@@ -1,0 +1,54 @@
+<form role="form" enctype="multipart/form-data" role="form" [formGroup]="preSubmissionGeneraldetailsfrm">
+
+<div class="row wizard-content">
+
+  <div class="col-lg-12">
+    <label class="control-label">Study Title</label>
+    <dx-text-area  formControlName="study_title"   placeholder="Study Title" >
+    </dx-text-area>
+  </div>
+  <div class=" col-lg-12">
+      <label class="control-label">Brief summary describing the background and objectives of trial</label>
+      <dx-text-area formControlName="brief_description"   placeholder="Brief summary describing the background and objectives of trial" >
+      </dx-text-area>
+    </div>
+    <div class=" col-lg-12">
+      <label class="control-label">Meeting Venue</label>
+  
+      <dx-text-area formControlName="meeting_venue"   placeholder="Meeting Venue">
+      </dx-text-area>
+    </div>
+    <div class="col-lg-4">
+      <label class="control-label">Proposed Meeting Date and Time</label>
+      <dx-date-box
+        type="datetime"
+        [formControlName]="'meeting_time'"
+      >
+      </dx-date-box>
+    </div>
+    <div class=" col-lg-4">
+      <label class="control-label">Meeting Type</label>
+      <dx-select-box [dataSource]="meetingTypeData"  (onValueChanged)="onClinicalTriaMeetingTypeChange($event)" valueExpr="id" displayExpr="name"  
+       [searchEnabled]="true" formControlName="meeting_type_id">
+      </dx-select-box>
+    </div>
+     <div class=" col-lg-12" *ngIf="is_virtual_meeting">
+      <label class="control-label">Meeting Invitation Details(Copy & Paste the Meeting Invitation Details & link</label>
+      <dx-text-area formControlName="meeting_invitation_details"   placeholder="Meeting Venue">
+      </dx-text-area>
+    </div>
+  <div class="col-lg-4 form-group" style="margin:1px;">
+
+  </div>
+  <div class="col-lg-12">
+    <input type="hidden" value={{sub_module_id}} formControlName="sub_module_id" />
+    <input type="hidden" value="{{module_id}}" formControlName="appmodule_id" />
+    <input type="hidden" value={{application_code}} formControlName="application_code" />
+    <input type="hidden" value={{section_id}} formControlName="section_id" />
+    
+    <input type="hidden" value={{reg_clinical_trial_id}} formControlName="reg_clinical_trial_id" />
+    
+  </div>
+</div> 
+</form>
+
