@@ -107,8 +107,15 @@
     <wizard navBarLayout ="large-filled-symbols"  style="background: #fff !important; height: 100% !important;">
      
       <wizard-step  navigationSymbol="Step 1" stepTitle="Application Details" class="wizardStep-height">
-        <app-disposal-generaldetails [dispapplicationGeneraldetailsfrm]="dispapplicationGeneraldetailsfrm" [section_id] ="section_id"  
-        [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-disposal-generaldetails>
+        <app-disposal-generaldetails
+         [dispapplicationGeneraldetailsfrm]="dispapplicationGeneraldetailsfrm" 
+         [section_id] ="section_id"  
+          [module_id] ="module_id" 
+          [status_id] ="status_id" 
+          [sub_module_id] ="sub_module_id" 
+          [isOtherDisposalClass]="isOtherDisposalClass"
+          [isOtherDisposalReason]="isOtherDisposalReason"
+          [application_code] ="application_code"></app-disposal-generaldetails>
 
           <div class=" div-footer" style="border-top: 1px solid #ccc; ">
             <dx-button
@@ -150,13 +157,13 @@
                   </dxi-column>
               
                   <dxi-column dataField="brand_name" caption="Brand Name/Trade Name"></dxi-column>
-                  <dxi-column dataField="common_name" caption="Common Name"></dxi-column>
+                  <dxi-column dataField="generic_name" caption="Generic Name"></dxi-column>
                   <dxi-column dataField="product_strength" caption="Product description"></dxi-column>
                   <dxi-column dataField="dosage_form" caption="Dosage Form/Product Form"></dxi-column>
-                  <dxi-column dataField="pack_size" caption="Dosage Form/Product Form"></dxi-column>
+                  <dxi-column dataField="product_pack" caption="Product Pack"></dxi-column>
                   <dxi-column dataField="batch_no" caption="Batch No's"></dxi-column>
                   <dxi-column dataField="quantity"></dxi-column>
-                  <dxi-column dataField="packaging_units"></dxi-column>
+                  <dxi-column dataField="pack_type"></dxi-column>
                   <dxi-column dataField="estimated_value"></dxi-column>
                   <dxi-column dataField="currency_name"></dxi-column>
                   <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
@@ -435,8 +442,8 @@
               </dx-text-box>
             </div>
             <div class="col-lg-6 no-padding">
-              <label>Common Name</label>
-              <dx-text-box placeholder="Common Name"  formControlName="common_name">
+              <label>Generic Name</label>
+              <dx-text-box placeholder="Generic Name"  formControlName="generic_name">
               </dx-text-box>
             </div>
             <div class="col-lg-6 no-padding">
@@ -450,12 +457,18 @@
               </dx-text-box>
             </div>
             <div class="col-lg-6 no-padding">
-              <label>Pack_size</label>
-              <dx-text-box placeholder="Pack_size"  formControlName="pack_size">
+              <label>Product Pack</label>
+              <dx-text-box placeholder="Product Pack"  formControlName="product_pack">
               </dx-text-box>
             </div>
+            <div class="col-lg-6 no-padding">
+              <label>Pack Type</label>
+              <dx-select-box [dataSource]="packTypeData" valueExpr="name" placeholder="Pack Type" displayExpr="name"
+                [searchEnabled]="true" formControlName="packaging_type_id">
+              </dx-select-box>
+            </div>
             <div class="col-lg-12 no-padding">
-              <label>Batch Nos</label>
+              <label>Batch Number (Enter multiple Batch Nos Separated by Commas)</label>
               <dx-text-area placeholder="Batch Nos"  formControlName="batch_no">
               </dx-text-area>
             </div>

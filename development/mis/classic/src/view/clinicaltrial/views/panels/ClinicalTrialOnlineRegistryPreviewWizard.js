@@ -4,7 +4,6 @@
 Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialOnlineRegistryPreviewWizard', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.clinicaltrialonlineregistrypreviewwizard',
-    
     controller: 'clinicaltrialvctr',
     viewModel: 'clinicaltrialvm',
     name: 'wizardPanel',

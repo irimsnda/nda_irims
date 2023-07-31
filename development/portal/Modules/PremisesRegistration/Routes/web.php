@@ -37,12 +37,15 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premisesregistration'], f
     Route::post('onSavePremisesOtherDetails', 'PremisesRegistrationController@onSavePremisesOtherDetails');
     Route::post('onSavePremisesPersonnel', 'PremisesRegistrationController@onSavePremisesPersonnel');
     Route::post('onSavePremisesStaff', 'PremisesRegistrationController@onSavePremisesStaff');
+    Route::post('onSavePremisesholder', 'PremisesRegistrationController@onSavePremisesholder');
+
     Route::post('onSavePremisesDirectors', 'PremisesRegistrationController@onSavePremisesDirectors');
     Route::post('onDeletePremisesDetails', 'PremisesRegistrationController@onDeletePremisesDetails');
     Route::post('onNewPremisesApplicationSubmit', 'PremisesRegistrationController@onNewPremisesApplicationSubmit');
     Route::post('onNewPremisesApplicationArchive', 'PremisesRegistrationController@onNewPremisesApplicationArchive');
     
     Route::post('onSavePersonnelDetails', 'PremisesRegistrationController@onSavePersonnelDetails');
+    Route::post('onSaveTelephoneDetails', 'PremisesRegistrationController@onSaveTelephoneDetails');
     Route::post('onSavePersonnelQualification', 'PremisesRegistrationController@onSavePersonnelQualification');
     Route::post('onSavePremisesAmmendmentsRequest', 'PremisesRegistrationController@onSavePremisesAmmendmentsRequest');
   
@@ -53,11 +56,18 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premisesregistration'], f
     Route::get('getPremisesArchivedApplicationLoading', 'PremisesRegistrationController@getPremisesArchivedApplicationLoading');
     
     Route::get('getPersonnelInformations', 'PremisesRegistrationController@getPersonnelInformations');
+    Route::get('getTelephoneDetails', 'PremisesRegistrationController@getTelephoneDetails');
+    Route::get('getApplicantIncharge', 'PremisesRegistrationController@getApplicantIncharge');
+    Route::get('getDirectorsInformations', 'PremisesRegistrationController@getDirectorsInformations');
+    Route::get('getStaffInformations', 'PremisesRegistrationController@getStaffInformations');
+    Route::get('getOtherPremises', 'PremisesRegistrationController@getOtherPremises');
+
     Route::get('getpremisesApplicationDetails', 'PremisesRegistrationController@getpremisesApplicationDetails');
     Route::get('getPersonnelQualifications', 'PremisesRegistrationController@getPersonnelQualifications');
     Route::get('getAppSubmissionGuidelines', 'PremisesRegistrationController@getAppSubmissionGuidelines');
   
     Route::get('getTradersRegisteredPremises', 'PremisesRegistrationController@getTradersRegisteredPremises');
+    Route::get('getNearestPremises', 'PremisesRegistrationController@getNearestPremises');
     Route::get('checkPendingPremisesRenewal', 'PremisesRegistrationController@checkPendingPremisesRenewal');
     
     Route::get('getPremisesAmmendementsRequest', 'PremisesRegistrationController@getPremisesAmmendementsRequest');

@@ -51,12 +51,6 @@ Ext.define('Admin.view.parameters.views.forms.glAccountsFrm', {
         allowBlank: true,
         margin: '0 20 20 0',
         name: 'code'
-    },{
-        xtype: 'textfield',
-        fieldLabel: 'TFDA Code',
-        allowBlank: true,
-        margin: '0 20 20 0',
-        name: 'tfda_code'
     },
     {
         xtype: 'textfield',

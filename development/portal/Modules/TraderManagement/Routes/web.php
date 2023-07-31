@@ -29,6 +29,9 @@ Route::group(['middleware' => 'api', 'prefix' => 'tradermanagement'], function()
     Route::post('onAccountRegistration', 'TraderManagementController@onAccountRegistration');
     Route::post('onAccountUsersRegistration', 'TraderManagementController@onAccountUsersRegistration');
 
+    Route::post('onPharmacisAccountUsersRegistration', 'TraderManagementController@onPharmacisAccountUsersRegistration');
+
+
     Route::get('onValidateAdminAccess', 'TraderManagementController@onValidateAdminAccess');
    
     Route::post('onUpdateTraderAccountDetails', 'TraderManagementController@onUpdateTraderAccountDetails');

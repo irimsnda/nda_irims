@@ -6,14 +6,12 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
     stores: [
         'Admin.store.premiseRegistration.PremiseRegGridAbstractStore',
         'Admin.store.premiseRegistration.PremiseRegComboAbstractStore',
-        'Admin.store.premiseRegistration.FoodPremiseRegistrationStr',
         'Admin.store.premiseRegistration.DrugsPremiseRegistrationStr',
         'Admin.store.premiseRegistration.CosmeticsPremiseRegistrationStr',
         'Admin.store.premiseRegistration.MedicinePremiseRegistrationStr',
         'Admin.store.premiseRegistration.OnlinePremRegistrationStr',
         'Admin.store.premiseRegistration.PremiseOtherDetailsOnlineStr',
         'Admin.store.premiseRegistration.PremisePersonnelDetailsOnlineStr',
-        'Admin.store.premiseRegistration.FoodPremDocOnlineUploadsStr',
         'Admin.store.premiseRegistration.TraPersonnelQualificationsStr',
         'Admin.store.premiseRegistration.PremisesInspectionDashGridStr',
         
@@ -62,13 +60,18 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
                 click: 'onPrevCardClick'
             },
 
-
+           
             'renewpremisereceivingwizard button[name=next_btn]': {
                 click: 'onNextCardClick'
             },
             'renewpremisereceivingwizard button[name=prev_btn]': {
                 click: 'onPrevCardClick'
             },
+
+            'drugshopdetailsfrm': {
+                afterrender: 'drugsShopFrmDefination'
+            },
+
 
           
             'applicantselectiongrid': {
@@ -129,18 +132,12 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
             'newpremisescreening': {
                 afterrender: 'prepareNewPremiseEvaluation'
             },
-            
-            'newfoodpremauditing': {
-                afterrender: 'prepareNewFoodPremiseAuditing'
-            },
+         
             'newpremisemanagerreview': {
                 afterrender: 'prepareNewPremiseManagerReview'
             },
             'newpremiseapprovals': {
                 afterrender: 'prepareNewPremiseMainApprovals'
-            },
-            'newfoodapprovals': {
-                afterrender: 'prepareNewFoodPremiseApprovals'
             },
             'newsinglepremiseapproval': {
                 afterrender: 'prepareSinglePremiseApproval'
@@ -226,9 +223,7 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
                 click: 'showNewReceivingApplicationSubmissionWin'
             },
 
-            'foodnewonlinereceivingwizard button[name=process_submission_btn]': {
-                click: 'showNewReceivingApplicationSubmissionWin'
-            },
+          
             'managerinspectiongrid button[action=process_submission_btn]': {
                 click: 'showManagerInspectionApplicationSubmissionWin'
             },
@@ -238,9 +233,7 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
             'newpremiseevaluationpanel button[name=process_submission_btn]': {
                 click: 'showPremisesSreeningApplicationSubmissionWin'
             },
-            'newfoodapprovalswizard button[name=process_submission_btn]': {
-                click: 'showSingleApprovalsApplicationSubmissionWin'
-            },
+        
             'newsinglepremiseapprovalwizard button[name=process_submission_btn]': {
                 click: 'showSingleApprovalsApplicationSubmissionWin'
             },
@@ -299,21 +292,7 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
             'managerreviewrenewalgrid': {
                 previousUploadedDocs: 'showPreviousUploadedDocs'
             },
-            'newfoodpremauditing button[name=save_btn]': {
-                click: 'saveApplicationAuditingChecklistDetails'
-            },
-            'foodnewevaluationpnl button[name=show_template]': {
-                click: 'showApplicationEvaluationTemplate'
-            },
-            'newsinglepremiseapprovalwizard button[name=show_recommendation]': {
-                click: 'getApplicationApprovalDetails'
-            },
-            'foodnewonlinereceivingwizard button menu menuitem[name=action_accept]': {
-                click: 'saveOnlineApplicationDetails'
-            },
-            'foodnewonlinereceivingwizard button menu menuitem[name=action_reject]': {
-                click: 'rejectOnlineApplicationDetails'
-            },
+           
             'premiseotherdetailsgrid': {
                 refresh: 'addPremiseDependentGrids'
             },
@@ -326,24 +305,6 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
             },
             'premisepersonneldetailsgrid button[name=add_personnel]': {
                 click: 'showAddPremisePersonnelDetails'
-            },
-            'foodnewinspectionpnl form toolbar button[name=more_app_details]': {
-                click: 'showApplicationMoreDetails'
-            },
-            'newpremiseinspectionpanel button[name=more_app_details]': {
-                click: 'showApplicationMoreDetails'
-            },
-            'foodnewevaluationpnl form toolbar button[name=more_app_details]': {
-                click: 'showApplicationMoreDetails'
-            },
-            'foodnewauditingpnl form toolbar button[name=more_app_details]': {
-                click: 'showApplicationMoreDetails'
-            },
-            'foodnewpaymentspnl form toolbar button[name=more_app_details]': {
-                click: 'showApplicationMoreDetails'
-            },
-            'foodnewinvoicingpnl form toolbar button[name=more_app_details]': {
-                click: 'showApplicationMoreDetails'
             },
             'newpremiseinvoicingpanel form toolbar button[name=more_app_details]': {
                 click: 'showApplicationMoreDetails'
@@ -369,9 +330,7 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
             'renewpremiseevaluationpanel form toolbar button[name=more_app_details]': {
                 click: 'showApplicationMoreDetails'
             },
-            'foodnewinvoicingpnl toolbar button[name=remove_selected]': {
-                click: 'deleteApplicationInvoice'
-            },
+           
             'newpremiseinspectionpanel button[name=premisesinspectiondocs_btn]': {
                 click: 'showInspectionRecommendationDetails'
             },
@@ -447,6 +406,19 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
             'drugshopdetailsfrm combo[name=country_id]': {
                 afterrender: 'afterPremiseCountriesComboRender'
             },
+
+            'drugshopapprovalsgrid combo[name=country_id]': {
+                afterrender: 'afterPremiseCountriesGridRender'
+            },
+
+            'drugshopcommunicationsgrid combo[name=country_id]': {
+                afterrender: 'afterPremiseCountriesGridRender'
+            },
+
+            'drugshopmanagerevaluationgrid combo[name=country_id]': {
+                afterrender: 'afterPremiseCountriesGridRender'
+            },
+
             'preinspectionpremisedetailsfrm combo[name=country_id]': {
                 afterrender: 'afterPremiseCountriesComboRender'
             },
@@ -571,6 +543,14 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
             'newdrugshopinspection': {
                 afterrender: 'prepareDrugShopPremiseInspection'
             },
+            'newdrugshopregionalinspection': {
+                afterrender: 'prepareDrugShopRegionalInspection'
+            },
+
+            'newdrugshopleadinspection': {
+                afterrender: 'prepareDrugShopLeadInspection'
+            },
+
             'newdrugshopinspectionpanel button[name=process_submission_btn]': {
                 click: 'showInspectionApplicationSubmissionWin'
             },
@@ -614,15 +594,16 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
                 newPremiseRegistration: 'onNewPremiseRegApplication',
                 funcActiveInspectionTabChanges:'funcActiveInspectionTabChanges',
                 showNewPremiseInspectionSchedule:'showNewPremiseInspectionSchedule',
-                onEditFoodPremiseRegApplication: 'onEditFoodPremiseRegApplication',
                 applicationMoreDetails: 'showApplicationMoreDetailsGeneric',
                 showPremisesInspectionDetailsWizard:'showPremisesInspectionDetailsWizard',
                 redoPremiseOtherDetailsGrid: 'redoPremiseOtherDetailsGrid',
                 redoPremisePersonnelDetailsGrid: 'redoPremisePersonnelDetailsGrid',
                 previewPremisesOnlineApplication:'previewPremisesOnlineApplication',
 
-                //drugshop
+                //drugshop 
                  newDrugShopRegistration: 'onNewDrugShopRegApplication',
+                 showDrugShopApplicationMoreDetails: 'showDrugShopApplicationMoreDetails',
+                 showDrugShopApplicationMoreDetailsGeneric: 'showDrugShopApplicationMoreDetailsGeneric'
             }
         }
     },  funcActiveInspectionTabChanges: function (tab) {
@@ -641,6 +622,30 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
         }
 
     },
+
+
+     drugsShopFrmDefination:function(frm){
+        var me = this,
+            mainTabPnl = frm.up('panel'),
+            activeTab = mainTabPnl.up('panel');
+            mainPnl = activeTab.up('panel');
+            console.log(mainTabPnl);
+            console.log(activeTab);
+            sub_module_id = mainPnl.down('hiddenfield[name=sub_module_id]').getValue();
+              
+            if(sub_module_id ==97){
+                frm.down('#director_fieldset').setVisible(false);
+            
+            }
+            else{
+                frm.down('#director_fieldset').setVisible(true);
+              
+            }
+
+    },
+
+
+
     showAddGmpProductLineDetails: function (btn) {
         var me = this,
             mainTabPanel = me.getMainTabPanel(),
@@ -930,6 +935,16 @@ previewPremisesOnlineApplication: function (view, record) {
         store.load({params: {filter: filterStr}});
     },
 
+    afterPremiseCountriesGridRender: function (cmbo) {
+        var form = cmbo.up('form'),
+            store = cmbo.getStore(),
+            filterObj = {is_local: 1},
+            filterStr = JSON.stringify(filterObj);
+        store.removeAll();
+        store.load({params: {filter: filterStr}});
+    },
+
+
     setPremiseRegGridsStore: function (me, options) {
 
         var config = options.config,
@@ -1024,7 +1039,7 @@ previewPremisesOnlineApplication: function (view, record) {
                     premise_id = win.down('premisemiscomparepreviewpnl').down('premisedetailsfrm').down('hiddenfield[name=premise_id]').getValue();
                 }
             } else {
-                premise_id = win.down('premisedetailsfrm').down('hiddenfield[name=premise_id]').getValue();
+                premise_id = win.down('drugshopdetailsfrm').down('hiddenfield[name=premise_id]').getValue();
             }
         } else {
             premise_id = activeTab.down('hiddenfield[name=premise_id]').getValue();
@@ -1221,43 +1236,7 @@ previewPremisesOnlineApplication: function (view, record) {
         }, 300);
     },
     
-    onEditFoodPremiseRegApplication: function (record) {
-        Ext.getBody().mask('Please wait...');
-        var me = this,
-            mainTabPanel = me.getMainTabPanel(),
-            process_id = record.get('process_id'),
-            workflow_stage_id = record.get('workflow_stage_id'),
-            workflow_stage = record.get('workflow_stage'),
-            ref_no = record.get('reference_no'),
-            workflow_details = getAllWorkflowDetails(process_id, workflow_stage_id);
-        if (!workflow_details || workflow_details.length < 1) {
-            Ext.getBody().unmask();
-            toastr.warning('Problem encountered while fetching workflow details-->Possibly workflow not set!!', 'Warning Response');
-            return false;
-        }
-        var tab = mainTabPanel.items.find(function (i) {
-            if (i.title.indexOf(ref_no) !== -1) {
-                return i;
-            } else {
-                return false;
-            }
-        });
-        if (!tab) {
-            var newTab = Ext.widget(workflow_details.viewtype, {
-                title: workflow_stage + '-' + ref_no,
-                closable: true
-            });
-            me.prepareApplicationBaseDetails(newTab, record);
-            mainTabPanel.add(newTab);
-            var lastTab = mainTabPanel.items.length - 1;
-            mainTabPanel.setActiveTab(lastTab);
-        } else {
-            mainTabPanel.setActiveTab(tab);
-        }
-        Ext.Function.defer(function () {
-            Ext.getBody().unmask();
-        }, 300);
-    },
+   
 
     prepareApplicationBaseDetails: function (tab, record) {
         var me = this,
@@ -1425,17 +1404,32 @@ previewPremisesOnlineApplication: function (view, record) {
                         message = resp.message,
                         success = resp.success,
                         results = resp.results,
+                        incharge_details = resp.incharge_details,
                         contactPersonDetails = resp.contactPersonDetails,
                         superintendentDetails = resp.superintendentDetails;
                     if (success == true || success === true) {
                         if (results) {
                             var model = Ext.create('Ext.data.Model', results);
+                            var model1a = Ext.create('Ext.data.Model', incharge_details);
                             //pnl.down('combo[name=zone_id]').setValue(results.zone_id);
                             pnl.down('displayfield[name=application_status]').setValue(results.app_status);
                             pnl.down('displayfield[name=tracking_no]').setValue(results.tracking_no);
                             pnl.down('displayfield[name=process_name]').setValue(results.process_name);
                             applicantFrm.loadRecord(model);
                             premiseFrm.loadRecord(model);
+                            // premiseFrm.down('textfield[name=incharge_nin_no]').setValue(incharge_details.incharge_nin_no);
+                            // premiseFrm.down('textfield[name=incharge_name]').setValue(incharge_details.incharge_name);
+                            // premiseFrm.down('combo[name=incharge_qualification_id]').setValue(incharge_details.incharge_qualification_id);
+                            // premiseFrm.down('textfield[name=incharge_telephone_no]').setValue(incharge_details.incharge_telephone_no);
+                            // premiseFrm.down('textfield[name=incharge_telephone_no2]').setValue(incharge_details.incharge_telephone_no2);
+                            // premiseFrm.down('textfield[name=incharge_telephone_no3]').setValue(incharge_details.incharge_telephone_no3);
+                            // premiseFrm.down('textfield[name=incharge_email_address]').setValue(incharge_details.incharge_email_address);
+                            // premiseFrm.down('textfield[name=incharge_email_address2]').setValue(incharge_details.incharge_email_address2);
+                            // premiseFrm.down('textfield[name=incharge_email_address3]').setValue(incharge_details.incharge_email_address3);
+                            // premiseFrm.down('combo[name=incharge_country_id]').setValue(incharge_details.incharge_country_id);
+                            // premiseFrm.down('combo[name=incharge_region_id]').setValue(incharge_details.incharge_region_id);
+                            // premiseFrm.down('combo[name=incharge_district_id]').setValue(incharge_details.incharge_district_id);
+
                         }
 
                         if (contactPersonDetails) {
@@ -1933,74 +1927,7 @@ previewPremisesOnlineApplication: function (view, record) {
         }
     },
     
-    prepareNewFoodPremiseEvaluation: function () {
-        Ext.getBody().mask('Please wait...');
-        var me = this,
-            mainTabPanel = me.getMainTabPanel(),
-            activeTab = mainTabPanel.getActiveTab(),
-            panel = activeTab.down('newpremisescreening'),
-            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
-            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
-            app_check_types_store = panel.down('combo[name=applicable_checklist]').store,
-            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
-            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
-            otherDetailsFrm = panel.down('form'),
-            applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
-            premise_details = otherDetailsFrm.down('displayfield[name=premise_details]');
-        if (application_id) {
-            app_check_types_store.load({
-                params: {
-                    process_id: process_id,
-                    workflow_stage: workflow_stage_id
-                }
-            });
-            Ext.Ajax.request({
-                method: 'GET',
-                url: 'premiseregistration/prepareNewPremiseEvaluationStage',
-                params: {
-                    application_id: application_id,
-                    application_code: application_code,
-                    table_name: 'tra_premises_applications'
-                },
-                headers: {
-                    'Authorization': 'Bearer ' + access_token
-                },
-                success: function (response) {
-                    Ext.getBody().unmask();
-                    var resp = Ext.JSON.decode(response.responseText),
-                        message = resp.message,
-                        success = resp.success,
-                        results = resp.results;
-                    if (success == true || success === true) {
-                        var module_id = results.module_id;
-                        activeTab.down('hiddenfield[name=premise_id]').setValue(results.premise_id);
-                        activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
-                        applicant_details.setValue(results.applicant_details);
-                        if (module_id == 2 || module_id === 2) {
-                            premise_details.setVisible(true);
-                            premise_details.setValue(results.premise_details);
-                        }
-                    } else {
-                        toastr.error(message, 'Failure Response');
-                    }
-                },
-                failure: function (response) {
-                    Ext.getBody().unmask();
-                    var resp = Ext.JSON.decode(response.responseText),
-                        message = resp.message,
-                        success = resp.success;
-                    toastr.error(message, 'Failure Response');
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    Ext.getBody().unmask();
-                    toastr.error('Error: ' + errorThrown, 'Error Response');
-                }
-            });
-        } else {
-            Ext.getBody().unmask();
-            //It's a new application
-        }
-    },
+   
     prepareNewPremiseEvaluation: function () {
         Ext.getBody().mask('Please wait...');
         var me = this,
@@ -2205,74 +2132,7 @@ previewPremisesOnlineApplication: function (view, record) {
         }
     },
 */
-    prepareNewFoodPremiseAuditing: function () {
-        Ext.getBody().mask('Please wait...');
-        var me = this,
-            mainTabPanel = me.getMainTabPanel(),
-            activeTab = mainTabPanel.getActiveTab(),
-            panel = activeTab.down('foodnewauditingpnl'),
-            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
-            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
-            app_check_types_store = panel.down('combo[name=applicable_checklist]').store,
-            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
-            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
-            otherDetailsFrm = panel.down('form'),
-            applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
-            premise_details = otherDetailsFrm.down('displayfield[name=premise_details]');
-        if (application_id) {
-            app_check_types_store.load({
-                params: {
-                    process_id: process_id,
-                    workflow_stage: workflow_stage_id
-                }
-            });
-            Ext.Ajax.request({
-                method: 'GET',
-                url: 'premiseregistration/prepareNewPremiseEvaluationStage',
-                params: {
-                    application_id: application_id,
-                    application_code: application_code,
-                    table_name: 'tra_premises_applications'
-                },
-                headers: {
-                    'Authorization': 'Bearer ' + access_token
-                },
-                success: function (response) {
-                    Ext.getBody().unmask();
-                    var resp = Ext.JSON.decode(response.responseText),
-                        message = resp.message,
-                        success = resp.success,
-                        results = resp.results;
-                    if (success == true || success === true) {
-                        var module_id = results.module_id;
-                        activeTab.down('hiddenfield[name=premise_id]').setValue(results.premise_id);
-                        activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
-                        applicant_details.setValue(results.applicant_details);
-                        if (module_id == 2 || module_id === 2) {
-                            premise_details.setVisible(true);
-                            premise_details.setValue(results.premise_details);
-                        }
-                    } else {
-                        toastr.error(message, 'Failure Response');
-                    }
-                },
-                failure: function (response) {
-                    Ext.getBody().unmask();
-                    var resp = Ext.JSON.decode(response.responseText),
-                        message = resp.message,
-                        success = resp.success;
-                    toastr.error(message, 'Failure Response');
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    Ext.getBody().unmask();
-                    toastr.error('Error: ' + errorThrown, 'Error Response');
-                }
-            });
-        } else {
-            Ext.getBody().unmask();
-            //It's a new application
-        }
-    },
+    
 
     prepareNewPremiseManagerReview: function () {
         Ext.getBody().mask('Please wait...');
@@ -2316,127 +2176,7 @@ previewPremisesOnlineApplication: function (view, record) {
         }
     },
 
-    prepareNewFoodPremiseApprovals: function () {
-        Ext.getBody().mask('Please wait...');
-        var me = this,
-            mainTabPanel = me.getMainTabPanel(),
-            activeTab = mainTabPanel.getActiveTab(),
-            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
-            applicantFrm = activeTab.down('applicantdetailsfrm'),
-            premiseFrm = activeTab.down('premisedetailsfrm'),
-            paymentsPanel = activeTab.down('approvalspaymentspnl'),
-            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
-            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
-            invoice_id_field = activeTab.down('hiddenfield[name=invoice_id]'),
-            invoice_no_field = paymentsPanel.down('displayfield[name=invoice_no]'),
-            invoiceDetailsGrid = paymentsPanel.down('paymentinvoicingcostdetailsgrid'),
-            paymentDetailsGrid = paymentsPanel.down('applicationpaymentsgrid'),
-            invoiceDetailsStore = invoiceDetailsGrid.getStore(),
-            paymentDetailsStore = paymentDetailsGrid.getStore(),
-            preCheckingGrid = activeTab.down('premisescreeninggrid'),
-            inspectionGrid = activeTab.down('foodpreminspectionchecklistgrid'),
-            evaluationGrid = activeTab.down('foodpremevaluationchecklistgrid'),
-            preCheckingChecklistsStore = preCheckingGrid.down('combo[name=applicable_checklist]').store,
-            inspectionChecklistsStore = inspectionGrid.down('combo[name=applicable_checklist]').store,
-            evaluationChecklistsStore = evaluationGrid.down('combo[name=applicable_checklist]').store,
-            receiving_stage,
-            inspection_stage,
-            evaluation_stage;
-        applicantFrm.down('button[action=link_applicant]').setDisabled(true);
-        preCheckingGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
-        inspectionGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
-        evaluationGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
-        activeTab.down('premisepersonneldetailsgrid').down('hiddenfield[name=isReadOnly]').setValue(1);
-        activeTab.down('premiseotherdetailsgrid').down('hiddenfield[name=isReadOnly]').setValue(1);
-        //paymentsPanel.down('button[name=remove_selected]').setHidden(true);
-        invoiceDetailsGrid.setHeight(255);
-        paymentDetailsGrid.setHeight(255);
-        if (section_id == 1) {//Food
-            receiving_stage = 1;
-            inspection_stage = 17;
-            evaluation_stage = 9;
-        } else if (section_id == 2) {//Drugs
-            receiving_stage = 5;
-            inspection_stage = 24;
-            evaluation_stage = 26;
-        } else if (section_id == 3) {//Cosmetics
-
-        } else if (section_id == 4) {//Medical Devices
-
-        }
-        if (application_id) {
-            Ext.Ajax.request({
-                method: 'GET',
-                url: 'premiseregistration/prepareNewPremiseReceivingStage',
-                params: {
-                    application_id: application_id,
-                    application_code: application_code
-                },
-                headers: {
-                    'Authorization': 'Bearer ' + access_token
-                },
-                success: function (response) {
-                    Ext.getBody().unmask();
-                    var resp = Ext.JSON.decode(response.responseText),
-                        message = resp.message,
-                        success = resp.success,
-                        results = resp.results,
-                        model = Ext.create('Ext.data.Model', results);
-                    if (success == true || success === true) {
-                        applicantFrm.loadRecord(model);
-                        premiseFrm.loadRecord(model);
-                        invoice_id_field.setValue(results.invoice_id);
-                        invoice_no_field.setValue(results.invoice_no);
-                        invoiceDetailsStore.load({params: {invoice_id: results.invoice_id}});
-                        paymentDetailsStore.load();
-                        preCheckingChecklistsStore.removeAll();
-                        preCheckingChecklistsStore.load({
-                            params: {
-                                process_id: results.process_id,
-                                workflow_stage: results.workflow_stage_id,
-                                is_approval: 1,
-                                target_stage: receiving_stage//for screening checklists at receiving stage
-                            }
-                        });
-                        inspectionChecklistsStore.removeAll();
-                        inspectionChecklistsStore.load({
-                            params: {
-                                process_id: results.process_id,
-                                workflow_stage: results.workflow_stage_id,
-                                is_approval: 1,
-                                target_stage: inspection_stage//for inspection checklists
-                            }
-                        });
-                        evaluationChecklistsStore.removeAll();
-                        evaluationChecklistsStore.load({
-                            params: {
-                                process_id: results.process_id,
-                                workflow_stage: results.workflow_stage_id,
-                                is_approval: 1,
-                                target_stage: evaluation_stage//for evaluation checklists
-                            }
-                        });
-                    } else {
-                        toastr.error(message, 'Failure Response');
-                    }
-                },
-                failure: function (response) {
-                    Ext.getBody().unmask();
-                    var resp = Ext.JSON.decode(response.responseText),
-                        message = resp.message,
-                        success = resp.success;
-                    toastr.error(message, 'Failure Response');
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    Ext.getBody().unmask();
-                    toastr.error('Error: ' + errorThrown, 'Error Response');
-                }
-            });
-        } else {
-            Ext.getBody().unmask();
-            //It's a new application
-        }
-    },
+   
 
     prepareSinglePremiseApproval: function () {
         Ext.getBody().mask('Please wait...');
@@ -3227,16 +2967,8 @@ previewPremisesOnlineApplication: function (view, record) {
     },
     //End
 
-    foodPremiseRegHome: function () {
-        var me = this,
-            mainTabPanel = me.getMainTabPanel(),
-            activeTab = mainTabPanel.getActiveTab(),
-            dashboardWrapper = activeTab.down('foodpremregdashwrapper');
-        if (!dashboardWrapper.down('foodpremregdash')) {
-            dashboardWrapper.removeAll();
-            dashboardWrapper.add({xtype: 'foodpremregdash'});
-        }
-    },
+  
+
     
     premisesinspectionHomeBtn: function (btn) {
         var me = this,
@@ -3321,6 +3053,8 @@ previewPremisesOnlineApplication: function (view, record) {
             win.close();
         }, 200);
     },
+
+    
 
     onPremiseSelectionListDblClick: function (view, record, item, index, e, eOpts) {
         
@@ -6537,10 +6271,10 @@ previewPremisesOnlineApplication: function (view, record) {
         }
         wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
         wizardPnl.down('combo[name=application_region_id]').setReadOnly(true);
-        personnelGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        //personnelGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         //otherDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         premiseFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
-        personnelGrid.setIsWin(1);
+        //personnelGrid.setIsWin(1);
         Ext.Ajax.request({
             method: 'GET',
             url: 'premiseregistration/getPremApplicationMoreDetails',
@@ -6571,15 +6305,7 @@ previewPremisesOnlineApplication: function (view, record) {
                     }
                     
                     funcShowCustomizableWindow('Preview Premises Details'+ref_no, '85%', wizardPnl, 'customizablewindow');
-                    if (sub_module_id == 2 || sub_module_id === 2) {
-                        if (isReadOnly < 1) {
-                            
-                            //personnelDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
-                           // otherDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
-                            me.fireEvent('formAuth', process_id, 1, premiseFrm);
-                            me.fireEvent('otherPartsAuth', process_id, wizardPnl);
-                        }
-                    }
+                   
                     //add new panels 
                     //add the queries and documents and then set the details 
                     wizardPnl.add({xtype:'applicationqueriesgrid',title: 'Request for Additional Information(Queries)'});
@@ -6745,7 +6471,6 @@ previewPremisesOnlineApplication: function (view, record) {
         }
     },
 
-
        prepareDrugShopPremiseInspection: function () {
         Ext.getBody().mask('Please wait...');
         var me = this,
@@ -6754,13 +6479,8 @@ previewPremisesOnlineApplication: function (view, record) {
             wizardPnl = activeTab.down('drugshopappmoredetailswizard');
             var applicantFrm = wizardPnl.down('applicantdetailsfrm'),
             premiseFrm = wizardPnl.down('drugshopdetailsfrm'),
-            //contactFrm = wizardPnl.down('premisecontactpersonfrm'),
-            //personnelGrid = wizardPnl.down('premisepersonneldetailsgrid'),
-            //otherDetailsGrid = wizardPnl.down('premiseotherdetailswingrid'); 
-            inspectorsGrid = activeTab.down('inspectioninspectorsgrid'),
-            inspectorsStore = inspectorsGrid.getStore(),
-            premisesinspectiondetailsfrm = activeTab.down('premisesinspectiondetailsfrm'),
-            isReadOnly = 0,
+          
+            isReadOnly = 1,
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
            // app_check_types_store = activeTab.down('combo[name=applicable_checklist]').store,
@@ -6769,11 +6489,7 @@ previewPremisesOnlineApplication: function (view, record) {
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
-          //  otherDetailsFrm = activeTab.down('form'),
-         //   applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
-            //premise_details = otherDetailsFrm.down('displayfield[name=premise_details]');
-            //map details 
-    //////  applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+        
             wizardPnl.down('hiddenfield[name=process_id]').setValue(process_id);
             wizardPnl.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
             wizardPnl.down('hiddenfield[name=application_id]').setValue(application_id);
@@ -6781,12 +6497,18 @@ previewPremisesOnlineApplication: function (view, record) {
             wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
             wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
-                wizardPnl.down('button[name=save_btn]').setVisible(false);
+                wizardPnl.down('button[name=updatedrugshopapplications]').setVisible(false);
+            }
+
+            if(activeTab.down('combo[name=applicable_checklist]')){
+            var checklistTypesGrid = activeTab.down('combo[name=applicable_checklist]'),
+              checklistTypesStr = checklistTypesGrid.getStore();
+              checklistTypesStr.removeAll();
+              checklistTypesStr.load({params: {module_id: module_id, sub_module_id: sub_module_id, section_id: section_id}});
             }
             wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
             wizardPnl.down('combo[name=application_region_id]').setReadOnly(true);
-            //personnelGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
-            //otherDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+            
             premiseFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
            // contactFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
             
@@ -6836,34 +6558,20 @@ previewPremisesOnlineApplication: function (view, record) {
                             var model2 = Ext.create('Ext.data.Model', premiseDetails);
                             premiseFrm.loadRecord(model2);
                         }
-                        // if (contactDetails) {
-                        //     var model3 = Ext.create('Ext.data.Model', contactDetails);
-                        //     contactFrm.loadRecord(model3);
-                        // }
+                       
                         if(inspectionDetails){
                             var model4 = Ext.create('Ext.data.Model', inspectionDetails);
-                            inspection_frm = activeTab.down('#premiseinspectionrecommfrm');
+                            inspection_frm = activeTab.down('drugshopinspectionfrm');
                             inspection_frm.loadRecord(model4);
                         }
 
                         if(!inspectionDetails){
                             var model5 = Ext.create('Ext.data.Model', premiseDetails);
-                            inspection_frm = activeTab.down('#premiseinspectionrecommfrm');
+                            inspection_frm = activeTab.down('drugshopinspectionfrm');
                             inspection_frm.loadRecord(model5);
                         }
 
-                        if(inspectionDetails){
-                            var model4 = Ext.create('Ext.data.Model', inspectionDetails);
-                            
-                            premisesinspectiondetailsfrm.loadRecord(model4);
-                        }
-
-                        if(!inspectionDetails){
-                            var model5 = Ext.create('Ext.data.Model', premiseDetails);
-                            
-                            premisesinspectiondetailsfrm.loadRecord(model5);
-                        }
-
+                       
                         
                         var docTypesStr = activeTab.down('combo[name=applicable_documents]').getStore();
                         docTypesStr.removeAll();
@@ -6875,7 +6583,279 @@ previewPremisesOnlineApplication: function (view, record) {
                                 workflow_stage: workflow_stage_id
                             }
                         });
-                        inspectorsStore.load();
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+    },
+
+
+    prepareDrugShopRegionalInspection: function () {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            wizardPnl = activeTab.down('drugshopappmoredetailswizard');
+            var applicantFrm = wizardPnl.down('applicantdetailsfrm'),
+            premiseFrm = wizardPnl.down('drugshopdetailsfrm'),
+          
+            isReadOnly = 1,
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+           // app_check_types_store = activeTab.down('combo[name=applicable_checklist]').store,
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+            activeTab.down('button[name=preview_report_btn]').setHidden(false);
+            wizardPnl.down('hiddenfield[name=process_id]').setValue(process_id);
+            wizardPnl.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+            wizardPnl.down('hiddenfield[name=application_id]').setValue(application_id);
+            wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
+            wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+            if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+                wizardPnl.down('button[name=updatedrugshopapplications]').setVisible(false);
+            }
+
+            if(activeTab.down('combo[name=applicable_checklist]')){
+            var checklistTypesGrid = activeTab.down('combo[name=applicable_checklist]'),
+              checklistTypesStr = checklistTypesGrid.getStore();
+              checklistTypesStr.removeAll();
+              checklistTypesStr.load({params: {module_id: module_id, sub_module_id: sub_module_id, section_id: section_id}});
+            }
+            wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
+            wizardPnl.down('combo[name=application_region_id]').setReadOnly(true);
+            
+            premiseFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+           // contactFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+            
+            documents_grid = wizardPnl.down('previewproductDocUploadsGrid');
+            documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+            documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+            documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+            documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);
+            //end 
+            
+        if (application_id) {
+            
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'premiseregistration/prepareNewPremiseRegionalEvaluationStage',
+                params: {
+                    application_id: application_id,
+                    application_code: application_code,
+                    table_name: 'tra_premises_applications'
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results,
+                        applicantDetails = resp.applicant_details,
+                        premiseDetails = resp.premise_details,
+                        inspectionDetails = resp.inspection_details;
+                        previousinspectionDetails = resp.previous_inspection_details;
+                        //contactDetails = resp.contact_details;
+                    if (success == true || success === true) {
+                        var module_id = results.module_id;
+                        activeTab.down('hiddenfield[name=premise_id]').setValue(results.premise_id);
+                        activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
+                        
+                       
+
+                        if (applicantDetails) {
+                            var model1 = Ext.create('Ext.data.Model', applicantDetails);
+                            applicantFrm.loadRecord(model1);
+                        }
+                        if (premiseDetails) {
+                            var model2 = Ext.create('Ext.data.Model', premiseDetails);
+                            premiseFrm.loadRecord(model2);
+                        }
+                       
+                        if(inspectionDetails){
+                            var model4 = Ext.create('Ext.data.Model', inspectionDetails);
+                            inspection_frm = activeTab.down('drugshopinspectionfrm');
+                            inspection_frm.loadRecord(model4);
+                        }
+
+                        if(!inspectionDetails){
+                            var model5 = Ext.create('Ext.data.Model', previousinspectionDetails);
+                            inspection_frm = activeTab.down('drugshopinspectionfrm');
+                            inspection_frm.loadRecord(model5);
+                        }
+
+                       
+                        
+                        var docTypesStr = activeTab.down('combo[name=applicable_documents]').getStore();
+                        docTypesStr.removeAll();
+                        docTypesStr.load({
+                            params: {
+                                section_id: section_id,
+                                module_id: module_id,
+                                sub_module_id: sub_module_id,
+                                workflow_stage: workflow_stage_id
+                            }
+                        });
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+    },
+
+
+    prepareDrugShopLeadInspection: function () {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            wizardPnl = activeTab.down('drugshopappmoredetailswizard');
+            var applicantFrm = wizardPnl.down('applicantdetailsfrm'),
+            premiseFrm = wizardPnl.down('drugshopdetailsfrm'),
+          
+            isReadOnly = 1,
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+           // app_check_types_store = activeTab.down('combo[name=applicable_checklist]').store,
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+            activeTab.down('button[name=preview_report_btn]').setHidden(false);
+            activeTab.down('button[name=regional_inspector_report_btn]').setHidden(false);
+            wizardPnl.down('hiddenfield[name=process_id]').setValue(process_id);
+            wizardPnl.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+            wizardPnl.down('hiddenfield[name=application_id]').setValue(application_id);
+            wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
+            wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+            if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+                wizardPnl.down('button[name=updatedrugshopapplications]').setVisible(false);
+            }
+
+            if(activeTab.down('combo[name=applicable_checklist]')){
+            var checklistTypesGrid = activeTab.down('combo[name=applicable_checklist]'),
+              checklistTypesStr = checklistTypesGrid.getStore();
+              checklistTypesStr.removeAll();
+              checklistTypesStr.load({params: {module_id: module_id, sub_module_id: sub_module_id, section_id: section_id}});
+            }
+            wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
+            wizardPnl.down('combo[name=application_region_id]').setReadOnly(true);
+            
+            premiseFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+           // contactFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+            
+            documents_grid = wizardPnl.down('previewproductDocUploadsGrid');
+            documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+            documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+            documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+            documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);
+            //end 
+            
+        if (application_id) {
+            
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'premiseregistration/prepareNewPremiseLeadEvaluationStage',
+                params: {
+                    application_id: application_id,
+                    application_code: application_code,
+                    table_name: 'tra_premises_applications'
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results,
+                        applicantDetails = resp.applicant_details,
+                        premiseDetails = resp.premise_details,
+                        inspectionDetails = resp.inspection_details;
+                        previousinspectionDetails = resp.previous_inspection_details;
+                        //contactDetails = resp.contact_details;
+                    if (success == true || success === true) {
+                        var module_id = results.module_id;
+                        activeTab.down('hiddenfield[name=premise_id]').setValue(results.premise_id);
+                        activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
+                        
+                       
+
+                        if (applicantDetails) {
+                            var model1 = Ext.create('Ext.data.Model', applicantDetails);
+                            applicantFrm.loadRecord(model1);
+                        }
+                        if (premiseDetails) {
+                            var model2 = Ext.create('Ext.data.Model', premiseDetails);
+                            premiseFrm.loadRecord(model2);
+                        }
+                       
+                        if(inspectionDetails){
+                            var model4 = Ext.create('Ext.data.Model', inspectionDetails);
+                            inspection_frm = activeTab.down('drugshopinspectionfrm');
+                            inspection_frm.loadRecord(model4);
+                        }
+
+                        if(!inspectionDetails){
+                            var model5 = Ext.create('Ext.data.Model', previousinspectionDetails);
+                            inspection_frm = activeTab.down('drugshopinspectionfrm');
+                            inspection_frm.loadRecord(model5);
+                        }
+
+                       
+                        
+                        var docTypesStr = activeTab.down('combo[name=applicable_documents]').getStore();
+                        docTypesStr.removeAll();
+                        docTypesStr.load({
+                            params: {
+                                section_id: section_id,
+                                module_id: module_id,
+                                sub_module_id: sub_module_id,
+                                workflow_stage: workflow_stage_id
+                            }
+                        });
                     } else {
                         toastr.error(message, 'Failure Response');
                     }

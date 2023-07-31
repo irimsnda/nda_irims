@@ -795,25 +795,30 @@ $is_orderlocal_supply = $req->is_orderlocal_supply;
             $import_typecategory_id = $req->import_typecategory_id;
             //dms get sub module flder getSubModuleNodereference()
             
-            $app_data = array('section_id'=>$req->section_id,
+            $app_data = array(
+                                    'section_id'=>$req->section_id,
+                                    'disposal_class_id'=>$req->disposal_class_id,
+                                    'other_product_category'=>$req->other_product_category,
+                                    'company_disposal_id'=>$req->company_disposal_id,
+                                    'reason_for_disposal_id'=>$req->reason_for_disposal_id,
+                                    'other_disposal_reasons'=>$req->other_disposal_reasons,
                                     'sub_module_id'=>$req->sub_module_id,
                                     'module_id'=>$req->module_id,
                                     'reason_for_disposal'=>$req->reason_for_disposal,
+                                    'hold_premise'=>$req->hold_premise,
                                     'total_weight'=>$req->total_weight,
                                     'weights_units_id'=>$req->weights_units_id,
                                     'market_value'=>$req->market_value,
-                                   'proposedmethod_of_disposal_id'=>$req->proposedmethod_of_disposal_id,
-                                   'reason_of_destruction_id'=>$req->reason_of_destruction_id,
-                                   'reason_for_disposal'=>$req->reason_for_disposal,
+                                    'proposedmethod_of_disposal_id'=>$req->proposedmethod_of_disposal_id,
+                                    'reason_of_destruction_id'=>$req->reason_of_destruction_id,
                                    'otherproposedmethod_of_disposal'=>$req->otherproposedmethod_of_disposal,
                                    'product_particulars_description'=>$req->product_particulars_description,
                                    'destructionsite_location'=>$req->destructionsite_location,
                                    'proposed_destructionsite'=>$req->proposed_destructionsite,
                                    'disposal_siteoption_id'=>$req->disposal_siteoption_id,
                                     'proposed_destructiondate'=>$req->proposed_destructiondate,
-                                   
-								   
-								   
+                                    'premises_name'=>$req->premises_name,
+                                    'premise_id'=>$req->premise_id,
                                     'currency_id'=>$req->currency_id,
                                     'zone_id'=>$req->zone_id,
                                     'trader_id'=>$trader_id
@@ -885,7 +890,7 @@ $is_orderlocal_supply = $req->is_orderlocal_supply;
                                $record_id = $resp['record_id'];
                                $application_id = $record_id;
                                if($resp['success']){
-                                    initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no, $trader_id);
+                                   // initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no, $trader_id);
                                     saveApplicationSubmissionDetails($application_code,$table_name);  
                                }
                                
@@ -966,10 +971,16 @@ public function saveDisposalPermitProductdetails(Request $req){
         
         $table_name = 'wb_disposal_products';
                 $data = array('application_code'=>$application_code,
+                            'generic_name'=>$req->generic_name,
+                            'brand_name'=>$req->brand_name,
                             'product_description'=>$product_description,
                             'estimated_value'=>$estimated_value,
                             'currency_id'=>$currency_id,
+                            'product_pack'=>$req->product_pack,
+                            'batch_no'=>$req->batch_no,
+                            'reason_for_disposal'=>$req->reason_for_disposal,
                             'packaging_unit_id'=>$packaging_unit_id,
+                            'packaging_type_id'=>$req->packaging_type_id,
                             'quantity'=>$quantity,
                             'product_id'=>$product_id
                             );
@@ -1001,8 +1012,9 @@ public function saveDisposalPermitProductdetails(Request $req){
                         $data['created_by'] = $trader_email;
                         $data['created_on'] = Carbon::now();
                         $resp = insertRecord($table_name, $data, $trader_email);
-                        
-                        $record_id = $resp['record_id'];     
+
+                        $record_id = $resp['record_id']; 
+    
                         if($resp['success']){
                             $res =  array('success'=>true,
                             'record_id'=>$record_id,
@@ -1208,7 +1220,7 @@ public function onUploadDocuments($req,$document_requirement_id){
                             'unitpack_size'=>$req->unitpack_size,
 							 'pack_size'=>$req->unitpack_size,
                             'unitpack_unit_id'=>$req->unitpack_unit_id,
-                            'dosage_form_id'=>$req->dosage_form_id,
+                            'dosage_form'=>$req->dosage_form,
                             'prodcertificate_no'=>$req->prodcertificate_no,
                             'device_type_id'=>$req->device_type_id,
                             'product_batch_no'=>$req->product_batch_no,
@@ -1321,7 +1333,8 @@ public function onUploadDocuments($req,$document_requirement_id){
                     $join->on('t1.application_status_id', '=', 't4.status_id');
                 })
                 ->where(array('t1.trader_id' => $trader_id))
-                ->orderBy('t1.date_added','desc');
+                ->orderBy('t1.date_added','desc')
+                ->groupBy('t1.application_code');
                 
                 if(is_array($application_status_ids) && count($application_status_ids) >0 && $application_status_id != ''){
                         
@@ -1359,16 +1372,24 @@ public function onUploadDocuments($req,$document_requirement_id){
 
         $subModuleData = getParameterItems('sub_modules','','mis_db');
         $sectionsData = getParameterItems('par_sections','','mis_db');
-        
+        $classProductData = getParameterItems('par_disposalprodclass_category','','mis_db');
+
         foreach ($records as $rec) {
            $section = returnParamFromArray($sectionsData,$rec->section_id);
+           $prod_class = returnParamFromArray($classProductData,$rec->disposal_class_id);
            $premises_name = getSingleRecordColValue('tra_premises', array('id' => $rec->premise_id), 'name','mis_db');
             
            $data[] = array('reference_no'=>$rec->reference_no,
                            'trader_id'=>$rec->trader_id,
                            'premise_id'=>$rec->premise_id,
                            'section_id'=>$rec->section_id,
+                           'disposal_class_id'=>$rec->disposal_class_id,
+                           'hold_premise'=>$rec->hold_premise,
+                           'other_product_category'=>$rec->other_product_category,
                            'application_id'=>$rec->id,
+                           'company_disposal_id'=>$rec->company_disposal_id,
+                           'reason_for_disposal_id'=>$rec->reason_for_disposal_id,
+                           'other_disposal_reasons'=>$rec->other_disposal_reasons,
                            'id'=>$rec->id,
                            'date_added'=>$rec->date_added,
                            'sub_module_id'=>$rec->sub_module_id,
@@ -1378,7 +1399,6 @@ public function onUploadDocuments($req,$document_requirement_id){
                            'section'=>$section,
                            'created_by'=>$rec->created_by,
                            'submission_date'=>$rec->submission_date,
-                           'premise_id'=>$rec->premise_id,
                            'premises_name'=>$premises_name,
                            'section_name'=>$section,
                            'zone_id'=>$rec->zone_id,
@@ -1386,6 +1406,8 @@ public function onUploadDocuments($req,$document_requirement_id){
                            'tracking_no'=>$rec->tracking_no,
                            'status_name'=>$rec->status_name,
                            'router_link'=>$rec->router_link,
+                           'proposed_destructiondate'=>$rec->proposed_destructiondate,
+                            'product_particulars_description'=>$rec->product_particulars_description,
                            'process_title'=>$rec->process_title,
                            'reason_for_disposal'=>$rec->reason_for_disposal,
                            'total_weight'=>$rec->total_weight,
@@ -1669,19 +1691,25 @@ public function onUploadDocuments($req,$document_requirement_id){
 
     $currencyData = getParameterItems('par_currencies','','mis_db');
     $packagingData = getParameterItems('par_packaging_units','','mis_db');
-
+    $packagingTypeData= getParameterItems('packaging_units','','mis_db');
     $weightsData = getParameterItems('par_weights_units','','mis_db');
     
     foreach ($records as $rec) {
-
-       $brand_name = getSingleRecordColValue('tra_product_information', array('id' => $rec->product_id), 'brand_name','mis_db');
+           $brand_name = getSingleRecordColValue('tra_product_information', array('id' => $rec->product_id), 'brand_name','mis_db');
        
        $data[] = array('application_code'=>$rec->application_code,
                        'product_id'=>$rec->product_id,
                        'quantity'=>$rec->quantity,
+                       'dosage_form'=>$rec->dosage_form,
+                       'generic_name'=>$rec->generic_name,
+                       'batch_no'=>$rec->batch_no,
+                       'product_pack'=>$rec->product_pack,
+                       'product_description'=>$rec->product_description,
+                       'pack_type'=>returnParamFromArray($packagingTypeData,$rec->packaging_type_id),
                        'currency_id'=>$rec->currency_id,
                        'packaging_unit_id'=>$rec->packaging_unit_id,
-                       'brand_name'=>$brand_name,
+                       'reason_for_disposal'=>$rec->reason_for_disposal,
+                       'brand_name'=>$rec->brand_name,
                        'estimated_value'=>$rec->estimated_value,
                        'id'=>$rec->id,
                        'packaging_units'=>returnParamFromArray($packagingData,$rec->packaging_unit_id),

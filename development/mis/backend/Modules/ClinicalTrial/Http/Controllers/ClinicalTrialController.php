@@ -548,6 +548,87 @@ class ClinicalTrialController extends Controller
         }
         return \response()->json($res);
     }
+
+
+     public function saveSAEReportingBaseDetails(Request $req)
+    {
+        $application_id = $req->input('application_id');
+        $applicant_id = $req->input('applicant_id');
+        $process_id = $req->input('process_id');
+        $workflow_stage_id = $req->input('workflow_stage_id');
+        $zone_id = $req->input('zone_id');
+        $section_id = $req->input('section_id');
+        $module_id = $req->input('module_id');
+        $sub_module_id = $req->input('sub_module_id');
+        $user_id = $this->user_id;
+        DB::beginTransaction();
+        try {
+            $applications_table = 'tra_clinicaltrial_progressreports';
+
+            $where_app = array(
+                'application_id' => $application_id
+            );
+            $application_params = array(
+                'reporting_start_date' => $req->reporting_start_date,
+                'reporting_end_date' => $req->reporting_end_date,
+                'clinicalreport_type_id' => $req->clinicalreport_type_id,
+                'actualstudy_date' => $req->actualstudy_date,
+                'screen_participants' => $req->screen_participants,
+                'dateof_first_screening' => $req->ateof_first_screening,
+                'target_sample_size' => $req->target_sample_size,
+                'enrolled_participants' => $req->enrolled_participants,
+                'dateof_first_enrollment' => $req->dateof_first_enrollment,
+                'number_of_dropouts' => $req->number_of_dropouts,
+                'number_lost_tofollow_ups' => $req->number_lost_tofollow_ups,
+                'inclusion_criteria' => $req->inclusion_criteria,
+                'exclusion_criteria' => $req->exclusion_criteria,
+                'number_of_saes' => $req->number_of_saes,
+                'events_of_medialimportance' => $req->events_of_medialimportance,
+                'clinicalstudy_status_id' => $req->clinicalstudy_status_id,
+                'study_site_id' => $req->study_site_id
+            );
+            if (isset($application_id) && $application_id != "") {//Edit
+                //Application_edit
+               
+                $app_details = array();
+                if (recordExists($applications_table, $where_app)) {
+                    //$app_details = getTableData($applications_table, $where_app);
+                    $app_details = getPreviousRecords($applications_table, $where_app);
+                    if ($app_details['success'] == false) {
+                        return $app_details;
+                    }
+                    $app_details = $app_details['results'];
+                    $res = updateRecord($applications_table, $app_details, $where_app, $application_params, $user_id);
+                    if ($res['success'] == false) {
+                        return $res;
+                    }
+                }
+                
+            } 
+            else{
+
+                $application_params['application_id'] = $application_id;
+                $res = insertRecord($applications_table, $application_params, $user_id);
+
+            }
+
+            DB::commit();
+           
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            DB::rollBack();
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
     public function saveNewReceivingBaseDetails(Request $request)
     {
         $application_id = $request->input('application_id');
@@ -1150,6 +1231,80 @@ class ClinicalTrialController extends Controller
         }
         return \response()->json($res);
     }
+
+
+     //end
+    public function prepareOnlineClinicalTrialOtherRptPreview(Request $request)
+    {
+        $application_id = $request->input('application_id');
+        try {
+            $portal_db = DB::connection('portal_db');
+            $qry = $portal_db->table('wb_clinical_trial_applications as t1')
+                ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->join('wb_statuses as t4', 't1.application_status_id', '=', 't4.id')
+                ->join('wb_clinicaltrial_otherreports as t5', 't1.id', '=', 't5.application_id')
+                ->select('t1.*', 't1.id as active_application_id',
+                    't3.name as applicant_name', 't3.contact_person',
+                    't3.tin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
+                    't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website', 't4.name as app_status', 't5.*')
+                ->where('t1.id', $application_id);
+            $results = $qry->first();
+
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
+
+      public function prepareOnlineClinicalTrialSAERptPreview(Request $request)
+    {
+        $application_id = $request->input('application_id');
+        try {
+            $portal_db = DB::connection('portal_db');
+            $qry = $portal_db->table('wb_clinical_trial_applications as t1')
+                ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->join('wb_statuses as t4', 't1.application_status_id', '=', 't4.id')
+                ->join('wb_clinicaltrial_saereports as t5', 't1.id', '=', 't5.application_id')
+                ->select('t1.*', 't1.id as active_application_id',
+                    't3.name as applicant_name', 't3.contact_person',
+                    't3.tin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
+                    't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website', 't4.name as app_status', 't5.*')
+                ->where('t1.id', $application_id);
+            $results = $qry->first();
+
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
     public function getClinicalTrialCompareDetails(Request $request)//kip here
     {
         $portal_application_id = $request->input('portal_application_id');
@@ -2059,7 +2214,7 @@ class ClinicalTrialController extends Controller
                 ->leftJoin('par_approval_decisions as t6', 't5.decision_id', '=', 't6.id')
                 ->leftJoin('clinical_trial_personnel as t7', 't1.sponsor_id', '=', 't7.id')
                 ->leftJoin('clinical_trial_personnel as t8', 't1.investigator_id', '=', 't8.id')
-                ->leftJoin('tra_clinicaltrial_progressreports as t9', 't1.id', '=', 't9.application_id')
+                ->Join('tra_clinicaltrial_progressreports as t9', 't1.id', '=', 't9.application_id')
                 ->leftJoin('tra_evaluation_recommendations as t11', function ($join) {
                     $join->on('t1.id', '=', 't11.application_id')
                         ->on('t1.application_code', '=', 't11.application_code');
@@ -2089,6 +2244,109 @@ class ClinicalTrialController extends Controller
         }
         return \response()->json($res);
     }
+
+    public function getstrSAEReportingManagerApplicationsGeneric(Request $request)
+    {
+        $table_name = $request->input('table_name');
+        $workflow_stage = $request->input('workflow_stage_id');
+        $meeting_id = $request->input('meeting_id');
+        $strict_mode = $request->input('strict_mode');
+        try {
+            $qry = DB::table($table_name . ' as t1')
+                ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->leftJoin('par_system_statuses as t4', function ($join) {
+                    $join->on('t1.application_status_id', '=', 't4.id');
+                })
+                ->leftJoin('tra_approval_recommendations as t5', function ($join) {
+                    $join->on('t1.id', '=', 't5.application_id')
+                        ->on('t1.application_code', '=', 't5.application_code');
+                })
+                ->leftJoin('par_approval_decisions as t6', 't5.decision_id', '=', 't6.id')
+                ->leftJoin('clinical_trial_personnel as t7', 't1.sponsor_id', '=', 't7.id')
+                ->leftJoin('clinical_trial_personnel as t8', 't1.investigator_id', '=', 't8.id')
+                ->Join('tra_clinicaltrial_saereports as t9', 't1.id', '=', 't9.application_id')
+                ->leftJoin('tra_evaluation_recommendations as t11', function ($join) {
+                    $join->on('t1.id', '=', 't11.application_id')
+                        ->on('t1.application_code', '=', 't11.application_code');
+                })
+                ->leftJoin('wf_workflow_actions as t12', 't11.recommendation_id', '=', 't12.id');
+
+            $qry->select('t1.*','reporting_start_date','reporting_end_date','actualstudy_date', 't3.name as applicant_name', 't12.name as evaluation_recommendation',  't4.name as application_status',
+                't6.name as approval_status', 't5.decision_id', 't1.id as active_application_id',
+                't7.name as sponsor', 't8.name as investigator')
+                ->where('t1.workflow_stage_id', $workflow_stage);
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
+
+    public function getstrOtherReportingManagerApplicationsGeneric(Request $request)
+    {
+        $table_name = $request->input('table_name');
+        $workflow_stage = $request->input('workflow_stage_id');
+        $meeting_id = $request->input('meeting_id');
+        $strict_mode = $request->input('strict_mode');
+        try {
+            $qry = DB::table($table_name . ' as t1')
+                ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->leftJoin('par_system_statuses as t4', function ($join) {
+                    $join->on('t1.application_status_id', '=', 't4.id');
+                })
+                ->leftJoin('tra_approval_recommendations as t5', function ($join) {
+                    $join->on('t1.id', '=', 't5.application_id')
+                        ->on('t1.application_code', '=', 't5.application_code');
+                })
+                ->leftJoin('par_approval_decisions as t6', 't5.decision_id', '=', 't6.id')
+                ->leftJoin('clinical_trial_personnel as t7', 't1.sponsor_id', '=', 't7.id')
+                ->leftJoin('clinical_trial_personnel as t8', 't1.investigator_id', '=', 't8.id')
+                ->Join('tra_clinicaltrial_otherreports as t9', 't1.id', '=', 't9.application_id')
+                ->leftJoin('tra_evaluation_recommendations as t11', function ($join) {
+                    $join->on('t1.id', '=', 't11.application_id')
+                        ->on('t1.application_code', '=', 't11.application_code');
+                })
+                ->leftJoin('wf_workflow_actions as t12', 't11.recommendation_id', '=', 't12.id');
+
+            $qry->select('t1.*','reporting_start_date','reporting_end_date','actualstudy_date', 't3.name as applicant_name', 't12.name as evaluation_recommendation',  't4.name as application_status',
+                't6.name as approval_status', 't5.decision_id', 't1.id as active_application_id',
+                't7.name as sponsor', 't8.name as investigator')
+                ->where('t1.workflow_stage_id', $workflow_stage);
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
+    
     
 
     public function getClinicalTrialManagerMeetingApplications(Request $request)
@@ -2100,8 +2358,8 @@ class ClinicalTrialController extends Controller
             $qry = DB::table($table_name . ' as t1')
                 ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
                 ->join('par_system_statuses as t4', 't1.application_status_id', '=', 't4.id')
-                ->join('clinical_trial_personnel as t7', 't1.sponsor_id', '=', 't7.id')
-                ->join('clinical_trial_personnel as t8', 't1.investigator_id', '=', 't8.id')
+                ->leftJoin('clinical_trial_personnel as t7', 't1.sponsor_id', '=', 't7.id')
+                ->leftJoin('clinical_trial_personnel as t8', 't1.investigator_id', '=', 't8.id')
                 ->leftJoin('tc_meeting_applications as t9', function ($join) use ($meeting_id) {
                     $join->on('t1.application_code', '=', 't9.application_code')
                         ->where('t9.meeting_id', $meeting_id);
@@ -4216,4 +4474,154 @@ public function saveEvaluationDetails(Request $request)
         }
         return \response()->json($res);
     }
+
+
+     public function getManagerReportReview( Request $req)
+    {
+        $application_code = $req->input('application_code');
+        $report_type_id= $req->input('report_type_id');
+        try {
+            
+            $qry = DB::table('tra_clinical_trial_applications  as t1')
+                ->leftJoin('tra_clinicaltrrial_assessment_report as t2', 't1.application_code', '=', 't2.application_code')
+                ->select(DB::raw("DISTINCT t2.id as evaluation_record_id,t1.study_title,t1.clinicaltrial_description,t1.meeting_date,t1.meeting_time,t1.meeting_type_id,t1.meeting_venue,t1.meeting_invitation_details,if(t2.meeting_date_okay is null, 1, t2.meeting_date_okay) as meeting_date_okay,t2.*"))
+                ->groupBy('t1.application_code');
+
+            $qry->where('t1.application_code', $application_code);
+
+            if(validateIsNumeric($report_type_id)){
+              $qry->where('t2.report_type_id', $report_type_id);
+            }
+          
+           $results=$qry->get();
+            
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
+    public function getclinicalStudySitesData(Request $req){
+    try{
+        $data = array();
+        $reg_clinical_trial_id = $req->reg_clinical_trial_id;
+        $application_code = $req->application_code;
+        $clinicaltrial_record = DB::table('tra_clinical_trial_applications')
+                        ->where('application_code',$application_code)
+                        ->first();
+
+        dd($clinicaltrial_record);
+        if(!$clinicaltrial_record){
+            $clinicaltrial_record = DB::connection('portal_db')->table('wb_clinical_trial_applications')
+            ->where('application_code',$application_code)
+            ->first();
+        }
+        $reg_clinical_trial_id = $clinicaltrial_record->reg_clinical_trial_id;
+        $records = DB::table('clinical_trial_sites as t1')
+                        ->join('study_sites as t2', 't1.study_site_id','=','t2.id')
+                        ->join('registered_clinical_trials as t3', 't1.application_id','=','t3.tra_clinical_trial_id')
+                        ->select('t2.name','t1.id')
+                        ->where(array('t3.id'=>$reg_clinical_trial_id))
+                        ->get();
+            $res = array('success'=>true, 
+                             'results' => $records
+                        );
+
+        }
+        catch (\Exception $e) {
+                $res = array(
+                    'success' => false,
+                    'message' => $e->getMessage()
+                );
+        } catch (\Throwable $throwable) {
+                $res = array(
+                    'success' => false,
+                    'message' => $throwable->getMessage()
+                );
+        }
+        return response()->json($res);
+
+
+   }
+
+
+  public function getClinicalTrialSAEReportMoreDetails(Request $request)
+    {
+         $application_id = $request->input('application_id');
+        try {
+            $qry = DB::table('tra_clinical_trial_applications as t1')
+                ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->leftjoin('par_system_statuses as t4', 't1.application_status_id', '=', 't4.id')
+                ->join('tra_clinicaltrial_saereports as t5', 't1.id', '=', 't5.application_id')
+                ->select('t1.*', 't1.id as active_application_id',
+                    't3.name as applicant_name', 't3.contact_person',
+                    't3.tin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
+                    't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website', 't4.name as app_status', 't5.*')
+                ->where('t1.id', $application_id);
+            $results = $qry->first();
+
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
+    public function getClinicalTrialOtherReportMoreDetails(Request $request)
+    {
+         $application_id = $request->input('application_id');
+        try {
+            $qry = DB::table('tra_clinical_trial_applications as t1')
+                ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->leftjoin('par_system_statuses as t4', 't1.application_status_id', '=', 't4.id')
+                ->join('tra_clinicaltrial_otherreports as t5', 't1.id', '=', 't5.application_id')
+                ->select('t1.*', 't1.id as active_application_id',
+                    't3.name as applicant_name', 't3.contact_person',
+                    't3.tin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
+                    't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website', 't4.name as app_status', 't5.*')
+                ->where('t1.id', $application_id);
+            $results = $qry->first();
+
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
+    
+    
 }

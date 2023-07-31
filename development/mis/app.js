@@ -1153,6 +1153,9 @@ function getApplicationStore(module_id, section_id,sub_module_id) {
             cosmetics: 'promotionadvertscosmeticapplicationstr',
             medicine: 'promotionadvertsmedicaldevicesapplicationsstr'
         },
+        enforcement_stores = {
+            medicine: 'enforcementStr'
+        },
         productnotificationapplicationstr = {
             medicine: 'medicaldevicenotificationdashstr'
         },disposalapplicationsdashgridstr = {
@@ -1173,6 +1176,7 @@ function getApplicationStore(module_id, section_id,sub_module_id) {
             pharmacovigilanceapp_stores: pharmacovigilanceapp_stores,
             pms_stores: pms_stores,
             impexp_stores: impexp_stores,
+            enforcement_stores:enforcement_stores,
             promotionmaterialapplicationstr: promotionmaterialapplicationstr,
             productnotificationapplicationstr: productnotificationapplicationstr,
             disposalapplicationsdashgridstr:disposalapplicationsdashgridstr,
@@ -1215,19 +1219,18 @@ function getApplicationStore(module_id, section_id,sub_module_id) {
         module_name = 'pharmacovigilanceapp_stores';
     }else if (module_id == 29 || module_id === 29) {
             module_name = 'premise_stores';
-    } else {
+    }else if (module_id ==30 || module_id ===30) {
+            module_name = 'enforcement_stores';
+    }  else {
         //unknown module
-    }
+    } 
+
     //sections
-    if (section_id == 1 || section_id === 1) {
-        section_name = 'food';
-    } else if (section_id == 2 || section_id === 2) {
+    if (section_id == 1 || section_id === 2) {
         section_name = 'drugs';
-    } else if (section_id == 3 || section_id === 3) {
-        section_name = 'cosmetics';
-    } else if (section_id == 4 || section_id === 4) {
+    }else if (section_id == 2 || section_id === 4) {
         section_name = 'medicine';
-    } else if (section_id == 5 || section_id === 5) {
+    } else if (section_id == 3 || section_id === 3) {
         section_name = 'clinical_trial';
     } else {
         //unknown section

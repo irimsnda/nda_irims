@@ -45,8 +45,10 @@ class PremisesRegistrationController extends Controller
             $applicant_contact_person = $req->applicant_contact_person;
             $business_category_id = $req->business_category_id;
 
-            $applicant_contact_person = $req->applicant_contact_person;
-            
+            $had_offence = $req->had_offence;
+            $had_cancelled_application = $req->had_cancelled_application;
+            $is_workinotherinstitutions = $req->is_workinotherinstitutions;
+
             $premise_type_id = $req->premise_type_id;
             $vehicle_reg_no = $req->vehicle_reg_no;
 
@@ -57,26 +59,43 @@ class PremisesRegistrationController extends Controller
                                     'country_id'=>$req->country_id,
                                     'section_id'=> $req->sectionId,
                                     'premise_type_id'=>$premise_type_id,
+                                    'had_offence'=>$req->had_offence,
+                                    'offence'=>$req->offence,
+                                    'prodpremise_classification_id'=>$req->prodpremise_classification_id,
+                                    'had_cancelled_application'=>$req->had_cancelled_application,
+                                    'cancelling_reason'=>$req->cancelling_reason,
+                                    'is_workinotherinstitutions'=>$req->is_workinotherinstitutions,
+                                    'working_inotherinstitutions'=>$req->working_inotherinstitutions,
                                     'vehicle_reg_no'=>$vehicle_reg_no,
-
+                                    'applicant_type_id'=>$req->applicant_type_id,
                                     'region_id'=>$req->region_id,
                                     'district_id'=>$req->district_id,
                                     'investment_capital'=>$req->investment_capital,
                                     'investment_capital_currency_id'=>$req->investment_capital_currency_id,
-									
+									'nin_no'=>$req->nin_no,
+                                    'applicant_reg_no'=>$req->applicant_reg_no,
+                                    'fullname'=>$req->fullname,
+                                    'applicant_reg_date'=>$req->applicant_reg_date,
+                                    'applicant_incharge_telephone'=>$req->applicant_incharge_telephone,
+                                    'applicant_incharge_email'=>$req->applicant_incharge_email,
+                                    'incharge_physical_address'=>$req->incharge_physical_address,
+                                    'county_id'=>$req->county_id,
+                                    'sub_county_id'=>$req->sub_county_id,
+                                    'street'=>$req->street,
 									'managing_director_email'=>$req->managing_director_email,
 									'managing_director_telepone'=>$req->managing_director_telepone,
 									'managing_director'=>$req->managing_director,
                                     'email'=>$req->email,
                                     'superv_email'=>$req->superv_email,
+                                    'other_classification'=>$req->other_classification,
                                     'super_telephone'=>$req->super_telephone,
                                     'super_physical_address'=>$req->super_physical_address,
                                     'postal_address'=>$req->postal_address,
-                                    'telephone'=>$req->telephone,
                                     'code_no'=>$req->code_no,
                                     'mobile_no'=>$req->mobile_no,
                                     'business_type_id'=>$business_type_id,
                                     'physical_address'=>$req->physical_address,
+                                    'telephone'=>$req->telephone,
                                     'longitude'=>$req->longitude,
                                     'latitude'=>$req->latitude,
                                     'business_scale_id'=>$req->business_scale_id,
@@ -90,10 +109,12 @@ class PremisesRegistrationController extends Controller
                                     'company_registration_no'=>$req->company_registration_no,
                                     'psu_reg_no'=>$req->psu_reg_no,
                                     'psu_reg_date'=>$req->psu_reg_date,
-                                    'first_name'=>$req->first_name,
+                                    'full_names'=>$req->full_names,
                                     'middle_name'=>$req->middle_name,
                                     'last_name'=>$req->last_name,
+                                    'qualification_id'=>$req->qualification_id,
                                     'reg_date'=>$req->reg_date,
+                                    'business_reg_date'=>$req->business_reg_date,
                                     'contact_person_id'=>$req->contact_person_id,
                                     'contact_person_startdate'=>$req->contact_person_startdate,
                                     'contact_person_enddate'=>$req->contact_person_enddate,
@@ -148,7 +169,7 @@ class PremisesRegistrationController extends Controller
                                 }
                                 
                                      $application_code = generateApplicationCode($sub_module_id, 'wb_premises_applications');
-                                 
+
                                     $premise_id = $resp['record_id'];
 
                                     $app_data = array('trader_id'=>$trader_id,
@@ -186,23 +207,25 @@ class PremisesRegistrationController extends Controller
                             
                                     //update the application code_no
                         }
-                        if($resp['success']){
+                        if($resp){
 
-                              $section_id = $req->section_id;
-                          DB::table('wb_premisesproduct_classification')->where(array('premise_id'=>$premise_id))->delete();
-                          $sectionsData = array();
-                         // print_r($section_id);
-                          if(is_array($section_id)){
-                              foreach($section_id as $sec_id){
+                          // $telephone = $req->telephone;
+                          // DB::table('wb_telephone_details')->where(array('premise_id'=>$premise_id))->delete();
+                          // $telephoneData = array();
+                          // if(is_array($telephone)){
+                          //     foreach($telephone as $phone){
                                                           
-                                      $sectionsData[] = array('section_id'=>$sec_id, 
-                                                      'premise_id'=>$premise_id, 
-                                                      'created_by'=>$trader_id, 
-                                                      'created_on'=>Carbon::now());
-      
-                              }
-                              DB::table('wb_premisesproduct_classification')->insert($sectionsData);
-                            }
+                          //              $telephoneData[]= array(
+                          //                           'telephone'=>$phone['telephone'], 
+                          //                            'premise_id'=>$premise_id, 
+                          //                             'created_by'=>$trader_id, 
+                          //                             'created_on'=>Carbon::now());
+
+                          //      }
+                          //     DB::table('wb_telephone_details')->insert($telephoneData);
+
+                          //   }
+
                             $res = array('tracking_no'=>$tracking_no,
                                          'premise_id'=>$premise_id,
                                          'application_code'=>$application_code,
@@ -628,73 +651,66 @@ class PremisesRegistrationController extends Controller
     }
 
 
-    public function onSavePremisesStoreLocationDetails(Request $req){
+public function onSavePremisesStoreLocationDetails(Request $req)
+{
+    try {
+        $premise_id = $req->premise_id;
+        $record_id = $req->id;
+        $trader_id = $req->trader_id;
+        $email_address = $req->email_address;
 
-        try {
-            $premise_id = $req->premise_id;
-            $record_id = $req->id;
-            $trader_id = $req->trader_id;
-            $email_address = $req->email_address;
-           
-           $table_name = 'wb_premises_storelocation';
-            $premises_otherinfor = array('street'=>$req->street,
-                                    'distance'=>$req->distance,
-                                    'country_id'=>$req->country_id,
-                                    'region_id'=>$req->region_id,
-                                    'district_id'=>$req->district_id,
-                                    'name'=>$req->name,
-                                   'premise_id'=>$req->premise_id
-                                );  
-                             
-                        if(validateIsNumeric($record_id)){
-                              
-                                $where = array('id'=>$record_id);
-                          
-                                if (recordExists($table_name, $where)) {
-                                    
-                                    $premises_otherinfor['dola'] = Carbon::now();
-                                    $premises_otherinfor['altered_by'] = $email_address;
-                
-                                    $previous_data = getPreviousRecords($table_name, $where);
-                                    
-                                    $resp =updateRecord($table_name, $previous_data, $where, $premises_otherinfor, $email_address);
-                                    
-                                $premises_otherdetail_id = $record_id;
-                                }
-                                $res = returnFuncResponses($resp,'Premises Business Type Details','premise_id',$premise_id);
-                           
-                            }
-                        else{
-                            //chenform if this exisit 
-                            $table_name = 'wb_premises_storelocation';
-                           if($table_name){
-                                $premises_otherinfor['created_on'] = Carbon::now();
-                                $premises_otherinfor['created_by'] = $email_address;
-            
-                                $resp = insertRecord($table_name, $premises_otherinfor, $email_address);
-                                $premises_otherdetail_id = $resp['record_id'];
-                                $res = returnFuncResponses($resp,'Premises Store Location','premise_id',$premise_id);
-                           
-                            }
+        $table_name = 'wb_premises_storelocation';
+        $premises_otherinfor = array(
+            'street' => $req->street,
+            'distance' => $req->distance,
+            'country_id' => $req->country_id,
+            'region_id' => $req->region_id,
+            'district_id' => $req->district_id,
+            'county_id' => $req->county_id,
+            'sub_county_id' => $req->sub_county_id,
+            'name' => $req->name,
+            'premise_id' => $req->premise_id
+        );
 
-                            
-                        }
-                             
-        } catch (\Exception $exception) {
-            $res = array(
-                'success' => false,
-                'message' => $exception->getMessage()
-            );
-        } catch (\Throwable $throwable) {
-            $res = array(
-                'success' => false,
-                'message' => $throwable->getMessage()
-            );
+
+        if (validateIsNumeric($record_id)) {
+            $where = array('id' => $record_id);
+
+            if (recordExists($table_name, $where)) {
+                $premises_otherinfor['dola'] = Carbon::now();
+                $premises_otherinfor['altered_by'] = $email_address;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+
+                $resp = updateRecord($table_name, $previous_data, $where, $premises_otherinfor, $email_address);
+                $premises_otherdetail_id = $record_id;
+                $res = returnFuncResponses($resp, 'Premises Type Details', 'premise_id', $premise_id);
+
+            }else {
+            if ($table_name) {
+                $premises_otherinfor['created_on'] = Carbon::now();
+                $premises_otherinfor['created_by'] = $email_address;
+
+                $resp = insertRecord($table_name, $premises_otherinfor, $email_address);
+                $premises_otherdetail_id = $resp['record_id'];
+                $res = returnFuncResponses($resp, 'Premises Store Location', 'premise_id', $premise_id);
+            }
         }
-        
-        return response()->json($res); 
+        } 
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
 
-   }
+    return response()->json($res);
+}
 
 
     public function onSavePremisesAmmendmentsRequest(Request $req){
@@ -765,18 +781,29 @@ class PremisesRegistrationController extends Controller
     public function getPremisesStoreLocationDetails(Request $req){
     try{
             $premise_id = $req->premise_id;
+            $countriesData = getParameterItems('par_countries','','mis_db');
+            $regionsData = getParameterItems('par_regions','','mis_db');
+            $districtsData = getParameterItems('par_districts','','mis_db');
+            $countiesData = getParameterItems('par_county','','mis_db');
+            $subCountiesData= getParameterItems('par_sub_county','','mis_db');
             $data = array();
             //get the records 
             $records = DB::table('wb_premises_storelocation as t1')
                     ->where(array('t1.premise_id' => $premise_id))
                      ->get();
+
                      foreach ($records as $rec) {
                       $premise_id = $rec->premise_id;
                         $data[] = array('id'=>$rec->id,
                                         'name'=>$rec->name,
                                         'street'=>$rec->street,
                                         'distance'=>$rec->distance,
-                                        'premise_id'=>$rec->premise_id
+                                        'premise_id'=>$rec->premise_id,
+                                        'country_name'=>returnParamFromArray($countriesData,$rec->country_id),
+                                        'region_name'=>returnParamFromArray($regionsData,$rec->region_id),
+                                        'district_name'=>returnParamFromArray($districtsData,$rec->district_id),
+                                        'county_name'=>returnParamFromArray($countiesData,$rec->county_id),
+                                        'sub_county_name'=>returnParamFromArray($subCountiesData,$rec->sub_county_id)
                                     );
                                     
                      }
@@ -886,14 +913,17 @@ class PremisesRegistrationController extends Controller
          $regionsData = getParameterItems('par_regions','','mis_db');
          $districtsData = getParameterItems('par_districts','','mis_db');
          $countriesData = getParameterItems('par_countries','','mis_db');
-         
+    
          foreach ($records as $rec) {
-             $section_id = $this->getPremiseProducctClassDetails('wb_premisesproduct_classification', $rec->premise_id, 'section_id');
+            //$telephone = $this->getPremiseDetails('wb_telephone_details', $rec->premise_id, 'telephone');
             $section = returnParamFromArray($sectionsData,$rec->section_id);
             $data[] = array('reference_no'=>$rec->reference_no,
                             'trader_id'=>$rec->trader_id,
                             'premise_id'=>$rec->premise_id,
-                            'section_id'=>$section_id,
+                            'applicant_type_id'=>$rec->applicant_type_id,
+                            'section_id'=>$rec->section_id,
+                            'telephone'=>$rec->telephone,
+                            'prodpremise_classification_id'=>$rec->prodpremise_classification_id,
                             'premises_name'=>$rec->name,
                             'application_code'=>$rec->application_code,
                             'application_id'=>$rec->application_id,
@@ -922,27 +952,54 @@ class PremisesRegistrationController extends Controller
                             'status'=>$rec->status_name,
                             'added_by'=>$rec->created_by,
                             'tracking_no'=>$rec->tracking_no,
-
-							 'cell_id'=>$rec->cell_id,
-							 'investment_capital_currency_id'=>$rec->investment_capital_currency_id,
-                                    'contact_person'=>$rec->contact_person,
-                                    'contact_person_email'=>$rec->contact_person_email,
-                                    'contact_person_enddate'=>$rec->contact_person_enddate,
-                                    'contact_person_telephone'=>$rec->contact_person_telephone,
-                                    'sector_id'=>$rec->sector_id,
-                                    'tpin_no'=>$rec->tpin_no,
+                            'nin_no'=>$rec->nin_no,
+                            'applicant_reg_no'=>$rec->applicant_reg_no,
+                            'fullname'=>$rec->fullname,
+                            'other_classification'=>$rec->other_classification,
+                            'applicant_reg_date'=>$rec->applicant_reg_date,
+                            'applicant_incharge_telephone'=>$rec->applicant_incharge_telephone,
+                            'applicant_incharge_email'=>$rec->applicant_incharge_email,
+                            'incharge_physical_address'=>$rec->incharge_physical_address,
+                            'county_id'=>$rec->county_id,
+                            'sub_county_id'=>$rec->sub_county_id,
+                            'qualification_id'=>$rec->qualification_id,
+                            'working_inotherinstitutions'=>$rec->working_inotherinstitutions,
+                            'cancelling_reason'=>$rec->cancelling_reason,
+                            'offence'=>$rec->offence,
+                            'street'=>$rec->street,
+                            'managing_director_email'=>$rec->managing_director_email,
+                            'managing_director_telepone'=>$rec->managing_director_telepone,
+                            'managing_director'=>$rec->managing_director,
+                            'superv_email'=>$rec->superv_email,
+                            'super_telephone'=>$rec->super_telephone,
+                            'super_physical_address'=>$rec->super_physical_address,
+							'cell_id'=>$rec->cell_id,
+							'investment_capital_currency_id'=>$rec->investment_capital_currency_id,
+                            'contact_person'=>$rec->contact_person,
+                            'contact_person_email'=>$rec->contact_person_email,
+                            'contact_person_enddate'=>$rec->contact_person_enddate,
+                            'contact_person_telephone'=>$rec->contact_person_telephone,
+                            'sector_id'=>$rec->sector_id,
+                            'tpin_no'=>$rec->tpin_no,
+                            'company_registration_no'=>$rec->company_registration_no,
+                            'psu_reg_no'=>$rec->psu_reg_no,
+                            'psu_reg_date'=>$rec->psu_reg_date,
+                            'full_names'=>$rec->full_names,
+                            'middle_name'=>$rec->middle_name,
+                            'last_name'=>$rec->last_name,
+                            'reg_date'=>$rec->reg_date,
+                            'business_reg_date'=>$rec->business_reg_date,
                             'action_name'=>$rec->action_name,
                                         'action'=>$rec->action,
                                         'iconCls'=>$rec->iconCls,
                             'contextMenu'=>returnActionColumn($rec->application_status_id,$actionColumnData)
                         );
-                        
          }
          return $data;
 
 
     }
-      function getPremiseProducctClassDetails($table_name, $premise_id, $column_name){
+      function getPremiseDetails($table_name, $premise_id, $column_name){
             $record = array();
             $records = DB::table($table_name)->where('premise_id',$premise_id)->select(DB::raw("$column_name as record_id"))->get();
             if($records){
@@ -958,6 +1015,7 @@ class PremisesRegistrationController extends Controller
         
         
     }
+ 
     public function getpremisesApplicationDetails(Request $req){
         try{
             $application_id = $req->application_id;
@@ -979,9 +1037,10 @@ class PremisesRegistrationController extends Controller
                     if($process_name != ''){
                         $records->process_title = $process_name;
                     } 
-                    $section_id = $this->getPremiseProducctClassDetails('wb_premisesproduct_classification', $records->premise_id, 'section_id');
+                 //   $telephone = $this->getPremiseDetails('wb_telephone_details', $records->premise_id, 'telephone');
 
-                        $records->section_id = $section_id;
+
+                       // $records->telephone = $telephone;
                      $res =array('success'=>true,'data'=> $records);
                      
         }
@@ -1062,6 +1121,21 @@ public function getPersonnelInformations(Request $req){
     $trader_id = $req->mistrader_id;
     $data = DB::connection('mis_db')->table('tra_personnel_information as t1')
                 ->where(array('trader_id'=>$trader_id))
+                ->get();
+    return response()->json(array('data'=>$data));
+}
+
+public function getTelephoneDetails(Request $req){
+    $trader_id = $req->mistrader_id;
+    $data = DB::connection('mis_db')->table('tra_telephone_details as t1')
+                ->where(array('trader_id'=>$trader_id))
+                ->get();
+    return response()->json(array('data'=>$data));
+}
+public function getApplicantIncharge(Request $req){
+    $nimNo = $req->nimNo;
+    $data = DB::connection('mis_db')->table('tra_premise_incharge_personnel as t1')
+                ->where(array('nin_no'=>$nimNo))
                 ->get();
     return response()->json(array('data'=>$data));
 }
@@ -1158,13 +1232,13 @@ public function onSavePremisesStaff(Request $req){
                 $record_id = $req->id;
 
                 $premises_personnel = array(
-                                        'pfirst_name'=>$req->pfirst_name,
-                                        'telephone_no'=>$req->telephone_no,
+                                        'staff_full_name'=>$req->staff_full_name,
+                                        'staff_telephone_no'=>$req->staff_telephone_no,
                                         'email_address'=>$req->email_address,
+                                        'staff_email_address'=>$req->staff_email_address,
                                         'premise_id'=>$req->premise_id,
-                                        'pmiddle_name'=>$req->pmiddle_name,
+                                        'trader_id'=>$req->trader_id,
                                         'qualification_id'=>$req->qualification_id,
-                                        'plast_name'=>$req->plast_name,
                                         'country_id'=>$req->country_id,
                                         'region_id'=>$req->region_id,
                                         'district_id'=>$req->district_id,
@@ -1172,7 +1246,6 @@ public function onSavePremisesStaff(Request $req){
                                         'postal_code'=>$req->postal_code
 
                                     );  
-                            
                             $table_name = 'wb_premises_staff';
                             if(validateIsNumeric($record_id)){
                                   
@@ -1197,16 +1270,15 @@ public function onSavePremisesStaff(Request $req){
                                if(!recordExists($table_name, $premises_personnel)){
                                     $premises_personnel['created_on'] = Carbon::now();
                                     $premises_personnel['created_by'] = $email_address;
-                                    
                                     $resp = insertRecord($table_name, $premises_personnel, $email_address);
-                             
-                                    $res = returnFuncResponses($resp,'Premises Personnel Details','premise_id',$premise_id);
+
+                                    $res = returnFuncResponses($resp,'Premises Staff Details','premise_id',$premise_id);
                                
                                 }
                                else{
                                     $res = array(
                                         'success'=>false,
-                                        'message'=>'Premises Personnel exists or already saved.');
+                                        'message'=>'Premises Staff exists or already saved.');
     
                                }
                                 
@@ -1226,6 +1298,99 @@ public function onSavePremisesStaff(Request $req){
             return response()->json($res); 
 
 }
+
+public function onSavePremisesholder(Request $req){
+            
+            try {
+                $trader_id = $req->trader_id;
+                 $email_address = $req->traderemail_address;
+           
+                $premise_id = $req->premise_id;
+                $other_premise_id=$req->id;
+
+                $premises_personnel = array(
+                                        'premise_id'=>$req->premise_id,
+                                        'other_premise_id'=>$other_premise_id,
+                                        'region_id'=>$req->region_id,
+                                        'hold_premise'=>$req->hold_premise,
+                                        'name'=>$req->name,
+                                        'permit_no'=>$req->permit_no
+                                    );  
+
+                            $table_name = 'wb_other_premises';
+                                
+                            if(!recordExists($table_name, $premises_personnel)){
+                                $premises_personnel['created_on'] = Carbon::now();
+                                $premises_personnel['created_by'] = $email_address;
+                                    
+                                $resp = insertRecord($table_name, $premises_personnel, $email_address);
+                             
+                                $res = returnFuncResponses($resp,'Other premises Details','premise_id',$premise_id);
+                               
+                                }
+                               else{
+                                    $res = array(
+                                        'success'=>false,
+                                        'message'=>'Other Premises exists or already saved.');
+    
+                               }
+                                
+                            
+            } catch (\Exception $exception) {
+                $res = array(
+                    'success' => false,
+                    'message' => $exception->getMessage()
+                );
+            } catch (\Throwable $throwable) {
+                $res = array(
+                    'success' => false,
+                    'message' => $throwable->getMessage()
+                );
+            }
+            
+            return response()->json($res); 
+
+}
+
+public function getOtherPremises(Request $req){
+
+   try{     
+            $premise_id = $req->premise_id;
+            $regionsData = getParameterItems('par_regions','','mis_db');
+            $data = array();
+            //get the records 
+            $records = DB::table('wb_other_premises as t1')
+                    ->where(array('t1.premise_id' => $premise_id))
+                     ->get();
+
+                     foreach ($records as $rec) {
+                      $premise_id = $rec->premise_id;
+                        $data[] = array('id'=>$rec->id,
+                                        'name'=>$rec->name,
+                                        'permit_no'=>$rec->permit_no,
+                                        'premise_id'=>$rec->premise_id,
+                                        'region_name'=>returnParamFromArray($regionsData,$rec->region_id),
+                                    );
+                                    
+                     }
+                     $res = $data;
+
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+    
+}
+
 public function onSavePremisesDirectors(Request $req){
             
             try {
@@ -1236,7 +1401,7 @@ public function onSavePremisesDirectors(Request $req){
                 $record_id = $req->id;
 
                 $premises_personnel = array(
-                                        'director_first_name'=>$req->director_first_name,
+                                        'directorfull_names'=>$req->directorfull_names,
                                         'director_telephone_no'=>$req->director_telephone_no,
                                         'director_email_address'=>$req->director_email_address,
                                         'premise_id'=>$req->premise_id,
@@ -1303,6 +1468,8 @@ public function onSavePremisesDirectors(Request $req){
             return response()->json($res); 
 
 }
+
+
 public function onSavePersonnelDetails(Request $req){
     try {
         $mistrader_id = $req->mistrader_id;
@@ -1372,7 +1539,37 @@ public function onSavePersonnelDetails(Request $req){
 
 }
 
+public function onSaveTelephoneDetails(Request $req){
+    try {
+        $mistrader_id = $req->mistrader_id;
+        $traderemail_address = $req->traderemail_address;
+        $premises_personnel = array(
+                                'telephone'=>$req->telephone,
+                                'trader_id'=>$req->mistrader_id
+                            );  
+                           
+                    $table_name = 'tra_telephone_details';
+                    $premises_personnel['created_on'] = Carbon::now();
+                    $premises_personnel['created_by'] = $mistrader_id;
+                    $resp = insertRecord($table_name, $premises_personnel,$traderemail_address,'mis_db');
+                    $record_id = $resp['record_id'];        
+                    $res = returnFuncResponses($resp,'Telephone Details','personnel_id',$record_id);
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    
+    return response()->json($res); 
 
+
+}
 public function onSavePremisesStaffDetails(Request $req){
     try {
         $mistrader_id = $req->mistrader_id;
@@ -1449,18 +1646,25 @@ public function onSavePremisesDirectorsDetails(Request $req){
         $traderemail_address = $req->traderemail_address;
         
         $record_id = $req->personnel_id;
-        $premises_personnel = array('name'=>$req->name,
-                                'postal_address'=>$req->postal_address,
-                                'telephone_no'=>$req->telephone_no,
-                                'email_address'=>$req->email_address,
-                                'trader_id'=>$req->mistrader_id
-                            );  
-                           
+        $premises_personnel = array(
+
+                                    'designation_id'=>$req->designation_id,
+                                    'directorfull_names'=>$req->directorfull_names,
+                                    'director_telephone_no'=>$req->director_telephone_no,
+                                    'director_email_address'=>$req->director_email_address,
+                                    'country_id'=>$req->country_id,
+                                    'region_id'=>$req->region_id,
+                                    'district_id'=>$req->district_id,                       
+                                    'id'=>$req->id,
+                                    'director_postal_address'=>$req->director_postal_address,
+                                    'premise_id'=>$req->premise_id,
+                                    'trader_id'=>$req->mistrader_id
+                            ); 
+
                     $table_name = 'tra_premises_proprietors';
                     if(validateIsNumeric($record_id)){
                           
                             $where = array('id'=>$record_id);
-                      
                             if (recordExists($table_name, $where,'mis_db')) {
                                 
                                 $premises_personnel['dola'] = Carbon::now();
@@ -1469,22 +1673,23 @@ public function onSavePremisesDirectorsDetails(Request $req){
                                 $previous_data = getPreviousRecords($table_name, $where,'mis_db');
                                
                                 $resp =updateRecord($table_name, $previous_data, $where, $premises_personnel, $mistrader_id,'mis_db');
+                                 $resp =updateRecord('wb_premises_proprietors', $previous_data, $where, $premises_personnel, $mistrader_id);
                                
                             }
                             $res = returnFuncResponses($resp,'Personnel Details','personnel_id',$record_id);
                        
                         }
                     else{
-                        //chenform if this exisit 
                         
                        if(!recordExists($table_name, $premises_personnel,'mis_db')){
                             $premises_personnel['created_on'] = Carbon::now();
                             $premises_personnel['created_by'] = $mistrader_id;
                             
                             $resp = insertRecord($table_name, $premises_personnel, $traderemail_address,'mis_db');
-                            $record_id = $resp['record_id'];
-                                  
-                            $res = returnFuncResponses($resp,'Premises Personnel Details','personnel_id',$record_id);
+
+                            $resp = insertRecord('wb_premises_proprietors', $premises_personnel,$traderemail_address);
+                             $record_id = $resp['record_id'];
+                            $res = returnFuncResponses($resp,'Drug Shop Personnel Details','personnel_id',$record_id);
                        
                         }
                        else{
@@ -1634,6 +1839,7 @@ public function getPremisesPersonnelDetails(Request $req){
         }
         return response()->json($res);
 }
+
 public function getPremisesDirectorsDetails(Request $req){
     
         try{
@@ -1649,13 +1855,12 @@ public function getPremisesDirectorsDetails(Request $req){
                         
 
                     //   $study_field = getParameterItem('par_personnel_studyfield',$rec->study_field_id,'mis_db');
-                       $qualification = getParameterItem('par_personnel_qualifications',$rec->designation_id,'mis_db');
+                       $designation = getParameterItem('par_personnel_qualifications',$rec->designation_id,'mis_db');
                                                  
                             $data[] = array('id'=>$rec->id,
-                                        'designation_id'=>$designation_id,
-                                        'director_first_name'=>$rec->director_first_name,
+                                        'designation'=>$designation,
+                                        'directorfull_names'=>$rec->directorfull_names,
                                         'director_telephone_no'=>$rec->director_telephone_no,
-                                        'qualification'=>$qualification,
                                         'director_email_address'=>$rec->director_email_address,
                                         'country_id'=>$rec->country_id,
                                         'region_id'=>$rec->region_id,
@@ -1683,17 +1888,104 @@ public function getPremisesDirectorsDetails(Request $req){
         return response()->json($res);
 }
 
+public function getDirectorsInformations(Request $req){
+    
+        try{
+            $trader_id = $req->trader_id;
 
+            $data = array();
+            //get the records 
+            $records = DB::table('wb_premises_proprietors as t1')
+                    ->where(array('t1.trader_id' => $trader_id))
+                     ->get();
+                     foreach ($records as $rec) {
+                        $designation_id = $rec->designation_id;
+                        
 
+                      // $designation = getParameterItem('par_personnel_qualifications',$rec->designation_id,'mis_db');
+                                                 
+                            $data[] = array('id'=>$rec->id,
+                                        'designation_id'=>$rec->designation_id,
+                                        'directorfull_names'=>$rec->directorfull_names,
+                                        'director_telephone_no'=>$rec->director_telephone_no,
+                                        'director_email_address'=>$rec->director_email_address,
+                                        'country_id'=>$rec->country_id,
+                                        'region_id'=>$rec->region_id,
+                                        'district_id'=>$rec->district_id,                       
+                                        'id'=>$rec->id,
+                                        'director_postal_address'=>$rec->director_postal_address,
+                                        'trader_id'=>$rec->trader_id,
+                                    );
+                        
+                     }
+                     $res = array('success'=>true, 'data'=>$data);// $data;
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+}
+public function getStaffInformations(Request $req){
+    
+        try{
+            $trader_id = $req->trader_id;
+
+            $data = array();
+            //get the records 
+            $records = DB::table('wb_premises_staff as t1')
+                    ->where(array('t1.trader_id' => $trader_id))
+                     ->get();
+                     foreach ($records as $rec) {
+                        $qualification_id = $rec->qualification_id;
+                        
+                                                 
+                            $data[] = array('id'=>$rec->id,
+                                        'qualification_id'=>$rec->qualification_id,
+                                        'staff_full_name'=>$rec->staff_full_name,
+                                        'staff_telephone_no'=>$rec->staff_telephone_no,
+                                        'staff_email_address'=>$rec->staff_email_address,
+                                        'country_id'=>$rec->country_id,
+                                        'region_id'=>$rec->region_id,
+                                        'district_id'=>$rec->district_id,                       
+                                        'id'=>$rec->id,
+                                        'postal_address'=>$rec->postal_address,
+                                        'postal_code'=>$rec->postal_code,
+                                        'trader_id'=>$rec->trader_id,
+                                    );
+                        
+                     }
+                     $res = array('success'=>true, 'data'=>$data);// $data;
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+}
 public function getPremisesStaffDetails(Request $req){
     
         try{
             $premise_id = $req->premise_id;
             $data = array();
-            //get the records 
             $records = DB::table('wb_premises_staff as t1')
                     ->where(array('t1.premise_id' => $premise_id))
                      ->get();
+
                      foreach ($records as $rec) {
                         $qualification_id = $rec->qualification_id;                        
 
@@ -1701,26 +1993,19 @@ public function getPremisesStaffDetails(Request $req){
 
                        
                             $data[] = array('id'=>$rec->id,
-                                        'qualification_id'=>$qualification_id,
-                                        'pmiddle_name'=>$rec->pmiddle_name,
-                                        'pfirst_name'=>$rec->pfirst_name,
+                                        'staff_full_name'=>$rec->staff_full_name,
                                         'qualification'=>$qualification,
-                                        'plast_name'=>$rec->plast_name,
                                         'country_id'=>$rec->country_id,
                                         'region_id'=>$rec->region_id,
                                         'district_id'=>$rec->district_id,
-                                        
-                                        'telephone_no'=>$rec->telephone_no,
+                                        'staff_telephone_no'=>$rec->staff_telephone_no,
                                         'email_address'=>$rec->email_address,
+                                        'staff_email_address'=>$rec->staff_email_address,
                                         'postal_code'=>$rec->postal_code,
-                                       // 'end_date'=>formatDate($rec->end_date),
                                         'id'=>$rec->id,
                                         'postal_address'=>$rec->postal_address,
-                                       // 'position_name'=> getParameterItem('par_personnel_positions',$rec->position_id,'mis_db'),
                                         'premise_id'=>$rec->premise_id,
-                                       // 'personnel_id'=>$rec->personnel_id
                                     );
-                        
                      }
                      $res = array('success'=>true, 'data'=>$data);// $data;
         }
@@ -1950,7 +2235,104 @@ public function getPremisesCounterDetails(Request $req){
     }
     return response()->json($res);
 }
+public function getNearestPremises(Request $req)
+{
+    try {
+        $trader_id = $req->mistrader_id;
+        $premise_id=$req->premise_id;
+        $take = $req->take;
+        $skip = $req->skip;
+        $searchValue = $req->searchValue;
+        $search_value = '';
 
+        if($req->searchValue != 'undefined' && $searchValue != ''){
+            $searchValue = explode(',',$searchValue);
+            $search_value =  $searchValue[2];
+        }                   
+
+         $rec = DB::table('wb_premises_applications as t1')
+                            ->join('wb_premises as t2','t1.premise_id','=','t2.id')
+                            ->where(array('t1.premise_id' => $premise_id))
+                             ->first();
+           if($rec) {
+            $latitude = $rec->latitude; 
+            $longitude = $rec->longitude;
+           }                 
+
+            $validity_status = $req->validity_status;
+            $registration_status = $req->registration_status;
+
+            $data = DB::connection('mis_db')->table('tra_premises_applications as t6')
+                ->join('tra_premises as t1', 't6.premise_id', '=', 't1.id')
+                ->leftJoin('tra_approval_recommendations as t2', 't6.application_code', '=', 't2.application_code')
+                ->leftJoin('wb_trader_account as t3', 't6.applicant_id', '=', 't3.id')
+                ->leftJoin('registered_premises as t4', 't1.id', '=', 't4.tra_premise_id')
+                ->leftJoin('par_validity_statuses as t5', 't2.appvalidity_status_id', '=', 't5.id')
+                
+                ->leftJoin('par_regions as t7', 't1.region_id', '=', 't7.id')
+                ->leftJoin('par_registration_statuses as t8', 't2.appregistration_status_id', '=', 't8.id')
+                ->select(DB::raw(" DISTINCT t4.tra_premise_id,t1.id as premise_id, t1.name as manufacturing_site_name,t1.name as premises_name, t1.*, t2.permit_no, t3.name as applicant_name,t4.id as registered_id,
+                    t3.id as applicant_id, t3.name as applicant_name, t3.contact_person, t3.tin_no,
+                    t3.country_id as app_country_id, t3.region_id as app_region_id, t3.district_id as app_district_id,t7.name as region_name,
+                    t3.physical_address as app_physical_address, t3.postal_address as app_postal_address,validity_status as validity_status_id,t8.name as registration_status,
+                    t3.telephone_no as app_telephone, t3.fax as app_fax, t3.email as app_email, t3.website as app_website,if(t2.appvalidity_status_id >0, t5.name, 'Not Licensed') as validity_status, t2.appvalidity_status_id as validity_status_id"));//change to status
+               
+                if (validateIsNumeric($validity_status)) {
+                  $data =  $data->where('t4.validity_status', $validity_status);
+                }
+                if (validateIsNumeric($registration_status)) {
+                    $data = $data->where('t4.registration_status', $registration_status);
+                }
+                if (validateIsNumeric($trader_id)){
+                   // $data = $data->where(array('t2.appregistration_status_id'=>2,'t6.applicant_id'=> $trader_id));
+                    //$data = $data->where(array('t6.applicant_id'=> $trader_id));
+                }
+        if ($search_value != '') {
+            $whereClauses = array();
+            $whereClauses[] = "t3.name  like '%" . ($search_value) . "%'";
+            $whereClauses[] = "t1.name  like '%" . ($search_value) . "%'";
+            $filter_string = implode(' OR ', $whereClauses);
+            $data->whereRAW($filter_string);
+        }
+
+        $totalCount = $data->count();
+        
+        $data->selectRaw(
+            "(6371 * acos(cos(radians($latitude)) * cos(radians(t1.latitude)) * cos(radians(t1.longitude) - radians($longitude)) + sin(radians($latitude)) * sin(radians(t1.latitude)))) AS distance"
+        );
+
+        $data->orderBy('distance');
+
+        $nearestPremises = $data->take(4)->get();
+
+        $nearestPremiseNames = $nearestPremises->pluck('premises_name')->toArray();
+
+        if (validateIsNumeric($take)) {
+            $records = $data->skip($skip)->take($take)->get();
+        } else {
+            $records = $data->get();
+        }
+
+        $res = array(
+            'success' => true,
+            'nearestPremises' => $nearestPremiseNames,
+            'data' => $records,
+            'totalCount' => $totalCount
+        );
+
+    } catch (\Exception $e) {
+        $res = array(
+            'success' => false,
+            'message' => $e->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($res);
+}
 public function getTradersRegisteredPremises(Request $req){
     try{
         $trader_id = $req->mistrader_id;
@@ -1965,8 +2347,6 @@ public function getTradersRegisteredPremises(Request $req){
        
        $validity_status = $req->validity_status;
        $registration_status = $req->registration_status;
-       // echo $trader_id;
-	    //DB::connection('mis_db')->enableQueryLog();
         $data = DB::connection('mis_db')->table('tra_premises_applications as t6')
                 ->join('tra_premises as t1', 't6.premise_id', '=', 't1.id')
                 ->leftJoin('tra_approval_recommendations as t2', 't6.application_code', '=', 't2.application_code')
@@ -1980,8 +2360,7 @@ public function getTradersRegisteredPremises(Request $req){
                     t3.id as applicant_id, t3.name as applicant_name, t3.contact_person, t3.tin_no,
                     t3.country_id as app_country_id, t3.region_id as app_region_id, t3.district_id as app_district_id,t7.name as region_name,
                     t3.physical_address as app_physical_address, t3.postal_address as app_postal_address,validity_status as validity_status_id,t8.name as registration_status,
-                    t3.telephone_no as app_telephone, t3.fax as app_fax, t3.email as app_email, t3.website as app_website,if(t2.appvalidity_status_id >0, t5.name, 'Not Licensed') as validity_status, t2.appvalidity_status_id as validity_status_id"));//change to status
-               
+                    t3.telephone_no as app_telephone, t3.fax as app_fax, t3.email as app_email, t3.website as app_website,if(t2.appvalidity_status_id > 0, t5.name, 'Not Licensed') as validity_status, t2.appvalidity_status_id as validity_status_id"));//change to status
                 if (validateIsNumeric($validity_status)) {
                   $data =  $data->where('t4.validity_status', $validity_status);
                 }
@@ -2002,6 +2381,8 @@ public function getTradersRegisteredPremises(Request $req){
                     $filter_string = implode(' OR ', $whereClauses);
                     $data->whereRAW($filter_string);
                 }
+
+
         $totalCount = $data->count();
 		$data->orderBy('t6.id', 'desc')->groupBy('t4.tra_premise_id');
             if(validateIsNumeric($take)){

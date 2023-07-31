@@ -376,6 +376,9 @@
                 [tra_premise_id] ="tra_premise_id" 
                 [registered_id] ="registered_id"
                 [isReadOnlyTraderasContact] ="isReadOnlyTraderasContact" 
+                [isConvicted]="isConvicted"
+                [isCancelled]="isCancelled"
+                [isHealth]="isHealth"
                 [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm" 
                 [payingCurrencyData] ="payingCurrencyData" 
                 [fastTrackOptionsData] ="fastTrackOptionsData" 
@@ -443,10 +446,11 @@
                         <div class="card-body no-padding">
                             <div class="no-padding">
                                 <app-drugshop-licensedetails 
-                                [premisesStafflDetailsfrm] ="premisesStafflDetailsfrm"  
-                                [newPremisesStafflDetailsfrm] ="newPremisesStafflDetailsfrm"  
+                                [premisesDetailsfrm] ="premisesDetailsfrm"  
+                                [newPremisesDetailsfrm] ="newPremisesDetailsfrm"  
                                 [premPersonnelDetailsData] ="premPersonnelDetailsData" 
                                 [countries] ="countries"  
+                                [confirmDataParam]="confirmDataParam"
                                 [regions] ="regions"  
                                 [districts] ="districts"
                                 [traderAccountsDetailsData] ="traderAccountsDetailsData"

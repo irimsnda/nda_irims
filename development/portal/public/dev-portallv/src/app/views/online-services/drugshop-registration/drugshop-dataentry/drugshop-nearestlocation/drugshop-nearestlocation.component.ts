@@ -15,14 +15,16 @@ export class DrugshopNearestlocationComponent implements OnInit {
   @Input() regions: any;
   @Input() districts: any;
   @Input() is_readonly: boolean;
+  @Input() isLocationPopupVisible: boolean;
   @Input() premisesStoreslocationFrm: FormGroup;
   country_id:number;
-  sectorsData:any;
-  cellsData:any;
-  filesToUpload: Array<File> = [];  
+  subCountyData:any;
+  countyData:any;
+  registeredPremisesData:any;
+  filesToUpload: Array<File> = []; 
   region_id:number;
   district_id:number;
-  sector_id:number;
+  county_id:number;
   
   @Input() premise_id: number;
   premisesStoreLocationDetailsData:any;
@@ -93,36 +95,41 @@ onCoutryCboSelect($event) {
           return false;
         });
   }
-  onLoadSectors(district_id) {
+  onLoadCounty(district_id) {
     var data = {
-      table_name: 'par_sectors',
+      table_name: 'par_county',
       district_id: district_id
     };
     this.config.onLoadConfigurationData(data)
       //.pipe(first())
       .subscribe(
         data => {
-          this.sectorsData = data
+          this.countyData = data
         },
         error => {
           return false;
         });
   }
-  onLoadCells(sector_id) {
+  onLoadSubCounty(county_id) {
     var data = {
-      table_name: 'par_cells',
-      sector_id: sector_id
+      table_name: 'par_sub_county',
+      county_id: county_id
     };
     this.config.onLoadConfigurationData(data)
       //.pipe(first())
       .subscribe(
         data => {
-          this.cellsData = data
+          this.subCountyData = data
         },
         error => {
           return false;
         });
   }
+  fileChangeEvent(fileInput: any) {
+    this.filesToUpload = <Array<File>>fileInput.target.files;
+  
+}
+
   
   onRegionsCboSelect($event) {
     this.region_id = $event.selectedItem.id;
@@ -134,15 +141,16 @@ onCoutryCboSelect($event) {
   oDistrictsCboSelect($event) {
     this.district_id = $event.selectedItem.id;
 
-    this.onLoadSectors(this.district_id);
+    this.onLoadCounty(this.district_id);
 
   }
-  oSectorsCboSelect($event) {
-    this.sector_id = $event.selectedItem.id;
+   oCountyCboSelect($event) {
+    this.county_id = $event.selectedItem.id;
 
-    this.onLoadCells(this.sector_id);
+    this.onLoadSubCounty(this.county_id);
 
   }
+
   funcEditLocationDetails(data) {
 
     this.premisesStoreslocationFrm.patchValue(data.data);
@@ -238,13 +246,33 @@ onCoutryCboSelect($event) {
         }
       });
   } 
-  //
+    private prepareSaveSketchtDoc(): any {
+
+      let input = { ...this.premisesStoreslocationFrm.value }; // Create a copy of the object
+      const files: Array<File> = this.filesToUpload;
+      for (let i = 0; i < files.length; i++) {
+      input['file'] = files[i]; // Add the file to the object
+      input['filename'] = files[i]['name']; // Add the filename to the object
+      }
+
+      return input;
+
+
+
+
+    // let input = this.premisesStoreslocationFrm.value;
+    // const files: Array<File> = this.filesToUpload;
+    // for(let i =0; i < files.length; i++){
+    //     input.append("file", files[i], files[i]['name']);
+    // }
+    // return input;
+  }
   onSavePremisesStoreLocationDetails() {
     if (this.premisesStoreslocationFrm.invalid) {
       return;
     }
-    //also get the premises ID
-    this.appService.onSavePremisesStoreLocationDetails(this.premisesStoreslocationFrm.value, this.premise_id)
+    const uploadData = this.prepareSaveSketchtDoc();
+    this.appService.onSavePremisesStoreLocationDetails(this.premisesStoreslocationFrm.value, this.premise_id,uploadData)
       .subscribe(
         response => {
           this.premises_resp = response.json();
@@ -259,8 +287,31 @@ onCoutryCboSelect($event) {
         error => {
           this.loading = false;
         });
-  }funcpopWidth(percentage_width) {
+  }  
+    onSearchNearestLocationDetails() {  
+    this.appService.onLoadNearestPremises(this.premise_id)
+        .subscribe(
+          data_response => {
+            this.isLocationPopupVisible = true;
+            this.registeredPremisesData = data_response.data;
+          },
+          error => {
+            return false
+      
+
+
+       });
+  } 
+  funcSelectLocationDetails(data){ 
+
+    this.premisesStoreslocationFrm.patchValue(data.data);
+    this.isLocationPopupVisible= false;         
+  }
+
+  funcpopWidth(percentage_width) {
     return window.innerWidth * percentage_width/100;
   }
+
+
 }
 

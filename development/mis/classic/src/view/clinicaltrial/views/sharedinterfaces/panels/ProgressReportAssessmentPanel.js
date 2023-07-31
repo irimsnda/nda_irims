@@ -81,7 +81,7 @@ Ext.define('Admin.view.clinicaltrial.views.sharedinterfaces.panels.ProgressRepor
                     xtype: 'transitionsbtn'
                 },{
                     
-                        text: 'Clinical Details Application Documents',
+                        text: 'Application Documents',
                         iconCls: 'x-fa fa-file',
                         tooltip: 'Application Documents',
                         action: 'edit',

@@ -150,6 +150,9 @@ Ext.define('Admin.controller.WorkflowManagementCtr', {
             'paymentVerificationPnl': {
                 afterrender: 'addApplicantDetailstoTab'
             },
+             'workflowinvestigationsubmissionsfrm button[name=app_submission_btn]': {
+                click: 'funcSubmitApplication'
+            },
         }
     },
     init: function () {

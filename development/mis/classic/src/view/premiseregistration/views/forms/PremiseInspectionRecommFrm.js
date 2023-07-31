@@ -198,32 +198,6 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseInspectionRecommFr
                 }
             },
                 
-            
-            {
-                xtype: 'textfield',
-                name: 'premise_reg_no',
-                fieldLabel: 'Registration No',
-                hidden: true,
-                allowBlank: true,
-                readOnly: true
-            },
-            {
-                xtype: 'textfield',
-                name: 'permit_no',
-                fieldLabel: 'Permit No',
-                allowBlank: true,
-                hidden: true,
-                readOnly: true
-            },
-            {
-                xtype: 'textfield',
-                name: 'gmp_cert_no',
-                fieldLabel: 'GMP Certificate No',
-                hidden: true,
-                allowBlank: true,
-                readOnly: true
-            },
-
             ]
         },
 

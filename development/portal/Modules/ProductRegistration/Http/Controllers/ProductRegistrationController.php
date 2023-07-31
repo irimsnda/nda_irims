@@ -2812,11 +2812,12 @@ public function onSearchRegisteredProductApplication(Request $req){
            $join->on('t7.id', '=', 't14.product_id')
                ->on('t14.manufacturer_role_id', '=', DB::raw(1))
                ->on('t14.manufacturer_type_id', '=', DB::raw(1));
-       })      
+       })  
+       ->leftJoin('par_man_sites as t18','t14.manufacturer_id','=','t18.id')    
 	    ->leftJoin($portalDb.'.wb_trader_account as t17', 't9.identification_no', '=', 't17.identification_no')
        ->select('t7.*','t1.*', 't16.name as section_name', 't4.name as validity_status','t15.name as registration_status', 't1.id as active_application_id', 't1.reg_product_id', 't3.name as applicant_name', 't9.name as local_agent', 't12.id as registered_product_id','t1.product_id as tra_product_id',
            't13.name as storage_condition','t7.brand_name', 't12.tra_product_id', 't8.name as common_name', 't10.name as classification_name', 't11.certificate_no', 't11.expiry_date',
-           't7.brand_name as sample_name','t14.manufacturer_id', 't17.id as local_agent_id')
+           't7.brand_name as sample_name','t18.name as manufacturer_name', 't17.id as local_agent_id')
        ->where(array('t12.registration_status_id' => 2))
 	   ->groupBy('t7.id')->orderBy('t1.id', 'desc');
        

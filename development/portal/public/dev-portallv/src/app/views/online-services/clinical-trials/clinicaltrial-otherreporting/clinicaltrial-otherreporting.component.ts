@@ -26,7 +26,7 @@ export class ClinicaltrialOtherreportingComponent extends SharedClinicaltrialCom
       return;
     }
     this.spinner.show();
-    this.appService.onSavePermitApplication(this.application_id, this.clinicaltrialOtherReportingdetailsfrm.value, this.tracking_no, 'clinicaltrials/saveClinicalTrialApplication')
+    this.appService.onSavePermitApplication(this.application_id, this.clinicaltrialOtherReportingdetailsfrm.value, this.tracking_no, 'clinicaltrials/saveCtrOtherReportingApplication')
       .subscribe(
         response => {
           this.app_resp = response.json();

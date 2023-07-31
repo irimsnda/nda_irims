@@ -6,7 +6,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Carbon\Carbon;
-use App\User;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -458,10 +458,10 @@ class UserManagementController extends Controller
                             $table_data['password'] = $pwd;
                             $table_data['uuid'] = $uuid;
                              
-                            $email_res = accountRegistrationEmail(18, $email, $password, '', $vars);
+                            //$email_res = accountRegistrationEmail(18, $email, $password, '', $vars);
                         }
                         else{
-                            $email_res = accountRegistrationEmail(19, $email, $password, '', $vars);
+                           // $email_res = accountRegistrationEmail(19, $email, $password, '', $vars);
                         }
                         
                         $success = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
@@ -527,10 +527,11 @@ class UserManagementController extends Controller
                             '{username}' => $email,
                             '{password}' => $password
                         );
-                        $email_res = accountRegistrationEmail(6, $email, $password, $link, $vars);
-                        if ($email_res['success'] == false) {
-                            $res = $email_res;
-                        } else {
+                        // $email_res = accountRegistrationEmail(6, $email, $password, $link, $vars);
+                        // if ($email_res['success'] == false) {
+                        //     $res = $email_res;
+                        // } 
+                        // else {
                             $table_data['created_at'] = Carbon::now();
                             $table_data['created_by'] = $user_id;
                             $results = insertRecord($table_name, $table_data, $user_id);
@@ -560,7 +561,7 @@ class UserManagementController extends Controller
                                     'message' => $results['message']
                                 );
                             }
-                        }
+                        //}
                     } else {
                         $res = array(
                             'success' => false,

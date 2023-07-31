@@ -106,7 +106,7 @@ Ext.define('Admin.view.configurations.views.forms.ChecklistTypesFrm', {
         valueField: 'id',
         displayField: 'name',
         forceSelection: true,
-        allowBlank: false,
+        allowBlank: true,
         queryMode: 'local',
         listeners: {
             afterrender: {
@@ -196,7 +196,7 @@ Ext.define('Admin.view.configurations.views.forms.ChecklistTypesFrm', {
                     handler: 'doCreateConfigParamWin'
                 }, {
                     text: 'Reset',
-                    iconCls: 'x-fa fa-close',
+                    iconCls: 'x-fa fa-times',
                     ui: 'soft-purple',
                     handler: function (btn) {
                         btn.up('form').getForm().reset();

@@ -109,7 +109,7 @@ Ext.define('Admin.view.onlineservices_configuration.views.forms.ApplicationDocum
         margin: '0 0 20 0',
         queryMode: 'local',
         forceSelection: true,
-        allowBlank: false,
+        allowBlank: true,
         listeners: {
             beforerender: {
                 fn: 'setOrgConfigCombosStore',

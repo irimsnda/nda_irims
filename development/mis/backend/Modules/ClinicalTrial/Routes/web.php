@@ -26,6 +26,7 @@ Route::group(['prefix' => 'clinicaltrial','middleware' => ['auth:api', 'web']], 
     Route::post('saveProgressReportingBaseDetails',  [ClinicalTrialController::class,'saveProgressReportingBaseDetails']);
      
     Route::post('saveEvaluationDetails',  [ClinicalTrialController::class,'saveEvaluationDetails']);
+    Route::get('getManagerReportReview',  [ClinicalTrialController::class,'getManagerReportReview']);
      
     
     Route::post('saveNewApplicationClinicalTrialDetails',  [ClinicalTrialController::class,'saveNewApplicationClinicalTrialDetails']);
@@ -116,6 +117,27 @@ Route::group(['prefix' => 'clinicaltrial','middleware' => ['auth:api', 'web']], 
     Route::post('onSaveContactPersonDetails',  [ClinicalTrialController::class,'onSaveContactPersonDetails']);
     Route::post('onSaveethicsApproval',  [ClinicalTrialController::class,'onSaveethicsApproval']);
     Route::get('getPharmacoVigilanceApps',  [ClinicalTrialController::class,'getClinicalTrialApplications']);
+    Route::get('getclinicalStudySitesData',  [ClinicalTrialController::class,'getclinicalStudySitesData']);
+    Route::get('prepareOnlineClinicalTrialOtherRptPreview',  [ClinicalTrialController::class,'prepareOnlineClinicalTrialOtherRptPreview']);
+
+    Route::get('prepareOnlineClinicalTrialSAERptPreview',  [ClinicalTrialController::class,'prepareOnlineClinicalTrialSAERptPreview']);
+
+    Route::get('getstrSAEReportingManagerApplicationsGeneric',  [ClinicalTrialController::class,'getstrSAEReportingManagerApplicationsGeneric']);
+
+    Route::get('getClinicalTrialSAEReportMoreDetails',  [ClinicalTrialController::class,'getClinicalTrialSAEReportMoreDetails']);
+
+    Route::get('prepareCtrSAEReportAssessment',  [ClinicalTrialController::class,'getClinicalTrialSAEReportMoreDetails']);
+
+    Route::get('prepareCtrOtherReportAssessment',  [ClinicalTrialController::class,'getClinicalTrialOtherReportMoreDetails']);
+
+    Route::get('saveSAEReportingBaseDetails',  [ClinicalTrialController::class,'saveSAEReportingBaseDetails']);
+
+    Route::get('getstrOtherReportingManagerApplicationsGeneric',  [ClinicalTrialController::class,'getstrOtherReportingManagerApplicationsGeneric']);
+
+    Route::get('getClinicalTrialOtherReportMoreDetails',  [ClinicalTrialController::class,'getClinicalTrialOtherReportMoreDetails']);
+
+
  
-    
+ 
+ 
 });

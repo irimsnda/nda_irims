@@ -72,18 +72,7 @@ Ext.define('Admin.view.administration.views.grids.SystemUserGroupsGrid', {
         displayInfo: true,
         displayMsg: 'Showing {0} - {1} of {2} total records',
         emptyMsg: 'No Records',
-        // beforeLoad: function () {
-        //     var store = this.store,
-        //         grid = this.up('grid'),
-        //         directorate_id = grid.down('combo[name=directorate_id]').getValue(),
-        //         department_id = grid.down('combo[name=department_id]').getValue(),
-        //         zone_id = grid.down('combo[name=zone_id]').getValue();
-        //     store.getProxy().extraParams = {
-        //         directorate_id: directorate_id,
-        //         department_id: department_id,
-        //         zone_id: zone_id
-        //     };
-        // }
+        
     }],
     features: [{
         ftype: 'searching',
@@ -96,12 +85,7 @@ Ext.define('Admin.view.administration.views.grids.SystemUserGroupsGrid', {
         text: 'Name',
         flex: 1
     }, 
-    {
-        xtype: 'gridcolumn',
-        dataIndex: 'institution',
-        text: 'Institution',
-        flex: 1
-    }, {
+     {
         xtype: 'gridcolumn',
         dataIndex: 'user_category',
         text: 'User Category',
@@ -111,11 +95,21 @@ Ext.define('Admin.view.administration.views.grids.SystemUserGroupsGrid', {
         dataIndex: 'externaluser_category',
         text: 'External User Category',
         flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'institution',
+        text: 'Institution',
+        flex: 1
     },
     {
         xtype: 'gridcolumn',
         dataIndex: 'system_dashboard',
         text: 'System Dashboard',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'zone',
+        text: 'User Region',
         flex: 1
     }, {
         xtype: 'gridcolumn',

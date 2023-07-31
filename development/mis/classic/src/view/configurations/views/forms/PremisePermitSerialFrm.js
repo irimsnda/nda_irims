@@ -130,6 +130,14 @@ Ext.define('Admin.view.configurations.views.forms.PremisePermitSerialFrm', {
                     ui: 'soft-purple',
                     action_url: 'configurations/saveConfigCommonData',
                     handler: 'doCreateConfigParamWin'
+                },
+                {
+                    text: 'Reset',
+                    iconCls: 'x-fa fa-times',
+                    ui: 'soft-purple',
+                    handler: function (btn) {
+                        btn.up('form').getForm().reset();
+                    }
                 }
             ]
         }

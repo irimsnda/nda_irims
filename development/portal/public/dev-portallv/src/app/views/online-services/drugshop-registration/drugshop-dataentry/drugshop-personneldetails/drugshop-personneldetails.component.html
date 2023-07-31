@@ -13,14 +13,14 @@
         <dxi-column [width]="200" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false" cellTemplate="cellTemplate">
             <div *dxTemplate="let data of 'cellTemplate'">
                 <dx-button text="Edit" (click)="funcEditPersonnelDetails(data)" 
-                    type="danger" icon="edit">
+                    type="success" icon="edit">
                     </dx-button> 
                 <dx-button text="Delete" (click)="funcDeleteDirectorsDetails(data)" 
                     type="danger" icon="delete">
                 </dx-button> 
             </div>
         </dxi-column>
-        <dxi-column dataField="director_first_name"></dxi-column>
+        <dxi-column dataField="directorfull_names"></dxi-column>
         <dxi-column dataField="director_email_address"></dxi-column>
         <dxi-column dataField="director_telephone_no"></dxi-column>
         <dxi-column dataField="designation"></dxi-column>
@@ -39,11 +39,11 @@
                         <div class="col-lg-4 row input-group ">
                             <div class="col-lg-8">
                                 <label class="control-label">Full Names</label>
-                                <dx-text-box formControlName="director_first_name"  placeholder="Initial Name" [showClearButton]="true">
+                                <dx-text-box formControlName="directorfull_names"  placeholder="Full Name" [showClearButton]="true">
                                 </dx-text-box>
                             </div>
                             <div class="col-lg-4 no-padding">
-                                <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:25px  !important;"  text="Search Staff Details"  type="default" (onClick)="onSearchStaffDetails()">
+                                <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:25px  !important;"  text="Search Partners Details"  type="default" (onClick)="onSearchPartnersDetails()">
                                  <i class="fa fa-search"></i>Search  Details
                                  </dx-button>
                             </div>
@@ -101,9 +101,10 @@
     </div>
 </dx-popup>
 
-<dx-popup class="popup"  [width]="funcpopWidth(60)" [height]="450" [showTitle]="true" title=" Directors Details"
+<dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="450" [showTitle]="true" title=" Directors Details"
     [dragEnabled]="false" [closeOnOutsideClick]="true" [(visible)]="isDirectorsPopupVisible">
     <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view>
           <dx-data-grid class="table row-border hover" [remoteOperations]='true'  [allowColumnResizing]="true"  [columnHidingEnabled]="true" 
                     [dataSource]="directorsDetailsData"  keyExpr="id">
                     <dxo-filter-row [visible]="false"></dxo-filter-row>
@@ -116,22 +117,19 @@
                     <dxo-export [enabled]="true" fileName="premDirectorsDetailsData" [allowExportSelectedData]="true"></dxo-export>
                     
                     <dxo-group-panel [visible]="true"></dxo-group-panel>
-                    <dxi-column [width]="140" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+                    <dxi-column [width]="180" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
                       cellTemplate="cellTemplate">
                       <div *dxTemplate="let data of 'cellTemplate'">
                         <a (click)="funcSelectDirectorsDetails(data)" class="action-btn"><i class="fa fa-edit"></i>Select Directors Details</a>&nbsp;
                       </div>
                     </dxi-column>
-                    <dxi-column [groupIndex]="1" dataField="directors_first_name"></dxi-column>
-                    <dxi-column dataField="director_last_name"></dxi-column>
-                    <dxi-column dataField="country"></dxi-column>
-                    <dxi-column dataField="region"></dxi-column>
-                    <dxi-column dataField="district"></dxi-column>
-                    <dxi-column dataField="director_physical_address"></dxi-column>
+                    <dxi-column [groupIndex]="1" dataField="names"></dxi-column>
+                    <dxi-column dataField="directorfull_names"></dxi-column>
                     <dxi-column dataField="director_postal_address"></dxi-column>
                     <dxi-column dataField="director_email_address"></dxi-column>
-                    
+                    <dxi-column dataField="designation"></dxi-column>
           </dx-data-grid>
+        </dx-scroll-view>
       </div>
   </dx-popup>
  

@@ -243,7 +243,6 @@ class UtilityHelper
         }
     }
     static function returnFuncResponses($resp,$title,$return_field,$return_value){
-
         if($resp){
             $res = array('success'=>true,
                          'message'=>$title.' saved successfully.');

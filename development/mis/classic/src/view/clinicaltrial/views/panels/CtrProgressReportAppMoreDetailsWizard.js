@@ -84,7 +84,7 @@ Ext.define('Admin.view.clinicaltrial.views.panels.CtrProgressReportAppMoreDetail
                     step: 1,
                     iconCls: 'fa fa-suitcase',
                     enableToggle: true,
-                    text: 'CLINICAL TRIAL DETAILS',
+                    text: 'CLINICAL TRIAL PROGRESS REPORT DETAILS',
                     action: 'quickNav',wizard:'ctrprogressreportappmoredetailswizard',max_step:1,
                     handler: 'quickNavigationMoreDetails'
                 }

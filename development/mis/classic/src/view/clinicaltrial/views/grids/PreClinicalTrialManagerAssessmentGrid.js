@@ -71,12 +71,12 @@ Ext.define('Admin.view.clinicaltrial.views.grids.PreClinicalTrialManagerAssessme
             menu: {
                 xtype: 'menu',
                 items: [
-                    {
-                        text: 'Print Confidential Agreement',
-                        iconCls: 'x-fa fa-cubes',
-                        hidden: true,
-                        handler: 'showApplicationQueries'
-                    },
+                    // {
+                    //     text: 'Print Confidential Agreement',
+                    //     iconCls: 'x-fa fa-cubes',
+                    //     hidden: true,
+                    //     handler: 'showApplicationQueries'
+                    // },
                     {
                         text: 'Application Documents',
                         iconCls: 'x-fa fa-file',

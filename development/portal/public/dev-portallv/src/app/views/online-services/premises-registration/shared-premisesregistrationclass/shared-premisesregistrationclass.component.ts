@@ -286,15 +286,18 @@ export class SharedPremisesregistrationclassComponent {
     });
     if(this.sub_module_id == 1){
     this.premisesStoreslocationFrm = new FormGroup({
+        name: new FormControl('', Validators.compose([Validators.required])),
+        distance: new FormControl('', Validators.compose([Validators.required])),
+        street: new FormControl('', Validators.compose([Validators.required])),
         country_id: new FormControl('', Validators.compose([Validators.required])),
         region_id: new FormControl('', Validators.compose([Validators.required])),
         district_id: new FormControl('', Validators.compose([Validators.required])),
-        physical_address: new FormControl('', Validators.compose([Validators.required])),
-        cell_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
-        //sector_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
-        village: new FormControl('', Validators.compose([])),//Validators.required
-        id: new FormControl('', Validators.compose([]))
-    });
+        county_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
+        sub_county_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
+        document_upload_id: new FormControl('', Validators.compose([])),
+        id: new FormControl('', Validators.compose([])),
+
+      });
   }else{
     this.premisesStoreslocationFrm = new FormGroup({
         name: new FormControl('', Validators.compose([Validators.required])),
@@ -303,27 +306,31 @@ export class SharedPremisesregistrationclassComponent {
         country_id: new FormControl('', Validators.compose([Validators.required])),
         region_id: new FormControl('', Validators.compose([Validators.required])),
         district_id: new FormControl('', Validators.compose([Validators.required])),
-        file: new FormControl('', Validators.compose([])),
-         node_ref:new FormControl('', Validators.compose([])),
-        id: new FormControl('', Validators.compose([]))
+        county_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
+        sub_county_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
+        document_upload_id: new FormControl('', Validators.compose([])),
+        id: new FormControl('', Validators.compose([])),
+
       });
   }
-
 
     if(this.sub_module_id == 1){
     this.premisesGeneraldetailsfrm = new FormGroup({
       premises_name: new FormControl('', Validators.compose([Validators.required])),
+      applicant_type_id:new FormControl('', Validators.compose([Validators.required])),
       businesstype_category_id: new FormControl('', Validators.compose([])),
       director_name:new FormControl('', Validators.compose([])),
       other_premproduct_classification:new FormControl('', Validators.compose([])),
-
-      premproduct_classification_id: new FormControl('', Validators.compose([Validators.required])),
+      prodpremise_classification_id: new FormControl('', Validators.compose([Validators.required])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
+      county_id: new FormControl('', Validators.compose([])),
+      sub_county_id: new FormControl('', Validators.compose([])),
+      street:new FormControl('', Validators.compose([])),
       region_id: new FormControl('', Validators.compose([Validators.required])),
       district_id: new FormControl('', Validators.compose([Validators.required])),
       psu_reg_no: new FormControl('', Validators.compose([Validators.required])),
       psu_reg_date: new FormControl('', Validators.compose([Validators.required])),
-      first_name: new FormControl('', Validators.compose([Validators.required])),
+      full_names: new FormControl('', Validators.compose([Validators.required])),
       reg_date:new FormControl('',Validators.compose([Validators.required])),
       middle_name: new FormControl('', Validators.compose([])),
       tpin_no: new FormControl('', Validators.compose([Validators.required])),
@@ -365,11 +372,16 @@ export class SharedPremisesregistrationclassComponent {
       otherregistration_institution: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_position: new FormControl('', Validators.compose([])),//Validators.required
       classification_id:new FormControl('', Validators.compose([])),
-      is_registered_business:new FormControl('', Validators.compose([]))
+      is_registered_business:new FormControl('', Validators.compose([])),
+      had_offence:new FormControl('', Validators.compose([])),
+      offence:new FormControl('', Validators.compose([])),
+      had_cancelled_application:new FormControl('', Validators.compose([])),
+      cancelling_reason:new FormControl('', Validators.compose([]))
     });
   }else{    
     this.premisesGeneraldetailsfrm = new FormGroup({
       premises_name: new FormControl('', Validators.compose([Validators.required])),
+      applicant_type_id:new FormControl('', Validators.compose([Validators.required])),
       businesstype_category_id: new FormControl('', Validators.compose([])),
       director_name:new FormControl('', Validators.compose([])),
       section_id: new FormControl(this.section_id, Validators.compose([])),
@@ -413,8 +425,15 @@ export class SharedPremisesregistrationclassComponent {
   is_registered_business:new FormControl('', Validators.compose([])),
   company_registration_no:new FormControl('', Validators.compose([])),
     other_premproduct_classification:new FormControl('', Validators.compose([])),
-
-      premproduct_classification_id: new FormControl('', Validators.compose([Validators.required]))
+      county_id: new FormControl('', Validators.compose([])),
+      sub_county_id: new FormControl('', Validators.compose([])),
+      street:new FormControl('', Validators.compose([])),
+      reg_date:new FormControl('',Validators.compose([])),
+      prodpremise_classification_id: new FormControl('', Validators.compose([Validators.required])),
+            had_offence:new FormControl('', Validators.compose([])),
+      offence:new FormControl('', Validators.compose([])),
+      had_cancelled_application:new FormControl('', Validators.compose([])),
+      cancelling_reason:new FormControl('', Validators.compose([]))
     });
 
   }
@@ -462,11 +481,9 @@ export class SharedPremisesregistrationclassComponent {
     });
 
 
-   this.premisesDirectorsDetailsfrm = new FormGroup({
-      director_first_name: new FormControl('', Validators.compose([Validators.required])),
+  this.premisesDirectorsDetailsfrm = new FormGroup({
+      directorfull_names: new FormControl('', Validators.compose([Validators.required])),
       id: new FormControl('', Validators.compose([])),
-      director_middle_name: new FormControl('', Validators.compose([])),
-      director_last_name: new FormControl('', Validators.compose([Validators.required])),
       director_postal_address: new FormControl('', Validators.compose([])),
       director_telephone_no: new FormControl('', Validators.compose([Validators.required])),
       director_email_address: new FormControl('', Validators.compose([Validators.required])),
@@ -481,29 +498,16 @@ export class SharedPremisesregistrationclassComponent {
 
 
       this.premisesStafflDetailsfrm = new FormGroup({
-      //start_date: new FormControl('', Validators.compose([])),
-      pfirst_name: new FormControl('', Validators.compose([Validators.required])),
-      //end_date: new FormControl('', Validators.compose([])),
+      staff_full_name: new FormControl('', Validators.compose([Validators.required])),
       id: new FormControl('', Validators.compose([])),
-      pmiddle_name: new FormControl('', Validators.compose([])),
-      ///id: new FormControl('', Validators.compose([Validators.required])),
-      plast_name: new FormControl('', Validators.compose([Validators.required])),
       postal_address: new FormControl('', Validators.compose([])),
-      telephone_no: new FormControl('', Validators.compose([Validators.required])),
-      email_address: new FormControl('', Validators.compose([Validators.required])),
+      staff_telephone_no: new FormControl('', Validators.compose([Validators.required])),
+      staff_email_address: new FormControl('', Validators.compose([Validators.required])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
       region_id: new FormControl('', Validators.compose([Validators.required])),
       district_id: new FormControl('', Validators.compose([Validators.required])),
-
       postal_code: new FormControl('', Validators.compose([])),
-     // registration_no: new FormControl('', Validators.compose([])),
-     // professional_board: new FormControl('', Validators.compose([])),
-      
       qualification_id: new FormControl('', Validators.compose([Validators.required])),
-     // study_field: new FormControl('', Validators.compose([Validators.required])),
-     // personnel_identification_no: new FormControl('', Validators.compose([])),
-
-      //identification_type_id: new FormControl('', Validators.compose([])),
 
     });
 
@@ -869,11 +873,18 @@ export class SharedPremisesregistrationclassComponent {
         error => {
           this.loading = false;
         });
-  }
-  onPremisesApplicationSubmit() {
-    this.app_route = ['./online-services/premisesreg-dashboard'];
+  } 
+   onPremisesApplicationSubmit() {
+    if(this.sub_module_id == 1){
+    this.app_route = ['./online-services/newpremisesreg-dashboard'];
     this.utilityService.onPermitsApplicationSubmit(this.viewRef, this.application_code, this.tracking_no,'wb_premises_applications', this.app_route,this.onApplicationSubmissionFrm.value);
     this.isApplicationSubmitwin = false;
+    }else{
+    this.app_route = ['./online-services/preinspection-dashboard'];
+    this.utilityService.onPermitsApplicationSubmit(this.viewRef, this.application_code, this.tracking_no,'wb_premises_applications', this.app_route,this.onApplicationSubmissionFrm.value);
+    this.isApplicationSubmitwin = false;
+    }
+
   }
   //reload the premsies Other Details 
   onLoadpremPersonnelDocumentsUploadData(personnel_id){

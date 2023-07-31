@@ -21,6 +21,7 @@ Route::get('prepareApplicationTCMeetingSchedulingStage', [commonController::clas
 Route::get('getApplicationApprovalDetails', [commonController::class, 'getApplicationApprovalDetails']);
 	Route::get('getApplicationChecklistQueries', [commonController::class, 'getApplicationChecklistQueries']);
 	Route::post('saveChecklistApplicationQuery', [commonController::class, 'saveChecklistApplicationQuery']);
+
 	Route::post('closeApplicationQuery', [commonController::class, 'closeApplicationQuery']);
 	Route::post('saveUnstructuredApplicationQuery', [commonController::class, 'saveUnstructuredApplicationQuery']);
 	Route::get('getTcMeetingParticipants', [commonController::class, 'getTcMeetingParticipants']);
@@ -62,7 +63,7 @@ Route::get('getApplicationApprovalDetails', [commonController::class, 'getApplic
 	Route::get('checkReviewREcommendationDEtails', [commonController::class, 'checkReviewREcommendationDEtails']);
 	Route::get('getPermitReleaseRecommendationDetails', [commonController::class, 'getPermitReleaseRecommendationDetails']);
 	Route::get('getApplicationPaymentDetails', [commonController::class, 'getApplicationPaymentDetails']);
-	Route::get('getCaseDecisionsLogs', [commonController::class, 'getCaseDecisionsLogs']);
+	
 	Route::post('addChecklistItemsQueries', [commonController::class, 'updateChecklistItemsQueries']);
 
 
@@ -73,4 +74,11 @@ Route::group(['prefix' => 'configurations','middleware' => ['auth:api', 'web']],
     Route::get('checkApplicationRespondedUnclosedQueries', [commonController::class, 'checkApplicationRespondedUnclosedQueries']);
 });
 
-Route::get('backendCall', [commonController::class, 'testApi']);
+Route::group(['middleware' => 'web', 'prefix' => 'common'], function () {
+Route::get('getCaseDecisionsLogs', [commonController::class, 'getCaseDecisionsLogs']);
+Route::get('getApplicationApprovalDetails', [commonController::class, 'getApplicationApprovalDetails']);
+Route::post('saveRecommendationDetails', [commonController::class, 'saveRecommendationDetails']);
+Route::get('getTcMeetingParticipants', [commonController::class, 'getTcMeetingParticipants']);
+
+
+});

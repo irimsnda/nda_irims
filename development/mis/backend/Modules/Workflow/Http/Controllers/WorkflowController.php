@@ -19,6 +19,7 @@ use Modules\Reports\Traits\ReportsTrait;
 use Modules\PromotionMaterials\Traits\PromotionMaterialsTrait;
 use Modules\ProductNotification\Traits\ProductsNotificationTrait;
 
+use Modules\Enforcement\Traits\EnforcementTrait;
 use Modules\Revenuemanagement\Traits\RevenuemanagementTrait;
 use Illuminate\Support\Arr;
 
@@ -35,6 +36,7 @@ class WorkflowController extends Controller
     use PromotionMaterialsTrait;
     use ProductsNotificationTrait;
     use RevenuemanagementTrait;
+    use EnforcementTrait;
     
     protected $base_url;
     public function __construct(Request $req)
@@ -825,7 +827,6 @@ class WorkflowController extends Controller
         try {
             if(validateIsNumeric($workflow_stage_id)){
                 if($table_name != ''){
-                    
                       $qry = DB::table('tra_submissions as t1')
                         ->join('wf_tfdaprocesses as t2', 't1.process_id', '=', 't2.id')
                         ->join('wf_workflow_stages as t3', 't1.current_stage', 't3.id')
@@ -837,7 +838,6 @@ class WorkflowController extends Controller
                         ->where(array('t1.application_id'=>$application_id, 'current_stage'=>$workflow_stage_id,'isDone'=>0,));
                 }
                 else if(validateIsNumeric($application_id)){
-                    
                       $qry = DB::table('tra_submissions as t1')
                         ->join('wf_tfdaprocesses as t2', 't1.process_id', '=', 't2.id')
                         ->join('wf_workflow_stages as t3', 't1.current_stage', 't3.id')
@@ -1479,8 +1479,13 @@ public function getProcessApplicableChecklistItems(Request $request)
             $application_code = $query_data->application_code;
             $workflow_stage = $query_data->workflow_stage_id;
             $process_id = $query_data->process_id;
+
+    
         }
+       
+ 
         $submission_details = getLastApplicationSubmissionDetails($application_code);
+
         if($submission_details['success']){
             $submission_details = $submission_details['results'];
             $submission_id = $submission_details->id;
@@ -1517,13 +1522,14 @@ public function getProcessApplicableChecklistItems(Request $request)
         if(validateIsNumeric($pass_status)){
             $whereClauses[] = "t2.pass_status = '" . ($pass_status) . "'";
         }
-        
+           
         try {
             //module_id, sub_module_id and section_id
             $where2 = DB::table('wf_tfdaprocesses')
                 ->select('module_id', 'sub_module_id', 'section_id')
                 ->where('id', $process_id)
                 ->first();
+
             $where2 = convertStdClassObjToArray($where2);
             $module_id = $where2['module_id'];
             
@@ -1531,7 +1537,7 @@ public function getProcessApplicableChecklistItems(Request $request)
                 $sub_module_id = $where2['sub_module_id'];
                 $section_id = $where2['section_id'];
             
-           
+         
 
             //get applicable checklist categories
             
@@ -1553,7 +1559,7 @@ public function getProcessApplicableChecklistItems(Request $request)
             $checklist_types = convertStdClassObjToArray($checklist_types);
             $checklist_types = convertAssArrayToSimpleArray($checklist_types, 'id');
 
-
+          
            if(validateIsNumeric($query_id)){
                 $qry = DB::table('checklistitems_queries as t4')
                 ->leftJoin('par_checklist_items as t1','t4.checklist_item_id', '=', 't1.id')
@@ -1576,12 +1582,13 @@ public function getProcessApplicableChecklistItems(Request $request)
                 ->leftJoin('par_checklist_categories as t5', 't3.checklist_category_id', '=', 't5.id')
                 ->leftJoin('checklistitems_queryresponses as t6', 't6.query_id', '=', 't4.id')
                 ->join('users as t8', 't2.responses_by', '=', 't8.id')
-                ->select(DB::raw("t1.name,t4.id, t1.id as checklist_item_id,CONCAT_WS(' ',decrypt(t8.first_name),decrypt(t8.last_name)) as screened_by , t2.id as item_resp_id,t2.pass_status,t6.response as query_response, t2.comment,t2.observation, t2.auditor_comment, t3.name as checklist_type, t2.auditorpass_status, $module_id as module_id, $sub_module_id as sub_module_id,  t4.query"));
+                ->select(DB::raw("t1.name,t4.id, t1.id as checklist_item_id,CONCAT_WS(' ',decrypt(t8.first_name),decrypt(t8.last_name)) as screened_by , t2.id as item_resp_id,t2.pass_status,t6.response as query_response, t2.comment,t2.observation, t2.auditor_comment, t1.checklist_type_id,t3.name as checklist_type, t2.auditorpass_status, $module_id as module_id, $sub_module_id as sub_module_id,  t4.query"));
           
                
                
            }
            else{
+ 
 
                 $qry = DB::table('par_checklist_items as t1')
                 ->leftJoin('checklistitems_responses as t2', function ($join) use ($application_code, $query_id, $submission_id, $is_auditor) {
@@ -1607,7 +1614,7 @@ public function getProcessApplicableChecklistItems(Request $request)
                 ->leftJoin('par_checklist_categories as t5', 't3.checklist_category_id', '=', 't5.id')
                 ->leftJoin('checklistitems_queryresponses as t6', 't6.query_id', '=', 't4.id')
                 ->leftjoin('users as t8', 't2.responses_by', '=', 't8.id')
-                ->select(DB::raw("t1.name,t1.id, t1.id as checklist_item_id,CONCAT_WS(' ',decrypt(t8.first_name),decrypt(t8.last_name)) as screened_by ,t2.id as item_resp_id,t2.pass_status,t6.response as query_response, t2.comment,t2.observation, t2.auditor_comment, t3.name as checklist_type, t2.auditorpass_status, $module_id as module_id, $sub_module_id as sub_module_id,  t4.query"));
+                ->select(DB::raw("t1.name,t1.id, t1.id as checklist_item_id,CONCAT_WS(' ',decrypt(t8.first_name),decrypt(t8.last_name)) as screened_by ,t2.id as item_resp_id,t2.pass_status,t6.response as query_response, t2.comment,t2.observation, t2.auditor_comment, t1.checklist_type_id, t3.name as checklist_type, t2.auditorpass_status, $module_id as module_id, $sub_module_id as sub_module_id,  t4.query"));
           
                
                
@@ -1752,6 +1759,8 @@ public function getProcessApplicableChecklistItems(Request $request)
             $checklist_categories = $qry1->get();
             $checklist_categories = convertStdClassObjToArray($checklist_categories);
             $checklist_categories = convertAssArrayToSimpleArray($checklist_categories, 'checklist_category_id');
+
+
             //get applicable checklist types
             $qry2 = DB::table('par_checklist_types as t1')
                 ->select('t1.id')
@@ -1760,7 +1769,6 @@ public function getProcessApplicableChecklistItems(Request $request)
             $checklist_types = $qry2->get();
             $checklist_types = convertStdClassObjToArray($checklist_types);
             $checklist_types = convertAssArrayToSimpleArray($checklist_types, 'id');
-
 
             $qry = DB::table('par_checklist_items as t1')
                 ->leftJoin('checklistitems_responses as t2', function ($join) use ($application_code, $is_previous) {
@@ -1773,8 +1781,7 @@ public function getProcessApplicableChecklistItems(Request $request)
                     }
                 })
                 ->join('par_checklist_types as t3', 't1.checklist_type_id', '=', 't3.id')
-                ->select(DB::raw("t1.*,t2.id as item_resp_id,t2.pass_status,t2.comment,t2.observation,t2.auditor_comment,t3.name as checklist_type,
-                            $module_id as module_id,$sub_module_id as sub_module_id,$section_id as section_id"));
+                ->select(DB::raw("t1.*,t2.id as item_resp_id,t2.pass_status,t2.comment,t2.observation,t2.auditor_comment,t3.name as checklist_type,$module_id as module_id,$sub_module_id as sub_module_id,'. $section_id .' as section_id"));
             if (validateIsNumeric($checklist_category_id)) {
                 $qry->where('t3.checklist_category_id', $checklist_category_id);
             }
@@ -2521,6 +2528,9 @@ public function getProcessApplicableChecklistItems(Request $request)
             $this->processImportExportApplicationSubmission($request);
         }else if ($module_id == 29) {//DRUG SHOP REGISTRATION
             $this->processPremiseApplicationSubmission($request);
+        }else if ($module_id == 30) { //LAW ENFORCEMENT
+            $this->processNormalApplicationSubmission($request);
+
         }else {
            echo "module not set";
         }
@@ -2549,7 +2559,9 @@ public function getProcessApplicableChecklistItems(Request $request)
             $this->processImportExportManagersApplicationSubmission($request);
         }  else if ($module_id == 29) {//DRUG SHOP REGISTRATION
             $this->processPremiseManagersApplicationSubmission($request);
-        } else {
+        } else if ($module_id == 30) {//Enforcement
+            $this->processManagerInvestigationApplicationSubmission($request);
+        }else {
             //unknown module
             echo "module not set";
         }
@@ -2561,6 +2573,8 @@ public function getProcessApplicableChecklistItems(Request $request)
         if ($module_id == 1) {//PRODUCT REGISTRATION
             $res = $this->saveProductOnlineApplicationDetails($request);
         } else if ($module_id == 2) {//PREMISE REGISTRATION
+            $res = $this->savePremiseOnlineApplicationDetails($request);
+        }else if ($module_id == 29) {//PREMISE REGISTRATION
             $res = $this->savePremiseOnlineApplicationDetails($request);
         } else if ($module_id == 3) { //GMP APPLICATIONS
             $res = $this->saveGmpOnlineApplicationDetails($request);

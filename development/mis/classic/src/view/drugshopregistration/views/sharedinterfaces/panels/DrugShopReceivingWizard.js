@@ -70,13 +70,13 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.DrugSh
                     action: 'quickNav'
                 },
                 {
-                           step: 3,
-                           iconCls: 'fa fa-money',
-                           enableToggle: true,iconAlign:'top',
-                           text: 'Invoice & Payment Details',
-                           wizard_pnl : 'drugshopreceivingwizard',
-                           action: 'quickNav'
-                       }
+                    step: 3,
+                    iconCls: 'fa fa-money',
+                    enableToggle: true,iconAlign:'top',
+                    text: 'INVOICE & PAYMENT DETAILS',
+                    wizard_pnl : 'drugshopreceivingwizard',
+                    action: 'quickNav'
+                }
             ]
         };
         this.bbar = {

@@ -190,6 +190,14 @@ Ext.define('Admin.view.configurations.views.forms.ImportExportPermitFeesConfigFr
                     ui: 'soft-purple',
                     action_url: 'configurations/saveModuleFeeConfigCommonData',
                     handler: 'doCreateConfigParamWin'
+                },
+                {
+                    text: 'Reset',
+                    iconCls: 'x-fa fa-times',
+                    ui: 'soft-purple',
+                    handler: function (btn) {
+                        btn.up('form').getForm().reset();
+                    }
                 }
             ]
         }

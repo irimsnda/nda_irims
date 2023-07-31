@@ -471,9 +471,66 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
     },
 
     onNextCardClickOnlineDetails: function (btn) {
-        var wizardPnl = btn.up('clinicaltrialonlineregistrypreviewwizard');
+        var wizardPnl = btn.up('clinicaltrialonlinepreviewwizard');
         wizardPnl.getViewModel().set('atBeginning', false);
         this.navigateOnlineDetails(btn, wizardPnl, 'next');
+    },
+
+     onPrevCardClickPreSubmissionOnlineDetails: function (btn) {
+        var wizardPnl = btn.up('preclinicaltrialonlinepreviewwizard');
+        wizardPnl.getViewModel().set('atEnd', false);
+        this.navigatePreSubmissionOnlineDetails(btn, wizardPnl, 'prev');
+    },
+
+    onPrevCardClickPreSubmissionOnlineDetails: function (btn) {
+        var wizardPnl = btn.up('preclinicaltrialonlinepreviewwizard');
+        wizardPnl.getViewModel().set('atBeginning', false);
+        this.navigatePreSubmissionOnlineDetails(btn, wizardPnl, 'next');
+    },
+
+    navigatePreSubmissionOnlineDetails: function (button, wizardPanel, direction) {
+        var layout = wizardPanel.getLayout(),
+            max_step = button.max_step,
+            progress = wizardPanel.down('#progress_tbar'),
+            model = wizardPanel.getViewModel(),
+            progressItems = progress.items.items,
+            item, i, activeItem, activeIndex;
+        layout[direction]();
+
+        activeItem = layout.getActiveItem();
+        activeIndex = wizardPanel.items.indexOf(activeItem);
+
+        if (activeIndex === 0) {
+            model.set('atBeginning', true);
+        } else {
+            model.set('atBeginning', false);
+        }
+            
+        if (activeIndex === 1) {
+            model.set('atDetails', true);
+        } else {
+            model.set('atDetails', false);
+        }
+        if (activeIndex === 3) {
+            model.set('atEnd', true);
+        } else {
+            model.set('atEnd', false);
+        }
+
+        for (i = 0; i < progressItems.length; i++) {
+            item = progressItems[i];
+
+            if (activeIndex === item.step) {
+                item.setPressed(true);
+            } else {
+                item.setPressed(false);
+            }
+
+            if (Ext.isIE8) {
+                item.btnIconEl.syncRepaint();
+            }
+        }
+        activeItem.focus();
     },
 
     navigateOnlineDetails: function (button, wizardPanel, direction) {
@@ -500,7 +557,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         if (activeIndex === 6) {
             wizardPanel.down('button[name=print_invoice]').setVisible(true);
             wizardPanel.down('button[name=receive_invoicebtn]').setVisible(true);
-           
+            wizardPanel.down('button[name=save_screening_btn]').setDisabled(false);
             model.set('atEnd', true);
         } else {
             wizardPanel.down('button[name=print_invoice]').setVisible(false);
@@ -532,6 +589,33 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
 
     onNextCardClickProgressRptOnlineDetails: function (btn) {
         var wizardPnl = btn.up('clinicaltrialprogressrptonlinepreviewwizard');
+        wizardPnl.getViewModel().set('atBeginning', false);
+        this.navigateProgressRptOnlineDetails(btn, wizardPnl, 'next');
+    },
+
+
+     onPrevCardClickOtherRptOnlineDetails: function (btn) {
+        var wizardPnl = btn.up('clinicaltrialotherrptonlinepreviewwizard');
+        wizardPnl.getViewModel().set('atEnd', false);
+        this.navigateProgressRptOnlineDetails(btn, wizardPnl, 'prev');
+    },
+
+    onNextCardClickOtherRptOnlineDetails: function (btn) {
+        var wizardPnl = btn.up('clinicaltrialotherrptonlinepreviewwizard');
+        wizardPnl.getViewModel().set('atBeginning', false);
+        this.navigateProgressRptOnlineDetails(btn, wizardPnl, 'next');
+    },
+
+
+
+     onPrevCardClickSaeRptOnlineDetails: function (btn) {
+        var wizardPnl = btn.up('clinicaltrialsaerptonlinepreviewwizard');
+        wizardPnl.getViewModel().set('atEnd', false);
+        this.navigateProgressRptOnlineDetails(btn, wizardPnl, 'prev');
+    },
+
+    onNextCardClickSaeRptOnlineDetails: function (btn) {
+        var wizardPnl = btn.up('clinicaltrialsaerptonlinepreviewwizard');
         wizardPnl.getViewModel().set('atBeginning', false);
         this.navigateProgressRptOnlineDetails(btn, wizardPnl, 'next');
     },
@@ -799,6 +883,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             
             wizardPnl.down('button[name=print_invoice]').setVisible(true);
             wizardPnl.down('button[name=receive_invoicebtn]').setVisible(true);
+            wizardPnl.down('button[name=save_screening_btn]').setDisabled(false);
            
             wizardPnl.getViewModel().set('atEnd', true);
         } else {
@@ -828,9 +913,137 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             }
         }
         activeItem.focus();
-    }, quickNavigationProgressRptOnlineDetails: function (btn) {
+    },
+      quickNavigationPreSubmissionOnlineDetails: function (btn) {
+        var step = btn.step,
+            wizardPnl = btn.up('preclinicaltrialonlinepreviewwizard'),
+            progress = wizardPnl.down('#progress_tbar'),
+            progressItems = progress.items.items;
+        if (step == 0) {
+            wizardPnl.getViewModel().set('atBeginning', true);
+        } else {
+            wizardPnl.getViewModel().set('atBeginning', false);
+        }
+        if (step == 3) {
+            
+            wizardPnl.down('button[name=print_invoice]').setVisible(true);
+            wizardPnl.down('button[name=receive_invoicebtn]').setVisible(true);
+           
+            wizardPnl.getViewModel().set('atEnd', true);
+        } else {
+            
+            wizardPnl.down('button[name=print_invoice]').setVisible(false);
+            wizardPnl.down('button[name=receive_invoicebtn]').setVisible(false);
+           
+            wizardPnl.getViewModel().set('atEnd', false);
+        }
+        wizardPnl.getLayout().setActiveItem(step);
+        var layout = wizardPnl.getLayout(),
+            item = null,
+            i = 0,
+            activeItem = layout.getActiveItem();
+
+        for (i = 0; i < progressItems.length; i++) {
+            item = progressItems[i];
+
+            if (step === item.step) {
+                item.setPressed(true);
+            } else {
+                item.setPressed(false);
+            }
+
+            if (Ext.isIE8) {
+                item.btnIconEl.syncRepaint();
+            }
+        }
+        activeItem.focus();
+    }, 
+
+     quickNavigationProgressRptOnlineDetails: function (btn) {
         var step = btn.step,
             wizardPnl = btn.up('clinicaltrialprogressrptonlinepreviewwizard'),
+            progress = wizardPnl.down('#progress_tbar'),
+            progressItems = progress.items.items;
+        if (step == 0) {
+            wizardPnl.getViewModel().set('atBeginning', true);
+        } else {
+            wizardPnl.getViewModel().set('atBeginning', false);
+        }
+        if (step == 3) {
+            
+           
+            wizardPnl.getViewModel().set('atEnd', true);
+        } else {
+            
+           
+            wizardPnl.getViewModel().set('atEnd', false);
+        }
+        wizardPnl.getLayout().setActiveItem(step);
+        var layout = wizardPnl.getLayout(),
+            item = null,
+            i = 0,
+            activeItem = layout.getActiveItem();
+
+        for (i = 0; i < progressItems.length; i++) {
+            item = progressItems[i];
+
+            if (step === item.step) {
+                item.setPressed(true);
+            } else {
+                item.setPressed(false);
+            }
+
+            if (Ext.isIE8) {
+                item.btnIconEl.syncRepaint();
+            }
+        }
+        activeItem.focus();
+    },
+
+     quickNavigationOtherRptOnlineDetails: function (btn) {
+        var step = btn.step,
+            wizardPnl = btn.up('clinicaltrialotherrptonlinepreviewwizard'),
+            progress = wizardPnl.down('#progress_tbar'),
+            progressItems = progress.items.items;
+        if (step == 0) {
+            wizardPnl.getViewModel().set('atBeginning', true);
+        } else {
+            wizardPnl.getViewModel().set('atBeginning', false);
+        }
+        if (step == 3) {
+            
+           
+            wizardPnl.getViewModel().set('atEnd', true);
+        } else {
+            
+           
+            wizardPnl.getViewModel().set('atEnd', false);
+        }
+        wizardPnl.getLayout().setActiveItem(step);
+        var layout = wizardPnl.getLayout(),
+            item = null,
+            i = 0,
+            activeItem = layout.getActiveItem();
+
+        for (i = 0; i < progressItems.length; i++) {
+            item = progressItems[i];
+
+            if (step === item.step) {
+                item.setPressed(true);
+            } else {
+                item.setPressed(false);
+            }
+
+            if (Ext.isIE8) {
+                item.btnIconEl.syncRepaint();
+            }
+        }
+        activeItem.focus();
+    },
+
+    quickNavigationSaeRptOnlineDetails: function (btn) {
+        var step = btn.step,
+            wizardPnl = btn.up('clinicaltrialsaerptonlinepreviewwizard'),
             progress = wizardPnl.down('#progress_tbar'),
             progressItems = progress.items.items;
         if (step == 0) {
@@ -1412,6 +1625,25 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         this.fireEvent('clinicalApplicationMoreDetails', application_id, application_code, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly);
         
     },
+
+     showClinicalTrialReportMoreDetails: function (item) {
+        Ext.getBody().mask('Please wait...');
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord(),
+            ref_no = record.get('reference_no'),
+            application_id = record.get('id'),
+            applicant_id = record.get('applicant_id'),
+            application_code = record.get('application_code'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = record.get('workflow_stage_id'),
+            module_id = record.get('module_id'),
+            sub_module_id = record.get('sub_module_id'),
+            section_id = record.get('section_id'),
+            isReadOnly = item.appDetailsReadOnly;
+        this.fireEvent('clinicalReportMoreDetails', application_id, application_code, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly);
+        
+    },
+
     showPreSubmissionApplicationMoreDetails: function (item) {
         Ext.getBody().mask('Please wait...');
         var btn = item.up('button'),
@@ -2171,7 +2403,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
               //load report details
            Ext.getBody().mask('loading...');
             Ext.Ajax.request({
-                    url: "applicationsdatacleanup/getClnProductsDetails",
+                    url: "clinicaltrial/getManagerReportReview",
                     method: 'GET',
                     params: {
                         application_code: record.get('application_code'),
@@ -2191,6 +2423,9 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
                         if (success == true || success === true) {
                             var model = Ext.create('Ext.data.Model', resp.results[0]);    
                            child.loadRecord(model);
+                           child.setHeight(500);
+                           child.down('button[name=save_btn]').setHidden(true);
+                           funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow'); 
                         } else {
                             toastr.error(message, 'Failure Response');
                             var model = Ext.create('Ext.data.Model', []);
@@ -2215,8 +2450,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
 
             Ext.getBody().unmask();
 
-            child.setHeight(500);
-            funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow'); 
+            
             
     },
 

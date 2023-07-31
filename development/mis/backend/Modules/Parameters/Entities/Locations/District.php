@@ -23,6 +23,10 @@ class District extends AbstractParameter
     public function region() {
         return $this -> belongsTo("Region");
     }
+     public function subcounty() {
+        return $this -> hasMany("SubCounty");
+    }
+
 
     public static function getData($start, $limit, $doRetrieveAll, $filters) {
         $rawSql = "par_districts.*, par_regions.name as region_name, par_countries.name as country_name";

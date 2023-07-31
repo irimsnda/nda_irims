@@ -35,7 +35,8 @@ export class AccountManagementService {
     let traderData_sub = JSON.stringify(traderData) 
 
     var headers= new HttpHeaders({
-      "Content-Type": "application/x-www-form-urlencoded"
+      "Content-Type": "application/x-www-form-urlencoded",
+      'X-CSRF-Token': 'token'
     });
     let user = this.authService.getUserDetails();
 
@@ -46,7 +47,8 @@ export class AccountManagementService {
     this.config = {
       params: {
         trader_id:this.trader_id,
-        traderemail_address:user.traderemail_address
+        traderemail_address:user.traderemail_address,
+
       },
       
     };
@@ -55,6 +57,8 @@ export class AccountManagementService {
             return data;
         }));
   }
+
+
   
   onSaveTradersApplicationInformation(data,mistrader_id){
 
@@ -112,6 +116,23 @@ export class AccountManagementService {
       }));
   }
   onLoadTraderAccountUsers(){
+    let user = this.authService.getUserDetails();
+
+    this.trader_id = user.trader_id;
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+    });
+    this.config = {
+      params: { trader_id: this.trader_id },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'tradermanagement/gettraderUsersAccountsManagementDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
+    onLoadPharmacistAccountUsers(){
     let user = this.authService.getUserDetails();
 
     this.trader_id = user.trader_id;

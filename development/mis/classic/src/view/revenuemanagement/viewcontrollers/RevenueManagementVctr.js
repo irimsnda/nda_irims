@@ -9,7 +9,18 @@ Ext.define('Admin.view.revenuemanagement.viewcontrollers.RevenueManagementVctr',
 
     },
 	
-	
+	setGridStore: function (obj, options) {
+        this.fireEvent('setGridStore', obj, options);
+    },
+     setCompStore: function (obj, options) {
+        this.fireEvent('setCompStore', obj, options);
+    },
+    setConfigCombosStore: function (obj, options) {
+        this.fireEvent('setCompStore', obj, options);
+    },
+    setDynamicTreeGridStore: function (obj, options) {
+        this.fireEvent('setDynamicTreeGridStore', obj, options);
+    },
     setWorkflowCombosStore: function (obj, options) {
         this.fireEvent('setWorkflowCombosStore', obj, options);
     },

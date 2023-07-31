@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\File;
 use Dilab\Network\SimpleRequest;
 use Dilab\Network\SimpleResponse;
 use Dilab\Resumable;
-
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Excel as ExcelClass;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Pion\Laravel\ChunkUpload\Receiver\FileReceiver;
 use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
 class DocumentManagementController extends Controller
@@ -1785,29 +1788,32 @@ public function iterateDirectories($uncompressedpath, $parent_id, $application_d
 	}
 
 	public function onunfitProductsUpload(Request $req){
-				try{
-					$data = array();
-						$res = array();
-						$trader_id = $req->trader_id;
-						$file = $req->file('file');
-						$application_code = $req->application_code;
-						if ($req->hasFile('file')) {
-								$path = $req->file('file')->getRealPath();
-								$data = \Excel::load($path)->get();
+   		 try {
+        			$data = array();
+        			$res = array();
+        			$trader_id = $req->trader_id;
+        			$file = $req->file('file');
+        			$application_code = $req->application_code;
+        				if ($req->hasFile('file')) {
+            				$path = $req->file('file')->getRealPath();
+            					$data = Excel::toArray([], $path)[0];
 
-								if($data->count()){
+								if (count($data)) {
 										$i = 0;
 										foreach ($data as $key => $value) {
+											   $value = str_replace(' ', '_', $value);
+											  
+
 												if($i !== 0){
 													$arr[] = array('brand_name'=>$value->Brand_Name,
-															'common_name'=>$value->Generic_Name,
+															'gener_name'=>$value->Generic_Name,
 															'product_strength'=>$value->Product_Strength,
 															'dosage_form'=>$value->Dosage_Form,
 															'pack_size'=>$value->Pack_Size,
 															'quantity'=>$value->Quantity,
 															'batch_no'=>$value->Batch_Nos,
 															'estimated_value'=>$value->Estimated_Value,
-															'reason_for_disposal'=>$value->Reason_for_unfitness,
+															'reason_for_disposal'=>$value->Reason_for_Disposal,
 															'currency_name'=>$value->currency_name,
 															'application_code'=>$application_code
 														);

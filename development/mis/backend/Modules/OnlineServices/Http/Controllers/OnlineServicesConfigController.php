@@ -79,6 +79,37 @@ class OnlineServicesConfigController extends Controller
 
 
     }
+
+    public function getApplicationTermsConditions(){
+        try {
+            $data = array();
+            $data = DB::table('wb_appsubmission_termscondition as t1')
+                        ->join('modules as t2', 't1.module_id','=','t2.id')
+                        ->join('sub_modules as t3', 't1.sub_module_id','=','t3.id')
+                    ->select('t1.*', 't2.name as module_name','t3.name as sub_module_name')
+                    ->get();
+
+        $res = array('results'=>$data,
+                     'success' => true,
+            );
+    } catch (\Exception $exception) {
+        
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+        
+    } catch (\Throwable $throwable) {
+        
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($res);  
+
+
+    }
     public function getOnlineFormsParams(Request $request)
     {
         $table_name = $request->input('table_name');

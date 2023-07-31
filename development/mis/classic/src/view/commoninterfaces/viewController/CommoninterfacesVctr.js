@@ -25,6 +25,17 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
         this.fireEvent('showGeneralAppAppQueries', btn);
 
     },
+    setGridStore: function (obj, options) {
+        this.fireEvent('setGridStore', obj, options);
+    },
+    setCompStore: function (obj, options) {
+        this.fireEvent('setCompStore', obj, options);
+    },
+
+      AddCaseDecision: function (argument) {
+        var form = Ext.widget('casedecisionFrm');
+        funcShowCustomizableWindow('Investigation Decisions', '50%', form, 'customizablewindow');
+    },
     showAddApplicationCapaForm: function (btn) {
         var childXtype = btn.childXtype,
         win_title = btn.win_title,
@@ -435,6 +446,10 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
 
     setParamCombosStore: function (obj, options) {
         this.fireEvent('setParamCombosStore', obj, options);
+    },
+     AddInvestigationComment: function (argument) {
+        var form = Ext.widget('investigationcommentsFrm');
+        funcShowCustomizableWindow('Investigation comments', '50%', form, 'customizablewindow');
     },
     doSavePrecheckingecommendationDetails: function (btn) {
         var me = this,

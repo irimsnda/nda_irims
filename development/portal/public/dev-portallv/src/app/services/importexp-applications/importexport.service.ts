@@ -248,6 +248,7 @@ export class ImportexportService {
     var headers = new Headers({
       "Accept": "application/json",
       "Authorization": "Bearer " + this.authService.getAccessToken(),
+    
     });
     let user = this.authService.getUserDetails();
     return this.http.post(AppSettings.base_url + 'clinicaltrials/onSaveClinicalStudySite', study_site_data, { params: { 'trader_id': this.trader_id, 'traderemail_address': this.email_address,table_name:table_name,application_id:application_id }, headers: headers })

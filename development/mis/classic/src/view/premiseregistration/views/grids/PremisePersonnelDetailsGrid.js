@@ -113,42 +113,46 @@ Ext.define('Admin.view.premiseregistration.views.grids.PremisePersonnelDetailsGr
     },
     columns: [{
         xtype: 'gridcolumn',
-        dataIndex: 'name',
+        dataIndex: 'directorfull_names',
         text: 'Name',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'telephone_no',
+        dataIndex: 'director_telephone_no',
         text: 'Telephone No',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'email_address',
+        dataIndex: 'director_email_address',
         text: 'Email address',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'postal_address',
+        dataIndex: 'director_postal_address',
         text: 'Postal Address',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'position',
+        hidden:true,
         text: 'Position',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'registration_no',
+         hidden:true,
         text: 'Registration No',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'study_field',
+         hidden:true,
         text: 'Field of Study',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'qualification',
+         hidden:true,
         text: 'Qualification',
         flex: 1
     }, {

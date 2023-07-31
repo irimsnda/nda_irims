@@ -98,7 +98,7 @@
     <dx-button *ngFor="let sub_module of drugshopappTypeData;" 
         text="{{sub_module.name}} Application"
         type="default"
-        width="290"
+        width="420"
         icon="fa {{sub_module.icon}}"
         [elementAttr]="{ id: 'elementId', class: 'col-lg-2' }"
         (onClick)="onClickSubModuleAppSelection(sub_module.id,sub_module.name)">
@@ -379,7 +379,7 @@
         </dx-select-box>
       </div>          
     <div class="col-lg-12  pull-right row" style="text-align: center;">
-        <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-right' }"   icon="fa fa-arrow-right" text="Initiate New Product Application" 
+        <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-right' }"   icon="fa fa-arrow-right" text="Initiate Pre Inspection Application" 
           type="success" (onClick)="onPremisesAppSelection()">
         </dx-button>
       

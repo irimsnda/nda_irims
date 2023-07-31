@@ -96,9 +96,9 @@
 <div class="row">
         
     <dx-button *ngFor="let sub_module of premisesappTypeData;" 
-        text="{{sub_module.name}} Application"
+        text="{{sub_module.name}}"
         type="default"
-        width="290"
+        width="350"
         icon="fa {{sub_module.icon}}"
         [elementAttr]="{ id: 'elementId', class: 'col-lg-2' }"
         (onClick)="onClickSubModuleAppSelection(sub_module.id,sub_module.name)">

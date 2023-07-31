@@ -9,7 +9,7 @@ Ext.define('Admin.view.productregistration.views.panels.ClinicalTrialTcRecommend
         title: 'Peer Review Recommendations',
         xtype: 'tcrecommendationfrm'
     },{
-        title: 'Product Information Final Recommendation Reports',
+        title: 'Final Recommendation Reports',
         xtype: 'productEvaluationUploadsGrid'
     }]
 });

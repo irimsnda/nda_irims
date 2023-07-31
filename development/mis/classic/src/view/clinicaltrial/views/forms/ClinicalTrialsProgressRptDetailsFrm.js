@@ -142,7 +142,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsProgressRptDetail
                             }
                         }
                     },
-                    isLoad: false
+                    isLoad: true
                 },
                 afterrender:function(cbo){
                         var store = cbo.getStore(),
@@ -167,14 +167,14 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsProgressRptDetail
             name: 'reporting_start_date',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
         },{
             xtype: 'datefield',
             fieldLabel: 'Reporting Period End Date',
             name: 'reporting_end_date',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
         },{
             xtype: 'numberfield',
             fieldLabel: 'Screened Participants(#)',
@@ -230,6 +230,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsProgressRptDetail
 
         },{
             xtype:'numberfield',
+            hidden:true,
             fieldLabel: 'Number of SAEs /SUSARs that have occurred',
             name: 'number_of_saes',            
 

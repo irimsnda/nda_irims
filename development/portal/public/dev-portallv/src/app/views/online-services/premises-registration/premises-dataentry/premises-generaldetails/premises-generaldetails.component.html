@@ -9,14 +9,14 @@
         <dx-select-box  [dataSource]="businessTypesData" valueExpr="id" displayExpr="name"[readOnly]= "true" placeholder="Select Premises Category" [searchEnabled]="true"  formControlName="business_type_id">
         </dx-select-box>
       </div>
-  <!-- <div class="col-lg-4" *ngIf="sub_module_id ==89">
-       <label>Is registered Business</label>
-      <dx-select-box [readOnly]="true"  [dataSource]="confirmDataParam" valueExpr="id"
-        displayExpr="name" placeholder="Is registered Business" [searchEnabled]="true"
-        formControlName="is_registered_business">
+    <div class="col-lg-4">
+      <label>Is This Application made for:</label>
+      <dx-select-box   [dataSource]="applicantTypesData" valueExpr="id"
+        displayExpr="name" placeholder="Select Application Type" [searchEnabled]="true"
+        formControlName="applicant_type_id">
       </dx-select-box>
-    </div> -->
-    <div class="col-lg-4 row input-group">
+    </div>
+    <div class="col-lg-4 row input-group"*ngIf="sub_module_id==1">
       <div class="col-lg-9">
           <label class="control-label">Registration No </label>
           <dx-text-box formControlName="company_registration_no"   placeholder="Registration" [showClearButton]="true">
@@ -28,7 +28,11 @@
                <i class="fa fa-search"></i>Search
               </dx-button>
             </div> 
-         
+      </div>
+      <div class="col-lg-4" *ngIf="sub_module_id==1">
+        <label>Registration Date</label>
+        <dx-date-box formControlName="reg_date">
+        </dx-date-box>
       </div>
       <div class="col-lg-4 row input-group">
             <div class="col-lg-9">
@@ -50,141 +54,155 @@
           <dx-text-box formControlName="premises_name"  placeholder="Premises Name" [showClearButton]="true">
           </dx-text-box>
       </div>        
-      
-      <div class="col-lg-4" *ngIf="sub_module_id ==1">
-          <label class="control-label">Registration No </label>
-          <dx-text-box formControlName="company_registration_no"   placeholder="Registration" [showClearButton]="true">
+
+      <div class="col-lg-4">
+        <label class="control-label">Product Classification</label>
+          <dx-select-box [dataSource]="premiseClassData"formControlName="prodpremise_classification_id"
+           placeholder="Product Classification"
+           valueExpr="id"
+            (onValueChanged)="onOtherClassificationChange($event)"
+            [searchEnabled]="true"
+            displayExpr="name">
+          </dx-select-box>
+      </div>
+      <div class="col-lg-4" *ngIf="is_other_classification">
+        <label class="control-label">Please Specify</label>
+          <dx-text-box formControlName="other_classification" 
+            placeholder="Specify if other Classification" [showClearButton]="true">
           </dx-text-box>
-      </div>
-      <div class="col-lg-4"*ngIf="sub_module_id ==1">
-                <label>Registration Date</label>
-                <dx-date-box formControlName="reg_date">
-                </dx-date-box>
         </div>
-        
-      <div class="col-lg-4">
-      <label class="control-label">Product Classification</label>
-      <dx-tag-box
-          [items]="premiseClassData"
-          formControlName="premproduct_classification_id"
-          placeholder="Product Classification"
-          valueExpr="id"
-          [showSelectionControls]="true"
-          [searchEnabled]="true"
-          applyValueMode="useButtons"
-          displayExpr="name">
-      </dx-tag-box>
-
-    </div>
-         <div class="col-lg-12">
-          <label class="control-label">Others Product Classification (Enter for other Product Classification) </label>
-          <dx-text-area formControlName="other_premproduct_classification"   placeholder="Others Product Classification">
-          </dx-text-area>
+      <div class="col-lg-4" *ngIf="sub_module_id==11">
+        <label>Business Scale</label>
+        <dx-select-box [dataSource]="businessScaleData" 
+          valueExpr="id" displayExpr="name" placeholder="Select Scale Types" [value] ='business_scale_id' [searchEnabled]="true" formControlName="business_scale_id">
+        </dx-select-box>
       </div>
-      <div class="col-lg-4">
-                <label>Business Scale</label>
-                <dx-select-box [dataSource]="businessScaleData" valueExpr="id" displayExpr="name" placeholder="Select Scale Types" [value] ='business_scale_id' [searchEnabled]="true" formControlName="business_scale_id">
-                </dx-select-box>
-
-      </div>
-
       </fieldset> 
        <fieldset class="col-lg-12 row" *ngIf="sub_module_id == 1">
         <legend  class="contentfieldset">Supervising Pharmacist Details</legend>
-              <div class="col-lg-4 row input-group">
-                
-                   <div class="col-lg-8">
-                    <label class="control-label">P.S.U Registration No</label>
-                  <dx-text-box formControlName="psu_reg_no"  
-                     placeholder="P.S.U Registration No" 
-                     [showClearButton]="true">
-                  </dx-text-box>
+          <div class="col-lg-4 row input-group"> 
+            <div class="col-lg-8">
+              <label class="control-label">P.S.U Registration No</label>
+              <dx-text-box formControlName="psu_reg_no"  
+                 placeholder="P.S.U Registration No" 
+                [showClearButton]="true">
+              </dx-text-box>
             </div>
-                  <div class="col-lg-4 no-padding">
-                  <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}"
-                     style="margin-top:25px  !important;"  text="Search Pharmacist Details"  type="default" (onClick)="onSearchSupervisingDetails()">
-                        <i class="fa fa-search"></i>Supervising Pharmacist Details
-                    </dx-button>
-                </div>
-              </div>
-           <div class="col-lg-4  ">
-              
-                 <label class="control-label">Full Names</label>
-                   <dx-text-box formControlName="first_name"  placeholder="Full Name" [showClearButton]="true">
-                    </dx-text-box>
-                
-               
+            <div class="col-lg-4 no-padding">
+              <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}"
+                style="margin-top:25px  !important;"  text="Search Pharmacist Details"  type="default" (onClick)="onSearchSupervisingDetails()">
+                  <i class="fa fa-search"></i>Supervising Pharmacist Details
+              </dx-button>
             </div>
-            
-
-              <div class="col-lg-4">
-                <label>P.S.U Registration Date</label>
-                <dx-date-box formControlName="psu_reg_date">
-                </dx-date-box>
-              </div>
-              <div class="col-lg-4">
-                <label class="control-label">Telephone No</label>
-                <dx-text-box formControlName="super_telephone" placeholder="Telephone" 
-                  [showClearButton]="true">
-                </dx-text-box>
-              </div>
-              <div class="col-lg-4">
-                <label class="control-label">Email Address</label>
-                <dx-text-box formControlName="superv_email"  placeholder="Email" [showClearButton]="true">
-                </dx-text-box>
-              </div>
-              <div class="col-lg-4">
-                <label class="control-label">Country</label>
-                <dx-select-box [dataSource]="countries" valueExpr="id" displayExpr="name" 
-                  placeholder="Select Country" (onSelectionChanged)="onCoutryCboSelect($event)" [searchEnabled]="true" formControlName="country_id">
-                </dx-select-box>
-              </div>
-              <div class="col-lg-4">
-                <label for="ti" class="control-label">Region</label>
-                <dx-select-box  [dataSource]="regions" valueExpr="id" 
-                  displayExpr="name" (onSelectionChanged)="onRegionsCboSelect($event)" [searchEnabled]="true" formControlName="region_id">
-                </dx-select-box>
-              </div>
-              <div class="col-lg-4">
-                <label for="ti" class="control-label">District</label>
-                <dx-select-box [dataSource]="districts" 
-                  valueExpr="id" 
-                  placeholder="Select District" displayExpr="name" 
-                  [searchEnabled]="true" formControlName="district_id" (onSelectionChanged)="oDistrictsCboSelect($event)" >
-                </dx-select-box>
-              </div>      
-              <div class="col-lg-4">
-                <label for="ti" class="control-label">Postal Address</label>
-                <dx-text-box  formControlName="super_physical_address" placeholder="Postal Address" [showClearButton]="true">
-                </dx-text-box>
-              </div>
-             
+          </div>
+          <div class="col-lg-4  ">
+              <label class="control-label">Full Names</label>
+              <dx-text-box formControlName="full_names"  placeholder="Full Name" [showClearButton]="true">
+              </dx-text-box>
+          </div>
+          <div class="col-lg-4">
+            <label>P.S.U Registration Date</label>
+            <dx-date-box formControlName="psu_reg_date">
+            </dx-date-box>
+          </div>
+          <div class="col-lg-4">
+            <label class="control-label">Telephone No</label>
+            <dx-text-box formControlName="super_telephone" placeholder="Telephone" 
+              [showClearButton]="true">
+            </dx-text-box>
+          </div>
+          <div class="col-lg-4">
+            <label class="control-label">Email Address</label>
+            <dx-text-box formControlName="superv_email"  placeholder="Email" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+          <div class="col-lg-4">
+            <label class="control-label">Country</label>
+            <dx-select-box [dataSource]="countries" valueExpr="id" displayExpr="name" 
+              placeholder="Select Country" (onSelectionChanged)="onCoutryCboSelect($event)" [searchEnabled]="true" formControlName="country_id">
+            </dx-select-box>
+          </div>
+          <div class="col-lg-4">
+            <label for="ti" class="control-label">Region</label>
+            <dx-select-box  [dataSource]="regions" valueExpr="id" 
+              displayExpr="name" (onSelectionChanged)="onRegionsCboSelect($event)" [searchEnabled]="true" formControlName="region_id">
+            </dx-select-box>
+          </div>
+          <div class="col-lg-4">
+            <label for="ti" class="control-label">District</label>
+            <dx-select-box [dataSource]="districts" 
+              valueExpr="id" 
+              placeholder="Select District" displayExpr="name" 
+              [searchEnabled]="true" formControlName="district_id" (onSelectionChanged)="oDistrictsCboSelect($event)" >
+            </dx-select-box>
+          </div>      
+          <div class="col-lg-4">
+            <label for="ti" class="control-label">Postal Address</label>
+            <dx-text-box  formControlName="super_physical_address" 
+              placeholder="Postal Address" [showClearButton]="true">
+            </dx-text-box>
+          </div> 
+          <div class="col-lg-12">
+            <label>Has the applicant, any partner or director been convicted the past three years within or outside Uganda, of any offence involving drug  </label>
+            <dx-select-box [dataSource]="confirmDataParam" valueExpr="id"
+              displayExpr="name"  (onSelectionChanged)="onApplicantConvictionChange($event)" placeholder="Is convicted" [searchEnabled]="true"
+              formControlName="had_offence">
+            </dx-select-box>
+          </div>
+          <div class="col-lg-12" *ngIf="isConvicted">
+            <label class="control-label">Give Offence Reason</label>
+            <dx-text-area formControlName="offence"placeholder="Offence Reason">
+            </dx-text-area>
+          </div>
+          <div class="col-lg-12">
+            <label>Has any previous application by the applicants any partner or director, for a license to operate any type of pharmaceutical business been refused or cancelled</label>
+             <dx-select-box (onSelectionChanged)="onApplicantCancelledChange($event)"  [dataSource]="confirmDataParam" valueExpr="id"
+               displayExpr="name" placeholder="Had Cancelled" [searchEnabled]="true"
+             formControlName="had_cancelled_application">
+              </dx-select-box>
+          </div>
+          <div class="col-lg-12" *ngIf="isCancelled">
+            <label class="control-label">Give Reason</label>
+            <dx-text-area formControlName="cancelling_reason" placeholder="Cancellation Reason">
+            </dx-text-area>
+          </div>
       </fieldset>  
       <fieldset class="col-lg-12 row">
-        <legend  class="contentfieldset">Address Details</legend>
+        <legend  class="contentfieldset">Physical Location of Premises of the business</legend>
         <div class="col-lg-4">
           <label class="control-label">Country</label>
-
           <dx-select-box [dataSource]="countries" valueExpr="id" displayExpr="name" placeholder="Select Country" (onSelectionChanged)="onCoutryCboSelect($event)" [searchEnabled]="true" formControlName="country_id">
           </dx-select-box>
-
-      </div>
-      <div class="col-lg-4">
+        </div>
+        <div class="col-lg-4">
           <label for="ti" class="control-label">Region</label>
-
           <dx-select-box  [dataSource]="regions" valueExpr="id" displayExpr="name" (onSelectionChanged)="onRegionsCboSelect($event)" [searchEnabled]="true" formControlName="region_id">
           </dx-select-box>
-      </div>
-      <div class="col-lg-4">
+       </div>
+        <div class="col-lg-4">
           <label for="ti" class="control-label">District</label>
-
           <dx-select-box [dataSource]="districts" valueExpr="id" placeholder="Select District" displayExpr="name" [searchEnabled]="true" formControlName="district_id" (onSelectionChanged)="oDistrictsCboSelect($event)" >
           </dx-select-box>
-      </div>
-
-      <div class="col-lg-4">
+        </div>
+        <div class="col-lg-4">
+        <label for="ti" class="control-label">County/Division</label>
+          <dx-select-box [dataSource]="countyData" valueExpr="id" 
+             placeholder="Select County/Division" displayExpr="name" [searchEnabled]="true" formControlName="county_id" (onSelectionChanged)="oCountyCboSelect($event)" >
+          </dx-select-box>
+        </div> 
+        <div class="col-lg-4">
+          <label for="ti" class="control-label">Sub-County</label>
+            <dx-select-box [dataSource]="subCountyData" valueExpr="id" 
+              placeholder="Select Sub-County" displayExpr="name" [searchEnabled]="true" formControlName="sub_county_id">
+            </dx-select-box>
+        </div>
+        <div class="col-lg-4">
+          <label for="ti" class="control-label">Village</label>
+          <dx-text-box  formControlName="village" placeholder="Enter Village" [showClearButton]="true">  </dx-text-box>
+        </div>   
+        <div class="col-lg-4">
             <label for="ti" class="control-label">Street/Road</label>
-            <dx-text-box  formControlName="village" placeholder="Road/Street" [showClearButton]="true">
+            <dx-text-box  formControlName="street" placeholder="Road/Street" [showClearButton]="true">
             </dx-text-box>
         </div>
         <div class="col-lg-4">
@@ -218,28 +236,7 @@
         
       </div>
       </fieldset> 
-     
-      <fieldset class="col-lg-12 row" *ngIf="sub_module_id ==11">
-        <legend  class="contentfieldset">Contact Information</legend>
-        <div class="col-lg-4">
-            <label for="ti" class="control-label">Offical Email Address</label>
-            <dx-text-box [readOnly]="is_readonly" formControlName="email" placeholder="Email Address" [showClearButton]="true">
-            </dx-text-box>
-        </div>
-        <div class="col-lg-4">
-            <label for="ti" class="control-label">Postal Address</label>
-            <dx-text-box  formControlName="postal_address" placeholder="Postal Address" [showClearButton]="true">
-            </dx-text-box>
-        </div>
-        <div class="col-lg-4">
-            <label for="ti" class="control-label">Offical Telephone No</label>
-            <dx-text-box    formControlName="telephone" placeholder="Telephone No" [showClearButton]="true">
-            </dx-text-box>
-        </div>
-       
-      </fieldset>          
-
-          <div class="col-lg-12">
+      <div class="col-lg-12">
               <input type="hidden" value={{sub_module_id}} formControlName="sub_module_id" />
               <input type="hidden" value={{module_id}} formControlName="module_id" />
               <input type="hidden" value={{application_code}} formControlName="application_code" />

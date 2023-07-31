@@ -173,6 +173,12 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
             'progressreportassessment': {
                 afterrender: 'prepareCtrProgressReportAssessment'
             },
+            'saereportassessment': {
+                afterrender: 'prepareCtrSAEReportAssessment'
+            },
+             'otherreportassessment': {
+                afterrender: 'prepareCtrOtherReportAssessment'
+            },
             'clinicaltrialauditing': {
                 afterrender: 'prepareNewClinicalTrialAuditing'
             },
@@ -208,8 +214,25 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
             //ONLINE
             'clinicaltrialonlinepreviewpnl': {
                 afterrender: 'prepareOnlineClinicalTrialPreview'
-            },'clinicaltrialprogressrptonlinepreviewpnl': {
+            },
+
+             'preclinicaltrialonlinepreviewpnl': {
+                afterrender: 'preparePreSubmissionOnlineClinicalTrialPreview'
+            },
+
+            'clinicaltrialsaerptonlinepreviewpnl': {
+                afterrender: 'prepareOnlineClinicalTrialSAERptPreview'
+            },
+
+
+             'clinicaltrialprogressrptonlinepreviewpnl': {
                 afterrender: 'prepareOnlineClinicalTrialProgressRptPreview'
+            },
+
+
+
+             'clinicaltrialotherrptonlinepreviewpnl': {
+                afterrender: 'prepareOnlineClinicalTrialOtherRptPreview'
             },
             'clinicaltrialonlineregistrypreviewpnl': {
                 afterrender: 'prepareOnlineClinicalTrialRegistryPreview'
@@ -250,6 +273,8 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
                 click: 'updateClinicalTrialNewReceivingBaseDetails'
             },'ctrprogressreportappmoredetailswizard button[name=save_clinicaltrial_details_btn]': {//more details win wizard
                 click: 'updateProgressReportingBaseDetails'
+            },'ctrsaereportappmoredetailswizard button[name=save_clinicaltrial_details_btn]': {//more details win wizard
+                click: 'updateSAEReportingBaseDetails'
             },
             'clinicaltrialappmoredetailswizard button[name=save_clinicaltrial_details_btn]': {
                 click: 'updateNewApplicationClinicalTrialDetails'
@@ -296,6 +321,15 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
             'progressreportassessmentpanel button[name=process_submission_btn]': {
                 click: 'showNewAssessmentApplicationSubmissionWin'
             },
+
+             'saereportassessmentpanel button[name=process_submission_btn]': {
+                click: 'showNewAssessmentApplicationSubmissionWin'
+            },
+
+            'otherreportassessmentpanel button[name=process_submission_btn]': {
+                click: 'showNewAssessmentApplicationSubmissionWin'
+            },
+            
             
             'clinicaltrialauditingpanel button[name=process_submission_btn]': {
                 click: 'showNewAuditingApplicationSubmissionWin'
@@ -471,7 +505,7 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
      */
     init: function () {
 
-    },
+    },  
 
     listen: {
         controller: {
@@ -480,6 +514,7 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
                 setClinicalTrialCombosStore: 'setClinicalTrialCombosStore',
                 newClinicalTrial: 'onNewClinicalTrialApplication',
                 clinicalApplicationMoreDetails: 'showClinicalTrialApplicationMoreDetailsGeneric',
+                clinicalReportMoreDetails: 'showClinicalTrialReportMoreDetailsGeneric',
                 preclinicalApplicationMoreDetails: 'showPreSubmissionApplicationMoreDetailsGeneric',
                 showSafetyAlertApplicationMoreDetails: 'showSafetyAlertApplicationMoreDetails',
                 previewClinicalTrialApplicationOnGridDetails:'previewClinicalTrialApplicationOnGridDetails',
@@ -953,10 +988,23 @@ Ext.getBody().unmask();
                 wizardPnl=onlinePanel.down('clinicaltrialprogressrptonlinepreviewwizard');
 
         }
+        else if( sub_module_id ==69){
+            var onlinePanel = Ext.widget('preclinicaltrialonlinepreviewpnl'),
+            wizardPnl=onlinePanel.down('preclinicaltrialonlinepreviewwizard');
+        }
+        else if( sub_module_id ==102){
+            var onlinePanel = Ext.widget('clinicaltrialsaerptonlinepreviewpnl'),
+                wizardPnl=onlinePanel.down('clinicaltrialsaerptonlinepreviewwizard');
+        }
+
+        else if( sub_module_id ==103){
+            var onlinePanel = Ext.widget('clinicaltrialotherrptonlinepreviewpnl'),
+            wizardPnl=onlinePanel.down('clinicaltrialotherrptonlinepreviewwizard');
+        }
         else if( sub_module_id == 56){
             var onlinePanel = Ext.widget('clinicaltrialonlineregistrypreviewpnl'),
               wizardPnl=onlinePanel.down('clinicaltrialonlineregistrypreviewwizard');
-panel_width = '95%';
+              panel_width = '95%';
         }
         else{
             var onlinePanel = Ext.widget('clinicaltrialonlinepreviewpnl'),
@@ -2165,6 +2213,48 @@ panel_width = '95%';
             return;
         }
     },
+
+     updateSAEReportingBaseDetails: function (btn) {
+        var me = this,
+            toaster = btn.toaster,
+            win = btn.up('#ctrsaereportappmoredetailswizard'),
+            application_id = win.down('hiddenfield[name=application_id]').getValue(),
+            detailsForm = win.down('clinicaltrialssaerptdetailsfrm'),
+            detailsFrm = detailsForm.getForm();
+        if (detailsFrm.isValid()) {
+           
+            detailsFrm.submit({
+                url: 'clinicaltrial/saveSAEReportingBaseDetails',
+                headers: {
+                    'Authorization': 'Bearer ' + access_token,
+                    'X-CSRF-Token': token
+                },
+                params: {
+                    application_id: application_id
+                },
+                waitMsg: 'Please wait...',
+                success: function (fm, action) {
+                    var response = Ext.decode(action.response.responseText),
+                        success = response.success,
+                        message = response.message;
+                    if (success == true || success === true) {
+                        if (toaster == 1 || toaster === 1) {
+                            toastr.success(message, "Success Response");
+                        }
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (fm, action) {
+                    var resp = action.result;
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        } else {
+            toastr.warning('Fill all required fields!!', 'Warning Response');
+            return;
+        }
+    },
     
     saveNewApplicationClinicalTrialOtherDetails: function (btn) {
         var me = this,
@@ -2328,6 +2418,75 @@ panel_width = '95%';
             //It's a new application
         }
     },
+
+     preparePreSubmissionOnlineClinicalTrialPreview: function (pnl) {
+        // Ext.getBody().mask('Please wait...');
+        var me = this,
+            applicantFrm = pnl.down('applicantdetailsfrm'),
+            detailsFrm = pnl.down('preclinicaltrialdetailsfrm'),
+            application_id = pnl.down('hiddenfield[name=active_application_id]').getValue(),
+            module_id = pnl.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = pnl.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = pnl.down('hiddenfield[name=section_id]').getValue(),
+            checklistTypesGrid = pnl.down('combo[name=applicable_checklist]'),
+            checklistTypesStr = checklistTypesGrid.getStore(),
+            mask = new Ext.LoadMask(
+                {
+                    msg: 'Please wait...',
+                    target: pnl
+                }
+            );
+        mask.show();
+        checklistTypesStr.removeAll();
+        checklistTypesStr.load({params: {module_id: module_id, sub_module_id: sub_module_id, section_id: section_id}});
+        if (application_id) {
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'clinicaltrial/prepareOnlineClinicalTrialPreview',
+                params: {
+                    application_id: application_id
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    mask.hide();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results,
+                        sponsorDetails = resp.sponsorDetails,
+                        investigatorDetails = resp.investigatorDetails;
+                    if (success == true || success === true) {
+                        if (results) {
+                            var model = Ext.create('Ext.data.Model', results);
+                            pnl.down('combo[name=zone_id]').setValue(results.zone_id);
+                            pnl.down('displayfield[name=application_status]').setValue(results.app_status);
+                            pnl.down('displayfield[name=tracking_no]').setValue(results.tracking_no);
+                            applicantFrm.loadRecord(model);
+                            detailsFrm.loadRecord(model);
+                        }
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    mask.hide();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    mask.hide();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            mask.hide();
+            //It's a new application
+        }
+    },
     prepareOnlineClinicalTrialRegistryPreview: function (pnl) {
         // Ext.getBody().mask('Please wait...');
         var me = this,
@@ -2395,6 +2554,143 @@ panel_width = '95%';
 
                         }
                         
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    mask.hide();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    mask.hide();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            mask.hide();
+            //It's a new application
+        }
+    },
+
+     prepareOnlineClinicalTrialOtherRptPreview: function (pnl) {
+        // Ext.getBody().mask('Please wait...');
+        var me = this,
+            applicantFrm = pnl.down('applicantdetailsfrm'),
+            detailsFrm = pnl.down('clinicaltrialsotherrptdetailsfrm'),
+           application_id = pnl.down('hiddenfield[name=active_application_id]').getValue(),
+            module_id = pnl.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = pnl.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = pnl.down('hiddenfield[name=section_id]').getValue(),
+            checklistTypesGrid = pnl.down('combo[name=applicable_checklist]'),
+            checklistTypesStr = checklistTypesGrid.getStore(),
+            mask = new Ext.LoadMask(
+                {
+                    msg: 'Please wait...',
+                    target: pnl
+                }
+            );
+        mask.show();
+        checklistTypesStr.removeAll();
+        checklistTypesStr.load({params: {module_id: module_id, sub_module_id: sub_module_id, section_id: section_id}});
+        if (application_id) {
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'clinicaltrial/prepareOnlineClinicalTrialOtherRptPreview',
+                params: {
+                    application_id: application_id
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    mask.hide();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results;
+                    if (success == true || success === true) {
+                        if (results) {
+                            var model = Ext.create('Ext.data.Model', results);
+                            pnl.down('combo[name=zone_id]').setValue(results.zone_id);
+                            pnl.down('displayfield[name=application_status]').setValue(results.app_status);
+                            pnl.down('displayfield[name=tracking_no]').setValue(results.tracking_no);
+                            applicantFrm.loadRecord(model);
+                            detailsFrm.loadRecord(model);
+                        }
+                       
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    mask.hide();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    mask.hide();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            mask.hide();
+            //It's a new application
+        }
+    },
+
+
+    prepareOnlineClinicalTrialSAERptPreview: function (pnl) {
+        // Ext.getBody().mask('Please wait...');
+        var me = this,
+            applicantFrm = pnl.down('applicantdetailsfrm'),
+            detailsFrm = pnl.down('clinicaltrialssaerptdetailsfrm'),
+           application_id = pnl.down('hiddenfield[name=active_application_id]').getValue(),
+            module_id = pnl.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = pnl.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = pnl.down('hiddenfield[name=section_id]').getValue(),
+            checklistTypesGrid = pnl.down('combo[name=applicable_checklist]'),
+            checklistTypesStr = checklistTypesGrid.getStore(),
+            mask = new Ext.LoadMask(
+                {
+                    msg: 'Please wait...',
+                    target: pnl
+                }
+            );
+        mask.show();
+        checklistTypesStr.removeAll();
+        checklistTypesStr.load({params: {module_id: module_id, sub_module_id: sub_module_id, section_id: section_id}});
+        if (application_id) {
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'clinicaltrial/prepareOnlineClinicalTrialSAERptPreview',
+                params: {
+                    application_id: application_id
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    mask.hide();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results;
+                    if (success == true || success === true) {
+                        if (results) {
+                            var model = Ext.create('Ext.data.Model', results);
+                            pnl.down('combo[name=zone_id]').setValue(results.zone_id);
+                            pnl.down('displayfield[name=application_status]').setValue(results.app_status);
+                            pnl.down('displayfield[name=tracking_no]').setValue(results.tracking_no);
+                            applicantFrm.loadRecord(model);
+                            detailsFrm.loadRecord(model);
+                        }
+                       
                     } else {
                         toastr.error(message, 'Failure Response');
                     }
@@ -3276,7 +3572,7 @@ panel_width = '95%';
             clinicaltrialappmoredetailswizard = activeTab.down('ctrprogressreportappmoredetailswizard'),
             
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
-            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=application_code]').getValue(),
             app_doc_types_store = activeTab.down('combo[name=applicable_documents]').getStore(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
@@ -3352,6 +3648,189 @@ panel_width = '95%';
             //It's a new application
         }
     },
+
+
+    prepareCtrSAEReportAssessment: function () {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            otherDetailsFrm = activeTab.down('form'),
+           
+            applicantFrm = activeTab.down('applicantdetailsfrm'),
+            detailsFrm = activeTab.down('clinicaltrialssaerptdetailsfrm'),
+            
+            clinicaltrialappmoredetailswizard = activeTab.down('ctrsaereportappmoredetailswizard'),
+            
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=application_code]').getValue(),
+            app_doc_types_store = activeTab.down('combo[name=applicable_documents]').getStore(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+       // premise_details.setFieldLabel('Clinical Trial Details');
+        
+        app_doc_types_store.removeAll();
+        app_doc_types_store.load({
+            params: {
+                process_id: process_id,
+                workflow_stage: workflow_stage_id
+            }
+        });
+        if (application_id) {
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'clinicaltrial/prepareCtrSAEReportAssessment',
+                params: {
+                    application_id: application_id,
+                    application_code: application_code,
+                    table_name: 'tra_clinical_trial_applications'
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results;
+                    if (success == true || success === true) {
+                        if (results) {
+                            activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
+                          
+                            var model = Ext.create('Ext.data.Model', results);
+                                applicantFrm.loadRecord(model);
+                                detailsFrm.loadRecord(model);
+                               
+                                applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+                               
+                                
+                                clinicaltrialappmoredetailswizard.down('hiddenfield[name=process_id]').setValue(process_id);
+                                clinicaltrialappmoredetailswizard.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+                                clinicaltrialappmoredetailswizard.down('hiddenfield[name=application_id]').setValue(application_id);
+                                clinicaltrialappmoredetailswizard.down('hiddenfield[name=application_code]').setValue(application_code);
+                                 clinicaltrialappmoredetailswizard.down('hiddenfield[name=module_id]').setValue(module_id);
+                                 clinicaltrialappmoredetailswizard.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                                 clinicaltrialappmoredetailswizard.down('hiddenfield[name=section_id]').setValue(section_id);
+
+
+                        }
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+    },
+
+
+    prepareCtrOtherReportAssessment: function () {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            otherDetailsFrm = activeTab.down('form'),
+           
+            applicantFrm = activeTab.down('applicantdetailsfrm'),
+            detailsFrm = activeTab.down('clinicaltrialsotherrptdetailsfrm'),
+            
+            clinicaltrialappmoredetailswizard = activeTab.down('ctrsotherreportappmoredetailswizard'),
+            
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=application_code]').getValue(),
+            app_doc_types_store = activeTab.down('combo[name=applicable_documents]').getStore(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+       // premise_details.setFieldLabel('Clinical Trial Details');
+        
+        app_doc_types_store.removeAll();
+        app_doc_types_store.load({
+            params: {
+                process_id: process_id,
+                workflow_stage: workflow_stage_id
+            }
+        });
+        if (application_id) {
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'clinicaltrial/prepareCtrOtherReportAssessment',
+                params: {
+                    application_id: application_id,
+                    application_code: application_code,
+                    table_name: 'tra_clinical_trial_applications'
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results;
+                    if (success == true || success === true) {
+                        if (results) {
+                            activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
+                          
+                            var model = Ext.create('Ext.data.Model', results);
+                                applicantFrm.loadRecord(model);
+                                detailsFrm.loadRecord(model);
+                               
+                                applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+                               
+                                
+                                clinicaltrialappmoredetailswizard.down('hiddenfield[name=process_id]').setValue(process_id);
+                                clinicaltrialappmoredetailswizard.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+                                clinicaltrialappmoredetailswizard.down('hiddenfield[name=application_id]').setValue(application_id);
+                                clinicaltrialappmoredetailswizard.down('hiddenfield[name=application_code]').setValue(application_code);
+                                 clinicaltrialappmoredetailswizard.down('hiddenfield[name=module_id]').setValue(module_id);
+                                 clinicaltrialappmoredetailswizard.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                                 clinicaltrialappmoredetailswizard.down('hiddenfield[name=section_id]').setValue(section_id);
+
+
+                        }
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+    },
+
     prepareNewClinicalTrialAuditing: function () {
         Ext.getBody().mask('Please wait...');
         var me = this,
@@ -4681,6 +5160,119 @@ panel_width = '95%';
                     if (investigatorDetails) {
                         var model4 = Ext.create('Ext.data.Model', investigatorDetails);
                         investigatorFrm.loadRecord(model4);
+                    }
+
+                    wizardPnl.add({xtype:'applicationqueriesgrid',title: 'Request for Additional Information(Queries)'});
+                    queries_panel = wizardPnl.down('applicationqueriesgrid');
+                    queries_panel.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+                    queries_panel.down('hiddenfield[name=application_code]').setValue(application_code);
+                    queries_panel.down('hiddenfield[name=module_id]').setValue(module_id);
+                    queries_panel.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    queries_panel.down('hiddenfield[name=section_id]').setValue(section_id);
+                    
+                    // documents_grid = Ext.widget('previewproductDocUploadsGrid');
+                    wizardPnl.add({xtype:'previewproductDocUploadsGrid',title: 'Application Uploaded Documents (All)'});
+
+                    documents_grid = wizardPnl.down('previewproductDocUploadsGrid');
+                    documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+                    documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+                    documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+                    documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);   
+
+                    funcShowCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+    },
+
+
+    showClinicalTrialReportMoreDetailsGeneric: function (application_id, application_code, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly) {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            applicationdetails_panel = activeTab.down('#main_processpanel').applicationdetails_panel;
+
+         //   wizardPnl = Ext.widget(applicationdetails_panel);
+             wizardPnl = Ext.create('Ext.tab.Panel', {layout: 'fit',items:[{xtype: applicationdetails_panel, title: 'Clinical Application Details '}]});
+          
+          if(sub_module_id==23){
+             var detailsFrm = wizardPnl.down('clinicaltrialsprogressrptdetailsfrm'),
+             action_url='clinicaltrial/getClinicalTrialProgressReportMoreDetails';
+          }else if(sub_module_id==102){
+            var detailsFrm = wizardPnl.down('clinicaltrialssaerptdetailsfrm'),
+            action_url='clinicaltrial/getClinicalTrialSAEReportMoreDetails';
+          }else{
+            var detailsFrm = wizardPnl.down('clinicaltrialsotherrptdetailsfrm'),
+            action_url='clinicaltrial/getClinicalTrialOtherReportMoreDetails';
+          }
+
+          var  applicantFrm = wizardPnl.down('applicantdetailsfrm'),
+            studySitesGrid = wizardPnl.down('clinicaltrialstudysitesgrid'),
+            previewproductDocUploadsGrid = wizardPnl.down('clinicaltrialdocuploadsgenericgrid');
+            
+            if(wizardPnl.down('clinicaltrialdocuploadsgenericgrid')){
+                previewproductDocUploadsGrid.setController('productregistrationvctr');
+
+                previewproductDocUploadsGrid.down('hiddenfield[name=process_id]').setValue(process_id);
+                previewproductDocUploadsGrid.down('hiddenfield[name=section_id]').setValue(section_id);
+                previewproductDocUploadsGrid.down('hiddenfield[name=module_id]').setValue(module_id);
+                previewproductDocUploadsGrid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                previewproductDocUploadsGrid.down('hiddenfield[name=application_code]').setValue(application_code);
+                
+            }
+            
+        wizardPnl.setHeight(500);
+        applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+        wizardPnl.down('hiddenfield[name=process_id]').setValue(process_id);
+        wizardPnl.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+        wizardPnl.down('hiddenfield[name=application_id]').setValue(application_id);
+        wizardPnl.down('hiddenfield[name=application_code]').setValue(application_code);
+        wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
+        wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+        wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+        detailsFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+            wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
+            //wizardPnl.down('button[name=save_btn]').setVisible(false);
+            wizardPnl.down('button[name=save_clinicaltrial_details_btn]').setVisible(false);
+        }
+
+
+        Ext.Ajax.request({
+            method: 'GET',
+            url: action_url,
+            params: {
+                application_id: application_id,
+                applicant_id: applicant_id
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            success: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    success = resp.success,
+                    message = resp.message,
+                    results = resp.results;
+                if (success == true || success === true) {
+                    if (results) {
+                        var model = Ext.create('Ext.data.Model', results);
+                        applicantFrm.loadRecord(model);
+                        detailsFrm.loadRecord(model);
                     }
 
                     wizardPnl.add({xtype:'applicationqueriesgrid',title: 'Request for Additional Information(Queries)'});

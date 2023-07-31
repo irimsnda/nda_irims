@@ -67,7 +67,7 @@ Ext.define('Admin.view.authentication.PasswordChangeWin', {
                 {
                     xtype: 'button',
                     text: 'Close',
-                    iconCls: 'x-fa fa-close',
+                    iconCls: 'x-fa fa-times',
                     action: 'close',
                     handler: function (btn) {
                         btn.up('form').up('window').close();

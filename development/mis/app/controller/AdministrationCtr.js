@@ -13,8 +13,8 @@ Ext.define('Admin.controller.AdministrationCtr', {
         'Admin.store.administration.ParentMenusStr',
         'Admin.store.administration.ChildMenusStr',
         'Admin.store.administration.UserGroupsStr',
-        'Admin.store.administration.SystemRolesTreeStr',
         'Admin.store.administration.MenuProcessesRolesStr',
+        'Admin.store.administration.SystemRolesTreeStr',
         'Admin.store.administration.MenuProcessesAccessLevelsStr',
         'Admin.store.administration.SystemMenusStr2'
     ],

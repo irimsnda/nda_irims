@@ -96,7 +96,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.NewPre
                 name: 'invoice_id'
             }, {
                 xtype: 'hiddenfield',
-                name: 'product_id'
+                name: 'premise_id'
             }, {
                 xtype: 'hiddenfield',
                 name: 'applicant_id'

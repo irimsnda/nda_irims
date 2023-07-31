@@ -729,7 +729,7 @@ trait ClinicalTrialTrait
             if($sub_module_id == 23){
                 //insert the clinical trial reporting details 
                 $ctr_reporting_data = $portal_db->table('wb_clinicaltrial_progressreports')
-                ->select(DB::raw("id as portal_id,$mis_application_id as application_id,reporting_start_date,reporting_end_date,clinicalreport_type_id,actualstudy_date,screen_participants,target_sample_size,enrolled_participants,dateof_first_enrollment,number_of_dropouts,number_lost_tofollow_ups,inclusion_criteria,exclusion_criteria,number_of_saes,events_of_medialimportance,protocol_deviations,clinicalstudy_status_id,study_site_id
+                ->select(DB::raw("id as portal_id,$mis_application_id as application_id,reporting_start_date,reporting_end_date,clinicalreport_type_id,actualstudy_date,screen_participants,target_sample_size,enrolled_participants,dateof_first_enrollment,number_of_dropouts,number_lost_tofollow_ups,inclusion_criteria,exclusion_criteria,number_of_saes,events_of_medialimportance,protocol_deviations,clinicalstudy_status_id,study_site_id,
                 NOW() as created_on,$user_id as created_by"))
                 ->where('application_id', $results->id)
                 ->get();
@@ -740,6 +740,44 @@ trait ClinicalTrialTrait
                     ->where('application_id', $mis_application_id)
                     ->delete();
                 DB::table('tra_clinicaltrial_progressreports')
+                    ->insert($ctr_reporting_data);
+
+            }
+
+             if($sub_module_id||$sub_module_id===102){
+                //insert the clinical trial reporting details 
+                $ctr_reporting_data = $portal_db->table('wb_clinicaltrial_saereports')
+                ->select(DB::raw("id as portal_id,$mis_application_id as application_id,reporting_start_date,reporting_end_date,clinicalreport_type_id,actualstudy_date,screen_participants,target_sample_size,enrolled_participants,dateof_first_enrollment,number_of_dropouts,number_lost_tofollow_ups,inclusion_criteria,exclusion_criteria,number_of_saes,events_of_medialimportance,protocol_deviations,clinicalstudy_status_id,study_site_id,
+                NOW() as created_on, $user_id as created_by"))
+                ->where('application_id', $results->id)
+                ->get();
+
+        
+                $ctr_reporting_data = convertStdClassObjToArray($ctr_reporting_data);
+
+                DB::table('tra_clinicaltrial_saereports')
+                    ->where('application_id', $mis_application_id)
+                    ->delete();
+                DB::table('tra_clinicaltrial_saereports')
+                    ->insert($ctr_reporting_data);
+
+            }
+            
+             if($sub_module_id==103 ||$sub_module_id===103){
+
+                //insert the clinical trial reporting details 
+                $ctr_reporting_data = $portal_db->table('wb_clinicaltrial_otherreports')
+                ->select(DB::raw("id as portal_id,$mis_application_id as application_id,reporting_start_date,reporting_end_date,clinicalreport_type_id,actualstudy_date,brief_description,clinicalstudy_status_id,study_site_id,
+                NOW() as created_on,$user_id as created_by"))
+                ->where('application_id', $results->id)
+                ->get();
+
+                $ctr_reporting_data = convertStdClassObjToArray($ctr_reporting_data);
+
+                DB::table('tra_clinicaltrial_otherreports')
+                    ->where('application_id', $mis_application_id)
+                    ->delete();
+                DB::table('tra_clinicaltrial_otherreports')
                     ->insert($ctr_reporting_data);
 
             }

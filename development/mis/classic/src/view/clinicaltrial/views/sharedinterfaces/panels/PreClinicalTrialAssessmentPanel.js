@@ -198,7 +198,7 @@ Ext.define('Admin.view.clinicaltrial.views.sharedinterfaces.panels.PreClinicalTr
                 },
                 {
                     
-                        text: 'Clinical Details Application Documents',
+                        text: 'Application Documents',
                         iconCls: 'x-fa fa-file',
                         tooltip: 'Application Documents',
                         action: 'edit',

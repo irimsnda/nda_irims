@@ -29,7 +29,16 @@ Ext.define('Admin.controller.ConfigurationsCtr', {
     control:{
         'migrationsetupgrid': {
             afterrender: 'preparemigrationsetupgrid'
-        }
+        },
+        'pharmacistFrm combo[name=country_id]': {
+                afterrender: 'beforePremiseCountriesComboRender'
+            },
+        'premiseinchargeFrm combo[name=country_id]': {
+                afterrender: 'beforePremiseCountriesComboRender'
+            },
+        'disposlboardfrm combo[name=country_id]': {
+                afterrender: 'beforeDisposalCountriesComboRender'
+            }
     },
     init: function() {
         
@@ -59,6 +68,27 @@ Ext.define('Admin.controller.ConfigurationsCtr', {
             
 
     },
+
+    beforePremiseCountriesComboRender: function (cmbo) {
+        var form = cmbo.up('form'),
+            is_local =1,
+            store = cmbo.getStore(),
+            filterObj = {is_local: is_local},
+            filterStr = JSON.stringify(filterObj);
+        store.removeAll();
+        store.load({params: {filter: filterStr}});
+    },
+
+    beforeDisposalCountriesComboRender: function (cmbo) {
+        var form = cmbo.up('form'),
+            is_local =1,
+            store = cmbo.getStore(),
+            filterObj = {is_local: is_local},
+            filterStr = JSON.stringify(filterObj);
+        store.removeAll();
+        store.load({params: {filter: filterStr}});
+    },
+
     setConfigGridsStore: function (me, options) {
         var config = options.config,
             isLoad = options.isLoad,

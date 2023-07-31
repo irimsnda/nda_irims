@@ -18,6 +18,8 @@ Route::group(['middleware' => 'web', 'prefix' => 'premiseregistration'], functio
     Route::get('/', 'PremiseRegistrationController@index');
     Route::post('uploadApplicationFile', 'PremiseRegistrationController@uploadApplicationFile');
     //REPORTS
+
+
     Route::get('previewDoc', 'ReportsController@previewDoc');
     Route::get('printPremiseRegistrationCertificate', 'ReportsController@printPremiseRegistrationCertificate');
     Route::get('printPremiseBusinessPermit', 'ReportsController@printPremiseBusinessPermit');
@@ -25,10 +27,24 @@ Route::group(['middleware' => 'web', 'prefix' => 'premiseregistration'], functio
 
     Route::get('getDrugShopApplicationsAtApproval', 'PremiseRegistrationController@getDrugShopApplicationsAtApproval');
     Route::get('getPremisesApprovedAppList', 'PremiseRegistrationController@getPremisesApprovedAppList');
+
+
+    
+
+
+    Route::get('getPremiseInspectionReport', 'PremiseRegistrationController@getPremiseInspectionReport');
     
 });
+
+
 //API Routes
 Route::group(['middleware' => 'auth:api', 'prefix' => 'premiseregistration'], function () {
+
+
+    Route::get('getNearestPremise', 'PremiseRegistrationController@getNearestPremise ');
+
+
+    
     Route::get('getPremiseRegParamFromModel', 'PremiseRegistrationController@getPremiseRegParamFromModel');
     Route::get('getApplicantsList', 'PremiseRegistrationController@getApplicantsList');
     Route::get('getPremisesList', 'PremiseRegistrationController@getPremisesList');
@@ -88,6 +104,14 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premiseregistration'], fu
     Route::get('getManagerApplicationsRenewalGeneric', 'PremiseRegistrationController@getManagerApplicationsRenewalGeneric');
     Route::get('getManagerInspectionApplications', 'PremiseRegistrationController@getManagerInspectionApplications');
     Route::get('prepareNewPremiseManagerInspectionStage', 'PremiseRegistrationController@prepareNewPremiseManagerInspectionStage');
+
+    
+
+    Route::get('prepareNewPremiseRegionalEvaluationStage', 'PremiseRegistrationController@prepareNewPremiseRegionalEvaluationStage');
+
+    Route::get('prepareNewPremiseLeadEvaluationStage', 'PremiseRegistrationController@prepareNewPremiseLeadEvaluationStage');
+
+
     Route::get('prepareNewPremiseEvaluationStage', 'PremiseRegistrationController@prepareNewPremiseEvaluationStage');
     Route::get('prepareRenewalPremiseEvaluationStage', 'PremiseRegistrationController@prepareRenewalPremiseEvaluationStage');
     Route::get('getOnlineApplicationQueries', 'PremiseRegistrationController@getOnlineApplicationQueries');
@@ -144,5 +168,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premiseregistration'], fu
 
      //DrugShop Routes
      Route::get('getDrugShopApplications', 'PremiseRegistrationController@getDrugShopApplications');
+
+     Route::get('getPremiseIncharge', 'PremiseRegistrationController@getPremiseIncharge');
     
 });

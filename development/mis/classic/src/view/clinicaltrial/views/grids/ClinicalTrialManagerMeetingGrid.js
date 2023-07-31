@@ -60,21 +60,23 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialManagerMeetingGrid
                         this.up('grid').fireEvent('refresh', this);
                     }
                 },
-                '->',{
-                    xtype: 'button',
-                    text: 'Upload Meeting Documents',
-                    iconCls: 'x-fa fa-upload',
-                    ui: 'soft-purple',
-                    name: 'save_btn',
-                    reference_table_name: 'tc_meeting_details',
-                    table_name: 'tc_meeting_uploaddocuments',
-                    handler: 'funcUploadTCMeetingtechnicalDocuments',
-                    document_type_id: 4,
-                    childXtype:'unstructureddocumentuploadsgrid',
-                    winTitle: 'Technical Meeting Documents Upload',
-                    winWidth: '80%',
-                    toaster: 0
-                },
+                '->',
+                // {
+                //     xtype: 'button',
+                //     text: 'Upload Meeting Documents',
+                //     iconCls: 'x-fa fa-upload',
+                //     ui: 'soft-purple',
+                //     name: 'save_btn',
+                //     hidden:true,
+                //     reference_table_name: 'tc_meeting_details',
+                //     table_name: 'tc_meeting_uploaddocuments',
+                //     handler: 'funcUploadTCMeetingtechnicalDocuments',
+                //     document_type_id: 4,
+                //     childXtype:'unstructureddocumentuploadsgrid',
+                //     winTitle: 'Technical Meeting Documents Upload',
+                //     winWidth: '80%',
+                //     toaster: 0
+                // },
                 {
                     xtype: 'button',
                     text: 'Save Details',

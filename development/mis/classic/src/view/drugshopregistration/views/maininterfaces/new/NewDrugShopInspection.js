@@ -107,6 +107,13 @@ Ext.define('Admin.view.drugshopregistration.views.maininterfaces.new.NewDrugShop
             },{
                 xtype: 'hiddenfield',
                 name: 'applicant_id'
+            },{
+                xtype: 'hiddenfield',
+                name: 'report_type_id',
+                value:1
+            },{
+                xtype: 'hiddenfield',
+                name: 'is_report_saved'
             }
             ]
         }

@@ -624,10 +624,13 @@ public function saveCtrSaeReportingApplication(Request $req){
 							'study_duration' => $req->study_duration,
 							'duration_desc' => $req->duration_desc,
 							'clearance_no' => $req->clearance_no,
+                            'rec_no'=>$req->rec_no,
 							'clinical_prodsection_id' => $req->clinical_prodsection_id,
+                            'is_clinicaltrialin_uganda'=>$req->is_clinicaltrialin_uganda,
 							'phase_id' => $req->phase_id,
 							 'clinicaltrial_registry_id' => $req->clinicaltrial_registry_id,
 							'clinicaltrial_identification_no' => $req->clinicaltrial_identification_no,
+                            'is_clinicaltrialin_othercountry'=>$req->is_clinicaltrialin_othercountry,
 							'short_study_title' => $req->short_study_title,
 							'ctrethics_committee_id' => $req->ctrethics_committee_id,
 							'trial_design' => $req->trial_design,
@@ -835,7 +838,6 @@ public function saveCtrSaeReportingApplication(Request $req){
 							'zone_id' => $req->zone_id,
 							'clincialtrialfields_type_id' => $req->clincialtrialfields_type_id,
 							'clincialtrialfunding_source_id' => $req->clincialtrialfunding_source_id,
-							'uncst_committee_id'=>$req->uncst_committee_id,
                             'screening_period' => $req->screening_period,
                             'screening_duration' => $req->screening_duration,
                             'follow_up_period' => $req->follow_up_period,
@@ -1210,7 +1212,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                         'date_received'=>$rec->date_received,
                         'date_added'=>$rec->date_added,
                         'duration_stimate'=>$rec->duration_stimate,
-                        'uncst_committee_id'=>$rec->uncst_committee_id,
+                        'rec_no'=>$rec->rec_no,
                         'trader_id'=>$rec->applicant_id,
                         'application_type'=>returnParamFromArray($subModuleData,$rec->sub_module_id).' Clinical Trial Application',
                         'sponsor_id'=>$rec->sponsor_id,
@@ -1243,10 +1245,10 @@ public function saveCtrSaeReportingApplication(Request $req){
                         'id'=>$rec->id,
                         'application_id'=>$rec->id,
                         'clinical_prodsection_id'=>$rec->clinical_prodsection_id,
-                        
+                        'is_clinicaltrialin_othercountry'=>$rec->is_clinicaltrialin_othercountry,
 						'primary_endpoints' => $rec->primary_endpoints,
 								'secondary_endpoints' => $rec->secondary_endpoints,
-
+                                'is_clinicaltrialin_uganda'=>$rec->is_clinicaltrialin_uganda,
 						'study_end_date'=>$rec->study_end_date,
 						 'clinicaltrial_registry_id' => $rec->clinicaltrial_registry_id,
 							'clinicaltrial_identification_no' => $rec->clinicaltrial_identification_no,
@@ -1371,6 +1373,7 @@ public function saveCtrSaeReportingApplication(Request $req){
         $data = array();
         $table_name = $req->table_name;
         $application_id = $req->application_id;
+
         $records = DB::table('wb_clinical_trial_monitors as t1')
                     ->where(array('application_id'=>$application_id))
                     ->get();

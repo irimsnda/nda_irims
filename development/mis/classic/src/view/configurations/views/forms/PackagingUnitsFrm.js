@@ -91,6 +91,14 @@ Ext.define('Admin.view.configurations.views.forms.PackagingUnitsFrm', {
                     ui: 'soft-purple',
                     action_url: 'configurations/saveConfigCommonData',
                     handler: 'doCreateConfigParamWin'
+                },
+                {
+                    text: 'Reset',
+                    iconCls: 'x-fa fa-times',
+                    ui: 'soft-purple',
+                    handler: function (btn) {
+                        btn.up('form').getForm().reset();
+                    }
                 }
             ]
         }

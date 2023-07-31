@@ -198,7 +198,7 @@ Ext.define('Admin.view.dashboard.grids.OnlineEvaluationQueryResponseAppDashboard
         xtype: 'button',
         text: 'Clear',
         ui: 'soft-red',
-        iconCls: 'x-fa fa-close',
+        iconCls: 'x-fa fa-times',
         handler: function(btn) {
           var grid = btn.up('grid'),
                 gridStr = grid.getStore();

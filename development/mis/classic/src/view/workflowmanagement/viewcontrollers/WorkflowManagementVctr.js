@@ -16,6 +16,10 @@ Ext.define('Admin.view.workflowmanagement.viewcontrollers.WorkflowManagementVctr
         this.fireEvent('setWorkflowGridsStore', obj, options);
     },
 
+    setCompStore: function (obj, options) {
+        this.fireEvent('setCompStore', obj, options);
+    },
+
     setWorkflowCombosStore: function (obj, options) {
         this.fireEvent('setWorkflowCombosStore', obj, options);
     },

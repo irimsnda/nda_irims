@@ -165,7 +165,7 @@ Ext.define('Admin.view.configurations.views.forms.VariationCategoriesFrm', {
                     handler: 'doCreateConfigParamWin'
                 }, {
                     text: 'Reset',
-                    iconCls: 'x-fa fa-close',
+                    iconCls: 'x-fa fa-times',
                     ui: 'soft-purple',
                     handler: function (btn) {
                         btn.up('form').getForm().reset();

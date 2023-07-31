@@ -41,6 +41,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'saveApplicationDismissalDetails'
             },
 
+            'enforcementApprovalRecommFrm button[name=save_recommendation]': {
+                click: 'saveApplicationApprovalDetails'
+            },
+
             'inspectionscaparequestsgrid': {
                 refresh: 'addApplicationIdCodeParams'
             },
@@ -105,6 +109,16 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'premiseonlinescreeninggrid': {
                 refresh: 'refreshOnlineScreeningChecklistItemsGrid'
             },
+            'drugshopinspectiongrid': {
+                refresh: 'refreshScreeningChecklistItemsGrid'
+            },
+
+            'drugshopinspectionreportgrid': {
+                refresh: 'refreshReportScreeningChecklistItemsGrid'
+            },
+
+ 
+
             'gmpscreeninggrid': {
                 refresh: 'refreshScreeningChecklistItemsGrid'
             },
@@ -168,6 +182,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'newpremisereceivingwizard button[name=save_screening_btn]': {
                 click: 'saveApplicationChecklistDetails'
             },
+
+            'newdrugshopinspectionpanel button[name=save_screening_btn]': {
+                click: 'saveApplicationChecklistDetails'
+            },
             'renewpremisereceivingwizard button[name=save_screening_btn]': {
                 click: 'saveApplicationChecklistDetails'
             },
@@ -229,6 +247,18 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
+
+            'saereportmanagerevaluationgrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+            'otherreportmanagerevaluationgrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+
             'productmanagerevaluationgrid': {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
@@ -381,6 +411,16 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
+
+            'otherreportmanagerreviewgrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+            'saereportmanagerreviewgrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
             'clinicaltrialmanagerreviewgrid': {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
@@ -486,6 +526,15 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'progressreportmanagerevaluationgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
+
+            'saereportmanagerevaluationgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'otherreportmanagerevaluationgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
             'onlineimpexportmanagersubmissionpnl button[action=process_submission_btn]': {
                 click: 'showOnlineManagerApplicationSubmissionWinGeneric'
             },
@@ -550,6 +599,19 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
 
             'progressreportmanagerreviewgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+
+             'otherreportmanagerreviewgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'otherreportmanagerreviewgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+             'saereportmanagerreviewgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
             'clinicaltrialmanagerreviewgrid button[action=process_submission_btn]': {
@@ -651,6 +713,13 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'progressreportassessmentpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
+
+            'saereportassessmentpanel button[name=comments_btn]': {
+                click: 'showApplicationCommentsWin'
+            },
+            'otherreportassessmentpanel button[name=comments_btn]': {
+                click: 'showApplicationCommentsWin'
+            },
             'clinicaltrialauditingpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
@@ -745,6 +814,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 submitApplication: 'submitRejectedOnlineApplication'
             },
             'clinicaltrialonlinepreviewwizard button[name=reject_btn]': {
+                submitApplication: 'submitRejectedOnlineApplication'
+            },
+
+            'preclinicaltrialonlinepreviewwizard button[name=reject_btn]': {
                 submitApplication: 'submitRejectedOnlineApplication'
             },
 
@@ -1242,6 +1315,13 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             }, 'clinicaltrialonlinepreviewwizard button[name=save_screening_btn]': {
                 click: 'saveOnlineApplicationChecklistDetails'
             },
+
+             'preclinicaltrialonlinepreviewwizard button[name=save_screening_btn]': {
+                click: 'saveOnlineApplicationChecklistDetails'
+            }, 'preclinicaltrialonlinepreviewwizard button[name=save_screening_btn]': {
+                click: 'saveOnlineApplicationChecklistDetails'
+            },
+
             'clinicaltrialonlineregistrypreviewwizard button[name=prechecking_recommendation]': {
                 click: 'addPrecheckingRecommendation'
             },
@@ -1251,6 +1331,21 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'clinicaltrialprogressrptonlinepreviewwizard button[name=prechecking_recommendation]': {
                 click: 'addPrecheckingRecommendation'
             },
+
+            'clinicaltrialsaerptonlinepreviewwizard button[name=save_screening_btn]': {
+                click: 'saveOnlineApplicationChecklistDetails'
+            },
+            'clinicaltrialsaerptonlinepreviewwizard button[name=prechecking_recommendation]': {
+                click: 'addPrecheckingRecommendation'
+            },
+
+            'clinicaltrialotherrptonlinepreviewwizard button[name=save_screening_btn]': {
+                click: 'saveOnlineApplicationChecklistDetails'
+            },
+            'clinicaltrialoterrptonlinepreviewwizard button[name=prechecking_recommendation]': {
+                click: 'addPrecheckingRecommendation'
+            },
+
             'renewalpremiseonlinepreviewwizard button[name=save_screening_btn]': {
                 click: 'saveOnlineApplicationChecklistDetails'
             },
@@ -1308,6 +1403,9 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'clinicaltrialonlinepreviewwizard button[name=preview_queries_btn]': {
                 click: 'previewQueriesFromOnlineApp'
             },
+            'preclinicaltrialonlinepreviewwizard button[name=preview_queries_btn]': {
+                click: 'previewQueriesFromOnlineApp'
+            },
             'applicationunstructuredqueriesgrid': {
                 refresh: 'refreshapplicationunstructuredqueriesgrid'
             },
@@ -1346,12 +1444,26 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'clinicaltrialonlinepreviewwizard button[name=submit_btn]': {
                 click: 'receiveOnlineApplicationDetailsFrmBtn'
             },
+
+            'preclinicaltrialonlinepreviewwizard button[name=submit_btn]': {
+                click: 'receiveOnlineApplicationDetailsFrmBtn'
+            },
             'clinicaltrialonlineregistrypreviewwizard button[name=submit_btn]': {
                 click: 'submitClinicalRegistryDetailsFrmBtn'
             },
             'clinicaltrialprogressrptonlinepreviewwizard button[name=submit_btn]': {
                 click: 'receiveOnlineApplicationDetailsFrmBtn'
-            },'onlineantisepticproductreceivingwizard button[name=save_screening_btn]': {
+            },
+
+            'clinicaltrialotherrptonlinepreviewwizard button[name=submit_btn]': {
+                click: 'receiveOnlineApplicationDetailsFrmBtn'
+            },
+
+            'clinicaltrialsaerptonlinepreviewwizard button[name=submit_btn]': {
+                click: 'receiveOnlineApplicationDetailsFrmBtn'
+            },
+
+            'onlineantisepticproductreceivingwizard button[name=save_screening_btn]': {
                 click: 'saveOnlineApplicationChecklistDetails'
             },'importexportonlinereceivingwizard button[name=save_screening_btn]': {
                 click: 'saveOnlineApplicationChecklistDetails'
@@ -1748,22 +1860,24 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
 
             //drugshop
             'drugshopmanagerevaluationgrid': {
-                refresh: 'addApplicationWorkflowParams',
+                refresh: 'addDrugShopApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
             'drugshopmanagerevaluationgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             }, 
             'drugshopapprovalsgrid': {
-                refresh: 'addApplicationWorkflowParams',
+                refresh: 'addDrugShopApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
+
+            
 
             'drugshopapprovalsgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
             'drugshopcommunicationsgrid': {
-                refresh: 'addApplicationWorkflowParams',
+                refresh: 'addDrugShopApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
 
@@ -1811,6 +1925,8 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             '*': {// This selector matches any originating Controller, you can specify controller name instead of *
                 deleteRecord: 'deleteRecordFromID',
                 //unlinkRecord: 'unlinkRecordByColumns',
+                setCompStore: 'setCompStore',
+                setGridStore: 'setGridStore',
                 setGridTreeStore: 'setGridTreeStore',
                 refreshStores: 'refreshGivenStores',
                 refreshStoresWithFilters: 'refreshGivenStoresWithFilters',
@@ -1870,6 +1986,21 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             childItem.setHeight(450);
             funcShowCustomizableWindow(' Rejection Details Request', '85%', childItem, 'customizablewindow');
     },
+
+    setGridStore: function (me, options) {
+        // console.log(me);
+        var config = options.config,
+            isLoad = options.isLoad,
+            toolbar = me.down('pagingtoolbar'),
+            store = Ext.create('Admin.store.abstract.AbstractStore', config);
+        me.setStore(store);
+        toolbar.setStore(store);
+        if (isLoad === true || isLoad == true) {
+            store.removeAll();
+            store.load();
+        }
+    },
+    
     doSaveappdatamigrationrequest: function (btn) {
         var me = this,
             url = btn.action_url,
@@ -2521,7 +2652,20 @@ showApplicationEvaluationUploads:function(btn){
                 toastr.error('Error: ' + errorThrown, 'Error Response');
             }
         });
-    }, showUploadedApplicationPayments:function(btn){
+    }, 
+
+setCompStore: function (me, options) {
+        var config = options.config,
+            isLoad = options.isLoad,
+            store = Ext.create('Admin.store.abstract.AbstractStore', config);
+        me.setStore(store);
+        if (isLoad === true || isLoad == true) {
+            store.removeAll();
+            store.load();
+        }
+    },
+
+    showUploadedApplicationPayments:function(btn){
         var mainTabPanel = this.getMainTabPanel(),
             winWidth = btn.winWidth,
             activeTab = mainTabPanel.getActiveTab(),
@@ -2683,13 +2827,13 @@ showApplicationEvaluationUploads:function(btn){
             if(win.down('combo[name=applicable_checklist]')){
                 checklist_category_id = win.down('combo[name=applicable_checklist]').getValue();
                 hasValidatedChecklist = checkOnlineApplicationChecklistDetails(application_code, module_id,sub_module_id,section_id,checklist_category_id);
-                if(!hasValidatedChecklist){
+                // if(!hasValidatedChecklist){
 
-                    toastr.warning('Fill in all the checklist details to proceed!!', 'Warning Response');
-                    Ext.getBody().unmask();
-                    return false;
+                //     toastr.warning('Fill in all the checklist details to proceed!!', 'Warning Response');
+                //     Ext.getBody().unmask();
+                //     return false;
 
-                }
+                // }
 
             }//needs_re
             if(win.down('button[name=prechecking_recommendation]')){
@@ -3718,6 +3862,31 @@ showApplicationEvaluationUploads:function(btn){
                 application_id: application_id,
                 application_code: application_code,
                 checklist_type: checklist_type, module_id: module_id,
+                process_id: process_id,
+                workflow_stage: workflow_stage
+            };
+    },
+
+
+     refreshReportScreeningChecklistItemsGrid: function (me) {
+        var store = me.getStore(),
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+             workflow_stage = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+
+            checklist_type = 0;
+            if(me.down('combo[name=applicable_checklist]')){
+                checklist_type = me.down('combo[name=applicable_checklist]').getValue();
+            }
+            store.getProxy().extraParams = {
+                application_id: application_id,
+                application_code: application_code,
+                checklist_type: checklist_type,
+                module_id: module_id,
                 process_id: process_id,
                 workflow_stage: workflow_stage
             };
@@ -5624,6 +5793,39 @@ else{
             gmp_type_id: gmp_type_id,
             inspection_type_id: inspection_type_id,
             inspection_id: inspection_id
+        };
+    },
+
+
+    addDrugShopApplicationWorkflowParams: function (me) {
+        var store = me.store,
+            table_name = me.table_name,
+            grid = me.up('grid'),
+            managerInspection = me.managerInspection,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            gmp_type_id = (activeTab.down('combo[name=gmp_type_id]')) ? activeTab.down('combo[name=gmp_type_id]').getValue() : null,
+            inspection_type_id = me.inspection_type_id,
+            country_id = grid.down('combo[name=country_id]').getValue(),
+            region_id = grid.down('combo[name=region_id]').getValue(),
+            district_id = grid.down('combo[name=district_id]').getValue(),
+            inspection_id = null;
+        if ((managerInspection) && managerInspection == 1) {
+            inspection_id = activeTab.down('form').down('hiddenfield[name=id]').getValue();
+        }
+    
+        store.getProxy().extraParams = {
+            table_name: table_name,
+            workflow_stage_id: workflow_stage_id,
+            section_id: section_id,
+            gmp_type_id: gmp_type_id,
+            inspection_type_id: inspection_type_id,
+            inspection_id: inspection_id,
+            country_id: country_id,
+            region_id: region_id,
+            district_id: district_id
         };
     },
 

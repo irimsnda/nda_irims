@@ -62,6 +62,7 @@ Ext.define('Admin.controller.ParametersCtr', {
         'Admin.store.parameters.PackagingUnitsStr',
         'Admin.store.parameters.ElementsCostStr',
         'Admin.store.parameters.glAccountsStr',
+        'Admin.store.parameters.RevenueAccountsStr',
         'Admin.store.parameters.RevenueTypeStr',
         'Admin.store.parameters.AgeAnalysisDaysSpanParamStr', 
         'Admin.store.parameters.ProcessDateSpanParamStr', 

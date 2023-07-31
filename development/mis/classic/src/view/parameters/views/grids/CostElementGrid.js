@@ -48,41 +48,6 @@ Ext.define('Admin.view.parameters.views.grids.CostElementGrid', {
         text: 'Fee Type',
         width: 200,
         tdCls: 'wrap'
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'irembo_productname',
-        text: 'Irembo Product Name',
-        width: 200,
-        tdCls: 'wrap',
-        renderer: function (value, metaData, record) {
-            var irembo_feescode_id = record.get('irembo_feescode_id');
-            console.log(irembo_feescode_id);
-            if (irembo_feescode_id < 1  || irembo_feescode_id == 'undefined') {
-                metaData.tdStyle = 'color:white;background-color:red';
-                return "Not Configured";
-            }
-            else{
-                metaData.tdStyle = 'color:white;background-color:green';
-                return value;
-            }
-        }
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'irembo_productcode',
-        text: 'Irembo Product Code',
-        width: 200,
-        tdCls: 'wrap',
-        renderer: function (value, metaData,record) {
-            var irembo_feescode_id = record.get('irembo_feescode_id'); console.log(irembo_feescode_id);
-            if (irembo_feescode_id < 1 || irembo_feescode_id == 'undefined') {
-                metaData.tdStyle = 'color:white;background-color:red';
-                return "Not Configured";
-            }
-            else{
-                metaData.tdStyle = 'color:white;background-color:green';
-                return value;
-            }
-        }
     },
     {
         xtype: 'gridcolumn',
@@ -151,8 +116,8 @@ Ext.define('Admin.view.parameters.views.grids.CostElementGrid', {
         tdCls: 'wrap'
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'product_amount',
-        text: 'Irembo Product Amount',
+        dataIndex: 'revenue_code',
+        text: 'Revenue Code',
         width: 200,
         tdCls: 'wrap'
     },{

@@ -68,6 +68,154 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopApprovalsGrid', 
         mode: 'local',
         minChars: 2
     }],
+    margin: 3,
+    tbar: [{
+        xtype: 'tbspacer',
+        width: 5
+     }, {
+        xtype: 'combo',
+        emptyText: 'COUNTRY',
+        flex: 1,
+        //labelWidth: 80,
+        width: 160,
+        valueField: 'id',
+        displayField: 'name',
+        forceSelection: true,
+        name: 'country_id',
+        queryMode: 'local', 
+        fieldStyle: {
+            'color': 'green',
+            'font-weight': 'bold'
+        },
+         listeners: {
+             beforerender: {
+                fn: 'setParamCombosStore',
+                config: {
+                    pageSize: 10000,
+                    proxy: {
+                        url: 'parameters/country'
+                    }
+                },
+                isLoad: true
+             },
+            change: function (cmbo, newVal) {
+            var grid = cmbo.up('grid'),
+            regionStore = grid.down('combo[name=region_id]').getStore(),
+            filterObj = {country_id: newVal},
+            filterStr = JSON.stringify(filterObj);
+            regionStore.removeAll();
+          regionStore.load({params: {filter: filterStr}});
+            }
+        },
+        triggers: {
+            clear: {
+                type: 'clear',
+                hideWhenEmpty: true,
+                hideWhenMouseOut: false,
+                clearOnEscape: true
+            }
+        }
+    }, {
+        xtype: 'combo',
+        emptyText: 'REGION',
+        flex: 1,
+        //labelWidth: 80,
+        width: 160,
+        valueField: 'id',
+        displayField: 'name',
+        forceSelection: true,
+        name: 'region_id',
+        queryMode: 'local',
+        fieldStyle: {
+            'color': 'green',
+            'font-weight': 'bold'
+        },
+        listeners: {
+                    beforerender: {
+                        fn: 'setParamCombosStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'parameters/region'
+                            }
+                        },
+                        isLoad: false
+            },
+            change: function (cmbo, newVal) {
+                var grid = cmbo.up('grid'),
+                districtStore = grid.down('combo[name=district_id]').getStore(),
+                filterObj = {region_id: newVal},
+                filterStr = JSON.stringify(filterObj);
+                districtStore.removeAll();
+                districtStore.load({params: {filter: filterStr}});
+            }
+        },
+        triggers: {
+            clear: {
+                type: 'clear',
+                hideWhenEmpty: true,
+                hideWhenMouseOut: false,
+                clearOnEscape: true
+            }
+        }
+    }, {
+        xtype: 'combo',
+        emptyText: 'DISTRICT',
+        flex: 1,
+        //labelWidth: 80,
+        width: 150,
+        valueField: 'id',
+        displayField: 'name',
+        forceSelection: true,
+        name: 'district_id',
+        queryMode: 'local',
+        fieldStyle: {
+            'color': 'green',
+            'font-weight': 'bold'
+        },
+        listeners: {
+                    beforerender: {
+                        fn: 'setParamCombosStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'parameters/district'
+                            }
+                        },
+                        isLoad: false
+            }
+        },
+        triggers: {
+            clear: {
+                type: 'clear',
+                hideWhenEmpty: true,
+                hideWhenMouseOut: false,
+                clearOnEscape: true
+            }
+        }
+    }, {
+        xtype: 'button',
+        text: 'Filter',
+        ui: 'soft-green',
+        iconCls: 'x-fa fa-search',
+        handler: function(btn) {
+          var grid = btn.up('grid');
+              grid.getStore().load();
+        },
+    },{
+        xtype: 'button',
+        text: 'Clear',
+        ui: 'soft-red',
+        iconCls: 'x-fa fa-times',
+        handler: function(btn) {
+          var grid = btn.up('grid'),
+                gridStr = grid.getStore();
+                grid.down('combo[name=country_id]').clearValue();
+                grid.down('combo[name=region_id]').clearValue();
+                grid.down('combo[name=district_id]').clearValue();
+                gridStr.load();
+        },
+    }],
     listeners: {
         beforerender: {
             fn: 'setPremiseRegGridsStore',
@@ -168,97 +316,55 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopApprovalsGrid', 
                         handler: 'getApplicationApprovalDetails',
                         stores: '["approvaldecisionsstr"]',
                         table_name: 'tra_premises_applications'
-                    }, {
-                        text: 'Inspection Details',
-                        iconCls: 'x-fa fa-exchange',
-                        menu: {
-                            xtype: 'menu',
-                            items: [
-                                {
-                                    text: 'Inspection',
-                                    iconCls: 'x-fa fa-clipboard',
-                                    action: 'inspection_report',
-                                    handler: 'printManagersReport',
-                                    report_type: 'Inspection Report'
-                                },
-                                {
-                                    text: 'Evaluation',
-                                    iconCls: 'x-fa fa-clipboard',
-                                    action: 'inspection_report',
-                                    handler: 'printManagersReport',
-                                    report_type: 'Evaluation Report'
-                                }
-                            ]
-                        }
                     },  {
-                        text: 'Inspection',
+                        text: 'Inspection Report',
                         iconCls: 'x-fa fa-exchange',
                         menu: {
                             xtype: 'menu',
                             items: [
-                                {
-                                    text: 'Report',
-                                    iconCls: 'x-fa fa-clipboard',
-                                    action: 'inspection_report',
-                                    handler: 'printManagersReport',
-                                    report_type: 'Inspection Report'
-                                },
-                                {
-                                    text: 'Documents',
-                                    iconCls: 'x-fa fa-upload',
-                                    childXtype: 'premregappprevdocuploadsgenericgrid',
-                                    winTitle: 'Inspection uploaded Documents',
-                                    winWidth: '80%',
-                                    handler: 'showPreviousUploadedDocs',
-                                    target_stage: 'inspection'
-                                },
                                 
                                 {
-                                    text: 'Inspection Details',
+                                    text: 'Inspection Report',
                                     iconCls: 'x-fa fa-bars',
-                                    childXtype: 'inspectiondetailstabpnl',
-                                    winTitle: 'Inspection Details',
+                                    childXtype: 'drugshopinspectiondetailstabpnl',
+                                    winTitle: 'Inspection Report',
                                     winWidth: '60%',
                                     name: 'inspection_details',
                                     stores: '[]',
-                                    isReadOnly: 1,
+                                    report_type_id:1,
+                                    handler: 'showInspectionDetails'
+                                },
+                                {
+                                    text: 'Inspection Report(Regional Inspector)',
+                                    iconCls: 'x-fa fa-bars',
+                                    childXtype: 'drugshopinspectiondetailstabpnl',
+                                    winTitle: 'Inspection Report(Regional Inspector)',
+                                    winWidth: '60%',
+                                    name: 'inspection_details',
+                                    stores: '[]',
+                                    report_type_id:2,
+                                    handler: 'showInspectionDetails'
+                                },
+                                {
+                                    text: 'Inspection Report(Lead Inspector)',
+                                    iconCls: 'x-fa fa-bars',
+                                    childXtype: 'drugshopinspectiondetailstabpnl',
+                                    winTitle: 'Inspection Report(Lead Inspector)',
+                                    winWidth: '60%',
+                                    name: 'inspection_details',
+                                    stores: '[]',
+                                    report_type_id:3,
                                     handler: 'showInspectionDetails'
                                 }
                             ]
                         }
                     }, 
-                    {
-                        text: 'Documents',
-                        iconCls: 'x-fa fa-exchange',
-                        menu: {
-                            xtype: 'menu',
-                            items: [
-                                {
-                                    text: 'Inspection',
-                                    iconCls: 'x-fa fa-folder',
-                                    childXtype: 'premregappprevdocuploadsgenericgrid',
-                                    winTitle: 'Inspection uploaded Documents',
-                                    winWidth: '80%',
-                                    handler: 'showPreviousUploadedDocs',
-                                    target_stage: 'inspection'
-                                },
-                                {
-                                    text: 'Evaluation',
-                                    iconCls: 'x-fa fa-folder',
-                                    childXtype: 'premregappprevdocuploadsgenericgrid',
-                                    winTitle: 'Evaluation uploaded Documents',
-                                    winWidth: '80%',
-                                    handler: 'showPreviousUploadedDocs',
-                                    target_stage: 'evaluation'
-                                }
-                            ]
-                        }
-                    },
+                    
                     {
                         text: 'Preview Premises Details',
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 1,
-                        handler: 'showPremApplicationMoreDetails'
+                        handler: 'showDrugShopApplicationMoreDetails'
                     },
                     {
                         text: 'Print',

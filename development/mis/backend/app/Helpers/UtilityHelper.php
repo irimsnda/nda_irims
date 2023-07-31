@@ -1511,36 +1511,45 @@ static function getPermitSignatoryDetails()
         }
         return $res;
     }
-
-    
- static function getProductPrimaryReferenceNo($where_statement, $applications_table){
+   static function getProductPrimaryReferenceNo($where_statement, $applications_table)
+    {
         $sub_module_id = 7; //primary sub-module
-		//check on the registered products 
-		$primary_ref ='';
-		$reg_product_id = $where_statement['t1.reg_product_id'];
-		$record = DB::table('tra_registered_products as t1')
-                        ->where(array('id'=>$reg_product_id))
-						->first();
-		if($record){
-			$primary_ref = $record->registration_ref_no;
-		}
-		if($primary_ref =='' || $primary_ref == null){
-				 $primary_ref = DB::table($applications_table.' as t1')
-                        ->join('tra_product_information as t2', 't1.product_id','=','t2.id')
-                        ->where($where_statement)
-                        ->value('reference_no');
-		}
-       if($primary_ref =='' || $primary_ref == null){
-		   $primary_ref = DB::table($applications_table.' as t1')
-                        ->join('tra_product_information as t2', 't1.product_id','=','t2.id')
-                        ->where(array('reg_product_id'=>$reg_product_id))
-                        ->select('reference_no')
-						->orderBy('t1.sub_module_id','desc')->first();
-			$primary_ref = $primary_ref->reference_no;
-	   }
-        
+        $primary_ref = DB::table($applications_table . ' as t1')
+            //->join('tra_product_information as t2', 't1.product_id', '=', 't2.id')
+            ->where($where_statement)
+            ->value('tracking_no');
+
         return $primary_ref;
     }
+    
+ // static function getProductPrimaryReferenceNo($where_statement, $applications_table){
+ //        $sub_module_id = 7; //primary sub-module
+	// 	//check on the registered products 
+	// 	$primary_ref ='';
+	// 	$reg_product_id = $where_statement['t1.reg_product_id'];
+	// 	$record = DB::table('tra_registered_products as t1')
+ //                        ->where(array('id'=>$reg_product_id))
+	// 					->first();
+	// 	if($record){
+	// 		$primary_ref = $record->registration_ref_no;
+	// 	}
+	// 	if($primary_ref =='' || $primary_ref == null){
+	// 			 $primary_ref = DB::table($applications_table.' as t1')
+ //                        ->join('tra_product_information as t2', 't1.product_id','=','t2.id')
+ //                        ->where($where_statement)
+ //                        ->value('reference_no');
+	// 	}
+ //       if($primary_ref =='' || $primary_ref == null){
+	// 	   $primary_ref = DB::table($applications_table.' as t1')
+ //                        ->join('tra_product_information as t2', 't1.product_id','=','t2.id')
+ //                        ->where(array('reg_product_id'=>$reg_product_id))
+ //                        ->select('reference_no')
+	// 					->orderBy('t1.sub_module_id','desc')->first();
+	// 		$primary_ref = $primary_ref->reference_no;
+	//    }
+        
+ //        return $primary_ref;
+ //    }
 	  static function getTableName($module, $portal_db = 0){
 
           $qry=DB::table('modules')

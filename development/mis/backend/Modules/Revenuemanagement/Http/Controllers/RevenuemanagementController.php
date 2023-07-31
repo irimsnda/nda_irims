@@ -2725,4 +2725,105 @@ public function onCancelGeneratedApplicationInvoice(Request $req){
     return response()->json($res, 200);
 
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+public function getApprovedRefundsList(Request $req){
+        $applicant_id = $req->applicant_id;
+        $invoice_number = $req->invoice_number;
+        $date_to = $req->date_to;
+        $date_from = $req->date_from;
+
+        try{
+            
+            $refunds = DB::table('tra_invoices_refund_requests as t1')
+                    ->join('tra_invoice_refund_approvals as t2', 't1.application_code', 't2.application_code')
+                    ->join('tra_application_invoices as t3', 't1.invoice_no', 't2.invoice_no')
+                    ->join('tra_invoice_details as t4', 't3.id', 't4.invoice_id')
+                    ->join('wb_trader_account as t5', 't3.applicant_id', 't5.id')
+                    ->join('par_currencies as t6', 't3.paying_currency_id', 't6.id')
+                    ->select('t1.invoice_no','t5.name as applicant','t2.created_on as date_of_refund', DB::raw("SUM(t4.element_amount) as total_element_amount, SUM(t4.element_amount*t4.paying_exchange_rate) as equivalent_paid, t6.name as currency,t4.paying_exchange_rate as exchange_rate"));
+
+            if(validateIsNumeric($applicant_id)){
+                $refunds->where('t1.applicant_id', $applicant_id);
+            }
+            if(validateIsNumeric($invoice_number)){
+                $refunds->where('t1.invoice_no', $invoice_number);
+            }
+            if(isset($date_to) & $date_to != ''){
+                $refunds->whereDate('t2.created_on','<', $date_to);
+            }
+            if(isset($date_from) & $date_from != ''){
+                $refunds->whereDate('t2.created_on', '>', $date_from);
+            }
+
+            $receivables = $refunds->get();
+
+            $res = array(
+                'message' => 'All is well',
+                'success' => true,
+                'results' => $receivables
+            );
+
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
+    public function getIssuedInvoicesList(Request $req){
+        try{
+            $applicant_id = $req->applicant_id;
+            $date_to = $req->date_to; 
+            $date_from = $req->date_from; 
+            $invoice_number = $req->invoice_number;   
+            $is_quote = $req->is_quote;
+            $invoicing_data = DB::table('tra_application_invoices as t1')
+                    ->join('tra_invoice_details as t2', 't1.id', 't2.invoice_id')
+                    ->leftJoin('par_currencies as t3', 't2.paying_currency_id', 't3.id')
+                    ->leftJoin('par_batchinvoice_types as t4', 't1.invoice_type_id', 't4.id')
+                    ->leftJoin('wb_trader_account as t5', 't1.applicant_id', 't5.id')
+                   
+                    //for quotes 
+                    ->leftJoin('tra_appmodules_feesconfigurations as t6', 't1.quotation_id', 't6.id')
+                    ->leftJoin('tra_element_costs as t7', 't6.element_costs_id', 't7.id')
+                    ->leftJoin('par_fee_types as t8', 't7.feetype_id', 't8.id')
+                    ->leftJoin('par_cost_elements as t9', 't7.element_id', 't9.id')
+                    ->leftJoin('par_applicationfee_types as t10', 't6.application_feetype_id', 't10.id')
+
+                    ->select(DB::raw("SUM(t2.element_amount) as total_element_amount, SUM(t2.element_amount*t2.paying_exchange_rate) as equivalent_paid, t3.name as currency, t1.date_of_invoicing,t2.paying_exchange_rate as exchange_rate, t1.invoice_no, t1.id as invoice_id, t4.name as invoice_type, t2.paying_currency_id, t1.module_id, t5.name as applicant, t8.name as fee_type,t9.name as element, concat(t8.name,'-', t9.name, '-', t10.name) as element_costs, t10.name as cost_type, t7.cost"))
+                    ->groupBy('t2.invoice_id','t2.element_amount','t2.paying_exchange_rate','t2.paying_currency_id', 't3.id', 't1.id', 't4.id', 't5.name', 't8.name', 't9.name', 't10.name', 't7.cost');
+                    // ->where('t1.application_code', $application_code)
+                    // ->where('t1.is_invoice', 1);
+
+            if(validateIsNumeric($applicant_id)){
+                $invoicing_data->where('t1.applicant_id', $applicant_id);
+            }
+            if(validateIsNumeric($invoice_number)){
+                $invoicing_data->where('t1.invoice_no', $invoice_number);
+            }
+            if(!validateIsNumeric($is_quote)){
+                $invoicing_data->where('t1.is_invoice', 1);
+            }
+            if(isset($date_to) & $date_to != ''){
+                $invoicing_data->whereDate('t1.date_of_invoicing','<', $date_to);
+            }
+            if(isset($date_from) & $date_from != ''){
+                $invoicing_data->whereDate('t1.date_of_invoicing', '>', $date_from);
+            }
+            $invoicing_data = $invoicing_data->get();
+
+            $res = array(
+                'message' => 'All is well',
+                'results' => $invoicing_data
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
 }

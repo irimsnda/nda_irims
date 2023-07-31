@@ -6,7 +6,7 @@ Ext.define('Admin.view.parameters.views.grids.ElementsCostGrid', {
     store: 'elementscoststr',
     tbar: [{
         xtype: "button",
-        text: "Add ElementCost",
+        text: "Add Element Cost",
         iconCls: 'x-fa fa-plus',
         margin: '0 0 5 0',
         action: 'add',

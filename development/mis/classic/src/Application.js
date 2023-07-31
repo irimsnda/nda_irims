@@ -20,10 +20,6 @@ Ext.define('Admin.Application', {
         'ProductRegistrationCtr',
         'ProductRecallAlertCtr',
         'ConfigurationsCtr',
-       // 'premiseregistration.DrugsPremiseCtr',
-       // 'premiseregistration.FoodPremiseCtr',
-       // 'premiseregistration.CosmeticsPremiseCtr',
-       // 'premiseregistration.MedDevicesPremiseCtr',
         'GmpApplicationsCtr',
         'ClinicalTrialCtr',
         'ReportsCtr',
@@ -37,7 +33,8 @@ Ext.define('Admin.Application', {
         'RevenueManagementCtr',
         'SystemAdministrationProcessCtr',
         'DocumentContolManCtr',
-        'PvCtr'
+        'PvCtr',
+        'EnforcementCtr'
     ],
     defaultToken : 'dashboard',
 

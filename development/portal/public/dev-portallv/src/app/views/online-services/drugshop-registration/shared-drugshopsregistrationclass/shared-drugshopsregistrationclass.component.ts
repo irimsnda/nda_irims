@@ -109,7 +109,7 @@ export class SharedDrugshopsregistrationclassComponent {
   premisesPersonnelDetailsfrm: FormGroup;
   newPremisesDirectorsDetailsFrm:FormGroup;
   premisesDirectorsDetailsfrm: FormGroup;
-  premisesStafflDetailsfrm: FormGroup;
+  premisesDetailsfrm: FormGroup;
 
   premisesStoreslocationFrm:FormGroup;
 
@@ -179,7 +179,7 @@ export class SharedDrugshopsregistrationclassComponent {
   isaddNewPremisesPersonnelDetails:boolean = false;
   //@Inject(WizardState) public wizard: WizardState,
   newPremisesPersonnelDetailsFrm:FormGroup;
-  newPremisesStafflDetailsfrm:FormGroup;
+  newPremisesDetailsfrm:FormGroup;
   confirmDataParam: any;
   isReadOnlyTraderasContact:boolean= false;
   isConvicted:boolean= false;
@@ -282,7 +282,7 @@ export class SharedDrugshopsregistrationclassComponent {
       postal_address: new FormControl('', Validators.compose([Validators.required])),
       telephone_no: new FormControl('', Validators.compose([]))
     });
-    this.newPremisesStafflDetailsfrm = new FormGroup({
+    this.newPremisesDetailsfrm = new FormGroup({
       name: new FormControl('', Validators.compose([Validators.required])),
       email_address: new FormControl('', Validators.compose([Validators.required])),
       postal_address: new FormControl('', Validators.compose([Validators.required])),
@@ -294,8 +294,8 @@ export class SharedDrugshopsregistrationclassComponent {
         region_id: new FormControl('', Validators.compose([Validators.required])),
         district_id: new FormControl('', Validators.compose([Validators.required])),
         physical_address: new FormControl('', Validators.compose([Validators.required])),
-        cell_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
-        //sector_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
+        //county_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
+        //sub_county_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
         village: new FormControl('', Validators.compose([])),//Validators.required
         id: new FormControl('', Validators.compose([]))
     });
@@ -307,9 +307,11 @@ export class SharedDrugshopsregistrationclassComponent {
         country_id: new FormControl('', Validators.compose([Validators.required])),
         region_id: new FormControl('', Validators.compose([Validators.required])),
         district_id: new FormControl('', Validators.compose([Validators.required])),
-        file: new FormControl('', Validators.compose([])),
-         node_ref:new FormControl('', Validators.compose([])),
-        id: new FormControl('', Validators.compose([]))
+        county_id: new FormControl('', Validators.compose([])),//Validators.required
+        sub_county_id: new FormControl('', Validators.compose([])),//Validators.required
+        document_upload_id: new FormControl('', Validators.compose([])),
+        id: new FormControl('', Validators.compose([])),
+
       });
   }
 
@@ -319,23 +321,21 @@ export class SharedDrugshopsregistrationclassComponent {
       premises_name: new FormControl('', Validators.compose([Validators.required])),
       businesstype_category_id: new FormControl('', Validators.compose([])),
       director_name:new FormControl('', Validators.compose([])),
-      section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+      section_id: new FormControl(this.section_id, Validators.compose([])),
+      other_classification:new FormControl('', Validators.compose([])),
+      prodpremise_classification_id: new FormControl('', Validators.compose([Validators.required])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
       region_id: new FormControl('', Validators.compose([Validators.required])),
       district_id: new FormControl('', Validators.compose([Validators.required])),
-      psu_reg_no: new FormControl('', Validators.compose([Validators.required])),
-      psu_reg_date: new FormControl('', Validators.compose([Validators.required])),
-      first_name: new FormControl('', Validators.compose([Validators.required])),
-      reg_date:new FormControl('',Validators.compose([Validators.required])),
+      fullname: new FormControl('', Validators.compose([Validators.required])),
       middle_name: new FormControl('', Validators.compose([])),
       tpin_no: new FormControl('', Validators.compose([Validators.required])),
       last_name:new FormControl('', Validators.compose([])),
-      superv_email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
       email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
       postal_address: new FormControl('', Validators.compose([])),
       telephone: new FormControl('', Validators.compose([Validators.required])),
-      super_telephone: new FormControl('', Validators.compose([Validators.required])),
-      super_physical_address:new FormControl('', Validators.compose([Validators.required])),
+      applicant_incharge_telephone: new FormControl('', Validators.compose([])),
+      incharge_physical_address:new FormControl('', Validators.compose([])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
       mobile_no: new FormControl('', Validators.compose([])),
       longitude: new FormControl('', Validators.compose([])),
@@ -349,7 +349,7 @@ export class SharedDrugshopsregistrationclassComponent {
       cancelling_reason: new FormControl('', Validators.compose([])),
       is_workinotherinstitutions: new FormControl('', Validators.compose([])),
       working_inotherinstitutions: new FormControl('', Validators.compose([])),
-      business_scale_id: new FormControl(this.businessScaleData, Validators.compose([Validators.required])),
+      business_scale_id: new FormControl(this.businessScaleData, Validators.compose([])),
       business_type_id: new FormControl('', Validators.compose([Validators.required])),
       sub_module_id: new FormControl(this.sub_module_id, Validators.compose([])),//Validators.required
       module_id: new FormControl(this.sub_module_id, Validators.compose([])),//Validators.required
@@ -366,32 +366,35 @@ export class SharedDrugshopsregistrationclassComponent {
       tra_premise_id: new FormControl('', Validators.compose([])),//Validators.required
       registered_id: new FormControl('', Validators.compose([])),//Validators.required
       investment_capital_currency_id: new FormControl('', Validators.compose([])),//Validators.required
-     // cell_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
-     // sector_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
+     county_id: new FormControl('', Validators.compose([])),//Validators.required
+     sub_county_id: new FormControl('', Validators.compose([])),
+      street:new FormControl('', Validators.compose([])),
       village: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_email: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_telephone: new FormControl('', Validators.compose([])),//Validators.required
-      company_registration_no: new FormControl('', Validators.compose([Validators.required])),//Validators.required
+      nin_no: new FormControl('', Validators.compose([Validators.required])),//Validators.required
       registration_institution_id: new FormControl('', Validators.compose([])),//Validators.required
       otherregistration_institution: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_position: new FormControl('', Validators.compose([])),//Validators.required
       classification_id:new FormControl('', Validators.compose([])),
       is_registered_business:new FormControl('', Validators.compose([])),
+      business_reg_date:new FormControl('', Validators.compose([Validators.required])),
       other_premproduct_classification:new FormControl('', Validators.compose([])),
       applicant_type_id:new FormControl('', Validators.compose([Validators.required])),
-      premproduct_classification_id: new FormControl('', Validators.compose([]))
+      premproduct_classification_id: new FormControl('', Validators.compose([])),
+      qualification_id:new FormControl('', Validators.compose([]))
     });
   }else{    
     this.premisesGeneraldetailsfrm = new FormGroup({
       premises_name: new FormControl('', Validators.compose([Validators.required])),
       businesstype_category_id: new FormControl('', Validators.compose([])),
-      company_registration_no: new FormControl('', Validators.compose([Validators.required])),//Validators.required
-      reg_date:new FormControl('',Validators.compose([Validators.required])),
-      managing_director_email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
-      managing_director: new FormControl('', Validators.compose([Validators.required])),
-      managing_director_telepone: new FormControl('', Validators.compose([Validators.required])),
+      nin_no: new FormControl('', Validators.compose([Validators.required])),//Validators.required
+      managing_director_email: new FormControl('', Validators.compose([])),
+      managing_director: new FormControl('', Validators.compose([])),
+      managing_director_telepone: new FormControl('', Validators.compose([])),
       director_name:new FormControl('', Validators.compose([])),
-      section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+      section_id: new FormControl(this.section_id, Validators.compose([])),
+      prodpremise_classification_id: new FormControl('', Validators.compose([Validators.required])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
       region_id: new FormControl('', Validators.compose([Validators.required])),
       district_id: new FormControl('', Validators.compose([Validators.required])),
@@ -399,15 +402,12 @@ export class SharedDrugshopsregistrationclassComponent {
       tpin_no 
       : new FormControl('', Validators.compose([Validators.required])),
       applicant_type_id:new FormControl('', Validators.compose([Validators.required])),
-      first_name: new FormControl('', Validators.compose([Validators.required])),
+      fullname: new FormControl('', Validators.compose([Validators.required])),
       middle_name: new FormControl('', Validators.compose([])),
       last_name: new FormControl('', Validators.compose([])),
-      psu_reg_no: new FormControl('', Validators.compose([Validators.required])),
-      psu_reg_date: new FormControl('', Validators.compose([Validators.required])),
-      superv_email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
-      super_telephone: new FormControl('', Validators.compose([Validators.required])),
-      super_physical_address:new FormControl('', Validators.compose([Validators.required])),
+      other_classification:new FormControl('', Validators.compose([])),
       email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
+      applicant_incharge_telephone: new FormControl('', Validators.compose([])),
       postal_address: new FormControl('', Validators.compose([])),
       telephone: new FormControl('', Validators.compose([Validators.required])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
@@ -445,9 +445,14 @@ export class SharedDrugshopsregistrationclassComponent {
       contact_person_position: new FormControl('', Validators.compose([])),//Validators.required
       classification_id:new FormControl('', Validators.compose([])),
       is_registered_business:new FormControl('', Validators.compose([])),
-  other_premproduct_classification:new FormControl('', Validators.compose([])),
+      street:new FormControl('', Validators.compose([])),
+      other_premproduct_classification:new FormControl('', Validators.compose([])),
+      county_id: new FormControl('', Validators.compose([])),//Validators.required
+      sub_county_id: new FormControl('', Validators.compose([])),//Validators.required
+      premproduct_classification_id: new FormControl('', Validators.compose([])),
+     qualification_id:new FormControl('', Validators.compose([])),
+           business_reg_date:new FormControl('', Validators.compose([Validators.required])),
 
-      premproduct_classification_id: new FormControl('', Validators.compose([]))
     });
 
   }
@@ -496,10 +501,8 @@ export class SharedDrugshopsregistrationclassComponent {
 
 
    this.premisesDirectorsDetailsfrm = new FormGroup({
-      director_first_name: new FormControl('', Validators.compose([Validators.required])),
+      directorfull_names: new FormControl('', Validators.compose([Validators.required])),
       id: new FormControl('', Validators.compose([])),
-      director_middle_name: new FormControl('', Validators.compose([])),
-      director_last_name: new FormControl('', Validators.compose([])),
       director_postal_address: new FormControl('', Validators.compose([])),
       director_telephone_no: new FormControl('', Validators.compose([Validators.required])),
       director_email_address: new FormControl('', Validators.compose([Validators.required])),
@@ -513,10 +516,12 @@ export class SharedDrugshopsregistrationclassComponent {
     });
 
 
-      this.premisesStafflDetailsfrm = new FormGroup({
-      trader_aslocal_agent: new FormControl('', Validators.compose([])),
+      this.premisesDetailsfrm = new FormGroup({
+      hold_premise: new FormControl('', Validators.compose([])),
       id: new FormControl('', Validators.compose([])),
-      local_agent_name: new FormControl('', Validators.compose([]))
+      name: new FormControl('', Validators.compose([])),
+      region_id: new FormControl('', Validators.compose([])),
+      permit_no: new FormControl('', Validators.compose([]))
     });
 
 
@@ -921,9 +926,16 @@ export class SharedDrugshopsregistrationclassComponent {
         });
   }
   onPremisesApplicationSubmit() {
-    this.app_route = ['./online-services/premisesreg-dashboard'];
+    if(this.sub_module_id == 96){
+    this.app_route = ['./online-services/newdrugshopreg-dashboard'];
     this.utilityService.onPermitsApplicationSubmit(this.viewRef, this.application_code, this.tracking_no,'wb_premises_applications', this.app_route,this.onApplicationSubmissionFrm.value);
     this.isApplicationSubmitwin = false;
+    }else{
+    this.app_route = ['./online-services/pre-inspection-dashboard'];
+    this.utilityService.onPermitsApplicationSubmit(this.viewRef, this.application_code, this.tracking_no,'wb_premises_applications', this.app_route,this.onApplicationSubmissionFrm.value);
+    this.isApplicationSubmitwin = false;
+    }
+
   }
   //reload the premsies Other Details 
   onLoadpremPersonnelDocumentsUploadData(personnel_id){

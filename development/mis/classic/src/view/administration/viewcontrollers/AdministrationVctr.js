@@ -16,6 +16,12 @@ Ext.define('Admin.view.administration.viewcontrollers.AdministrationVctr', {
     setWorkflowCombosStore: function (obj, options) {
         this.fireEvent('setWorkflowCombosStore', obj, options);
     },
+    setGridTreeStore: function (obj, options) {
+        this.fireEvent('setGridTreeStore', obj, options);
+    },
+    setParamCombosStore: function (obj, options) {
+        this.fireEvent('setParamCombosStore', obj, options);
+    },
 
     setOrgConfigCombosStore: function (obj, options) {
         this.fireEvent('setOrgConfigCombosStore', obj, options);

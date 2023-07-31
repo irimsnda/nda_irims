@@ -4,7 +4,7 @@
 Ext.define('Admin.view.premiseregistration.views.forms.ApplicantDetailsFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'applicantdetailsfrm',
-    
+    scrollable:true,
     items:[
         {
             xtype: 'fieldset',

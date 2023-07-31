@@ -8,6 +8,7 @@ import { SpinnerVisibilityService } from 'ng-http-loader';
 import { ConfigurationsService } from 'src/app/services/shared/configurations.service';
 import { ImportexportService } from 'src/app/services/importexp-applications/importexport.service';
 import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/services/auth.service';
@@ -56,6 +57,8 @@ export class ClinicalpresubmissionGeneraldetailsComponent implements OnInit {
   sectionsData:any;
   is_clinicalin_othercountry:any;
   is_clinicalin_uganda:any;
+  minDate: Date = new Date();
+
   //par_clinical_phases
   @Output() docClinicalSectionsEvent = new EventEmitter();
   constructor(public utilityService: Utilities, public premappService: PremisesApplicationsService, public dmsService: DocumentManagementService, public fb: FormBuilder, public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: ImportexportService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public httpClient: HttpClient) {
@@ -71,6 +74,7 @@ export class ClinicalpresubmissionGeneraldetailsComponent implements OnInit {
       physical_address: new FormControl('', Validators.compose([Validators.required])),
       contact_person: new FormControl('', Validators.compose([Validators.required]))
     });
+
     this.onLoadSections();
     this.onLoadMeetingType();
     this.onLoadclinicalStudyPhaseData();

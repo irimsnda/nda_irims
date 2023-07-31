@@ -208,7 +208,7 @@ Ext.define('Admin.view.dashboard.grids.ExternalUserIntrayGrid', {
         xtype: 'button',
         text: 'Clear',
         ui: 'soft-red',
-        iconCls: 'x-fa fa-close',
+        iconCls: 'x-fa fa-times',
         handler: function(btn) {
           var grid = btn.up('grid');
           grid.down('combo[name=section_id]').clearValue();

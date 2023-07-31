@@ -13,17 +13,16 @@
         <dxi-column [width]="200" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false" cellTemplate="cellTemplate">
             <div *dxTemplate="let data of 'cellTemplate'">
                 <dx-button text="Edit" (click)="funcEditPersonnelDetails(data)" 
-                    type="danger" icon="edit">
+                    type="success" icon="edit">
                     </dx-button> 
                 <dx-button text="Delete" (click)="funcDeletePersonnelDetails(data)" 
                     type="danger" icon="delete">
                 </dx-button> 
             </div>
         </dxi-column>
-        <dxi-column dataField="trader_name"></dxi-column>
-        <dxi-column dataField="country"></dxi-column>
-        <dxi-column dataField="region"></dxi-column>
-        <dxi-column dataField="physical_address"></dxi-column>
+        <dxi-column dataField="name"></dxi-column>
+        <dxi-column dataField="permit_no"></dxi-column>
+        <dxi-column dataField="region_name"></dxi-column>
     </dx-data-grid>
 </div>
 
@@ -35,25 +34,25 @@
             <wizard style="background: #fff !important; height: 100% !important;">
                 <wizard-step stepTitle=" Other Pharmaceutical Premises" class="wizardStep-height">
                     <form role="form" enctype="multipart/form-data" role="form"
-                         [formGroup]="       premisesStafflDetailsfrm" class="col-lg-12" (ngSubmit)="onSavePremisesStaffDetails()">
+                         [formGroup]=" premisesDetailsfrm" class="col-lg-12" (ngSubmit)="onSavePremisesHolderDetails()">
                         <div class="row wizard-contentwin">                            
                             <div class="col-lg-4">
                                 <label class="control-label">Does the applicant, any partner or director currently hold a licence Pharmaceutical business</label>
-                                 <dx-select-box  (onValueChanged)="onTraderasContactpersonChange($event)" [dataSource]="confirmDataParam" valueExpr="id" 
+                                 <dx-select-box  (onValueChanged)="onOtherPremisesnChange($event)" [dataSource]="confirmDataParam" valueExpr="id" 
                                  displayExpr="name" [searchEnabled]="true"
                                    placeholder="Hold Pharmaceutical Business" 
-                                    formControlName="trader_aslocal_agent">
+                                    formControlName="hold_premise">
                                 </dx-select-box>    
                             </div>
                             <div class="col-lg-4 input-group">
                                 <div class="col-lg-8">
                                     <label class="control-label">Premise Name</label>
-                                     <dx-text-box  formControlName="local_agent_name" readOnly=true [showClearButton]="true">
+                                     <dx-text-box  formControlName="name" readOnly=true [showClearButton]="true">
                                     </dx-text-box>
                                 </div>
                                  <div class="col-lg-4">
-                                    <dx-button [disabled]="isReadOnlyTraderasLtr" 
-                                    [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:25px  !important;"  text="Search"  type="default" (onClick)="funcSearchRegistrantDetails(1)">
+                                    <dx-button [disabled]="isReadOnlyPremise" 
+                                    [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:25px  !important;"  text="Search"  type="default" (onClick)="onRegisteredPremisesSearch(1)">
                                      <i class="fa fa-search"></i>Premise
                                     </dx-button>
                                 </div>
@@ -61,10 +60,14 @@
                         </div>
                         <div class="col-lg-12">
                             <input type="hidden" formControlName="id" />
+                            <input type="hidden" formControlName="region_id" />
+                            <input type="hidden" formControlName="permit_no" />
+
+
                         </div>
                         <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
                            
-                            <dx-button text="Save Staff Details" [disabled]="!premisesStafflDetailsfrm.valid" (onClick)="onSavePremisesStaffDetails()" type="success" class="btn" icon="save" [elementAttr]="{ class: 'btn btn-primary; pull-right' }">
+                            <dx-button text="Save Other Premises Details" [disabled]="!premisesDetailsfrm.valid" (click)="onSavePremisesHolderDetails()" type="success" class="btn" icon="save" [elementAttr]="{ class: 'btn btn-primary; pull-right' }">
                             </dx-button>
                         </div>
                     </form>
@@ -74,11 +77,9 @@
     </div>
 </dx-popup>
 
-<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="500" [showTitle]="true" title="{{trader_title}}"
-[dragEnabled]="false" [closeOnOutsideClick]="true" [(visible)]="isStaffPopupVisible">
+<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="500" [showTitle]="true" title="Other Premises" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isStaffPopupVisible">
 <div *dxTemplate="let data of 'content'">
-
-  <dx-data-grid class="table row-border hover"  [height]="450"   [remoteOperations]='true'  [dataSource]="traderAccountsDetailsData" keyExpr="id">
+  <dx-data-grid class="table row-border hover"  [height]="450"   [remoteOperations]='true'  [dataSource]="registeredPremisesData" keyExpr="id">
     <dxo-filter-row [visible]="false"></dxo-filter-row>
     <dxo-search-panel [visible]="true">
     </dxo-search-panel>
@@ -90,27 +91,18 @@
 
     <dxo-selection mode="multiple"></dxo-selection>
     <dxo-group-panel [visible]="true"></dxo-group-panel>
-    
-    <dxi-column [width]="100" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
-      cellTemplate="cellTemplate">
-      <div *dxTemplate="let data of 'cellTemplate'">
-     
-      <dx-button
-          text="Select LTR"
-          type="success"
-          icon="fa fa-plus"
-          [elementAttr]="{  class: 'pull-left' }"
-          (onClick)="funcSelectTraderDetails(data)">
-      </dx-button>
-      </div>
-    </dxi-column>
-    <dxi-column dataField="trader_no"></dxi-column>
-    <dxi-column dataField="trader_name"></dxi-column>
-    <dxi-column dataField="country"></dxi-column>
-    <dxi-column dataField="region"></dxi-column>
+    <dxi-column [width]="120" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+     cellTemplate="cellTemplate">
+    <div *dxTemplate="let data of 'cellTemplate'">
+     <a (click)="funcSelectPremisesDetails(data)" class="action-btn"><i class="fa fa-edit"></i>Select Premise</a>&nbsp;
+                      </div>
+                    </dxi-column>
+    <dxi-column dataField="name"></dxi-column>
+    <dxi-column dataField="premise_reg_no"></dxi-column>
+    <dxi-column dataField="permit_no"></dxi-column>
     <dxi-column dataField="physical_address"></dxi-column>
     <dxi-column dataField="postal_address"></dxi-column>
-    <dxi-column dataField="email_address"></dxi-column>
+    <dxi-column dataField="region_name"></dxi-column>
 
   </dx-data-grid>
 </div>

@@ -73,6 +73,14 @@ Ext.define('Admin.view.configurations.views.forms.OnlineStatusesFrm', {
                     ui: 'soft-purple',
                     action_url: 'configurations/saveConfigPortalCommonData',
                     handler: 'doCreateConfigParamWin'
+                },
+                {
+                    text: 'Reset',
+                    iconCls: 'x-fa fa-times',
+                    ui: 'soft-purple',
+                    handler: function (btn) {
+                        btn.up('form').getForm().reset();
+                    }
                 }
             ]
         }

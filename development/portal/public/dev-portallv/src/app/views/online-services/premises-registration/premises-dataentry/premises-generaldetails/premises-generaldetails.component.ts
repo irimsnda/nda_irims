@@ -34,6 +34,8 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
   @Input() businessScaleData: any;
   @Input() businessCategoryData: any;
   @Input() zoneData: any;
+  @Input() isConvicted:boolean;
+  @Input() isCancelled:boolean;
   @Input() confirmDataParam: any;
   @Input() sub_module_id: number;
   @Input() module_id: number;
@@ -53,11 +55,15 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
 
   region_id:number;
   country_id:number;
+  county_id:number;
   personnel_type_id:number;
   personnel_informationData:any;
   isPersonnelPopupVisible:boolean;
   section_id:number;
   businessTypeDetailsData:any;
+  applicantTypesData:any;
+  countyData:any;
+  subCountyData:any;
   business_type_id:number;
   isaddNewPremisesPersonnelDetails:boolean=false;
   isDisabledVehicleReg:boolean;
@@ -68,6 +74,7 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
   businesstypeCategoriesData:any;
   premiseClassData:any;
   isSectionHidden:boolean=false;
+  is_other_classification:boolean=false;
   sectorsData:any;
   district_id:number;
   cellsData:any;
@@ -84,6 +91,7 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
     this.onregisteringOrganisationDataLod();
     this.onLoadclassificationData();
     this.onLoadSections();
+    this.onLoadapplicantTypesLoad();
     this.onLoadBusinessTypesLoad();
     this.is_readonly = false;
     if(this.sub_module_id != 1){
@@ -130,7 +138,59 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
         error => {
           return false
         });
-  } onBusinesTypeCboSelect($event) {
+  }  
+  onLoadCounty(district_id) {
+    var data = {
+      table_name: 'par_county',
+      district_id: district_id
+    };
+    this.config.onLoadConfigurationData(data)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.countyData = data
+        },
+        error => {
+          return false;
+        });
+  }
+
+   oCountyCboSelect($event) {
+    this.county_id = $event.selectedItem.id;
+
+    this.onLoadSubCounty(this.county_id);
+
+  }
+  onLoadapplicantTypesLoad() {
+    var data = {
+      table_name: 'par_premiseapplications_types',
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.applicantTypesData = data;
+        },
+        error => {
+          return false
+        });
+  }
+  onLoadSubCounty(county_id) {
+    var data = {
+      table_name: 'par_sub_county',
+      county_id: county_id
+    };
+    this.config.onLoadConfigurationData(data)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.subCountyData = data
+        },
+        error => {
+          return false;
+        });
+  }
+
+  onBusinesTypeCboSelect($event) {
     
     this.business_type_id = $event.value;
     this.onBusinessTypesDetailsLoad(this.business_type_id);
@@ -243,16 +303,10 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
         });
   }
   
-  oDistrictsCboSelect($event) {
+ oDistrictsCboSelect($event) {
     this.district_id = $event.selectedItem.id;
 
-    this.onLoadSectors(this.district_id);
-
-  }
-  oSectorsCboSelect($event) {
-    this.sector_id = $event.selectedItem.id;
-
-    this.onLoadCells(this.sector_id);
+    this.onLoadCounty(this.district_id);
 
   }
 
@@ -267,7 +321,18 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
     }
     
 
-  } onPersonnelSearchDetails(personnel_type_id) {
+  }  
+   onOtherClassificationChange($event) {
+    if($event.value == 3){
+        this.is_other_classification = true;
+
+    }else{
+      this.is_other_classification = false;
+    }
+    
+
+  }
+  onPersonnelSearchDetails(personnel_type_id) {
     this.personnel_type_id = personnel_type_id;
     this.appService.onLoadPersonnelInformations()
     .subscribe(
@@ -320,11 +385,27 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
 
     }
   }
-  // onSectionsCboSelect($event) {
-  //   this.onBusinessTypesLoad($event.value)
-  //  // this. OnLoadBusinesstypeCategories($event.value);
+    onApplicantCancelledChange($event) {
+    if($event.selectedItem.id == 1){
+        this.isCancelled = true;
 
-  // }
+    }else{
+      this.isCancelled = false;
+    }
+    
+
+  }  
+   onApplicantConvictionChange($event) {
+    
+    if($event.selectedItem.id == 1){
+        this.isConvicted = true;
+
+    }else{
+      this.isConvicted = false;
+    }
+    
+
+  }
     onLoadPremisesPersonnelDetails() {
 
     this.appService.onLoadPremisesPersonnelDetails(this.premise_id)

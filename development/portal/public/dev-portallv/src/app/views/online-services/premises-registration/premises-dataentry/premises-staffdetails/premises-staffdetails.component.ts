@@ -63,24 +63,24 @@ export class PremisesStaffdetailsComponent implements OnInit {
   }
   funcEditPersonnelDetails(data) {
 
-    // this.premisesPersonnelDetailsfrm.patchValue({personnel_id:data.data.personnel_id,id:data.data.id,start_date:data.data.start_date,end_date:data.data.end_date, personnel_name:data.data.personnel_name})
     this.premisesStafflDetailsfrm.patchValue(data.data);
 
     this.premisesStafflDetailsfrm.patchValue(data.data);
-    //load the personnel qualifiations 
 
     this.isBusinessPersonnelPopupVisible = true;
     this.onLoadPersonnerQualifationsDetails(data.data.personnel_id);
     this.personnel_id = data.data.personnel_id;
 
   }      
-  funcSelectStaffDetails(data){
+  funcSelectStaffDetails(data){ 
+
     this.premisesStafflDetailsfrm.patchValue(data.data);
-      this.isStaffPopupVisible= false;         
+    
+    this.isStaffPopupVisible= false;         
   }
  
-    onSearchStaffDetails() {
-      this.appService.onLoadPremisesStaffDetails({})
+  onSearchStaffDetails() {
+      this.appService.onLoadStaffInformations()
         .subscribe(
           data_response => {
             this.isStaffPopupVisible = true;
@@ -368,7 +368,6 @@ export class PremisesStaffdetailsComponent implements OnInit {
     if (this.premisesStafflDetailsfrm.invalid) {
       return;
     }
-    //also get the premises ID
     this.appService.onSavePremisesStaffDetails(this.premisesStafflDetailsfrm.value, this.premise_id)
       .subscribe(
         response => {

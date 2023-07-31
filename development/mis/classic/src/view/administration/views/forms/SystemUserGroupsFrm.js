@@ -143,6 +143,32 @@ Ext.define('Admin.view.administration.views.forms.SystemUserGroupsFrm', {
                 isLoad: true
             }
         }
+    },{
+        xtype: 'combo',
+        fieldLabel: 'User Region',
+        forceSelection: true,
+        columnWidth: 0.25,
+        allowBlank: false,
+        queryMode: 'local',
+        margin: '0 20 0 0',
+        name: 'zone_id',
+        displayField: 'name',
+        valueField: 'id',
+        listeners: {
+            beforerender: {
+                fn: 'setParamCombosStore',
+                config: {
+                    pageSize: 100,
+                    proxy: {
+                        url: 'commonparam/getCommonParamFromTable',
+                        extraParams: {
+                            table_name: 'par_zones'
+                        }
+                    }
+                },
+                isLoad: true
+            }
+         }
     }, {
         xtype: 'combo',
         store: 'confirmationstr',
@@ -192,7 +218,7 @@ Ext.define('Admin.view.administration.views.forms.SystemUserGroupsFrm', {
                     handler: 'doCreateAdminParam'
                 }, {
                     text: 'Reset',
-                    iconCls: 'x-fa fa-close',
+                    iconCls: 'x-fa fa-times',
                     ui: 'soft-purple',
                     handler: function (btn) {
                         btn.up('form').getForm().reset();

@@ -20,6 +20,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
        'utilities/onPermitApplicationSubmit',
+       'utilities/onAddUniformApplicantDataset',
        'authentication/onUserLogin',
        'administration/onUserLogOut',
        'tradermanagement/onAccountRegistration',
@@ -33,8 +34,21 @@ class VerifyCsrfToken extends Middleware
        'clinicaltrials/onsaveclinicaltInvestigatorDetails',
        'clinicaltrials/onsaveclinicaltMonitorDetails',
        'clinicaltrials/saveiMPProductDetailsDetails',
-       'clinicaltrials/saveComparatorProductDetailsDetails'
-       
-        //
+       'clinicaltrials/saveComparatorProductDetailsDetails',
+       'importexportapp/saveDisposalApplication',
+       'importexportapp/saveDisposalPermitProductdetails',
+       'documentmanagement/onunfitProductsUpload',
+       'tradermanagement/onUpdateTraderAccountDetails',
+       'utilities/onCustomerAccountRegistrationSubmission',
+       'tradermanagement/onPharmacisAccountUsersRegistration',
+       'premisesregistration/onSavePremisesApplication',
+       'premisesregistration/onSavePremisesStoreLocationDetails',
+       'premisesregistration/onSavePremisesDirectors',
+       'premisesregistration/onSavePremisesDirectorsDetails',
+       'premisesregistration/onDeletePremisesDetails',
+       'premisesregistration/onSavePremisesholder',
+       'premisesregistration/onSavePremisesStaff',
+       'importexportapp/onDeletePermitdetails',
+       'premisesregistration/onSaveTelephoneDetails'
     ];
 }

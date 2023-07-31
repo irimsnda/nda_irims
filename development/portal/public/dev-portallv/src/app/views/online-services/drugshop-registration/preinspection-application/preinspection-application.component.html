@@ -391,7 +391,7 @@
                       type="success"
                       icon="fa fa-eraser"
                       [elementAttr]="{  class: 'pull-left' }"
-                      (onClick)="onPremisesDashboard()">
+                      (click)="onPremisesDashboard()">
                   </dx-button>
                   <button type="submit" (click)="onSavePremisesApplication()" class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Drug Shop
         Application &&   Next Particulars Nearest Pharmacy</button>
@@ -418,7 +418,8 @@
                               [premisesStoreslocationFrm] ="premisesStoreslocationFrm"  
                               [countries] ="countries"  
                               [regions] ="regions"     
-                              [premise_id] ="premise_id"  
+                              [premise_id] ="premise_id"
+                              [isLocationPopupVisible]="isLocationPopupVisible"  
                               [districts] ="districts"  
                               [is_readonly] ="is_readonly">
                               </app-drugshop-nearestlocation>

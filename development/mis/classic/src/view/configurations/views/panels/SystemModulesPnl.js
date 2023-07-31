@@ -22,7 +22,7 @@ Ext.define('Admin.view.configurations.views.panels.SystemModulesPnl', {
             width: 520,
             titleCollapse: true
         },{
-            xtype: 'systemSubModulesGrid',
+            xtype: 'systemsubmodulesgrid',
             region: 'center'
         }
     ]

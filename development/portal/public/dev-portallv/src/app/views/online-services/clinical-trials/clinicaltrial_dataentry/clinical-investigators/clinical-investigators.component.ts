@@ -62,11 +62,11 @@ export class ClinicalInvestigatorsComponent implements OnInit {
       region_id: new FormControl('', Validators.compose([])),
       district_id: new FormControl('', Validators.compose([])),
       email: new FormControl('', Validators.compose([Validators.required])),
-      postal_address: new FormControl('', Validators.compose([Validators.required])),
+      postal_address: new FormControl('', Validators.compose([])),
       telephone: new FormControl('', Validators.compose([])),
       mobile_no: new FormControl('', Validators.compose([])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
-      contact_person: new FormControl('', Validators.compose([Validators.required]))
+      contact_person: new FormControl('', Validators.compose([]))
     });
   }
   ngOnInit() {
@@ -440,13 +440,9 @@ onInvestigatorsPreparing(e) {
           //the details 
           if (this.app_resp.success) {
             this.issponsorInvestigatorAddWinVisible = false;
-
             this.updateConsigneeReceiver(this.app_resp.record_id, name);
-
-            this.toastr.success(this.app_resp.message, 'Response');
-
+            
           } else {
-            this.toastr.error(this.app_resp.message, 'Alert');
           }
           this.spinner.hide();
         },

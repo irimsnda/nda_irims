@@ -188,6 +188,15 @@ if (!function_exists('insertRecord')) {
         return DbHelper::insertRecord($table_name, $table_data, $user_id, $con);
     }
 }
+
+//new
+if (!function_exists('insertMultipleRecords')) {
+    function insertMultipleRecords($table_name, $table_data, $user_id= 0, $con = 'mysql')
+    {
+
+        return DbHelper::insertMultipleRecords($table_name, $table_data, $user_id,$con);
+    }
+}
 if(!function_exists('sendMailNotification')){
 	function sendMailNotification($trader_name, $to,$subject,$message,$cc=null,$bcc=null,$attachement=null,$attachement_name = null,$template_id =null, $vars=null) {
 		 return EmailHelper::sendMailNotification($trader_name, $to,$subject,$message,$cc,$bcc,$attachement,$attachement_name,$template_id, $vars);

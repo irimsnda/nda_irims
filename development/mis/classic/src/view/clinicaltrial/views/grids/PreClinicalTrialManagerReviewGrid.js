@@ -72,12 +72,12 @@ Ext.define('Admin.view.clinicaltrial.views.grids.PreClinicalTrialManagerReviewGr
                 xtype: 'menu',
                 items: [
                     {
-                        text: '1st Assessment',
+                        text: 'Assessment',
                         iconCls: 'x-fa fa-sliders',
                         menu: {
                             xtype: 'menu',
                             items: [{
-                                    text: 'Report',
+                                    text: 'Assesement Report',
                                     iconCls: 'x-fa fa-file',
                                     childXtype: 'presubmissionevaluationfrm',
                                     winTitle: 'Assessment Report',

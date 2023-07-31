@@ -3,6 +3,8 @@ import { AccountManagementService } from 'src/app/services/account_management/ac
 import { ToastrService } from 'ngx-toastr';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SpinnerVisibilityService } from 'ng-http-loader'
+import { ConfigurationsService } from 'src/app/services/shared/configurations.service';
+
 
 @Component({
   selector: 'app-pharmacistsaccount-user',
@@ -10,34 +12,47 @@ import { SpinnerVisibilityService } from 'ng-http-loader'
   styleUrls: ['./pharmacistsaccount-user.component.css']
 })
 export class PharmacistsaccountUserComponent implements OnInit {
- dtaTraderaccountUsers:any={};
-  traderUsersAccountFrm:FormGroup;
+ dtaPharmacistaccountUsers:any={};
+  PharmacistsUsersAccountFrm:FormGroup;
   password:string;
   confirm_password:string;
   account_resp:any;
-  addTraderUsersAccountFrmWin:boolean = false;
+  countries:any;
+  regions:any;
+  districts:any;
+  region_id:number;
+  country_id:number;
+  addPharmacistUsersAccountFrmWin:boolean = false;
   message:string;
-  constructor(public appService:AccountManagementService,public toastr: ToastrService,public spinner: SpinnerVisibilityService) { 
-    this.traderUsersAccountFrm = new FormGroup({
+  constructor(public appService:AccountManagementService,public toastr: ToastrService,public spinner: SpinnerVisibilityService,public configService: ConfigurationsService) { 
+    this.PharmacistsUsersAccountFrm = new FormGroup({
       email_address: new FormControl('', Validators.compose([Validators.required])),
-      password: new FormControl('', Validators.compose([Validators.required])),
-      confirm_password: new FormControl('', Validators.compose([Validators.required])),
-      id: new FormControl('', Validators.compose([]))
+      psu_reg_no: new FormControl('', Validators.compose([Validators.required])),
+      full_name: new FormControl('', Validators.compose([Validators.required])),     
+      psu_reg_date: new FormControl('', Validators.compose([Validators.required])), 
+      telephone_no: new FormControl('', Validators.compose([Validators.required])),
+      country_id: new FormControl('', Validators.compose([Validators.required])),
+      region_id: new FormControl('', Validators.compose([Validators.required])),
+      district_id: new FormControl('', Validators.compose([Validators.required])),
+      physical_address: new FormControl('', Validators.compose([Validators.required])),
+      id: new FormControl('', Validators.compose([])),
+      _token:new FormControl('',Validators.compose([]))
     });
   }
 
   ngOnInit() {
     this.onLoadTraderAccountUsers();
+    this.onLoadCountries();
   }
-  onTradersToolbarPreparing(e) {
+  onPharmacistToolbarPreparing(e) {
     e.toolbarOptions.items.unshift({
       location: 'before',
       widget: 'dxButton',
       options: {
-        text: 'Add User',
+        text: 'Add Pharmacist',
         type: 'default',
         icon: 'fa fa-plus',
-        onClick: this.funcAddTraderAccountUser.bind(this)
+        onClick: this.funcAddPharmacistAccountUser.bind(this)
 
       }
     }, {
@@ -49,9 +64,9 @@ export class PharmacistsaccountUserComponent implements OnInit {
         }
       });
   }
-  funcAddTraderAccountUser(){
-    this.traderUsersAccountFrm.reset();
-    this.addTraderUsersAccountFrmWin = true;
+  funcAddPharmacistAccountUser(){
+    this.PharmacistsUsersAccountFrm.reset();
+    this.addPharmacistUsersAccountFrmWin = true;
   }funcpopWidth(percentage_width) {
     return window.innerWidth * percentage_width/100;
   }
@@ -64,27 +79,20 @@ export class PharmacistsaccountUserComponent implements OnInit {
       .subscribe(
         resp_data => {
           if (resp_data.success) {
-            this.dtaTraderaccountUsers =  resp_data.data;
+            this.dtaPharmacistaccountUsers =  resp_data.data;
           }
           else {
             this.toastr.error(resp_data.message, 'Alert!');
           }
         });
   }
-  onSavetraderUsersAccountDetails(){
+  onSavepharmacistUsersAccountDetails(){
     
-    if (this.traderUsersAccountFrm.invalid) {
-      return;
-    }
-    this.password = this.traderUsersAccountFrm.controls['password'].value;
-    this.confirm_password = this.traderUsersAccountFrm.controls['confirm_password'].value;
-    
-    if(this.password != this.confirm_password){
-      this.toastr.error('Pasword MisMatch', 'Alert');
+    if (this.PharmacistsUsersAccountFrm.invalid) {
       return;
     }
     
-    this.appService.onCreateUserAccount(this.traderUsersAccountFrm.value,'onAccountUsersRegistration')
+    this.appService.onCreateUserAccount(this.PharmacistsUsersAccountFrm.value,'onPharmacisAccountUsersRegistration')
       //.pipe(first())
       .subscribe(
         response => {
@@ -93,7 +101,7 @@ export class PharmacistsaccountUserComponent implements OnInit {
             if(this.account_resp.success){
               this.onLoadTraderAccountUsers() 
               this.toastr.success(this.message, 'Response');
-              this.addTraderUsersAccountFrmWin = false;
+              this.addPharmacistUsersAccountFrmWin = false;
             }else{
               this.message = this.account_resp.message;
               this.toastr.error(this.message, 'Alert');
@@ -103,13 +111,70 @@ export class PharmacistsaccountUserComponent implements OnInit {
         error => {
           
         });
+  }  
+  onCoutryCboSelect($event) {
+
+    this.country_id = $event.selectedItem.id;
+
+    this.onLoadRegions(this.country_id);
+
+  }
+    onRegionsCboSelect($event) {
+    this.region_id = $event.selectedItem.id;
+
+    this.onLoadDistricts(this.region_id);
+
+  }
+  onLoadCountries() {
+
+    var data = {
+      table_name: 'par_countries'
+    };
+    this.configService.onLoadConfigurationData(data)
+
+      .subscribe(
+        data => {
+          this.countries = data;
+        },
+        error => {
+          return false;
+        });
+  }
+    onLoadRegions(country_id) {
+
+    var data = {
+      table_name: 'par_regions',
+      country_id: country_id
+    };
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.regions = data;
+        },
+        error => {
+          return false
+        });
+  }
+    onLoadDistricts(region_id) {
+    var data = {
+      table_name: 'par_districts',
+      region_id: region_id
+    };
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.districts = data
+        },
+        error => {
+          return false;
+        });
   }
   funcUpdateTraderUserAccountDetails(data){
     
-    this.addTraderUsersAccountFrmWin = true;
-    this.traderUsersAccountFrm.patchValue(data.data);
-    this.traderUsersAccountFrm.controls['password'].setValue('');
-    this.traderUsersAccountFrm.controls['confirm_password'].setValue('');
+    this.addPharmacistUsersAccountFrmWin = true;
+    this.PharmacistsUsersAccountFrm.patchValue(data.data);
+    this.PharmacistsUsersAccountFrm.controls['password'].setValue('');
+    this.PharmacistsUsersAccountFrm.controls['confirm_password'].setValue('');
     
   }
 }

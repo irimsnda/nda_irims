@@ -304,6 +304,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
             text: 'Save Assessment Details',
             iconCls: 'x-fa fa-save',
             formBind: true,
+            name:'save_btn',
             ui: 'soft-purple',
             handler: 'doSaveEvaluationDetails',
             storeId: ' ',

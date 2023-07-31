@@ -9,7 +9,7 @@ use Modules\PremiseRegistration\Traits\PremiseRegistrationTrait;
 use Modules\GmpApplications\Traits\GmpApplicationsTrait;
 use Modules\ClinicalTrial\Traits\ClinicalTrialTrait;
 use Modules\ProductRegistration\Traits\ProductsRegistrationTrait;
-
+use Modules\Enforcement\Traits\EnforcementTrait;
 use Modules\PromotionMaterials\Traits\PromotionMaterialsTrait;
 use Modules\ProductNotification\Traits\ProductsNotificationTrait;
 use Modules\Importexportpermits\Traits\ImportexportpermitsTraits;
@@ -24,6 +24,7 @@ class CommonController extends Controller
     use PromotionMaterialsTrait;
     use ProductsNotificationTrait;
     use ImportexportpermitsTraits;
+    use EnforcementTrait;
     protected $user_id;
 
     protected $base_url;
@@ -86,6 +87,60 @@ class CommonController extends Controller
             $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
         }
         return response()->json($res);
+    }
+
+  public function getTcMeetingParticipants(Request $request)
+    {
+        $meeting_id = $request->input('meeting_id');
+        try {
+            $qry = DB::table('tc_meeting_participants as t1')
+                ->select('t1.*')
+                ->where('t1.meeting_id', $meeting_id);
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+    public function getCaseDecisionsLogs(Request $req)
+    {
+
+        $application_code = $req->input('application_code');
+        $module_id = $req->input('module_id');
+        try {
+            $qry = DB::table('tra_case_recommendations as t1')
+                ->leftJoin('par_recommendations as t2', 't1.recommendation_id', 't2.id')
+                ->leftJoin('users as t3', 't1.created_by', 't3.id')
+                ->leftJoin('wf_stage_categories as t4', 't1.stage_category_id', 't4.id')
+                ->leftJoin('par_case_decisions as t5', 't1.case_decision_id', 't5.id')
+                ->select('t1.*', 't2.name as recommendation','t5.name as decision', 't1.created_on as recommendation_date', DB::raw("CONCAT_WS(' ',decrypt(t3.first_name),decrypt(t3.last_name)) as recommended_by"), 't4.name as stage_name');
+
+
+
+            $qry->where('application_code', $application_code);
+            $qry->where('module_id', $module_id);
+
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
     }
 
     public function deleteChecklistRaisedQuery(Request $req)
@@ -162,6 +217,55 @@ class CommonController extends Controller
         }
         return response()->json($res);
     }   
+
+    public function saveRecommendationDetails(Request $req)
+    {
+        try {
+            $user_id = \Auth::user()->id;
+            $post_data = $req->all();
+            $table_name = 'tra_evaluation_recommendations';
+            $id = $post_data['recommendation_record_id'];
+            $stage_category_id = $post_data['stage_category_id'];
+            //unset unnecessary values
+            unset($post_data['_token']);
+            unset($post_data['table_name']);
+            unset($post_data['model']);
+            unset($post_data['id']);
+            unset($post_data['recommendation_record_id']);
+            unset($post_data['unset_data']);
+            $unsetData = $req->input('unset_data');
+            if (isset($unsetData)) {
+                $unsetData = explode(",", $unsetData);
+                $post_data = unsetArrayData($post_data, $unsetData);
+            }
+
+            $table_data = $post_data;
+            //add extra params
+            $table_data['created_on'] = Carbon::now();
+            $table_data['created_by'] = $user_id;
+            $where = array(
+                'id' => $id
+            );
+            $res = array();
+            if (isset($id) && $id != "") {
+                if (recordExists($table_name, $where)) {
+                    unset($table_data['created_on']);
+                    unset($table_data['created_by']);
+                    $table_data['dola'] = Carbon::now();
+                    $table_data['altered_by'] = $user_id;
+                    $res = updateRecord($table_name, $where, $table_data);
+                }
+            } else {
+                $res = insertRecord($table_name, $table_data);
+            }
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return response()->json($res);
+    }
+
     function validateInvoiceAmountsDetails($details, $paying_currency_id,$paying_exchange_rate,$is_fast_track){
              foreach ($details as $detail) {
 
@@ -564,6 +668,7 @@ class CommonController extends Controller
         $table_name = $request->input('table_name');
         $application_id = $request->input('application_id');
         $module_id = $request->input('module_id');
+        $application_code = $request->application_code;
         $process_id = $request->input('process_id');
         $res = array();
 /*
@@ -582,13 +687,16 @@ class CommonController extends Controller
             $qry = DB::table($table_name)
                 ->where('application_code', $app_code);
             $app_details = $qry->first();
+        }else if(validateIsNumeric($application_code)){
+             $qry = DB::table($table_name)
+             ->where('application_code', $application_code);
+            $app_details = $qry->first();
         }
         else{
             $qry = DB::table($table_name)
                 ->where('id', $application_id);
             $app_details = $qry->first();
         }
-
         if (is_null($app_details)) {
             $res = array(
                 'success' => false,
@@ -621,6 +729,8 @@ class CommonController extends Controller
             $res = $this->saveImpExpApplicationRecommendationDetails($request, $sub_module_id, $app_details);
         }else if ($module_id == 29) {//Drug Shops
             $res = $this->savePremiseApplicationApprovalDetails($request, $sub_module_id, $app_details);
+        }else if ($module_id ==30) {//enforcement
+            $res = $this->saveEnforcementApplicationRecommendationDetails($request, $sub_module_id, $app_details);
         }
         return \response()->json($res);
     }
@@ -1132,7 +1242,7 @@ class CommonController extends Controller
 
      public function getApplicationApplicantDetails(Request $request)
     {
-        $application_id = $request->input('application_id');
+        $application_code = $request->input('application_code');
         $table_name = $request->input('table_name');
 
         try {
@@ -1142,7 +1252,7 @@ class CommonController extends Controller
                 ->leftJoin('par_districts as t5', 't1.district_id','t5.id')
                 ->leftJoin($table_name.' as t4', 't1.id','t4.applicant_id')
                 ->select('t1.id as applicant_id', 't1.name as applicant_name', 't1.contact_person', 't1.physical_address', 't1.postal_address', 't5.name as district_name', 't3.name as region_name', 't2.name as country_name', 't1.telephone_no')
-                ->where('t4.id', $application_id);
+                ->where('t4.application_code', $application_code);
                 
                 
             $results = $qry->first();

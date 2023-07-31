@@ -38,6 +38,8 @@ Ext.define('Admin.controller.PvCtr', {
             },
             'pvReviewRcMeetingPnl': {
                 afterrender: 'preparePvManagerMeeting'
+            },'videocnt': {
+                afterrender: 'showVideo'
             },
             'pvPeerMeetingApplicationListGrid button[name=save_btn]': {
                 click: 'saveTCMeetingDetails'
@@ -321,6 +323,49 @@ Ext.define('Admin.controller.PvCtr', {
             applicationsGrid = activeTab.down('#application_list');
         this.preparePvMeetingDetailsGeneric(activeTab, applicationsGrid, 0);
     },
+
+     showVideo: function () {
+        var me = this,
+            form = me.getMainTabPanel();
+         Ext.Ajax.request({
+                 method: 'GET',
+                    url: 'commonparam/getCommonParamFromTable',
+                    params: {
+                        table_name:'par_video_test'
+                    },
+                    headers: {
+                        'Authorization': 'Bearer ' + access_token
+                    }, 
+                    success: function (response) {
+                        Ext.getBody().unmask();
+                        var resp = Ext.JSON.decode(response.responseText),
+                            message = resp.message,
+                            success = resp.success,
+                            videoData = resp.results;
+                        if (success == true || success === true) {
+                           
+                            videoData.forEach(function (videoInfo) {
+                                form.add({
+                                        xtype: 'video',
+                                        url: videoInfo.url,
+                                        autoPause: true,
+                                        autoResume: true
+                                    });
+                                });
+                            form.updateLayout();
+                        }else {
+                            toastr.error(message, "Failure Response");
+                        }
+                      },
+                        failure: function (response) {
+                            var resp = Ext.JSON.decode(response.responseText),
+                             message = resp.message,
+                            success = resp.success;
+                            toastr.error(message, 'Failure Response');
+                    }
+        });
+     },
+    
     preparePvMeetingDetailsGeneric: function (activeTab, applicationsGrid, isReadOnly) {
         Ext.getBody().mask('Please wait...');
         var me = this,

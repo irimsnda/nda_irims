@@ -44,9 +44,10 @@ export class DisposalSharedclassComponent implements OnInit {
   mis_url:string = AppSettings.mis_url;
   printiframeUrl:any;
   isPrintReportVisible:boolean;
-
+  disposalclassData:any;
+  destructionCompanyData:any;
   printReportTitle:string;
-  
+  packTypeData:any;
   onApplicationSubmissionFrm:FormGroup;
   sectionsData: any;
   typesOfDisposalData:any;
@@ -204,20 +205,22 @@ export class DisposalSharedclassComponent implements OnInit {
             application_code:null
           });
           this.dispapplicationGeneraldetailsfrm = new FormGroup({
-            proposedmethod_of_disposal_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+            company_disposal_id: new FormControl('', Validators.compose([Validators.required])),
             reason_of_destruction_id: new FormControl(this.section_id, Validators.compose([])),
             sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
-            reason_for_disposal: new FormControl('', Validators.compose([])),
+            reason_for_disposal_id: new FormControl('', Validators.compose([Validators.required])),
+            other_product_category:new FormControl('', Validators.compose([])),
             total_weight: new FormControl('', Validators.compose([Validators.required])),
             weights_units_id: new FormControl('', Validators.compose([Validators.required])),
             quantity: new FormControl('', Validators.compose([])),
             otherproposedmethod_of_disposal: new FormControl('', Validators.compose([])),
             product_particulars_description: new FormControl('', Validators.compose([Validators.required])),
-            market_value: new FormControl('', Validators.compose([Validators.required])),
+            market_value: new FormControl('', Validators.compose([])),
             currency_id: new FormControl('', Validators.compose([Validators.required])),
-            
-            section_id: new FormControl('', Validators.compose([Validators.required])),
+            disposal_class_id: new FormControl('', Validators.compose([Validators.required])),
+            section_id: new FormControl('', Validators.compose([])),
             zone_id: new FormControl('', Validators.compose([])),
+
             module_id: new FormControl(this.module_id, Validators.compose([Validators.required])),
             application_code: new FormControl(this.application_code, Validators.compose([])),
             destructionsite_location: new FormControl('', Validators.compose([])),
@@ -227,9 +230,10 @@ export class DisposalSharedclassComponent implements OnInit {
             superintendent_incharge: new FormControl('', Validators.compose([])),
             superintendent_registration_number: new FormControl('', Validators.compose([])),
             registration_body: new FormControl('', Validators.compose([])),
-            premise_id: new FormControl('', Validators.compose([])),
-            premises_name: new FormControl('', Validators.compose([])),
-            
+            premise_id: new FormControl('', Validators.compose([Validators.required])),
+            hold_premise:new FormControl('', Validators.compose([Validators.required])),
+            premises_name: new FormControl('', Validators.compose([Validators.required])),
+            other_disposal_reasons: new FormControl('', Validators.compose([]))
           });
           
           this.permitReceiverSenderFrm = new FormGroup({
@@ -260,10 +264,12 @@ export class DisposalSharedclassComponent implements OnInit {
             currency_name: new FormControl('', Validators.compose([])),
             estimated_value: new FormControl('', Validators.compose([])),
             packaging_unit_id: new FormControl('', Validators.compose([])),
-            common_name: new FormControl('', Validators.compose([])),
+            packaging_type_id:new FormControl('', Validators.compose([])),
+            generic_name: new FormControl('', Validators.compose([Validators.required])),
             product_strength: new FormControl('', Validators.compose([])),
             dosage_form: new FormControl('', Validators.compose([])),
             pack_size: new FormControl('', Validators.compose([])),
+            product_pack:new FormControl('', Validators.compose([])),
             batch_no: new FormControl('', Validators.compose([])),
             reason_for_disposal: new FormControl('', Validators.compose([])),
             product_id: new FormControl('', Validators.compose([])),
@@ -331,6 +337,7 @@ export class DisposalSharedclassComponent implements OnInit {
     this.onLoadWeightsData()
     this.onLoadconsigneeOptionsData();
     this.onLoadpayingCurrencyData();
+    this.onLoadpackTypeData();
     this.onloadApplicationTypes();
 
     this.onLoaddisposalSiteoptionData()
@@ -338,8 +345,9 @@ export class DisposalSharedclassComponent implements OnInit {
     this.onLoadSections();
     this.onLoaddestructionMethodsData();
     this.onLoadreasonsOfDisposalData();
+    this.onLoadDisposalCompaniesData();
     this.onLoadconfirmDataParm();
-
+    this.onLoadDisposalclass();
   }
   funcpopWidth(percentage_width) {
     return window.innerWidth * percentage_width/100;
@@ -480,6 +488,18 @@ export class DisposalSharedclassComponent implements OnInit {
           this.reasonsOfDisposalData = data;
         });
   }
+
+  onLoadDisposalCompaniesData() {
+    var data = {
+      table_name: 'par_disposal_companies',
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.destructionCompanyData = data;
+        });
+  }
   onLoadZones() {
     var data = {
       table_name: 'par_zones',
@@ -581,6 +601,17 @@ export class DisposalSharedclassComponent implements OnInit {
       .subscribe(
         data => {
           this.payingCurrencyData = data;
+        });
+
+  }
+    onLoadpackTypeData() {
+    var data = {
+      table_name: 'par_packaging_units',
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.packTypeData = data;
         });
 
   }
@@ -836,7 +867,17 @@ export class DisposalSharedclassComponent implements OnInit {
         });
   }
   
- 
+   onLoadDisposalclass() {
+    var data = {
+      table_name: 'par_disposalprodclass_category',
+    };
+
+    this.configService.onLoadConfigurationData(data)
+      .subscribe( 
+        data => {
+          this.disposalclassData = data;
+        });
+  }
   OnReloadPermitProducts(){
 
       let me = this;

@@ -2508,11 +2508,10 @@ public function onfuncValidatePermitDetails(Request $req){
         $application_code = $req->application_code;
         $title = $req->title;
         $sql = DB::table($table_name)->where(array('application_code'=>$application_code))->get();
-
+        $res=array();
         if(count($sql) == 0){
                 
                 $res = array('success'=>false, 'message'=>$validation_title);
-             
         }else{
             //check the sub_module_id
             $record = DB::table('wb_importexport_applications')->where('application_code',$application_code)->first();
@@ -2537,9 +2536,12 @@ public function onfuncValidatePermitDetails(Request $req){
                                  })
                                 ->count();
                     if($counter >0){
+                        // $res = array(
+                        //     'success' => true,
+                        //     'message' => 'Update the Batch No/# for all the products before you proceed'
                         $res = array(
-                            'success' => true,
-                            'message' => 'Update the Batch No/# for all the products before you proceed'
+                        'success' => true,
+                        'message' => 'Data entry validated'
                         );
                     }
                     else{
@@ -2560,7 +2562,8 @@ public function onfuncValidatePermitDetails(Request $req){
             
 
         }
-       
+             
+
  
       } catch (\Exception $e) {
           $res = array(
@@ -2573,8 +2576,7 @@ public function onfuncValidatePermitDetails(Request $req){
               'message' => $throwable->getMessage()
           );
       }
-      return response()->json($res);
-
+ return response()->json($res);
 }
 
     public function onValidateGMPOtherdetails(Request $req){
@@ -2823,6 +2825,8 @@ public function onfuncValidatePermitDetails(Request $req){
                 $data['trader_id']  = $mistrader_id;
             }else if($table_name == 'tra_billingpersonnel_information'){
                 $data['trader_id']  = $mistrader_id;
+            }else if($table_name =='tra_telephone_details'){
+                $data['trader_id']=$mistrader_id;
             }
             
             if(validateIsNumeric($record_id)){

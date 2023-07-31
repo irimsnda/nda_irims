@@ -390,14 +390,15 @@
      *      }
      *
      */
-    "output": {
-        "base": "${ext.dir}/build/examples/admin-dashboard/${build.id}",
+     "output": {
+        "base": "../production/mis/${build.id}",
         "page": "../index.html",
         "manifest": "../${build.id}.json",
         "appCache": {
             "enable": false
         }
     },
+
 
     /**
     * Controls for localStorage caching

@@ -12,9 +12,7 @@
 */
 
 use Modules\Importexportpermits\Http\Controllers\ImportexportpermitsController;
-
-Route::group(['middleware' => ['auth:api', 'web'], 'prefix' => 'importexportpermits'], function()
-{
+Route::group(['middleware' => ['web'], 'prefix' => 'importexportpermits'], function(){
     Route::get('getonlineimportexportappdetails', [ImportexportpermitsController::class, 'getonlineimportexportappdetails']);
     Route::get('prepareOnlineImportExporPermitReceivingStage', [ImportexportpermitsController::class, 'prepareOnlineImportExporPermitReceivingStage']);
     Route::get('prepareImportExporPermitReceivingStage', [ImportexportpermitsController::class, 'prepareImportExporPermitReceivingStage']);

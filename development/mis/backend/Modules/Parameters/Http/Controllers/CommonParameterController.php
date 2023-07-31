@@ -18,6 +18,8 @@ use Modules\Parameters\Entities\Finance\TransactionType;
 use Modules\Parameters\Entities\Locations\Country;
 use Modules\Parameters\Entities\Locations\Region;
 use Modules\Parameters\Entities\Locations\District;
+use Modules\Parameters\Entities\Locations\County;
+use Modules\Parameters\Entities\Locations\SubCounty;
 use Modules\Parameters\Entities\Locations\City;
 use Modules\Parameters\Entities\PortalParameter;
 use Illuminate\Support\Facades\DB;
@@ -305,6 +307,19 @@ class CommonParameterController extends BaseController
                     $doRetrieveAll,
                     $filter != null ? $this->parseFilter($filter) : null);
             },
+
+             "get-county" => function ($start, $limit, $doRetrieveAll, $filter = null) {
+                return County::getData($start,
+                    $limit,
+                    $doRetrieveAll,
+                    $filter != null ? $this->parseFilter($filter) : null);
+            },
+            "get-subcounty" => function ($start, $limit, $doRetrieveAll, $filter = null) {
+                return SubCounty::getData($start,
+                    $limit,
+                    $doRetrieveAll,
+                    $filter != null ? $this->parseFilter($filter) : null);
+            },
             "get-city" => function ($start, $limit, $doRetrieveAll, $filter = null) {
                 return City::getData($start,
                     $limit,
@@ -530,6 +545,7 @@ class CommonParameterController extends BaseController
         $filters = $request->input('filters');
         $con = $request->input('con');
         $db_con = 'mysql';
+
         if (isset($con) && $con != '') {
             $db_con = $con;
         }
@@ -652,7 +668,36 @@ class CommonParameterController extends BaseController
                         ->leftJoin('par_regions as t5','t1.region_id','=','t5.id')
                         ->select('t1.*', 't4.name as country_name', 't5.name as region_name');
             }
-else if ($table_name == 'par_audited_tables') {
+            else if ($table_name == 'tra_pharmacist_personnel') {
+                $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->leftJoin('par_countries as t4','t1.country_id','=','t4.id')
+                        ->leftJoin('par_regions as t5','t1.region_id','=','t5.id')
+                         ->leftJoin('par_districts as t6','t1.district_id','=','t6.id')
+                         ->leftJoin('par_personnel_qualifications as t7','t1.qualification_id','=','t7.id')
+                        ->select('t1.*', 't4.name as country_name', 't5.name as region_name','t6.name as district_name','t7.name as qualification_name');
+            }
+             else if ($table_name == 'tra_disposal_bodies') {
+                $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->leftJoin('par_disposal_license_types as t2','t1.licence_type_id','=','t2.id')
+                        ->leftJoin('par_disposal_waste_types as t3','t1.waste_type_id','=','t3.id')
+                        ->leftJoin('par_countries as t4','t1.country_id','=','t4.id')
+                        ->leftJoin('par_regions as t5','t1.region_id','=','t5.id')
+                         ->leftJoin('par_districts as t6','t1.district_id','=','t6.id')
+                        ->select('t1.*', 't4.name as country_name', 't5.name as region_name','t6.name as district_name','t2.name as license_name','t3.name as waste_name');
+            }
+            else if ($table_name == 'tra_premise_incharge_personnel') {
+                $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->leftJoin('par_countries as t4','t1.country_id','=','t4.id')
+                        ->leftJoin('par_regions as t5','t1.region_id','=','t5.id')
+                         ->leftJoin('par_districts as t6','t1.district_id','=','t6.id')
+                         ->leftJoin('par_personnel_qualifications as t7','t1.qualification_id','=','t7.id')
+                        ->select('t1.*', 't4.name as country_name', 't5.name as region_name','t6.name as district_name','t7.name as qualification_name');
+            }
+
+            else if ($table_name == 'par_audited_tables') {
                 $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')
                         ->leftJoin('par_audit_table_types as t4','t1.table_type_id','=','t4.id')
@@ -808,8 +853,9 @@ else if ($table_name == 'par_audited_tables') {
                 
                 ->LeftJoin('par_sections as t11','a7.section_id','t11.id')
                 ->LeftJoin('par_cost_types as t12','t1.cost_type_id','t12.id')
+                ->LeftJoin('par_revenue_accounts as t13','t1.revenue_code_id','t13.id')
                 ->select('t1.*', 't1.id as element_costs_id','t11.name as section_name','t4.name as currency_name', 'a7.section_id', 't4.id as currency_id', 't2.name as element', 
-                    't4.name as currency', 't5.name as sub_category','t6.name as feetype','a7.name as category', 't8.name as formulaflag', 't9.name as optionalflag','t10.name as glcode','t12.name as cost_type',
+                    't4.name as currency', 't5.name as sub_category','t6.name as feetype','a7.name as category', 't8.name as formulaflag', 't9.name as optionalflag','t10.name as glcode','t10.name as revenue_code','t12.name as cost_type',
                     DB::raw("concat(t6.name,' ',a7.name,' ',t5.name,' ',t2.name, ' ',if(cost >0,cost,formula_rate),' ',t4.name) as element_desc"));
                     
          
@@ -932,6 +978,37 @@ else if ($table_name == 'par_audited_tables') {
          $cost_sub_category_id = $request->input('sub_category_id');
         try {
             $qry = DB::table('par_gl_accounts as t1')
+                ->select('t1.*');
+              if(isset($cost_sub_category_id)){
+                $qry->where('t5.id',$cost_sub_category_id);
+              }
+              //by
+              $qry->orderBy('id','DESC');
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    
+    }
+
+    public function getRevenueAccounts(request $request){
+         $cost_sub_category_id = $request->input('sub_category_id');
+        try {
+            $qry = DB::table('par_revenue_accounts as t1')
                 ->select('t1.*');
               if(isset($cost_sub_category_id)){
                 $qry->where('t5.id',$cost_sub_category_id);

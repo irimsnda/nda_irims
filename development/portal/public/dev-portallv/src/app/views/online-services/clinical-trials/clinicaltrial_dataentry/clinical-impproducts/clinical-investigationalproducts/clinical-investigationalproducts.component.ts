@@ -41,6 +41,7 @@ export class ClinicalInvestigationalproductsComponent extends ClinicalImpproduct
       classification_id: new FormControl('', Validators.compose([])),
       gmdn_term: new FormControl('', Validators.compose([])),
       gmdn_category: new FormControl('', Validators.compose([])),
+      is_registered:new FormControl('', Validators.compose([])),
       manufacturer_name: new FormControl('', Validators.compose([])),
       investigationproduct_section_id: new FormControl('', Validators.compose([Validators.required]))
       
@@ -76,5 +77,6 @@ export class ClinicalInvestigationalproductsComponent extends ClinicalImpproduct
         error => {
           this.toastr.error('Error Occurred', 'Alert');
         });
-  }
+  }  
+
 }

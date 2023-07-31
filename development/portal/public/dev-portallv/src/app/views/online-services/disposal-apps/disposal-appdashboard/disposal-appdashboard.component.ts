@@ -1,15 +1,18 @@
 
-
-
-
 import { Component, OnInit, ViewContainerRef, ViewChild } from '@angular/core';
 import { ModalDialogService } from 'ngx-modal-dialog';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { ConfigurationsService } from 'src/app/services/shared/configurations.service';
+import { AnimationStyleNormalizer } from '@angular/animations/browser/src/dsl/style_normalization/animation_style_normalizer';
+import { DataTableResource } from 'angular5-data-table';
 import { ImportexportService } from 'src/app/services/importexp-applications/importexport.service';
-import { DxDataGridComponent, DxActionSheetModule } from 'devextreme-angular';
+import {
+  DxDataGridModule,
+  DxDataGridComponent,
+  DxTemplateModule
+} from 'devextreme-angular';
 import { Utilities } from 'src/app/services/common/utilities.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AppSettings } from 'src/app/app-settings';
@@ -231,6 +234,7 @@ export class DisposalAppdashboardComponent implements OnInit {
   functActionColumnClick(action_btn, data) {
       
     if(action_btn.action === 'edit'){
+
       this.funcApplicationPreveditDetails(data.data);
     }
     else if(action_btn.action === 'preview'){
@@ -275,6 +279,13 @@ export class DisposalAppdashboardComponent implements OnInit {
       this.funcPrintDisposalegistrationCertificate(data.data);
 
     }
+    else if(action_btn.action == 'delete_application'){
+      this.funcDeletePermitApplication(data);
+    }
+
+  }
+  funcDeletePermitApplication(data) { 
+    this.utilityService.funcApplicationDeleteCall(this.viewRef,data,'wb_disposal_applications', this.reloadPermitApplicationsApplications);
   }
   funcApplicationRejection(app_data){
     

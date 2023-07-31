@@ -188,7 +188,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialApprovalRecommFrm'
             xtype: 'button',
             text: 'Clear',
             ui: 'soft-purple',
-            iconCls: 'x-fa fa-close',
+            iconCls: 'x-fa fa-times',
             handler: function () {
                 this.up('form').getForm().reset();
             }

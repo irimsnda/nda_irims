@@ -62,6 +62,7 @@ export class DrugshopRegDashboardComponent implements OnInit {
   module_id:number = 29;
   businessTypeDetailsData:any;
   sectionsData:number;
+  
    applicationStatusData:number;
    FilterDetailsFrm:FormGroup;
    applicationDismissalFrm:FormGroup;
@@ -88,7 +89,7 @@ export class DrugshopRegDashboardComponent implements OnInit {
       premises_name: new FormControl('', Validators.compose([Validators.required])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
       application_type: new FormControl('', Validators.compose([Validators.required])),
-      status: new FormControl('', Validators.compose([Validators.required]))
+      status_name: new FormControl('', Validators.compose([Validators.required]))
     });
     this.FilterDetailsFrm = new FormGroup({
       sub_module_id: new FormControl('', Validators.compose([])),
@@ -117,7 +118,7 @@ export class DrugshopRegDashboardComponent implements OnInit {
     this.onLoadApplicationCounterDueforRenewal();
     this.onLoadprodProductTypeData();
     this.onBusinessTypesDetailsLoad();
-
+    
    }
   
   ngOnInit() {
@@ -283,6 +284,8 @@ export class DrugshopRegDashboardComponent implements OnInit {
           this.sectionsData = data;
         });
   }
+
+
   onLoadDrugshopAppType(sub_module_id) {
     var data = {
       table_name: 'sub_modules',

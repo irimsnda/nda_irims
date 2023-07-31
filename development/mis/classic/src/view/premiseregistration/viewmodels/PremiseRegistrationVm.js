@@ -20,6 +20,7 @@ Ext.define('Admin.view.premiseregistration.viewmodels.PremiseRegistrationVm', {
     data: {
         atBeginning: true,
         atEnd: false,
+        isReadOnly: false,
         atBeginningApproval: true,
         atEndApproval: false
     }

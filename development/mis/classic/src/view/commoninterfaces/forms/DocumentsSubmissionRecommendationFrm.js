@@ -76,7 +76,7 @@ Ext.define('Admin.view.commoninterfaces.views.forms.common_forms.DocumentsSubmis
             text: 'Clear',
             ui: 'soft-purple',
             hidden: true,
-            iconCls: 'x-fa fa-close',
+            iconCls: 'x-fa fa-times',
             handler: function () {
                 this.up('form').getForm().reset();
             }

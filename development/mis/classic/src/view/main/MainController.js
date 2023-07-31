@@ -42,6 +42,10 @@ Ext.define('Admin.view.main.MainController', {
         }
     },
 
+     setWorkflowCombosStore: function (obj, options) {
+        this.fireEvent('setWorkflowCombosStore', obj, options);
+    },
+
     setCurrentPage: function (store, me, hashTag, navigationList, mainCard, mainLayout) {
         var view = (node && node.get('viewType')) || 'page404',
             title = node.get('tab_title'),

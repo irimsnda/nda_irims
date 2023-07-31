@@ -38,6 +38,8 @@ export class ClinicalImpproductsComponent implements OnInit {
   clinicaltrailPlaceboProdData:any;
   clinicaltrailComparatorPProdData:any;
   isClinicalSitesDetailsVisible:boolean=false;
+    isReadOnlyProduct:boolean=false;
+
   studySitesData:any;
   studySiteFrm:FormGroup;
   isStudySiteAddWinVisible:boolean;
@@ -45,7 +47,7 @@ export class ClinicalImpproductsComponent implements OnInit {
   districts:any;
   app_resp:any;
   regions:any;
-
+confirmDataParam:any;
   IMPProductDetailsWinVisible:boolean;
   isRegisteredProductsWinshow:boolean=false;
   
@@ -112,6 +114,7 @@ export class ClinicalImpproductsComponent implements OnInit {
       
     });
     this.onLoadSections();
+    this.onLoadconfirmDataParm();
     this.onLoadinvestigationproductSectionData();
 
      
@@ -128,8 +131,8 @@ export class ClinicalImpproductsComponent implements OnInit {
 
   }
   onProductSectionChange($event){
-    if($event.value == 5 || $event.value == 6){
-      this.section_id = 5;
+    if($event.value == 5 ){
+      this.section_id = 2;
     }
     else{
       this.section_id = 1;
@@ -167,6 +170,17 @@ export class ClinicalImpproductsComponent implements OnInit {
         error => {
           return false
         });
+  } 
+  onLoadconfirmDataParm() {
+    var data = {
+      table_name: 'par_confirmations',
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.confirmDataParam = data;
+        });
   }
   onRegionsCboSelect($event) {
 
@@ -198,7 +212,8 @@ export class ClinicalImpproductsComponent implements OnInit {
         data => {
           this.investigationproductSectionData = data;
         });
-  }  onLoadSections() {
+  }  
+  onLoadSections() {
     var data = {
       table_name: 'par_sections',
     };
@@ -339,14 +354,13 @@ export class ClinicalImpproductsComponent implements OnInit {
   funSelectRegisteredProdcustsApp(data){
     let productdata = data.data;
      
-    this.iMPProductDetailsFrm.patchValue({brand_name:productdata.brand_name, common_name_id:productdata.common_name_id,product_id:data.tra_product_id,product_category_id:productdata.product_category_id,product_subcategory_id:productdata.product_subcategory_id,registration_no:productdata.certificate_no,registrant_name:productdata.applicant_name, dosage_form_id:productdata.dosage_form_id,routes_of_admin_id:productdata.routes_of_admin_id,product_strength:productdata.product_strength, product_desc: productdata.physical_description, registered_product_id:productdata.registered_product_id});
+    this.iMPProductDetailsFrm.patchValue({brand_name:productdata.brand_name,manufacturer_name:productdata.manufacturer_name, common_name_id:productdata.common_name_id,product_id:data.tra_product_id,product_category_id:productdata.product_category_id,product_subcategory_id:productdata.product_subcategory_id,registration_no:productdata.certificate_no,registrant_name:productdata.applicant_name, dosage_form_id:productdata.dosage_form_id,routes_of_admin_id:productdata.routes_of_admin_id,product_strength:productdata.product_strength, product_desc: productdata.physical_description, registered_product_id:productdata.registered_product_id});
     this.isPreviewApplicationsDetails = false;
 this.isRegisteredProductsWinshow = false;
   }
   prodApplicationActionColClick(data){
     let productdata = data.data;
-     
-    this.iMPProductDetailsFrm.patchValue({brand_name:productdata.brand_name, common_name_id:productdata.common_name_id,product_id:data.tra_product_id,product_category_id:productdata.product_category_id,product_subcategory_id:productdata.product_subcategory_id,registration_no:productdata.certificate_no,registrant_name:productdata.applicant_name, dosage_form_id:productdata.dosage_form_id,routes_of_admin_id:productdata.routes_of_admin_id,product_strength:productdata.product_strength, product_desc: productdata.physical_description, registered_product_id:productdata.registered_product_id});
+    this.iMPProductDetailsFrm.patchValue({brand_name:productdata.brand_name, manufacturer_name:productdata.manufacturer_name,common_name_id:productdata.common_name_id,product_id:data.tra_product_id,product_category_id:productdata.product_category_id,product_subcategory_id:productdata.product_subcategory_id,registration_no:productdata.certificate_no,registrant_name:productdata.applicant_name, dosage_form_id:productdata.dosage_form_id,routes_of_admin_id:productdata.routes_of_admin_id,product_strength:productdata.product_strength, product_desc: productdata.physical_description, registered_product_id:productdata.registered_product_id});
     this.isRegisteredProductsWinshow = false;
 
   }
@@ -383,6 +397,17 @@ this.isRegisteredProductsWinshow = false;
         error => {
           return false
         });
+  }  
+  onIsRegisteredProductChange($event) {
+    
+    if($event.value == 1){
+        this.isReadOnlyProduct =true;
+
+    }else{
+      this.isReadOnlyProduct =false;
+    }
+    
+
   }
   
   onLoadclinicaltrailComparatorProdData() {
@@ -454,7 +479,9 @@ this.isRegisteredProductsWinshow = false;
                 .catch(error => { throw 'Data Loading Error' });
         }
     });
-} funcSearchManufacturingSite() {
+} 
+
+funcSearchManufacturingSite() {
 
   this.isManufacturerSitePopupVisible = true;
   var me = this;

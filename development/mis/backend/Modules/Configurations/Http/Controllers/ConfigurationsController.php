@@ -93,6 +93,7 @@ class ConfigurationsController extends Controller
                 }
             } else {
                
+
                 $res = insertRecord($table_name, $table_data, $user_id);
             }
             
@@ -396,9 +397,12 @@ public function deleteWorkflowRecord(Request $req)
                 ->join('par_checklist_categories as t2', 't1.checklist_category_id', '=', 't2.id')
                 ->join('modules as t3', 't1.module_id', '=', 't3.id')
                 ->join('sub_modules as t4', 't1.sub_module_id', '=', 't4.id')
-                ->join('par_sections as t5', 't1.section_id', '=', 't5.id')
+                ->leftJoin('par_sections as t5', 't1.section_id', '=', 't5.id')
                 ->leftJoin('par_device_types as t6', 't1.device_type_id', '=', 't6.id')
                 ->select('t1.*', 't2.name as category_name', 't3.name as module', 't4.name as sub_module', 't5.name as section', 't6.name as device_type_name');
+
+
+
             if (isset($checklist_category) && $checklist_category != '') {
                 $qry->where('t1.checklist_category_id', $checklist_category);
             }
@@ -1988,9 +1992,13 @@ public function getParameterFormColumnsConfig(Request $req)
 
     $pure_array = array();
     foreach ($param_columns as $result) {
-        $pure_array[] = $result;
+         //$result = array_map('ucwords', $result);
+        $pure_array[] = array_map('ucwords', $result);
     }
-$labels = array_reverse($labels);
+
+    $labels = array_reverse($labels);
+
+
     $res = array(
                 'success' => true,
                 'main_fields' => $pure_array,
@@ -2355,4 +2363,25 @@ $labels = array_reverse($labels);
         $res = array('success'=>true, 'results'=>$element_data, 'message'=>'all is well');
         return response()->json($res);
    }
+
+
+   public function getCustomerList(Request $req){
+     try{
+            $applicant_id = $req->applicant_id;
+            
+            $list = DB::table('wb_trader_account as t1')
+                        ->get();
+
+            $res =  array(
+                'success' => true,
+                'message' => 'All is well',
+                'results' => $list
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
 }

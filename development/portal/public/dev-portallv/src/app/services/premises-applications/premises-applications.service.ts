@@ -78,7 +78,7 @@ export class PremisesApplicationsService {
 
   }
 
-    onLoadDirectorsInformations() {
+  onLoadTelephoneNos() {
     var headers = new HttpHeaders({
       "Accept": "application/json",
       "Authorization": 'Bearer ' + this.authService.getAccessToken(),
@@ -89,12 +89,30 @@ export class PremisesApplicationsService {
       params: { mistrader_id: this.mistrader_id }
     };
 
-    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getDirectorsInformations', this.config)
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getTelephoneDetails', this.config)
       .pipe(map(data => {
         return <any>data;
       }));
 
   }
+  onLoadApplicantIncharge(nimNo) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+
+    this.config = {
+      headers: headers,
+      params: { nimNo: nimNo }
+    };
+
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getApplicantIncharge', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+
+  }
+
   onLoadPersonnerQualifationsDetails(personnel_id) {
     var headers = new HttpHeaders({
       "Accept": "application/json",
@@ -126,6 +144,23 @@ export class PremisesApplicationsService {
         return <any>data;
       }));
   }
+
+ onLoadNearestPremises(premise_id) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+    this.config = {
+      headers: headers,
+      params:{mistrader_id:this.mistrader_id,premise_id:premise_id}
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getNearestPremises', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+  o
+
   onCheckPendingPremisesRenewal(premise_target_id) {
     var headers = new HttpHeaders({
       "Accept": "application/json",
@@ -206,6 +241,17 @@ export class PremisesApplicationsService {
         return data;
       }));
   }
+    onSaveTelephoneDetails(personnelData) {
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'premisesregistration/onSaveTelephoneDetails', personnelData, { params: { 'trader_id': this.trader_id, 'traderemail_address': this.email_address, 'mistrader_id': this.mistrader_id }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
   onSavePremisesPersonnelDetails(personnelData, premise_id) {
     var headers = new Headers({
       "Accept": "application/json",
@@ -239,15 +285,28 @@ export class PremisesApplicationsService {
         return data;
       }));
   }
-
-
-
-  onSavePremisesStoreLocationDetails(personnelData, premise_id) {
+  onSavePremisesHolderDetails(personnelData, premise_id) {
     var headers = new Headers({
       "Accept": "application/json",
       "Authorization": "Bearer " + this.authService.getAccessToken(),
     });
     let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'premisesregistration/onSavePremisesholder', personnelData, { params: { 'trader_id': this.trader_id, 'traderemail_address': this.email_address, 'mistrader_id': this.mistrader_id, premise_id: premise_id }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+
+  onSavePremisesStoreLocationDetails(personnelData, premise_id,uploadData ='') {
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    if(uploadData != ''){
+      
+    }
     return this.http.post(AppSettings.base_url + 'premisesregistration/onSavePremisesStoreLocationDetails', personnelData, { params: { 'trader_id': this.trader_id, 'traderemail_address': this.email_address, 'mistrader_id': this.mistrader_id, premise_id: premise_id }, headers: headers })
       .pipe(map(data => {
         return data;
@@ -310,6 +369,41 @@ export class PremisesApplicationsService {
         return <any>data;
       }));
   }
+    onLoadDirectorsInformations() {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer '+this.authService.getAccessToken() ,
+    });
+
+    this.config = {
+      headers: headers,
+      params:{trader_id:this.trader_id}
+    };
+
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getDirectorsInformations', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+
+  }
+
+   onLoadStaffInformations() {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer '+this.authService.getAccessToken() ,
+    });
+
+    this.config = {
+      headers: headers,
+      params:{trader_id:this.trader_id}
+    };
+
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getStaffInformations', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+
+  }
     onLoadPremisesDirectorsDetails(premise_id) {
     var headers = new HttpHeaders({
       "Accept": "application/json",
@@ -338,6 +432,23 @@ export class PremisesApplicationsService {
         return <any>data;
       }));
   }
+
+  onLoadOtherPremisesDetails(premise_id) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { premise_id: premise_id },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getOtherPremises', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
+
 
   onLoadPremisesStoreLocationDetails(premise_id) {
     var headers = new HttpHeaders({

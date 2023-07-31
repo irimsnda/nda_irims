@@ -352,13 +352,14 @@ Ext.define('Admin.view.parameters.views.forms.ElementsCostFrm', {
                     isLoad: true
                 }
             }
-        },{
+        },
+        {
             xtype: 'combobox',
             forceSelection: true,
-            name: 'irembo_feescode_id',
-            displayField: 'product_name',
+            name: 'revenue_code_id',
+            displayField: 'name',
             allowBlank: true,
-            fieldLabel: 'Irembo Product details',
+            fieldLabel: 'Revenue Code',
             margin: '0 20 0 0',
             valueField: 'id',
             queryMode: 'local',
@@ -366,10 +367,11 @@ Ext.define('Admin.view.parameters.views.forms.ElementsCostFrm', {
                 afterrender: {
                     fn: 'setConfigCombosStore',
                     config:{
+                        pageSize: 10000,
                         proxy:{
                             url: 'configurations/getConfigParamFromTable',
                             extraParams:{
-                                table_name: 'irembo_feescode_details',
+                                table_name: 'par_revenue_accounts',
                                 is_enabled: 1
                             }
                         }

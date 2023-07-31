@@ -195,6 +195,14 @@ Ext.define('Admin.view.configurations.views.forms.Product_Class_RulesFrm', {
                     ui: 'soft-purple',
                     action_url: 'configurations/saveEditedConfigCommonData',
                     handler: 'doCreateConfigParamWin'
+                },
+                {
+                    text: 'Reset',
+                    iconCls: 'x-fa fa-times',
+                    ui: 'soft-purple',
+                    handler: function (btn) {
+                        btn.up('form').getForm().reset();
+                    }
                 }
             ]
         }

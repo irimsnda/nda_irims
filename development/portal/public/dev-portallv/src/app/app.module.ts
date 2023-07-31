@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { PublicModule } from './modules/public/public.module';
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { OnlineServicesModule } from './modules/online-services/online-services.module';
-import { DxActionSheetModule,DxFileUploaderModule, DxDataGridModule, DxPopupModule, DxButtonModule, DxDateBoxModule,DxRadioGroupModule, DxTextBoxModule, DxSelectBoxModule, DxTextAreaModule, DxContextMenuModule, DxMenuModule, DxCheckBoxModule, DxNumberBoxModule, DxTagBoxModule, DxTreeListModule, DxScrollViewModule, DxProgressBarModule, DxTabsModule } from 'devextreme-angular';
+import { DxActionSheetModule,DxFileUploaderModule, DxDataGridModule, DxPopupModule, DxButtonModule, DxDateBoxModule,DxRadioGroupModule, DxTextBoxModule, DxSelectBoxModule, DxTextAreaModule, DxContextMenuModule, DxMenuModule, DxMapModule , DxCheckBoxModule, DxNumberBoxModule, DxTagBoxModule, DxTreeListModule, DxScrollViewModule, DxProgressBarModule, DxTabsModule } from 'devextreme-angular';
 import { RegisteredPremisesComponent } from './views/online-services/premises-registration/registered-premises/registered-premises.component';
 import { ApprovedImportexportComponent } from './views/online-services/importexport-apps/approved-importexport/approved-importexport.component';
 import { GmpCompliantComponent } from './views/online-services/gmp-applications/gmp/gmp-compliant/gmp-compliant.component';
@@ -53,8 +53,8 @@ import { AddproductApplicationdetailsComponent } from './views/online-services/p
     OnlineAdminModule,
     NgxSmartModalModule.forRoot(),
     NgxCaptchaModule,
-    DxActionSheetModule,DxFileUploaderModule,DxNumberBoxModule , DxCheckBoxModule ,DxSelectBoxModule,DxTextAreaModule,DxContextMenuModule,DxMenuModule,DxTextBoxModule,DxTreeListModule,
-    DxDataGridModule, DxPopupModule, DxButtonModule, DxDateBoxModule,DxRadioGroupModule,DxTagBoxModule ,DxScrollViewModule,DxProgressBarModule,
+    DxActionSheetModule,DxFileUploaderModule,DxNumberBoxModule ,DxCheckBoxModule ,DxSelectBoxModule,DxTextAreaModule,DxContextMenuModule,DxMenuModule,DxTextBoxModule,DxTreeListModule,
+    DxDataGridModule, DxPopupModule, DxMapModule, DxButtonModule, DxDateBoxModule,DxRadioGroupModule,DxTagBoxModule ,DxScrollViewModule,DxProgressBarModule,
     NgCircleProgressModule.forRoot({
       // set defaults here
       radius: 100,

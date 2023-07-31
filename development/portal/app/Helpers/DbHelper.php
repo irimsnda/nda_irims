@@ -17,7 +17,6 @@ class DbHelper
     public static function insertRecordNoTransaction($table_name, $table_data, $user_id,$con)
     {
         $record_id = DB::connection($con)->table($table_name)->insertGetId($table_data);
-        
         $data = serialize($table_data);
         $audit_detail = array(
             'table_name' => $table_name,

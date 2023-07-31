@@ -97,7 +97,7 @@ Ext.define('Admin.view.commoninterfaces.ApplicationCommentsPnl', {
                 {
                     text: 'Cancel',
                     ui: 'soft-purple',
-                    iconCls: 'x-fa fa-close',
+                    iconCls: 'x-fa fa-times',
                     handler: 'cancelAddApplicationComment'
                 }
             ]

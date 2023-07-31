@@ -32,11 +32,6 @@ Ext.define('Admin.view.parameters.views.grids.glAccountsGrid', {
             dataIndex: 'name',
             text: 'Name',
             flex: 1
-        },{
-            xtype: 'gridcolumn',
-            dataIndex: 'tfda_code',
-            text: 'TFDA code',
-            flex: 1
         },
         {
             xtype: 'gridcolumn',

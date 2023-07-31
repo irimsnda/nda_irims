@@ -4,6 +4,7 @@
 Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialApplicantPnl', {
     extend: 'Ext.panel.Panel',
     xtype: 'clinicaltrialapplicantpnl',
+    //scrollable:true,
     dockedItems: [
         {
             xtype: 'toolbar',
@@ -23,6 +24,7 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialApplicantPnl', {
                     width: 400,
                     name: 'zone_id',
                     valueField: 'id',
+                    hidden:true,
                     displayField: 'name',
                     queryMode: 'local',
                     forceSelection: true,

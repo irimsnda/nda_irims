@@ -4126,7 +4126,8 @@ showPermitApplicationMoreDetails: function (btn) {
                     },
                     params: {
                         application_code: application_code,
-                        section_id: section_id
+                        section_id: section_id,
+                        _token:token
                     },
                     success: function (form, action) {
                         var response = Ext.decode(action.response.responseText),

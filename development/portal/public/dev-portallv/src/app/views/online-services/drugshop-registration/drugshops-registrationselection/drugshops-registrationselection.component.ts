@@ -44,7 +44,8 @@ export class DrugshopsRegistrationselectionComponent implements OnInit {
     }
     else {
       this.sub_module_id = this.premisesapp_details.sub_module_id;
-      
+      this.registration_status = this.premisesapp_details.registration_status;
+      this.validity_status = this.premisesapp_details.validity_status;
       this.module_id = this.premisesapp_details.module_id;
       this.process_title = this.premisesapp_details.process_title;
      
@@ -100,7 +101,7 @@ export class DrugshopsRegistrationselectionComponent implements OnInit {
    onRegisteredPremisesSearch() {
     
       //load the Premises Details 
-      this.appService.onLoadRegisteredPremises({})
+      this.appService.onLoadRegisteredPremises({registration_status:this.registration_status,validity_status:this.validity_status})
         .subscribe(
           data_response => {
             this.registeredPremisesData = data_response.data;

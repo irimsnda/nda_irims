@@ -119,6 +119,9 @@ use Modules\Configurations\Http\Controllers\ConfigurationsController;
    });
    Route::group(['middleware' => ['web'], 'prefix' => 'configurations'], function(){
       Route::post('saveAllQuestionsForMedicalAssesment', [ConfigurationsController::class,'saveAllQuestionsForMedicalAssesment']);
+      //
+
+   Route::get('getCustomerList', [ConfigurationsController::class, 'getCustomerList']);
    });
 
 

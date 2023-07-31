@@ -7,10 +7,10 @@ if(app_connection == 'development'){
 
   var s2bpayjs = 'https://test-s2bpay.sc.com/s2bpaysit/resources/merchant/js/s2bpay.js';
 
-  var base_url = 'http://localhost:83/nda_irims/demonstration/portal/'
- var  assets_url = 'http://localhost:83/nda_irims/demonstration/portal/public/resources/';
+  var base_url = 'http://localhost:83/nda_irims/development/portal/'
+ var  assets_url = 'http://localhost:83/nda_irims/development/portal/public/resources/';
 
-  var mis_url = 'localhost:83/nda_irims/demonstration/mis';
+  var mis_url = 'localhost:83/nda_irims/development/mis';
   var siteKey = '6LcoH54UAAAAAOqpAGCXC4cmup6N2c5KseVHmv1c';
   
 }
