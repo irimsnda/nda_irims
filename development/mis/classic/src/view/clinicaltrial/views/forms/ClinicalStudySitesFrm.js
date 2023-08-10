@@ -13,48 +13,97 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalStudySitesFrm', {
         labelAlign: 'top',
         margin: 3
     },
-    items: [{
-            xtype: 'fieldcontainer',
-            layout: 'column',
-            defaults: {
-                labelAlign: 'top'
-            },
-            items:[{
-                xtype: 'combo',
-                name: 'study_site_id',
-                fieldLabel: 'Study Site',
-                queryMode: 'local',
-                allowBlank: false,
-                columnWidth: 0.8,
-                forceSelection: true,
-                valueField: 'id',
-                displayField: 'name',
-                listeners: {
-                    beforerender: {
-                        fn: 'setClinicalTrialCombosStore',
-                        config: {
-                            pageSize: 1000,
-                            storeId:'studysitesstr',
-                            proxy: {
-                                url: 'clinicaltrial/getStudySitesList'
-                            }
-                        },
-                        isLoad: true 
-                    }
-                }
-            },{
-                xtype: 'button',
-                text: 'Add Study Site',
-                columnWidth: 0.15,
-                iconCls: 'x-fa fa-plus',
-                ui: 'soft-green',
-                name: 'add_study_site',
-                childXtype: 'studysitefrm',
-                winTitle: 'Study Site',
-                winWidth: '70%'
-            }]
+    items: [
+    // {
+    //         xtype: 'fieldcontainer',
+    //         layout: 'column',
+    //         defaults: {
+    //             labelAlign: 'top'
+    //         },
+    //         items:[
+    // {
+    //             xtype: 'combo',
+    //             name: 'study_site_id',
+    //             fieldLabel: 'Study Site',
+    //             queryMode: 'local',
+    //             allowBlank: false,
+    //             columnWidth: 0.7,
+    //             forceSelection: true,
+    //             valueField: 'id',
+    //             displayField: 'name',
+    //             listeners: {
+    //                 beforerender: {
+    //                     fn: 'setClinicalTrialCombosStore',
+    //                     config: {
+    //                         pageSize: 1000,
+    //                         storeId:'studysitesstr',
+    //                         proxy: {
+    //                             url: 'clinicaltrial/getStudySitesList'
+    //                         }
+    //                     },
+    //                     isLoad: true 
+    //                 }
+    //             }
+    //         },
+    //{
+    //             xtype: 'button',
+    //             text: 'Add Study Site',
+    //             columnWidth: 0.15,
+    //             iconCls: 'x-fa fa-plus',
+    //             ui: 'soft-green',
+    //             name: 'add_study_site',
+    //             childXtype: 'studysitefrm',
+    //             winTitle: 'Study Site',
+    //             winWidth: '70%'
+    //         }]
 
-        },
+    //     },
+
+        {
+                xtype: 'fieldcontainer',
+                layout: 'column',
+                defaults: {
+                    labelAlign: 'top'
+                },
+                items: [
+                    {
+                        xtype: 'combo',
+                        name: 'study_site_id',
+                        fieldLabel: 'Study Site',
+                        queryMode: 'local',
+                        allowBlank: false,
+                        columnWidth: 0.7,
+                        forceSelection: true,
+                        valueField: 'id',
+                        displayField: 'name',
+                        listeners: {
+                            beforerender: {
+                                fn: 'setClinicalTrialCombosStore',
+                                config: {
+                                    pageSize: 1000,
+                                    storeId:'studysitesstr',
+                                    proxy: {
+                                        url: 'clinicaltrial/getStudySitesList'
+                                    }
+                                },
+                                isLoad: true 
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'button',
+                        iconCls: 'x-fa fa-plus',
+                        text: 'Add Study Site',
+                        columnWidth: 0.3,
+                        ui: 'soft-green',
+                        name: 'add_study_site',
+                        childXtype: 'studysitefrm',
+                        winTitle: 'Study Site',
+                        winWidth: '70%',
+                        margin: '30 0 0 0'
+                    }
+                ]
+            },  
         {
             xtype: 'hiddenfield',
             name: '_token',

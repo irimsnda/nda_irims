@@ -80,42 +80,42 @@ Ext.define('Admin.view.configurations.views.grids.ManufacturersConfigGrid', {
     },{
         xtype: 'gridcolumn',
         dataIndex: 'contact_person',
-        text: 'contact_person',
+        text: 'Contact Person',
         flex: 1
     },{
         xtype: 'gridcolumn',
         dataIndex: 'tin_no',
-        text: 'tin_no',
+        text: 'Tin No',
         flex: 1
     },{
         xtype: 'gridcolumn',
         dataIndex: 'physical_address',
-        text: 'physical_address',
+        text: 'Physical Address',
         flex: 1
     },{
         xtype: 'gridcolumn',
         dataIndex: 'postal_address',
-        text: 'postal_address',
+        text: 'Postal Address',
         flex: 1
     },{
         xtype: 'gridcolumn',
         dataIndex: 'telephone_no',
-        text: 'telephone_no',
+        text: 'Telephone No',
         flex: 1
     },{
         xtype: 'gridcolumn',
         dataIndex: 'mobile_no',
-        text: 'mobile_no',
+        text: 'Mobile No',
         flex: 1
     },{
         xtype: 'gridcolumn',
         dataIndex: 'email_address',
-        text: 'email_address',
+        text: 'Email Address',
         flex: 1
     },{
         xtype: 'gridcolumn',
         dataIndex: 'website',
-        text: 'website',
+        text: 'Website',
         flex: 1
     },{
         xtype: 'gridcolumn',

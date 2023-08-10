@@ -4,7 +4,7 @@
 Ext.define('Admin.view.document_management.views.panels.Documentsdefinationrequirementpnl', {
     extend: 'Ext.panel.Panel',
     xtype: 'documentsdefinationrequirementpnl',
-    title: 'Documents Defination Requiments Setup',
+    title: 'Documents Definition Requiments Setup',
     userCls: 'big-100 small-100',
     height: Ext.Element.getViewportHeight() - 118,
     layout:{

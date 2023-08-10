@@ -76,6 +76,7 @@ export class DrugshopRegDashboardComponent implements OnInit {
    business_typecategory_id:number;
    businessTypesData:any;
    prodProductTypeData:any;
+   premiseClassData:any;
    regulatedSectionsData:any;
    isPremisesApplicationInitialisation:boolean;
    premisesAppSelectionfrm:FormGroup;
@@ -94,6 +95,7 @@ export class DrugshopRegDashboardComponent implements OnInit {
     this.FilterDetailsFrm = new FormGroup({
       sub_module_id: new FormControl('', Validators.compose([])),
       section_id: new FormControl('', Validators.compose([])),
+      product_classification_id: new FormControl('', Validators.compose([])),
       application_status_id: new FormControl('', Validators.compose([]))
     });
 
@@ -168,10 +170,10 @@ export class DrugshopRegDashboardComponent implements OnInit {
   }
   onSelectPremisesFilters(e) {
     
-    let section_id = this.FilterDetailsFrm.get('section_id').value;
+    let product_classification_id = this.FilterDetailsFrm.get('product_classification_id').value;
     let application_status_id = this.FilterDetailsFrm.get('application_status_id').value;
      
-    this.reloadPremisesApplications({sub_module_id:this.sub_module_id,section_id:section_id,application_status_id:application_status_id});
+    this.reloadPremisesApplications({sub_module_id:this.sub_module_id,product_classification_id:product_classification_id,application_status_id:application_status_id});
 
   }
   onClearPremisesFilters(){
@@ -275,13 +277,13 @@ export class DrugshopRegDashboardComponent implements OnInit {
   
   onLoadSections() {
     var data = {
-      table_name: 'par_sections',
+      table_name: 'par_premise_class',
     };
 
     this.configService.onLoadConfigurationData(data)
-      .subscribe( 
+      .subscribe(
         data => {
-          this.sectionsData = data;
+          this.premiseClassData = data;
         });
   }
 
@@ -312,7 +314,7 @@ export class DrugshopRegDashboardComponent implements OnInit {
       this.premisessapp_details = {module_id: this.module_id, process_title: sub_module_name, sub_module_id: sub_module_id};
       this.appService.setPremisesApplicationDetail(this.premisessapp_details);
 
-      this.app_route = ['./online-services/registered-premises-selection'];
+      this.app_route = ['./online-services/registered-drugshop-selection'];
 
       this.router.navigate(this.app_route);
     }

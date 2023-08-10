@@ -34,6 +34,7 @@ Ext.define('Admin.view.commoninterfaces.grids.ClinicalTrialPersonnelAbstractGrid
             }, {
                 xtype: 'gridcolumn',
                 dataIndex: 'postal_address',
+                hidden:true,
                 text: 'Postal Address',
                 flex: 1
             }, {

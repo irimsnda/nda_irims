@@ -106,9 +106,14 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'premiseinspectionscreeninggrid': {
                 refresh: 'refreshScreeningChecklistItemsGrid'
             },
+            'drugshoponlinescreeninggrid': {
+                refresh: 'refreshOnlineScreeningChecklistItemsGrid'
+            },
+
             'premiseonlinescreeninggrid': {
                 refresh: 'refreshOnlineScreeningChecklistItemsGrid'
             },
+            
             'drugshopinspectiongrid': {
                 refresh: 'refreshScreeningChecklistItemsGrid'
             },
@@ -731,6 +736,15 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'clinicaltrialauditingpanel toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
+
+
+
+            'newdrugshopinspectionpanel toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+
+
             'newpremiseevaluationpanel toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
@@ -1130,6 +1144,17 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'promotionmaterialevaluationcontentpanel toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
+
+
+            'newdrugshopinspectionpanel toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+            'newdrugshopinspectionpanel button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+
             'promotionmaterialevaluationcontentpanel button[name=docs_btn]': {
                 click: 'showApplicationUploads'
             },
@@ -1234,7 +1259,12 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'declaredimportexportonlinereceivingwizard button[name=save_screening_btn]': {
                 click: 'saveOnlineApplicationChecklistDetails'
             },
+
           
+             'newdrugshoponlinepreviewwizard button[name=assign_zone]': {
+                click: 'addZone'
+            }, 
+
 
             
             'onlinecosmeticsreceivingwizard button[name=prechecking_recommendation]': {
@@ -2827,22 +2857,22 @@ setCompStore: function (me, options) {
             if(win.down('combo[name=applicable_checklist]')){
                 checklist_category_id = win.down('combo[name=applicable_checklist]').getValue();
                 hasValidatedChecklist = checkOnlineApplicationChecklistDetails(application_code, module_id,sub_module_id,section_id,checklist_category_id);
-                // if(!hasValidatedChecklist){
+                if(!hasValidatedChecklist){
 
-                //     toastr.warning('Fill in all the checklist details to proceed!!', 'Warning Response');
-                //     Ext.getBody().unmask();
-                //     return false;
+                    toastr.warning('Fill in all the checklist details to proceed!!', 'Warning Response');
+                    Ext.getBody().unmask();
+                    return false;
 
-                // }
+                }
 
             }//needs_re
-            if(win.down('button[name=prechecking_recommendation]')){
-                hasPrecheckingrecommendation = checkPrecheckingrecommendation(application_code, module_id);
-                // if(!hasPrecheckingrecommendation){
-                //     toastr.warning('Add Prechecking Recommendation to proceed.', 'Warning Response');
-                //     Ext.getBody().unmask();
-                //     return false;
-                // }
+            if(win.down('button[name=assign_zone]')){
+                hasAssignedZone = checkAssignedProcessingZone(application_code, module_id);
+                if(!hasAssignedZone){
+                    toastr.warning('Assign Processing Zone to proceed.', 'Warning Response');
+                    Ext.getBody().unmask();
+                    return false;
+                }
 
             }
         showOnlineSubmissionWin(application_id, application_code, module_id, sub_module_id, section_id, 'onlinesubmissionsfrm', winWidth, storeID, tracking_no, status_type_id, extraParams, hasQueries,action_type);
@@ -5808,9 +5838,9 @@ else{
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             gmp_type_id = (activeTab.down('combo[name=gmp_type_id]')) ? activeTab.down('combo[name=gmp_type_id]').getValue() : null,
             inspection_type_id = me.inspection_type_id,
-            country_id = grid.down('combo[name=country_id]').getValue(),
             region_id = grid.down('combo[name=region_id]').getValue(),
             district_id = grid.down('combo[name=district_id]').getValue(),
+            zone_id = grid.down('combo[name=zone_id]').getValue(),
             inspection_id = null;
         if ((managerInspection) && managerInspection == 1) {
             inspection_id = activeTab.down('form').down('hiddenfield[name=id]').getValue();
@@ -5823,9 +5853,9 @@ else{
             gmp_type_id: gmp_type_id,
             inspection_type_id: inspection_type_id,
             inspection_id: inspection_id,
-            country_id: country_id,
             region_id: region_id,
-            district_id: district_id
+            district_id: district_id,
+            zone_id:zone_id
         };
     },
 
@@ -7347,6 +7377,8 @@ else{
             table_name = 'wb_product_applications';
         } else if (module_id == 2 || module_id === 2) {
             table_name = 'wb_premises_applications';
+        }else if (module_id == 29 || module_id === 29) {
+            table_name = 'wb_premises_applications';
         } else if (module_id == 3 || module_id === 3) {
             table_name = 'wb_gmp_applications';
         } else if (module_id == 7 || module_id === 7) {
@@ -8141,5 +8173,22 @@ else{
 
 
 
-    }
+    },
+
+
+
+    addZone:function(btn){
+        var win = btn.up('window'),
+            application_code = win.down('hiddenfield[name=active_application_code]').getValue();
+
+            var me = this,
+            childXtype = 'assignzonefrm',
+            winTitle = 'Assign Processing Zone',
+            winWidth = '40%',
+            child = Ext.widget(childXtype);
+            child.down('hiddenfield[name=application_code]').setValue(application_code);
+
+        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+
+    },
 });

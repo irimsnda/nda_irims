@@ -25,13 +25,37 @@ class ConfigurationsController extends Controller
     public function getNavigationItems(Request $req){
 
         $navigation_type_id = $req->navigation_type_id;
+        $trader_id = $req->trader_id;
         $is_local = $req->is_local;
         
         $navData = array();
-        $data = DB::table('wb_navigation_items')
+        $record = DB::table('wb_trader_account')
+                ->where('id',$trader_id)
+                ->first();
+        $traderaccount_type_id=$record->traderaccount_type_id;
+        if($traderaccount_type_id == 9){
+                    $data = DB::table('wb_navigation_items as t1')
+                    //->join('wb_navigation_menu_account_type as t2', 't1.id','=','t2.navigation_menu_id')
+                    ->select('t1.*')
+                    //->where('t2.account_type_id',$traderaccount_type_id)
                     ->where(array('navigation_type_id'=>$navigation_type_id, 'is_online'=>1, 'is_disabled'=>0,'level'=>0))
                     ->orderBy('order_no');
                     
+                }else if($traderaccount_type_id == 8){
+                    $data = DB::table('wb_navigation_items')
+                    ->where(array('navigation_type_id'=>$navigation_type_id, 'is_online'=>1, 'is_disabled'=>0,'level'=>0))
+                    ->whereIn('id',[230,231,232,233,235])
+                    ->orderBy('order_no');
+                      
+
+            }else{
+               $data = DB::table('wb_navigation_items')
+                    ->where(array('navigation_type_id'=>$navigation_type_id, 'is_online'=>1, 'is_disabled'=>0,'level'=>0))
+                    //->whereNotIn('id',[230,231,232,233,235])
+                    ->orderBy('order_no');
+
+            }
+
         
         $data = $data->get();
                     $res = array($data);

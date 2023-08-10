@@ -46,7 +46,7 @@ Ext.define('Admin.view.configurations.views.grids.ChecklistItemsGrid', {
             ptype: 'gridexporter'
         }
     ],
-    export_title: 'TFDA Processes',
+    export_title: 'NDA Processes',
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '100%',

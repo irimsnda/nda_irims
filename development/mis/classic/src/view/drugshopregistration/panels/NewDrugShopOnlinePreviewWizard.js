@@ -22,13 +22,13 @@ Ext.define('Admin.view.drugshopregistration.views.panels.NewDrugShopOnlinePrevie
             xtype: 'applicationapplicantpnl'
         },
         {
-            xtype: 'drugshopdetailstabpnl'
+            xtype: 'onlinedrugshopdetailstabpnl'
         },
         {
             xtype: 'premregonlinedocuploadsgenericgrid'
         },
         {
-            xtype: 'premiseonlinescreeninggrid'//'premisescreeninggrid'
+            xtype: 'drugshoponlinescreeninggrid'//'premisescreeninggrid'
         }
     ],
 
@@ -153,7 +153,7 @@ Ext.define('Admin.view.drugshopregistration.views.panels.NewDrugShopOnlinePrevie
                
                 {
                     text: 'Query Application',
-                    ui: 'soft-purple',
+                    ui: 'soft-blue',
                     iconCls: 'x-fa fa-sliders',
                     name: 'query_btn',
                     hidden: true,
@@ -164,10 +164,10 @@ Ext.define('Admin.view.drugshopregistration.views.panels.NewDrugShopOnlinePrevie
                 },
                 {
                     text: 'Reject Application',
-                    ui: 'soft-purple',
+                    ui: 'soft-red',
                     iconCls: 'x-fa fa-thumbs-down',
                     name: 'reject_btn',
-                    hidden: true,
+                   // hidden: true,
                     
                     handler: 'submitRejectedOnlineApplicationFrmBtn',
                     bind: {
@@ -181,7 +181,16 @@ Ext.define('Admin.view.drugshopregistration.views.panels.NewDrugShopOnlinePrevie
                     iconCls: 'fa fa-save',
                     name: 'save_screening_btn',
                     disabled: true
-                }, {
+                },
+                {
+                    text: 'Assign Zone',
+                    ui: 'soft-red',
+                    iconCls: 'fa fa-save',
+                    name: 'assign_zone',
+                    
+                },
+
+                 {
                     text: 'Submit Application',
                     ui: 'soft-purple',
                     iconCls: 'x-fa fa-check',

@@ -38,5 +38,6 @@
     "Tradermanagement": true,
     "UserManagement": true,
     "Workflow": true,
-    "Enforcement": true
+    "Enforcement": true,
+    "PersonnelManagement": true
 }

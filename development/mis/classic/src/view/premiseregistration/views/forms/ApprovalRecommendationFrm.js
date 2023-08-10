@@ -6,6 +6,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.ApprovalRecommendationFrm
     xtype: 'approvalrecommendationfrm',
     layout: 'form',
     frame: true,
+    scrollable:true,
     defaults: {
         allowBlank: false,
         labelStyle: 'font-weight:bold'

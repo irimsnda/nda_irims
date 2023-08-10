@@ -1432,7 +1432,7 @@ function checkApprovalREcommendationDEtails(application_code) {
 }
 
 function validateDocumentsSubmissonRecRecommendation(application_code) {
-    var hasReviewrecommendation = 0;
+    var validate_insprecom = 0;
     
     Ext.Ajax.request({
         method: 'GET',
@@ -1448,12 +1448,39 @@ function validateDocumentsSubmissonRecRecommendation(application_code) {
             var resp = Ext.JSON.decode(response.responseText),
                 success = resp.success;
             if (success || success == true || success === true) {
+                validate_insprecom = 1;
+            }
+        }
+    });
+    return validate_insprecom;
+}
+
+function validateInspectionReportSubmisson(application_code,report_type_id) {
+    var hasReviewrecommendation = 0;
+    
+    Ext.Ajax.request({
+        method: 'GET',
+        async: false,
+        url: 'api/validateInspectionReportSubmission',
+        params: {
+            application_code: application_code,
+            report_type_id:report_type_id,
+        },
+        headers: {
+            'Authorization': 'Bearer ' + access_token
+        },
+        success: function (response) {
+            var resp = Ext.JSON.decode(response.responseText),
+                success = resp.success;
+            if (success || success == true || success === true) {
                 hasReviewrecommendation = 1;
             }
         }
     });
     return hasReviewrecommendation;
 }
+
+
 
 function checkReviewREcommendationDEtails(application_code) {
     var hasReviewrecommendation = 0;
@@ -1530,6 +1557,39 @@ function checkPrecheckingrecommendation(application_code, module_id){
     });
     return is_recommended;
 }
+
+
+function checkAssignedProcessingZone(application_code, module_id){
+    is_recommended = true;
+    Ext.Ajax.request({
+        method: 'GET',
+        async: false,
+        url: 'api/checkAssignedProcessingZone',
+        params: {
+            application_code: application_code,
+            module_id: module_id
+        },
+        headers: {
+            'Authorization': 'Bearer ' + access_token
+        },
+        success: function (response) {
+            var resp = Ext.JSON.decode(response.responseText),
+                success = resp.success;
+            if (success || success == true || success === true) {
+                has_zone = true;
+            }
+            else{
+               
+                has_zone = false;
+                return false;
+            }
+        }
+    });
+    return has_zone;
+}
+
+
+
 function checkApplicationEvaluationOverralRecom(application_code,comment_type_id){
     var hasRecommendation = 0;
     Ext.Ajax.request({

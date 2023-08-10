@@ -58,6 +58,7 @@ Ext.define('Admin.view.parameters.views.forms.locations.DistrictFrm', {
                 },
                 displayField: 'name',
                 valueField: 'id',
+                queryMode: 'local',
                 allowBlank: false,
                 margin: '0 20 20 0',
                 name: 'country',
@@ -92,6 +93,7 @@ Ext.define('Admin.view.parameters.views.forms.locations.DistrictFrm', {
         items:[{
             xtype: 'combobox',
             forceSelection: true,
+            queryMode: 'local',
             fieldLabel: 'Region',
             store: {
                 type: 'regionsstr',

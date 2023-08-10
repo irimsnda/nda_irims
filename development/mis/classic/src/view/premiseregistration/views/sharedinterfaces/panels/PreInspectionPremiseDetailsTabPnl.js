@@ -16,7 +16,7 @@ Ext.define('Admin.view.premiseregistration.views.panels.PreInspectionPremiseDeta
     items: [
         {
             title: 'Premises Details',
-            xtype: 'preinspectionpremisedetailsfrm'
+            xtype: 'premisedetailsfrm'
         },
         {
             title: 'Premises Responsible Technician',

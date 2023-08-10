@@ -15,11 +15,11 @@ Ext.define('Admin.view.drugshopregistration.views.panels.DrugShopDetailsTabPnl',
     },
     items: [
         {
-            title: 'Premises Details',
+            title: 'Drug Shop Details',
             xtype: 'drugshopdetailsfrm'
         },
          {
-            title: 'Directors Details(When applying on Behalf) and Nearest Pharmacies',
+            title: 'Other Details',
             xtype: 'drugshopotherdetailstabPnl'
         },
         {

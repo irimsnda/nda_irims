@@ -18,13 +18,18 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopOtherLicensesDet
         type: 'vbox'
     },
     layout: 'vbox',
-    items: [{ 
-            xtype: 'hidden',
-            name: 'application_code'
-        },{
+    items: [{
             xtype: 'hidden',
             name: '_token',
             value: token
+        },{
+            xtype: 'hiddenfield',
+            name: 'isReadOnly'
+        },
+        {
+            xtype: 'hiddenfield',
+            name: 'table_name',
+            value: 'tra_other_premises'
         },
         {
             xtype: 'hidden',
@@ -34,22 +39,9 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopOtherLicensesDet
             name: 'applicant_id',
         },{
             xtype: 'hidden',
-            name: 'requested_by'
-        },{ 
-            xtype: 'hidden',
-            name: 'previous_approval_date'
-        },
+            name: 'other_premise_id'
+        }, 
         {
-            xtype: 'hidden',
-            name: 'previous_expiry_date'
-        },{
-            xtype: 'hidden',
-            name: 'previous_personnel_id'
-        },{
-            xtype: 'hidden',
-            name: 'table_name',
-            value: 'tra_permitdetailsammendment_requests'  
-        },{
           xtype:'panel',
           layout:{
               type:'column',
@@ -83,6 +75,15 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopOtherLicensesDet
             name: 'permit_no',
             readOnly: true
          },
+
+         {
+            xtype: 'textfield',
+            fieldLabel: 'Premise Name',
+            name: 'name',
+            readOnly: true
+         },
+
+         
            {
             xtype: 'datefield',
             format: 'Y-m-d H:i:s',
@@ -104,13 +105,13 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopOtherLicensesDet
        
        ],
     buttons: [{
-        text: 'Update Application Details',
+        text: 'Save',
         iconCls: 'x-fa fa-save',
         ui: 'soft-purple',
         formBind: true,
-        action_url: 'applicationdetailsamendment/savePermitAmmendmentApplicationsDetails',
-        handler: 'updateApplicationAmmendmentDetails',
-        table_name: 'tra_permitdetailsammendment_requests',
-        storeID: 'premisepermitdetailsammendmentsgridstr'
+        action_url: 'configurations/saveConfigCommonData',
+        handler: 'doCreatePremiseRegParamWin',
+        table_name: 'tra_other_premises',
+        storeID: 'otherpremisesdetailsstr'
     }]
 });

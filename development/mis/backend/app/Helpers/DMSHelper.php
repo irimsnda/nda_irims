@@ -987,7 +987,6 @@ class DMSHelper
             $response = $client->request('DELETE', 'api/-default-/public/alfresco/versions/1/nodes/' . $node_id . '?alf_ticket=' . $ticket)
                 ->getBody()
                 ->getContents();
-            dd($response);
             $response = json_decode((string)$response);
             $data = array('success' => true, 'message' => 'DMS NODE Deleted successfully');
 

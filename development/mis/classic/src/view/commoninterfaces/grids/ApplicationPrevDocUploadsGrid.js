@@ -228,7 +228,7 @@ Ext.define('Admin.view.commoninterfaces.grids.ApplicationPrevDocUploadsGrid', {
                 metaData.tdStyle = 'color:white;background-color:red';
                 return "Is-Mandatory";
             } else {
-                metaData.tdStyle = 'color:white;background-color:red';
+                metaData.tdStyle = 'color:white;background-color:green';
                 return "Not-Mandatory";
             }
 

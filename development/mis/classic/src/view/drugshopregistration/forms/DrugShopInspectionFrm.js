@@ -217,7 +217,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.DrugShopInspectionFrm', {
         {
             xtype: 'datefield',
             name: 'actual_start_date',
-            fieldLabel: 'Actual Start Date',
+            fieldLabel: 'Inspection Date',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
             bind: {
@@ -238,36 +238,52 @@ Ext.define('Admin.view.premiseregistration.views.forms.DrugShopInspectionFrm', {
             fieldLabel: 'Actual End Date',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
+            allowBlank:true,
+            hidden:true,
             bind: {
                 readOnly: '{isReadOnly}'
             },
             altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
-        },{
-            xtype: 'combo',
-            name: 'inspection_type_id',
-            fieldLabel: 'Inspection Type',
-            queryMode: 'local',
-            bind: {
-                readOnly: '{isReadOnly}'
-            },
-            forceSelection: true,
-            valueField: 'id',
-            displayField: 'name',
-            listeners: {
-                beforerender: {
-                    fn: 'setParamCombosStore',
-                    config: {
-                        pageSize: 100,
-                        proxy: {
-                            url: 'commonparam/getCommonParamFromTable',
-                            extraParams: {
-                                table_name: 'par_inspection_types'
-                            }
-                        }
-                    },
-                    isLoad: true
+        },
+    {
+    xtype: 'combo',
+    name: 'inspection_type_id',
+    fieldLabel: 'Inspection Type',
+    queryMode: 'local',
+    readOnly: true,
+    forceSelection: true,
+    valueField: 'id',
+    displayField: 'name',
+    listeners: {
+        beforerender: {
+            fn: 'setParamCombosStore',
+            config: {
+                pageSize: 100,
+                proxy: {
+                    url: 'commonparam/getCommonParamFromTable',
+                    extraParams: {
+                        table_name: 'par_inspection_types'
+                    }
                 }
-            }
+            },
+            isLoad: true
+        },
+        afterrender: function (cmbo) {
+            var grid = cmbo.up('form'),
+                store = cmbo.getStore(),
+                filterObj = { id: 2 },
+                filterStr = JSON.stringify(filterObj);
+            store.removeAll();
+            store.load({ params: { filters: filterStr },
+                callback: function(records, operation, success) {
+                    if (success && records && records.length > 0) {
+                        var selectedRecord = records[0];
+                        cmbo.setValue(selectedRecord.get('id'));
+                    }
+                }
+            });
+          },
+        }
         },
         {
             xtype: 'combo',

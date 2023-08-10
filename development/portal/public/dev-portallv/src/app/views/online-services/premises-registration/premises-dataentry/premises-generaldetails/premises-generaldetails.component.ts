@@ -1,12 +1,13 @@
 
 
-import { Component, OnInit, ViewChild, ViewContainerRef, Inject, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef, Inject, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { ToastrService } from 'ngx-toastr';
-
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { ModalDialogService } from 'ngx-modal-dialog';
 
@@ -22,7 +23,7 @@ import { PremisesApplicationsService } from 'src/app/services/premises-applicati
   templateUrl: './premises-generaldetails.component.html',
   styleUrls: ['./premises-generaldetails.component.css']
 })
-export class PremisesGeneraldetailsComponent  implements OnInit {
+export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
 
   @Input() premisesGeneraldetailsfrm: FormGroup;
   @Input() sectionsData: any;
@@ -63,6 +64,7 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
   businessTypeDetailsData:any;
   applicantTypesData:any;
   countyData:any;
+  qualificationsData:any;
   subCountyData:any;
   business_type_id:number;
   isaddNewPremisesPersonnelDetails:boolean=false;
@@ -78,7 +80,10 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
   sectorsData:any;
   district_id:number;
   cellsData:any;
+  psuNo:any;
   sector_id:number;
+  private destroy$ = new Subject<void>();
+  private isFetchingData = false;
   registeringOrganisationData:any;
   has_otherregisteringorganisation:boolean= false
   constructor(public cdr: ChangeDetectorRef,public dmsService:DocumentManagementService,public fb: FormBuilder,public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: PremisesApplicationsService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public utilityService:Utilities) {
@@ -93,6 +98,7 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
     this.onLoadSections();
     this.onLoadapplicantTypesLoad();
     this.onLoadBusinessTypesLoad();
+    this.onLoadQualificationDetails();
     this.is_readonly = false;
     if(this.sub_module_id != 1){
       this.is_readonly = true;
@@ -101,8 +107,68 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
     if(!this.application_code){
       //  this.premisesGeneraldetailsfrm.get('zone_id').setValue(2);
         this.premisesGeneraldetailsfrm.get('country_id').setValue(37);
-    }
+    }        
+    this.setupSearchByPsuNoHandler();
+
     
+  }    
+  private setupSearchByPsuNoHandler(): void {
+    this.premisesGeneraldetailsfrm
+      .get('psu_no')
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((psuNo) => {
+        if (!this.isFetchingData) {
+          this.isFetchingData = true;
+          this.searchByPsuNo(psuNo);
+        }
+      });
+  }   
+  captureLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          this.premisesGeneraldetailsfrm.patchValue({ latitude, longitude });
+        },
+        (error) => {
+          console.error('Error getting user location:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
+  } 
+   searchByPsuNo(psuNo){
+    this.appService.onLoadApplicantPharmacist(psuNo).subscribe(
+      (response: any) => {
+        if (response && Array.isArray(response.data) && response.data.length > 0) {
+          const dataItem = response.data[0];
+          this.premisesGeneraldetailsfrm.get('full_names').setValue(dataItem.name);
+          this.premisesGeneraldetailsfrm.get('pharmacist_email').setValue(dataItem.email);
+          this.premisesGeneraldetailsfrm.get('psu_date').setValue(dataItem.psu_date);
+          this.premisesGeneraldetailsfrm.get('pharmacist_telephone').setValue(dataItem.telephone);
+          this.premisesGeneraldetailsfrm.get('pharmacist_qualification').setValue(dataItem.qualification_id);
+          this.premisesGeneraldetailsfrm.get('pharmacist_country_id').setValue(dataItem.country_id);
+          this.premisesGeneraldetailsfrm.get('pharmacist_region_id').setValue(dataItem.region_id);
+          this.premisesGeneraldetailsfrm.get('pharmacist_district_id').setValue(dataItem.district_id);
+
+
+        } else {
+          
+          this.toastr.error('No data found');
+        }
+
+        this.isFetchingData = false;
+      },
+      (error) => {
+        this.isFetchingData = false;
+      }
+    );
+  }  
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
   onCoutryCboSelect($event) {
 
@@ -110,6 +176,18 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
 
     this.onLoadRegions(this.country_id);
 
+  }   
+
+  onLoadQualificationDetails() {
+    var data = {
+      table_name: 'par_personnel_qualifications',
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.qualificationsData = data;
+        });
   }
    onLoadSections() {
     var data = {
@@ -129,7 +207,6 @@ export class PremisesGeneraldetailsComponent  implements OnInit {
       country_id: country_id
     };
     this.config.onLoadConfigurationData(data)
-      //.pipe(first())
       .subscribe(
         data => {
           console.log(data);

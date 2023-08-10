@@ -38,12 +38,12 @@
           </div>
       <div class="col-lg-4">
         <label>Business Registration Date</label>
-        <dx-date-box formControlName="business_reg_date">
+        <dx-date-box formControlName="registration_date">
         </dx-date-box>
         </div>
       <div class="col-lg-4">
       <label class="control-label">Product Classification</label>
-      <dx-select-box [dataSource]="premiseClassData"formControlName="prodpremise_classification_id"
+      <dx-select-box [dataSource]="premiseClassData"formControlName="product_classification_id"
           placeholder="Product Classification"
           valueExpr="id"
           (onValueChanged)="onOtherClassificationChange($event)"
@@ -58,44 +58,44 @@
         </div>
     </fieldset> 
     <fieldset class="col-lg-12 row" *ngIf="sub_module_id == 96" >
-        <legend  class="contentfieldset">Director's and Declaration</legend>
-        <div class="col-lg-4">
+        <legend  class="contentfieldset"> Declarations</legend>
+        <div class="col-lg-4" [hidden]="true">
             <label class="control-label">Name of Managing Director</label>
             <dx-text-box formControlName="managing_director" placeholder="Director Name" [showClearButton]="true">
             </dx-text-box>
         </div>
-          <div class="col-lg-4">
+          <div class="col-lg-4"[hidden]="true">
             <label class="control-label">Managing Director's Email</label>
             <dx-text-box formControlName="managing_director_email" placeholder="Director Email" [showClearButton]="true">
             </dx-text-box>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-4"[hidden]="true">
             <label class="control-label">Managing Director's Telephone No.</label>
             <dx-text-box formControlName="managing_director_telepone" placeholder="Director Telephone No" [showClearButton]="true">
             </dx-text-box>
         </div>
-        <div class="col-lg-4" >
+        <div class="col-lg-4" [hidden]="true">
           <label class="control-label">Director As Primary Contact Person</label>
           <dx-select-box (onSelectionChanged)="onTraderasContactpersnChange($event)"  [dataSource]="confirmDataParam" valueExpr="id" displayExpr="name" [searchEnabled]="true"
            placeholder="Director as Contact Person" formControlName="applicant_contact_person">
           </dx-select-box>
         </div>
-        <div class="col-lg-4" *ngIf="!isReadOnlyTraderasContact">
+        <div class="col-lg-4" *ngIf="!isReadOnlyTraderasContact"[hidden]="true">
           <label class="control-label">Contact Person</label>
           <dx-text-box formControlName="contact_person"  placeholder="Contact Person Name"  [showClearButton]="true">
           </dx-text-box>
       </div>
-        <div class="col-lg-4" *ngIf="!isReadOnlyTraderasContact">
+        <div class="col-lg-4" *ngIf="!isReadOnlyTraderasContact"[hidden]="true">
           <label class="control-label">Contact Person's Email</label>
           <dx-text-box formControlName="contact_person_email"  placeholder="Contact Person Email"  [showClearButton]="true">
           </dx-text-box>
       </div>
-      <div class="col-lg-4" *ngIf="!isReadOnlyTraderasContact">
+      <div class="col-lg-4" *ngIf="!isReadOnlyTraderasContact"[hidden]="true">
           <label class="control-label">Contact Person's Telephone No.</label>
           <dx-text-box formControlName="contact_person_telephone"  placeholder="Contact Person Telephone No"   [showClearButton]="true">
           </dx-text-box>
       </div>
-      <div class="col-lg-4" *ngIf="!isReadOnlyTraderasContact">
+      <div class="col-lg-4" *ngIf="!isReadOnlyTraderasContact"[hidden]="true">
         <label class="control-label"> Contact Person Position</label>
         <dx-text-box formControlName="contact_person_position"  placeholder="Contact Person Position" [showClearButton]="true">
         </dx-text-box>
@@ -153,30 +153,30 @@
               <div class="col-lg-4">
               <label for="ti" class="control-label">Qualification of Applicant</label>
                 <dx-select-box [dataSource]="qualificationsData" valueExpr="id" 
-                   placeholder="Select Qualification" displayExpr="name" [searchEnabled]="true" formControlName="qualification_id">
+                   placeholder="Select Qualification" displayExpr="name" [searchEnabled]="true" formControlName="incharge_qualification">
                 </dx-select-box>
               </div>
               <div class="col-lg-4">
                 <label class="control-label">Telephone No</label>
-                <dx-text-box [readOnly]="true" formControlName="telephone"  placeholder="Telephone No" [showClearButton]="true">
+                <dx-text-box [readOnly]="true" formControlName="incharge_telephone"  placeholder="Telephone No" [showClearButton]="true">
                 </dx-text-box>
               </div>
 
               <div class="col-lg-4">
                 <label class="control-label">Email Address</label>
-                <dx-text-box [readOnly]="true" formControlName="email"  placeholder="Email" [showClearButton]="true">
+                <dx-text-box [readOnly]="true" formControlName="incharge_email"  placeholder="Email" [showClearButton]="true">
                 </dx-text-box>
               </div>
               <div class="col-lg-4">
                 <label class="control-label">Country</label>
                 <dx-select-box [readOnly]="true" [dataSource]="countries" valueExpr="id" displayExpr="name" 
-                  placeholder="Select Country" (onSelectionChanged)="onCoutryCboSelect($event)" [searchEnabled]="true" formControlName="country_id">
+                  placeholder="Select Country" (onSelectionChanged)="onCoutryCboSelect($event)" [searchEnabled]="true" formControlName="incharge_country_id">
                 </dx-select-box>
               </div>
               <div class="col-lg-4">
                 <label for="ti" class="control-label">Region</label>
                 <dx-select-box [readOnly]="true" [dataSource]="regions" valueExpr="id" 
-                  displayExpr="name" (onSelectionChanged)="onRegionsCboSelect($event)" [searchEnabled]="true" formControlName="region_id">
+                  displayExpr="name" (onSelectionChanged)="onRegionsCboSelect($event)" [searchEnabled]="true" formControlName="incharge_region_id">
                 </dx-select-box>
               </div>
               <div class="col-lg-4">
@@ -184,7 +184,7 @@
                 <dx-select-box [readOnly]="true" [dataSource]="districts" 
                   valueExpr="id" 
                   placeholder="Select District" displayExpr="name" 
-                  [searchEnabled]="true" formControlName="district_id" (onSelectionChanged)="oDistrictsCboSelect($event)" >
+                  [searchEnabled]="true" formControlName="incharge_district_id" (onSelectionChanged)="oDistrictsCboSelect($event)" >
                 </dx-select-box>
               </div>
       </fieldset> 

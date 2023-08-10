@@ -78,7 +78,7 @@ Ext.define('Admin.view.document_management.views.forms.NonStructuredDocumentsDef
         fieldLabel: 'Description',
         margin: '0 20 20 0',
         name: 'description',
-        allowBlank: true
+        allowBlank: false
     }],
     dockedItems: [{
         xtype: 'toolbar',

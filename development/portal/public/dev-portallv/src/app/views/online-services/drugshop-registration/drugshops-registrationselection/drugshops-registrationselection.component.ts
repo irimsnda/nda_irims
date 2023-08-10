@@ -101,7 +101,7 @@ export class DrugshopsRegistrationselectionComponent implements OnInit {
    onRegisteredPremisesSearch() {
     
       //load the Premises Details 
-      this.appService.onLoadRegisteredPremises({registration_status:this.registration_status,validity_status:this.validity_status})
+      this.appService.onLoadRegisteredDrugShops({registration_status:this.registration_status,validity_status:this.validity_status})
         .subscribe(
           data_response => {
             this.registeredPremisesData = data_response.data;

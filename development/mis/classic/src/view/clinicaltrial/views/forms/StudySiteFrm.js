@@ -4,6 +4,7 @@
 Ext.define('Admin.view.clinicaltrial.views.forms.StudySiteFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'studysitefrm',
+    itemId:'studysitefrm',
     controller: 'clinicaltrialvctr',
     scrollable:true,
     layout: {
@@ -23,6 +24,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.StudySiteFrm', {
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 form.getForm().getFields().each(function (field) {
                     field.setReadOnly(true);
+                    form.down('button[name=submit_btn]').setVisible(false);
                 });
             }
         }
@@ -131,12 +133,6 @@ Ext.define('Admin.view.clinicaltrial.views.forms.StudySiteFrm', {
             valueField: 'id',
             displayField: 'name'
         },
-        {
-            xtype: 'textfield',
-            allowBlank: true,
-            fieldLabel: 'Physical Address',
-            name: 'physical_address'
-        },
          {
                 xtype:'fieldcontainer',
                 layout: {
@@ -163,6 +159,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.StudySiteFrm', {
         {
             xtype: 'textfield',
             allowBlank: true,
+            hidden:true,
             fieldLabel: 'Postal Address',
             name: 'postal_address'
         },
@@ -171,6 +168,13 @@ Ext.define('Admin.view.clinicaltrial.views.forms.StudySiteFrm', {
             fieldLabel: 'Telephone',
             name: 'telephone',
             allowBlank: true
+        },
+        {
+            xtype: 'textfield',
+            allowBlank: true,
+            columnWidth: 0.99,
+            fieldLabel: 'Physical Address',
+            name: 'physical_address'
         },
          {
             xtype: 'textarea',
@@ -222,6 +226,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.StudySiteFrm', {
             ui: 'soft-purple',
             iconCls: 'x-fa fa-save',
             formBind: true,
+            name:'submit_btn',
             handler: 'doCreateClinicalTrialParamWin',
             action_url: 'clinicaltrial/saveClinicalTrialCommonData',
             table_name: 'study_sites',

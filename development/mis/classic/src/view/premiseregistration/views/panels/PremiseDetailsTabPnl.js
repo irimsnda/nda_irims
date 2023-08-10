@@ -25,7 +25,7 @@ Ext.define('Admin.view.premiseregistration.views.panels.PremiseDetailsTabPnl', {
         },
          {
             title: 'Particulars of Nearest Pharmancy',
-            xtype: 'nearestpremiseparticulars'
+            xtype: 'nearestpremisegrid'
         },
 
         {

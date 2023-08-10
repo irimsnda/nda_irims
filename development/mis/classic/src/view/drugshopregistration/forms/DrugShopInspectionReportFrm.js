@@ -222,7 +222,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.DrugShopInspectionReportF
         {
             xtype: 'datefield',
             name: 'actual_start_date',
-            fieldLabel: 'Actual Start Date',
+            fieldLabel: 'Inspection Date',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
             bind: {
@@ -242,6 +242,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.DrugShopInspectionReportF
             name: 'actual_end_date',
             fieldLabel: 'Actual End Date',
             submitFormat: 'Y-m-d',
+            hidden:true,
             format: 'd/m/Y',
             bind: {
                 readOnly: '{isReadOnly}'
@@ -309,16 +310,15 @@ Ext.define('Admin.view.premiseregistration.views.forms.DrugShopInspectionReportF
             name: 'report_by',
             },
 
-        {
+             {
             xtype: 'datefield',
+            format: 'Y-m-d H:i:s',
+            altFormats: 'Y-m-d H:i:s|Y-m-d',
             name: 'report_date',
-            fieldLabel: 'Report Submitted on',
-            submitFormat: 'Y-m-d',
             readOnly:true,
-            format: 'd/m/Y',
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
-        },
-
+            fieldLabel: 'Report Submitted on',
+            allowBlank: false
+            }
         ]
      }
         

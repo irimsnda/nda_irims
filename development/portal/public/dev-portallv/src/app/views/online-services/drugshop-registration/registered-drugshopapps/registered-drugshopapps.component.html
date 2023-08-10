@@ -26,7 +26,7 @@
             
                 <dxo-selection mode="single"></dxo-selection>
                 <dxo-group-panel [visible]="true"></dxo-group-panel>
-                <dxi-column [width]=200 caption="Actions" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+                <dxi-column [width]=140 caption="Actions" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
                   cellTemplate="cellTemplate">
                   <div *dxTemplate="let d of 'cellTemplate'">
                     <dx-menu [items]="contextMenu" displayExpr="text" orientation="horizontal" [hideSubmenuOnMouseLeave]="false"
@@ -41,7 +41,6 @@
                 <dxi-column dataField="premise_reg_no"></dxi-column>
                 <dxi-column dataField="permit_no"></dxi-column>
                 <dxi-column dataField="physical_address"></dxi-column>
-                <dxi-column dataField="postal_address"></dxi-column>
                 <dxi-column dataField="region_name"></dxi-column>
                 <dxi-column dataField="registration_status" caption="Registration Status"></dxi-column>
                 <dxi-column dataField="validity_status" caption="Validity Status"></dxi-column>

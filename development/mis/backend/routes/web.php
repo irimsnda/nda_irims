@@ -28,6 +28,9 @@ Route::get('getApplicationApprovalDetails', [commonController::class, 'getApplic
 	Route::get('getApplicationApplicantDetails', [commonController::class, 'getApplicationApplicantDetails']);
 	Route::get('getApplicationComments', [commonController::class, 'getApplicationComments']);
 	Route::get('getApplicationunstructuredqueries', [commonController::class, 'getApplicationunstructuredqueries']);
+
+	
+	Route::post('submitQueriedOnlineApplication', [commonController::class, 'submitQueriedOnlineApplication']);
     Route::post('saveApplicationInvoicingDetails', [commonController::class, 'saveApplicationInvoicingDetails']);
 	Route::get('getCommonParamFromModel', [commonController::class, 'getCommonParamFromModel']);
 	Route::get('checkInvoicePaymentsLimit', [commonController::class, 'checkInvoicePaymentsLimit']);

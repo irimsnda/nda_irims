@@ -12,8 +12,7 @@ Ext.define('Admin.view.premiseregistration.views.containers.DrugsPremRegCtn', {
         },
         {
             xtype: 'hiddenfield',
-            name: 'section_id',
-            value: 1
+            name: 'section_id'
         },
         {
             xtype: 'drugspremregdashwrapper',

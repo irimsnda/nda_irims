@@ -371,6 +371,8 @@ setConfigGridsStore: function (obj, options) {
                     if (success == true || success === true) {
                         toastr.success(message, "Success Response");
                         activeTab.down('hiddenfield[name=is_report_saved]').setValue(1);
+                        activeTab.down('button[name=btn_print_inspection_report]').setVisible(true);
+                        
                     } else {
                         toastr.error(message, 'Failure Response');
                     }
@@ -382,6 +384,21 @@ setConfigGridsStore: function (obj, options) {
             });
         }
     },
+
+
+     doPrintInspectionReport: function (btn) {
+        var me = this,
+          
+            mainTabPnl = btn.up('#contentPanel'),
+            activeTab = mainTabPnl.getActiveTab(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            premise_id = activeTab.down('hiddenfield[name=premise_id]').getValue(),
+            report_type_id = activeTab.down('hiddenfield[name=report_type_id]').getValue(),
+            url = 'reports/printPremiseInspectionReport?application_code=' + application_code + '&premise_id=' + premise_id+ '&report_type_id=' + report_type_id;
+            print_report(url);
+    },
+
+
     saveLegalityofStockprdRemarks: function (btn) {
         var me = this,
             url = btn.action_url,
@@ -2483,7 +2500,7 @@ setConfigGridsStore: function (obj, options) {
     printColumnPremiseCertificate: function (item) {
         var record = item.getWidgetRecord(),
             application_code = record.get('application_code');
-        this.fireEvent('generatePremiseCert', application_code);
+        this.fireEvent('generatePremisePermit', application_code);
     },
     printPremisePermit: function (item) {
         var btn = item.up('button'),
@@ -3145,7 +3162,8 @@ setConfigGridsStore: function (obj, options) {
         this.fireEvent('showReinspectionRequestswin', item);
     }, showRejectionDetailsRequestswin: function (item) {
         this.fireEvent('showRejectionDetailsRequestswin', item);
-    }, showDataCleanUpWindow: function(btn) {
+    }, 
+    showDataCleanUpWindow: function(btn) {
         var container = Ext.ComponentQuery.query("#contentPanel")[0],
              activeTab = container.getActiveTab(), 
              wrapper = activeTab.down(btn.wrapper),
@@ -3153,7 +3171,6 @@ setConfigGridsStore: function (obj, options) {
         wrapper.removeAll();
         wrapper.add(child);
     },
-
 
 
 
@@ -3218,12 +3235,27 @@ setConfigGridsStore: function (obj, options) {
         funcShowCustomizableWindow(winTitle, width, childItem, 'customizablewindow');
     },
 
+     showPremisePharmacistSelectionGrid: function (btn) {
+        var width = btn.winWidth,
+        winTitle=btn.winTitle,
+        handlerFn=btn.handlerFn,
+        childItem = Ext.widget(btn.childXtype);
+        childItem.addListener('itemdblclick', handlerFn, this);
+        funcShowCustomizableWindow(winTitle, width, childItem, 'customizablewindow');
+    },
+
+
 
     loadSelectedPremiseIncharge: function (view, record) {
         var grid = view.grid,
             win = grid.up('window'),
             form = Ext.ComponentQuery.query('#drugshopdetailsfrm')[0];
-            form.down('textfield[name=incharge_nin_no]').setValue(record.get('incharge_nin_no'));
+            if (form) {
+             form = Ext.ComponentQuery.query('#drugshopdetailsfrm')[0];   
+            }else{
+            form = Ext.ComponentQuery.query('#preinspectiondrugshopdetailsfrm')[0];   
+            }
+            form.down('textfield[name=nin_no]').setValue(record.get('nin_no'));
             form.down('textfield[name=incharge_name]').setValue(record.get('incharge_name'));
             form.down('combo[name=incharge_qualification_id]').setValue(record.get('incharge_qualification_id'));
             form.down('textfield[name=incharge_telephone_no]').setValue(record.get('incharge_telephone_no'));
@@ -3241,13 +3273,26 @@ setConfigGridsStore: function (obj, options) {
     },
 
 
-    funcOtherLicenses:function(btn){
-        var childXtype = btn.childXtype,
-            child = Ext.widget(childXtype),
-            winTitle = btn.winTitle,
-            winWidth = btn.winWidth;
-            child.setHeight(500);
-            funcShowCustomizableWindow('Other Registered Premises', '60%', child, 'customizablewindow'); 
+    loadSelectedPremisePharmacist: function (view, record) {
+        var grid = view.grid,
+            win = grid.up('window'),
+            form = Ext.ComponentQuery.query('#premisedetailsfrm')[0];
+            form.down('textfield[name=psu_no]').setValue(record.get('psu_no'));
+            form.down('datefield[name=supervising_registration_date]').setValue(record.get('supervising_registration_date'));
+            form.down('textfield[name=supervising_name]').setValue(record.get('supervising_name'));
+            form.down('combo[name=supervising_qualification_id]').setValue(record.get('supervising_qualification_id'));
+            form.down('textfield[name=supervising_telephone_no]').setValue(record.get('supervising_telephone_no'));
+            form.down('textfield[name=supervising_telephone_no2]').setValue(record.get('supervising_telephone_no2'));
+            form.down('textfield[name=supervising_telephone_no3]').setValue(record.get('supervising_telephone_no3'));
+            form.down('textfield[name=supervising_email_address]').setValue(record.get('supervising_email_address'));
+            form.down('textfield[name=supervising_email_address2]').setValue(record.get('supervising_email_address2'));
+            form.down('textfield[name=supervising_email_address3]').setValue(record.get('supervising_email_address3'));
+            form.down('combo[name=supervising_country_id]').setValue(record.get('supervising_country_id'));
+            form.down('combo[name=supervising_region_id]').setValue(record.get('supervising_region_id'));
+            form.down('combo[name=supervising_district_id]').setValue(record.get('supervising_district_id'));
+            win.close();
+         
+
     },
 
        showOtherPremiseSearch: function(btn) {
@@ -3278,12 +3323,34 @@ setConfigGridsStore: function (obj, options) {
 
       showAddNearestPremiseForm: function (btn) {
         var grid = btn.up('grid'),
-            premise_id = grid.down('hiddenfield[name=premise_id]').getValue(),
-            width = btn.winWidth,
-            childObject = Ext.widget(btn.childXtype);
+        mainTabPanel = this.getMainTabPanel(),
+        activeTab = mainTabPanel.getActiveTab(),
+        premise_id = activeTab.down('hiddenfield[name=premise_id]').getValue(),
+            //premise_id = grid.down('hiddenfield[name=premise_id]').getValue(),
+        width = btn.winWidth,
+        childObject = Ext.widget(btn.childXtype);
 
         childObject.down('hiddenfield[name=premise_id]').setValue(premise_id);
         //childObject.down('button[action=link_personnel]').setDisabled(true);
-        funcShowCustomizableWindow('Nearest Premise', width, childObject, 'customizablewindow');
+        funcShowCustomizableWindow('Nearest DrugShop', width, childObject, 'customizablewindow');
+    },
+
+
+
+    viewSelectedpApplicationMoreDetails:function(view, record) {
+        Ext.getBody().mask('Please wait...');
+          var ref_no = record.get('reference_no'),
+            application_id = record.get('id'),
+            application_code = record.get('application_code'),
+            applicant_id = record.get('applicant_id'),
+            premise_id = record.get('premise_id'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = record.get('workflow_stage_id'),
+            module_id = record.get('module_id'),
+            sub_module_id = record.get('sub_module_id'),
+            section_id = record.get('section_id'),
+            isReadOnly = 1,
+            is_temporal = 0;
+        this.fireEvent('showDrugShopApplicationMoreDetailsGeneric', application_code,application_id, premise_id, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly, is_temporal);
     },
 });

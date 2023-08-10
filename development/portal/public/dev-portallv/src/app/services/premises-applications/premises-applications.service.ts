@@ -111,6 +111,23 @@ export class PremisesApplicationsService {
         return <any>data;
       }));
 
+  } 
+   onLoadApplicantPharmacist(psuNo) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+
+    this.config = {
+      headers: headers,
+      params: { psuNo: psuNo }
+    };
+
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getSupervisingPharmacist', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+
   }
 
   onLoadPersonnerQualifationsDetails(personnel_id) {
@@ -144,7 +161,21 @@ export class PremisesApplicationsService {
         return <any>data;
       }));
   }
-
+onLoadRegisteredDrugShops(params) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+    params.mistrader_id = this.mistrader_id;
+    this.config = {
+      headers: headers,
+      params: params
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getTradersRegisteredDrugShops', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
  onLoadNearestPremises(premise_id) {
     var headers = new HttpHeaders({
       "Accept": "application/json",

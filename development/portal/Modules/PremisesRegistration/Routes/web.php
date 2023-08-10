@@ -58,6 +58,8 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premisesregistration'], f
     Route::get('getPersonnelInformations', 'PremisesRegistrationController@getPersonnelInformations');
     Route::get('getTelephoneDetails', 'PremisesRegistrationController@getTelephoneDetails');
     Route::get('getApplicantIncharge', 'PremisesRegistrationController@getApplicantIncharge');
+        Route::get('getSupervisingPharmacist', 'PremisesRegistrationController@getSupervisingPharmacist');
+
     Route::get('getDirectorsInformations', 'PremisesRegistrationController@getDirectorsInformations');
     Route::get('getStaffInformations', 'PremisesRegistrationController@getStaffInformations');
     Route::get('getOtherPremises', 'PremisesRegistrationController@getOtherPremises');
@@ -67,6 +69,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premisesregistration'], f
     Route::get('getAppSubmissionGuidelines', 'PremisesRegistrationController@getAppSubmissionGuidelines');
   
     Route::get('getTradersRegisteredPremises', 'PremisesRegistrationController@getTradersRegisteredPremises');
+    Route::get('getTradersRegisteredDrugShops', 'PremisesRegistrationController@getTradersRegisteredDrugShops');
     Route::get('getNearestPremises', 'PremisesRegistrationController@getNearestPremises');
     Route::get('checkPendingPremisesRenewal', 'PremisesRegistrationController@checkPendingPremisesRenewal');
     

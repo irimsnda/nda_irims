@@ -1781,7 +1781,7 @@ public function getProcessApplicableChecklistItems(Request $request)
                     }
                 })
                 ->join('par_checklist_types as t3', 't1.checklist_type_id', '=', 't3.id')
-                ->select(DB::raw("t1.*,t2.id as item_resp_id,t2.pass_status,t2.comment,t2.observation,t2.auditor_comment,t3.name as checklist_type,$module_id as module_id,$sub_module_id as sub_module_id,'. $section_id .' as section_id"));
+                ->select(DB::raw("t1.*,t2.id as item_resp_id,t2.pass_status,t2.comment,t1.id as checklist_item_id,t2.observation,t2.auditor_comment,t3.name as checklist_type,$module_id as module_id,$sub_module_id as sub_module_id,'. $section_id .' as section_id"));
             if (validateIsNumeric($checklist_category_id)) {
                 $qry->where('t3.checklist_category_id', $checklist_category_id);
             }

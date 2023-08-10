@@ -35,13 +35,7 @@ import { AddproductApplicationdetailsComponent } from './views/online-services/p
     ApprovedImportexportComponent,
     PreviewAssessmentmedicinesComponent,
     PreviewAssessmentgmpappsComponent
-    
-    
-    
-    
-    
-    
-
+  
   ],
   imports: [
    // NgWizardModule.forRoot(ngWizardConfig),

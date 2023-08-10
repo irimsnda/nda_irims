@@ -27,7 +27,7 @@ Ext.define('Admin.view.document_management.views.grids.SectionModulesDocDefinati
         action: 'add',
         ui: 'soft-green',
         childXtype: 'sectionModulesDocDefinationfrm',
-        winTitle: 'DMS Sections Modules Defination',
+        winTitle: 'DMS Sections Modules Definition',
         winWidth: '40%',
         handler: 'showAddDMSSectionsDefinationDetails',
         stores: '[]'
@@ -39,7 +39,7 @@ Ext.define('Admin.view.document_management.views.grids.SectionModulesDocDefinati
             ptype: 'gridexporter'
         }
     ],
-    export_title: 'DMS Sections Modules Defination',
+    export_title: 'DMS Sections Modules Definition',
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '100%',

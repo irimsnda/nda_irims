@@ -690,9 +690,9 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
             record = btn.getWidgetRecord(),
             grid = btn.up('grid'),
             store = grid.store,
-            table_name = grid.table_name,
-            document_type_id = grid.document_type_id,
-
+            table_name = grid.down('hiddenfield[name=table_name]').getValue(),
+            document_type_id = grid.down('hiddenfield[name=document_type_id]').getValue(),
+            reference_record_id = grid.down('hiddenfield[name=reference_record_id]').getValue(),
             node_ref = record.get('node_ref'),
             record_id = record.get('id'),
             application_code = record.get('application_code');
@@ -705,7 +705,9 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
             params: {
                 node_ref: node_ref,
                 record_id: record_id,
-                table_name: table_name
+                table_name: table_name,
+                reference_record_id:reference_record_id,
+                _token:token
             },
             headers: {
                 'Authorization': 'Bearer ' + access_token,

@@ -61,13 +61,48 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.NewDru
             split: false,
             items: [
                 {
-                    xtype: 'transitionsbtn'
+                    xtype: 'transitionsbtn',
+                    hidden:true,
+                },
+                {
+                    xtype: 'button',
+                    text: "Raise/View Query & Responses",
+                    tooltip: 'Raise Query/View Query(Request for Information) and query Responses',
+                    ui: 'soft-red',
+                    handler: 'showAddApplicationUnstrcuturedQueries',
+                },
+                ,{
+                    text: 'Preview/Add CAPA Request',
+                    iconCls: 'x-fa fa-cubes',
+                    ui: 'soft-blue',
+                    handler: 'showPremisesInspectionCAPApplicationQueries'
+                },
+                {
+                    text: 'Comments',
+                    iconCls: 'x-fa fa-weixin',
+                    childXtype: 'applicationprevcommentsgrid',
+                    name: 'prev_comments',
+                    winTitle: 'Inspection Comments',
+                    winWidth: '60%',
+                    stores: '[]',
+                    hidden:true,
+                    comment_type_id: 1,
+                    target_stage: 'inspection',
+                    isWin: 1
+                 },
+                  {
+                    text: 'Print Inspection Report',
+                    iconCls: 'x-fa fa-print',
+                    hidden:true,
+                    ui: 'soft-green',
+                    name:'btn_print_inspection_report',
+                    handler: 'doPrintInspectionReport'
                 },
 
                 {
                     text: 'View Inspectors Report',
                     ui: 'soft-green',
-                    iconCls: 'fa fa-print',
+                    iconCls: 'fa fa-eye',
                     childXtype: 'drugshopinspectiondetailstabpnl',
                     winTitle: 'Inspection Report',
                     winWidth: '60%',
@@ -80,7 +115,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.NewDru
                 {
                     text: 'View Regional Inspectors Report',
                     ui: 'soft-red',
-                    iconCls: 'fa fa-print',
+                    iconCls: 'fa fa-eye',
                     childXtype: 'drugshopinspectiondetailstabpnl',
                     winTitle: 'Inspection Report',
                     winWidth: '60%',
@@ -104,6 +139,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.NewDru
                     text: 'Submit Application',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-check',
+                    isInspectionSubmit:1,
                     name: 'process_submission_btn',
                     storeID: 'foodpremiseregistrationstr',
                     table_name: 'tra_premises_applications',

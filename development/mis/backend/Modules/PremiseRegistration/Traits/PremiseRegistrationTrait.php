@@ -130,9 +130,9 @@ trait PremiseRegistrationTrait
             inValidateApplicationChecklist($module_id, $sub_module_id, $section_id, $checklist_category, $application_codes);
         }
         if ($approval_submission == 1) {
-            if ($sub_module_id == 1) {//todo New Applications
+            if ($sub_module_id == 1  || $sub_module_id == 97) {//todo New Applications
                 $this->processNewApprovalApplicationSubmission($request, $keep_status);
-            } else if ($sub_module_id == 2) {//todo Renewal Applications
+            } else if ($sub_module_id == 2 || $sub_module_id == 96) {//todo Renewal Applications
                 $this->processSubsequentApprovalApplicationSubmission($request);
             } else if ($sub_module_id == 3) {//todo Alteration Applications
                 $this->batchPremiseAlterationApplicationApprovalSubmission($request);
@@ -1104,7 +1104,7 @@ trait PremiseRegistrationTrait
 
     }
     public function savePremiseApplicationRecommendationDetails(Request $request,$document_types)
-    {
+    {  
         $table_name = $request->input('table_name');
         $application_id = $request->input('application_id');
         $application_code = $request->input('application_code');
@@ -1120,7 +1120,6 @@ trait PremiseRegistrationTrait
         }
         $res = array();
 
-    
 
         try {
             DB::transaction(function () use ($qry, $application_id, $application_code, $table_name, $request, $app_details,$document_types, &$res) {
@@ -1162,6 +1161,8 @@ trait PremiseRegistrationTrait
                     'comment' => $comment,
                     'approval_date' => $approval_date,
                     'expiry_date' => $expiry_date,
+                    'appvalidity_status_id' =>2,
+                    'appregistration_status_id' =>2,
                     'approved_by' => $approved_by,
                     'dg_signatory' => $dg_signatory,
                     'permit_signatory' => $permit_signatory
@@ -1188,7 +1189,7 @@ trait PremiseRegistrationTrait
                         ->insert($prev_data_results);
 						$premise_reg_no = '';
                     if ($decision_id == 1) {
-						if ($app_details->sub_module_id == 2) {
+						if ($app_details->sub_module_id == 2 || $app_details->sub_module_id == 108) {
 							$premise_reg_no = getSingleRecordColValue('registered_premises', array('id'=>$app_details->reg_premise_id), 'registration_no');
 						}
 						else{
@@ -1220,7 +1221,7 @@ trait PremiseRegistrationTrait
                     $params['created_by'] = $user_id;
 				$premise_reg_no = '';
                     if ($decision_id == 1) {
-						if ($app_details->sub_module_id == 2) {
+						if ($app_details->sub_module_id == 2 || $app_details->sub_module_id == 108) {
 							$premise_reg_no = getSingleRecordColValue('registered_premises', array('id'=>$app_details->reg_premise_id), 'registration_no');
 						}
 						else{
@@ -1255,7 +1256,7 @@ trait PremiseRegistrationTrait
                 }
                 updatePortalApplicationStatusWithCode($application_code, 'wb_premises_applications',$portal_status_id);
 
-                if ($app_details->sub_module_id == 1 || $app_details->sub_module_id == 2) {//we only update premise validity status on new applications
+                if ($app_details->sub_module_id == 1 || $app_details->sub_module_id == 2 || $app_details->sub_module_id == 96 || $app_details->sub_module_id == 97) {//we only update premise validity status on new applications
                     $updates = array(
                         'validity_status_id' => $validity_status_id,
                         'registration_status_id' => $registration_status_id,
@@ -1595,16 +1596,8 @@ trait PremiseRegistrationTrait
             $premise_otherdetails = unsetPrimaryIDsInArray($premise_otherdetails);
             DB::table('tra_premises_otherdetails')
                 ->insert($premise_otherdetails);
-            //premise personnel details
-            $premise_personneldetails = $portal_db->table('wb_premises_personnel')
-                ->where('premise_id', $results->premise_id)
-                ->select(DB::raw("id as portal_id,$premise_id as premise_id,personnel_id,position_id,qualification_id,start_date,end_date,status_id,$user_id as created_by,
-                         registration_no,study_field_id,institution"))
-                ->get();
-            $premise_personneldetails = convertStdClassObjToArray($premise_personneldetails);
-            $premise_personneldetails = unsetPrimaryIDsInArray($premise_personneldetails);
-            DB::table('tra_premises_personnel')
-                ->insert($premise_personneldetails);
+
+                
             if ($sub_module_id == 3) {//Alteration
                 $this->syncApplicationOnlineVariationRequests($application_code);
             }
@@ -1648,7 +1641,7 @@ trait PremiseRegistrationTrait
                 return $application_insert;
             }
             $mis_application_id = $application_insert['record_id'];
-            if ($sub_module_id == 1) {
+            if ($sub_module_id == 1 || $sub_module_id == 97 || $sub_module_id ===97) {
                 $reg_params = array(
                     'tra_premise_id' => $premise_id,
                     'registration_status_id' => 1,
@@ -1656,7 +1649,9 @@ trait PremiseRegistrationTrait
                     'created_by' => $user_id
                 );
                 //should apply only to new applications
-                createInitialRegistrationRecord('registered_premises', 'tra_premises_applications', $reg_params, $mis_application_id, 'reg_premise_id');
+            createInitialRegistrationRecord('registered_premises', 'tra_premises_applications', $reg_params, $mis_application_id, 'reg_premise_id');
+
+
             } else {
                 DB::table('tra_premises_applications')
                     ->where('id', $mis_application_id)

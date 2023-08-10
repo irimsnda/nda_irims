@@ -37,6 +37,10 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopNearestPremiseFr
         },{
             xtype: 'hiddenfield',
             name: 'premise_id'
+        },{
+        xtype: 'hiddenfield',
+        name: 'is_local',
+        value: 1
         },
         {
             xtype: 'hiddenfield',
@@ -60,7 +64,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopNearestPremiseFr
         
         {
             xtype: 'textfield',
-            name: 'Street',
+            name: 'street',
             fieldLabel: 'Street/Road'
         },
          {
@@ -136,7 +140,6 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopNearestPremiseFr
                 fieldLabel: 'District',
                 name: 'district_id',
                 //store: 'districtsstr',
-                allowBlank:true,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
@@ -151,16 +154,72 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopNearestPremiseFr
                             }
                         },
                         isLoad: false
+                    },
+                    change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                            districtStore = form.down('combo[name=county_id]').getStore(),
+                            filterObj = {region_id: newVal},
+                            filterStr = JSON.stringify(filterObj);
+                        districtStore.removeAll();
+                        districtStore.load({params: {filter: filterStr}});
+                    }
+                }
+            }, 
+
+            {
+                xtype: 'combo',
+                fieldLabel: 'County/Division',
+                name: 'county_id',
+                allowBlank: true,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                    beforerender: {
+                        fn: 'setParamCombosStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'parameters/county'
+                            }
+                        },
+                        isLoad: false
+                    },
+                    change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                            districtStore = form.down('combo[name=sub_county_id]').getStore(),
+                            filterObj = {region_id: newVal},
+                            filterStr = JSON.stringify(filterObj);
+                        districtStore.removeAll();
+                        districtStore.load({params: {filter: filterStr}});
+                    }
+                }
+            },
+            {
+                xtype: 'combo',
+                fieldLabel: 'Sub County',
+                name: 'sub_county_id',
+                allowBlank: true,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                    beforerender: {
+                        fn: 'setParamCombosStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'parameters/subcounty'
+                            }
+                        },
+                        isLoad: true
                     }
                   
                 }
-        },
-        {
-            xtype: 'filefield',
-            fieldLabel: 'Location Sketch',
-            allowBlank: false,
-            name: 'sketch'
-        },
+            },
+    
     ],
     buttons: [
         {
@@ -170,10 +229,9 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopNearestPremiseFr
             iconCls: 'x-fa fa-save',
             formBind: true,
             table_name: 'tra_premises_storelocation',
-            storeID: 'nearestpremisestr',
-            action_url: 'premiseregistration/saveNearestPremiseDetails',
-            handler: 'saveNearestPremiseDetails',
-            name: 'save_btn'
+            storeID: 'nearestdrugshopstr',
+            action_url: 'premiseregistration/onSavePremisesStoreLocationDetails',
+            handler: 'doCreatePremiseRegParamWin'
         },
         {
             xtype: 'button',

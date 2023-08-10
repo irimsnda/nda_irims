@@ -49,6 +49,30 @@ class OnlineServicesConfigController extends Controller
 
 
     }
+
+     public function getAccountTypes(Request $req)
+       {
+        try {
+           
+            $table_name = $req->table_name;
+            $qry = DB::table($table_name. ' as t1');
+            $results = $qry->get();
+
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
+
     public function getApplicationprocessguidelines(){
         try {
             $data = array();
@@ -467,6 +491,8 @@ class OnlineServicesConfigController extends Controller
             $table_name = $post_data['model'];
             $id = $post_data['id'];
             $name = $req->name;
+            $account_type_ids = $req->input('account_type_ids');
+            $account_type_ids = json_decode($account_type_ids);
 
             $unsetData=$req->input('unset_data');
             //unset unnecessary values
@@ -475,6 +501,7 @@ class OnlineServicesConfigController extends Controller
             unset($post_data['model']);
             unset($post_data['id']);
             unset($post_data['unset_data']);
+            unset($post_data['account_type_ids']);
             if(isset($unsetData)){
                 $unsetData= explode(",", $unsetData);
                 $post_data=unsetArrayData($post_data,$unsetData);
@@ -516,6 +543,7 @@ class OnlineServicesConfigController extends Controller
                     }
                     $previous_data = $previous_data['results'];
                     $res = updateRecord($table_name, $previous_data, $where, $table_data, $user_id, $db_connect);
+                     $record_id = $res['record_id'];
                     
                 }
             } else {
@@ -538,6 +566,40 @@ class OnlineServicesConfigController extends Controller
                         );
                     }
                 }
+            if($table_name == 'wb_navigation_items'){
+            //save the account_type_ids
+                DB::table('tra_navigation_menu_account_type')
+                    ->where('navigation_menu_id', $record_id)
+                    ->delete();
+                if (count($account_type_ids) > 0) {
+                    foreach ($account_type_ids as $account_type_id) {
+                        $params[] = array(
+                            'navigation_menu_id' => $id,
+                            'account_type_id' => $account_type_id,
+                            'created_on' => Carbon::now(),
+                            'created_by' => \Auth::user()->id
+                        );
+                    }
+                    DB::table('tra_navigation_menu_account_type')
+                        ->insert($params);
+                }
+
+               $rec = DB::connection('portal_db')->table('wb_navigation_menu_account_type')
+                            ->where('navigation_menu_id', $record_id)
+                            ->delete();
+                if (count($account_type_ids) > 0) {
+                    foreach ($account_type_ids as $account_type_id) {
+                        $params[] = array(
+                            'navigation_menu_id' => $id,
+                            'account_type_id' => $account_type_id,
+                            'created_on' => Carbon::now(),
+                            'created_by' => \Auth::user()->id
+                        );
+                    }
+                   DB::connection('portal_db')->table('wb_navigation_menu_account_type')
+                        ->insert($params);
+                }
+            }
         } catch (\Exception $exception) {
             $res = array(
                 'success' => false,
@@ -622,7 +684,7 @@ class OnlineServicesConfigController extends Controller
     }
    public function getOnlineMenuLevel0(Request $req){
             try {
-                $navigation_type_id= $req->navigation_type_id;
+                $navigation_type_id=2;
 
                     $rec = DB::connection('portal_db')->table('wb_navigation_items as t1')
                             ->select('t1.*')
@@ -756,7 +818,7 @@ class OnlineServicesConfigController extends Controller
      //  $belongsToSuperGroup = belongsToSuperGroup($groups);
        $qry = DB::connection('portal_db')
             ->table('wb_navigation_items as t1')
-            ->join('wb_navigation_types  as t2', 't1.navigation_type_id','=','t2.id')
+            ->leftjoin('wb_navigation_types  as t2', 't1.navigation_type_id','=','t2.id')
            ->distinct()
            ->select('t1.*', 't2.name as navigation_type')
            ->where($where);

@@ -2,7 +2,6 @@
 Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'drugshopdetailsfrm',
-    alias: "widget.drugshopdetailsfrm",
     itemId: 'drugshopdetailsfrm',
     scrollable: true,
     layout: {
@@ -16,14 +15,23 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
         labelAlign: 'top',
         allowBlank: false
     },
+
+    
     listeners: {
         afterrender: function () {
             var form = this,
                 isReadOnly = form.down('hiddenfield[name=isReadOnly]').getValue();
+
+                isPreInspection = form.down('hiddenfield[name=isPreInspection]').getValue();
+
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 form.getForm().getFields().each(function (field) {
                     field.setReadOnly(true);
                 });
+            }
+
+            if ((isPreInspection) && (isPreInspection == 1 || isPreInspection === 1)) {
+                form.down('#director_fieldset').setVisible(false);
             }
         }
     },
@@ -31,15 +39,24 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
         xtype: 'hiddenfield',
         name: 'isReadOnly'
     },
+     {
+        xtype: 'hiddenfield',
+        name: 'isPreInspection'
+    },
     {
         xtype: 'hiddenfield',
         name: 'is_local',
         value: 1
+    },{
+        xtype: 'hiddenfield',
+        name: 'business_type_id',
+        value: 7
     },
     {
         xtype: 'hiddenfield',
         name: 'premise_id'
     },
+    
     {
         xtype: 'hiddenfield',
         name: 'manufacturing_site_id'
@@ -59,6 +76,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
     },{
             xtype:'fieldset',
             columnWidth: 1,
+            itemId: 'main_fieldset',
             title: 'Drug Shop Details',
             collapsible: true,
             defaults: {
@@ -160,8 +178,10 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
             fieldLabel: 'Business Registration Date',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
+            //format: 'Y-m-d H:i:s', // Use the correct format here
             allowBlank: true,
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+            maxValue: new Date() 
            },
            
             
@@ -187,19 +207,36 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
                             }
                         },
                         isLoad: true
+                    },
+                        change: function(cmbo,newVal){
+                            var form=cmbo.up('form'),
+                            other_classification=form.down('textfield[name=other_classification]');
+                            if(newVal==3||newVal===3){
+                                var is_visible = true;
+                            }else{
+                                var is_visible = false;
+                            }
+                            other_classification.setVisible(is_visible);
+                        }
                     }
+                },
+                 {
+                    xtype: 'textarea',
+                    name: 'other_classification',
+                    columnWidth: 1,
+                    fieldLabel: 'Other Classifications',
+                    allowBlank:true,
+                    hidden: true
                 }
-            }
-            
            
 
             ]
-        },
-        {
+          },
+          {
                 xtype:'fieldset',
                 columnWidth: 1,
                 itemId: 'director_fieldset',
-                title: "Director's Information and Declarations",
+                title: "Declarations",
                 collapsible: true,
                 defaults: {
                     labelAlign: 'top',
@@ -212,77 +249,6 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
                 },
                 layout: 'column',
                 items:[{
-                    xtype: 'textfield',
-                    fieldLabel: 'Name of Managing Director',
-                    name: 'managing_director',
-                    allowBlank: false
-                },{
-                    xtype: 'textfield',
-                    fieldLabel: "Managing Director's Email",
-                    name: 'managing_director_email',
-                },{
-                    xtype: 'textfield',
-                    fieldLabel: "Managing Director's Telephone No",
-                    name: 'managing_director_telepone',
-                }, {
-                    xtype: 'combo',
-                    name: 'applicant_contact_person',
-                    fieldLabel: 'Director as Contact Person',
-                    valueField: 'id',
-                    displayField: 'name',
-                    queryMode: 'local',
-                    forceSelection: true,
-                    value: 1,
-                    listeners: { 
-                        beforerender: {
-                            fn: 'setParamCombosStore',
-                            config: {
-                                pageSize: 100,
-                                proxy: {
-                                    url: 'commonparam/getCommonParamFromTable',
-                                    extraParams: {
-                                        table_name: 'par_confirmations'
-                                    }
-                                }
-                            },
-                            isLoad: true
-                        },
-                        change: function(cmbo,newVal){
-                            var form=cmbo.up('form'),
-                            contact_person=form.down('textfield[name=contact_person]'),
-                            contact_telephone_no=form.down('textfield[name=contact_person_telephone]'),
-                            contact_email_address=form.down('textfield[name=contact_person_email]');
-                            if(newVal==1||newVal===1){
-                                var is_visible = false;
-                            }else{
-                                var is_visible = true;
-                            }
-                            contact_person.setVisible(is_visible);
-                            contact_telephone_no.setVisible(is_visible);
-                            contact_email_address.setVisible(is_visible);
-                        }
-                    }
-                }, {
-                    xtype: 'textfield',
-                    name: 'contact_person',
-                    fieldLabel: 'Contact Person',
-                    allowBlank: true,
-                    hidden: true
-                },{
-                    xtype: 'textfield',
-                    name: 'contact_person_telephone',
-                    allowBlank: true,
-                    fieldLabel: 'Contact Person Telephone No',
-                    hidden: true
-                },
-                {
-                    xtype: 'textfield',
-                    name: 'contact_person_email',
-                    allowBlank: true,
-                    fieldLabel: ' Contact Person Email Address',
-                    hidden: true
-                },
-                 {
                 xtype: 'combo',
                 fieldLabel: 'Has the applicant,any partner or director been convicted within the past three years, within or outside Uganda, of any offence involving drug?',
                 name: 'had_offence',
@@ -443,6 +409,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
         {
                 xtype:'fieldset',
                 columnWidth: 1,
+                itemId: 'incharge_fieldset',
                 title: "Details of the Applicant (Full time in Charge)",
                 collapsible: true,
                 defaults: {
@@ -500,7 +467,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
                 items: [
                     {
                         xtype: 'textfield',
-                        name: 'incharge_nin_no',
+                        name: 'nin_no',
                         columnWidth: 0.9,
                         allowBlank: false,
                         fieldLabel: 'NIN'
@@ -512,7 +479,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
                         columnWidth: 0.1,
                         tooltip: 'Search',
                         childXtype: 'premiseinchargeselectiongrid',
-                        winTitle: 'Premise Incharge',
+                        winTitle: 'Drug Shop Incharge',
                         winWidth: '90%',
                         handlerFn: 'loadSelectedPremiseIncharge',
                         handler: 'showPremiseInchargeSelectionGrid',
@@ -741,6 +708,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
             xtype:'fieldset',
             columnWidth: 1,
             title: 'Location Details',
+            itemId: 'location_fieldset',
             collapsible: true,
             defaults: {
                 labelAlign: 'top',
@@ -899,23 +867,13 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
            {
                 xtype: 'textfield',
                 fieldLabel: 'village',
+                allowBlank:true,
                 name: 'village'
             },{
                 xtype: 'textfield',
                 name: 'street',
                 allowBlank:true,
                 fieldLabel: 'Street/Road'
-            },
-             {
-                xtype: 'textfield',
-                name: 'email',
-                fieldLabel: 'Email Address'
-            },
-            {
-                xtype: 'textfield',
-                name: 'telephone',
-                fieldLabel: 'Telephone No'
-                
             },
 
             {

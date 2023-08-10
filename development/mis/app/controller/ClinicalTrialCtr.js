@@ -4602,12 +4602,12 @@ Ext.getBody().unmask();
                 value: hasQueries
             }];
             hasEvalUploadChecklist = checkApplicationChecklistUploadDetails(application_code, module_id,sub_module_id,section_id,'',workflow_stage_id);
-            if(!hasEvalUploadChecklist){
-                toastr.warning('Upload the evaluation/assessment report or fill in the Evaluation checklist details(for checklist based evaluation) to proceed!!', 'Warning Response');
-                Ext.getBody().unmask();
-                return false;
+            // if(!hasEvalUploadChecklist){
+            //     toastr.warning('Upload the evaluation/assessment report or fill in the Evaluation checklist details(for checklist based evaluation) to proceed!!', 'Warning Response');
+            //     Ext.getBody().unmask();
+            //     return false;
                
-            }
+            // }
         if (valid == true || valid === true) {
             showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsfrm', winWidth, storeID, extraParams);
         } else {

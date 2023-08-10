@@ -6,12 +6,17 @@ Ext.define('Admin.view.drugshopregistration.views.panels.DrugShopOtherDetailsTab
     items: [
        
         {
-            title: 'PROPRIETOR(S)/DIRECTORS(S)',
-            xtype: 'premisepersonneldetailsgrid'
+            title: 'Director(s)',
+            itemId:'drugshopdirectorsdetailsgrid',
+            xtype: 'drugshopdirectorsdetailsgrid'
         },
         {
             title: 'Nearest Pharmacies',
             xtype: 'nearestpremisegrid'
+        },
+        {
+            title: 'Nearest DrugShop',
+            xtype: 'nearestdrugshopgrid'
         },
          {
             title: 'Other License(S)',
@@ -20,3 +25,4 @@ Ext.define('Admin.view.drugshopregistration.views.panels.DrugShopOtherDetailsTab
 
     ]
 });
+

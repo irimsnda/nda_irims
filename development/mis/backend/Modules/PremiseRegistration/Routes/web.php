@@ -28,8 +28,14 @@ Route::group(['middleware' => 'web', 'prefix' => 'premiseregistration'], functio
     Route::get('getDrugShopApplicationsAtApproval', 'PremiseRegistrationController@getDrugShopApplicationsAtApproval');
     Route::get('getPremisesApprovedAppList', 'PremiseRegistrationController@getPremisesApprovedAppList');
 
+    Route::get('getDrugShopPreInspectionList', 'PremiseRegistrationController@getDrugShopPreInspectionList');
 
-    
+
+    Route::post('onDeleteOnlineApplicationQueries', 'PremiseRegistrationController@onDeleteOnlineApplicationQueries');
+
+    Route::post('saveApplicationProcessingZone', 'PremiseRegistrationController@saveApplicationProcessingZone');
+
+
 
 
     Route::get('getPremiseInspectionReport', 'PremiseRegistrationController@getPremiseInspectionReport');
@@ -41,9 +47,9 @@ Route::group(['middleware' => 'web', 'prefix' => 'premiseregistration'], functio
 Route::group(['middleware' => 'auth:api', 'prefix' => 'premiseregistration'], function () {
 
 
-    Route::get('getNearestPremise', 'PremiseRegistrationController@getNearestPremise ');
+    Route::get('getOtherPremiseDetails', 'PremiseRegistrationController@getOtherPremiseDetails');
 
-
+    Route::get('getPremisePharmacist', 'PremiseRegistrationController@getPremisePharmacist');
     
     Route::get('getPremiseRegParamFromModel', 'PremiseRegistrationController@getPremiseRegParamFromModel');
     Route::get('getApplicantsList', 'PremiseRegistrationController@getApplicantsList');
@@ -56,6 +62,10 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premiseregistration'], fu
     Route::get('getPremiseApplicationsAtApproval', 'PremiseRegistrationController@getPremiseApplicationsAtApproval');
     Route::get('getPremiseOtherDetails', 'PremiseRegistrationController@getPremiseOtherDetails');
     Route::get('getPremisePersonnelDetails', 'PremiseRegistrationController@getPremisePersonnelDetails');
+
+    Route::get('getPremiseDirectorsDetails', 'PremiseRegistrationController@getPremiseDirectorsDetails');
+
+    
     Route::post('savePremiseRegCommonData', 'PremiseRegistrationController@savePremiseRegCommonData');
     Route::post('deletePremiseRegRecord', 'PremiseRegistrationController@deletePremiseRegRecord');
     Route::post('softDeletePremiseRegRecord', 'PremiseRegistrationController@softDeletePremiseRegRecord');
@@ -87,15 +97,30 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premiseregistration'], fu
     Route::post('saveInspectionInspectors', 'PremiseRegistrationController@saveInspectionInspectors');
     Route::post('removeInspectionInspectors', 'PremiseRegistrationController@removeInspectionInspectors');
     Route::post('saveNewReceivingBaseDetails', 'PremiseRegistrationController@saveNewReceivingBaseDetails');
+
+    Route::post('saveNewLicenseReceivingBaseDetails', 'PremiseRegistrationController@saveNewLicenseReceivingBaseDetails');
+    
     Route::post('funcAddNewPremisesDetails', 'PremiseRegistrationController@funcAddNewPremisesDetails');
     
     
+
+    Route::post('onSavePremisesStoreLocationDetails', 'PremiseRegistrationController@onSavePremisesStoreLocationDetails');
+
+    Route::get('getPremisesStoreLocationDetails', 'PremiseRegistrationController@getPremisesStoreLocationDetails');
+
+   Route::get('getDrugShopStoreLocationDetails', 'PremiseRegistrationController@getDrugShopStoreLocationDetails');
+
 
     Route::post('saveRenewalReceivingBaseDetails', 'PremiseRegistrationController@saveRenewalReceivingBaseDetails');
     Route::post('saveAlterationReceivingBaseDetails', 'PremiseRegistrationController@saveAlterationReceivingBaseDetails');
     Route::post('saveRenewalAlterationReceivingBaseDetails', 'PremiseRegistrationController@saveRenewalAlterationReceivingBaseDetails');
 
     Route::get('prepareNewPremiseReceivingStage', 'PremiseRegistrationController@prepareNewPremiseReceivingStage');
+
+    Route::get('prepareNewLicensePremiseReceivingStage', 'PremiseRegistrationController@prepareNewLicensePremiseReceivingStage');
+
+
+    
     Route::get('prepareRenewalPremiseReceivingStage', 'PremiseRegistrationController@prepareRenewalPremiseReceivingStage');
     Route::get('prepareNewPremiseInvoicingStage', 'PremiseRegistrationController@prepareNewPremiseInvoicingStage');
     Route::get('prepareRenewalPremiseInvoicingStage', 'PremiseRegistrationController@prepareRenewalPremiseInvoicingStage');

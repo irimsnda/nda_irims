@@ -26,6 +26,9 @@ Route::group(['middleware' => 'web', 'prefix' => 'onlineservices'], function () 
     Route::post('saveApplicationstatusactions', [OnlineServicesConfigController::class,'saveApplicationstatusactions']);
     
     
+    Route::get('getAccountTypes', [OnlineServicesConfigController::class,'getAccountTypes']);
+    
+
     Route::get('getapplicationstatusactions', [OnlineServicesConfigController::class,'getapplicationstatusactions']);
     Route::get('getApplicationTermsConditions', [OnlineServicesConfigController::class,'getApplicationTermsConditions']);
 

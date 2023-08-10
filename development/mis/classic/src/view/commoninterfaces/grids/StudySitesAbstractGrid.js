@@ -29,8 +29,34 @@ Ext.define('Admin.view.commoninterfaces.grids.StudySitesAbstractGrid', {
             }, {
                 xtype: 'gridcolumn',
                 dataIndex: 'postal_address',
+                hidden:true,
                 text: 'Postal Address',
                 flex: 1
+            },{
+                xtype: 'widgetcolumn',
+                width: 160,
+                widget:{
+                    xtype: 'button',
+                    text: 'View all Details',
+                    childXtype: 'studysitefrm',
+                    winTitle: 'Study Site',
+                    winWidth: '70%',
+                    ui: 'soft-green',
+                    iconCls: 'fa fa-eye',
+                    handler: 'viewSiteDetails'
+                }
+            },{
+                xtype: 'widgetcolumn',
+                width: 120,
+                widget:{
+                    xtype: 'button',
+                    text: 'Edit',
+                    iconCls: 'fa fa-edit',
+                    childXtype: 'studysitefrm',
+                    winTitle: 'Study Site',
+                    winWidth: '70%',
+                    handler: 'editSiteDetails'
+                }
             }
         ];
         this.columns = defaultColumns.concat(this.columns);

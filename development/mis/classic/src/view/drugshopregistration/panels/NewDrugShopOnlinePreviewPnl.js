@@ -81,6 +81,9 @@ Ext.define('Admin.view.drugshopregistration.views.panels.NewDrugShopOnlinePrevie
             }, {
                 xtype: 'hiddenfield',
                 name: 'section_id'
+            },{
+                xtype: 'hiddenfield',
+                name: 'premise_id'
             }, {
                 xtype: 'hiddenfield',
                 name: 'is_manager_query'

@@ -55,6 +55,7 @@ Ext.define('Admin.view.parameters.views.forms.locations.RegionFrm', {
             {
                 xtype: 'combobox',
                 forceSelection: true,
+                queryMode: 'local',
                 fieldLabel: 'Country',
                 flex: 1,
                 store: {

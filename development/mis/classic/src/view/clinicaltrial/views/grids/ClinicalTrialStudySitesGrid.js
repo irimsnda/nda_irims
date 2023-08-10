@@ -30,6 +30,13 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialStudySitesGrid', {
             winWidth: '40%'
         },
         {
+            xtype: 'displayfield',
+            value: 'Double click to view all site details!!',
+            fieldStyle: {
+                'color':'green'
+            }
+        },
+        {
             xtype: 'hiddenfield',
             name: 'section_id'
         },
@@ -64,7 +71,8 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialStudySitesGrid', {
                 }
             },
             isLoad: true
-        }
+        },
+        itemdblclick: 'loadViewSiteDetails'
     },
     columns: [
         {
@@ -80,8 +88,8 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialStudySitesGrid', {
                 menu: {
                     xtype: 'menu',
                     items: [{
-                        text: 'Edit/Details',
-                        iconCls: 'x-fa fa-edit',
+                        text: 'change',
+                        iconCls: 'fa fa-cog',
                         handler: 'editClinicalStudySiteDetails',
                         winTitle: 'Clinical Study Site',
                         winWidth: '40%',

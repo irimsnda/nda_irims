@@ -48,7 +48,7 @@ Ext.define('Admin.view.configurations.views.grids.PremiseInchargeSelectionGrid',
         width: 100
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'incharge_nin_no',
+        dataIndex: 'nin_no',
         text: 'NIN',
         flex: 1,
         filter: {

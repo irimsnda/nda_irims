@@ -138,15 +138,19 @@
                       <div class="row wizard-contentwin">
                         <fieldset class="col-lg-12 row">
                           <legend  class="contentfieldset">Nearest Pharmacy Location</legend>
-                              <div class="col-lg-4">
+                             <div class="col-lg-4 row input-group ">
+                                <div class="col-lg-8">
                                   <label class="control-label">Name</label>
-                                  <dx-text-box  formControlName="name" placeholder="Premise Name" [showClearButton]="true">  </dx-text-box>
-                        
+                                  <dx-text-box  formControlName="name" placeholder="Premise Name" 
+                                      [showClearButton]="true">  </dx-text-box>
+                                </div>
+                                <div class="col-lg-4 no-padding">
+                                  <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:25px  !important;"  text="Search Location Details"  type="default" (onClick)="onSearchNearestLocationDetails()">
+                                  <i class="fa fa-search"></i>Search  Details
+                                 </dx-button>
+                                 </div>
                               </div>
-                              <div class="col-lg-4">
-                                  <label for="ti" class="control-label">Street/Road</label>
-                                  <dx-text-box  formControlName="street" placeholder="Street/Road" [showClearButton]="true">  </dx-text-box>
-                              </div>
+
                               <div class="col-lg-4">
                                   <label for="ti" class="control-label">Distance (Km)</label>
                                 <dx-text-box  formControlName="distance" placeholder="Enter Distance" [showClearButton]="true">  </dx-text-box>
@@ -167,7 +171,7 @@
                                 <dx-select-box [dataSource]="districts" valueExpr="id" 
                                     placeholder="Select District" displayExpr="name" [searchEnabled]="true" formControlName="district_id" (onSelectionChanged)="oDistrictsCboSelect($event)" >
                                 </dx-select-box>
-                            </div>      
+                            </div>   
                             <div class="col-lg-4">
                               <label for="ti" class="control-label">County/Division</label>
                               <dx-select-box [dataSource]="countyData" valueExpr="id" 
@@ -179,12 +183,15 @@
                                 <dx-select-box [dataSource]="subCountyData" valueExpr="id" 
                                  placeholder="Select Sub-County" displayExpr="name" [searchEnabled]="true" formControlName="sub_county_id">
                                 </dx-select-box>
-                            </div>   
+                            </div>            
+                            <div class="col-lg-4">
+                                  <label for="ti" class="control-label">Street/Road</label>
+                                  <dx-text-box  formControlName="street" placeholder="Street/Road" [showClearButton]="true">  </dx-text-box>
+                              </div> 
                             <div class="col-lg-4">
                               <label for="ti" class="control-label">Location Sketch Map</label>
                                 <input type="file" class="form-control col-lg-12" (change)="fileChangeEvent($event)" multiple placeholder="Upload Sketch"/>
                             </div>
-                              
                               
                         </fieldset>   
                           <div class="col-lg-12">
@@ -202,4 +209,31 @@
           </wizard>
       </div>
   </div>
+</dx-popup>
+<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="500" [showTitle]="true" title="Nearest Location Premises" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isLocationPopupVisible">
+<div *dxTemplate="let data of 'content'">
+  <dx-data-grid class="table row-border hover"  [height]="450"   [remoteOperations]='true'  [dataSource]="registeredPremisesData" keyExpr="id">
+    <dxo-filter-row [visible]="false"></dxo-filter-row>
+    <dxo-search-panel [visible]="true">
+    </dxo-search-panel>
+    <dxo-paging [enabled]="true">
+    </dxo-paging>
+    <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
+    </dxo-pager>
+    <dxo-export [enabled]="true" fileName="traderFile" [allowExportSelectedData]="true"></dxo-export>
+
+    <dxo-selection mode="multiple"></dxo-selection>
+    <dxo-group-panel [visible]="true"></dxo-group-panel>
+    <dxi-column [width]="120" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+     cellTemplate="cellTemplate">
+    <div *dxTemplate="let data of 'cellTemplate'">
+     <a (click)="funcSelectLocationDetails(data)" class="action-btn"><i class="fa fa-edit"></i>Select Premise</a>&nbsp;
+                      </div>
+                    </dxi-column>
+    <dxi-column dataField="name"></dxi-column>
+    <dxi-column dataField="distance"></dxi-column>
+    <dxi-column dataField="region_name"></dxi-column>
+
+  </dx-data-grid>
+</div>
 </dx-popup>

@@ -16,22 +16,25 @@ export class ConfigurationsService {
   config: any;
   data:any;
   key:string= 'kPJks1MrdXE03n8H';
-
+  trader_id: number;
+  mistrader_id: number;
   constructor(private sanitizer:DomSanitizer , private authService: AuthService,private httpClient: HttpClient, private http: Http) { }
   onLoadNavigation(navigation_type_id: number) {
 
     let user = this.authService.getUserDetails();
-    
+      this.trader_id = user.trader_id;
+      this.mistrader_id = user.mistrader_id;
     if(user){
       this.data = {
         is_local:user.is_local,
         navigation_type_id: navigation_type_id,
-
+        trader_id: this.trader_id
       };
     }
     else{
       this.data = {
-        navigation_type_id: navigation_type_id
+        navigation_type_id: navigation_type_id,
+        trader_id: this.trader_id
       };
     }
     

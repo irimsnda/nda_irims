@@ -101,6 +101,7 @@ export class PremisesRegDashboardComponent implements OnInit {
     this.FilterDetailsFrm = new FormGroup({
       sub_module_id: new FormControl('', Validators.compose([])),
       section_id: new FormControl('', Validators.compose([])),
+      business_type_id:new FormControl('', Validators.compose([])),
       application_status_id: new FormControl('', Validators.compose([]))
     });
 
@@ -175,10 +176,10 @@ export class PremisesRegDashboardComponent implements OnInit {
   }
   onSelectPremisesFilters(e) {
     
-    let section_id = this.FilterDetailsFrm.get('section_id').value;
+    let business_type_id = this.FilterDetailsFrm.get('business_type_id').value;
     let application_status_id = this.FilterDetailsFrm.get('application_status_id').value;
      
-    this.reloadPremisesApplications({sub_module_id:this.sub_module_id,section_id:section_id,application_status_id:application_status_id});
+    this.reloadPremisesApplications({sub_module_id:this.sub_module_id,business_type_id:business_type_id,application_status_id:application_status_id});
 
   }
   onClearPremisesFilters(){
@@ -635,7 +636,6 @@ export class PremisesRegDashboardComponent implements OnInit {
           
                     if(this.router_link != ''){
                       this.app_route = ['./online-services/' + this.router_link];
-          
                       this.router.navigate(this.app_route);
                     }
                     else{

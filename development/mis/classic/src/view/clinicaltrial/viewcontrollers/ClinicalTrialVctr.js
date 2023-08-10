@@ -2453,6 +2453,37 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             
             
     },
+    editSiteDetails:function(btn) {
+           var me = this,
+            record = btn.getWidgetRecord(),
+            childObject = Ext.widget(btn.childXtype),
+            winTitle = btn.winTitle,
+            winWidth = btn.winWidth;
+            childObject.loadRecord(record);
+            funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+    },
+
+    viewSiteDetails:function(btn) {
+           var me = this,
+            record = btn.getWidgetRecord(),
+            grid = btn.up('grid'),
+            activeTab = grid.up('panel'),
+            childObject = Ext.widget(btn.childXtype),
+            winTitle = btn.winTitle,
+            winWidth = btn.winWidth;
+            childObject.loadRecord(record);
+            childObject.down('hiddenfield[name=isReadOnly]').setValue(1);
+            funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+    },
+
+
+    loadViewSiteDetails :function(view, record) {
+            var grid = view.up('grid'),
+            form = Ext.widget('studysitefrm');
+            form.loadRecord(record);
+            form.down('hiddenfield[name=isReadOnly]').setValue(1);
+            funcShowCustomizableWindow('Study Site', '70%', form, 'customizablewindow');
+    },
 
 });
 

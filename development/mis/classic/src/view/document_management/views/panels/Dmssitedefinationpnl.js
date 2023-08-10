@@ -4,7 +4,7 @@
 Ext.define('Admin.view.document_management.views.panels.Dmssitedefinationpnl', {
     extend: 'Ext.panel.Panel',
     xtype: 'dmssitedefinationpnl',
-    title: 'DMS Site Defination',
+    title: 'DMS Site Definition',
     userCls: 'big-100 small-100',
     height: Ext.Element.getViewportHeight() - 118,
     layout:{

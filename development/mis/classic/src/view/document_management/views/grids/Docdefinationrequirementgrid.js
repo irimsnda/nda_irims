@@ -27,7 +27,7 @@ Ext.define('Admin.view.document_management.views.grids.Docdefinationrequirementg
         action: 'add',
         ui: 'soft-green',
         childXtype: 'docdefinationrequirementfrm',
-        winTitle: 'Documents requirements Defination',
+        winTitle: 'Documents requirements Definition',
         winWidth: '40%',
         handler: 'showAddConfigParamWinFrm',
         stores: '[]'
@@ -281,7 +281,7 @@ Ext.define('Admin.view.document_management.views.grids.Docdefinationrequirementg
                     tooltip: 'Edit Record',
                     action: 'edit',
                     childXtype: 'docdefinationrequirementfrm',
-                    winTitle: 'Dcouments requirements Defination',
+                    winTitle: 'Documents requirements Definition',
                     winWidth: '40%',
                     handler: 'showEditConfigParamWinFrm',
                     stores: '[]'

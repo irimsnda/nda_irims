@@ -160,12 +160,12 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
         if (response && Array.isArray(response.data) && response.data.length > 0) {
           const dataItem = response.data[0];
           this.premisesGeneraldetailsfrm.get('fullname').setValue(dataItem.name);
-          this.premisesGeneraldetailsfrm.get('email').setValue(dataItem.email);
-          this.premisesGeneraldetailsfrm.get('telephone').setValue(dataItem.telephone);
-          this.premisesGeneraldetailsfrm.get('qualification_id').setValue(dataItem.qualification_id);
-          this.premisesGeneraldetailsfrm.get('country_id').setValue(dataItem.country_id);
-          this.premisesGeneraldetailsfrm.get('region_id').setValue(dataItem.region_id);
-          this.premisesGeneraldetailsfrm.get('district_id').setValue(dataItem.district_id);
+          this.premisesGeneraldetailsfrm.get('incharge_email').setValue(dataItem.email);
+          this.premisesGeneraldetailsfrm.get('incharge_telephone').setValue(dataItem.telephone);
+          this.premisesGeneraldetailsfrm.get('incharge_qualification').setValue(dataItem.qualification_id);
+          this.premisesGeneraldetailsfrm.get('incharge_country_id').setValue(dataItem.country_id);
+          this.premisesGeneraldetailsfrm.get('incharge_region_id').setValue(dataItem.region_id);
+          this.premisesGeneraldetailsfrm.get('incharge_district_id').setValue(dataItem.district_id);
 
 
         } else {

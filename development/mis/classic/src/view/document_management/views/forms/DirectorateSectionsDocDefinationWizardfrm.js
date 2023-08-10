@@ -52,7 +52,7 @@ Ext.define('Admin.view.document_management.views.forms.DirectorateSectionsDocDef
                     iconCls: 'fa fa-cubes',
                     pressed: true,
                     enableToggle: true,
-                    text:  'Section Modules Document Defination',
+                    text:  'Section Modules Document Definition',
                     action: 'quickNav',
                     handler: 'quickNavigation'
                 },
@@ -60,7 +60,7 @@ Ext.define('Admin.view.document_management.views.forms.DirectorateSectionsDocDef
                     step: 1,
                     iconCls: 'fa fa-arrows',
                     enableToggle: true,
-                    text: 'Section Sub-Modules Document Defination',
+                    text: 'Section Sub-Modules Document Definition',
                     action: 'quickNav',
                     handler: 'quickNavigation'
                 },
@@ -68,7 +68,7 @@ Ext.define('Admin.view.document_management.views.forms.DirectorateSectionsDocDef
                     step: 2,
                     iconCls: 'fa fa-sitemap',
                     enableToggle: true,
-                    text: 'Document Requirements Defination',
+                    text: 'Document Requirements Definition',
                     action: 'quickNav',
                     handler: 'quickNavigation'
                 }

@@ -56,7 +56,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialAbstractFrm', {
         {
             xtype: 'textfield',
             name: 'contact_person',
-            allowBlank: false,
+            allowBlank: true,
+            hidden:true,
             fieldLabel: 'Contact Person'
         },
         {
@@ -116,6 +117,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialAbstractFrm', {
         },
         {
             xtype: 'textfield',
+            hidden:true,
             fieldLabel: 'Postal Address',
             name: 'postal_address'
         },
@@ -127,6 +129,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialAbstractFrm', {
         {
             xtype: 'textfield',
             fieldLabel: 'Fax',
+            hidden:true,
             name: 'fax'
         },
         {

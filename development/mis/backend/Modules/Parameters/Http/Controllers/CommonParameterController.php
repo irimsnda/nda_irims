@@ -545,19 +545,25 @@ class CommonParameterController extends BaseController
         $filters = $request->input('filters');
         $con = $request->input('con');
         $db_con = 'mysql';
-
         if (isset($con) && $con != '') {
             $db_con = $con;
         }
         $filters = (array)json_decode($filters);
         $filters=array_filter($filters);
+
+        
         try {
-            
             if($table_name == 'par_business_types' || $table_name == 'pms_program_details'){
                 $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')
-                        ->join('par_sections as t2','t1.section_id','=','t2.id')
-                        ->select('t1.*','t2.name as section_name');
+                        //->join('par_sections as t2','t1.section_id','=','t2.id')
+                        ->select('t1.*');
+            }
+             else if($table_name == 'par_inspection_types'){
+                $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        //->join('par_sections as t2','t1.section_id','=','t2.id')
+                        ->select('t1.*');
             }
             else if($table_name == 'par_business_type_details'){
                 $qry = DB::connection($db_con)
@@ -812,7 +818,7 @@ class CommonParameterController extends BaseController
 
             }
            // $qry->where('t1.is_enabled',1);
-           if(!validateIsnumeric($is_config)){
+           if(validateIsnumeric($is_config)){
                 $qry->where('t1.is_enabled', 1);
             }
             $results = $qry->get();

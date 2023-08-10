@@ -34,7 +34,7 @@ export class RegisteredDrugshopappsComponent implements OnInit {
     this.premisesapp_details = this.appService.getPremisesApplicationDetail();
 
     if (!this.premisesapp_details) {
-      this.router.navigate(['./../online-services/premisesreg-dashboard']);
+      this.router.navigate(['./../online-services/newdrugshopreg-dashboard']);
       return;
     }
     else {
@@ -48,8 +48,8 @@ export class RegisteredDrugshopappsComponent implements OnInit {
           icon: 'menu',
           items: [
             { text: "Preview Application Details", action: 'preview',  icon: 'fa fa-print' },
-            { text: "Premises Renewal Request", action: 'renew',sub_module_id: 2, icon: 'fa fa-repeat' },
-            { text: "Premises Alteration Request", action: 'alteration',sub_module_id: 3, icon: 'fa fa-edit'},
+            { text: "Drug Shop Renewal Request", action: 'renew',sub_module_id: 108, icon: 'fa fa-repeat' },
+            { text: "Drug Shop Variation Request", action: 'alteration',sub_module_id: 109, icon: 'fa fa-edit'},
             { text: "Product Widthdrawal Request", action: 'withdrawal', sub_module_id: 4,icon: 'fa fa-times'},
           ]
         }
@@ -72,7 +72,7 @@ export class RegisteredDrugshopappsComponent implements OnInit {
   onRegisteredPremisesSearch() {
    
       //load the Premises Details 
-      this.appService.onLoadRegisteredPremises({registration_status:this.registration_status,validity_status:this.validity_status})
+      this.appService.onLoadRegisteredDrugShops({registration_status:this.registration_status,validity_status:this.validity_status})
         .subscribe(
           data_response => {
             this.registeredPremisesData = data_response.data;

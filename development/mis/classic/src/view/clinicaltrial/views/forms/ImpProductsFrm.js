@@ -4,6 +4,7 @@
 Ext.define('Admin.view.clinicaltrial.views.forms.ImpProductsFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'impproductsfrm',
+    scrollable:true,
     viewModel:'clinicaltrialvm',
     layout: 'column',
     defaults: {
@@ -173,7 +174,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ImpProductsFrm', {
         },
         {
             xtype: 'combo',
-            fieldLabel: 'Routes of Admin',
+            fieldLabel: 'Routes of Administration',
             forceSelection: true,
             displayField: 'name',
             valueField: 'id',

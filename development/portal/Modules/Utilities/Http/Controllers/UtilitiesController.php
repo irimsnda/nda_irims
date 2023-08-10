@@ -1907,7 +1907,6 @@ $res = array('success'=>false,
                         't1.sub_module_id' => $records->sub_module_id,
                         't1.section_id' => $records->section_id
                         );
-
                     $rec = DB::connection('mis_db')->table('wf_tfdaprocesses as t1')
                         ->join('wf_workflow_stages as t2', 't1.workflow_id','=','t2.workflow_id')
                         ->where($where)

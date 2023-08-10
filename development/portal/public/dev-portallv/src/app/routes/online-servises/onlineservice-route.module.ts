@@ -8,7 +8,6 @@ import { ProductRegDashboardComponent } from '../../views/online-services/produc
 //gurds
 import { AuthGuard } from '../../guards/auth.guard';
 //import { NewDrugProductApplicationComponent } from '../../views/online-services/product-registration/new-product-registration/new-drugproduct-application/new-drugproduct-application.component';
-import { PremisesRegDashboardComponent } from '../../views/online-services/premises-registration/premises-reg-dashboard/premises-reg-dashboard.component';
 
 import { NewPremisesRegistrationComponent } from '../../views/online-services/premises-registration/new-premises-registration/new-premises-registration.component';
 import { NewDrugshopsRegistrationComponent } from '../../views/online-services/drugshop-registration/new-drugshops-registration/new-drugshops-registration.component';
@@ -19,6 +18,8 @@ import { ApplicationSelectionComponent } from '../../views/online-services/produ
 
 import { PremapplSelectionComponent } from '../../views/online-services/premises-registration/premappl-selection/premappl-selection.component';
 import { RenewalBusinessPermitComponent } from '../../views/online-services/premises-registration/renewal-business-permit/renewal-business-permit.component';
+import { RenewalDrugshopPermitComponent } from '../../views/online-services/drugshop-registration/renewal-drugshop-permit/renewal-drugshop-permit.component';
+
 import { TraderProfileComponent } from '../../views/online-services/trader-profile/trader-profile.component';
 import { NotificationsComponent } from '../../views/online-services/notifications/notifications.component';
 import { ArchivedPremisesComponent } from 'src/app/views/online-services/premises-registration/archived-premises/archived-premises.component';
@@ -118,6 +119,7 @@ import { ControldrugsImplicensedashComponent } from 'src/app/views/online-servic
 
 import { NewpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/newpremises-dashboard/newpremises-dashboard.component';
 import { RenewalpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/renewalpremises-dashboard/renewalpremises-dashboard.component';
+import { RenewaldrugshopDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/renewaldrugshop-dashboard/renewaldrugshop-dashboard.component';
 import { VariationpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/variationpremises-dashboard/variationpremises-dashboard.component';
 import { WithdrawalpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/withdrawalpremises-dashboard/withdrawalpremises-dashboard.component';
 import { InvoiceApppreviewComponent } from 'src/app/views/online-services/invoice-appgeneration/invoice-apppreview/invoice-apppreview.component';
@@ -229,10 +231,13 @@ const appRoutes: Routes = [
 			component: NewdrugshopDashboardComponent
 		},{//
 			path: 'pre-inspection-dashboard',
-			component: PreinspectionDashboardComponent
+			component: PreinspectionDashboardComponent 
 		},{//
 			path: 'premisesrenewal-dashboard',
 			component: RenewalpremisesDashboardComponent
+		},{//
+			path: 'drugshop-renewal-dashboard',
+			component: RenewaldrugshopDashboardComponent
 		}, {//
 			path: 'premisesvariation-dashboard',
 			component: VariationpremisesDashboardComponent
@@ -281,6 +286,9 @@ const appRoutes: Routes = [
 			path: 'renewal-business-permit',
 			component: RenewalBusinessPermitComponent
 		}, {
+			path: 'renewal-drugshop-permit',
+			component: RenewalDrugshopPermitComponent
+		},{
 			path: 'premises-alteration-request',
 			component: PremisesAlterationComponent
 		}, {
@@ -516,7 +524,7 @@ const appRoutes: Routes = [
 			path: 'registered-premises-selection',
 			component: PremisesRegistrationselectionComponent
 		},{
-			path: 'registered-premises-selection',
+			path: 'registered-drugshop-selection',
 			component: DrugshopsRegistrationselectionComponent
 		},{
 			path: 'premises-withdrawal',

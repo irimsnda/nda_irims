@@ -1785,6 +1785,9 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
         classification_id = record.get('classification_id');
         checklist_category_id = '';//for chekclist based 
         //get the evaluation grids options checklist or upload 
+
+
+        //sasa
         if (section_id == 4 || prodclass_category_id == 2) {
             grid = Ext.widget('productevaluationchecklistsGrid');
             checklist_category_id = 2;

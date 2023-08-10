@@ -66,7 +66,39 @@ Ext.define('Admin.view.administration.views.forms.OnlineMenusFrm', {
 						},
 						change: 'onChangeNavigationType'
 		}
-    }, {
+     },
+     {
+        xtype: 'tagfield',
+        fieldLabel: 'Associated Account Type(s)',
+        hidden:true,
+        name: 'account_type_ids',
+        allowBlank: false,
+        forceSelection: true,
+        filterPickList: true,
+        encodeSubmitValue: true,
+        emptyText: 'Select Account Type(s)',
+        growMax: 100,
+        queryMode: 'local',
+        valueField: 'id',
+        displayField: 'name',
+        listeners: {
+            beforerender: {
+                fn: 'setWorkflowCombosStore',
+                config: {
+                    pageSize: 1000,
+                    proxy: {
+                        url: 'onlineservices/getAccountTypes',
+                        extraParams: {
+                            table_name: 'par_traderaccount_types'
+                        }
+                    }
+                },
+                isLoad: true
+            }
+        }
+     }, 
+
+     {
         xtype: 'textfield',
         fieldLabel: 'Name/Text',
         name: 'name'

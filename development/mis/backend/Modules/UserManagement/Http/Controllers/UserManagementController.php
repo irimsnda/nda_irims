@@ -774,8 +774,7 @@ class UserManagementController extends Controller
         return response()->json($res);
     }
 
-    public
-    function resetUserPassword(Request $req)
+    public function resetUserPassword(Request $req)
     {
         //i need his/her encrypted username and UUID
         $user_id = $req->input('id');

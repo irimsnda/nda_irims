@@ -77,7 +77,7 @@ Ext.define('Admin.view.document_management.views.forms.DocumentTypesFrm', {
         name: 'validity_period'
     },{
          xtype: 'combo',
-            fieldLabel: 'Validity Period Defination',
+            fieldLabel: 'Validity Period Definition',
             margin: '0 20 20 0',
             name: 'validity_perioddef_id',
             valueField: 'id',

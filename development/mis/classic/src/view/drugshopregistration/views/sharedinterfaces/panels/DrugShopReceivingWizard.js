@@ -16,10 +16,24 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.DrugSh
     colorScheme: 'soft-green',
     items: [
         {
-            xtype: 'applicationapplicantpnl'
+            xtype: 'onlinedrugshopdetailstabpnl',
+            tbar:[ {
+                xtype: 'button',
+                iconCls: 'x-fa fa-search',
+                tooltip: 'Search',
+                text: 'Search Pre Inspection Application',
+                action: 'searchPreInspectionDrugShop',
+                name: 'search_PreInspection_DrugShop',
+                ui: 'soft-red',
+                childXtype: 'preinspectiondrugshopselectiongrid',
+                winTitle: 'Pre Inspection Selection List',
+                winWidth: '90%',
+                margin: '30 0 0 0'
+            }]
+            
         },
-        {
-            xtype: 'drugshopdetailstabpnl'
+         {
+            xtype: 'applicationapplicantpnl'
         },
         {
             xtype: 'premregappdocuploadsgenericgrid'
@@ -46,19 +60,18 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.DrugSh
             items: [
                 {
                     step: 0,
+                    iconCls: 'fa fa-university',
+                    enableToggle: true,iconAlign: 'top',
+                    text: 'DRUG SHOP DETAILS',
+                    wizard_pnl : 'drugshopreceivingwizard',
+                    action: 'quickNav'
+                },{
+                    step: 1,
                     iconCls: 'fa fa-user',
                     enableToggle: true,
                     pressed: true,iconAlign: 'top',
                     wizard_pnl : 'drugshopreceivingwizard',
                     text: 'APPLICANT DETAILS',
-                    action: 'quickNav'
-                },
-                {
-                    step: 1,
-                    iconCls: 'fa fa-university',
-                    enableToggle: true,iconAlign: 'top',
-                    text: 'DRUG SHOP DETAILS',
-                    wizard_pnl : 'drugshopreceivingwizard',
                     action: 'quickNav'
                 },
                 {

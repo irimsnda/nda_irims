@@ -27,7 +27,7 @@ Ext.define('Admin.view.document_management.views.grids.DirectorateSectionsDocDef
         action: 'add',
         ui: 'soft-green',
         childXtype: 'directorateSectionsDocDefinationfrm',
-        winTitle: 'DMS Directorate Sections Defination',
+        winTitle: 'DMS Directorate Sections Definition',
         winWidth: '40%',
         handler: 'showAddConfigParamWinFrm',
         stores: '[]'
@@ -39,7 +39,7 @@ Ext.define('Admin.view.document_management.views.grids.DirectorateSectionsDocDef
             ptype: 'gridexporter'
         }
     ],
-    export_title: 'DMS Directorate Sections Defination',
+    export_title: 'DMS Directorate Sections Definition',
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '100%',

@@ -285,7 +285,7 @@ if(validateIsNumeric($section_id)){
             if(!validateIsNumeric($process_id)){
                 $process_id = getSingleRecordColValue('wf_tfdaprocesses', $where, 'id');
             }
-if($module_id ==4 || $module_id ==12){
+            if($module_id ==4 || $module_id ==12){
                 unset($where['section_id']);
             }
 
@@ -311,7 +311,7 @@ if($module_id ==4 || $module_id ==12){
             if (validateIsNumeric($doc_type_id)) {
                // $where['t1.document_type_id'] = $doc_type_id;
             }
-           
+          
             if(validateIsNumeric($parent_id)){
                 $qry = DB::table('tra_application_uploadeddocuments as t1')
                     ->leftJoin('tra_application_documents as t2', 't1.application_document_id', 't2.id')
@@ -350,11 +350,12 @@ if($module_id ==4 || $module_id ==12){
                        // ->where('t4.parent_id', 0);
 
                     $res = $qry->get();
+
                     if($res->isEmpty()){
                         $res = DB::table('tra_documentupload_requirements as t1')
                                 ->join('par_document_types as t3', 't1.document_type_id', 't3.id')
                                 ->where('t1.id', $doc_req->id)
-                                ->selectRaw("t1.name as file_name, true as leaf, t1.name as document_requirement, t3.name as document_type")
+                                ->selectRaw("t1.name as file_name, true as leaf,t1.is_mandatory, t1.name as document_requirement, t3.name as document_type")
                                 ->get();
                     }
                     $results = $results->merge($res);
@@ -1202,10 +1203,12 @@ if($module_id ==4 || $module_id ==12){
             $table_name = $req->table_name;
             $reference_table_name = $req->reference_table_name;
 
+             
             $file = $req->file('uploaded_doc');
           //tra_nonstructured_docdefination
             $rootnode_ref = getSingleRecordColValue('tra_nonstructured_docdefination', array('document_type_id'=>$document_type_id), 'node_ref');
 
+          
             $app_rootnode = getNonStructuredDocApplicationRootNode($rootnode_ref,$reference_record_id,$reference_table_name,$document_type_id,$user_id);
 
             if ($app_rootnode) {
@@ -1214,7 +1217,9 @@ if($module_id ==4 || $module_id ==12){
                     $origFileName = $file->getClientOriginalName();
                     $extension = $file->getClientOriginalExtension();
                     $fileSize = $file->getSize();
-                    $document_rootupload =  Config('constants.dms.doc_rootupload');;
+                    $document_rootupload =  Config('constants.dms.doc_rootupload');
+
+
 
                     $destination = getcwd() . $document_rootupload;
                     $savedName = str_random(3) . time() . '.' . $extension;
@@ -1223,9 +1228,10 @@ if($module_id ==4 || $module_id ==12){
 
                     $document_path = $destination . $savedName;
                     //check if tje dpcument type has been mapped and not autoCreate the folder
-                     $document_type = getParameterItem('par_document_types', $document_type_id, 'pgsql');
+                     $document_type = getParameterItem('par_document_types', $document_type_id, 'mysql');
                     $uploadfile_name = $document_type . str_random(5) . '.' . $extension;
                     $destination_node = $app_rootnode->node_ref;
+
                     if (validateIsNumeric($record_id)) {
 
                         $response = dmsUploadNodeDocument($destination_node, $document_path, $uploadfile_name, $node_ref);
@@ -1260,9 +1266,7 @@ if($module_id ==4 || $module_id ==12){
                     } else {
 
                         $response = dmsUploadNodeDocument($destination_node, $document_path, $uploadfile_name, '');
-                        dd($response);
                         $node_ref = $response['nodeRef'];
-                        dd($node_ref);
                          $document_data = array('reference_record_id' => $reference_record_id,
                             'document_type_id' => $document_type_id,
                             'uploaded_on' => Carbon::now(),
@@ -1414,7 +1418,6 @@ if($module_id ==4 || $module_id ==12){
             $application_code = $req->application_code;
             $uploadeddocuments_id = $req->uploadeddocuments_id;
             $node_ref = $req->node_ref;
-            $node_ref = $req->node_ref;
             $data= array('user_id'=>$user_id,
                     'application_code'=>$application_code,
                     'uploadeddocuments_id'=>$uploadeddocuments_id,
@@ -1422,7 +1425,7 @@ if($module_id ==4 || $module_id ==12){
                     'accessed_on'=>Carbon::now());
             
             if($node_ref == ''){
-               
+              
                 $res = array(
                     'success' => false,
                     'message'=> 'Document Not Uploaded'
@@ -1444,6 +1447,8 @@ if($module_id ==4 || $module_id ==12){
                                 ->select('*')
                                 ->where('node_ref',$node_ref)
                                 ->first();
+
+                   
                     
                 }
                 
@@ -1688,7 +1693,6 @@ if($module_id ==4 || $module_id ==12){
             $node_ref = $req->node_ref;
             $record_id = $req->record_id;
             $user_id = $this->user_id;
-            $table_name = 'tra_application_uploadeddocuments';
             $data = array();
             //get the records
             $resp = false;
@@ -1696,16 +1700,25 @@ if($module_id ==4 || $module_id ==12){
             $records = DB::table($table_name)
                 ->where($where_state)
                 ->get();
+
+
+
             if (count($records) > 0) {
 
                 $response = dmsDeleteAppRootNodesChildren($node_ref);
+
                 if ($response['success']) {
                     $previous_data = getPreviousRecords($table_name, $where_state);
+
+
+
                     $previous_data = $previous_data['results'];
                     $resp = deleteRecordNoTransaction($table_name, $previous_data, $where_state, $user_id);
 
-                }
+
+                }   
             }
+
             if ($resp) {
                 $res = array('success' => true, 'message' => 'Document deleted successfully');
 

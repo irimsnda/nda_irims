@@ -27,6 +27,14 @@ Ext.define('Admin.view.drugshopregistration.views.toolbars.DrugShopRegTb', {
             menu: {
                 xtype: 'menu',
                 items: [
+                     {
+                        text: 'Pre Inspection Drug Shop Registration',
+                        iconCls: 'x-fa fa-check',
+                        handler: 'showNewDrugShopRegistration',
+                        wrapper_xtype: 'drugshopregdashwrapper',
+                        app_type: 97
+                    },
+                    '-',
                     {
                         text: 'New Drug Shop Registration',
                         iconCls: 'x-fa fa-check',

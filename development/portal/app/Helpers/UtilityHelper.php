@@ -49,7 +49,6 @@ class UtilityHelper
         return $res;
     	}
 		
-		  
          $qry = DB::connection('mis_db')->table($table_name . ' as t1')
              ->leftJoin('tra_approval_recommendations as t2', 't1.application_code', '=', 't2.application_code')
              ->where('t1.' . $reg_column, $registered_id)

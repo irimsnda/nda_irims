@@ -9,7 +9,8 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopOtherLicensesDet
     config: {
         isWin: 0,
         isOnline: 0,
-        isCompare: 0
+        isCompare: 0,
+        isPreview: 1
     },
     viewConfig: {
         deferEmptyText: false,
@@ -35,7 +36,8 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopOtherLicensesDet
         ui: 'soft-green',
         childXtype: 'drugshopotherlicensesdetailsfrm',
         winWidth: '65%',
-        handler:'funcOtherLicenses',
+        name: 'other_licenses',
+        winTitle:'Other Registered Premises',
         storeID: 'otherpremisesdetailsstr',
         stores: '[]'
     }, {
@@ -69,7 +71,7 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopOtherLicensesDet
                 pageSize: 1000,
                 storeId: 'otherpremisesdetailsstr',
                 proxy: {
-                    url: 'premiseregistration/getPremisePersonnelDetails'
+                    url: 'premiseregistration/getOtherPremiseDetails'
                 }
             },
             isLoad: true
@@ -85,17 +87,7 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopOtherLicensesDet
                 widgetCol.widget.menu.items = [];
             } else {
                 //add_btn.setVisible(true);
-                widgetCol.widget.menu.items = [{
-                    text: 'Other License(s)',
-                    iconCls: 'x-fa fa-user',
-                    winTitle: 'Other License(s)',
-                    childXtype: 'premisesuperintendentfrm',
-                    winWidth: '65%',
-                    handler: 'showEditPremisePersonnelDetails',
-                    storeID: 'otherpremisesdetailsstr',
-                    action_url: 'premiseregistration/savePremisePersonnelLinkageDetails',
-                    stores: '[]'
-                }, {
+                widgetCol.widget.menu.items = [ {
                     text: 'Remove',
                     iconCls: 'x-fa fa-remove',
                     table_name: 'tra_premises_personnel',

@@ -1,8 +1,8 @@
 
-Ext.define('Admin.view.premiseregistration.views.grids.NearestPremiseParticulars', {
+Ext.define('Admin.view.drugshopregistration.views.grids.NearestDrugShopGrid', {
     extend: 'Ext.grid.Panel',
     controller: 'premiseregistrationvctr',
-    xtype: 'nearestpremiseparticulars',
+    xtype: 'nearestdrugshopgrid',
     autoScroll: true,
     autoHeight: true,
     width: '100%',
@@ -13,44 +13,37 @@ Ext.define('Admin.view.premiseregistration.views.grids.NearestPremiseParticulars
     },
     viewConfig: {
         deferEmptyText: false,
-        emptyText: 'Nothing to display',
-        getRowClass: function (record, rowIndex, rowParams, store) {
-            var is_enabled = record.get('is_enabled');
-            if (is_enabled == 0 || is_enabled === 0) {
-                return 'invalid-row';
-            }
-        }
+        emptyText: 'Nothing to display'
     },
     tbar: [{
+        xtype: 'button',
+        text: 'Add Nearest DrugShop',
+        iconCls: 'x-fa fa-plus',
+        name: 'nearest_drugshop',
+        ui: 'soft-green',
+        childXtype: 'drugshopnearestdrugshopFrm',
+        winWidth: '40%',
+        winTitle:'Nearest DrugShop'
+    }, {
+        xtype: 'hiddenfield',
+        name: 'premise_id'
+    },{
         xtype: 'hiddenfield',
         name: 'isReadOnly'
     }, {
         xtype: 'hiddenfield',
         name: 'is_temporal',
         value: 0
-    },
-     {
-        xtype: 'button',
-        text: 'Add Nearest Premise Particulars',
-        iconCls: 'x-fa fa-plus',
-        ui: 'soft-green',
-        hidden:true,
-        name: 'add_personnel',
-        winTitle: 'Premise Personnel Details',
-        childXtype: 'premisesuperintendentfrm',
-        winWidth: '65%',
-        storeID: 'premisepersonneldetailsstr',
-        action_url: 'premiseregistration/savePremisePersonnelLinkageDetails',
-        stores: '[]'
     }, {
         xtype: 'exportbtn'
     }],
+
     plugins: [
         {
             ptype: 'gridexporter'
         }
     ],
-    export_title: 'Premise Personnel Details',
+    export_title: 'Nearest DrugShop Details',
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '100%',
@@ -71,9 +64,9 @@ Ext.define('Admin.view.premiseregistration.views.grids.NearestPremiseParticulars
             fn: 'setPremiseRegGridsStore',
             config: {
                 pageSize: 1000,
-                storeId: 'premisepersonneldetailsstr',
+                storeId: 'nearestdrugshopstr',
                 proxy: {
-                    url: 'premiseregistration/getPremisePersonnelDetails'
+                    url: 'premiseregistration/getDrugShopStoreLocationDetails'
                 }
             },
             isLoad: true
@@ -81,7 +74,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.NearestPremiseParticulars
         afterrender: function () {
             var grid = this,
                 isReadOnly = grid.down('hiddenfield[name=isReadOnly]').getValue(),
-                add_btn = grid.down('button[name=add_personnel]'),
+                add_btn = grid.down('button[name=nearest_drugshop]'),
                 widgetCol = grid.columns[grid.columns.length - 1];
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 add_btn.setVisible(false);
@@ -90,20 +83,21 @@ Ext.define('Admin.view.premiseregistration.views.grids.NearestPremiseParticulars
             } else {
                 add_btn.setVisible(true);
                 widgetCol.widget.menu.items = [{
-                    text: 'Personnel Details',
-                    iconCls: 'x-fa fa-user',
-                    winTitle: 'Premise Directors',
-                    childXtype: 'premisesuperintendentfrm',
-                    winWidth: '65%',
-                    handler: 'showEditPremisePersonnelDetails',
-                    storeID: 'premisepersonneldetailsstr',
-                    action_url: 'premiseregistration/savePremisePersonnelLinkageDetails',
-                    stores: '[]'
-                }, {
+                    text: 'Edit',
+                    iconCls: 'x-fa fa-edit',
+                    tooltip: 'Edit Record',
+                    action: 'edit',
+                    handler: 'showEditPremiseRegParamWinFrm',
+                    winWidth: '40%',
+                    stores: '[]',
+                    childXtype: 'drugshopnearestdrugshopFrm',
+                    winTitle: 'Nearest DrugShop'
+                },
+                {
                     text: 'Remove',
                     iconCls: 'x-fa fa-remove',
-                    table_name: 'tra_premises_personnel',
-                    storeID: 'premisepersonneldetailsstr',
+                    table_name: 'tra_drugshop_storelocation',
+                    storeID: 'nearestdrugshopstr',
                     action_url: 'premiseregistration/deletePremiseRegRecord',
                     action: 'actual_delete',
                     handler: 'doDeletePremiseOtherDetails',
@@ -121,34 +115,40 @@ Ext.define('Admin.view.premiseregistration.views.grids.NearestPremiseParticulars
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'street',
-        text: 'Street',
+        text: 'Street/Road',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'distance',
-        text: 'Distance',
+        text: 'Distance(Km)',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'country',
+        dataIndex: 'country_name',
         text: 'Country',
         flex: 1
-    }, {
+    },{
         xtype: 'gridcolumn',
-        dataIndex: 'region',
+        dataIndex: 'region_name',
         text: 'Region',
         flex: 1
-    }, {
+    },{
         xtype: 'gridcolumn',
-        dataIndex: 'location_no',
-        text: 'Location',
+        dataIndex: 'district_name',
+        text: 'District',
         flex: 1
-    }, {
+    },{
         xtype: 'gridcolumn',
-        dataIndex: 'study_field',
-        text: 'Field of Study',
+        dataIndex: 'county_name',
+        text: 'County/Division',
         flex: 1
-    },  {
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'sub_county_name',
+        text: 'Sub County',
+        flex: 1
+    },
+  {
         text: 'Options',
         xtype: 'widgetcolumn',
         width: 90,

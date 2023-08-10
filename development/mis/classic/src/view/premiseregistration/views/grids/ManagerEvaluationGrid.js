@@ -80,6 +80,171 @@ Ext.define('Admin.view.premiseregistration.views.grids.ManagerEvaluationGrid', {
         mode: 'local',
         minChars: 2
     }],
+    tbar: [{
+        xtype: 'tbspacer',
+        width: 5
+     }, 
+    //  {
+    //     xtype: 'combo',
+    //     emptyText: 'COUNTRY',
+    //     flex: 1,
+    //     //labelWidth: 80,
+    //     width: 160,
+    //     hidden:true,
+    //     valueField: 'id',
+    //     displayField: 'name',
+    //     forceSelection: true,
+    //     name: 'country_id',
+    //     queryMode: 'local', 
+    //     fieldStyle: {
+    //         'color': 'green',
+    //         'font-weight': 'bold'
+    //     },
+    //      listeners: {
+    //          beforerender: {
+    //             fn: 'setParamCombosStore',
+    //             config: {
+    //                 pageSize: 10000,
+    //                 proxy: {
+    //                     url: 'parameters/country'
+    //                 }
+    //             },
+    //             isLoad: true
+    //          },
+    //          afterrender: function (cmbo) {
+    //              var grid = cmbo.up('grid'),
+    //              store = cmbo.getStore(),
+    //              filterObj = {is_local: 1},
+    //              filterStr = JSON.stringify(filterObj);
+    //              store.removeAll();
+    //              store.load({params: {filter: filterStr}});
+    //           },
+    //         change: function (cmbo, newVal) {
+    //         var grid = cmbo.up('grid'),
+    //         regionStore = grid.down('combo[name=region_id]').getStore(),
+    //         filterObj = {country_id: newVal},
+    //         filterStr = JSON.stringify(filterObj);
+    //         regionStore.removeAll();
+    //       regionStore.load({params: {filter: filterStr}});
+    //         }
+    //     },
+    //     triggers: {
+    //         clear: {
+    //             type: 'clear',
+    //             hideWhenEmpty: true,
+    //             hideWhenMouseOut: false,
+    //             clearOnEscape: true
+    //         }
+    //     }
+    // },
+     {
+        xtype: 'combo',
+        emptyText: 'REGION',
+        flex: 1,
+        //labelWidth: 80,
+        width: 160,
+        valueField: 'id',
+        displayField: 'name',
+        forceSelection: true,
+        name: 'region_id',
+        queryMode: 'local',
+        fieldStyle: {
+            'color': 'green',
+            'font-weight': 'bold'
+        },
+        listeners: {
+                    beforerender: {
+                        fn: 'setParamCombosStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'parameters/region'
+                            }
+                        },
+                        isLoad: false
+            },afterrender: function (cmbo) {
+                 var grid = cmbo.up('grid'),
+                 store = cmbo.getStore(),
+                 filterObj = {country_id: 37},
+                 filterStr = JSON.stringify(filterObj);
+                 store.removeAll();
+                 store.load({params: {filter: filterStr}});
+              },
+            change: function (cmbo, newVal) {
+                var grid = cmbo.up('grid'),
+                districtStore = grid.down('combo[name=district_id]').getStore(),
+                filterObj = {region_id: newVal},
+                filterStr = JSON.stringify(filterObj);
+                districtStore.removeAll();
+                districtStore.load({params: {filter: filterStr}});
+            }
+        },
+        triggers: {
+            clear: {
+                type: 'clear',
+                hideWhenEmpty: true,
+                hideWhenMouseOut: false,
+                clearOnEscape: true
+            }
+        }
+    }, {
+        xtype: 'combo',
+        emptyText: 'DISTRICT',
+        flex: 1,
+        //labelWidth: 80,
+        width: 150,
+        valueField: 'id',
+        displayField: 'name',
+        forceSelection: true,
+        name: 'district_id',
+        queryMode: 'local',
+        fieldStyle: {
+            'color': 'green',
+            'font-weight': 'bold'
+        },
+        listeners: {
+                    beforerender: {
+                        fn: 'setParamCombosStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'parameters/district'
+                            }
+                        },
+                        isLoad: false
+            }
+        },
+        triggers: {
+            clear: {
+                type: 'clear',
+                hideWhenEmpty: true,
+                hideWhenMouseOut: false,
+                clearOnEscape: true
+            }
+        }
+    }, {
+        xtype: 'button',
+        text: 'Filter',
+        ui: 'soft-green',
+        iconCls: 'x-fa fa-search',
+        handler: function(btn) {
+          var grid = btn.up('grid');
+              grid.getStore().load();
+        },
+    },{
+        xtype: 'button',
+        text: 'Clear',
+        ui: 'soft-red',
+        iconCls: 'x-fa fa-times',
+        handler: function(btn) {
+          var grid = btn.up('grid'),
+                gridStr = grid.getStore();
+                grid.down('combo[name=country_id]').clearValue();
+                grid.down('combo[name=region_id]').clearValue();
+                grid.down('combo[name=district_id]').clearValue();
+                gridStr.load();
+        },
+    }],
     listeners: {
         beforerender: {
             fn: 'setPremiseRegGridsStore',

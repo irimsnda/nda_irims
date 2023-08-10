@@ -29,6 +29,12 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('getApplicationPaymentDetails', [commonController::class, 'getApplicationPaymentDetails']);
      Route::get('getAllInspectionsCaparequests', [commonController::class, 'getAllInspectionsCaparequests']);
 
+      Route::get('getInspectionCapaFindingChecklists', [commonController::class, 'getInspectionCapaFindingChecklists']);
+       Route::get('getInspectionCapaFindingChecklists', [commonController::class, 'getInspectionCapaFindingChecklists']);
+
+
+      Route::post('saveChecklistApplicationCAPA ', [commonController::class, 'saveChecklistApplicationCAPA']);
+
     Route::get('getOnlineApplicationRejections', [commonController::class, 'getOnlineApplicationRejections']);
 
     Route::get('getApplicationWithdrawalReasons', [commonController::class, 'getApplicationWithdrawalReasons']);
@@ -50,10 +56,14 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::get('validateDocumentsSubmissonRecRecommendation', [commonController::class, 'validateDocumentsSubmissonRecRecommendation']);
 
+    Route::get('validateInspectionReportSubmission', [commonController::class, 'validateInspectionReportSubmission']);
+
     Route::get('checkPrecheckingrecommendation', [commonController::class, 'checkPrecheckingrecommendation']);
 
 
-    
+    Route::get('checkAssignedProcessingZone', [commonController::class, 'checkAssignedProcessingZone']);
+
+
     
     Route::get('checkApplicationRaisedQueries', [commonController::class, 'checkApplicationRaisedQueries']);
 

@@ -47,13 +47,15 @@ Ext.define('Admin.view.drugshopregistration.views.panels.DrugShopAppMoreDetailsW
         {
             xtype: 'applicationapplicantpnl',
             collapsible: true, 
-           collapsed: true,hidden: true,
+           collapsed: true,
+           hidden: true,
             title:'Drug Shop Applicant Details'
         }
     ],
     bbar:[{
         text: 'Update Application Details',
         ui: 'soft-purple',
+        hidden:true,
         iconCls: 'fa fa-save',
         name: 'updatedrugshopapplications',
         toaster: 1

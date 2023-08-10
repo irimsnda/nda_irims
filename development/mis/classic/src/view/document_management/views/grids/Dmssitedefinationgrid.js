@@ -135,7 +135,7 @@ Ext.define('Admin.view.document_management.views.grids.Dmssitedefinationgrid', {
                     tooltip: 'Edit Record',
                     action: 'edit',
                     childXtype: 'dmssitedefinationfrm',
-                    winTitle: 'DMS Site Defination Details',
+                    winTitle: 'DMS Site Definition Details',
                     winWidth: '40%',
                     handler: 'showEditConfigParamWinFrm',
                     stores: '[]'

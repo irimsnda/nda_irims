@@ -98,9 +98,17 @@ Ext.define('Admin.view.drugshopregistration.views.maininterfaces.new.NewDrugShop
             },{
                 xtype: 'hiddenfield',
                 name: 'module_id'
-            }, {
+            },{
+                xtype: 'hiddenfield',
+                name: 'premise_id'
+            },
+             {
                 xtype: 'hiddenfield',
                 name: 'sub_module_id'
+            },{
+                xtype: 'hiddenfield',
+                name: 'report_type_id',
+                value:3
             }, {
                 xtype: 'hiddenfield',
                 name: 'section_id'

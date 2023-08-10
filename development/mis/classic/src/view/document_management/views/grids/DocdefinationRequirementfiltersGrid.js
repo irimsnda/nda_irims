@@ -27,7 +27,7 @@ Ext.define('Admin.view.document_management.views.grids.DocdefinationRequirementf
         action: 'add',
         ui: 'soft-green',
         childXtype: 'docdefinationrequirementfiltersfrm',
-        winTitle: 'Documents Requirements Defination Filters',
+        winTitle: 'Documents Requirements Definition Filters',
         winWidth: '40%',
         handler: 'showAddConfigParamWinFrm',
         stores: '[]'
@@ -39,7 +39,7 @@ Ext.define('Admin.view.document_management.views.grids.DocdefinationRequirementf
             ptype: 'gridexporter'
         }
     ],
-    export_title: 'Documents Types Definations',
+    export_title: 'Documents Types Definition',
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '100%',

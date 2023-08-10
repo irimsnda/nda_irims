@@ -58,7 +58,22 @@ export class AccountManagementService {
         }));
   }
 
+   onLoadApplicantPharmacist(psuNo) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+    });
 
+    this.config = {
+      headers: headers,
+      params: { psuNo: psuNo }
+    };
+
+    return this.httpClient.get(AppSettings.base_url + 'tradermanagement/getSupervisingPharmacist', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+
+  }
   
   onSaveTradersApplicationInformation(data,mistrader_id){
 

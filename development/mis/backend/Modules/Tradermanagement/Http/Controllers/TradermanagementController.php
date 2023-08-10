@@ -4,6 +4,7 @@ namespace Modules\Tradermanagement\Http\Controllers;
 
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\Controller;
 
@@ -323,8 +324,10 @@ class TradermanagementController extends Controller
                                 $email_content .= " - Account User Password: '".$user_passwordData ."'.<br/>";
 
                                 $email_content.="<p>For more information visit TMDA Web Portal for a full account access guide</p>  ";
+
+
                                 
-                                 sendMailNotification($email_address, $email_address,$subject,$email_content);
+                                 //sendMailNotification($email_address, $email_address,$subject,$email_content);
 
                     }
                     else{
@@ -372,12 +375,12 @@ class TradermanagementController extends Controller
 
                                 $email_content.="<p>For more information visit TMDA Web Portal for a full account access guide</p>  ";
                                 
-                                 sendMailNotification($email_address, $email_address,$subject,$email_content);
+                                 //sendMailNotification($email_address, $email_address,$subject,$email_content);
 
                 
                         }
                         else{
-                            $resp = array('success'=>false, 'message'=>'Trader User Account exists!!'); 
+                            $resp = array('success'=>false, 'message'=>'Trader User Account exists!!'.$email_content); 
                         }
 
                     }
@@ -392,7 +395,7 @@ class TradermanagementController extends Controller
         
             if($resp['success']){
                 DB::commit();
-                $resp = array('success'=>true, 'message'=>'Trader User Account has been added successfully');
+                $resp = array('success'=>true, 'message'=>'Trader User Account has been added successfully'.$email_content);
             }
             else{
                 DB::rollBack(); 

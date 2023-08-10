@@ -335,11 +335,19 @@ setWorkflowCombosStore: function (obj, options) {
 
     onChangeNavigationType: function (combo, newVal, oldVal) {
         var me = this,
+           form=combo.up('form'),
             selectedVal = newVal,
+            account_type_ids=form.down('textfield[name=account_type_ids]');
             store = Ext.getStore('onlineparentmenus');
-            
             store.removeAll();
             store.load({params:{navigation_type_id: selectedVal}});
+            if(newVal==2||newVal===2){
+                var is_visible = true;
+            }else{
+                var is_visible = false;
+            }
+            account_type_ids.setVisible(is_visible);
+                       
             
     },
     reloadProcessStore: function(combo, newVal, oldVal, eopts) {

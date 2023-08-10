@@ -48,6 +48,7 @@ import { DrugshopLicensedetailsComponent } from 'src/app/views/online-services/d
 
 import { DxActionSheetModule, DxFileUploaderModule, DxDataGridModule, DxPopupModule, DxButtonModule, DxDateBoxModule, DxTextBoxModule, DxSelectBoxModule, DxTextAreaModule, DxContextMenuModule, DxMenuModule, DxCheckBoxModule, DxNumberBoxModule, DxRadioGroupModule, DxScrollViewModule, DxDropDownBoxModule, DxHtmlEditorModule, DxTagBoxModule, DxTabsModule, DxTabPanelModule } from 'devextreme-angular';
 import { ModalDialogModule } from 'ngx-modal-dialog';
+import { RenewalDrugshopPermitComponent } from '../../views/online-services/drugshop-registration/renewal-drugshop-permit/renewal-drugshop-permit.component';
 
 import { RenewalBusinessPermitComponent } from '../../views/online-services/premises-registration/renewal-business-permit/renewal-business-permit.component';
 import { TraderProfileComponent } from '../../views/online-services/trader-profile/trader-profile.component';
@@ -233,7 +234,7 @@ import { ImportgeneralicenseDashboardComponent } from 'src/app/views/online-serv
 import { ExportlicenseDashboardComponent } from 'src/app/views/online-services/importexport-apps/importexport-dashboard/exportlicense-dashboard/exportlicense-dashboard.component';
 import { NewpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/newpremises-dashboard/newpremises-dashboard.component';
 import { PreinspectionDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/preinspection-dashboard/preinspection-dashboard.component';
-
+import { RenewaldrugshopDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/renewaldrugshop-dashboard/renewaldrugshop-dashboard.component';
 import { NewdrugshopDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/newdrugshop-dashboard/newdrugshop-dashboard.component';
 import { RenewalpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/renewalpremises-dashboard/renewalpremises-dashboard.component';
 import { VariationpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/variationpremises-dashboard/variationpremises-dashboard.component';
@@ -362,11 +363,13 @@ import { AddproductApplicationdetailsComponent } from 'src/app/views/online-serv
     NewpremisesDashboardComponent,
     PreinspectionDashboardComponent,
     RenewalpremisesDashboardComponent,
+    RenewaldrugshopDashboardComponent,
     VariationpremisesDashboardComponent,
     WithdrawalpremisesDashboardComponent,
     NewPremisesRegistrationComponent,
     NewDrugshopsRegistrationComponent,
     RenewalBusinessPermitComponent,
+    RenewalDrugshopPermitComponent,
     PremisesAlterationComponent,
     SharedPremisesregistrationclassComponent,
     SharedDrugshopsregistrationclassComponent,

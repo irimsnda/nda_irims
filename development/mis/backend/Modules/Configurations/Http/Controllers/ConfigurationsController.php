@@ -855,12 +855,9 @@ public function deleteWorkflowRecord(Request $req)
                 
                 $qry = DB::table($table_name)
                     ->leftJoin('par_sections as t2', 't1.section_id', '=', 't2.id')
-                    
                     ->leftJoin('par_prodcat_classifications as t5','t1.id','t5.classification_id')
-                    ->leftJoin('par_prodclass_categories as t3', 't5.prodclass_category_id', '=', 't3.id')
-                    ->select('t1.*', 't2.name as section_name', 't3.name as product_class_category_name');
-
-                    
+                    //->leftJoin('par_prodclass_categories as t3', 't5.prodclass_category_id', '=', 't3.id')
+                    ->select('t1.*', 't2.name as section_name');
             }
             else if ($req->table_name == 'par_atc_codes') {
                 

@@ -47,7 +47,7 @@ class ClinicalTrialController extends Controller
 
     public function saveClinicalTrialCommonData(Request $req)
     {
-        try {
+        try { 
             $user_id = \Auth::user()->id;
             $post_data = $req->all();
             $table_name = $post_data['table_name'];
@@ -63,7 +63,7 @@ class ClinicalTrialController extends Controller
                 $unsetData = explode(",", $unsetData);
                 $post_data = unsetArrayData($post_data, $unsetData);
             }
-
+            
             $table_data = $post_data;
             //add extra params
             $table_data['created_on'] = Carbon::now();
@@ -72,21 +72,32 @@ class ClinicalTrialController extends Controller
                 'id' => $id
             );
             $res = array();
+         
             if (isset($id) && $id != "") {
+
+                $res=recordExists($table_name, $where);
+                 dd($id);
                 if (recordExists($table_name, $where)) {
                     unset($table_data['created_on']);
                     unset($table_data['created_by']);
                     $table_data['dola'] = Carbon::now();
                     $table_data['altered_by'] = $user_id;
                     $previous_data = getPreviousRecords($table_name, $where);
+
+
                     if ($previous_data['success'] == false) {
                         return $previous_data;
                     }
                     $previous_data = $previous_data['results'];
                     $res = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
+
+                    
                 }
             } else {
+
                 $res = insertRecord($table_name, $table_data, $user_id);
+                dd($res);
+
             }
         } catch (\Exception $exception) {
             $res = array(
@@ -652,7 +663,7 @@ class ClinicalTrialController extends Controller
                
                
             );
-            
+   
             $application_params = array(
                 'study_title' => $request->study_title,
                 'protocol_no' => $request->protocol_no,
@@ -691,7 +702,27 @@ class ClinicalTrialController extends Controller
                 'meeting_time' => $request->meeting_time,
                 'meeting_type_id' => $request->meeting_type_id,
                 'meeting_venue' => $request->meeting_venue,
-                'meeting_invitation_details' => $request->meeting_invitation_details
+                'meeting_invitation_details' => $request->meeting_invitation_details,
+                'clincialtrialfields_type_id' => $request->clincialtrialfields_type_id,
+                'clincialtrialfunding_source_id' => $request->clincialtrialfunding_source_id,
+                'participant_no' => $request->participant_no,
+                'enrolled_worldwide_no' => $request->enrolled_worldwide_no,
+                'enrolled_uganda_no' => $request->enrolled_uganda_no,
+                'sites_no' => $request->sites_no,
+                'intended_no' => $request->intended_no,
+                'publication_url' => $request->publication_url,
+                'is_clinicaltrialin_uganda' => $request->is_clinicaltrialin_uganda,
+                'clinicalin_otheruganda_sites' => $request->clinicalin_otheruganda_sites,
+                'is_clinicaltrialin_othercountry' => $request->is_clinicaltrialin_othercountry,
+                'clinicalin_othercountries_sites' => $request->clinicalin_othercountries_sites,
+                'first_final_duration' => $request->first_final_duration,
+                'screening_period' => $request->screening_period,
+                'follow_up_period' => $request->follow_up_period,
+                'follow_up_duration' => $request->follow_up_duration,
+                'intervention_period' => $request->intervention_period,
+                'intervention_duration' => $request->intervention_duration,
+                'uncst_no' => $request->uncst_no,
+                'rec_no' => $request->rec_no
 
             );
             if (validateIsNumeric($application_id)) {
@@ -1708,7 +1739,7 @@ class ClinicalTrialController extends Controller
                 ->join('study_sites as t2', 't1.study_site_id', '=', 't2.id')
                 ->join('par_countries as t3', 't2.country_id', '=', 't3.id')
                 ->join('par_regions as t4', 't2.region_id', '=', 't4.id')
-                ->select('t2.*', 't1.id', 't1.study_site_id','t1.*', 't3.name as country_name', 't4.name as region_name')
+                ->select('t2.*', 't1.study_site_id', 't3.name as country_name', 't4.name as region_name')
                 ->where('t1.application_id', $application_id);
             $results = $qry->get();
                 

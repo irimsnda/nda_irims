@@ -49,6 +49,7 @@ class VerifyCsrfToken extends Middleware
        'premisesregistration/onSavePremisesholder',
        'premisesregistration/onSavePremisesStaff',
        'importexportapp/onDeletePermitdetails',
-       'premisesregistration/onSaveTelephoneDetails'
+       'premisesregistration/onSaveTelephoneDetails',
+       'premisesregistration/onSaveRenPremisesApplication'
     ];
 }

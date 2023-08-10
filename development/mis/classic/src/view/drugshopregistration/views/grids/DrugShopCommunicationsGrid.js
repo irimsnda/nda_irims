@@ -68,55 +68,14 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
     tbar: [{
         xtype: 'tbspacer',
         width: 5
-     }, {
-        xtype: 'combo',
-        emptyText: 'COUNTRY',
-        flex: 1,
-        //labelWidth: 80,
-        width: 160,
-        valueField: 'id',
-        displayField: 'name',
-        forceSelection: true,
-        name: 'country_id',
-        queryMode: 'local', 
-        fieldStyle: {
-            'color': 'green',
-            'font-weight': 'bold'
-        },
-         listeners: {
-             beforerender: {
-                fn: 'setParamCombosStore',
-                config: {
-                    pageSize: 10000,
-                    proxy: {
-                        url: 'parameters/country'
-                    }
-                },
-                isLoad: true
-             },
-            change: function (cmbo, newVal) {
-            var grid = cmbo.up('grid'),
-            regionStore = grid.down('combo[name=region_id]').getStore(),
-            filterObj = {country_id: newVal},
-            filterStr = JSON.stringify(filterObj);
-            regionStore.removeAll();
-          regionStore.load({params: {filter: filterStr}});
-            }
-        },
-        triggers: {
-            clear: {
-                type: 'clear',
-                hideWhenEmpty: true,
-                hideWhenMouseOut: false,
-                clearOnEscape: true
-            }
-        }
-    }, {
+     }, 
+    
+     {
         xtype: 'combo',
         emptyText: 'REGION',
         flex: 1,
         //labelWidth: 80,
-        width: 160,
+        width: 190,
         valueField: 'id',
         displayField: 'name',
         forceSelection: true,
@@ -136,7 +95,14 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
                             }
                         },
                         isLoad: false
-            },
+            },afterrender: function (cmbo) {
+                 var grid = cmbo.up('grid'),
+                 store = cmbo.getStore(),
+                 filterObj = {country_id: 37},
+                 filterStr = JSON.stringify(filterObj);
+                 store.removeAll();
+                 store.load({params: {filter: filterStr}});
+              },
             change: function (cmbo, newVal) {
                 var grid = cmbo.up('grid'),
                 districtStore = grid.down('combo[name=district_id]').getStore(),
@@ -144,6 +110,7 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
                 filterStr = JSON.stringify(filterObj);
                 districtStore.removeAll();
                 districtStore.load({params: {filter: filterStr}});
+                grid.getStore().load();
             }
         },
         triggers: {
@@ -154,12 +121,13 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
                 clearOnEscape: true
             }
         }
-    }, {
+    },
+    {
         xtype: 'combo',
         emptyText: 'DISTRICT',
         flex: 1,
         //labelWidth: 80,
-        width: 150,
+        width: 190,
         valueField: 'id',
         displayField: 'name',
         forceSelection: true,
@@ -179,6 +147,52 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
                             }
                         },
                         isLoad: false
+            },
+            change: function (cmbo, newVal) {
+                var grid = cmbo.up('grid');
+                grid.getStore().load();
+            }
+        },
+        triggers: {
+            clear: {
+                type: 'clear',
+                hideWhenEmpty: true,
+                hideWhenMouseOut: false,
+                clearOnEscape: true
+            }
+        }
+    },{
+        xtype: 'combo',
+        emptyText: 'ZONE',
+        flex: 1,
+        //labelWidth: 80,
+        width: 190,
+        valueField: 'id',
+        displayField: 'name',
+        forceSelection: true,
+        name: 'zone_id',
+        queryMode: 'local',
+        fieldStyle: {
+            'color': 'green',
+            'font-weight': 'bold'
+        },
+        listeners: {
+                    beforerender: {
+                        fn: 'setParamCombosStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_zones'
+                            }
+                        }
+                        },
+                        isLoad: true
+            },
+            change: function (cmbo, newVal) {
+                var grid = cmbo.up('grid');
+                grid.getStore().load();
             }
         },
         triggers: {
@@ -206,9 +220,9 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
         handler: function(btn) {
           var grid = btn.up('grid'),
                 gridStr = grid.getStore();
-                grid.down('combo[name=country_id]').clearValue();
                 grid.down('combo[name=region_id]').clearValue();
                 grid.down('combo[name=district_id]').clearValue();
+                grid.down('combo[name=zone_id]').clearValue();
                 gridStr.load();
         },
     }],
@@ -236,7 +250,8 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
             if (selCount < 1) {
                 grid.down('button[name=submit_selected]').setDisabled(true);
             }
-        }
+        },
+        itemdblclick: 'viewSelectedpApplicationMoreDetails'
     },
     columns: [{
         xtype: 'widgetcolumn',
@@ -249,7 +264,7 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
             text: 'Print License/Letter',
             iconCls: 'x-fa fa-certificate',
             backend_function: 'printPremiseRegistrationCertificate',
-            handler: 'printColumnPremiseCertificate'
+            handler: 'printColumnPremisePermit'
         }
     },{
         xtype: 'gridcolumn',
@@ -275,6 +290,11 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
         xtype: 'gridcolumn',
         dataIndex: 'district_name',
         text: 'District Name',
+        flex: 1
+    }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'zone_name',
+        text: 'Processing Zone',
         flex: 1
     }, {
         xtype: 'gridcolumn',
@@ -331,7 +351,7 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
                             items: [
                                 
                                 {
-                                    text: 'Inspection Report',
+                                    text: 'Inspection Report(DID)',
                                     iconCls: 'x-fa fa-bars',
                                     childXtype: 'drugshopinspectiondetailstabpnl',
                                     winTitle: 'Inspection Report',
@@ -342,7 +362,7 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
                                     handler: 'showInspectionDetails'
                                 },
                                 {
-                                    text: 'Inspection Report(Regional Inspector)',
+                                    text: 'Inspection Report(RID)',
                                     iconCls: 'x-fa fa-bars',
                                     childXtype: 'drugshopinspectiondetailstabpnl',
                                     winTitle: 'Inspection Report(Regional Inspector)',
@@ -353,7 +373,7 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
                                     handler: 'showInspectionDetails'
                                 },
                                 {
-                                    text: 'Inspection Report(Lead Inspector)',
+                                    text: 'Inspection Report(Chief Regional Inspector)',
                                     iconCls: 'x-fa fa-bars',
                                     childXtype: 'drugshopinspectiondetailstabpnl',
                                     winTitle: 'Inspection Report(Lead Inspector)',
@@ -362,6 +382,11 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
                                     stores: '[]',
                                     report_type_id:3,
                                     handler: 'showInspectionDetails'
+                                },{
+                                    text: 'Print Final Inspection Report',
+                                    iconCls: 'x-fa fa-print',
+                                    name:'btn_print_inspection_report',
+                                    handler: 'doPrintInspectionReport'
                                 }
                             ]
                         }

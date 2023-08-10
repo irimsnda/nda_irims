@@ -51,8 +51,11 @@ class TraderManagementController extends Controller
                  $count = DB::connection('mis_db')->table('wb_trader_account')
                      ->where($where_app)
                      ->count();
+
+
                  if($count){
                     $previous_data = getPreviousRecords('wb_trader_account', $where_app,'mis_db');
+
                     $trader_no = $previous_data['results'][0]['identification_no']; 
                     $email_address = $previous_data['results'][0]['email']; 
                     $resp=   updateRecord('wb_trader_account', $previous_data, $where_app, $data, '','mis_db');
@@ -129,6 +132,7 @@ class TraderManagementController extends Controller
                
                 $trader_no = generateTraderNo('wb_trader_account');
                 $data = array('name'=>$trader_data->name,
+                    'traderaccount_type_id'=>$trader_data->traderaccount_type_id,
                     'contact_person'=>$trader_data->contact_person,
                     'contact_person_email'=>$trader_data->contact_person_email,
                     'country_id'=>$trader_data->country_id,
@@ -154,7 +158,6 @@ class TraderManagementController extends Controller
                 if($count == 0){
                    $email_address = $trader_data->email_address;
                    $resp = insertRecord('wb_trader_account', $data, 'Create Account');
-                   
                    $user_passwordData = str_random(8);
                    //had code for test
                   
@@ -162,7 +165,7 @@ class TraderManagementController extends Controller
                    $uuid = generateUniqID();//unique user ID
                    $user_password = hashPwd($email_address, $uuid, $user_passwordData);
                    $trader_id = $resp['record_id'];
-                   
+
                    $user_data = array('email'=> $email_address,
                                  'trader_id'=>$trader_id,
                                  'password'=>$user_password,
@@ -179,7 +182,7 @@ class TraderManagementController extends Controller
                     //the details //tin_no
                     
                     $resp = insertRecord('wb_traderauthorised_users', $user_data, 'Create Trader Users');
-                  
+
                     $usr_id = $resp['record_id'];
                     $verification_code = str_random(30);
                     DB::table('wb_user_verifications')->insert(['user_id'=>$usr_id,'token'=>$verification_code]);
@@ -362,113 +365,7 @@ class TraderManagementController extends Controller
         return response()->json($resp);
 
     }
-     public function onPharmacisAccountUsersRegistration(Request $req){
-        try{
-
-
-            $email_address = $req->email_address;
-            $trader_id = $req->trader_id;
-            $traderemail_address = $req->traderemail_address;
-            $password = $req->password;
-            $id = $req->id;
-
-            $rec = DB::table('wb_trader_account')->where('id', $trader_id)->first();
-            if($rec){
-                    if(validateIsNumeric($id)){
-                        $where_app = array('id'=>$id);
-
-                        
-                        $user_data = array(
-                                            'email_address'=> $req->email_address,
-                                            'trader_id'=>$trader_id,
-                                            'full_name'=>$req->full_name,
-                                            'country_id'=>$req->country_id,
-                                            'region_id'=>$req->region_id,
-                                            'district_id'=>$req->district_id,
-                                            'telephone_no'=>$req->telephone_no,
-                                            'physical_address'=>$req->physical_address,
-                                            'is_verified'=>1,
-                                            'status_id'=>1,//as actve
-                                            'account_roles_id'=>2,
-                                            'created_by'=>$traderemail_address,
-                                            'psu_reg_no'=>$req->psu_reg_no,
-                                            'psu_reg_date'=>$req->psu_reg_date,
-                                            'altered_by'=>$traderemail_address,
-                                            'dola'=>date('Y-m-d H:i:s')
-                                    );
-                            //the details 
-                            $previous_data = getPreviousRecords('wb_pharmacistauthorised_users', $where_app);
-                           
-                            $resp=   updateRecord('wb_pharmacistauthorised_users', $previous_data, $where_app, $user_data, $traderemail_address);
-                           
-
-                    }
-                    else{
-                        $count = DB::table('wb_pharmacistauthorised_users')
-                        ->where(array('email_address'=>$email_address))
-                        ->count();
-                        if($count == 0){
-                                                     
-                            $user_data = array(
-                                            'email_address'=> $email_address,
-                                            'trader_id'=>$trader_id,
-                                            'full_name'=>$req->full_name,
-                                            'country_id'=>$req->country_id,
-                                            'region_id'=>$req->region_id,
-                                            'district_id'=>$req->district_id,
-                                            'telephone_no'=>$req->telephone_no,
-                                            'physical_address'=>$req->physical_address,
-                                            'is_verified'=>1,
-                                            'status_id'=>1,//as actve
-                                            'account_roles_id'=>2,
-                                            'created_by'=>$traderemail_address,
-                                            'psu_reg_no'=>$req->psu_reg_no,
-                                            'psu_reg_date'=>$req->psu_reg_date,
-                                            'created_on'=>date('Y-m-d H:i:s')
-                                        );
-                                //the details 
-                                
-                                $resp = insertRecord('wb_pharmacistauthorised_users', $user_data, 'Create Pharmacists Users');
-                            
-                                $usr_id = $resp['record_id'];
-                                $verification_code = str_random(30);
-                                DB::table('wb_user_verifications')->insert(['user_id'=>$usr_id,'token'=>$verification_code]);
-                
-                        }
-                        else{
-                            $resp = array('success'=>false, 'message'=>'Trader Pharmicist Account exists!!'); 
-                        }
-
-                    }
-                        
-
-            }
-            
-           
-        
-            if($resp['success']){
-                DB::commit();
-                $resp = array('success'=>true, 'message'=>'Trader User Account has been added successfully');
-            }
-            else{
-                DB::rollBack(); 
-            }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $resp = array(
-                'success' => false,
-                'message' => $e->getMessage()
-            );
-        } catch (\Throwable $throwable) {
-            DB::rollBack();
-            $resp = array(
-                'success' => false,
-                'message' => $throwable->getMessage()
-            );
-        }
-        return response()->json($resp);
-
-    }
+  
 	public function onSaveTradersApplicationInformation(Request $req){
         try{
             $mistrader_id = $req->mistrader_id;
@@ -729,7 +626,34 @@ class TraderManagementController extends Controller
     return response()->json($resp);
 
    }
-   
+   public function getSupervisingPharmacist(Request $req){
+  
+    try{
+        $data = array();
+        $psuNo = $req->psuNo;
+
+        $records =DB::connection('mis_db')->table('tra_pharmacist_personnel as t1')
+                ->where(array('psu_no'=>$psuNo))
+                ->get();
+       
+              $resp =array('success'=>true,'data'=> $records);
+
+    
+    } catch (\Exception $e) {
+        $resp = array(
+            'success' => false,
+            'message' => $e->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $resp = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($resp);
+
+
+}
    public function getTraderInformation(Request $req){
     try{
         $data = array();
@@ -787,35 +711,6 @@ class TraderManagementController extends Controller
     return response()->json($res);
 
 }
-   public function gettraderUsersAccountsManagementDetails(Request $req){
-    try{
-           
-            $trader_id = $req->trader_id;
-            
-            $data = DB::table('wb_trader_account as t1')
-                        ->join('wb_traderauthorised_users as t2', 't1.id','=','t2.trader_id')
-                        ->leftJoin('wb_account_roles as t3', 't2.account_roles_id','=','t3.id')
-                        ->select(DB::raw("t2.email,t2.telephone_no,t3.name as account_role, t2.email as email_address,t1.identification_no, t2.created_on, t2.id,t2.last_login_time "))
-                        ->where('t1.id',$trader_id)
-                        ->get();
-                      
-            $res = array('success'=>true,  'data'=>$data);
-
-            
-     } catch (\Exception $exception) {
-        $res = array(
-            'success' => false,
-            'message' => $exception->getMessage()
-        );
-    } catch (\Throwable $throwable) {
-        $res = array(
-            'success' => false,
-            'message' => $throwable->getMessage()
-        );
-    }
-    return response()->json($res);
-
-}
-
+   
 
 }
