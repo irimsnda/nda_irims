@@ -97,6 +97,10 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
             'preinspectiondrugshopselectiongrid': {
                 itemdblclick: 'onPreInspectionDrugShopSelectionListDblClick'
             },
+
+            'preinspectionpremiseselectiongrid': {
+                itemdblclick: 'onPreInspectionPremiseSelectionListDblClick'
+            },
            
             'appdocuploadsfrm button[name=upload_file_btn]': {
                 click: 'uploadApplicationFile'
@@ -313,6 +317,22 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
             'premiseotherdetailsgrid': {
                 refresh: 'addPremiseDependentGrids'
             },
+
+            'premisedirectorsdetailsgrid button[name=add_personnel]': {
+                click: 'showAddOtherDetailsPremiseForm'
+            },
+
+            'premisedirectorsdetailsgrid': {
+                refresh: 'addPremiseDependentGrids'
+            },
+             'premisenearestpremisegrid': {
+                refresh: 'addPremiseDependentGrids'
+            },
+
+            'premisenearestpremisegrid button[name=nearest_premise]': {
+                click: 'showAddOtherDetailsPremiseForm'
+            },
+
             'premiseotherdetailsgrid button[name=add_details]': {
                 click: 'showAddPremiseOtherDetails'
             },
@@ -352,12 +372,14 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
                 click: 'showInspectionRecommendationDetails'
             },
             //SAVE
+
+
             'newpremisereceivingwizard button[name=save_btn]': {//new
-                click: 'savePremiseNewReceivingBaseDetails'
+                click: 'saveNewPremiseLicenseReceivingBaseDetails'
             },
 
             'newpremisereceivingwizard  button[name=process_submission_btn]': {
-                click: 'showNewReceivingApplicationSubmissionWin'
+                click: 'showNewLicenseReceivingApplicationSubmissionWin'
             },
 
             'preinpectionpremisereceivingwizard button[name=save_btn]': {//new
@@ -406,6 +428,10 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
             },
 
             'drugshopreceivingwizard button[action=searchPreInspectionDrugShop]': {
+                click: 'showPreInspectionDrugShopSelectionList'
+            },
+
+            'newpremisereceivingwizard button[action=searchPreInspectionPremise]': {
                 click: 'showPreInspectionDrugShopSelectionList'
             },
 
@@ -591,6 +617,12 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
             'newdrugshoppaymentspnl form toolbar button[name=more_app_details]': {
                 click: 'showDrugShopApplicationMoreDetails'
             },
+            'predrugshoppaymentspnl form toolbar button[name=more_app_details]': {
+                click: 'showPreDrugShopApplicationMoreDetails'
+            },
+
+
+            
             'newdrugshopscreening': {
                 afterrender: 'prepareNewDrugShopEvaluation'
             },
@@ -605,11 +637,33 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
                 afterrender: 'prepareDrugShopRegionalInspection'
             },
 
+            'predrugshopinspection': {
+                afterrender: 'preparePreDrugShopPremiseInspection'
+            },
+            'predrugshopregionalinspection': {
+                afterrender: 'preparePreDrugShopRegionalInspection'
+            },
+
+            'newpremiseregionalinspection': {
+                afterrender: 'preparPremiseRegionalInspection'
+            },
+
+
             'newdrugshopleadinspection': {
                 afterrender: 'prepareDrugShopLeadInspection'
             },
+            'predrugshopleadinspection': {
+                afterrender: 'preparePreDrugShopLeadInspection'
+            },
+
+            'newpremiseleadinspection': {
+                afterrender: 'preparePremiseLeadInspection'
+            },
 
             'newdrugshopinspectionpanel button[name=process_submission_btn]': {
+                click: 'showDrugShopInspectionApplicationSubmissionWin'
+            },
+            'predrugshopinspectionpanel button[name=process_submission_btn]': {
                 click: 'showDrugShopInspectionApplicationSubmissionWin'
             },
 
@@ -660,7 +714,7 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
 
 
             'newdrugshoponlinepreviewpnl': {
-                afterrender: 'prepareNewPremiseOnlinePreview'
+                afterrender: 'prepareNewDrugShopOnlinePreview'
             },
             
 
@@ -693,7 +747,9 @@ Ext.define('Admin.controller.PremiseRegistrationCtr', {
                 //drugshop 
                  newDrugShopRegistration: 'onNewDrugShopRegApplication',
                  showDrugShopApplicationMoreDetails: 'showDrugShopApplicationMoreDetails',
-                 showDrugShopApplicationMoreDetailsGeneric: 'showDrugShopApplicationMoreDetailsGeneric'
+                 showDrugShopApplicationMoreDetailsGeneric: 'showDrugShopApplicationMoreDetailsGeneric',
+                 showPreDrugShopApplicationMoreDetails: 'showPreDrugShopApplicationMoreDetails',
+                 showPreDrugShopApplicationMoreDetailsGeneric: 'showPreDrugShopApplicationMoreDetailsGeneric'
             }
         }
     },  funcActiveInspectionTabChanges: function (tab) {
@@ -809,6 +865,10 @@ previewPremisesOnlineApplication: function (view, record) {
                     docsGrid = onlinePanel.down('premregonlinedocuploadsgenericgrid'),
                     
                     premisePersonnelGrid = wizardPnl.down('drugshopdirectorsdetailsgrid');
+                    nearestpremisegrid = wizardPnl.down('nearestpremisegrid');
+
+                    nearestdrugshopgrid = wizardPnl.down('nearestdrugshopgrid');
+                    drugshopotherlicensesdetailsgrid = wizardPnl.down('drugshopotherlicensesdetailsgrid');
 
 
                 if (status_id == 23 && isRejection != 1) {
@@ -863,6 +923,16 @@ previewPremisesOnlineApplication: function (view, record) {
                 //premisePersonnelGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
                 premisePersonnelGrid.setIsWin(1);
                 premisePersonnelGrid.setIsOnline(1);
+
+                nearestpremisegrid.setIsWin(1);
+                nearestpremisegrid.setIsOnline(1);
+
+                nearestdrugshopgrid.setIsWin(1);
+                nearestdrugshopgrid.setIsOnline(1);
+
+                drugshopotherlicensesdetailsgrid.setIsWin(1);
+                drugshopotherlicensesdetailsgrid.setIsOnline(1);
+
                 //wizardPnl.down('premisecontactpersonfrm').down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
                 funcShowCustomizableWindow(tracking_no, '80%', onlinePanel, 'customizablewindow');
 
@@ -890,7 +960,9 @@ previewPremisesOnlineApplication: function (view, record) {
         var onlinePanel = Ext.widget(onlinePanelXtype),
             wizardPnl = onlinePanel.down(wizardPnlXtype),
             docsGrid = onlinePanel.down('premregonlinedocuploadsgenericgrid'),
-            premisePersonnelGrid = wizardPnl.down('premisepersonneldetailsgrid');
+            premisePersonnelGrid = wizardPnl.down('premisepersonneldetailsgrid'),
+            premisedirectorsdetailsgrid = wizardPnl.down('premisedirectorsdetailsgrid'),
+            premisenearestpremisegrid = wizardPnl.down('premisenearestpremisegrid');
         if (status_id == 23 && isRejection != 1) {
             toastr.warning('Action not allowed for application in this status [' + status_name + '] ', 'Warning Response');
             return false;
@@ -902,6 +974,12 @@ previewPremisesOnlineApplication: function (view, record) {
             wizardPnl.down('button[name=query_btn]').setVisible(false);
             wizardPnl.down('button[name=reject_btn]').setVisible(false);
         }
+
+
+        if(sub_module_id==89 || sub_module_id==89){
+                    onlinePanel.down('premisedetailsfrm').down('hiddenfield[name=isPreInspection]').setValue(1);
+                    onlinePanel.down('premisedetailsfrm').down('hiddenfield[name=isReadOnly]').setValue(1);
+            }
         /* if (is_manager_query == 1 || is_manager_query === 1) {
              wizardPnl.down('button[name=preview_queries_btn]').setVisible(true);
          }*/
@@ -932,6 +1010,15 @@ previewPremisesOnlineApplication: function (view, record) {
         premisePersonnelGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         premisePersonnelGrid.setIsWin(1);
         premisePersonnelGrid.setIsOnline(1);
+
+        premisedirectorsdetailsgrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        premisedirectorsdetailsgrid.setIsWin(1);
+        premisedirectorsdetailsgrid.setIsOnline(1);
+
+        premisenearestpremisegrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        premisenearestpremisegrid.setIsWin(1);
+        premisenearestpremisegrid.setIsOnline(1);
+
         wizardPnl.down('premisecontactpersonfrm').down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         funcShowCustomizableWindow(tracking_no, '80%', onlinePanel, 'customizablewindow');
      }
@@ -1144,7 +1231,7 @@ previewPremisesOnlineApplication: function (view, record) {
                     premise_id = win.down('premisemiscomparepreviewpnl').down('premisedetailsfrm').down('hiddenfield[name=premise_id]').getValue();
                 }
             } else {
-                premise_id = win.down('drugshopdetailsfrm').down('hiddenfield[name=premise_id]').getValue();
+                premise_id = win.down('premisedetailsfrm').down('hiddenfield[name=premise_id]').getValue();
             }
         } else {
             premise_id = activeTab.down('hiddenfield[name=premise_id]').getValue();
@@ -1169,10 +1256,18 @@ previewPremisesOnlineApplication: function (view, record) {
             activeTab = mainTabPanel.getActiveTab(),
             applicant_id = (activeTab.down('hiddenfield[name=applicant_id]')) ? activeTab.down('hiddenfield[name=applicant_id]').getValue() : null,
             premise_id;
-        
-            premise_id = activeTab.down('hiddenfield[name=premise_id]').getValue();
-
-            store.getProxy().extraParams = {
+            
+            premise_id = (activeTab.down('hiddenfield[name=premise_id]')) ? activeTab.down('hiddenfield[name=premise_id]').getValue() : Ext.ComponentQuery.query("#drugshopdetailsfrm")[0].down('hiddenfield[name=premise_id]').getValue();
+            //premise_id = activeTab.down('hiddenfield[name=premise_id]').getValue();
+            if(premise_id != ''){
+                premise_id = premise_id;
+            }else if(Ext.ComponentQuery.query("#drugshopdetailsfrm")[0]){
+                premise_id = Ext.ComponentQuery.query("#drugshopdetailsfrm")[0].down('hiddenfield[name=premise_id]').getValue();
+            }else{
+                premise_id = Ext.ComponentQuery.query("#preinspectiondrugshopdetailsfrm")[0].down('hiddenfield[name=premise_id]').getValue();
+            }
+            
+            store.getProxy().extraParams = {   
             premise_id: premise_id,
             applicant_id: applicant_id,
             is_temporal: is_temporal,
@@ -1424,9 +1519,24 @@ previewPremisesOnlineApplication: function (view, record) {
             app_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
-            // if(sub_module_id==89){
-            //    premiseFrm = activeTab.down('preinspectionpremisedetailsfrm');
-            // }
+            //activeTab.down('button[name=search_PreInspection_Premise]').setVisible(false);
+            //applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+            if(sub_module_id==1 || sub_module_id==1){
+            premiseFrm.down('#Location_fieldset').items.each(function(item) {
+                if (item.isFormField) { // Check if the item is a form field (e.g., textfield, combo, etc.)
+                    item.setReadOnly(true);
+                }
+            });
+            premiseFrm.down('#main_fieldset').query('field').forEach(function(item) {
+                item.setConfig({
+                    readOnly: true
+                });
+
+                // if (item.isValid()) {
+                //     item.clearInvalid();
+                // }
+            });
+          }  
        /*
         app_check_types_store.removeAll();
         app_check_types_store.load({
@@ -1505,7 +1615,94 @@ previewPremisesOnlineApplication: function (view, record) {
         }
     },
 
-    prepareNewPremiseOnlinePreview: function (pnl) {
+    // prepareNewPremiseOnlinePreview: function (pnl) {
+    //     var me = this,
+    //         applicantFrm = pnl.down('applicantdetailsfrm'),
+    //         premiseFrm = pnl.down('premisedetailsfrm'),
+    //         contactPersonFrm = pnl.down('premisecontactpersonfrm'),
+    //         superintendentFrm = pnl.down('premisesuperintendentfrm'),
+    //         application_id = pnl.down('hiddenfield[name=active_application_id]').getValue(),
+    //         module_id = pnl.down('hiddenfield[name=module_id]').getValue(),
+    //         sub_module_id = pnl.down('hiddenfield[name=sub_module_id]').getValue(),
+    //         section_id = pnl.down('hiddenfield[name=section_id]').getValue();
+    //         mask = new Ext.LoadMask({
+    //             target: pnl,
+    //             msg: 'Please wait...'
+    //         });
+    //          mask.show();
+    //     if(pnl.down('combo[name=applicable_checklist]')){
+    //         var checklistTypesGrid = pnl.down('combo[name=applicable_checklist]'),
+    //         checklistTypesStr = checklistTypesGrid.getStore();
+           
+    //     checklistTypesStr.removeAll();
+    //     checklistTypesStr.load({params: {module_id: module_id, sub_module_id: sub_module_id, section_id: section_id}});
+
+    //     }
+          
+    //     if (application_id) {
+    //         Ext.Ajax.request({
+    //             method: 'GET',
+    //             url: 'premiseregistration/prepareNewOnlineReceivingStage',
+    //             params: {
+    //                 application_id: application_id
+    //             },
+    //             headers: {
+    //                 'Authorization': 'Bearer ' + access_token
+    //             },
+    //             success: function (response) {
+    //                 mask.hide();
+    //                 var resp = Ext.JSON.decode(response.responseText),
+    //                     message = resp.message,
+    //                     success = resp.success,
+    //                     results = resp.results,
+    //                     incharge_details = resp.incharge_details,
+    //                     contactPersonDetails = resp.contactPersonDetails,
+    //                     superintendentDetails = resp.superintendentDetails;
+    //                 if (success == true || success === true) {
+    //                     if (results) {
+    //                         var model = Ext.create('Ext.data.Model', results);
+    //                         var model1a = Ext.create('Ext.data.Model', incharge_details);
+    //                         //pnl.down('combo[name=zone_id]').setValue(results.zone_id);
+    //                         pnl.down('displayfield[name=application_status]').setValue(results.app_status);
+    //                         pnl.down('displayfield[name=tracking_no]').setValue(results.tracking_no);
+    //                         pnl.down('displayfield[name=process_name]').setValue(results.process_name);
+    //                         applicantFrm.loadRecord(model);
+    //                         premiseFrm.loadRecord(model);
+
+    //                     }
+
+    //                     if (contactPersonDetails) {
+    //                         var model1 = Ext.create('Ext.data.Model', contactPersonDetails);
+    //                         contactPersonFrm.loadRecord(model1);
+    //                     }
+    //                     if (superintendentDetails) {
+    //                         var model2 = Ext.create('Ext.data.Model', superintendentDetails);
+    //                         superintendentFrm.loadRecord(model2);
+    //                     }
+    //                 } else {
+    //                     toastr.error(message, 'Failure Response');
+    //                 }
+    //             },
+    //             failure: function (response) {
+    //                 mask.hide();
+    //                 var resp = Ext.JSON.decode(response.responseText),
+    //                     message = resp.message,
+    //                     success = resp.success;
+    //                 toastr.error(message, 'Failure Response');
+    //             },
+    //             error: function (jqXHR, textStatus, errorThrown) {
+    //                 mask.hide();
+    //                 toastr.error('Error: ' + errorThrown, 'Error Response');
+    //             }
+    //         });
+    //     } else {
+    //         mask.hide();
+    //         //It's a new application
+    //     }
+    // },
+
+
+    prepareNewDrugShopOnlinePreview: function (pnl) {
         var me = this,
             applicantFrm = pnl.down('applicantdetailsfrm'),
             premiseFrm = pnl.down('premisedetailsfrm'),
@@ -1895,21 +2092,18 @@ previewPremisesOnlineApplication: function (view, record) {
         }
 
     },
+
+
     prepareNewPremiseInspection: function () {
         Ext.getBody().mask('Please wait...');
         var me = this,
             mainTabPanel = me.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
-            wizardPnl = activeTab.down('premiseappmoredetailswizard'),
-            applicantFrm = wizardPnl.down('applicantdetailsfrm'),
+            wizardPnl = activeTab.down('premiseappmoredetailswizard');
+            var applicantFrm = wizardPnl.down('applicantdetailsfrm'),
             premiseFrm = wizardPnl.down('premisedetailsfrm'),
-            contactFrm = wizardPnl.down('premisecontactpersonfrm'),
-            personnelGrid = wizardPnl.down('premisepersonneldetailsgrid'),
-            otherDetailsGrid = wizardPnl.down('premiseotherdetailswingrid'); 
-            inspectorsGrid = activeTab.down('inspectioninspectorsgrid'),
-            inspectorsStore = inspectorsGrid.getStore(),
-            premisesinspectiondetailsfrm = activeTab.down('premisesinspectiondetailsfrm'),
-            isReadOnly = 0;
+          
+            isReadOnly = 1,
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
            // app_check_types_store = activeTab.down('combo[name=applicable_checklist]').store,
@@ -1917,12 +2111,8 @@ previewPremisesOnlineApplication: function (view, record) {
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
-            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
-            otherDetailsFrm = activeTab.down('form'),
-         //   applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
-            premise_details = otherDetailsFrm.down('displayfield[name=premise_details]');
-            //map details 
-            applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+        
             wizardPnl.down('hiddenfield[name=process_id]').setValue(process_id);
             wizardPnl.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
             wizardPnl.down('hiddenfield[name=application_id]').setValue(application_id);
@@ -1930,14 +2120,26 @@ previewPremisesOnlineApplication: function (view, record) {
             wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
             wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
-                wizardPnl.down('button[name=save_btn]').setVisible(false);
+                wizardPnl.down('button[name=updatepremisesapplications]').setVisible(false);
+            }
+
+           if(sub_module_id==89 || sub_module_id==89){
+            premiseFrm.down('#director_fieldset').setVisible(false);
+        
+           }
+
+            if(activeTab.down('combo[name=applicable_checklist]')){
+            var checklistTypesGrid = activeTab.down('combo[name=applicable_checklist]'),
+              checklistTypesStr = checklistTypesGrid.getStore();
+              checklistTypesStr.removeAll();
+              checklistTypesStr.load({params: {module_id: module_id, sub_module_id: sub_module_id, section_id: section_id}});
             }
             wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
             wizardPnl.down('combo[name=application_region_id]').setReadOnly(true);
-            personnelGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
-            //otherDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+             applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+            
             premiseFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
-            contactFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+           // contactFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
             
             documents_grid = wizardPnl.down('previewproductDocUploadsGrid');
             documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
@@ -1955,7 +2157,8 @@ previewPremisesOnlineApplication: function (view, record) {
                 params: {
                     application_id: application_id,
                     application_code: application_code,
-                    table_name: 'tra_premises_applications'
+                    table_name: 'tra_premises_applications',
+
                 },
                 headers: {
                     'Authorization': 'Bearer ' + access_token
@@ -1969,39 +2172,39 @@ previewPremisesOnlineApplication: function (view, record) {
                         applicantDetails = resp.applicant_details,
                         premiseDetails = resp.premise_details,
                         inspectionDetails = resp.inspection_details;
-                        contactDetails = resp.contact_details;
+                        //contactDetails = resp.contact_details;
                     if (success == true || success === true) {
                         var module_id = results.module_id;
                         activeTab.down('hiddenfield[name=premise_id]').setValue(results.premise_id);
                         activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
                         
-                        if (module_id == 2 || module_id === 2) {
-                          //  premise_details.setVisible(true);
-                           // premise_details.setValue(results.premise_details);
-                        }
+                       
 
                         if (applicantDetails) {
                             var model1 = Ext.create('Ext.data.Model', applicantDetails);
                             applicantFrm.loadRecord(model1);
                         }
                         if (premiseDetails) {
+
                             var model2 = Ext.create('Ext.data.Model', premiseDetails);
                             premiseFrm.loadRecord(model2);
+                             
                         }
-                        if (contactDetails) {
-                            var model3 = Ext.create('Ext.data.Model', contactDetails);
-                            contactFrm.loadRecord(model3);
-                        }
+                       
                         if(inspectionDetails){
                             var model4 = Ext.create('Ext.data.Model', inspectionDetails);
-                            inspection_frm = activeTab.down('#premiseinspectionrecommfrm');
+                            inspection_frm = activeTab.down('premiseinspectionrecommfrm');
                             inspection_frm.loadRecord(model4);
+                            activeTab.down('button[name=btn_print_inspection_report]').setVisible(true);
                         }
-                        if(inspectionDetails){
-                            var model4 = Ext.create('Ext.data.Model', inspectionDetails);
-                            
-                            premisesinspectiondetailsfrm.loadRecord(model4);
+
+                        if(!inspectionDetails){
+                            var model5 = Ext.create('Ext.data.Model', premiseDetails);
+                            inspection_frm = activeTab.down('premiseinspectionrecommfrm');
+                            inspection_frm.loadRecord(model5);
                         }
+
+                       
                         
                         var docTypesStr = activeTab.down('combo[name=applicable_documents]').getStore();
                         docTypesStr.removeAll();
@@ -2013,7 +2216,6 @@ previewPremisesOnlineApplication: function (view, record) {
                                 workflow_stage: workflow_stage_id
                             }
                         });
-                        inspectorsStore.load();
                     } else {
                         toastr.error(message, 'Failure Response');
                     }
@@ -2035,6 +2237,300 @@ previewPremisesOnlineApplication: function (view, record) {
             //It's a new application
         }
     },
+
+
+    preparPremiseRegionalInspection: function () {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            wizardPnl = activeTab.down('premiseappmoredetailswizard');
+            var applicantFrm = wizardPnl.down('applicantdetailsfrm'),
+            premiseFrm = wizardPnl.down('premisedetailsfrm'),
+          
+            isReadOnly = 1,
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+           // app_check_types_store = activeTab.down('combo[name=applicable_checklist]').store,
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+            activeTab.down('button[name=preview_report_btn]').setHidden(false);
+            wizardPnl.down('hiddenfield[name=process_id]').setValue(process_id);
+            wizardPnl.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+            wizardPnl.down('hiddenfield[name=application_id]').setValue(application_id);
+            wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
+            wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+            applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+            
+            if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+                wizardPnl.down('button[name=updatepremisesapplications]').setVisible(false);
+            }
+
+            if(sub_module_id==89 || sub_module_id==89){
+              premiseFrm.down('#director_fieldset').setVisible(false);
+           }
+
+            if(activeTab.down('combo[name=applicable_checklist]')){
+            var checklistTypesGrid = activeTab.down('combo[name=applicable_checklist]'),
+              checklistTypesStr = checklistTypesGrid.getStore();
+              checklistTypesStr.removeAll();
+              checklistTypesStr.load({params: {module_id: module_id, sub_module_id: sub_module_id, section_id: section_id}});
+            }
+            wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
+            wizardPnl.down('combo[name=application_region_id]').setReadOnly(true);
+            
+            premiseFrm.down('hiddenfield[name=isReadOnly]').setValue(1);
+           // contactFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+            
+            documents_grid = wizardPnl.down('previewproductDocUploadsGrid');
+            documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+            documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+            documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+            documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);
+            //end 
+            
+        if (application_id) {
+            
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'premiseregistration/prepareNewPremiseRegionalEvaluationStage',
+                params: {
+                    application_id: application_id,
+                    application_code: application_code,
+                    table_name: 'tra_premises_applications'
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results,
+                        applicantDetails = resp.applicant_details,
+                        premiseDetails = resp.premise_details,
+                        inspectionDetails = resp.inspection_details;
+                        previousinspectionDetails = resp.previous_inspection_details;
+                        //contactDetails = resp.contact_details;
+                    if (success == true || success === true) {
+                        var module_id = results.module_id;
+                        activeTab.down('hiddenfield[name=premise_id]').setValue(results.premise_id);
+                        activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
+                        
+                       
+
+                        if (applicantDetails) {
+                            var model1 = Ext.create('Ext.data.Model', applicantDetails);
+                            applicantFrm.loadRecord(model1);
+                        }
+                        if (premiseDetails) {
+                            var model2 = Ext.create('Ext.data.Model', premiseDetails);
+                            premiseFrm.loadRecord(model2);
+                        }
+                       
+                        if(inspectionDetails){
+                            var model4 = Ext.create('Ext.data.Model', inspectionDetails);
+                            inspection_frm = activeTab.down('premiseinspectionrecommfrm');
+                            inspection_frm.loadRecord(model4);
+                            inspection_frm.down('combo[name=recommendation_id]').setFieldLabel('Regional Inspector Recommendation');
+                            activeTab.down('button[name=btn_print_inspection_report]').setVisible(true);
+                        }
+
+                        if(!inspectionDetails){
+                            var model5 = Ext.create('Ext.data.Model', previousinspectionDetails);
+                            inspection_frm = activeTab.down('premiseinspectionrecommfrm');
+                            inspection_frm.down('combo[name=recommendation_id]').setFieldLabel('Regional Inspector Recommendation');
+                            inspection_frm.loadRecord(model5);
+                        }
+
+                       
+                        
+                        var docTypesStr = activeTab.down('combo[name=applicable_documents]').getStore();
+                        docTypesStr.removeAll();
+                        docTypesStr.load({
+                            params: {
+                                section_id: section_id,
+                                module_id: module_id,
+                                sub_module_id: sub_module_id,
+                                workflow_stage: workflow_stage_id
+                            }
+                        });
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+    },
+
+
+    preparePremiseLeadInspection: function () {
+
+
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            wizardPnl = activeTab.down('premiseappmoredetailswizard');
+            var applicantFrm = wizardPnl.down('applicantdetailsfrm'),
+            premiseFrm = wizardPnl.down('premisedetailsfrm'),
+          
+            isReadOnly = 1,
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+           // app_check_types_store = activeTab.down('combo[name=applicable_checklist]').store,
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+            activeTab.down('button[name=preview_report_btn]').setHidden(false);
+            activeTab.down('button[name=regional_inspector_report_btn]').setHidden(false);
+            wizardPnl.down('hiddenfield[name=process_id]').setValue(process_id);
+            wizardPnl.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+            wizardPnl.down('hiddenfield[name=application_id]').setValue(application_id);
+            wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
+            wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+            applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+            
+            if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+                wizardPnl.down('button[name=updatepremisesapplications]').setVisible(false);
+            }
+
+            if(sub_module_id==89 || sub_module_id==89){
+            premiseFrm.down('#director_fieldset').setVisible(false);
+           }
+
+            if(activeTab.down('combo[name=applicable_checklist]')){
+            var checklistTypesGrid = activeTab.down('combo[name=applicable_checklist]'),
+              checklistTypesStr = checklistTypesGrid.getStore();
+              checklistTypesStr.removeAll();
+              checklistTypesStr.load({params: {module_id: module_id, sub_module_id: sub_module_id, section_id: section_id}});
+            }
+            wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
+            wizardPnl.down('combo[name=application_region_id]').setReadOnly(true);
+            
+            premiseFrm.down('hiddenfield[name=isReadOnly]').setValue(1);
+           // contactFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+            
+            documents_grid = wizardPnl.down('previewproductDocUploadsGrid');
+            documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+            documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+            documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+            documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);
+            //end 
+            
+        if (application_id) {
+            
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'premiseregistration/prepareNewPremiseLeadEvaluationStage',
+                params: {
+                    application_id: application_id,
+                    application_code: application_code,
+                    table_name: 'tra_premises_applications'
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results,
+                        applicantDetails = resp.applicant_details,
+                        premiseDetails = resp.premise_details,
+                        inspectionDetails = resp.inspection_details;
+                        previousinspectionDetails = resp.previous_inspection_details;
+                        //contactDetails = resp.contact_details;
+                    if (success == true || success === true) {
+                        var module_id = results.module_id;
+                        activeTab.down('hiddenfield[name=premise_id]').setValue(results.premise_id);
+                        activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
+                        
+                       
+
+                        if (applicantDetails) {
+                            var model1 = Ext.create('Ext.data.Model', applicantDetails);
+                            applicantFrm.loadRecord(model1);
+                        }
+                        if (premiseDetails) {
+                            var model2 = Ext.create('Ext.data.Model', premiseDetails);
+                            premiseFrm.loadRecord(model2);
+                        }
+                       
+                        if(inspectionDetails){
+                            var model4 = Ext.create('Ext.data.Model', inspectionDetails);
+                            inspection_frm = activeTab.down('premiseinspectionrecommfrm');
+                            inspection_frm.loadRecord(model4);
+                            inspection_frm.down('combo[name=recommendation_id]').setFieldLabel('Chief Regional Inspector Recommendation');
+                            activeTab.down('button[name=btn_print_inspection_report]').setVisible(true);
+                        }
+
+                        if(!inspectionDetails){
+                            var model5 = Ext.create('Ext.data.Model', previousinspectionDetails);
+                            inspection_frm = activeTab.down('premiseinspectionrecommfrm');
+                            inspection_frm.down('combo[name=recommendation_id]').setFieldLabel('Chief Regional Inspector Recommendation');
+                            inspection_frm.loadRecord(model5);
+                        }
+
+                       
+                        
+                        var docTypesStr = activeTab.down('combo[name=applicable_documents]').getStore();
+                        docTypesStr.removeAll();
+                        docTypesStr.load({
+                            params: {
+                                section_id: section_id,
+                                module_id: module_id,
+                                sub_module_id: sub_module_id,
+                                workflow_stage: workflow_stage_id
+                            }
+                        });
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+    },
+    
     prepareNewPremiseManagerEvaluation: function () {
         Ext.getBody().mask('Please wait...');
         var me = this,
@@ -2067,8 +2563,8 @@ previewPremisesOnlineApplication: function (view, record) {
             premiseFrm = wizardPnl.down('premisedetailsfrm'),
             contactFrm = wizardPnl.down('premisecontactpersonfrm'),
             personnelGrid = wizardPnl.down('premisepersonneldetailsgrid'),
-            otherDetailsGrid = wizardPnl.down('premiseotherdetailswingrid'); 
-            isReadOnly = 0;
+            otherDetailsGrid = wizardPnl.down('premiseotherdetailswingrid'), 
+            isReadOnly = 0,
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
            // app_check_types_store = activeTab.down('combo[name=applicable_checklist]').store,
@@ -2088,6 +2584,7 @@ previewPremisesOnlineApplication: function (view, record) {
             wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
             wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
             wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 wizardPnl.down('button[name=save_btn]').setVisible(false);
             }
@@ -3209,16 +3706,16 @@ previewPremisesOnlineApplication: function (view, record) {
         } else {
             premiseForm = activeTab.down('premisedetailsfrm');
             applicantForm = activeTab.down('applicantdetailsfrm');
-            contactPersonFrm = activeTab.down('premisecontactpersonfrm');
+            // contactPersonFrm = activeTab.down('premisecontactpersonfrm');
         }
         if (module_id == 3 || module_id === 3) {//GMP
             premiseForm.loadRecord(record);
         } else {
             premiseForm.loadRecord(record);
             applicantForm.loadRecord(record);
-            activeTab.down('premiseotherdetailsgrid').getStore().load();
+            activeTab.down('premisedirectorsdetailsgrid').getStore().load();
             activeTab.down('premisepersonneldetailsgrid').getStore().load();
-            me.getPremiseContactPersonDetails(premise_id, contactPersonFrm);
+            activeTab.down('premisenearestpremisegrid').getStore().load();
         }
         Ext.Function.defer(function () {
             mask.hide();
@@ -3247,6 +3744,7 @@ previewPremisesOnlineApplication: function (view, record) {
         mask.show();
         
             premiseForm = activeTab.down('drugshopdetailsfrm');
+            premiseForm.down('hiddenfield[name=isReadOnly]').setValue(1);
             applicantForm = activeTab.down('applicantdetailsfrm');
             premiseForm.loadRecord(record);
             applicantForm.loadRecord(record);
@@ -3255,6 +3753,41 @@ previewPremisesOnlineApplication: function (view, record) {
             activeTab.down('drugshopotherlicensesdetailsgrid').getStore().load();
     
         Ext.Function.defer(function () {
+            mask.hide();
+            win.close();
+        }, 200);
+    },
+
+
+     onPreInspectionPremiseSelectionListDblClick: function (view, record, item, index, e, eOpts) {
+        
+        var me = this,
+            grid = view.grid,
+            premise_id = record.get('premise_id'),
+            win = grid.up('window'),
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            premiseForm,
+            applicantForm,
+            contactPersonFrm,
+            mask = new Ext.LoadMask({
+                msg: 'Please wait...',
+                target: win
+            });
+        mask.show();
+        
+            premiseForm = activeTab.down('premisedetailsfrm');
+            premiseForm.down('hiddenfield[name=isReadOnly]').setValue(1);
+            applicantForm = activeTab.down('applicantdetailsfrm');
+            premiseForm.loadRecord(record);
+            applicantForm.loadRecord(record);
+            activeTab.down('premisedirectorsdetailsgrid').getStore().load();
+            activeTab.down('premisepersonneldetailsgrid').getStore().load();
+            activeTab.down('premisenearestpremisegrid').getStore().load();
+    
+          Ext.Function.defer(function () {
             mask.hide();
             win.close();
         }, 200);
@@ -3382,6 +3915,31 @@ previewPremisesOnlineApplication: function (view, record) {
         }
     },
 
+    showNewLicenseReceivingApplicationSubmissionWin: function (btn) {
+        Ext.getBody().mask('Please wait...');
+        var mainTabPanel = this.getMainTabPanel(),
+            winWidth = btn.winWidth,
+            activeTab = mainTabPanel.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            hasQueries = checkApplicationRaisedQueries(application_code, module_id),
+            valid = this.validateNewPremiseLicenseReceivingSubmission(btn),
+            storeID = getApplicationStore(module_id, section_id),
+            table_name = getApplicationTable(module_id),
+            extraParams = [{
+                field_type: 'hiddenfield',
+                field_name: 'has_queries',
+                value: hasQueries
+            }];
+        if (valid == true || valid === true) {
+            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsreceivingfrm', winWidth, storeID, extraParams);//workflowsubmissionsfrm
+        } else {
+            Ext.getBody().unmask();
+        }
+    },
+
     validateNewPremiseReceivingSubmission: function (btn) {
         var mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
@@ -3403,6 +3961,37 @@ previewPremisesOnlineApplication: function (view, record) {
             return false;
         }
         this.savePremiseNewReceivingBaseDetails(btn);
+      /*  if (screeningGrid.getStore().getModifiedRecords().length > 0) {
+            toastr.warning('There are unsaved screening data!!', 'Warning Response');
+            return false;
+        }
+        */
+        return true;
+    },
+
+
+    validateNewPremiseLicenseReceivingSubmission: function (btn) {
+        var mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            applicantFrm = activeTab.down('applicantdetailsfrm'),
+            applicant_id = applicantFrm.down('hiddenfield[name=applicant_id]').getValue(),
+            premiseFrm = activeTab.down('premisedetailsfrm'),
+
+         //   screeningGrid = activeTab.down('productscreeninggrid'),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue();
+        if (!application_id) {
+            toastr.warning('Please Save Application Details!!', 'Warning Response');
+            return false;
+        }
+        if (!applicant_id) {
+            toastr.warning('Please Select Applicant!!', 'Warning Response');
+            return false;
+        }
+        if (!premiseFrm.isValid()) {
+            toastr.warning('Please Enter All the required Premise Details!!', 'Warning Response');
+            return false;
+        }
+        this.saveNewPremiseLicenseReceivingBaseDetails(btn);
       /*  if (screeningGrid.getStore().getModifiedRecords().length > 0) {
             toastr.warning('There are unsaved screening data!!', 'Warning Response');
             return false;
@@ -3740,6 +4329,9 @@ previewPremisesOnlineApplication: function (view, record) {
             activeTab = mainTabPanel.getActiveTab(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            report_type_id = activeTab.down('hiddenfield[name=report_type_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             hasQueries = checkApplicationRaisedQueries(application_code, module_id),
@@ -3752,8 +4344,7 @@ previewPremisesOnlineApplication: function (view, record) {
                 value: hasQueries
             }];
         if(btn.isInspectionSubmit == 1){
-            var pnl = btn.up('panel'),
-                grid = pnl.down('premisescreeninggrid')
+                grid = activeTab.down('premiseinspectionscreeninggrid')
                 store = grid.getStore();
                  for (var i = 0; i < store.data.items.length; i++) {
                     var record = store.data.items[i];
@@ -3763,8 +4354,29 @@ previewPremisesOnlineApplication: function (view, record) {
                         Ext.getBody().unmask();
                         return false;
                     }
+          }
+
         }
-        }
+
+        checklist_category_id = 3;
+            if(activeTab.down('combo[name=applicable_checklist]') ){
+                checklist_category_id = activeTab.down('combo[name=applicable_checklist]').getValue();
+            }
+           
+            hasEvalUploadChecklist = checkApplicationChecklistUploadDetails(application_code, module_id,sub_module_id,section_id,checklist_category_id,workflow_stage_id);
+            if(!hasEvalUploadChecklist){
+                toastr.warning('Fill in the Evaluation checklist details(for checklist based inspection) to proceed!!', 'Warning Response');
+                Ext.getBody().unmask();
+                return false;
+               
+            }
+
+        var  validate_insprecom = validateInspectionReportSubmisson(application_code,report_type_id);
+            if(!validate_insprecom){
+                Ext.getBody().unmask();
+                toastr.warning('Please fill inspection Report!!', 'Warning Response');
+                return false;
+            }
         if (valid == true || valid === true) {
             showRecommendationWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsstrictrecommfrm', winWidth, storeID, 1, extraParams);
         } else {
@@ -4543,6 +5155,96 @@ previewPremisesOnlineApplication: function (view, record) {
         }
     },
 
+
+    saveNewPremiseLicenseReceivingBaseDetails: function (btn) {
+        var me = this,
+            toaster = btn.toaster,
+            wizardPnl = btn.up('panel'),
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            zone_id = wizardPnl.down('combo[name=zone_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            applicantDetailsForm = activeTab.down('applicantdetailsfrm'),
+            applicant_id = applicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue();
+            premiseDetailsForm = activeTab.down('premisedetailsfrm');
+            if (premiseDetailsForm) {
+             premiseDetailsForm = activeTab.down('premisedetailsfrm');   
+            }else{
+            premiseDetailsForm =  activeTab.down('premisesinspectiondetailsfrm');   
+            }
+            premiseDetailsFrm = premiseDetailsForm.getForm();
+            
+        if (!applicant_id) {
+            toastr.warning('Please select applicant!!', 'Warning Response');
+            return false;
+        }
+
+        //  if (!zone_id) {
+        //     toastr.warning('Please select  Processing zone!!', 'Warning Response');
+        //     return false;
+        // }
+        if (premiseDetailsFrm.isValid()) {
+         
+            premiseDetailsFrm.submit({
+                url: 'premiseregistration/saveNewLicenseReceivingBaseDetails',
+                waitMsg: 'Please wait...',
+                params: {
+                    process_id: process_id,
+                    workflow_stage_id: workflow_stage_id,
+                    application_id: application_id,
+                    applicant_id: applicant_id,
+                    module_id: module_id,
+                    sub_module_id: sub_module_id,
+                    section_id: section_id,
+                    zone_id:zone_id
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token,
+                    'X-CSRF-Token': token
+                },
+                success: function (frm, action) {
+                    var resp = action.result,
+                        message = resp.message,
+                        success = resp.success,
+                        record_id = resp.record_id,
+                        tracking_no = resp.tracking_no,
+                        ref_no= resp.ref_no,
+                        application_code = resp.application_code,
+                        premise_id = resp.premise_id;
+                    if (success == true || success === true) {
+                        if (toaster == 1 || toaster === 1) {
+                            toastr.success(message, "Success Response");
+                            activeTab.down('hiddenfield[name=active_application_id]').setValue(record_id);
+                            activeTab.down('hiddenfield[name=active_application_code]').setValue(application_code);
+                            premiseDetailsForm.down('hiddenfield[name=premise_id]').setValue(premise_id);
+                            activeTab.down('displayfield[name=tracking_no]').setValue(tracking_no);
+                            activeTab.down('displayfield[name=reference_no]').setValue(ref_no);
+                            activeTab.down('button[name=search_PreInspection_Premise]').setVisible(false);
+                        }
+                    } else {
+                        toastr.error(message, "Failure Response");
+                        closeActiveWindow();
+                    }
+                },
+                failure: function (frm, action) {
+                    var resp = action.result,
+                        message = resp.message;
+                    toastr.error(message, "Failure Response");
+                    closeActiveWindow();
+                }
+            });
+        } else {
+            toastr.warning('Please fill all the required fields!!', 'Warning Response');
+            return false;
+        }
+    },
+
+
     savePremiseRenewalReceivingBaseDetails: function (btn) {
         var me = this,
             toaster = btn.toaster,
@@ -4866,8 +5568,10 @@ previewPremisesOnlineApplication: function (view, record) {
             wizardPnl = Ext.widget('premiseappmoredetailswizard'),
             applicantFrm = wizardPnl.down('applicantdetailsfrm'),
             premiseFrm = wizardPnl.down('premisedetailsfrm'),
-            contactFrm = wizardPnl.down('premisecontactpersonfrm'),
+            // contactFrm = wizardPnl.down('premisecontactpersonfrm'),
             personnelGrid = wizardPnl.down('premisepersonneldetailsgrid'),
+            premisedirectorsdetailsgrid = wizardPnl.down('premisedirectorsdetailsgrid'),
+            premisenearestpremisegrid = wizardPnl.down('premisenearestpremisegrid'),
             otherDetailsGrid = wizardPnl.down('premiseotherdetailswingrid');
         wizardPnl.setHeight(500);
         applicantFrm.down('button[action=link_applicant]').setDisabled(true);
@@ -4883,9 +5587,17 @@ previewPremisesOnlineApplication: function (view, record) {
         wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
         wizardPnl.down('combo[name=application_region_id]').setReadOnly(true);
         personnelGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        premisedirectorsdetailsgrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        premisenearestpremisegrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         //otherDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+         if(sub_module_id==89 || sub_module_id==89){
+          premiseFrm.down('hiddenfield[name=isPreInspection]').setValue(1);
+        }
+
         premiseFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
-        contactFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        //contactFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        premisedirectorsdetailsgrid.setIsWin(1);
+        premisenearestpremisegrid.setIsWin(1);
         personnelGrid.setIsWin(1);
         Ext.Ajax.request({
             method: 'GET',
@@ -4915,10 +5627,7 @@ previewPremisesOnlineApplication: function (view, record) {
                         var model2 = Ext.create('Ext.data.Model', premiseDetails);
                         premiseFrm.loadRecord(model2);
                     }
-                    if (contactDetails) {
-                        var model3 = Ext.create('Ext.data.Model', contactDetails);
-                        contactFrm.loadRecord(model3);
-                    }
+                   
                     funcShowCustomizableWindow('Preview Premises Details'+ref_no, '85%', wizardPnl, 'customizablewindow');
                     if (sub_module_id == 2 || sub_module_id === 2) {
                         if (isReadOnly < 1) {
@@ -4940,7 +5649,7 @@ previewPremisesOnlineApplication: function (view, record) {
                     queries_panel.down('hiddenfield[name=section_id]').setValue(section_id);
                     
                    // documents_grid = Ext.widget('previewproductDocUploadsGrid');
-                   wizardPnl.add({xtype:'previewproductDocUploadsGrid',title: 'Application Uploaded Documents (All)'});
+                   //wizardPnl.add({xtype:'previewproductDocUploadsGrid',title: 'Application Uploaded Documents (All)'});
 
 
                     documents_grid = wizardPnl.down('previewproductDocUploadsGrid');
@@ -6391,6 +7100,7 @@ previewPremisesOnlineApplication: function (view, record) {
                         success = resp.success,
                         record_id = resp.record_id,
                         tracking_no = resp.tracking_no,
+                        ref_no= resp.ref_no,
                         application_code = resp.application_code,
                         premise_id = resp.premise_id;
                     if (success == true || success === true) {
@@ -6400,6 +7110,9 @@ previewPremisesOnlineApplication: function (view, record) {
                             activeTab.down('hiddenfield[name=active_application_code]').setValue(application_code);
                             premiseDetailsForm.down('hiddenfield[name=premise_id]').setValue(premise_id);
                             activeTab.down('displayfield[name=tracking_no]').setValue(tracking_no);
+                            activeTab.down('displayfield[name=reference_no]').setValue(ref_no);
+                            activeTab.down('button[name=search_PreInspection_Premise]').setVisible(false);
+
                         }
                     } else {
                         toastr.error(message, "Failure Response");
@@ -6442,8 +7155,9 @@ previewPremisesOnlineApplication: function (view, record) {
             app_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+            applicantFrm.down('button[action=link_applicant]').setDisabled(true);  
 
-           // activeTab.down('button[action=searchPreInspectionDrugShop]').setVisible(false);
+           //activeTab.down('button[name=search_PreInspection_Premise]').setVisible(false);
 
          
         if (app_status_id == 8 || app_status_id === 8) {//manager raise query
@@ -6716,6 +7430,121 @@ previewPremisesOnlineApplication: function (view, record) {
         return true;
     },
 
+     showPreDrugShopApplicationMoreDetails: function (btn) {
+        var isReadOnly = btn.isReadOnly,
+            is_temporal = btn.is_temporal,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            premise_id = activeTab.down('hiddenfield[name=premise_id]').getValue(),
+            applicant_id = activeTab.down('hiddenfield[name=applicant_id]').getValue(),
+            ref_no = activeTab.down('displayfield[name=reference_no]').getValue(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+        this.showPreDrugShopApplicationMoreDetailsGeneric(application_code,application_id, premise_id, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly);
+    },
+   
+    showPreDrugShopApplicationMoreDetailsGeneric: function (application_code,application_id, premise_id, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly) {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            wizardPnl = Ext.widget('predrugshopappmoredetailswizard'),
+            applicantFrm = wizardPnl.down('applicantdetailsfrm'),
+            premiseFrm = wizardPnl.down('preinspectiondrugshopdetailsfrm');
+            //contactFrm = wizardPnl.down('premisecontactpersonfrm'),
+           // personnelGrid = wizardPnl.down('premisepersonneldetailsgrid'),
+           //otherDetailsGrid = wizardPnl.down('premiseotherdetailswingrid');
+        wizardPnl.setHeight(500);
+        applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+        wizardPnl.down('hiddenfield[name=process_id]').setValue(process_id);
+        wizardPnl.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+        wizardPnl.down('hiddenfield[name=application_id]').setValue(application_id);
+        wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
+        wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+        wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+        if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+           // wizardPnl.down('button[name=save_btn]').setVisible(false);
+        }
+        wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
+        wizardPnl.down('combo[name=application_region_id]').setReadOnly(true);
+        //personnelGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        //otherDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        premiseFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+
+        //personnelGrid.setIsWin(1);
+        Ext.Ajax.request({
+            method: 'GET',
+            url: 'premiseregistration/getPremApplicationMoreDetails',
+            params: {
+                application_id: application_id,
+                premise_id: premise_id,
+                applicant_id: applicant_id
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            success: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    success = resp.success,
+                    message = resp.message,
+                    applicantDetails = resp.applicant_details,
+                    premiseDetails = resp.premise_details;
+                    //contactDetails = resp.contact_details;
+                if (success == true || success === true) {
+                    if (applicantDetails) {
+                        var model1 = Ext.create('Ext.data.Model', applicantDetails);
+                        applicantFrm.loadRecord(model1);
+                    }
+                    if (premiseDetails) {
+                        var model2 = Ext.create('Ext.data.Model', premiseDetails);
+                        premiseFrm.loadRecord(model2);
+                    }
+                    
+                    funcShowCustomizableWindow('Preview Premises Details'+ref_no, '85%', wizardPnl, 'customizablewindow');
+                   
+                    //add new panels 
+                    //add the queries and documents and then set the details 
+                    wizardPnl.add({xtype:'applicationqueriesgrid',title: 'Request for Additional Information(Queries)'});
+                    queries_panel = wizardPnl.down('applicationqueriesgrid');
+                    queries_panel.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+                    queries_panel.down('hiddenfield[name=application_code]').setValue(application_code);
+                    queries_panel.down('hiddenfield[name=module_id]').setValue(module_id);
+                    queries_panel.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    queries_panel.down('hiddenfield[name=section_id]').setValue(section_id);
+                    
+                   // documents_grid = Ext.widget('previewproductDocUploadsGrid');
+                  // wizardPnl.add({xtype:'previewproductDocUploadsGrid',title: 'Application Uploaded Documents (All)'});
+
+                    documents_grid = wizardPnl.down('previewproductDocUploadsGrid');
+                    documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+                    documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+                    documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+                    documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);
+
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+    },
+
+
+
 
     showDrugShopApplicationMoreDetails: function (btn) {
         var isReadOnly = btn.isReadOnly,
@@ -6759,10 +7588,8 @@ previewPremisesOnlineApplication: function (view, record) {
         wizardPnl.down('combo[name=application_region_id]').setReadOnly(true);
         //personnelGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         //otherDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
-        if(sub_module_id==97 || sub_module_id==97){
-          premiseFrm.down('hiddenfield[name=isPreInspection]').setValue(1);
-        }
         premiseFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+
         //personnelGrid.setIsWin(1);
         Ext.Ajax.request({
             method: 'GET',
@@ -6863,6 +7690,7 @@ previewPremisesOnlineApplication: function (view, record) {
             wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
             wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
             wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+            applicantFrm.down('button[action=link_applicant]').setDisabled(true);
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 wizardPnl.down('button[name=save_btn]').setVisible(false);
             }
@@ -6984,14 +7812,14 @@ previewPremisesOnlineApplication: function (view, record) {
             wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
             wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
             wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+            applicantFrm.down('button[action=link_applicant]').setDisabled(true);
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 wizardPnl.down('button[name=updatedrugshopapplications]').setVisible(false);
             }
 
-           if(sub_module_id==97 || sub_module_id==97){
-            premiseFrm.down('#director_fieldset').setVisible(false);
-            ise
-           }
+           // if(sub_module_id==97 || sub_module_id==97){
+           //  premiseFrm.down('#director_fieldset').setVisible(false);
+           // }
 
             if(activeTab.down('combo[name=applicable_checklist]')){
             var checklistTypesGrid = activeTab.down('combo[name=applicable_checklist]'),
@@ -7128,13 +7956,434 @@ previewPremisesOnlineApplication: function (view, record) {
             wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
             wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
             wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+            applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+            
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 wizardPnl.down('button[name=updatedrugshopapplications]').setVisible(false);
             }
 
-            if(sub_module_id==97 || sub_module_id==97){
-            premiseFrm.down('#director_fieldset').setVisible(false);
-           }
+            if(activeTab.down('combo[name=applicable_checklist]')){
+            var checklistTypesGrid = activeTab.down('combo[name=applicable_checklist]'),
+              checklistTypesStr = checklistTypesGrid.getStore();
+              checklistTypesStr.removeAll();
+              checklistTypesStr.load({params: {module_id: module_id, sub_module_id: sub_module_id, section_id: section_id}});
+            }
+            wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
+            wizardPnl.down('combo[name=application_region_id]').setReadOnly(true);
+            
+            premiseFrm.down('hiddenfield[name=isReadOnly]').setValue(1);
+           // contactFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+            
+            documents_grid = wizardPnl.down('previewproductDocUploadsGrid');
+            documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+            documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+            documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+            documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);
+            //end 
+            
+        if (application_id) {
+            
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'premiseregistration/prepareNewPremiseRegionalEvaluationStage',
+                params: {
+                    application_id: application_id,
+                    application_code: application_code,
+                    table_name: 'tra_premises_applications'
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results,
+                        applicantDetails = resp.applicant_details,
+                        premiseDetails = resp.premise_details,
+                        inspectionDetails = resp.inspection_details;
+                        previousinspectionDetails = resp.previous_inspection_details;
+                        //contactDetails = resp.contact_details;
+                    if (success == true || success === true) {
+                        var module_id = results.module_id;
+                        activeTab.down('hiddenfield[name=premise_id]').setValue(results.premise_id);
+                        activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
+                        
+                       
+
+                        if (applicantDetails) {
+                            var model1 = Ext.create('Ext.data.Model', applicantDetails);
+                            applicantFrm.loadRecord(model1);
+                        }
+                        if (premiseDetails) {
+                            var model2 = Ext.create('Ext.data.Model', premiseDetails);
+                            premiseFrm.loadRecord(model2);
+                        }
+                       
+                        if(inspectionDetails){
+                            var model4 = Ext.create('Ext.data.Model', inspectionDetails);
+                            inspection_frm = activeTab.down('drugshopinspectionfrm');
+                            inspection_frm.loadRecord(model4);
+                            inspection_frm.down('combo[name=recommendation_id]').setFieldLabel('Regional Inspector Recommendation');
+                            activeTab.down('button[name=btn_print_inspection_report]').setVisible(true);
+                        }
+
+                        if(!inspectionDetails){
+                            var model5 = Ext.create('Ext.data.Model', previousinspectionDetails);
+                            inspection_frm = activeTab.down('drugshopinspectionfrm');
+                            inspection_frm.down('combo[name=recommendation_id]').setFieldLabel('Regional Inspector Recommendation');
+                            inspection_frm.loadRecord(model5);
+                        }
+
+                       
+                        
+                        var docTypesStr = activeTab.down('combo[name=applicable_documents]').getStore();
+                        docTypesStr.removeAll();
+                        docTypesStr.load({
+                            params: {
+                                section_id: section_id,
+                                module_id: module_id,
+                                sub_module_id: sub_module_id,
+                                workflow_stage: workflow_stage_id
+                            }
+                        });
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+    },
+
+
+    prepareDrugShopLeadInspection: function () {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            wizardPnl = activeTab.down('drugshopappmoredetailswizard');
+            var applicantFrm = wizardPnl.down('applicantdetailsfrm'),
+            premiseFrm = wizardPnl.down('drugshopdetailsfrm'),
+          
+            isReadOnly = 1,
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+           // app_check_types_store = activeTab.down('combo[name=applicable_checklist]').store,
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+            activeTab.down('button[name=preview_report_btn]').setHidden(false);
+            activeTab.down('button[name=regional_inspector_report_btn]').setHidden(false);
+            wizardPnl.down('hiddenfield[name=process_id]').setValue(process_id);
+            wizardPnl.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+            wizardPnl.down('hiddenfield[name=application_id]').setValue(application_id);
+            wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
+            wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+            applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+            if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+                wizardPnl.down('button[name=updatedrugshopapplications]').setVisible(false);
+            }
+
+
+            if(activeTab.down('combo[name=applicable_checklist]')){
+            var checklistTypesGrid = activeTab.down('combo[name=applicable_checklist]'),
+              checklistTypesStr = checklistTypesGrid.getStore();
+              checklistTypesStr.removeAll();
+              checklistTypesStr.load({params: {module_id: module_id, sub_module_id: sub_module_id, section_id: section_id}});
+            }
+            wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
+            wizardPnl.down('combo[name=application_region_id]').setReadOnly(true);
+            
+            premiseFrm.down('hiddenfield[name=isReadOnly]').setValue(1);
+           // contactFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+            
+            documents_grid = wizardPnl.down('previewproductDocUploadsGrid');
+            documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+            documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+            documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+            documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);
+            //end 
+            
+        if (application_id) {
+            
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'premiseregistration/prepareNewPremiseLeadEvaluationStage',
+                params: {
+                    application_id: application_id,
+                    application_code: application_code,
+                    table_name: 'tra_premises_applications'
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results,
+                        applicantDetails = resp.applicant_details,
+                        premiseDetails = resp.premise_details,
+                        inspectionDetails = resp.inspection_details;
+                        previousinspectionDetails = resp.previous_inspection_details;
+                        //contactDetails = resp.contact_details;
+                    if (success == true || success === true) {
+                        var module_id = results.module_id;
+                        activeTab.down('hiddenfield[name=premise_id]').setValue(results.premise_id);
+                        activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
+                        
+                       
+
+                        if (applicantDetails) {
+                            var model1 = Ext.create('Ext.data.Model', applicantDetails);
+                            applicantFrm.loadRecord(model1);
+                        }
+                        if (premiseDetails) {
+                            var model2 = Ext.create('Ext.data.Model', premiseDetails);
+                            premiseFrm.loadRecord(model2);
+                        }
+                       
+                        if(inspectionDetails){
+                            var model4 = Ext.create('Ext.data.Model', inspectionDetails);
+                            inspection_frm = activeTab.down('drugshopinspectionfrm');
+                            inspection_frm.loadRecord(model4);
+                            inspection_frm.down('combo[name=recommendation_id]').setFieldLabel('Chief Regional Inspector Recommendation');
+                            activeTab.down('button[name=btn_print_inspection_report]').setVisible(true);
+                        }
+
+                        if(!inspectionDetails){
+                            var model5 = Ext.create('Ext.data.Model', previousinspectionDetails);
+                            inspection_frm = activeTab.down('drugshopinspectionfrm');
+                            inspection_frm.down('combo[name=recommendation_id]').setFieldLabel('Chief Regional Inspector Recommendation');
+                            inspection_frm.loadRecord(model5);
+                        }
+
+                       
+                        
+                        var docTypesStr = activeTab.down('combo[name=applicable_documents]').getStore();
+                        docTypesStr.removeAll();
+                        docTypesStr.load({
+                            params: {
+                                section_id: section_id,
+                                module_id: module_id,
+                                sub_module_id: sub_module_id,
+                                workflow_stage: workflow_stage_id
+                            }
+                        });
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+    },
+
+
+    preparePreDrugShopPremiseInspection: function () {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            wizardPnl = activeTab.down('predrugshopappmoredetailswizard');
+            var applicantFrm = wizardPnl.down('applicantdetailsfrm'),
+            premiseFrm = wizardPnl.down('preinspectiondrugshopdetailsfrm'),
+          
+            isReadOnly = 1,
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+           // app_check_types_store = activeTab.down('combo[name=applicable_checklist]').store,
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+        
+            wizardPnl.down('hiddenfield[name=process_id]').setValue(process_id);
+            wizardPnl.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+            wizardPnl.down('hiddenfield[name=application_id]').setValue(application_id);
+            wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
+            wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+            applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+            if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+                wizardPnl.down('button[name=updatedrugshopapplications]').setVisible(false);
+            }
+
+            if(activeTab.down('combo[name=applicable_checklist]')){
+            var checklistTypesGrid = activeTab.down('combo[name=applicable_checklist]'),
+              checklistTypesStr = checklistTypesGrid.getStore();
+              checklistTypesStr.removeAll();
+              checklistTypesStr.load({params: {module_id: module_id, sub_module_id: sub_module_id, section_id: section_id}});
+            }
+            wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
+            wizardPnl.down('combo[name=application_region_id]').setReadOnly(true);
+            
+            premiseFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+           // contactFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+            
+            documents_grid = wizardPnl.down('previewproductDocUploadsGrid');
+            documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+            documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+            documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+            documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);
+            //end 
+            
+        if (application_id) {
+            
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'premiseregistration/prepareNewPremiseEvaluationStage',
+                params: {
+                    application_id: application_id,
+                    application_code: application_code,
+                    table_name: 'tra_premises_applications',
+
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results,
+                        applicantDetails = resp.applicant_details,
+                        premiseDetails = resp.premise_details,
+                        inspectionDetails = resp.inspection_details;
+                        //contactDetails = resp.contact_details;
+                    if (success == true || success === true) {
+                        var module_id = results.module_id;
+                        activeTab.down('hiddenfield[name=premise_id]').setValue(results.premise_id);
+                        activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
+                        
+                       
+
+                        if (applicantDetails) {
+                            var model1 = Ext.create('Ext.data.Model', applicantDetails);
+                            applicantFrm.loadRecord(model1);
+                        }
+                        if (premiseDetails) {
+
+                            var model2 = Ext.create('Ext.data.Model', premiseDetails);
+                            premiseFrm.loadRecord(model2);
+                             
+                        }
+                       
+                        if(inspectionDetails){
+                            var model4 = Ext.create('Ext.data.Model', inspectionDetails);
+                            inspection_frm = activeTab.down('drugshopinspectionfrm');
+                            inspection_frm.loadRecord(model4);
+                            activeTab.down('button[name=btn_print_inspection_report]').setVisible(true);
+                        }
+
+                        if(!inspectionDetails){
+                            var model5 = Ext.create('Ext.data.Model', premiseDetails);
+                            inspection_frm = activeTab.down('drugshopinspectionfrm');
+                            inspection_frm.loadRecord(model5);
+                        }
+
+                       
+                        
+                        var docTypesStr = activeTab.down('combo[name=applicable_documents]').getStore();
+                        docTypesStr.removeAll();
+                        docTypesStr.load({
+                            params: {
+                                section_id: section_id,
+                                module_id: module_id,
+                                sub_module_id: sub_module_id,
+                                workflow_stage: workflow_stage_id
+                            }
+                        });
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+    },
+
+
+    preparePreDrugShopRegionalInspection: function () {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            wizardPnl = activeTab.down('predrugshopappmoredetailswizard');
+            var applicantFrm = wizardPnl.down('applicantdetailsfrm'),
+            premiseFrm = wizardPnl.down('preinspectiondrugshopdetailsfrm'),
+          
+            isReadOnly = 1,
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+           // app_check_types_store = activeTab.down('combo[name=applicable_checklist]').store,
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+            activeTab.down('button[name=preview_report_btn]').setHidden(false);
+            wizardPnl.down('hiddenfield[name=process_id]').setValue(process_id);
+            wizardPnl.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+            wizardPnl.down('hiddenfield[name=application_id]').setValue(application_id);
+            wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
+            wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+            applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+            if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+                wizardPnl.down('button[name=updatedrugshopapplications]').setVisible(false);
+            }
+
 
             if(activeTab.down('combo[name=applicable_checklist]')){
             var checklistTypesGrid = activeTab.down('combo[name=applicable_checklist]'),
@@ -7244,14 +8493,17 @@ previewPremisesOnlineApplication: function (view, record) {
     },
 
 
-    prepareDrugShopLeadInspection: function () {
+
+    preparePreDrugShopLeadInspection: function () {
         Ext.getBody().mask('Please wait...');
         var me = this,
             mainTabPanel = me.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
-            wizardPnl = activeTab.down('drugshopappmoredetailswizard');
+            wizardPnl = activeTab.down('predrugshopappmoredetailswizard');
             var applicantFrm = wizardPnl.down('applicantdetailsfrm'),
-            premiseFrm = wizardPnl.down('drugshopdetailsfrm'),
+            premiseFrm = wizardPnl.down('preinspectiondrugshopdetailsfrm'),
+
+
           
             isReadOnly = 1,
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
@@ -7270,13 +8522,10 @@ previewPremisesOnlineApplication: function (view, record) {
             wizardPnl.down('hiddenfield[name=module_id]').setValue(module_id);
             wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
             wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
+            applicantFrm.down('button[action=link_applicant]').setDisabled(true);
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 wizardPnl.down('button[name=updatedrugshopapplications]').setVisible(false);
             }
-
-            if(sub_module_id==97 || sub_module_id==97){
-            premiseFrm.down('#director_fieldset').setVisible(false);
-           }
 
             if(activeTab.down('combo[name=applicable_checklist]')){
             var checklistTypesGrid = activeTab.down('combo[name=applicable_checklist]'),
@@ -7469,7 +8718,7 @@ previewPremisesOnlineApplication: function (view, record) {
      prepareNewPremiseOnlinePreview: function (pnl) {
         var me = this,
             applicantFrm = pnl.down('applicantdetailsfrm'),
-            premiseFrm = pnl.down('drugshopdetailsfrm'),
+            premiseFrm = pnl.down('premisedetailsfrm'),
             //contactPersonFrm = pnl.down('premisecontactpersonfrm'),
             //superintendentFrm = pnl.down('premisesuperintendentfrm'),
             application_id = pnl.down('hiddenfield[name=active_application_id]').getValue(),

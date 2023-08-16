@@ -20,16 +20,27 @@ Ext.define('Admin.view.premiseregistration.views.forms.PreInspectionPremiseDetai
         afterrender: function () {
             var form = this,
                 isReadOnly = form.down('hiddenfield[name=isReadOnly]').getValue();
+
+                isPreInspection = form.down('hiddenfield[name=isPreInspection]').getValue();
+
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 form.getForm().getFields().each(function (field) {
                     field.setReadOnly(true);
                 });
             }
+
+            if ((isPreInspection) && (isPreInspection == 1 || isPreInspection === 1)) {
+                form.down('#director_fieldset').setVisible(false);
+            }
         }
     },
-   items: [ {
+    items: [ {
         xtype: 'hiddenfield',
         name: 'isReadOnly'
+    },
+     {
+        xtype: 'hiddenfield',
+        name: 'isPreInspection'
     },
     {
         xtype: 'hiddenfield',
@@ -56,7 +67,8 @@ Ext.define('Admin.view.premiseregistration.views.forms.PreInspectionPremiseDetai
         xtype: 'hiddenfield',
         name: '_token',
         value: token
-    },{
+    },
+    {
             xtype:'fieldset',
             columnWidth: 1,
             title: 'Premises Details',
@@ -71,10 +83,11 @@ Ext.define('Admin.view.premiseregistration.views.forms.PreInspectionPremiseDetai
                 columnWidth: 0.33,
             },
             layout: 'column',
-            items:[  {
+            items:[
+            {
                 xtype: 'combo',
-                name: 'applicant_type_id',
-                fieldLabel: 'Application  made for?',
+                name: 'business_type_id',
+                fieldLabel: 'Business Type',
                 forceSelection: true,
                 queryMode: 'local',
                 allowBlank: false,
@@ -88,7 +101,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PreInspectionPremiseDetai
                         proxy: {
                             url: 'commonparam/getCommonParamFromTable',
                             extraParams: {
-                                table_name: 'par_premiseapplications_types'
+                                table_name: 'par_business_types'
                             }
                         }
                     },

@@ -1788,7 +1788,6 @@ $res = array('success'=>false,
             $status_id = $req->status_id;
             $trader_id = $req->trader_id;
             $remarks = $req->submission_comments;
-
             $is_fast_track = $req->is_fast_track;
             $paying_currency_id = $req->paying_currency_id;
 
@@ -1811,10 +1810,55 @@ $res = array('success'=>false,
             $records = DB::table($table_name)
                         ->where($where_state)
                         ->first();
-
             $prodclass_category_id = 0;
 
             if($records){
+
+                if ($records->module_id == 2) {
+                    if ($records->pharmacist_approvalstatus_id != 2) {
+                        $premise_id = $records->premise_id;
+                        
+                        if (recordExists('wb_pharmacists_approval', ['premise_id' => $premise_id])) {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Application awaiting Pharmacists Approval'
+                            );
+
+                            return response()->json($res);
+                        } else {
+                            $pharmacistSelected = DB::table('wb_premises as t1')
+                                ->join('wb_premises_applications as t2', 't2.premise_id', '=', 't1.id')
+                                ->select('t1.*')
+                                ->where('t2.premise_id', $premise_id)
+                                ->first();
+
+                            $selectedPharmacists = $pharmacistSelected->psu_no;
+
+                            if ($selectedPharmacists) {
+                                $params = array(
+                                    'application_status_id' => 79,
+                                );
+                                $previous_data = getPreviousRecords('wb_premises_applications', ['premise_id' => $premise_id]);
+                               updateRecord('wb_premises_applications', $previous_data, $where_state,$params, $traderemail_address);
+                                $pharmacistApprovalData = [
+                                    'application_code' => $records->application_code,
+                                    'pharmacist_id' => $selectedPharmacists,
+                                    'premise_id' => $records->premise_id
+                                ];
+
+                                insertRecord('wb_pharmacists_approval', $pharmacistApprovalData, $traderemail_address);
+
+                                $res = array(
+                                    'success' => true,
+                                    'message' => 'Application submitted for pharmacist approval.'
+                                );
+                             return response()->json($res);
+
+                            }
+                        }
+                    }   
+                }
+
                 $status_id=$records->application_status_id;
                 $module_id=$records->module_id;
                 //will change
@@ -3920,30 +3964,27 @@ $application_code = $request->application_code;
                             'country_id'=>$req->country_id,
                             'region_id'=>$req->region_id,
                             'email_address'=>$req->email_address,
-                            'postal_address'=>$req->postal_address,
-                            'telephone_no'=>$req->telephone_no,
+                            'telephone'=>$req->telephone,
                             'physical_address'=>$req->physical_address);
                     $man_data['created_on'] = Carbon::now();
                     $man_data['created_by'] = $trader_email;
                     
                     $resp = insertRecord('tra_manufacturers_information', $man_data, $trader_email,'mis_db');
-                  
+
                     $manufacturer_id = $resp['record_id']; 
+
             }
             //save the other details 
-            $man_data = array('name'=>$req->mansite_name,
-                    'country_id'=>$req->mansitecountry_id,
-                    'region_id'=>$req->mansiteregion_id,
-                    'email_address'=>$req->mansiteemail_address,
-                    'postal_address'=>$req->mansitepostal_address,
-                    'telephone_no'=>$req->mansitetelephone_no,
+            $man_data = array('name'=>$req->name,
+                    'country_id'=>$req->country_id,
+                    'region_id'=>$req->region_id,
+                    'email_address'=>$req->email_address,
+                    'telephone'=>$req->telephone,
                     'manufacturer_id'=>$manufacturer_id,
-                    'physical_address'=>$req->mansitephysical_address,
-                    'contact_person'=>$req->contact_person);
+                    'physical_address'=>$req->physical_address);
+
 
             $resp = insertRecord('par_man_sites', $man_data, $trader_email,'mis_db');
-        
-           
             if($resp['success']){
                 $man_site_id = $resp['record_id']; 
                 $record =  $this->getManufacturingSite($man_site_id);

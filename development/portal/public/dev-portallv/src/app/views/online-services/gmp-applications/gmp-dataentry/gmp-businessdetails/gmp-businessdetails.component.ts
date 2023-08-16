@@ -35,6 +35,7 @@ export class GmpBusinessdetailsComponent implements OnInit {
   @Input() isContractManufacturingPopupVisible:boolean;
   @Input() isaddNewPremisesPersonnelDetails: boolean;
   @Input() businessTypesData: any;
+  @Input() confirmDataParam: any;
   @Input() ContractManufacturingData:any;
   @Input() businessTypeDetailsData: any;
   @Input() gmpOtherDetailsfrm: FormGroup;
@@ -62,7 +63,9 @@ export class GmpBusinessdetailsComponent implements OnInit {
   addBusinessTypeDetailsfrm:FormGroup;
   addBusinessTypeDetailsMdl: boolean=false;
   isonContractGiverManufacturer:boolean = false;
+  isContractGiverManufacturer:boolean = false;
   gmp_resp:any;
+  gmpappTypeData:any;
   product_resp:any;
   region_id:number;
   country_id:number;
@@ -85,7 +88,21 @@ export class GmpBusinessdetailsComponent implements OnInit {
     });
     this.onContractManufacturingDetailsLoad();
     this.onLoadCountries();
-   
+       this.onLoadGmpAppType(this.sub_module_id);
+
+  }  
+  onLoadGmpAppType(sub_module_id) {
+    
+    var data = {
+      table_name: 'sub_modules',
+      sub_module_id:sub_module_id,
+      module_id: 3
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+         this.gmpappTypeData =  data;
+        });
   }
   onSaveProductTypeDetails(){
     this.addBusinessTypeDetailsfrm.get('tablename').setValue('par_business_type_details')
@@ -304,16 +321,29 @@ export class GmpBusinessdetailsComponent implements OnInit {
           return false
         });
   }
-
-  onContractGiverManufacturer($event) {
+  ContractGiverManufacturer($event) {
 
   if($event.value == 1 || $event.value == 2 ){
+      this.isContractGiverManufacturer = true;
+  }
+  else{
+    this.isContractGiverManufacturer = false;
+    this.isonContractGiverManufacturer = false;
+
+  }
+}
+  onContractGiverManufacturer($event) {
+
+  if($event.value == 1){
       this.isonContractGiverManufacturer = true;
   }
   else{
     this.isonContractGiverManufacturer = false;
+    alert('Submission of the information of the Registered/Approved Contract Facility is Mandatory on Contract Giver or Acceptor.  application will not be received until all manufacturing parties have applied for an inspection');
+
+
   }
-}
+}   
 
     onContractManufacturingDetailsLoad() {
     var data = {

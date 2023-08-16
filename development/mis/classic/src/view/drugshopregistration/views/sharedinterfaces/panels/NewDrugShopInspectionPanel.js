@@ -66,7 +66,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.NewDru
                 },
                 {
                     xtype: 'button',
-                    text: "Raise/View Query & Responses",
+                    text: "Raise/View CAPA/Query & Responses",
                     tooltip: 'Raise Query/View Query(Request for Information) and query Responses',
                     ui: 'soft-red',
                     handler: 'showAddApplicationUnstrcuturedQueries',
@@ -75,6 +75,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.NewDru
                     text: 'Preview/Add CAPA Request',
                     iconCls: 'x-fa fa-cubes',
                     ui: 'soft-blue',
+                    hidden:true,
                     handler: 'showPremisesInspectionCAPApplicationQueries'
                 },
                 {
@@ -100,7 +101,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.NewDru
                 },
 
                 {
-                    text: 'View Inspectors Report',
+                    text: 'View DID Report',
                     ui: 'soft-green',
                     iconCls: 'fa fa-eye',
                     childXtype: 'drugshopinspectiondetailstabpnl',
@@ -113,7 +114,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.NewDru
                     hidden: true
                 },
                 {
-                    text: 'View Regional Inspectors Report',
+                    text: 'View RID Report',
                     ui: 'soft-red',
                     iconCls: 'fa fa-eye',
                     childXtype: 'drugshopinspectiondetailstabpnl',

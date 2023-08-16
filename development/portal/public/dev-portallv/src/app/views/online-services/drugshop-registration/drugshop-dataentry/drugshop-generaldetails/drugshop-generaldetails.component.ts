@@ -104,7 +104,6 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
     this.onLoadSections();
     this.onLoadBusinessTypesLoad();
     this.onLoadapplicantTypesLoad();
-    this.onLoadTelephoneNos();
     this.onLoadQualificationDetails();
     this.is_readonly = false;
     if(this.sub_module_id != 1){
@@ -202,17 +201,7 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
 
   }
 
-  onLoadTelephoneNos() {
 
-    this.appService.onLoadTelephoneNos()
-      .subscribe(
-        data => {
-          this.telephoneData = data;
-        },
-        error => {
-          return false
-        });
-  }
 
    onLoadSections() {
     var data = {
@@ -506,21 +495,31 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
     
 
   }
-
-
   onLoadBusinessTypesLoad() {
-    var data = {
-      table_name: 'par_business_types',
-    };
-    this.config.onLoadConfigurationData(data)
+    this.appService.onLoadBusinessTypesLoad()
       .subscribe(
-        data => {
-          this.businessTypesData = data;
+        data_response => {
+          this.businessTypesData = data_response.data;
         },
         error => {
           return false
         });
+
   }
+
+  // onLoadBusinessTypesLoad(business_type_id) {
+  //   var data = {
+  //     table_name: 'par_business_types',
+  //   };
+  //   this.config.onLoadConfigurationData(data)
+  //     .subscribe(
+  //       data => {
+  //         this.businessTypesData = data;
+  //       },
+  //       error => {
+  //         return false
+  //       });
+  // }
  
 
   onLoadapplicantTypesLoad() {
@@ -637,25 +636,6 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
         return window.innerWidth * percentage_width/100;
       }
 
-    onSaveNewTelephone() {
-   
-    this.appService.onSaveTelephoneDetails(this.addTelephonefrm.value)
-      .subscribe(
-        response => {
-          this.app_resp = response.json();
-          if (this.app_resp.success) {
-            this.toastr.success(this.app_resp.message, 'Response');
-            this.addTelephoneModal = false;
-            this.onLoadTelephoneNos();
-
-          } else {
-            this.toastr.error(this.app_resp.message, 'Alert');
-          }
-        },
-        error => {
-              this.toastr.error('Error Occurred', 'Alert');
-        });
-  }
   
 }
 

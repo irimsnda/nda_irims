@@ -10,13 +10,21 @@ Ext.define('Admin.view.premiseregistration.views.panels.PremiseDetailsWinTabPnl'
         {
             title: 'Main Details',
             xtype: 'premisedetailsfrm'
+        },{
+            title: 'Directors Details',
+            xtype: 'premisedirectorsdetailsgrid'
         },
         {
-            title: 'Personnel Details',
-            xtype: 'premisepersonneltabpnl'//'premisepersonneldetailswingrid'
+            title: 'Staff Details',
+            xtype: 'premisepersonneldetailsgrid'
+        },
+         {
+            title: 'Particulars of Nearest Pharmancy',
+            xtype: 'premisenearestpremisegrid'
         },
         {
             title: 'Premises Main Activities/Product Types',
+            hidden: true,
             xtype: 'premiseotherdetailswingrid'
         },{
             xtype:'previewproductDocUploadsGrid',

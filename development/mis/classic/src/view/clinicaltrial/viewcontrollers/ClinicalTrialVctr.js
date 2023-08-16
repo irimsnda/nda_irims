@@ -2348,10 +2348,10 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             win = form.up('window'),
             tabPnl=form.up('panel'),
             wizardPnl=tabPnl.up('panel'),
-            storeID = btn.storeId,
+            //storeID = btn.storeId,
             application_code = wizardPnl.down('hiddenfield[name=active_application_code]').getValue(),
             report_type_id = wizardPnl.down('hiddenfield[name=report_type_id]').getValue(),
-            store = Ext.getStore(storeID),
+           // store = Ext.getStore(storeID),
             frm = form.getForm();
         if (frm.isValid()) {
             frm.submit({
@@ -2374,10 +2374,10 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
                     if (success == true || success === true) {
                         toastr.success(message, "Success Response");
                        
-                            store.removeAll();
-                            store.load();
+                            // store.removeAll();
+                            // store.load();
                             //close the window
-                            win.close();
+                            //win.close();
                     } else {
                         toastr.error(message, 'Failure Response');
                     }

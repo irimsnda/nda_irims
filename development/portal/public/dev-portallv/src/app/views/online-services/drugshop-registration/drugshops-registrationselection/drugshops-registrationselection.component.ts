@@ -37,7 +37,6 @@ export class DrugshopsRegistrationselectionComponent implements OnInit {
 
     this.premisesapp_details = this.appService.getPremisesApplicationDetail();
 
-    console.log( this.premisesapp_details);
     if (!this.premisesapp_details) {
       this.router.navigate(['./../online-services/premisesrenewal-dashboard']);
       return;

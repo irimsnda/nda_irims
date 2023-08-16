@@ -597,10 +597,14 @@ public function saveCtrSaeReportingApplication(Request $req){
             $timespan_defination = getSingleRecordColValue('clinical_trial_duration_desc', array('id' => $duration_desc), 'name','mis_db');
                                 
             $study_end_date = date('Y-m-d', strtotime($req->study_start_date. " + $study_duration  $timespan_defination"));
-            
+            $meeting_time = $req->meeting_time;
+
+            $formattedMeetingTime = date("H:i", strtotime($meeting_time));
+
                         /** Already Saved */ 
                         $app_data = array(
-							'study_title' => $req->study_title,
+
+                            'study_title' => $req->study_title,
 							'protocol_no' => $req->protocol_no,
 							'primary_endpoints' => $req->primary_endpoints,
 							'secondary_endpoints' => $req->secondary_endpoints,
@@ -610,9 +614,10 @@ public function saveCtrSaeReportingApplication(Request $req){
                             'other_objective'=>$req->other_objective,
 							 'date_of_protocol'=>formatDate($req->date_of_protocol),
 							'study_start_date'=>formatDate($req->study_start_date),
-							'meeting_time'=>formatDate($req->meeting_time),	
+							'meeting_date'=>formatDate($req->meeting_date), 
                             'brief_description'=>$req->brief_description, 
                             'uncst_no'=>$req->uncst_no,
+                            'meeting_time' => $formattedMeetingTime,  
                             'first_final_duration'=>$req->first_final_duration,
                             'duration_stimate'=>$req->duration_stimate,
                             'meeting_type_id'=>$req->meeting_type_id, 
@@ -649,11 +654,15 @@ public function saveCtrSaeReportingApplication(Request $req){
                             'enrolled_uganda_no' => $req->enrolled_uganda_no,
                             'sites_no' => $req->sites_no,
 							'zone_id' => $req->zone_id,
+                            'clinicalin_othercountries_sites' => $req->clinicalin_othercountries_sites,
+                            'clinicalin_otheruganda_sites' => $req->clinicalin_otheruganda_sites,
 							'clincialtrialfields_type_id' => $req->clincialtrialfields_type_id,
 							'clincialtrialfunding_source_id' => $req->clincialtrialfunding_source_id,
 							'trader_id' => $trader_id,
 							'applicant_id' => $trader_id
 					   );
+
+
                         $sub_module_id = $req->sub_module_id;
                   
                         $table_name = 'wb_clinical_trial_applications';
@@ -671,10 +680,12 @@ public function saveCtrSaeReportingApplication(Request $req){
 
                                     $tracking_no = $previous_data['results'][0]['tracking_no'];
                                     $resp =   updateRecord('wb_clinical_trial_applications', $previous_data, $where_app, $app_data, $trader_email);
+
+                                   
                                    
                                    $where_app = array('application_code'=>$application_code);
 									if (!recordExists('tra_application_uploadeddocuments', $where_app,'mis_db')) {
-										initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
+										//initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
 									}
                             }
 							
@@ -726,7 +737,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                             if($resp['success']){
                                                     //create all the details
                                                   
-                                                 initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
+                                                 //initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
                                                  saveApplicationSubmissionDetails($application_code,$table_name);
                                              }
                                
@@ -1054,6 +1065,8 @@ public function saveCtrSaeReportingApplication(Request $req){
                     $records->where(array('t1.application_code'=>$application_code));
                 }
                 $records =  $records->get();
+
+
                 $data = $this->getClincialTrialAppsData($records);
                 $res =array('success'=>true,'data'=> $data);
         }
@@ -1097,6 +1110,8 @@ public function saveCtrSaeReportingApplication(Request $req){
                 $report_data = getSingleRecord('wb_clinicaltrial_otherreports', array('application_id' => $rec->application_id));
                  }
                 if($report_data){
+
+                 
 					$data[] = array('application_code'=>$rec->application_code,
                                 'module_id'=>$rec->module_id,
                                 'sub_module_id'=>$rec->sub_module_id,
@@ -1183,6 +1198,8 @@ public function saveCtrSaeReportingApplication(Request $req){
 								'phase_id'=>$rec->phase_id,
 								'status_name'=>$rec->status_name,
 								'is_fast_track'=>$rec->is_fast_track,
+                                'clinicalin_othercountries_sites' => $rec->clinicalin_othercountries_sites,
+                                'clinicalin_otheruganda_sites' => $rec->clinicalin_otheruganda_sites,
 								'clinical_trial_sponsor'=>$clinical_trial_sponsor,
 								'principal_investigator'=>$principal_investigator,
                                 'contextMenu'=>returnActionColumn($rec->application_status_id,$actionColumnData)
@@ -1274,6 +1291,8 @@ public function saveCtrSaeReportingApplication(Request $req){
 							
                         'phase_id'=>$rec->phase_id,
                         'status_name'=>$rec->status_name,
+                        'clinicalin_othercountries_sites' => $rec->clinicalin_othercountries_sites,
+                        'clinicalin_otheruganda_sites' => $rec->clinicalin_otheruganda_sites,
                         'is_fast_track'=>$rec->is_fast_track,
                         'clinical_trial_sponsor'=>$clinical_trial_sponsor,
                         'principal_investigator'=>$principal_investigator,

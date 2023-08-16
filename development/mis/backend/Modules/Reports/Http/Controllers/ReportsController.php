@@ -548,7 +548,8 @@ use ReportsTrait;
     }
 
        public function generatePremisePermit(Request $request)
-    {
+       {
+
         $application_code = $request->input('application_code');
         if(validateIsNumeric($application_code)){
             //get the section id 
@@ -561,7 +562,10 @@ use ReportsTrait;
         }
         
          $approvalGrant = DB::table('tra_approval_recommendations')->where('application_code',$application_code)->first();
+
         if(!empty($approvalGrant) && $approvalGrant->decision_id == 1){
+
+
         /*   $textBusiness = $this->getPremisesOtherDetails($premise_id,$section_id);
             $params = array(
                 'application_code' => $application_code,
@@ -574,7 +578,7 @@ use ReportsTrait;
             $report = generateJasperReport('premisePermitReport', 'permit_' . time(), 'pdf', $params);
                 return $report;
                 */
-            
+         
             PDF::setPrintHeader(false);
             PDF::setPrintFooter(false);
             PDF::AddPage();
@@ -605,6 +609,9 @@ use ReportsTrait;
                                     ->select(DB::raw("t1.reference_no, t1.premise_id,  t2.postal_address as premise_poastal_address,t2.physical_address as premise_physical_address, t4.name as premise_region_name,t5.name as premise_district_name,t7.name as premise_country, t10.expiry_date,t10.approval_date as permit_issue_date,t10.permit_no,t2.premise_reg_no,t2.name as premise_name,t6.name as applicant_name,t6.physical_address,t6.postal_address,t6.telephone_no as telephone,t6.email,t9.name as districtName,t8.name as regionName,t7.name as countryName"))
                                     ->where(array('t1.application_code'=>$application_code))
                                     ->first();
+
+
+
 
             $costs=array();
             $tot_inv=0;
@@ -638,6 +645,8 @@ use ReportsTrait;
                         $permit_issue_date = $row->permit_issue_date;
                         
                         $org_info = $this->getOrganisationInfo();
+
+                
             
                         $logo = getcwd() . '/resources/images/org-logo.jpg';
                         $permit_no= $row->permit_no;
@@ -654,21 +663,22 @@ use ReportsTrait;
                         PDF::Cell(78);
                         PDF::SetMargins(14,10,14, true);
                         PDF::SetFont('times','B',13);
-                        if($section_id ==2){
-                            PDF::SetFont('times','I',10);
+                        // if($section_id ==2){
+                        //     PDF::SetFont('times','I',10);
                                 
-                            PDF::Cell(0,4,$org_info->org_acynm.'/DMC/MCIE/P/002',0,1,'R');
-                        }elseif($section_id ==3){
-                            PDF::SetFont('times','I',10);
+                        //     PDF::Cell(0,4,$org_info->org_acynm.'/DMC/MCIE/P/002',0,1,'R');
+                        // }elseif($section_id ==3){
+                        //     PDF::SetFont('times','I',10);
                                 
-                            PDF::Cell(0,4,$org_info->org_acynm.'/DMC/MDC/P/007',0,1,'R');
-                        }else{
-                            PDF::SetFont('times','I',10);
+                        //     PDF::Cell(0,4,$org_info->org_acynm.'/DMC/MDC/P/007',0,1,'R');
+                        // }else{
+                        //     PDF::SetFont('times','I',10);
                                 
-                            PDF::Cell(0,4,$org_info->org_acynm.'/DMC/MDC/P/002',0,1,'R');
-                        }
+                        //     PDF::Cell(0,4,$org_info->org_acynm.'/DMC/MDC/P/002',0,1,'R');
+                        // }
+                        PDF::Cell(0,4,'Regulation 5 (2)',0,1,'R');
                         PDF::SetFont('times','B',12);
-                        PDF::Cell(0,5,$org_info->org_name,0,2,'C');
+                        PDF::Cell(0,5,$org_info->name,0,2,'C');
                         PDF::Image($logo,86,32,39,16);
                         PDF::SetLineWidth(0.9);
                         PDF::Rect(11,11,186,270);
@@ -686,6 +696,7 @@ use ReportsTrait;
                             ->where('t1.premise_id', $premise_id)
                             ->get();
                             $l = 1;
+
                             if($bus_records){
                                 foreach($bus_records as $rows){
                                             if($i == $l){

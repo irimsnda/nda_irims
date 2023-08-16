@@ -113,7 +113,7 @@ export class DrugshopRegDashboardComponent implements OnInit {
       business_type_id: new FormControl('', Validators.compose([Validators.required])),
       business_typecategory_id:new FormControl('',  Validators.compose([]))
     });
-    this.onBusinessTypesLoad(this.business_type_id);
+    this.onLoadBusinessTypesLoad();
     this.onLoadApplicationstatuses();
     this.onLoadSections();
     this.onLoadreasonForDismissalData();
@@ -267,7 +267,6 @@ export class DrugshopRegDashboardComponent implements OnInit {
     this.configService.onLoadConfigurationData(data)
       .subscribe(
         data => {
-          console.log(data);
           this.businessTypeDetailsData = data;
         },
         error => {
@@ -322,7 +321,7 @@ export class DrugshopRegDashboardComponent implements OnInit {
   }
   onLoadPremisesCounterDetails(sub_module_id) {
 
-    this.utilityService.onLoadApplicationCounterDetails('tra_premises_applications',sub_module_id)
+    this.utilityService.onLoadApplicationCounterDetails('wb_premises_applications',sub_module_id)
       .subscribe(
         data => {
           if (data.success) {
@@ -666,22 +665,32 @@ export class DrugshopRegDashboardComponent implements OnInit {
   //  // this. OnLoadBusinesstypeCategories($event.value);
 
   // }
-  
-  onBusinessTypesLoad(business_type_id) {
-
-    var data = {
-      table_name: 'par_business_types',
-       business_type_id:business_type_id
-    };
-    this.configService.onLoadConfigurationData(data)
+    onLoadBusinessTypesLoad() {
+    this.appService.onLoadBusinessTypesLoad()
       .subscribe(
-        data => {
-          this.businessTypesData = data;
+        data_response => {
+          this.businessTypesData = data_response.data;
         },
         error => {
           return false
         });
+
   }
+  // onBusinessTypesLoad(business_type_id) {
+
+  //   var data = {
+  //     table_name: 'par_business_types',
+  //      business_type_id:business_type_id
+  //   };
+  //   this.configService.onLoadConfigurationData(data)
+  //     .subscribe(
+  //       data => {
+  //         this.businessTypesData = data;
+  //       },
+  //       error => {
+  //         return false
+  //       });
+  // }
    
   onLoadprodProductTypeData() {
     var data = {

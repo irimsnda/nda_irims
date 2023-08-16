@@ -35,10 +35,9 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
         {
             xtype: 'textarea',
             columnWidth: 1,
-            allowBlank:true,
             readOnly:true,
             fieldLabel: 'Brief summary describing the background and objectives of trial',
-            name: 'clinicaltrial_description'
+            name: 'brief_description'
         },
         {
             xtype:'fieldcontainer',
@@ -53,12 +52,13 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
             },
             items:[{
                 xtype: 'datefield',
-                fieldLabel: 'Proposed Meeting Date',labelAlign: 'top',
+                fieldLabel: 'Proposed Meeting Date',
+                labelAlign: 'top',
                 name: 'meeting_date',
                 submitFormat: 'Y-m-d',
                 readOnly:true,
                 format: 'd/m/Y',width: '60%',
-                altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+                altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s',
                 bind: {
                     readOnly: '{isReadOnly}'  // negated
                 }
@@ -68,7 +68,6 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
                 labelAlign: 'top',
                 name: 'meeting_time',
                 format: 'H:i',
-                allowBlank:true,
                 readOnly:true,
                 altFormats:'H:i',
                 increment: 30,width: '40%',
@@ -83,7 +82,6 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
             fieldLabel: 'Meeting Type',
             queryMode: 'local',
             forceSelection: true,
-            allowBlank: true,
             readOnly:true,
             valueField: 'id',
             displayField: 'name',
@@ -213,10 +211,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
                 hidden: true,
                 submitFormat: 'Y-m-d',
                 format: 'd/m/Y',width: '60%',
-                altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
-                bind: {
-                    readOnly: '{isReadOnly}'  // negated
-                }
+                altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s'
             },{
                 xtype: 'timefield',
                 fieldLabel:'Preferred Meeting Time',
@@ -225,10 +220,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
                 name: 'preferred_meeting_time',
                 format: 'H:i',
                 altFormats:'H:i',
-                increment: 30,width: '40%',
-                bind: {
-                    readOnly: '{isReadOnly}'  // negated
-                }
+                increment: 30,width: '40%'
             }]
         },{
             xtype: 'combo',
@@ -237,7 +229,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
             queryMode: 'local',
             hidden: true,
             forceSelection: true,
-            // allowBlank: true,
+            allowBlank: false,
             valueField: 'id',
             displayField: 'name',
 
@@ -262,9 +254,14 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
                         if(newValue ==1){
                             form.down('textfield[name=preferred_meeting_venue]').setVisible(true);
                             form.down('textfield[name=preferred_meeting_invitation_details]').setVisible(false);
+                            form.down('textfield[name=preferred_meeting_venue]').allowBlank = false;
+                            form.down('textfield[name=preferred_meeting_invitation_details]').allowBlank = true;
+
                         }else{
                             form.down('textfield[name=preferred_meeting_venue]').setVisible(false);
                             form.down('textfield[name=preferred_meeting_invitation_details]').setVisible(true);
+                            form.down('textfield[name=preferred_meeting_invitation_details]').allowBlank = false;
+                            form.down('textfield[name=preferred_meeting_venue]').allowBlank = true;
                         }
 
                 }
@@ -274,20 +271,12 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
             fieldLabel: 'Preferred Meeting Venue',
             columnWidth: 0.99,
             hidden: true,
-            name: 'preferred_meeting_venue', 
-            allowBlank: true,
-            bind: {
-                readOnly: '{isReadOnly}'  // negated
-            }
+            name: 'preferred_meeting_venue'
         },{
             xtype: 'textfield',
             fieldLabel: 'Preferred Meeting Invitation Details(Copy & Paste the Meeting Invitation Details & link) ', columnWidth: 0.99,
             name: 'preferred_meeting_invitation_details', 
-             hidden: true,
-            allowBlank: true,
-            bind: {
-                readOnly: '{isReadOnly}'  // negated
-            }
+            hidden: true
         },
 
         {
@@ -307,9 +296,14 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
             name:'save_btn',
             ui: 'soft-purple',
             handler: 'doSaveEvaluationDetails',
-            storeId: ' ',
             action_url: 'clinicaltrial/saveEvaluationDetails',
             table_name: 'tra_clinicaltrrial_assessment_report',
         }
     ]
 });
+
+
+
+
+
+

@@ -97,8 +97,8 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDirectorsDetails
             fieldLabel: 'Email Address',
           }, {
                 xtype: 'combo',
-                name: 'designation_id',
-                fieldLabel: 'Designation',
+                name: 'qualification_id',
+                fieldLabel: 'Qualification',
                 forceSelection: true,
                 queryMode: 'local',
                 allowBlank: true,
@@ -112,7 +112,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDirectorsDetails
                         proxy: {
                             url: 'commonparam/getCommonParamFromTable',
                             extraParams: {
-                                table_name: 'par_personnel_positions'
+                                table_name: 'par_personnel_qualifications'
                             }
                         }
                     },
@@ -155,6 +155,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDirectorsDetails
                 fieldLabel: 'Region',
                 name: 'region_id',
                 //store: 'regionsstr',
+                hidden:true,
                 allowBlank:true,
                 forceSelection: true,
                 queryMode: 'local',
@@ -187,6 +188,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDirectorsDetails
                 name: 'district_id',
                 //store: 'districtsstr',
                 allowBlank:true,
+                hidden:true,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
@@ -204,7 +206,14 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDirectorsDetails
                     }
                     
                 }
-            }, 
+            },
+        {
+            xtype: 'textfield',
+            name: 'director_postal_address',
+            hidden:true,
+            allowBlank:true,
+            fieldLabel: 'Shares',
+        }, 
         {
             xtype: 'textfield',
             name: 'director_postal_address',

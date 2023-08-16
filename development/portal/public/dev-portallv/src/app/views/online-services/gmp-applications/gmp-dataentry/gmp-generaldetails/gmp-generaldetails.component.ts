@@ -97,6 +97,7 @@ export class GmpGeneraldetailsComponent implements OnInit {
   manufacturerFrm:FormGroup;
   isReadOnlyTraderasLtr:boolean = false;
   is_local:number;
+  sectionData:any;
   trader_aslocalagent:number;
   isRegistrantDetailsWinshow:boolean= false;
   isonInterCompleteManufacturer:boolean = false;
@@ -117,17 +118,16 @@ export class GmpGeneraldetailsComponent implements OnInit {
       country_id: new FormControl('', Validators.compose([Validators.required])),
       region_id: new FormControl('', Validators.compose([])),
       email_address: new FormControl('', Validators.compose([Validators.required])),
-      postal_address: new FormControl('', Validators.compose([Validators.required])),
-      telephone_no: new FormControl('', Validators.compose([])),
-      physical_address: new FormControl('', Validators.compose([])),
-      mansite_name: new FormControl('', Validators.compose([Validators.required])),
-      mansitecountry_id: new FormControl('', Validators.compose([Validators.required])),
+      physical_address: new FormControl('', Validators.compose([Validators.required])),
+      telephone: new FormControl('', Validators.compose([Validators.required])),
+      mansite_name: new FormControl('', Validators.compose([])),
+      mansitecountry_id: new FormControl('', Validators.compose([])),
       mansiteregion_id: new FormControl('', Validators.compose([])),
-      mansiteemail_address: new FormControl('', Validators.compose([Validators.required])),
-      mansitepostal_address: new FormControl('', Validators.compose([Validators.required])),
-      mansitetelephone_no: new FormControl('', Validators.compose([Validators.required])),
-      mansitephysical_address: new FormControl('', Validators.compose([Validators.required])),
-      contact_person: new FormControl('', Validators.compose([Validators.required])),
+      mansiteemail_address: new FormControl('', Validators.compose([])),
+      mansitepostal_address: new FormControl('', Validators.compose([])),
+      mansitetelephone_no: new FormControl('', Validators.compose([])),
+      mansitephysical_address: new FormControl('', Validators.compose([])),
+      contact_person: new FormControl('', Validators.compose([])),
       manufacturer_id: new FormControl('', Validators.compose([])),
       
     });
@@ -170,7 +170,8 @@ export class GmpGeneraldetailsComponent implements OnInit {
     this.onLoaddevicesTypeData(this.section_id);
     if(this.sub_module_id == 5){
       this.manufacturingSiteLocationSet = true;
-    }
+   
+      }
     else{
       this.manufacturingSiteLocationSet = false;
     }

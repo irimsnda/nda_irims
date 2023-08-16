@@ -28,8 +28,9 @@ Route::group(['prefix' => 'clinicaltrial','middleware' => ['auth:api', 'web']], 
     Route::post('saveEvaluationDetails',  [ClinicalTrialController::class,'saveEvaluationDetails']);
     Route::get('getManagerReportReview',  [ClinicalTrialController::class,'getManagerReportReview']);
      
+     
     
-    Route::post('saveNewApplicationClinicalTrialDetails',  [ClinicalTrialController::class,'saveNewApplicationClinicalTrialDetails']);
+    Route::post('saveNewApplicationClinicalTrialDetails',  [ClinicalTrialController::class,'saveNewReceivingBaseDetails']);
     Route::post('saveNewApplicationClinicalTrialOtherDetails',  [ClinicalTrialController::class,'saveNewApplicationClinicalTrialOtherDetails']);
     Route::get('prepareNewClinicalTrialReceivingStage',  [ClinicalTrialController::class,'prepareNewClinicalTrialReceivingStage']);
     Route::get('prepareNewClinicalTrialInvoicingStage',  [ClinicalTrialController::class,'prepareNewClinicalTrialInvoicingStage']);
@@ -125,6 +126,10 @@ Route::group(['prefix' => 'clinicaltrial','middleware' => ['auth:api', 'web']], 
     Route::get('getstrSAEReportingManagerApplicationsGeneric',  [ClinicalTrialController::class,'getstrSAEReportingManagerApplicationsGeneric']);
 
     Route::get('getClinicalTrialSAEReportMoreDetails',  [ClinicalTrialController::class,'getClinicalTrialSAEReportMoreDetails']);
+
+    Route::get('getClinicalTrialProgressReportMoreDetails',  [ClinicalTrialController::class,'getClinicalTrialProgressReportMoreDetails']);
+
+    
 
     Route::get('prepareCtrSAEReportAssessment',  [ClinicalTrialController::class,'getClinicalTrialSAEReportMoreDetails']);
 

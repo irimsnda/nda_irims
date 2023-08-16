@@ -43,6 +43,7 @@ Ext.define('Admin.view.clinicaltrial.views.panels.CtrProgressReportAppMoreDetail
             xtype: 'hiddenfield',
             name: 'application_code'
         },
+        
         {
             xtype: 'hiddenfield',
             name: 'module_id'

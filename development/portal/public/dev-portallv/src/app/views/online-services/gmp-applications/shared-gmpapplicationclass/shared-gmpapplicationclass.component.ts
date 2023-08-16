@@ -233,7 +233,7 @@ registered_id: number;
       country_id: new FormControl('', Validators.compose([Validators.required])),
       region_id: new FormControl('', Validators.compose([Validators.required])),
       district_id: new FormControl('', Validators.compose([])),
-      email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
+      email_address: new FormControl('', Validators.compose([Validators.required, Validators.email])),
       postal_address: new FormControl('', Validators.compose([])),
       telephone: new FormControl('', Validators.compose([])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
@@ -256,7 +256,8 @@ registered_id: number;
       applicant_contact_person: new FormControl('', Validators.compose([Validators.required])),//Validators.required
       contact_person_enddate: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_startdate: new FormControl('', Validators.compose([])),//Validators.required
-      
+      billing_person_id: new FormControl('', Validators.compose([])),
+      billing_person: new FormControl('', Validators.compose([])),
       gmpassessment_countries_ids: new FormControl('', Validators.compose([])),//
       business_type_id: new FormControl('', Validators.compose([])),//Validators.required
       premise_id: new FormControl('', Validators.compose([])),//Validators.required
@@ -283,6 +284,7 @@ registered_id: number;
       telephone_no: new FormControl('', Validators.compose([Validators.required])),
       country_id: new FormControl('', Validators.compose([Validators.required])),     
       region_id: new FormControl('', Validators.compose([Validators.required])),
+      inspected_id:new FormControl('', Validators.compose([Validators.required])),
       id: new FormControl('', Validators.compose([])),
       personnel_id:new FormControl('', Validators.compose([])),
 
@@ -312,8 +314,12 @@ registered_id: number;
     });
     this.manufatcuringSiteBlocksfrm = new FormGroup({
       name: new FormControl(this.businessTypesData, Validators.compose([Validators.required])),
-      intermediate_complete_id:new FormControl('', Validators.compose([Validators.required])),
-      activities: new FormControl(this.businessTypeDetailsData, Validators.compose([Validators.required])),
+      inspection_category_id:new FormControl('', Validators.compose([Validators.required])),
+      inspection_activities_id:new FormControl('', Validators.compose([Validators.required])),
+      physical_address:new FormControl('', Validators.compose([])),
+      site_name: new FormControl('', Validators.compose([])),
+      country_id: new FormControl('', Validators.compose([])),
+      manufacturing_id: new FormControl(this.businessTypeDetailsData, Validators.compose([Validators.required])),
       id: new FormControl('', Validators.compose([]))
     });
      this.manufatcuringContractDetailsfrm = new FormGroup({
@@ -332,9 +338,12 @@ registered_id: number;
 
     this.gmpProductLineDetailsfrm = new FormGroup({
       product_line_id: new FormControl('', Validators.compose([Validators.required])),
-      category_id: new FormControl('', Validators.compose([Validators.required])),
-      prodline_description: new FormControl('', Validators.compose([Validators.required])),
-      manufacturingsite_block_id: new FormControl('', Validators.compose([Validators.required])),
+      block_name:new FormControl('', Validators.compose([Validators.required])),
+      no_ofblocks_inspected:new FormControl('', Validators.compose([Validators.required])),
+      non_betalactam: new FormControl('', Validators.compose([])),
+      beta_lactam_id: new FormControl('', Validators.compose([])), 
+      gmpproduct_type_id:new FormControl('', Validators.compose([])),      
+      manufacturing_id: new FormControl('', Validators.compose([])),
       id: new FormControl('', Validators.compose([]))
     });
     this.premisesDocumentUploadfrm = this.formBuilder.group({
@@ -372,7 +381,6 @@ registered_id: number;
   }
 
   ngOnInit() {
-   
   }
   onLoadpayingCurrencyData() {
     var data = {

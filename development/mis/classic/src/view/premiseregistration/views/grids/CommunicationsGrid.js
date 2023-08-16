@@ -66,6 +66,166 @@ Ext.define('Admin.view.premiseregistration.views.grids.CommunicationsGrid', {
         mode: 'local',
         minChars: 2
     }],
+    tbar: [{
+        xtype: 'tbspacer',
+        width: 5
+     }, 
+    {
+        xtype: 'combo',
+        emptyText: 'REGION',
+        flex: 1,
+        //labelWidth: 80,
+        width: 190,
+        valueField: 'id',
+        displayField: 'name',
+        forceSelection: true,
+        name: 'region_id',
+        queryMode: 'local',
+        fieldStyle: {
+            'color': 'green',
+            'font-weight': 'bold'
+        },
+        listeners: {
+                    beforerender: {
+                        fn: 'setParamCombosStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'parameters/region'
+                            }
+                        },
+                        isLoad: false
+            },afterrender: function (cmbo) {
+                 var grid = cmbo.up('grid'),
+                 store = cmbo.getStore(),
+                 filterObj = {country_id: 37},
+                 filterStr = JSON.stringify(filterObj);
+                 store.removeAll();
+                 store.load({params: {filter: filterStr}});
+              },
+            change: function (cmbo, newVal) {
+                var grid = cmbo.up('grid'),
+                districtStore = grid.down('combo[name=district_id]').getStore(),
+                filterObj = {region_id: newVal},
+                filterStr = JSON.stringify(filterObj);
+                districtStore.removeAll();
+                districtStore.load({params: {filter: filterStr}});
+                grid.getStore().load();
+            }
+        },
+        triggers: {
+            clear: {
+                type: 'clear',
+                hideWhenEmpty: true,
+                hideWhenMouseOut: false,
+                clearOnEscape: true
+            }
+        }
+    },
+     {
+        xtype: 'combo',
+        emptyText: 'DISTRICT',
+        flex: 1,
+        //labelWidth: 80,
+        width: 190,
+        valueField: 'id',
+        displayField: 'name',
+        forceSelection: true,
+        name: 'district_id',
+        queryMode: 'local',
+        fieldStyle: {
+            'color': 'green',
+            'font-weight': 'bold'
+        },
+        listeners: {
+                    beforerender: {
+                        fn: 'setParamCombosStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'parameters/district'
+                            }
+                        },
+                        isLoad: false
+            },
+            change: function (cmbo, newVal) {
+                var grid = cmbo.up('grid');
+                grid.getStore().load();
+            }
+        },
+        triggers: {
+            clear: {
+                type: 'clear',
+                hideWhenEmpty: true,
+                hideWhenMouseOut: false,
+                clearOnEscape: true
+            }
+        }
+    },{
+        xtype: 'combo',
+        emptyText: 'ZONE',
+        flex: 1,
+        //labelWidth: 80,
+        width: 190,
+        valueField: 'id',
+        displayField: 'name',
+        forceSelection: true,
+        name: 'zone_id',
+        queryMode: 'local',
+        fieldStyle: {
+            'color': 'green',
+            'font-weight': 'bold'
+        },
+        listeners: {
+                    beforerender: {
+                        fn: 'setParamCombosStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_zones'
+                            }
+                        }
+                        },
+                        isLoad: true
+            },
+            change: function (cmbo, newVal) {
+                var grid = cmbo.up('grid');
+                grid.getStore().load();
+            }
+        },
+        triggers: {
+            clear: {
+                type: 'clear',
+                hideWhenEmpty: true,
+                hideWhenMouseOut: false,
+                clearOnEscape: true
+            }
+        }
+    },  {
+        xtype: 'button',
+        text: 'Filter',
+        ui: 'soft-green',
+        iconCls: 'x-fa fa-search',
+        handler: function(btn) {
+          var grid = btn.up('grid');
+              grid.getStore().load();
+        },
+    },{
+        xtype: 'button',
+        text: 'Clear',
+        ui: 'soft-red',
+        iconCls: 'x-fa fa-times',
+        handler: function(btn) {
+          var grid = btn.up('grid'),
+                gridStr = grid.getStore();
+                grid.down('combo[name=region_id]').clearValue();
+                grid.down('combo[name=district_id]').clearValue();
+                grid.down('combo[name=zone_id]').clearValue();
+                gridStr.load();
+        },
+    }],
     listeners: {
         beforerender: {
             fn: 'setPremiseRegGridsStore',
@@ -145,7 +305,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.CommunicationsGrid', {
         dataIndex: 'application_status',
         text: 'Application Status',
         flex: 1
-    }, {
+    },  {
         text: 'Options',
         xtype: 'widgetcolumn',
         width: 90,
@@ -177,24 +337,60 @@ Ext.define('Admin.view.premiseregistration.views.grids.CommunicationsGrid', {
                                 }
                             ]
                         }
-                    }, {
-                        text: 'Update Signatory',
-                        iconCls: 'x-fa fa-pencil',
-                        stores: '["approvaldecisionsstr"]',
-                        table_name: 'tra_premises_applications',
-                        is_update: 1,
-                        handler: 'getApplicationApprovalDetails'
-                    },
+                    },  {
+                        text: 'Inspection Report',
+                        iconCls: 'x-fa fa-exchange',
+                        menu: {
+                            xtype: 'menu',
+                            items: [
+                                
+                                {
+                                    text: 'Inspection Report',
+                                    iconCls: 'x-fa fa-bars',
+                                    childXtype: 'premiseinspectiondetailstabpnl',
+                                    winTitle: 'Inspection Report',
+                                    winWidth: '80%',
+                                    name: 'inspection_details',
+                                    stores: '[]',
+                                    report_type_id:1,
+                                    handler: 'showInspectionDetails'
+                                },
+                                {
+                                    text: 'RID Recomendation',
+                                    iconCls: 'x-fa fa-bars',
+                                    childXtype: 'premiseinspectiondetailstabpnl',
+                                    winTitle: 'RID Recomendation',
+                                    winWidth: '60%',
+                                    name: 'inspection_details',
+                                    stores: '[]',
+                                    report_type_id:2,
+                                    handler: 'showInspectionDetails'
+                                },
+                                {
+                                    text: 'CRID Recommendation',
+                                    iconCls: 'x-fa fa-bars',
+                                    childXtype: 'premiseinspectiondetailstabpnl',
+                                    winTitle: 'CRID Recommendation',
+                                    winWidth: '80%',
+                                    name: 'inspection_details',
+                                    stores: '[]',
+                                    report_type_id:3,
+                                    handler: 'showInspectionDetails'
+                                },{
+                                    text: 'Print Final Inspection Report',
+                                    iconCls: 'x-fa fa-print',
+                                    name:'btn_print_inspection_report',
+                                    handler: 'doPrintInspectionReport'
+                                }
+                            ]
+                        }
+                    }, 
+                    
                     {
-                        text: 'Preview Details',
+                        text: 'Preview Premises Details',
                         iconCls: 'x-fa fa-bars',
-                        appDetailsReadOnly: 0,
+                        appDetailsReadOnly: 1,
                         handler: 'showPremApplicationMoreDetails'
-                    },
-                    {
-                        text: 'Dismiss/Cancel Application',
-                        iconCls: 'x-fa fa-thumbs-down',
-                        handler: 'showApplicationDismissalForm'
                     }
                 ]
             }

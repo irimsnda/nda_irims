@@ -38,6 +38,7 @@ export class NewPremisesRegistrationComponent extends SharedPremisesregistration
       this.process_title = this.premisesapp_details.process_title;
       this.section_id = this.premisesapp_details.section_id;
       this.premise_id = this.premisesapp_details.premise_id;
+      this.business_type_id = this.premisesapp_details.business_type_id;
 
       this.tracking_no = this.premisesapp_details.tracking_no;
       this.country_id = this.premisesapp_details.country_id;

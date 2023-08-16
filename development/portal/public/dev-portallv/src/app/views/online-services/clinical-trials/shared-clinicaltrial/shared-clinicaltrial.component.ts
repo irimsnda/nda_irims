@@ -310,7 +310,8 @@ export class SharedClinicaltrialComponent implements OnInit {
               section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
               reg_clinical_trial_id: new FormControl('', Validators.compose([])),
               clinical_prodsection_id: new FormControl('', Validators.compose([])),
-              meeting_venue: new FormControl('', Validators.compose([Validators.required])),
+              meeting_venue: new FormControl('', Validators.compose([])),
+              meeting_date: new FormControl('', Validators.compose([Validators.required])),
               meeting_invitation_details: new FormControl('', Validators.compose([]))
 
             });

@@ -1,6 +1,5 @@
 Ext.define('Admin.controller.SharedUtilitiesCtr', {
     extend: 'Ext.app.Controller',
-
     config: {
         refs: [{
             ref: 'mainPanel',
@@ -122,7 +121,12 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 refresh: 'refreshReportScreeningChecklistItemsGrid'
             },
 
+            'premiseinspectionreportgrid': {
+                refresh: 'refreshReportScreeningChecklistItemsGrid'
+            },
+
  
+           
 
             'gmpscreeninggrid': {
                 refresh: 'refreshScreeningChecklistItemsGrid'
@@ -189,6 +193,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
 
             'newdrugshopinspectionpanel button[name=save_screening_btn]': {
+                click: 'saveApplicationChecklistDetails'
+            },
+
+            'predrugshopinspectionpanel button[name=save_screening_btn]': {
                 click: 'saveApplicationChecklistDetails'
             },
             'renewpremisereceivingwizard button[name=save_screening_btn]': {
@@ -743,6 +751,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'showApplicationCommentsWin'
             },
 
+            'predrugshopinspectionpanel toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
 
 
             'newpremiseevaluationpanel toolbar menu menuitem[name=prev_comments]': {
@@ -1155,6 +1167,16 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
 
 
+            'predrugshopinspectionpanel toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+            'predrugshopinspectionpanel button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+
+
             'promotionmaterialevaluationcontentpanel button[name=docs_btn]': {
                 click: 'showApplicationUploads'
             },
@@ -1263,7 +1285,11 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
           
              'newdrugshoponlinepreviewwizard button[name=assign_zone]': {
                 click: 'addZone'
-            }, 
+            },
+
+             'newpremiseonlinepreviewwizard button[name=assign_zone]': {
+                click: 'addZone'
+            },  
 
 
             
@@ -1895,7 +1921,17 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
             'drugshopmanagerevaluationgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'predrugshopmanagerevaluationgrid': {
+                refresh: 'addDrugShopApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+            'predrugshopmanagerevaluationgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
             }, 
+
+
             'drugshopapprovalsgrid': {
                 refresh: 'addDrugShopApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
@@ -1906,7 +1942,27 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'drugshopapprovalsgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
+
+
+            'predrugshopapprovalsgrid': {
+                refresh: 'addDrugShopApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+            
+
+            'predrugshopapprovalsgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+            
+
+
             'drugshopcommunicationsgrid': {
+                refresh: 'addDrugShopApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+            'predrugshopcommunicationsgrid': {
                 refresh: 'addDrugShopApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
@@ -5804,6 +5860,7 @@ else{
     addApplicationWorkflowParams: function (me) {
         var store = me.store,
             table_name = me.table_name,
+            grid = me.up('grid'),
             managerInspection = me.managerInspection,
             mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),

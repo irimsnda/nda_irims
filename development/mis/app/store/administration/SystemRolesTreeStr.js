@@ -27,7 +27,7 @@ Ext.define('Admin.store.administration.SystemRolesTreeStr', {
             messageProperty: 'msg'
         }
     },
-    listeners: {
+    /*listeners: {
         load: function (store, records, success, operation) {
             var reader = store.getProxy().getReader(),
                 response = operation.getResponse(),
@@ -38,5 +38,7 @@ Ext.define('Admin.store.administration.SystemRolesTreeStr', {
             }
         }
     }
+    */
 });
+
 

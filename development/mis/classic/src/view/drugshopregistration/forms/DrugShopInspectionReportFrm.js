@@ -325,7 +325,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.DrugShopInspectionReportF
     ],
     buttons: [
         {
-            text: 'Save Inspection Details & Recommendation',
+            text: 'Save',
             iconCls: 'x-fa fa-save',
             formBind: true,
             bind: {

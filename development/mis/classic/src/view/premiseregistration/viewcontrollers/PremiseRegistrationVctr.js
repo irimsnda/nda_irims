@@ -3201,6 +3201,26 @@ setConfigGridsStore: function (obj, options) {
         this.fireEvent('showDrugShopApplicationMoreDetailsGeneric', application_code,application_id, premise_id, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly, is_temporal);
     },
 
+    showPreDrugShopApplicationMoreDetails: function (item) {
+        Ext.getBody().mask('Please wait...');
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord(),
+            ref_no = record.get('reference_no'),
+            application_id = record.get('id'),
+            application_code = record.get('application_code'),
+            applicant_id = record.get('applicant_id'),
+            premise_id = record.get('premise_id'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = record.get('workflow_stage_id'),
+            module_id = record.get('module_id'),
+            sub_module_id = record.get('sub_module_id'),
+            section_id = record.get('section_id'),
+            isReadOnly = item.appDetailsReadOnly,
+            is_temporal = item.is_temporal;
+            console.log('wewe');
+        this.fireEvent('showPreDrugShopApplicationMoreDetailsGeneric', application_code,application_id, premise_id, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly, is_temporal);
+    },
+
 
     showTraderSupervisorSelectionGrid: function (btn) {
         var form = btn.up('form'),

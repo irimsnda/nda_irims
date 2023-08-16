@@ -35,6 +35,7 @@ export class DrugshopNearestlocationComponent implements OnInit {
 
   ngOnInit() {
     this.onLoadPremisesStoreLocationDetails();
+    this.onLoadDrugShopStoreLocationDetails();
 
   }
   onLoadPremisesStoreLocationDetails(){
@@ -42,6 +43,16 @@ export class DrugshopNearestlocationComponent implements OnInit {
       //.pipe(first())
       .subscribe(
         data => {//dtpremPersonnelDetailsData
+          this.premisesStoreLocationDetailsData = data;
+        },
+        error => {
+          return false
+        });
+  }   
+  onLoadDrugShopStoreLocationDetails(){
+    this.appService.onLoadDrugShopStoreLocationDetails(this.premise_id)
+      .subscribe(
+        data => {
           this.premisesStoreLocationDetailsData = data;
         },
         error => {
@@ -215,9 +226,10 @@ onCoutryCboSelect($event) {
 
   onPremisesStoreLocationToolbar(e,is_readonly) {
 
-    this.functDataGridToolbar(e, this.funAddPremisesStreLocationDetails, 'Premises Nearest Location',is_readonly);
+    this.functDataGridToolbar(e, this.funAddPremisesStreLocationDetails, 'Premise Nearest Location',is_readonly);
 
   }
+
  funAddPremisesStreLocationDetails() {
   
     this.premisesStoreslocationFrm.reset();
@@ -287,7 +299,29 @@ onCoutryCboSelect($event) {
         error => {
           this.loading = false;
         });
-  }  
+  }   
+  onSaveDrugShopStoreLocationDetails() {
+    if (this.premisesStoreslocationFrm.invalid) {
+      return;
+    }
+    const uploadData = this.prepareSaveSketchtDoc();
+    this.appService.onSaveDrugShopStoreLocationDetails(this.premisesStoreslocationFrm.value, this.premise_id,uploadData)
+      .subscribe(
+        response => {
+          this.premises_resp = response.json();
+          if (this.premises_resp.success) {
+            this.toastr.success(this.premises_resp.message, 'Response');
+            this.isStoreLocationPopupVisible = false;
+            this.onLoadDrugShopStoreLocationDetails();
+          } else {
+            this.toastr.error(this.premises_resp.message, 'Alert');
+          }
+        },
+        error => {
+          this.loading = false;
+        });
+  } 
+
     onSearchNearestLocationDetails() {  
     this.appService.onLoadNearestPremises(this.premise_id)
         .subscribe(

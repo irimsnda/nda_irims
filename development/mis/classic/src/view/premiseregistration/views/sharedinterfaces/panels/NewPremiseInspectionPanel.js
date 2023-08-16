@@ -11,113 +11,48 @@ Ext.define('Admin.view.premiseregistration.views.sharedinterfaces.panels.NewPrem
         split: true
     },
     
-    items: [{
-            title: 'Premises Inspection Schedules',
-            region: 'north',
-            height: 250,
-            autoScroll: true,
-            collapsible: true,
-            collapsed: true,
-            xtype: 'premisesinspectiondetailsfrm'
-        },
+    items: [
         {
 
            
-           //title: 'Preview & Premises Inspection Upload',
             region: 'center',
             layout: 'fit',
             xtype:'tabpanel',
             listeners: {
-                tabchange: 'funcActiveInspectionTabChanges'
+                tabchange: function(tabPanel, newCard, oldCard) {
+                  const selectedIndex = tabPanel.items.indexOf(newCard);
+                  if (selectedIndex ===1) {
+                    var panel=tabPanel.up('panel');
+                    panel.down('button[name=save_screening_btn]').setHidden(false);
+
+                  }
+                  if (selectedIndex ===2) {
+                    var panel=tabPanel.up('panel');
+                    panel.down('button[name=save_screening_btn]').setHidden(true);
+
+                  }
+                  if (selectedIndex ===0) {
+                    var panel=tabPanel.up('panel');
+                    panel.down('button[name=save_screening_btn]').setHidden(true);
+
+                  }
+                }
+              
             },
             items: [{
-                     title: 'Premises Application Details & Documents Uploads',
+                     title: 'Application Details & Documents Uploads',
                     xtype:'premiseappmoredetailswizard'
                 },{
-                    xtype: 'preminspectionuploaddetailspnl',
-					title: 'Premises Inspection Recommendation & Upload',
-                    listeneers:{
-                        beforerender:function(pnl){
-                            mainTabPnl = btn.up('#contentPanel'),
-                            containerPnl = mainTabPnl.getActiveTab(),
-                            meeting_id = containerPnl.down('premisesinspectiondetailsfrm').down('hiddenfield[name=id]')
-                            pnl.down('hiddenfield[name=reference_record_id]').setValue(meeting_id);
-                            pnl.down('hiddenfield[name=document_type_id]').setValue(23);
-                           
-                            pnl.down('hiddenfield[name=table_name]').setValue('tc_incepttionconcept_uploaddocuments');
-                            pnl.down('hiddenfield[name=reference_table_name]').setValue('tra_premise_inspection_details');
+                   xtype: 'premiseinspectionscreeninggrid',
+                   title: 'Inspection Checklist'
+               },{
+                    xtype: 'premiseinspectionrecommfrm',
+                    itemId: 'premiseinspectionrecommfrm',
+                    title:'Inspection Report'
+               }]
+        },
 
-                        }
-                    }
-            }]
-        },
-        {
-            title: 'Other Details',
-            region: 'south',
-            width: 200,
-            collapsed: true,
-            collapsible: true,
-            titleCollapse: true,
-            items: [
-                {
-                    xtype: 'form',
-                    bodyPadding: 5,
-                    layout: 'column',
-                    defaults: {
-                        margin: 2,
-                        labelAlign: 'top',
-                        columnWidth: 0.5
-                    },
-                    fieldDefaults: {
-                        fieldStyle: {
-                            'color': 'green',
-                            'font-weight': 'bold'
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'displayfield',
-                            fieldLabel: 'Applicant Details',
-                            name: 'applicant_details'
-                        },
-                        {
-                            xtype: 'displayfield',
-                            fieldLabel: 'Product Details',
-                            name: 'product_details',
-                            hidden: true
-                        },
-                        {
-                            xtype: 'displayfield',
-                            fieldLabel: 'Premise Details',
-                            name: 'premise_details',
-                            hidden: true
-                        },
-                        {
-                            xtype: 'toolbar',
-                            ui: 'footer',
-                            columnWidth: 1,
-                            items: [
-                                {
-                                    text: 'More Details',
-                                    iconCls: 'fa fa-bars',
-                                    name: 'more_app_details',
-                                    isReadOnly: 0,
-                                    is_temporal: 0
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            title: 'Inspectors',
-            xtype: 'inspectioninspectorsgrid',
-            region: 'west',
-            width: 400,collapsed: true,
-            collapsible: true,
-            titleCollapse: true
-        },
+        
         {
             xtype: 'toolbar',
             ui: 'footer',
@@ -126,108 +61,86 @@ Ext.define('Admin.view.premiseregistration.views.sharedinterfaces.panels.NewPrem
             split: false,
             items: [
                 {
-                    xtype: 'transitionsbtn'
-                },{
-                    text: 'General Inspection Comments',
-                    ui: 'soft-purple',
-                    iconCls: 'fa fa-weixin',
-                    childXtype: 'applicationcommentspnl',
+                    xtype: 'transitionsbtn',
+                    hidden:true,
+                },
+                {
+                    xtype: 'button',
+                    text: "Raise/View CAPA/ Query & Responses",
+                    tooltip: 'Raise Query/View Query(Request for Information) and query Responses',
+                    ui: 'soft-red',
+                    handler: 'showAddApplicationUnstrcuturedQueries',
+                },
+                ,{
+                    text: 'Preview/Add CAPA Request',
+                    iconCls: 'x-fa fa-cubes',
+                    ui: 'soft-blue',
+                    hidden:true,
+                    handler: 'showPremisesInspectionCAPApplicationQueries'
+                },
+                {
+                    text: 'Comments',
+                    iconCls: 'x-fa fa-weixin',
+                    childXtype: 'applicationprevcommentsgrid',
+                    name: 'prev_comments',
                     winTitle: 'Inspection Comments',
                     winWidth: '60%',
-                    comment_type_id: 1,
-                    name: 'comments_btn',
-                    stores: '[]'
-                },
-                {
-                    text: 'Inspection Documents & Recommendation',
-                    ui: 'soft-purple',
-                    iconCls: 'fa fa-upload',
-                    hidden: true,
-                    childXtype: 'preminspectionuploaddetailspnl',
-                    winTitle: 'Inspection Recommendation & Documents',
-                    winWidth: '80%',
-                    name: 'premisesinspectiondocs_btn',
                     stores: '[]',
+                    hidden:true,
+                    comment_type_id: 1,
+                    target_stage: 'inspection',
                     isWin: 1
-                },
-                {
-                    text: 'Inspections',
-                    ui: 'soft-purple',
-                    hidden: true,
-                    iconCls: 'fa fa-bars',
-                    menu:{
-                        xtype: 'menu',
-                        items:[
-                            {
-                                text: 'Inspection Details(Current)',
-                                ui: 'soft-purple',
-                                iconCls: 'x-fa fa-bars',
-                                childXtype: 'inspectiondetailstabpnl',
-                                winTitle: 'Inspection Details',
-                                winWidth: '60%',
-                                name: 'inspection_details',
-                                isReadOnly: 1,
-                                stores: '[]'
-                            },
-                            {
-                                text: 'Prev Inspections',
-                                ui: 'soft-purple',
-                                iconCls: 'x-fa fa-history',
-                                childXtype: 'checklistresponseshistorygrid',
-                                winTitle: 'Previous Inspections',
-                                winWidth: '85%',
-                                name: 'prev_inspections'
-                            },
-                        ]
-                    }
-                },
-                {
-                    text: 'Recommendation',
-                    ui: 'soft-purple',
-                    iconCls: 'fa fa-check',
-                    childXtype: 'premiseinspectionrecommfrm',
-                    winTitle: 'Inspection Recommendation',
-                    winWidth: '55%',
-                    hidden: true,
-                    name: 'recommendation'
-                },
-                '->',{
-                    xtype: 'button',
-                    text: "Raise/View Query(Request for Information)",
-                    tooltip: 'Raise Query/View Query(Request for Information) and query Responses',
+                 },
+                  {
+                    text: 'Print Inspection Report',
+                    iconCls: 'x-fa fa-print',
+                    hidden:true,
                     ui: 'soft-green',
-                    name: 'raise_checklist_query',
-                     hidden: true,
-                    handler:'showGeneralAppAppQueries'
+                    name:'btn_print_inspection_report',
+                    handler: 'doPrintInspectionReport'
+                },
+
+                {
+                    text: 'View IOD Report',
+                    ui: 'soft-green',
+                    iconCls: 'fa fa-eye',
+                    childXtype: 'premiseinspectiondetailstabpnl',
+                    winTitle: 'IOD Report',
+                    winWidth: '60%',
+                    name: 'preview_report_btn',
+                    stores: '[]',
+                    report_type_id:1,
+                    handler: 'showInspectionReportDetails',
+                    hidden: true
                 },
                 {
-                    text: 'Save Inspection Details',
+                    text: 'View RID Recommendation',
+                    ui: 'soft-red',
+                    iconCls: 'fa fa-eye',
+                    childXtype: 'premiseinspectiondetailstabpnl',
+                    winTitle: 'RID Recommendation',
+                    winWidth: '60%',
+                    name: 'regional_inspector_report_btn',
+                    stores: '[]',
+                    report_type_id:2,
+                    handler: 'showInspectionReportDetails',
+                    hidden: true
+                },
+               
+                '->',
+
+                  {
+                    text: 'Save Inspection Checklist',
                     ui: 'soft-purple',
-                    hidden: true,
                     iconCls: 'fa fa-save',
-                    name: 'save_btn'
-                },{
-                    xtype: 'button',
-                    text: 'Upload Concept Note',
-                    iconCls: 'x-fa fa-upload',
-                    ui: 'soft-purple',
-                    reference_table_name: 'tra_premise_inspection_details',
-                    table_name: 'tc_incepttionconcept_uploaddocuments',
-                    handler: 'funcUploadTCMeetingtechnicalDocuments',
-                    document_type_id: 23,
-                    childXtype:'unstructureddocumentuploadsgrid',
-                    winTitle: 'Concept Note Upload',
-                    winWidth: '80%',
-                    toaster: 0
-                },{
-                    text: 'Preview/Add CAPA Request',
-                    iconCls: 'x-fa fa-cubes',ui: 'soft-red',
-                    handler: 'showPremisesInspectionCAPApplicationQueries'
+                    name: 'save_screening_btn',
+                    hidden: true
                 },
                 {
                     text: 'Submit Application',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-check',
+                    isInspectionSubmit:1,
                     name: 'process_submission_btn',
                     storeID: 'foodpremiseregistrationstr',
                     table_name: 'tra_premises_applications',

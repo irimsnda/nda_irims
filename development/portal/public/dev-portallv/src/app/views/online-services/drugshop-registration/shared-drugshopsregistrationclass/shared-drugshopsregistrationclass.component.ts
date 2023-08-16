@@ -303,7 +303,7 @@ export class SharedDrugshopsregistrationclassComponent {
     this.premisesStoreslocationFrm = new FormGroup({
         name: new FormControl('', Validators.compose([Validators.required])),
         distance: new FormControl('', Validators.compose([Validators.required])),
-        street: new FormControl('', Validators.compose([Validators.required])),
+        street: new FormControl('', Validators.compose([])),
         country_id: new FormControl('', Validators.compose([Validators.required])),
         region_id: new FormControl('', Validators.compose([Validators.required])),
         district_id: new FormControl('', Validators.compose([Validators.required])),
@@ -333,7 +333,7 @@ export class SharedDrugshopsregistrationclassComponent {
       last_name:new FormControl('', Validators.compose([])),
       incharge_email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
       postal_address: new FormControl('', Validators.compose([])),
-      telephone: new FormControl('', Validators.compose([Validators.required])),
+      incharge_telephone: new FormControl('', Validators.compose([Validators.required])),
       applicant_incharge_telephone: new FormControl('', Validators.compose([])),
       incharge_physical_address:new FormControl('', Validators.compose([])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
@@ -513,10 +513,11 @@ export class SharedDrugshopsregistrationclassComponent {
       director_telephone_no: new FormControl('', Validators.compose([Validators.required])),
       director_email_address: new FormControl('', Validators.compose([Validators.required])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
-      region_id: new FormControl('', Validators.compose([Validators.required])),
-      district_id: new FormControl('', Validators.compose([Validators.required])),
+      region_id: new FormControl('', Validators.compose([])),
+      district_id: new FormControl('', Validators.compose([])),
+      shares:new FormControl('',Validators.compose([])),
       director_postal_code: new FormControl('', Validators.compose([])),
-      designation_id: new FormControl('', Validators.compose([Validators.required])),
+      qualification_id: new FormControl('', Validators.compose([Validators.required])),
 
 
     });
@@ -882,7 +883,6 @@ export class SharedDrugshopsregistrationclassComponent {
     this.config.onLoadConfigurationData(data)
       .subscribe(
         data => {
-          console.log(data);
           this.businessTypeDetailsData = data;
         },
         error => {
@@ -908,7 +908,6 @@ export class SharedDrugshopsregistrationclassComponent {
     if (this.premisesGeneraldetailsfrm.invalid) {
     //  return;
     }
-    console.log(this.premisesGeneraldetailsfrm.value);
     this.spinner.show();
     this.appService.onSavePremisesApplication(this.premise_id, this.premisesGeneraldetailsfrm.value, this.tracking_no)
       .subscribe(
@@ -1145,7 +1144,6 @@ export class SharedDrugshopsregistrationclassComponent {
 
   }
   newPremTermscheckbox(e) {
-    console.log(e.value);
     this.checkPremisesSubmission = e.value;
 
   }

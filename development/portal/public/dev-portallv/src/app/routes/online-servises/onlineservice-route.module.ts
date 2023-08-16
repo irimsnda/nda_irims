@@ -9,7 +9,9 @@ import { ProductRegDashboardComponent } from '../../views/online-services/produc
 import { AuthGuard } from '../../guards/auth.guard';
 //import { NewDrugProductApplicationComponent } from '../../views/online-services/product-registration/new-product-registration/new-drugproduct-application/new-drugproduct-application.component';
 
+import { PremiserelocationRegistrationComponent } from '../../views/online-services/premises-registration/premiserelocation-registration/premiserelocation-registration.component';
 import { NewPremisesRegistrationComponent } from '../../views/online-services/premises-registration/new-premises-registration/new-premises-registration.component';
+import { AnnexstoreRegistrationComponent } from '../../views/online-services/premises-registration/annexstore-registration/annexstore-registration.component';
 import { NewDrugshopsRegistrationComponent } from '../../views/online-services/drugshop-registration/new-drugshops-registration/new-drugshops-registration.component';
 import { NewdrugshopDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/newdrugshop-dashboard/newdrugshop-dashboard.component';
 import { PreinspectionDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/preinspection-dashboard/preinspection-dashboard.component';
@@ -79,11 +81,7 @@ import { QualityAuditDashboardComponent } from 'src/app/views/online-services/gm
 import { NewQualityauditApplicationComponent } from 'src/app/views/online-services/gmp-applications/quality-audit/new-qualityaudit-application/new-qualityaudit-application.component';
 import { QualityauditAppSelectionComponent } from 'src/app/views/online-services/gmp-applications/quality-audit/qualityaudit-app-selection/qualityaudit-app-selection.component';
 import { TraderaccountUsersComponent } from 'src/app/views/online-services/traderaccount-users/traderaccount-users.component';
-
-import { PharmacistsaccountUserComponent } from 'src/app/views/online-services/pharmacistsaccount-user/pharmacistsaccount-user.component';
-
-
-
+import { PharmacistsaccountUserComponent } from '../../views/online-services/premises-registration/pharmacistsaccount-user/pharmacistsaccount-user.component';
 import { RetentionPaymentsComponent } from 'src/app/views/online-services/productretention/retention-payments/retention-payments.component';
 import { RetentionChargesComponent } from 'src/app/views/online-services/productretention/retention-charges/retention-charges.component';
 import { DisposalAppdashboardComponent } from 'src/app/views/online-services/disposal-apps/disposal-appdashboard/disposal-appdashboard.component';
@@ -116,8 +114,9 @@ import { InspectionbookingDashboardComponent } from 'src/app/views/online-servic
 import { OfficialcertificateDashboardComponent } from 'src/app/views/online-services/controlleddrugspermits-apps/controlleddrugspermits-dashboard/officialcertificate-dashboard/officialcertificate-dashboard.component';
 import { ControldrugsInspectionbkdashComponent } from 'src/app/views/online-services/controlleddrugspermits-apps/controlleddrugspermits-dashboard/controldrugs-inspectionbkdash/controldrugs-inspectionbkdash.component';
 import { ControldrugsImplicensedashComponent } from 'src/app/views/online-services/controlleddrugspermits-apps/controlleddrugspermits-dashboard/controldrugs-implicensedash/controldrugs-implicensedash.component';
-
 import { NewpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/newpremises-dashboard/newpremises-dashboard.component';
+import { AnnexstoreDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/annexstore-dashboard/annexstore-dashboard.component';
+import { PremiserelocationDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/premiserelocation-dashboard/premiserelocation-dashboard.component';
 import { RenewalpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/renewalpremises-dashboard/renewalpremises-dashboard.component';
 import { RenewaldrugshopDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/renewaldrugshop-dashboard/renewaldrugshop-dashboard.component';
 import { VariationpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/variationpremises-dashboard/variationpremises-dashboard.component';
@@ -225,7 +224,13 @@ const appRoutes: Routes = [
 			component: ArchivedProductsappsComponent
 		},{//
 			path: 'newpremisesreg-dashboard',
-			component: NewpremisesDashboardComponent
+			component: NewpremisesDashboardComponent 
+		},{//
+			path: 'newpremiseregannex-dashboard',
+			component: AnnexstoreDashboardComponent
+		},{//
+			path: 'premiserelocationreg-dashboard',
+			component: PremiserelocationDashboardComponent
 		},{//
 			path: 'newdrugshopreg-dashboard',
 			component: NewdrugshopDashboardComponent
@@ -269,10 +274,16 @@ const appRoutes: Routes = [
 			component: ControldrugsImportpermitAppComponent
 		},{
 			path: 'controlleddrugs-license-application',
-			component: ControldrugsLicenseAppComponent 
+			component: ControldrugsLicenseAppComponent    
 		},{
 			path: 'new-premises-applications',
 			component: NewPremisesRegistrationComponent
+		},{
+			path: 'new-premises-applications',
+			component: AnnexstoreRegistrationComponent
+		},{
+			path: 'premisesrelocation-applications',
+			component: PremiserelocationRegistrationComponent
 		},{
 			path: 'new-drugshop-applications',
 			component: NewDrugshopsRegistrationComponent
@@ -575,7 +586,7 @@ const appRoutes: Routes = [
 			path: 'traderaccount-users',
 			component: TraderaccountUsersComponent
 		},{
-			path: 'pharm-acount-profile',
+			path: 'pharmacist-dashboard',
 			component: PharmacistsaccountUserComponent
 		},{
 			path: 'product-retention-charges',

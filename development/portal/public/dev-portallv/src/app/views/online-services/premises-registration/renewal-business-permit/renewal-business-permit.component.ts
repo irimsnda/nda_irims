@@ -44,6 +44,7 @@ export class RenewalBusinessPermitComponent extends SharedPremisesregistrationcl
       this.sub_module_id = this.premisesapp_details.sub_module_id;
       this.process_title = this.premisesapp_details.process_title;
       this.section_id = this.premisesapp_details.section_id;
+      this.business_type_id = this.premisesapp_details.business_type_id;
       this.premise_id = this.premisesapp_details.premise_id;
       this.tracking_no = this.premisesapp_details.tracking_no;
       this.country_id = this.premisesapp_details.country_id;

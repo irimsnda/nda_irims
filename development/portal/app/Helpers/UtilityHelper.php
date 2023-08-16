@@ -39,15 +39,15 @@ class UtilityHelper
         }
         
     } 
-    static function checkForOngoingApplications($registered_id, $table_name, $reg_column, $process_id,$sub_module_id)
+    static function checkForOngoingApplications($registered_id, $table_name, $reg_column, $process_id)
     {
-    	if($sub_module_id==9){
-    	   $res = array(
-            'exists' => false,
-            'ref_no' => ''
-        );
-        return $res;
-    	}
+    	// if($sub_module_id==9){
+    	//    $res = array(
+        //     'exists' => false,
+        //     'ref_no' => ''
+        // );
+        // return $res;
+    	// }
 		
          $qry = DB::connection('mis_db')->table($table_name . ' as t1')
              ->leftJoin('tra_approval_recommendations as t2', 't1.application_code', '=', 't2.application_code')
@@ -55,10 +55,10 @@ class UtilityHelper
              ->where(array('t1.process_id'=>$process_id))
              //->whereIn('t1.application_status_id',[1,2,6,8]);
              ->whereIn('t1.application_status_id',[1,2,8]);
-            if(validateIsNumeric($sub_module_id)){
-              $qry->where(array('t1.sub_module_id'=>$sub_module_id));
+            // if(validateIsNumeric($sub_module_id)){
+            //   $qry->where(array('t1.sub_module_id'=>$sub_module_id));
 			  
-            }
+            // }
           
          $app_details = $qry->first();
 		 
@@ -80,16 +80,16 @@ class UtilityHelper
      
         return $res;
     }
-    static function checkForPortalOngoingApplications($registered_id, $table_name, $reg_column, $process_id,$sub_module_id)
+    static function checkForPortalOngoingApplications($registered_id, $table_name, $reg_column, $process_id)
     {
     	
         $qry = DB::table($table_name . ' as t1')
             ->where('t1.' . $reg_column, $registered_id)
             //->where(array('t1.process_id'=>$process_id))
             ->whereIn('t1.application_status_id',[1,2,6,8]);
-            if(validateIsNumeric($sub_module_id)){
-              $qry->where(array('t1.sub_module_id'=>$sub_module_id));
-            }
+            // if(validateIsNumeric($sub_module_id)){
+            //   $qry->where(array('t1.sub_module_id'=>$sub_module_id));
+            // }
             
         $app_details = $qry->first();
 		

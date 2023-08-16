@@ -144,7 +144,7 @@ export class SharedPremisesregistrationclassComponent {
   //premises other details 
   premisesOtherDetailsRows: any;
   registered_premisesData: any;
-
+  premise_category_id:number;
   premisesDocumentsRows: any;
 
   businessTypesData: any;
@@ -152,6 +152,7 @@ export class SharedPremisesregistrationclassComponent {
   zoneData: any;
   isInitalCapaResponseFrmVisible:boolean;
  public business_type_id: number;
+  premise_type_id:number;
  isPrintReportVisible:boolean = false;
     printiframeUrl:string;
     printReportTitle:string;
@@ -179,6 +180,7 @@ export class SharedPremisesregistrationclassComponent {
   isaddNewPremisesPersonnelDetails:boolean = false;
   //@Inject(WizardState) public wizard: WizardState,
   newPremisesPersonnelDetailsFrm:FormGroup;
+  approvalRecomDetailsfrm:FormGroup;
   newPremisesStafflDetailsfrm:FormGroup;
   confirmDataParam: any;
   isReadOnlyTraderasContact:boolean= false;
@@ -266,6 +268,10 @@ export class SharedPremisesregistrationclassComponent {
      this.onLoadfastTrackOptionsData();
     this.onLoadpayingCurrencyData();
 
+   this.approvalRecomDetailsfrm = new FormGroup ({
+    pharmacist_approvalstatus_id:new FormControl('',Validators.compose([Validators.required])),
+    id:new FormControl('',Validators.compose([]))
+   });
     this.newPremisesPersonnelDetailsFrm = new FormGroup({
       name: new FormControl('', Validators.compose([Validators.required])),
       email_address: new FormControl('', Validators.compose([Validators.required])),
@@ -288,13 +294,12 @@ export class SharedPremisesregistrationclassComponent {
     this.premisesStoreslocationFrm = new FormGroup({
         name: new FormControl('', Validators.compose([Validators.required])),
         distance: new FormControl('', Validators.compose([Validators.required])),
-        street: new FormControl('', Validators.compose([Validators.required])),
+        street: new FormControl('', Validators.compose([])),
         country_id: new FormControl('', Validators.compose([Validators.required])),
         region_id: new FormControl('', Validators.compose([Validators.required])),
-        district_id: new FormControl('', Validators.compose([Validators.required])),
-        county_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
-        sub_county_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
-        document_upload_id: new FormControl('', Validators.compose([])),
+        district_id: new FormControl('', Validators.compose([])),
+        county_id: new FormControl('', Validators.compose([])),//Validators.required
+        sub_county_id: new FormControl('', Validators.compose([])),//Validators.required
         id: new FormControl('', Validators.compose([])),
 
       });
@@ -302,13 +307,12 @@ export class SharedPremisesregistrationclassComponent {
     this.premisesStoreslocationFrm = new FormGroup({
         name: new FormControl('', Validators.compose([Validators.required])),
         distance: new FormControl('', Validators.compose([Validators.required])),
-        street: new FormControl('', Validators.compose([Validators.required])),
+        street: new FormControl('', Validators.compose([])),
         country_id: new FormControl('', Validators.compose([Validators.required])),
         region_id: new FormControl('', Validators.compose([Validators.required])),
         district_id: new FormControl('', Validators.compose([Validators.required])),
-        county_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
-        sub_county_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
-        document_upload_id: new FormControl('', Validators.compose([])),
+        county_id: new FormControl('', Validators.compose([])),//Validators.required
+        sub_county_id: new FormControl('', Validators.compose([])),//Validators.required
         id: new FormControl('', Validators.compose([])),
 
       });
@@ -319,6 +323,7 @@ export class SharedPremisesregistrationclassComponent {
       premises_name: new FormControl('', Validators.compose([Validators.required])),
       applicant_type_id:new FormControl('', Validators.compose([Validators.required])),
       businesstype_category_id: new FormControl('', Validators.compose([])),
+      business_typecategory_id: new FormControl('', Validators.compose([])),
       director_name:new FormControl('', Validators.compose([])),
       other_premproduct_classification:new FormControl('', Validators.compose([])),
       product_classification_id: new FormControl('', Validators.compose([Validators.required])),
@@ -333,6 +338,7 @@ export class SharedPremisesregistrationclassComponent {
       full_names: new FormControl('', Validators.compose([Validators.required])),
       reg_date:new FormControl('',Validators.compose([Validators.required])),
       middle_name: new FormControl('', Validators.compose([])),
+      other_classification:new FormControl('', Validators.compose([])),
       tpin_no: new FormControl('', Validators.compose([Validators.required])),
       last_name:new FormControl('', Validators.compose([])),
       pharmacist_email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
@@ -345,6 +351,7 @@ export class SharedPremisesregistrationclassComponent {
       latitude: new FormControl('', Validators.compose([])),
       business_scale_id: new FormControl(this.businessScaleData, Validators.compose([])),
       business_type_id: new FormControl('', Validators.compose([Validators.required])),
+      premise_type_id: new FormControl('', Validators.compose([])),
       sub_module_id: new FormControl(this.sub_module_id, Validators.compose([])),//Validators.required
       module_id: new FormControl(this.sub_module_id, Validators.compose([])),//Validators.required
       application_code: new FormControl(this.application_code, Validators.compose([])),//Validators.required
@@ -355,7 +362,6 @@ export class SharedPremisesregistrationclassComponent {
       applicant_contact_person: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_enddate: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_startdate: new FormControl('', Validators.compose([])),//Validators.required
-      premise_type_id: new FormControl('', Validators.compose([])),//Validators.required
       pharmacist_qualification: new FormControl('', Validators.compose([Validators.required])),
       tra_premise_id: new FormControl('', Validators.compose([])),//Validators.required
       registered_id: new FormControl('', Validators.compose([])),//Validators.required
@@ -376,12 +382,14 @@ export class SharedPremisesregistrationclassComponent {
       had_cancelled_application:new FormControl('', Validators.compose([])),
       cancelling_reason:new FormControl('', Validators.compose([]))
     });
-  }else{    
-    this.premisesGeneraldetailsfrm = new FormGroup({
+  }else if(this.sub_module_id == 110){
+      this.premisesGeneraldetailsfrm = new FormGroup({
       premises_name: new FormControl('', Validators.compose([Validators.required])),
       applicant_type_id:new FormControl('', Validators.compose([Validators.required])),
       businesstype_category_id: new FormControl('', Validators.compose([])),
+      business_typecategory_id: new FormControl('', Validators.compose([])),
       director_name:new FormControl('', Validators.compose([])),
+      business_type_detail_id: new FormControl(this.businessTypeDetailsData, Validators.compose([])),
       section_id: new FormControl(this.section_id, Validators.compose([])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
       region_id: new FormControl('', Validators.compose([Validators.required])),
@@ -392,6 +400,7 @@ export class SharedPremisesregistrationclassComponent {
       investment_capital: new FormControl('', Validators.compose([])),
       tpin_no
       : new FormControl('', Validators.compose([])),
+      other_classification:new FormControl('', Validators.compose([])),
       pharmacist_email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
       postal_address: new FormControl('', Validators.compose([])),     
       full_names: new FormControl('', Validators.compose([Validators.required])),
@@ -404,6 +413,7 @@ export class SharedPremisesregistrationclassComponent {
       latitude: new FormControl('', Validators.compose([])),
       business_scale_id: new FormControl(this.businessScaleData, Validators.compose([])),
       business_type_id: new FormControl('', Validators.compose([Validators.required])),
+      premise_type_id: new FormControl('', Validators.compose([])),
       sub_module_id: new FormControl(this.sub_module_id, Validators.compose([])),//Validators.required
       module_id: new FormControl(this.sub_module_id, Validators.compose([])),//Validators.required
       application_code: new FormControl(this.application_code, Validators.compose([])),//Validators.required
@@ -414,7 +424,81 @@ export class SharedPremisesregistrationclassComponent {
       applicant_contact_person: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_enddate: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_startdate: new FormControl('', Validators.compose([])),//Validators.required
-      premise_type_id: new FormControl('', Validators.compose([])),//Validators.required
+      vehicle_reg_no: new FormControl('', Validators.compose([])),//Validators.required
+      tra_premise_id: new FormControl('', Validators.compose([])),//Validators.required
+      registered_id: new FormControl('', Validators.compose([])),//Validators.required
+      investment_capital_currency_id: new FormControl('', Validators.compose([])),//Validators.required
+      village: new FormControl('', Validators.compose([])),//Validators.required
+      contact_person_email: new FormControl('', Validators.compose([])),//Validators.required
+      contact_person_telephone: new FormControl('', Validators.compose([])),//Validators.required
+      registration_institution_id: new FormControl('', Validators.compose([])),//Validators.required
+      otherregistration_institution: new FormControl('', Validators.compose([])),//Validators.required
+      contact_person_position: new FormControl('', Validators.compose([])),//Validators.required
+      classification_id:new FormControl('', Validators.compose([])),
+      is_registered_business:new FormControl('', Validators.compose([])),
+      company_registration_no:new FormControl('', Validators.compose([])),
+      other_premproduct_classification:new FormControl('', Validators.compose([])),
+      county_id: new FormControl('', Validators.compose([])),
+      sub_county_id: new FormControl('', Validators.compose([])),
+      street:new FormControl('', Validators.compose([])),
+      reg_date:new FormControl('',Validators.compose([])),
+      product_classification_id: new FormControl('', Validators.compose([Validators.required])),
+      had_offence:new FormControl('', Validators.compose([])),
+      offence:new FormControl('', Validators.compose([])),
+      pharmacist_qualification: new FormControl('', Validators.compose([Validators.required])),
+      had_cancelled_application:new FormControl('', Validators.compose([])),
+      cancelling_reason:new FormControl('', Validators.compose([])),
+      proposed_region_id: new FormControl('', Validators.compose([Validators.required])),
+      proposed_district_id: new FormControl('', Validators.compose([Validators.required])),
+      proposed_sub_county_id: new FormControl('', Validators.compose([])),
+      proposed_village: new FormControl('', Validators.compose([])),
+      proposed_street: new FormControl('', Validators.compose([])),
+      proposed_physical_address: new FormControl('', Validators.compose([]))
+
+    });
+  }
+  else{    
+    this.premisesGeneraldetailsfrm = new FormGroup({
+      premises_name: new FormControl('', Validators.compose([Validators.required])),
+      applicant_type_id:new FormControl('', Validators.compose([Validators.required])),
+      business_type_detail_id: new FormControl(this.businessTypeDetailsData, Validators.compose([])),
+      businesstype_category_id: new FormControl('', Validators.compose([])),
+      business_typecategory_id: new FormControl('', Validators.compose([])),
+      director_name:new FormControl('', Validators.compose([])),
+      section_id: new FormControl(this.section_id, Validators.compose([])),
+      country_id: new FormControl('', Validators.compose([Validators.required])),
+      region_id: new FormControl('', Validators.compose([Validators.required])),
+      district_id: new FormControl('', Validators.compose([Validators.required])),
+      pharmacist_country_id: new FormControl('', Validators.compose([Validators.required])),
+      pharmacist_region_id: new FormControl('', Validators.compose([Validators.required])),
+      pharmacist_district_id: new FormControl('', Validators.compose([Validators.required])),
+      investment_capital: new FormControl('', Validators.compose([])),
+      tpin_no
+      : new FormControl('', Validators.compose([])),
+         other_classification:new FormControl('', Validators.compose([])),
+      pharmacist_email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
+      postal_address: new FormControl('', Validators.compose([])),     
+      full_names: new FormControl('', Validators.compose([Validators.required])),
+      psu_no: new FormControl('', Validators.compose([Validators.required])),
+      psu_date: new FormControl('', Validators.compose([Validators.required])),
+      pharmacist_telephone: new FormControl('', Validators.compose([Validators.required])),
+      physical_address: new FormControl('', Validators.compose([Validators.required])),
+      mobile_no: new FormControl('', Validators.compose([])),
+      longitude: new FormControl('', Validators.compose([])),
+      latitude: new FormControl('', Validators.compose([])),
+      business_scale_id: new FormControl(this.businessScaleData, Validators.compose([])),
+      business_type_id: new FormControl('', Validators.compose([Validators.required])),
+      premise_type_id: new FormControl('', Validators.compose([])),
+      sub_module_id: new FormControl(this.sub_module_id, Validators.compose([])),//Validators.required
+      module_id: new FormControl(this.sub_module_id, Validators.compose([])),//Validators.required
+      application_code: new FormControl(this.application_code, Validators.compose([])),//Validators.required
+      zone_id: new FormControl(this.zoneData, Validators.compose([])),//Validators.required
+      business_category_id: new FormControl('', Validators.compose([])),//Validators.required
+      contact_person: new FormControl('', Validators.compose([])),//Validators.required
+      contact_person_id: new FormControl('', Validators.compose([])),//Validators.required
+      applicant_contact_person: new FormControl('', Validators.compose([])),//Validators.required
+      contact_person_enddate: new FormControl('', Validators.compose([])),//Validators.required
+      contact_person_startdate: new FormControl('', Validators.compose([])),//Validators.required
       vehicle_reg_no: new FormControl('', Validators.compose([])),//Validators.required
       tra_premise_id: new FormControl('', Validators.compose([])),//Validators.required
       registered_id: new FormControl('', Validators.compose([])),//Validators.required
@@ -486,33 +570,34 @@ export class SharedPremisesregistrationclassComponent {
     });
 
 
-  this.premisesDirectorsDetailsfrm = new FormGroup({
+   this.premisesDirectorsDetailsfrm = new FormGroup({
       directorfull_names: new FormControl('', Validators.compose([Validators.required])),
       id: new FormControl('', Validators.compose([])),
       director_postal_address: new FormControl('', Validators.compose([])),
       director_telephone_no: new FormControl('', Validators.compose([Validators.required])),
       director_email_address: new FormControl('', Validators.compose([Validators.required])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
-      region_id: new FormControl('', Validators.compose([Validators.required])),
-      district_id: new FormControl('', Validators.compose([Validators.required])),
+      region_id: new FormControl('', Validators.compose([])),
+      district_id: new FormControl('', Validators.compose([])),
+      shares:new FormControl('',Validators.compose([])),
       director_postal_code: new FormControl('', Validators.compose([])),
-      designation_id: new FormControl('', Validators.compose([Validators.required])),
+      qualification_id: new FormControl('', Validators.compose([Validators.required])),
 
 
     });
 
 
-      this.premisesStafflDetailsfrm = new FormGroup({
-      staff_full_name: new FormControl('', Validators.compose([Validators.required])),
+    this.premisesStafflDetailsfrm = new FormGroup({
+      position_id: new FormControl('', Validators.compose([Validators.required])),
       id: new FormControl('', Validators.compose([])),
+      personnel_id: new FormControl('', Validators.compose([])),
+      personnel_name: new FormControl('', Validators.compose([Validators.required])),
       postal_address: new FormControl('', Validators.compose([])),
-      staff_telephone_no: new FormControl('', Validators.compose([Validators.required])),
-      staff_email_address: new FormControl('', Validators.compose([Validators.required])),
-      country_id: new FormControl('', Validators.compose([Validators.required])),
-      region_id: new FormControl('', Validators.compose([Validators.required])),
-      district_id: new FormControl('', Validators.compose([Validators.required])),
-      postal_code: new FormControl('', Validators.compose([])),
+      telephone_no: new FormControl('', Validators.compose([Validators.required])),
+      email_address: new FormControl('', Validators.compose([Validators.required])),
       qualification_id: new FormControl('', Validators.compose([Validators.required])),
+      personnel_identification_no: new FormControl('', Validators.compose([])),
+
 
     });
 
@@ -542,6 +627,7 @@ export class SharedPremisesregistrationclassComponent {
           this.onLoadconfirmDataParm();
           this.onLoadPremisesTypeData();
           this.business_type_id = this.premisesapp_details.business_type_id;
+          this.premise_type_id=this.premisesapp_details.premise_type_id;
           this.onBusinessTypesDetailsLoad(this.premisesapp_details.business_type_id);
           if(this.premise_id <1){
           
@@ -710,7 +796,7 @@ export class SharedPremisesregistrationclassComponent {
         data => {
           this.sectionsData = data;
         });
-  }
+  } 
   onLoadPremisesTypeData() {
     var data = {
       table_name: 'par_premise_types',

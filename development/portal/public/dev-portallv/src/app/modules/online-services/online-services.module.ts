@@ -30,7 +30,8 @@ import { HttpClientModule } from '@angular/common/http';
 //premsies NewDrugshopsRegistrationComponentdrugshop-reg-dashboard
 import { DrugshopRegDashboardComponent } from '../../views/online-services/drugshop-registration/drugshop-reg-dashboard/drugshop-reg-dashboard.component';
 import { PremisesRegDashboardComponent } from '../../views/online-services/premises-registration/premises-reg-dashboard/premises-reg-dashboard.component';
-
+import { AnnexstoreRegistrationComponent } from '../../views/online-services/premises-registration/annexstore-registration/annexstore-registration.component';
+import { PremiserelocationRegistrationComponent } from '../../views/online-services/premises-registration/premiserelocation-registration/premiserelocation-registration.component';
 import { NewPremisesRegistrationComponent } from '../../views/online-services/premises-registration/new-premises-registration/new-premises-registration.component';
 import { NewDrugshopsRegistrationComponent } from '../../views/online-services/drugshop-registration/new-drugshops-registration/new-drugshops-registration.component';
 
@@ -39,8 +40,7 @@ import { ApplicationSelectionComponent } from '../../views/online-services/produ
 import { PremapplSelectionComponent } from '../../views/online-services/premises-registration/premappl-selection/premappl-selection.component';
 import { PrepremsapplSelectionComponent } from '../../views/online-services/premises-registration/prepremsappl-selection/prepremsappl-selection.component';
 import { PredrugshopAppselectionComponent } from '../../views/online-services/drugshop-registration/predrugshop-appselection/predrugshop-appselection.component';
-
-
+import { DrugshopNeareststoreComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-dataentry/drugshop-neareststore/drugshop-neareststore.component';
 
 import { DrugshopNearestlocationComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-dataentry/drugshop-nearestlocation/drugshop-nearestlocation.component';
 import { DrugshopPersonneldetailsComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-dataentry/drugshop-personneldetails/drugshop-personneldetails.component';
@@ -133,7 +133,7 @@ import { NewQualityauditApplicationComponent } from 'src/app/views/online-servic
 import { QualityauditAppSelectionComponent } from 'src/app/views/online-services/gmp-applications/quality-audit/qualityaudit-app-selection/qualityaudit-app-selection.component';
 import { RegisteredQualityauditselectionComponent } from 'src/app/views/online-services/gmp-applications/quality-audit/registered-qualityauditselection/registered-qualityauditselection.component';
 import { TraderaccountUsersComponent } from 'src/app/views/online-services/traderaccount-users/traderaccount-users.component';
-import { PharmacistsaccountUserComponent } from 'src/app/views/online-services/pharmacistsaccount-user/pharmacistsaccount-user.component';
+import { PharmacistsaccountUserComponent } from 'src/app/views/online-services/premises-registration/pharmacistsaccount-user/pharmacistsaccount-user.component';
 
 //import { SafePipe } from 'src/app/safe.pipe';
 //import { DrugsProductsdetailsComponent } from 'src/app/views/online-services/product-registration/product-generaldetails/drugs-productsdetails/drugs-productsdetails.component';
@@ -230,6 +230,8 @@ import { InspectionbookingDashboardComponent } from 'src/app/views/online-servic
 import { ImportlicenseDashboardComponent } from 'src/app/views/online-services/importexport-apps/importexport-dashboard/importlicense-dashboard/importlicense-dashboard.component';
 import { ImportvisaDashboardComponent } from 'src/app/views/online-services/importexport-apps/importexport-dashboard/importvisa-dashboard/importvisa-dashboard.component';
 import { ImportgeneralicenseDashboardComponent } from 'src/app/views/online-services/importexport-apps/importexport-dashboard/importgeneralicense-dashboard/importgeneralicense-dashboard.component';
+import { AnnexstoreDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/annexstore-dashboard/annexstore-dashboard.component';
+import { PremiserelocationDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/premiserelocation-dashboard/premiserelocation-dashboard.component';
 
 import { ExportlicenseDashboardComponent } from 'src/app/views/online-services/importexport-apps/importexport-dashboard/exportlicense-dashboard/exportlicense-dashboard.component';
 import { NewpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/newpremises-dashboard/newpremises-dashboard.component';
@@ -358,15 +360,20 @@ import { AddproductApplicationdetailsComponent } from 'src/app/views/online-serv
     PremisesRegDashboardComponent,
     DrugshopRegDashboardComponent,
     DrugshopNearestlocationComponent,
+    DrugshopNeareststoreComponent,
     DrugshopPersonneldetailsComponent,
     DrugshopLicensedetailsComponent,
     NewpremisesDashboardComponent,
+    AnnexstoreDashboardComponent,
+    PremiserelocationDashboardComponent,
     PreinspectionDashboardComponent,
     RenewalpremisesDashboardComponent,
     RenewaldrugshopDashboardComponent,
     VariationpremisesDashboardComponent,
     WithdrawalpremisesDashboardComponent,
     NewPremisesRegistrationComponent,
+    PremiserelocationRegistrationComponent,
+    AnnexstoreRegistrationComponent,
     NewDrugshopsRegistrationComponent,
     RenewalBusinessPermitComponent,
     RenewalDrugshopPermitComponent,

@@ -47,6 +47,7 @@ export class ClinicalpresubmissionGeneraldetailsComponent implements OnInit {
   isSponsorInvestigatorSearchWinVisible:boolean = false;
   issponsorInvestigatorAddWinVisible:boolean = false;
   is_virtual_meeting:boolean = false;
+  is_meeting_venue:boolean = false;
   sponsorInvestigatorFrm:FormGroup;
   clinicaltInvestigatorFrm:FormGroup;
   app_resp:any;
@@ -58,6 +59,7 @@ export class ClinicalpresubmissionGeneraldetailsComponent implements OnInit {
   is_clinicalin_othercountry:any;
   is_clinicalin_uganda:any;
   minDate: Date = new Date();
+  meetingTime:Date = new Date();
 
   //par_clinical_phases
   @Output() docClinicalSectionsEvent = new EventEmitter();
@@ -81,7 +83,9 @@ export class ClinicalpresubmissionGeneraldetailsComponent implements OnInit {
     this.OnloadclinicalStudyFieldsTypesData();
     this.onLoadconfirmationDataData();
     
-  }onClinicalTriaProductSectionChange($event){
+  }
+
+  onClinicalTriaProductSectionChange($event){
     this.docClinicalSectionsEvent.emit($event.value+','+this.section_id);
 
 } onLoadconfirmationDataData() {
@@ -370,8 +374,10 @@ export class ClinicalpresubmissionGeneraldetailsComponent implements OnInit {
 
   if($event.value == 2 ){
       this.is_virtual_meeting = true;
+      this.is_meeting_venue = false ;
   }
   else{
+    this.is_meeting_venue = true ;
     this.is_virtual_meeting = false;
   }
 }

@@ -47,9 +47,15 @@ class VerifyCsrfToken extends Middleware
        'premisesregistration/onSavePremisesDirectorsDetails',
        'premisesregistration/onDeletePremisesDetails',
        'premisesregistration/onSavePremisesholder',
-       'premisesregistration/onSavePremisesStaff',
+       'premisesregistration/onSavePremisesPersonnel',
        'importexportapp/onDeletePermitdetails',
        'premisesregistration/onSaveTelephoneDetails',
-       'premisesregistration/onSaveRenPremisesApplication'
+       'premisesregistration/onSaveRenPremisesApplication',
+       'authentication/onFuncChangePassword',
+       'utilities/saveManufacturerSiteFulldetails',
+       'gmpinspection/onSaveGmpApplication',
+       'gmpinspection/onSavemanufatcuringSiteBlocks',
+       'premisesregistration/onSaveDrugShopStoreLocationDetails',
+       'premisesregistration/onSaveApprovalRecomDetails'
     ];
 }

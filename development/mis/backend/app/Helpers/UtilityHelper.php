@@ -368,6 +368,7 @@ static function returnTableNamefromModule($table_name,$module_id){
                 ->where('sub_module_id', $sub_module_id)
                 ->where('reference_type_id', $reference_type_id)
                 ->value('reference_format_id');
+
             if (!is_numeric($ref_id)) {
                 $res = array(
                     'success' => false,

@@ -130,9 +130,9 @@ trait PremiseRegistrationTrait
             inValidateApplicationChecklist($module_id, $sub_module_id, $section_id, $checklist_category, $application_codes);
         }
         if ($approval_submission == 1) {
-            if ($sub_module_id == 1  || $sub_module_id == 97) {//todo New Applications
+            if ($sub_module_id == 89  || $sub_module_id == 97) {//todo New Applications
                 $this->processNewApprovalApplicationSubmission($request, $keep_status);
-            } else if ($sub_module_id == 2 || $sub_module_id == 96) {//todo Renewal Applications
+            } else if ($sub_module_id == 1  || $sub_module_id == 2 || $sub_module_id == 96) {//todo Renewal Applications
                 $this->processSubsequentApprovalApplicationSubmission($request);
             } else if ($sub_module_id == 3) {//todo Alteration Applications
                 $this->batchPremiseAlterationApplicationApprovalSubmission($request);
@@ -1587,15 +1587,74 @@ trait PremiseRegistrationTrait
                 return $prem_insert;
             }
             $premise_id = $prem_insert['record_id'];
-            //premise other details
-            $premise_otherdetails = $portal_db->table('wb_premises_otherdetails')
+            
+ 
+                $premise_directorsdetails = $portal_db->table('wb_premises_proprietors')
                 ->where('premise_id', $results->premise_id)
-                ->select(DB::raw("id as portal_id,$premise_id as premise_id,business_type_id,business_type_detail_id,$user_id as created_by"))
                 ->get();
-            $premise_otherdetails = convertStdClassObjToArray($premise_otherdetails);
-            $premise_otherdetails = unsetPrimaryIDsInArray($premise_otherdetails);
-            DB::table('tra_premises_otherdetails')
-                ->insert($premise_otherdetails);
+                foreach($premise_directorsdetails as $premise_directorsdetail)
+                {  
+                   $data=get_object_vars($premise_directorsdetail);
+                   unset($data['premise_id']);
+                   unset($data['id']);
+                   $data['premise_id'] = $premise_id;
+                   DB::table('tra_premises_proprietors')->insert($data);
+                   
+                }
+
+                 $premise_personnelsdetails = $portal_db->table('wb_premises_personnel')
+                ->where('premise_id', $results->premise_id)
+                ->get();
+                foreach($premise_personnelsdetails as $premise_personnelsdetail)
+                {  
+                   $data=get_object_vars($premise_personnelsdetail);
+                   unset($data['premise_id']);
+                   unset($data['id']);
+                   $data['premise_id'] = $premise_id;
+                   DB::table('tra_premises_personnel')->insert($data);
+                   
+                }
+
+            
+                $nearestdrugshopsdetails =$portal_db->table('wb_drugshop_storelocation')
+                ->where('premise_id', $results->premise_id)
+                ->get();
+                foreach($nearestdrugshopsdetails as $nearestdrugshopsdetail)
+                {  
+                   $data=get_object_vars($nearestdrugshopsdetail);
+                   unset($data['premise_id']);
+                   unset($data['id']);
+                   $data['premise_id'] = $premise_id;
+                   DB::table('tra_drugshop_storelocation')->insert($data);
+                   
+                }
+
+               
+                $nearestpremisedetails = $portal_db->table('wb_premises_storelocation')
+                ->where('premise_id', $results->premise_id)
+                ->get();
+                foreach($nearestpremisedetails as $nearestpremisedetail)
+                {  
+                   $data=get_object_vars($nearestpremisedetail);
+                   unset($data['premise_id']);
+                   unset($data['id']);
+                   $data['premise_id'] = $premise_id;
+                   DB::table('tra_premises_storelocation')->insert($data);
+                   
+                }
+
+                $other_premisesdetails = $portal_db->table('wb_other_premises')
+                ->where('premise_id', $results->premise_id)
+                ->get();
+                foreach($other_premisesdetails as $other_premisesdetail)
+                {  
+                   $data=get_object_vars($other_premisesdetail);
+                   unset($data['premise_id']);
+                   unset($data['id']);
+                   $data['premise_id'] = $premise_id;
+                   DB::table('tra_other_premises')->insert($data);
+                   
+             }
 
                 
             if ($sub_module_id == 3) {//Alteration
@@ -1634,7 +1693,8 @@ trait PremiseRegistrationTrait
                 'paying_currency_id' => $results->paying_currency_id,
                 'is_fast_track' => $results->is_fast_track
             );
-            
+
+           
             $application_insert = insertRecord('tra_premises_applications', $application_details, $user_id);
             if ($application_insert['success'] == false) {
                 DB::rollBack();

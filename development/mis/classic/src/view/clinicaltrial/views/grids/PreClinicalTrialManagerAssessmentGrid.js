@@ -56,6 +56,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.PreClinicalTrialManagerAssessme
     columns: [{
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
+        hidden:true,
         text: 'Status',
         flex: 1
     }, {

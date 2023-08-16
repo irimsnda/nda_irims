@@ -342,7 +342,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialDetailsFrm', {
                             var form = combo.up('form'),
                             clinicalin_otheruganda_sites = form.down('textarea[name=clinicalin_otheruganda_sites]');
                             clinicalin_otheruganda_sites.setVisible(true);
-                            clinicalin_otheruganda_sites.allowBlank = false;
+                            clinicalin_otheruganda_sites.allowBlank = true;
                             clinicalin_otheruganda_sites.validate();
                         }
                         
@@ -393,7 +393,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialDetailsFrm', {
                             var form = combo.up('form'),
                             clinicalin_othercountries_sites = form.down('textarea[name=clinicalin_othercountries_sites]');
                             clinicalin_othercountries_sites.setVisible(true);
-                            clinicalin_othercountries_sites.allowBlank = false;
+                            clinicalin_othercountries_sites.allowBlank = true;
                             clinicalin_othercountries_sites.validate();
                         }
                         

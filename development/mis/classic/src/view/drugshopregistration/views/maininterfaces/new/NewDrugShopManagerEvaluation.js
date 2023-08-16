@@ -94,6 +94,9 @@ Ext.define('Admin.view.drugshopregistration.views.maininterfaces.new.NewDrugShop
             }, {
                 xtype: 'hiddenfield',
                 name: 'active_application_code'
+            },{
+                xtype: 'hiddenfield',
+                name: 'premise_id'
             }, {
                 xtype: 'hiddenfield',
                 name: 'application_status_id'

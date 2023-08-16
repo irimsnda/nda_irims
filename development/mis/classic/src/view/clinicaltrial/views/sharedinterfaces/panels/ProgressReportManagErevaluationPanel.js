@@ -10,7 +10,7 @@ Ext.define('Admin.view.clinicaltrial.views.sharedinterfaces.panels.ProgressRepor
         {
             xtype: 'progressreportmanagerevaluationgrid',
             itemId:'main_processpanel',
-            applicationdetails_panel: 'ctrsaereportappmoredetailswizard',
+            applicationdetails_panel: 'ctrprogressreportappmoredetailswizard',
         }
     ]
 });

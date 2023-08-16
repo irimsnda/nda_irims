@@ -400,7 +400,7 @@
 
                 </div>
         </wizard-step>
-          <wizard-step stepTitle=" Directors or Partner Details and License to Operate Pharmaceutical Business & Nearest Drug Shops Location"   navigationSymbol="Step 2" class="wizardStep-height">
+        <wizard-step stepTitle=" Directors or Partner Details and License to Operate Pharmaceutical Business & Nearest Drug Shops Location"   navigationSymbol="Step 2" class="wizardStep-height">
             
             <div class="accordion" id="premisesInfo" >
                 <div class="card" >
@@ -687,52 +687,159 @@
 
                         </div>
                     </wizard-step>
-                    <wizard-step stepTitle="Premises Application Details" navigationSymbol="Step 2"  class="wizardStep-height">
-                            <app-drugshop-generaldetails  [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
-                            [sectionsData] ="sectionsData"  
-                            [premisesTypeData] ="premisesTypeData"  
-                            [countries] ="countries"  
-                            [regions] ="regions"  
-                            [districts] ="districts"  
-                            [businessTypesData] ="businessTypesData" 
-                            [businessScaleData] ="businessScaleData"
-                            [classificationData] ="classificationData"  
-                            [businessCategoryData] ="businessCategoryData"  
-                            [zoneData] ="zoneData"  
-                            [confirmDataParam] ="confirmDataParam"
-                            [sub_module_id] ="sub_module_id" 
-                            [module_id] ="module_id" 
-                            [application_code] ="application_code"
-                            [tra_premise_id] ="tra_premise_id" 
-                            [registered_id] ="registered_id"
-                            [isReadOnlyTraderasContact] ="isReadOnlyTraderasContact" 
-                            [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm" 
-                            [payingCurrencyData] ="payingCurrencyData" 
-                            [fastTrackOptionsData] ="fastTrackOptionsData" 
-                            [newPremisesPersonnelDetailsFrm] ="newPremisesPersonnelDetailsFrm" 
-                            (businessTypeEvent)="business_type_id=$event"
+                    <wizard-step stepTitle="Drug Shops Application Details"  navigationSymbol="Step 1" class="wizardStep-height">
+                    <app-drugshop-generaldetails  [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
+                    [sectionsData] ="sectionsData"  
+                    [premisesTypeData] ="premisesTypeData"  
+                    [countries] ="countries"  
+                    [regions] ="regions"
+                    [classificationData] ="classificationData"
+                    [districts] ="districts"  
+                    [businessTypesData] ="businessTypesData" 
+                    [businessScaleData] ="businessScaleData"  
+                    [businessCategoryData] ="businessCategoryData"  
+                    [zoneData] ="zoneData"  
+                    [confirmDataParam] ="confirmDataParam"
+                    [sub_module_id] ="sub_module_id" 
+                    [module_id] ="module_id" 
+                    [application_code] ="application_code"
+                    [tra_premise_id] ="tra_premise_id" 
+                    [registered_id] ="registered_id"
+                    [isReadOnlyTraderasContact] ="isReadOnlyTraderasContact" 
+                    [isConvicted]="isConvicted"
+                    [isCancelled]="isCancelled"
+                    [isHealth]="isHealth"
+                    [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm" 
+                    [payingCurrencyData] ="payingCurrencyData" 
+                    [fastTrackOptionsData] ="fastTrackOptionsData" 
+                    [newPremisesPersonnelDetailsFrm] ="newPremisesPersonnelDetailsFrm"
+                    (businessTypeEvent)="business_type_id=$event"
+                    [is_readonly] ="is_readonly" >
+  
+                    </app-drugshop-generaldetails>
+                    <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+                    <dx-button
+                        text="Dashboard"
+                        type="success"
+                        icon="fa fa-eraser"
+                        [elementAttr]="{  class: 'pull-left' }"
+                        (onClick)="onPremisesDashboard()">
+                    </dx-button>
+                    <button type="submit" (click)="onSavePremisesApplication()" class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Drug Shop
+                    Application && Drug Shop Documents  Next </button>
 
-                            [is_readonly] ="is_readonly" >
+                </div>
+                </wizard-step>
+             <wizard-step stepTitle=" Directors or Partner Details and License to Operate Pharmaceutical Business & Nearest Drug Shops Location"   navigationSymbol="Step 2" class="wizardStep-height">
             
-                            </app-drugshop-generaldetails>
-                            <div class=" div-footer" style="border-top: 1px solid #ccc; ">
-                            
-                                <button class="btn btn-primary pull-right" style="margin:5px;" [disabled]="!premise_id" nextStep type="button">
-                    &nbsp;<i class="fa fa-angle-double-right"></i></button>
-
-                                <button type="submit" (click)="onSavePremisesApplication()" class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Drug Shop
-                    Application &&  Documents Next</button>
-
+                 <div class="accordion" id="premisesInfo" >
+                <div class="card" >
+                    <div class="card-headerdefined" id="headingTwo">
+                        <button class="btn btn-link " type="button" 
+                            data-toggle="collapse" data-target="#premises_otherdetails"
+                             aria-expanded="false" aria-controls="premises_otherdetails">
+                             Directors or Partner Details applying on Behalf of Company
+                        </button>
+                    </div>
+                    <div id="premises_otherdetails" class="collapse show" 
+                        aria-labelledby="headingTwo" data-parent="#premisesInfo">
+                        <div class="card-body no-padding">
+                            <div class="no-padding">
+                                <app-drugshop-personneldetails
+                                [premisesDirectorsDetailsfrm] ="premisesDirectorsDetailsfrm"  
+                                [newPremisesDirectorsDetailsFrm] ="newPremisesDirectorsDetailsFrm"  
+                                [premDirectorsDetailsData] ="premDirectorsDetailsData"  
+                                [isBusinessPersonnelPopupVisible] ="isBusinessPersonnelPopupVisible"  
+                                [qualificationsData] ="qualificationsData"  
+                                [personnelPositionData] ="personnelPositionData"  
+                                 [studyFieldsData] ="studyFieldsData"  
+                                [personnel_informationData] ="personnel_informationData"  
+                                [isaddNewPremisesDirectorsDetails] ="isaddNewPremisesDirectorsDetails" 
+                                [is_readonly] ="is_readonly"  
+                                [premise_id] ="premise_id"  
+                                [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
+                                >
+                                </app-drugshop-personneldetails>          
                             </div>
-                    
-                    </wizard-step>
-                    
-                    <wizard-step stepTitle="Documents" class="wizardStep-height" navigationSymbol="Step 5" >
-                        <div class=" wizard-content">
-                            <app-application-documents   [business_type_id]="business_type_id" [section_id]="section_id" [module_id]="module_id" [status_id]="status_id" [sub_module_id]="sub_module_id" [application_code]="application_code"></app-application-documents>
                         </div>
-                        <div class="wizard-divbottom">
-                            <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Previous
+                    </div>
+                    <div class="card">
+                        <div class="card-headerdefined" id="headingTwo">
+                            <button class="btn btn-link " type="button" 
+                                data-toggle="collapse" data-target="#premises_staffdetails"
+                                aria-expanded="false" aria-controls="premises_staffdetails">
+                                Does The Applicant or Director hold License to Operate Pharmaceutical Business
+                            </button>
+                        </div>
+                        <div id="premises_staffdetails" class="collapse show" 
+                            aria-labelledby="headingTwo" data-parent="#premisesInfo">
+                            <div class="card-body no-padding">
+                                <div class="no-padding">
+                                    <app-drugshop-licensedetails 
+                                    [premisesDetailsfrm] ="premisesDetailsfrm"  
+                                    [newPremisesDetailsfrm] ="newPremisesDetailsfrm"  
+                                    [premPersonnelDetailsData] ="premPersonnelDetailsData" 
+                                    [countries] ="countries"  
+                                    [confirmDataParam]="confirmDataParam"
+                                    [regions] ="regions"  
+                                    [districts] ="districts"
+                                    [traderAccountsDetailsData] ="traderAccountsDetailsData"
+                                    [isBusinessPersonnelPopupVisible] ="isBusinessPersonnelPopupVisible"  
+                                    [qualificationsData] ="qualificationsData"  
+                                    [personnelPositionData] ="personnelPositionData"  
+                                    [studyFieldsData] ="studyFieldsData"  
+                                    [personnel_informationData] ="personnel_informationData"  
+                                    [isaddNewPremisesPersonnelDetails] ="isaddNewPremisesPersonnelDetails"  
+              
+                                    [is_readonly] ="is_readonly"  
+
+                                    [premise_id] ="premise_id"  
+                                    [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
+                                    >
+                                    </app-drugshop-licensedetails>   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-headerdefined" id="headingThree">
+                            <button class="btn btn-link " type="button" 
+                                data-toggle="collapse"  data-target="#premises_storelocationdetails"
+                                aria-expanded="false" aria-controls="premises_storelocationdetails">
+                                Nearest Pharmacy Location Details
+                            </button>
+                        </div>
+                        <div id="premises_storelocationdetails" class="collapse show" 
+                            aria-labelledby="headingThree" data-parent="#premisesInfo">
+                            <div class="card-body no-padding">
+                                <div class="no-padding">
+                                    <app-drugshop-nearestlocation 
+                                    [premisesStoreslocationFrm] ="premisesStoreslocationFrm"  
+                                    [countries] ="countries"  
+                                    [regions] ="regions"     
+                                    [premise_id] ="premise_id"
+                                    [isLocationPopupVisible]="isLocationPopupVisible"  
+                                    [districts] ="districts"  
+                                    [is_readonly] ="is_readonly">
+                                    </app-drugshop-nearestlocation>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+                <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
+                 <button type="button" class="btn btn-primary" previousStep>&nbsp;<i class="fa fa-angle-double-left"></i>Previous
+                     Premises Information</button>
+                 <button type="button" class="btn btn-primary" (click)="funcValidatePremBusinessDetails(2+initWizardPanel)">Next Drug Shop Documents &nbsp;<i class="fa fa-angle-double-right"></i></button>
+                 </div>
+            </wizard-step>
+            <wizard-step stepTitle="Documents" class="wizardStep-height" navigationSymbol="Step 5" >
+                <div class=" wizard-content">
+                    <app-application-documents   [business_type_id]="business_type_id" [section_id]="section_id" [module_id]="module_id" [status_id]="status_id" [sub_module_id]="sub_module_id" [application_code]="application_code"></app-application-documents>
+                    </div>
+                <div class="wizard-divbottom">
+                     <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Previous
                      Documents</button>
 
 

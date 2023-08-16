@@ -29,6 +29,8 @@ Route::group(['middleware' => 'web', 'prefix' => 'premiseregistration'], functio
     Route::get('getPremisesApprovedAppList', 'PremiseRegistrationController@getPremisesApprovedAppList');
 
     Route::get('getDrugShopPreInspectionList', 'PremiseRegistrationController@getDrugShopPreInspectionList');
+    
+     Route::get('getPremisePreInspectionList', 'PremiseRegistrationController@getPremisePreInspectionList');
 
 
     Route::post('onDeleteOnlineApplicationQueries', 'PremiseRegistrationController@onDeleteOnlineApplicationQueries');
@@ -64,8 +66,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premiseregistration'], fu
     Route::get('getPremisePersonnelDetails', 'PremiseRegistrationController@getPremisePersonnelDetails');
 
     Route::get('getPremiseDirectorsDetails', 'PremiseRegistrationController@getPremiseDirectorsDetails');
-
-    
+    Route::get('getPremiseStaffDetails', 'PremiseRegistrationController@getPremiseStaffDetails');
     Route::post('savePremiseRegCommonData', 'PremiseRegistrationController@savePremiseRegCommonData');
     Route::post('deletePremiseRegRecord', 'PremiseRegistrationController@deletePremiseRegRecord');
     Route::post('softDeletePremiseRegRecord', 'PremiseRegistrationController@softDeletePremiseRegRecord');

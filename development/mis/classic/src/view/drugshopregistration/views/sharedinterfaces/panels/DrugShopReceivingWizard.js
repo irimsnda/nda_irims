@@ -23,7 +23,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.DrugSh
                 tooltip: 'Search',
                 text: 'Search Pre Inspection Application',
                 action: 'searchPreInspectionDrugShop',
-                name: 'search_PreInspection_DrugShop',
+                name: 'search_PreInspection_Premise',
                 ui: 'soft-red',
                 childXtype: 'preinspectiondrugshopselectiongrid',
                 winTitle: 'Pre Inspection Selection List',

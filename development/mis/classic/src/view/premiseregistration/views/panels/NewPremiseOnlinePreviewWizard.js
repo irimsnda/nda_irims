@@ -167,7 +167,7 @@ Ext.define('Admin.view.premiseregistration.views.panels.NewPremiseOnlinePreviewW
                     ui: 'soft-purple',
                     iconCls: 'x-fa fa-thumbs-down',
                     name: 'reject_btn',
-                    hidden: true,
+                    //hidden: true,
                     
                     handler: 'submitRejectedOnlineApplicationFrmBtn',
                     bind: {
@@ -181,7 +181,13 @@ Ext.define('Admin.view.premiseregistration.views.panels.NewPremiseOnlinePreviewW
                     iconCls: 'fa fa-save',
                     name: 'save_screening_btn',
                     disabled: true
-                }, {
+                },   {
+                    text: 'Assign Zone',
+                    ui: 'soft-red',
+                    iconCls: 'fa fa-save',
+                    name: 'assign_zone',
+                    
+                },{
                     text: 'Submit Application',
                     ui: 'soft-purple',
                     iconCls: 'x-fa fa-check',

@@ -550,14 +550,19 @@ class CommonParameterController extends BaseController
         }
         $filters = (array)json_decode($filters);
         $filters=array_filter($filters);
-
         
         try {
-            if($table_name == 'par_business_types' || $table_name == 'pms_program_details'){
+            if($table_name == 'par_business_types'){
                 $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->whereIn('id',[1,2,4])
+                        ->select('t1.*');
+            } else if($table_name == 'pms_program_details'){
+                 $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')
                         //->join('par_sections as t2','t1.section_id','=','t2.id')
                         ->select('t1.*');
+
             }
              else if($table_name == 'par_inspection_types'){
                 $qry = DB::connection($db_con)

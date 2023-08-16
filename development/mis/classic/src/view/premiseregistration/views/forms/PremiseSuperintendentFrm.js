@@ -52,6 +52,8 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseSuperintendentFrm'
             {
                 xtype: 'textfield',
                 name: 'registration_no',
+                hidden:true,
+                allowBlank:true,
                 fieldLabel: 'Registration No'
             },{
                 xtype: 'textfield',

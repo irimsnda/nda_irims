@@ -36,7 +36,7 @@ Ext.define('Admin.view.productregistration.views.toolbars.VetProductRegTb', {
                     },
                     '-',
                     {
-                        text: ' Product Renewal',
+                        text: 'Product Notifications',
                         iconCls: 'x-fa fa-check',
                         handler: 'showRenAltProductRegistration',
                         app_type: 8

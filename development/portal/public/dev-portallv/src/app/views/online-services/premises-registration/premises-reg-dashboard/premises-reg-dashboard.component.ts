@@ -1,23 +1,23 @@
 import { Component, OnInit, ViewChild, NgModule, ViewContainerRef } from '@angular/core';
 import { DataTableResource } from 'angular5-data-table';
 import { PremisesApplicationsService } from '../../../../services/premises-applications/premises-applications.service';
-import { ConfigurationsService } from '../../../../services/shared/configurations.service';
-import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+ import { ConfigurationsService } from '../../../../services/shared/configurations.service';
+  import { Router } from '@angular/router';
+  import { Subject } from 'rxjs';
 
-import { AnimationStyleNormalizer } from '@angular/animations/browser/src/dsl/style_normalization/animation_style_normalizer';
-import { ToastrService } from 'ngx-toastr';
+  import { AnimationStyleNormalizer } from '@angular/animations/browser/src/dsl/style_normalization/animation_style_normalizer';
+  import { ToastrService } from 'ngx-toastr';
 
-import {
-  DxDataGridModule,
-  DxDataGridComponent,
-  DxTemplateModule
-} from 'devextreme-angular';
-import { SpinnerVisibilityService } from 'ng-http-loader';
-import { ModalDialogService } from 'ngx-modal-dialog';
-import { Utilities } from 'src/app/services/common/utilities.service';
-import { AppSettings } from 'src/app/app-settings';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+  import {
+    DxDataGridModule,
+    DxDataGridComponent,
+    DxTemplateModule
+  } from 'devextreme-angular';
+  import { SpinnerVisibilityService } from 'ng-http-loader';
+  import { ModalDialogService } from 'ngx-modal-dialog';
+  import { Utilities } from 'src/app/services/common/utilities.service';
+  import { AppSettings } from 'src/app/app-settings';
+  import { FormGroup, FormControl, Validators } from '@angular/forms';
 @Component({
   selector: 'app-premises-reg-dashboard',
   templateUrl: './premises-reg-dashboard.component.html',
@@ -69,6 +69,7 @@ export class PremisesRegDashboardComponent implements OnInit {
   premisessapp_details:any;
   module_id:number = 2;
   businessTypeDetailsData:any;
+  businessDetailsData:any;
   sectionsData:number;
    applicationStatusData:number;
    FilterDetailsFrm:FormGroup;
@@ -82,11 +83,13 @@ export class PremisesRegDashboardComponent implements OnInit {
    sub_module_id:number;
    business_typecategory_id:number;
    businessTypesData:any;
+   premisesTypesData:any;
    prodProductTypeData:any;
    regulatedSectionsData:any;
    isPremisesApplicationInitialisation:boolean;
    premisesAppSelectionfrm:FormGroup;
    section_id:number;
+   premise_type_id:number;
    business_type_id:number;
   constructor(private utilityService:Utilities,private viewRef: ViewContainerRef,private modalServ: ModalDialogService, private spinner: SpinnerVisibilityService,public toastr: ToastrService, private router: Router, private configService: ConfigurationsService, private appService: PremisesApplicationsService) {
 
@@ -96,7 +99,8 @@ export class PremisesRegDashboardComponent implements OnInit {
       premises_name: new FormControl('', Validators.compose([Validators.required])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
       application_type: new FormControl('', Validators.compose([Validators.required])),
-      status: new FormControl('', Validators.compose([Validators.required]))
+      status: new FormControl('', Validators.compose([Validators.required])),
+      status_name:new FormControl('', Validators.compose([Validators.required]))
     });
     this.FilterDetailsFrm = new FormGroup({
       sub_module_id: new FormControl('', Validators.compose([])),
@@ -116,8 +120,7 @@ export class PremisesRegDashboardComponent implements OnInit {
       section_id: new FormControl(this.sectionsData, Validators.compose([])),
       sub_module_id: new FormControl(this.sub_module_id, Validators.compose([])),
       regulated_producttype_id: new FormControl('', Validators.compose([])),
-      business_type_id: new FormControl('', Validators.compose([Validators.required])),
-      business_typecategory_id:new FormControl('',  Validators.compose([]))
+      business_type_id: new FormControl('', Validators.compose([Validators.required]))
     });
     this.onBusinessTypesLoad();
     this.onLoadApplicationstatuses();
@@ -125,7 +128,8 @@ export class PremisesRegDashboardComponent implements OnInit {
     this.onLoadreasonForDismissalData();
     this.onLoadApplicationCounterDueforRenewal();
     this.onLoadprodProductTypeData();
-    this.onBusinessTypesDetailsLoad()
+    this.onBusinessTypesDetailsLoad();
+    this.onLoadPremiseTypesLoad();
    }
   
   ngOnInit() {
@@ -272,7 +276,6 @@ export class PremisesRegDashboardComponent implements OnInit {
     this.configService.onLoadConfigurationData(data)
       .subscribe(
         data => {
-          console.log(data);
           this.businessTypeDetailsData = data;
         },
         error => {
@@ -324,7 +327,7 @@ export class PremisesRegDashboardComponent implements OnInit {
   }
   onLoadPremisesCounterDetails(sub_module_id) {
 
-    this.utilityService.onLoadApplicationCounterDetails('tra_premises_applications',sub_module_id)
+    this.utilityService.onLoadApplicationCounterDetails('wb_premises_applications',sub_module_id)
       .subscribe(
         data => {
           if (data.success) {
@@ -667,7 +670,9 @@ export class PremisesRegDashboardComponent implements OnInit {
   //  // this. OnLoadBusinesstypeCategories($event.value);
 
   // }
-  
+
+
+
   onBusinessTypesLoad() {
 
     var data = {
@@ -682,7 +687,45 @@ export class PremisesRegDashboardComponent implements OnInit {
           return false
         });
   }
-   
+    onLoadPremiseTypesLoad() {
+
+    var data = {
+      table_name: 'par_premises_types',
+    };
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.premisesTypesData = data;
+        },
+        error => {
+          return false
+        });
+  }
+      onPremiseCboSelect($event) {
+
+    this.premise_type_id = $event.selectedItem.id;
+
+    this.onLoadBusinessDetails(this.premise_type_id);
+
+  } 
+
+
+  onLoadBusinessDetails(premise_type_id) {
+
+    var data = {
+      table_name: 'par_business_types',
+      premise_type_id: premise_type_id
+    };
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.businessDetailsData = data;
+        },
+        error => {
+          return false
+        });
+  }  
+
   onLoadprodProductTypeData() {
     var data = {
       table_name: 'par_regulated_productstypes'

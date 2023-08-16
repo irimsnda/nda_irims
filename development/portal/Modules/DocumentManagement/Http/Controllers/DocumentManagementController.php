@@ -789,7 +789,7 @@ public function iterateDirectories($uncompressedpath, $parent_id, $application_d
 					
 					$portalapp_variationsdata_id = $req->portalapp_variationsdata_id;
 					$status_id = $req->status_id;
-				$parent_id = $req->parent_id;
+				   $parent_id = $req->parent_id;
 
 					$document_typedata = getApplicationApplicableDocuments(	$section_id,$sub_module_id,	$status_id);
 					
@@ -920,7 +920,7 @@ public function iterateDirectories($uncompressedpath, $parent_id, $application_d
 															'is_mandatory'=>$is_mandatory,
 															'initial_file_name'=>'',
 															'file_type'=>'',
-															'dms_node_id'=>'',
+															''=>'',
 															'allowed_extensions'=>$allowed_extensions,
 															'version_no'=>'',
 												);

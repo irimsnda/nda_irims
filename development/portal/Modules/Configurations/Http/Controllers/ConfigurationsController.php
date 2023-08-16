@@ -34,9 +34,9 @@ class ConfigurationsController extends Controller
                 ->first();
         $traderaccount_type_id=$record->traderaccount_type_id;
         if($traderaccount_type_id == 9){
-                    $data = DB::table('wb_navigation_items as t1')
-                    //->join('wb_navigation_menu_account_type as t2', 't1.id','=','t2.navigation_menu_id')
-                    ->select('t1.*')
+                    $data = DB::table('wb_navigation_items')
+                  //  ->join('wb_navigation_menu_account_type as t2', 't1.id','=','t2.navigation_menu_id')
+                   // ->select('t1.*')
                     //->where('t2.account_type_id',$traderaccount_type_id)
                     ->where(array('navigation_type_id'=>$navigation_type_id, 'is_online'=>1, 'is_disabled'=>0,'level'=>0))
                     ->orderBy('order_no');
@@ -51,7 +51,6 @@ class ConfigurationsController extends Controller
             }else{
                $data = DB::table('wb_navigation_items')
                     ->where(array('navigation_type_id'=>$navigation_type_id, 'is_online'=>1, 'is_disabled'=>0,'level'=>0))
-                    //->whereNotIn('id',[230,231,232,233,235])
                     ->orderBy('order_no');
 
             }
@@ -153,7 +152,6 @@ class ConfigurationsController extends Controller
             $filter = $req->filter;
             $table_name = $req->table_name;
              $table_name = base64_decode($table_name);
-        
             $sectionSelection = $req->sectionSelection;
             unset($requestData['table_name']);
             unset($requestData['sectionSelection']);
@@ -189,6 +187,12 @@ class ConfigurationsController extends Controller
                     $sql =  $sql->whereIn('id', $sectionsId);
                   
                 }
+            }
+            if($table_name == 'par_business_types'){
+                    $sql =  $sql->whereNotIn('id',[3,5,7]);
+
+                
+ 
             }
             if($table_name == 'par_classifications'){
                 $prodclass_category_id = $req->prodclass_category_id;

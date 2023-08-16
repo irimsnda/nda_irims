@@ -29,6 +29,18 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
                 click: 'pharmacovigilancereportingHome'
             },
 
+            'clinicaltrialsotherrptdetailsfrm combo[name=study_site_id]': {
+                afterrender: 'afterStudySitesComboRender'
+            },
+
+            'clinicaltrialsprogressrptdetailsfrm combo[name=study_site_id]': {
+                afterrender: 'afterProgressRptStudySitesComboRender'
+            },
+
+            'clinicaltrialssaerptdetailsfrm combo[name=study_site_id]': {
+                afterrender: 'afterSaeRptStudySitesComboRender'
+            },
+
 
             
             //NEW
@@ -651,6 +663,102 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
 
 
     },
+
+     afterStudySitesComboRender: function (cmbo) {
+                var store = cmbo.getStore(),
+                frm = cmbo.up('form'),
+                application_code =0,
+                mainTabPanel = this.getMainTabPanel(),
+                activeTab = mainTabPanel.getActiveTab()
+                if(frm.up('ctrotherreportappmoredetailswizard')){
+                                   
+                     application_code = frm.up('ctrotherreportappmoredetailswizard').down('hiddenfield[name=application_code]').getValue();
+                }
+                else if(frm.up('clinicaltrialotherrptonlinepreviewpnl')){
+                    application_code = frm.up('clinicaltrialotherrptonlinepreviewpnl').down('hiddenfield[name=application_code]').getValue();
+                } 
+                 if(application_code != ''){
+                    application_code=application_code;
+
+                 }else{
+                    application_code=activeTab.down('hiddenfield[name=active_application_code]').getValue();
+                }   
+                     store.removeAll();
+                    store.load({
+                    params: { application_code: application_code },
+                    callback: function(records, operation, success) {
+                    if (success && records.length > 0) {
+                    // Assuming the first record in the loaded data should be selected
+                    cmbo.setValue(records[0].get('id'));
+                   }
+                    }
+             });
+        },
+
+        afterProgressRptStudySitesComboRender: function (cmbo) {
+                var store = cmbo.getStore(),
+                frm = cmbo.up('form'),
+                application_code =0,
+                mainTabPanel = this.getMainTabPanel(),
+                activeTab = mainTabPanel.getActiveTab()
+                if(frm.up('ctrprogressreportappmoredetailswizard')){
+                                   
+                     application_code = frm.up('ctrprogressreportappmoredetailswizard').down('hiddenfield[name=application_code]').getValue();
+                }
+                else if(frm.up('clinicaltrialprogressrptonlinepreviewpnl')){
+                    application_code = frm.up('clinicaltrialprogressrptonlinepreviewpnl').down('hiddenfield[name=application_code]').getValue();
+                } 
+                 if(application_code != ''){
+                    application_code=application_code;
+
+                 }else{
+                    
+                    application_code=activeTab.down('hiddenfield[name=active_application_code]').getValue();
+                }   
+                     store.removeAll();
+                    store.load({
+                    params: { application_code: application_code },
+                    callback: function(records, operation, success) {
+                    if (success && records.length > 0) {
+                    // Assuming the first record in the loaded data should be selected
+                    cmbo.setValue(records[0].get('id'));
+                   }
+                    }
+             });
+        },
+
+        afterSaeRptStudySitesComboRender: function (cmbo) {
+                var store = cmbo.getStore(),
+                frm = cmbo.up('form'),
+                application_code =0,
+                mainTabPanel = this.getMainTabPanel(),
+                activeTab = mainTabPanel.getActiveTab()
+                if(frm.up('ctrsaereportappmoredetailswizard')){
+                                   
+                     application_code = frm.up('ctrsaereportappmoredetailswizard').down('hiddenfield[name=application_code]').getValue();
+                }
+                else if(frm.up('clinicaltrialsaerptonlinepreviewpnl')){
+                    application_code = frm.up('clinicaltrialsaerptonlinepreviewpnl').down('hiddenfield[name=application_code]').getValue();
+                } 
+                 if(application_code != ''){
+                    application_code=application_code;
+
+                 }else{
+
+                    application_code=activeTab.down('hiddenfield[name=active_application_code]').getValue();
+                }   
+                     store.removeAll();
+                    store.load({
+                    params: { application_code: application_code },
+                    callback: function(records, operation, success) {
+                    if (success && records.length > 0) {
+                    // Assuming the first record in the loaded data should be selected
+                    cmbo.setValue(records[0].get('id'));
+                   }
+                    }
+             });
+        },
+
     loadClinicalTrialRegistryEditApp:function(grid,record){
         Ext.getBody().mask('Please wait...');
         var me = this,
@@ -3572,7 +3680,7 @@ Ext.getBody().unmask();
             clinicaltrialappmoredetailswizard = activeTab.down('ctrprogressreportappmoredetailswizard'),
             
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
-            application_code = activeTab.down('hiddenfield[name=application_code]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             app_doc_types_store = activeTab.down('combo[name=applicable_documents]').getStore(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
@@ -3615,8 +3723,7 @@ Ext.getBody().unmask();
                                 detailsFrm.loadRecord(model);
                                
                                 applicantFrm.down('button[action=link_applicant]').setDisabled(true);
-                               
-                                
+
                                 clinicaltrialappmoredetailswizard.down('hiddenfield[name=process_id]').setValue(process_id);
                                 clinicaltrialappmoredetailswizard.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
                                 clinicaltrialappmoredetailswizard.down('hiddenfield[name=application_id]').setValue(application_id);
@@ -3663,7 +3770,7 @@ Ext.getBody().unmask();
             clinicaltrialappmoredetailswizard = activeTab.down('ctrsaereportappmoredetailswizard'),
             
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
-            application_code = activeTab.down('hiddenfield[name=application_code]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             app_doc_types_store = activeTab.down('combo[name=applicable_documents]').getStore(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
@@ -3751,7 +3858,7 @@ Ext.getBody().unmask();
             applicantFrm = activeTab.down('applicantdetailsfrm'),
             detailsFrm = activeTab.down('clinicaltrialsotherrptdetailsfrm'),
             
-            clinicaltrialappmoredetailswizard = activeTab.down('ctrsotherreportappmoredetailswizard'),
+            clinicaltrialappmoredetailswizard = activeTab.down('ctrotherreportappmoredetailswizard'),
             
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=application_code]').getValue(),
@@ -5071,17 +5178,18 @@ Ext.getBody().unmask();
         var me = this,
             mainTabPanel = me.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
-            applicationdetails_panel = activeTab.down('#main_processpanel').applicationdetails_panel;
 
-         //   wizardPnl = Ext.widget(applicationdetails_panel);
+         //    if(activeTab.down('#main_processpanel').applicationdetails_panel){
+         //    applicationdetails_panel = activeTab.down('#main_processpanel').applicationdetails_panel;
+         // //   wizardPnl = Ext.widget(applicationdetails_panel);
+         //    }
+         //    else if(applicationdetails_panel ==''){
+                applicationdetails_panel = Ext.widget('clinicaltrialappmoredetailswizard'),
+                //applicationdetails_panel = clinicaltrialappmoredetailswizard;
 
-            if(applicationdetails_panel ==''){
-
-                applicationdetails_panel = clinicaltrialappmoredetailswizard;
-
-            }
+            //}
              wizardPnl = Ext.create('Ext.tab.Panel', {layout: 'fit',items:[{xtype: applicationdetails_panel, title: 'Clinical Application Details '}]});
-          
+           
           var  applicantFrm = wizardPnl.down('applicantdetailsfrm'),
             detailsFrm = wizardPnl.down('clinicaltrialdetailsfrm'),
             sponsorFrm = wizardPnl.down('clinicaltrialsponsorfrm'),
@@ -5208,7 +5316,6 @@ Ext.getBody().unmask();
 
          //   wizardPnl = Ext.widget(applicationdetails_panel);
              wizardPnl = Ext.create('Ext.tab.Panel', {layout: 'fit',items:[{xtype: applicationdetails_panel, title: 'Clinical Application Details '}]});
-          
           if(sub_module_id==23){
              var detailsFrm = wizardPnl.down('clinicaltrialsprogressrptdetailsfrm'),
              action_url='clinicaltrial/getClinicalTrialProgressReportMoreDetails';

@@ -30,6 +30,9 @@ Ext.define('Admin.view.drugshopregistration.views.panels.DrugShopAppMoreDetailsW
     {
         xtype: 'hiddenfield',
         name: 'module_id'
+    },{
+        xtype: 'hiddenfield',
+        name: 'premise_id'
     },
     {
         xtype: 'hiddenfield',

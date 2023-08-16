@@ -1,7 +1,7 @@
 /**
  * Created by Kip on 11/20/2018.
  */
-Ext.define('Admin.view.premiseregistration.views.panels.DrugShopInspectionDetailsTabPnl', {
+Ext.define('Admin.view.drugshopregistration.views.panels.DrugShopInspectionDetailsTabPnl', {
     extend: 'Ext.tab.Panel',
     xtype: 'drugshopinspectiondetailstabpnl',
     controller: 'premiseregistrationvctr',

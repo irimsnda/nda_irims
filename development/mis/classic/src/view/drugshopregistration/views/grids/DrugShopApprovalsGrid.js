@@ -396,7 +396,7 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopApprovalsGrid', 
                                     handler: 'showInspectionDetails'
                                 },
                                 {
-                                    text: 'Inspection Report(RID)',
+                                    text: 'RID Recomendation',
                                     iconCls: 'x-fa fa-bars',
                                     childXtype: 'drugshopinspectiondetailstabpnl',
                                     winTitle: 'Inspection Report(Regional Inspector)',
@@ -407,7 +407,7 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopApprovalsGrid', 
                                     handler: 'showInspectionDetails'
                                 },
                                 {
-                                    text: 'Inspection Report(Chief Regional Inspector)',
+                                    text: 'CRID Recomendation',
                                     iconCls: 'x-fa fa-bars',
                                     childXtype: 'drugshopinspectiondetailstabpnl',
                                     winTitle: 'Inspection Report(Lead Inspector)',

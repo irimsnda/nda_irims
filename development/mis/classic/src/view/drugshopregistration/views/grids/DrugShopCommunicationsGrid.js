@@ -373,7 +373,7 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopCommunicationsGr
                                     handler: 'showInspectionDetails'
                                 },
                                 {
-                                    text: 'Inspection Report(Chief Regional Inspector)',
+                                    text: 'Inspection Report(CRID)',
                                     iconCls: 'x-fa fa-bars',
                                     childXtype: 'drugshopinspectiondetailstabpnl',
                                     winTitle: 'Inspection Report(Lead Inspector)',

@@ -73,11 +73,12 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsOtherRptDetailsFr
             name: 'date_of_protocol',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',readOnly: true,
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s'
         },{
             xtype: 'combo',
             queryMode: 'local',
             forceSelection: true,
+            hidden:true,
             valueField: 'id',
             displayField: 'name',
             fieldLabel: 'Clinical Study Reporting Type',
@@ -102,6 +103,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsOtherRptDetailsFr
             queryMode: 'local',
             forceSelection: true,
             valueField: 'id',
+            hidden:true,
             displayField: 'name',
             fieldLabel: 'Clinical Study Status',
             name: 'clinicalstudy_status_id',
@@ -120,7 +122,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsOtherRptDetailsFr
                     isLoad: true
                 }
             }
-        },{
+        },
+        {
             xtype: 'combo',
             queryMode: 'local',
             forceSelection: true,
@@ -141,45 +144,25 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsOtherRptDetailsFr
                         }
                     },
                     isLoad: true
-                },
-                afterrender:function(cbo){
-                        var store = cbo.getStore(),
-                            frm = cbo.up('form');
-                            application_code =0;
-                            // if(frm.up('ctrotherreportappmoredetailswizard')){
-                               
-                            //     application_code = frm.up('ctrotherreportappmoredetailswizard').down('hiddenfield[name=application_code]').getValue();
-                            // }
-                            // else if(frm.up('clinicaltrialotherrptonlinepreviewpnl')){
-                            //     application_code = frm.up('clinicaltrialotherrptonlinepreviewpnl').down('hiddenfield[name=application_code]').getValue();
-                            // } else{
-                                panel=frm.up('panel');
-                                mainPnl=panel.up('panel');
-                                activeTab=panel.up('panel');
-                                application_code=activeTab.down('hiddenfield[name=application_code]').getValue();
-                              console.log(application_code);
-                              console.log(activeTab);
-                                
-                            store.removeAll();
-                            store.load({params:{application_code:application_code}});
-
                 }
             }
-        },  {
+        }, 
+      {
         xtype: 'datefield',
         name: 'reporting_start_date',
         fieldLabel: 'Reporting Period Start Date',
         submitFormat: 'Y-m-d',
         format: 'd/m/Y',
+        hidden:true,
         allowBlank: false,
-        altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
+        altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s'
       },{
             xtype: 'datefield',
             fieldLabel: 'Reporting Period End Date',
             name: 'reporting_end_date',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s'
         },
         {
             xtype: 'textarea',columnWidth: 1,

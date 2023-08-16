@@ -24,13 +24,16 @@ Route::group(['middleware' => ['api', 'cors'], 'prefix' => 'premisesregistration
 
     Route::get('getPremisesCounterDetails', 'PremisesRegistrationController@getPremisesCounterDetails');
     Route::get('onSearchPublicRegisteredpremises', 'PremisesRegistrationController@onSearchPublicRegisteredpremises');
-Route::get('getPremisesStoreLocationDetails', 'PremisesRegistrationController@getPremisesStoreLocationDetails');
+    Route::get('getPremisesStoreLocationDetails', 'PremisesRegistrationController@getPremisesStoreLocationDetails');
+    Route::get('getDrugShopStoreLocationDetails', 'PremisesRegistrationController@getDrugShopStoreLocationDetails');
 });
 Route::group(['middleware' => 'auth:api', 'prefix' => 'premisesregistration'], function()
 {
     Route::post('onSavePremisesApplication', 'PremisesRegistrationController@onSavePremisesApplication');
-     Route::post('onSavePremisesStoreLocationDetails', 'PremisesRegistrationController@onSavePremisesStoreLocationDetails');
+    Route::post('onSavePremisesStoreLocationDetails', 'PremisesRegistrationController@onSavePremisesStoreLocationDetails');
+    Route::post('onSaveDrugShopStoreLocationDetails', 'PremisesRegistrationController@onSaveDrugShopStoreLocationDetails');
     Route::post('onSavePremisesDirectorsDetails', 'PremisesRegistrationController@onSavePremisesDirectorsDetails');
+    Route::post('onSaveApprovalRecomDetails', 'PremisesRegistrationController@onSaveApprovalRecomDetails');
 
     Route::post('onSaveRenPremisesApplication', 'PremisesRegistrationController@onSaveRenPremisesApplication');
     
@@ -51,7 +54,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premisesregistration'], f
   
     //get 
     Route::get('getPremisesApplicationLoading', 'PremisesRegistrationController@getPremisesApplicationLoading');
-
+   Route::get('getPremisesApplicationPharmicts', 'PremisesRegistrationController@getPremisesApplicationPharmicts');
 
     Route::get('getPremisesArchivedApplicationLoading', 'PremisesRegistrationController@getPremisesArchivedApplicationLoading');
     
@@ -66,11 +69,13 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premisesregistration'], f
 
     Route::get('getpremisesApplicationDetails', 'PremisesRegistrationController@getpremisesApplicationDetails');
     Route::get('getPersonnelQualifications', 'PremisesRegistrationController@getPersonnelQualifications');
+    Route::get('getBusinessTypeDetails', 'PremisesRegistrationController@getBusinessTypeDetails');
     Route::get('getAppSubmissionGuidelines', 'PremisesRegistrationController@getAppSubmissionGuidelines');
   
     Route::get('getTradersRegisteredPremises', 'PremisesRegistrationController@getTradersRegisteredPremises');
     Route::get('getTradersRegisteredDrugShops', 'PremisesRegistrationController@getTradersRegisteredDrugShops');
     Route::get('getNearestPremises', 'PremisesRegistrationController@getNearestPremises');
+    Route::get('getNearestDrugShops', 'PremisesRegistrationController@getNearestDrugShops');
     Route::get('checkPendingPremisesRenewal', 'PremisesRegistrationController@checkPendingPremisesRenewal');
     
     Route::get('getPremisesAmmendementsRequest', 'PremisesRegistrationController@getPremisesAmmendementsRequest');

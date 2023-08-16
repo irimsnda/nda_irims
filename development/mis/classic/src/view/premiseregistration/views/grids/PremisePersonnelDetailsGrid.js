@@ -1,4 +1,6 @@
-
+/**
+ * Created by Kip on 11/7/2018.
+ */
 Ext.define('Admin.view.premiseregistration.views.grids.PremisePersonnelDetailsGrid', {
     extend: 'Ext.grid.Panel',
     controller: 'premiseregistrationvctr',
@@ -34,7 +36,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.PremisePersonnelDetailsGr
         iconCls: 'x-fa fa-plus',
         ui: 'soft-green',
         name: 'add_personnel',
-        winTitle: 'Premise Directors Details',
+        winTitle: 'Premise Personnel Details',
         childXtype: 'premisesuperintendentfrm',
         winWidth: '65%',
         storeID: 'premisepersonneldetailsstr',
@@ -88,9 +90,9 @@ Ext.define('Admin.view.premiseregistration.views.grids.PremisePersonnelDetailsGr
             } else {
                 add_btn.setVisible(true);
                 widgetCol.widget.menu.items = [{
-                    text: 'DIRECTOR(S)',
+                    text: 'Personnel Details',
                     iconCls: 'x-fa fa-user',
-                    winTitle: 'DIRECTOR(S) DETAILS',
+                    winTitle: 'Premise Personnel Details',
                     childXtype: 'premisesuperintendentfrm',
                     winWidth: '65%',
                     handler: 'showEditPremisePersonnelDetails',
@@ -113,52 +115,49 @@ Ext.define('Admin.view.premiseregistration.views.grids.PremisePersonnelDetailsGr
     },
     columns: [{
         xtype: 'gridcolumn',
-        dataIndex: 'directorfull_names',
+        dataIndex: 'personnel_name',
         text: 'Name',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'director_telephone_no',
+        dataIndex: 'telephone_no',
         text: 'Telephone No',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'director_email_address',
+        dataIndex: 'email_address',
         text: 'Email address',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'director_postal_address',
+        dataIndex: 'postal_address',
         text: 'Postal Address',
+        hidden:true,
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'position',
-        hidden:true,
         text: 'Position',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'registration_no',
-         hidden:true,
+        hidden:true,
         text: 'Registration No',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'study_field',
-         hidden:true,
         text: 'Field of Study',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'qualification',
-         hidden:true,
         text: 'Qualification',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'institution',
-        hidden:true,
         text: 'Institution',
         flex: 1
     }, {

@@ -834,15 +834,15 @@ public function getSystemNavigationMenuItems(Request $request)
         $department_id = $request->input('department_id');
         $zone_id = $request->input('zone_id');
         try {
-            $qry = DB::table('par_groups as t1')
-                // ->join('par_directorates as t2', 't1.directorate_id', '=', 't2.id')
+            $qry = DB::table('par_groups as t1') 
+                 ->leftjoin('par_regions as t2', 't1.region_id', '=', 't2.id')
                 // ->join('par_departments as t3', 't1.department_id', '=', 't3.id')
                 ->join('par_zones as t4', 't1.zone_id', '=', 't4.id')
                 ->leftJoin('par_user_categories as t5', 't1.user_category_id', '=', 't5.id')
                 ->leftJoin('par_externaluser_categories as t6', 't1.externaluser_category_id', '=', 't6.id')
                 
                 ->leftJoin('par_system_dashboards as t7', 't1.system_dashboard_id', '=', 't7.id')
-                ->select('t1.*','t5.name as user_category','t6.name as externaluser_category','t7.name as system_dashboard','t4.name as zone');
+                ->select('t1.*','t5.name as user_category','t2.name as region','t6.name as externaluser_category','t7.name as system_dashboard','t4.name as zone');
             // if (isset($directorate_id) && $directorate_id != '') {
             //     $qry->where('t1.directorate_id', $directorate_id);
             // }

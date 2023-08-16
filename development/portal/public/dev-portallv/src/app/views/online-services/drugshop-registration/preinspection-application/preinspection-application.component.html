@@ -428,6 +428,32 @@
                         </div>
                     </div>
                 </div>
+                <div class="card">
+                  <div class="card-headerdefined" id="headingOne">
+              
+                    <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#drugshop_storelocationdetails"
+                      aria-expanded="false" aria-controls="drugshop_storelocationdetails">
+                      Nearest Drug Shop Location Details
+                    </button>
+              
+                  </div>
+                  <div id="drugshop_storelocationdetails" class="collapse show" aria-labelledby="headingOne" data-parent="#premisesInfo">
+                        <div class="card-body no-padding">
+                            <div class="no-padding">
+                              <app-drugshop-neareststore 
+                              [premisesStoreslocationFrm] ="premisesStoreslocationFrm"  
+                              [countries] ="countries"  
+                              [regions] ="regions"     
+                              [premise_id] ="premise_id"
+                              [isLocationPopupVisible]="isLocationPopupVisible"  
+                              [districts] ="districts"  
+                              [is_readonly] ="is_readonly">
+                              </app-drugshop-neareststore>
+                                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
           </div>
               
           <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
@@ -637,7 +663,7 @@
             </div>
       </wizard-step>
       <wizard-step stepTitle="Drug Shops Application Details" class="wizardStep-height">
-              <app-drugshop-generaldetails  [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
+            <app-drugshop-generaldetails  [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
               [sectionsData] ="sectionsData"  
               [premisesTypeData] ="premisesTypeData"  
               [countries] ="countries"  
@@ -658,70 +684,87 @@
               [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm" 
               [payingCurrencyData] ="payingCurrencyData" 
               [fastTrackOptionsData] ="fastTrackOptionsData" 
-              [newPremisesPersonnelDetailsFrm] ="newPremisesPersonnelDetailsFrm" 
+              [newPremisesPersonnelDetailsFrm] ="newPremisesPersonnelDetailsFrm"
               (businessTypeEvent)="business_type_id=$event"
-
               [is_readonly] ="is_readonly" >
 
               </app-drugshop-generaldetails>
               <div class=" div-footer" style="border-top: 1px solid #ccc; ">
-                 
-                  <button class="btn btn-primary pull-right" style="margin:5px;" [disabled]="!premise_id" nextStep type="button">
-        &nbsp;<i class="fa fa-angle-double-right"></i></button>
-
-                  <button type="submit" (click)="onSavePremisesApplication()" class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Premises
-        Application &&  Next {{premises_typetitle}}</button>
+                  <dx-button
+                      text="Dashboard"
+                      type="success"
+                      icon="fa fa-eraser"
+                      [elementAttr]="{  class: 'pull-left' }"
+                      (click)="onPremisesDashboard()">
+                  </dx-button>
+                  <button type="submit" (click)="onSavePremisesApplication()" class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Drug Shop
+                  Application &&   Next Particulars Nearest Pharmacy</button>
 
               </div>
          
       </wizard-step>
-      <wizard-step stepTitle="{{premises_typetitle}}" class="wizardStep-height">
+      <wizard-step stepTitle=" Particulars of the Nearest Pharmacy "navigationSymbol="Step 2" class="wizardStep-height">
           
-              <app-premises-businessdetails  [premisesOtherDetailsfrm]        ="premisesOtherDetailsfrm"  
-                  [premisesOtherDetailsRows] ="premisesOtherDetailsRows"  
-                  [isBusinessTypePopupVisible] ="isBusinessTypePopupVisible"  
-                  [businessTypesData] ="businessTypesData"  
-                  [businessTypeDetailsData] ="businessTypeDetailsData"  
-                  [is_readonly] ="is_readonly"  
-                  [premise_id] ="premise_id"     [section_id] ="section_id"
-                  [business_type_id] ="business_type_id"  
-                  [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
-              >
+          <div class="accordion" id="premisesInfo">
+              <div class="card">
+                  <div class="card-headerdefined" id="headingTwo">
               
-              </app-premises-businessdetails>
+                    <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#premises_storelocationdetails"
+                      aria-expanded="false" aria-controls="premises_storelocationdetails">
+                      Nearest Pharmacy Location Details
+                    </button>
+              
+                  </div>
+                  <div id="premises_storelocationdetails" class="collapse show" aria-labelledby="headingTwo" data-parent="#premisesInfo">
+                        <div class="card-body no-padding">
+                            <div class="no-padding">
+                              <app-drugshop-nearestlocation 
+                              [premisesStoreslocationFrm] ="premisesStoreslocationFrm"  
+                              [countries] ="countries"  
+                              [regions] ="regions"     
+                              [premise_id] ="premise_id"
+                              [isLocationPopupVisible]="isLocationPopupVisible"  
+                              [districts] ="districts"  
+                              [is_readonly] ="is_readonly">
+                              </app-drugshop-nearestlocation>
+                                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                  <div class="card-headerdefined" id="headingOne">
+              
+                    <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#drugshop_storelocationdetails"
+                      aria-expanded="false" aria-controls="drugshop_storelocationdetails">
+                      Nearest Drug Shop Location Details
+                    </button>
+              
+                  </div>
+                  <div id="drugshop_storelocationdetails" class="collapse show" aria-labelledby="headingOne" data-parent="#premisesInfo">
+                        <div class="card-body no-padding">
+                            <div class="no-padding">
+                              <app-drugshop-nearestlocation 
+                              [premisesStoreslocationFrm] ="premisesStoreslocationFrm"  
+                              [countries] ="countries"  
+                              [regions] ="regions"     
+                              [premise_id] ="premise_id"
+                              [isLocationPopupVisible]="isLocationPopupVisible"  
+                              [districts] ="districts"  
+                              [is_readonly] ="is_readonly">
+                              </app-drugshop-nearestlocation>
+                                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+          </div>
+              
           <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
               <button type="button" class="btn btn-primary" previousStep>&nbsp;<i class="fa fa-angle-double-left"></i>Previous
-      Premises Information</button>
-              <button type="button" class="btn btn-primary" nextStep>Next Premises Personnel Details &nbsp;<i class="fa fa-angle-double-right"></i></button>
+                Drug Shop Information</button>
+              <button type="button" class="btn btn-primary" (click)="funcValidatePremStaffDetails(2+initWizardPanel)">Next Application Submissio&nbsp;<i class="fa fa-angle-double-right"></i></button>
           </div>
-      </wizard-step>
-      <wizard-step stepTitle="Premises Staff Details">
-              <app-premises-staffdetails  
-              [premisesStafflDetailsfrm] ="premisesStafflDetailsfrm"  
-              [newPremisesStafflDetailsfrm] ="newPremisesStafflDetailsfrm"  
-              [premPersonnelDetailsData] ="premPersonnelDetailsData" 
-              [countries] ="countries"  
-              [regions] ="regions"  
-              [districts] ="districts" 
-              [isBusinessPersonnelPopupVisible] ="isBusinessPersonnelPopupVisible"  
-              [qualificationsData] ="qualificationsData"  
-              [personnelPositionData] ="personnelPositionData"  
-              [studyFieldsData] ="studyFieldsData"  
-              [personnel_informationData] ="personnel_informationData"  
-              [isaddNewPremisesPersonnelDetails] ="isaddNewPremisesPersonnelDetails"  
-              
-              [is_readonly] ="is_readonly"  
-
-              [premise_id] ="premise_id"  
-              [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
-              >
-              </app-premises-staffdetails>
-          <div class="wizard-divbottom">
-              <button type="button" class="btn btn-primary" previousStep>&nbsp;<i class="fa fa-angle-double-left"></i>Previous
-      Premises Business Details</button>
-              <button type="button" class="btn btn-primary" nextStep>Next Premises Documents<i class="fa fa-angle-double-right"></i></button>
-          </div>
-
       </wizard-step>
       <wizard-step stepTitle="Documents" class="wizardStep-height">
           <div class=" wizard-content">

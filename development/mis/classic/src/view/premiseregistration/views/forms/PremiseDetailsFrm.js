@@ -20,16 +20,27 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
         afterrender: function () {
             var form = this,
                 isReadOnly = form.down('hiddenfield[name=isReadOnly]').getValue();
+
+                isPreInspection = form.down('hiddenfield[name=isPreInspection]').getValue();
+
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 form.getForm().getFields().each(function (field) {
                     field.setReadOnly(true);
                 });
+            }
+
+            if ((isPreInspection) && (isPreInspection == 1 || isPreInspection === 1)) {
+                form.down('#director_fieldset').setVisible(false);
             }
         }
     },
     items: [ {
         xtype: 'hiddenfield',
         name: 'isReadOnly'
+    },
+     {
+        xtype: 'hiddenfield',
+        name: 'isPreInspection'
     },
     {
         xtype: 'hiddenfield',
@@ -39,6 +50,10 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
     {
         xtype: 'hiddenfield',
         name: 'premise_id'
+    },
+    {
+        xtype: 'hiddenfield',
+        name: 'isPreInspection'
     },
     {
         xtype: 'hiddenfield',
@@ -60,6 +75,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
             xtype:'fieldset',
             columnWidth: 1,
             title: 'Premises Details',
+            itemId: 'main_fieldset',
             collapsible: true,
             defaults: {
                 labelAlign: 'top',
@@ -71,44 +87,11 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                 columnWidth: 0.33,
             },
             layout: 'column',
-            items:[{
-            xtype: 'combo',
-            fieldLabel: 'License Type',
-            name: 'premise_type_id',
-            forceSelection: true,
-            allowBlank: true,
-            queryMode: 'local',
-            valueField: 'id',
-            displayField: 'name',
-            listeners: {
-                beforerender: {
-                    fn: 'setParamCombosStore',
-                    config: {
-                        pageSize: 10000,
-                        proxy: {
-                            url: 'commonparam/getCommonParamFromTable',
-                            extraParams: {
-                                table_name: 'par_premises_types'
-                            }
-                        }
-                    },
-                    isLoad: true
-                },
-                change: function (cmbo, newVal) {
-                    var form = cmbo.up('form'),
-                    business_typeStr = form.down('combo[name=business_type_id]').getStore(),
-                        filterObj = {premise_type_id: newVal},
-                        filterStr = JSON.stringify(filterObj);
-                        business_typeStr.removeAll();
-                        business_typeStr.load({params: {filter: filterStr}});
-                }
-            }
-        },
-
+            items:[
             {
                 xtype: 'combo',
                 name: 'business_type_id',
-                fieldLabel: 'Business Type',
+                fieldLabel: 'Premise Type',
                 forceSelection: true,
                 queryMode: 'local',
                 allowBlank: false,
@@ -275,7 +258,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                     name: 'premise_reg_no',
                     columnWidth: 1,
                     fieldLabel: 'Permit Reg No',
-                    allowBlank:false,
+                    allowBlank:true,
                     hidden: true
                 },
                 {
@@ -283,7 +266,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                     name: 'permit_no',
                     columnWidth: 1,
                     fieldLabel: 'Permit No',
-                    allowBlank:false,
+                    allowBlank:true,
                     hidden: true
                 }
            
@@ -598,9 +581,130 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                 }
               }
             ]
+            }, {
+                xtype:'fieldset',
+                columnWidth: 1,
+                itemId: 'director_fieldset',
+                title: "Declarations",
+                collapsible: true,
+                defaults: {
+                    labelAlign: 'top',
+                    allowBlank: false,
+                    labelAlign: 'top',
+                    margin: 5,
+                    xtype: 'textfield',
+                    allowBlank: false,
+                    columnWidth: 0.33,
+                },
+                layout: 'column',
+                items:[{
+                xtype: 'combo',
+                fieldLabel: 'Has the applicant,any partner or director been convicted within the past three years, within or outside Uganda, of any offence involving drug?',
+                name: 'had_offence',
+                columnWidth: 1,
+                allowBlank: false,
+                valueField: 'id',
+                displayField: 'name',
+                forceSelection: true,
+                queryMode: 'local',
+                emptyText: 'Select',
+                listeners: {
+                    beforerender: {
+                        fn: 'setConfigCombosStore',
+                        config: {
+                            pageSize: 1000,
+                            proxy: {
+                                url: 'commonparam/getCommonParamFromTable',
+                                extraParams: {
+                                    table_name: 'par_confirmations'
+                                }
+                            }
+                        },
+                        isLoad: true
+                    },
+                    change: function(combo, newVal, oldValue, eopts) {
+                        if(newVal == 1){
+                            var form = combo.up('form'),
+                                offence = form.down('htmleditor[name=offence]');
+                            offence.setVisible(true);
+                            offence.allowBlank = false;
+                            offence.validate();
+                        }else{
+                            var form = combo.up('form'),
+                                offence = form.down('htmleditor[name=offence]');
+                            offence.setVisible(false);
+                            offence.allowBlank = true;
+                            offence.validate();
+                        }
+                        
+                    }
+                   
+                }
             },{
+                xtype: 'htmleditor',
+                fieldLabel: 'Details',
+                // margin: '0 20 20 20',
+                columnWidth: 1,
+                name: 'offence',
+                hidden: true,
+                allowBlank: true
+            },
+             {
+                xtype: 'combo',
+                fieldLabel: 'Has any previous application by the applicants any partner or director,for a license to operate any type of pharmaceutical business been refused or cancelled?',
+                name: 'had_cancelled_application',
+                columnWidth: 1,
+                allowBlank: false,
+                valueField: 'id',
+                displayField: 'name',
+                forceSelection: true,
+                queryMode: 'local',
+                emptyText: 'Select',
+                listeners: {
+                    beforerender: {
+                        fn: 'setConfigCombosStore',
+                        config: {
+                            pageSize: 1000,
+                            proxy: {
+                                url: 'commonparam/getCommonParamFromTable',
+                                extraParams: {
+                                    table_name: 'par_confirmations'
+                                }
+                            }
+                        },
+                        isLoad: true
+                    },
+                    change: function(combo, newVal, oldValue, eopts) {
+                        if(newVal == 1){
+                            var form = combo.up('form'),
+                                offence = form.down('htmleditor[name=cancelling_reason]');
+                            offence.setVisible(true);
+                            offence.allowBlank = false;
+                            offence.validate();
+                        }else{
+                            var form = combo.up('form'),
+                                offence = form.down('htmleditor[name=cancelling_reason]');
+                            offence.setVisible(false);
+                            offence.allowBlank = true;
+                            offence.validate();
+                        }
+                        
+                    }
+                   
+                }
+            },{
+                xtype: 'htmleditor',
+                fieldLabel: 'Details',
+                // margin: '0 20 20 20',
+                columnWidth: 1,
+                name: 'cancelling_reason',
+                hidden: true,
+                allowBlank: true
+            }]
+        },{
             xtype:'fieldset',
             columnWidth: 1,
+            itemId: 'Location_fieldset',
             title: 'Location Details',
             collapsible: true,
             defaults: {

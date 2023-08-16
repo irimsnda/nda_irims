@@ -23,7 +23,8 @@
         <dxi-column dataField="directorfull_names"></dxi-column>
         <dxi-column dataField="director_email_address"></dxi-column>
         <dxi-column dataField="director_telephone_no"></dxi-column>
-        <dxi-column dataField="designation"></dxi-column>
+        <dxi-column dataField="qualification"></dxi-column>
+        <dxi-column dataField="shares"></dxi-column>
     </dx-data-grid>
 </div>
 
@@ -60,27 +61,32 @@
                             </div>
                             <div class="col-lg-4">
                                 <label>Qualification</label>
-                                <dx-select-box [dataSource]="qualificationsData" valueExpr="id" placeholder="Qualification" displayExpr="name" [searchEnabled]="true" formControlName="designation_id">
+                                <dx-select-box [dataSource]="qualificationsData" valueExpr="id" placeholder="Qualification" displayExpr="name" [searchEnabled]="true" formControlName="qualification_id">
                                 </dx-select-box>
+                            </div>
+                           <div class="col-lg-4">
+                                <label for="ti" class="control-label">Shares</label>
+                                <dx-text-box  formControlName="shares" placeholder="Shares" [showClearButton]="true">
+                                </dx-text-box>
                             </div>
                             <div class="col-lg-4">
                                 <label class="control-label">Country</label>
                                 <dx-select-box [dataSource]="countries" valueExpr="id" displayExpr="name" placeholder="Select Country" (onSelectionChanged)="onCoutryCboSelect($event)" [searchEnabled]="true" formControlName="country_id">
                                  </dx-select-box>
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-lg-4" [hidden]="true">
                                 <label for="ti" class="control-label">Region</label>
                                 <dx-select-box  [dataSource]="regions" valueExpr="id" 
                                     displayExpr="name" (onSelectionChanged)="onRegionsCboSelect($event)" [searchEnabled]="true" formControlName="region_id">
                                 </dx-select-box>
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-lg-4"[hidden]="true">
                                 <label for="ti" class="control-label">District</label>
                                 <dx-select-box [dataSource]="districts" valueExpr="id" 
                                     placeholder="Select District" displayExpr="name" [searchEnabled]="true" formControlName="district_id" (onSelectionChanged)="oDistrictsCboSelect($event)" >
                                 </dx-select-box>
                             </div>      
-                            <div class="col-lg-4">
+                            <div class="col-lg-4"[hidden]="true">
                                 <label for="ti" class="control-label">Postal Address</label>
                                 <dx-text-box  formControlName="director_postal_address" placeholder="Postal Address" [showClearButton]="true">
                                 </dx-text-box>
@@ -127,7 +133,7 @@
                     <dxi-column dataField="directorfull_names"></dxi-column>
                     <dxi-column dataField="director_postal_address"></dxi-column>
                     <dxi-column dataField="director_email_address"></dxi-column>
-                    <dxi-column dataField="designation"></dxi-column>
+                    <dxi-column dataField="qualification"></dxi-column>
           </dx-data-grid>
         </dx-scroll-view>
       </div>

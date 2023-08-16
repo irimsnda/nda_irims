@@ -37,7 +37,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreClinicalTrialDetailsFrm', {
             xtype: 'textarea',
             columnWidth: 1,
             fieldLabel: 'Brief summary describing the background and objectives of trial',
-            name: 'clinicaltrial_description'
+            name: 'brief_description'
         },
         {
             xtype:'fieldcontainer',
@@ -55,7 +55,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreClinicalTrialDetailsFrm', {
                 name: 'meeting_date',
                 submitFormat: 'Y-m-d',
                 format: 'd/m/Y',width: '60%',
-                altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+                altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s',
                 bind: {
                     readOnly: '{isReadOnly}'  // negated
                 }

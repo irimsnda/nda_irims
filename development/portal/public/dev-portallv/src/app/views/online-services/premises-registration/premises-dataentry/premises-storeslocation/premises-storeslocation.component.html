@@ -124,7 +124,6 @@
       <dxi-column dataField="region_name" caption="region"></dxi-column>
       <dxi-column dataField="county_name" caption="County"></dxi-column> 
       <dxi-column dataField="sub_county_name" caption="Sub-County"></dxi-column>
-      <dxi-column dataField="file" caption="Location Sketch"></dxi-column>
       
   </dx-data-grid>
 </div>
@@ -188,11 +187,6 @@
                                   <label for="ti" class="control-label">Street/Road</label>
                                   <dx-text-box  formControlName="street" placeholder="Street/Road" [showClearButton]="true">  </dx-text-box>
                               </div> 
-                            <div class="col-lg-4">
-                              <label for="ti" class="control-label">Location Sketch Map</label>
-                                <input type="file" class="form-control col-lg-12" (change)="fileChangeEvent($event)" multiple placeholder="Upload Sketch"/>
-                            </div>
-                              
                         </fieldset>   
                           <div class="col-lg-12">
                               <input type="hidden" formControlName="id" />

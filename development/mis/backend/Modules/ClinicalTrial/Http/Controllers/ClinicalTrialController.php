@@ -96,7 +96,7 @@ class ClinicalTrialController extends Controller
             } else {
 
                 $res = insertRecord($table_name, $table_data, $user_id);
-                dd($res);
+            
 
             }
         } catch (\Exception $exception) {
@@ -1771,14 +1771,31 @@ class ClinicalTrialController extends Controller
             $qry = $portal_db->table('wb_clinical_trial_sites as t1')
                 ->where('t1.application_id', $application_id);
             $results = $qry->get();
+
+
             foreach ($results as $key => $result) {
                 $site_details = getTableData('study_sites', array('id' => $result->study_site_id));
+                
+                $results[$key]->country_id=$site_details->country_id;
+                $results[$key]->region_id=$site_details->region_id;
+                $results[$key]->district_id=$site_details->district_id;
                 $results[$key]->country_name = getSingleRecordColValue('par_countries', array('id' => $site_details->country_id), 'name');
                 $results[$key]->region_name = getSingleRecordColValue('par_regions', array('id' => $site_details->region_id), 'name');
                 $results[$key]->name = $site_details->name;
                 $results[$key]->physical_address = $site_details->physical_address;
                 $results[$key]->postal_address = $site_details->postal_address;
+                $results[$key]->telephone = $site_details->telephone;
+                $results[$key]->email_address = $site_details->email_address;
+                $results[$key]->latitude = $site_details->latitude;
+                $results[$key]->longitude = $site_details->longitude;
+                $results[$key]->clinical_council = $site_details->clinical_council;
+                $results[$key]->emergency = $site_details->emergency;
+                $results[$key]->special_examination_facility = $site_details->special_examination_facility;
+                $results[$key]->capacity = $site_details->capacity;
+                $results[$key]->storage_facility = $site_details->storage_facility;
+                $results[$key]->staff_qualification = $site_details->staff_qualification;
             }
+
             $res = array(
                 'success' => true,
                 'results' => $results,
@@ -4550,7 +4567,7 @@ public function saveEvaluationDetails(Request $request)
                         ->where('application_code',$application_code)
                         ->first();
 
-        dd($clinicaltrial_record);
+      
         if(!$clinicaltrial_record){
             $clinicaltrial_record = DB::connection('portal_db')->table('wb_clinical_trial_applications')
             ->where('application_code',$application_code)
@@ -4583,6 +4600,40 @@ public function saveEvaluationDetails(Request $request)
 
 
    }
+
+    public function getClinicalTrialProgressReportMoreDetails(Request $request)
+    {
+         $application_id = $request->input('application_id');
+        try {
+            $qry = DB::table('tra_clinical_trial_applications as t1')
+                ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->leftjoin('par_system_statuses as t4', 't1.application_status_id', '=', 't4.id')
+                ->join('tra_clinicaltrial_progressreports as t5', 't1.id', '=', 't5.application_id')
+                ->select('t1.*', 't1.id as active_application_id',
+                    't3.name as applicant_name', 't3.contact_person',
+                    't3.tin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
+                    't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website', 't4.name as app_status', 't5.*')
+                ->where('t1.id', $application_id);
+            $results = $qry->first();
+
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
 
 
   public function getClinicalTrialSAEReportMoreDetails(Request $request)

@@ -86,7 +86,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.PremiseSelectionGrid', {
 					reader: {
                         type: 'json',
                         totalProperty: 'totalCount',
-                        root: 'results'
+                        rootProperty: 'results'
                     }
                 }
             },

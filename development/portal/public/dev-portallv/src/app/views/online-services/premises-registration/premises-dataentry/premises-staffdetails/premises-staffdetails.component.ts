@@ -59,6 +59,7 @@ export class PremisesStaffdetailsComponent implements OnInit {
   }
   ngOnInit() {
     this.onLoadPremisesStaffDetails();
+    this.onLoadPremisesPersonnelDetails()
     this.onpersonnelIdentificationTypeDataLoad();
   }
   funcEditPersonnelDetails(data) {
@@ -78,7 +79,18 @@ export class PremisesStaffdetailsComponent implements OnInit {
     
     this.isStaffPopupVisible= false;         
   }
- 
+   onLoadPremisesPersonnelDetails() {
+
+    this.appService.onLoadPremisesPersonnelDetails(this.premise_id)
+      //.pipe(first())
+      .subscribe(
+        data => {//dtpremPersonnelDetailsData
+          this.premPersonnelDetailsData = data.data;
+        },
+        error => {
+          return false
+        });
+  }
   onSearchStaffDetails() {
       this.appService.onLoadStaffInformations()
         .subscribe(
@@ -198,7 +210,7 @@ export class PremisesStaffdetailsComponent implements OnInit {
     //func_delete records 
     let record_id = data.data.id;
     let apppremises_id = data.data.premise_id;
-    let table_name = 'wb_premises_staff';
+    let table_name = 'wb_premises_personnel';
     this.funcDeleteDetailhelper(record_id, apppremises_id, table_name, 'busines_personnel', 'Staff Details');
 
   }
@@ -222,7 +234,7 @@ export class PremisesStaffdetailsComponent implements OnInit {
 
                   if (resp.success) {
                     
-                      this.onLoadPremisesStaffDetails();
+                      this.onLoadPremisesPersonnelDetails();
 
                     this.toastr.success(resp.message, 'Response');
                   }
@@ -364,11 +376,11 @@ export class PremisesStaffdetailsComponent implements OnInit {
               this.toastr.error('Error Occurred', 'Alert');
             });
       }
-  onSavePremisesStaffDetails() {
+  onSavePremisesPersonnelDetails() {
     if (this.premisesStafflDetailsfrm.invalid) {
       return;
     }
-    this.appService.onSavePremisesStaffDetails(this.premisesStafflDetailsfrm.value, this.premise_id)
+    this.appService.onSavePremisesPersonnelDetails(this.premisesStafflDetailsfrm.value, this.premise_id)
       .subscribe(
         response => {
           this.premises_resp = response.json();
@@ -377,7 +389,7 @@ export class PremisesStaffdetailsComponent implements OnInit {
             this.isBusinessPersonnelPopupVisible = false;
             this.isperssonelAddPopupVisible = false;
 
-            this.onLoadPremisesStaffDetails();
+            this.onLoadPremisesPersonnelDetails();
 
           } else {
             this.toastr.error(this.premises_resp.message, 'Alert');

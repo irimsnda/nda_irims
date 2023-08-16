@@ -151,7 +151,7 @@ Ext.define('Admin.view.administration.views.forms.SystemUserGroupsFrm', {
         allowBlank: false,
         queryMode: 'local',
         margin: '0 20 0 0',
-        name: 'zone_id',
+        name: 'region_id',
         displayField: 'name',
         valueField: 'id',
         listeners: {
@@ -162,12 +162,21 @@ Ext.define('Admin.view.administration.views.forms.SystemUserGroupsFrm', {
                     proxy: {
                         url: 'commonparam/getCommonParamFromTable',
                         extraParams: {
-                            table_name: 'par_zones'
+                            table_name: 'par_regions'
                         }
                     }
                 },
                 isLoad: true
-            }
+            },
+            afterrender: function (cmbo) {
+                 var grid = cmbo.up('form'),
+                 store = cmbo.getStore(),
+                 filterObj = {country_id: 37},
+                 filterStr = JSON.stringify(filterObj);
+                 store.removeAll();
+                 store.load({params: {filters: filterStr}});
+              
+             }
          }
     }, {
         xtype: 'combo',

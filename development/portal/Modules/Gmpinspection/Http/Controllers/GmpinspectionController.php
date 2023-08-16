@@ -74,9 +74,11 @@ class GmpinspectionController extends Controller
                                     'longitude'=>$req->longitude,
                                     'latitude'=>$req->latitude,
                                     'business_type_id'=>$req->business_type_id,
-
+                                    'billing_person'=>$req->billing_person,
+                                    'billing_person_id'=>$req->billing_person_id,
                                     'gmp_type_id'=>$req->gmp_type_id,
                                     'contact_person_id'=>$req->contact_person_id,
+
                                     'contact_person_startdate'=>$req->contact_person_startdate,
                                     'contact_person_enddate'=>$req->contact_person_enddate,
                                     'applicant_contact_person'=>$req->applicant_contact_person
@@ -100,7 +102,6 @@ class GmpinspectionController extends Controller
 								   
                                    'zone_id'=>$req->zone_id,
                            );
-
                         /** Already Saved */
                       $table_name = 'wb_gmp_applications';
                         if(validateIsNumeric($manufacturing_site_id)){
@@ -151,6 +152,7 @@ class GmpinspectionController extends Controller
                             }
                             $application_code = generateApplicationCode($sub_module_id, 'wb_gmp_applications');
 
+
                             $ref_id = getSingleRecordColValue('tra_submodule_referenceformats', array('sub_module_id' => $sub_module_id, 'module_id' => $module_id, 'reference_type_id' => 1), 'reference_format_id','mis_db');
 
 
@@ -174,6 +176,7 @@ class GmpinspectionController extends Controller
                                 }
 
                             $application_code = generateApplicationCode($sub_module_id, 'wb_gmp_applications');
+                             $manufacturing_site_id = $resp['record_id'];
                              $app_data = array('sub_module_id'=>$sub_module_id,
                                    'section_id'=>$section_id,
                                    'module_id'=>$module_id,
@@ -728,11 +731,18 @@ class GmpinspectionController extends Controller
             $trader_id = $req->trader_id;
             $email_address = $req->email_address;
             $name = $req->name;
+            $site_name = $req->site_name; 
+            $inspection_category_id = $req->inspection_category_id; 
+            $inspection_activities_id = $req->inspection_activities_id; 
             $activities = $req->activities;
            $table_name = 'wb_manufacturingsite_blocks';
             $block_data = array('activities'=>$req->activities,
+                                        'site_name'=>$req->site_name,  
                                          'name'=>$req->name,
-                                         'manufacturing_site_id'=>$req->manufacturing_site_id
+                                         'manufacturing_site_id'=>$req->manufacturing_site_id,
+                                        'inspection_category_id'=>$req->inspection_category_id,  
+                                         'inspection_activities_id'=>$req->inspection_activities_id,
+                                         'manufacturing_id'=>$req->manufacturing_id
                                 );  
                              
                         if(validateIsNumeric($record_id)){
@@ -1003,7 +1013,6 @@ class GmpinspectionController extends Controller
         try{
             $application_id = $req->application_id;
             $data = array();
-            //get the records 
             
             $records = DB::table('wb_gmp_applications as t1')
                     ->select(DB::raw('t1.*,init_site_id as initial_site_id, t2.registered_id, t2.premise_id, t6.name as local_agent_name,t1.id as application_id, t5.name as applicant_name, t2.name as manufacturing_site_name, t2.*, t3.name as status_name, t4.router_link, t4.name as process_title'))
@@ -1040,6 +1049,7 @@ class GmpinspectionController extends Controller
             $manufacturer_id =  getSingleRecordColValue('par_man_sites', array('id'=>$rec->man_site_id), 'manufacturer_id','mis_db');
             $manufacturer_name =  getSingleRecordColValue('tra_manufacturers_information', array('id'=>$manufacturer_id), 'name','mis_db');
             $contact_person =  getSingleRecordColValue('tra_personnel_information', array('id'=>$rec->contact_person_id), 'name','mis_db');
+             $billing_person =  getSingleRecordColValue('tra_billingpersonnel_information', array('id'=>$rec->billing_person_id), 'name','mis_db');
 
             $data[] = array('reference_no'=>$rec->reference_no,
                             'application_initiator_id'=>$rec->application_initiator_id,
@@ -1103,6 +1113,8 @@ class GmpinspectionController extends Controller
                            'device_type_id'=>$rec->device_type_id,
                             'contact_person'=>$contact_person,
                            'contact_person_id'=>$rec->contact_person_id,
+                            'billing_person'=>$billing_person,
+                           'billing_person_id'=>$rec->billing_person_id,
                            'contact_person_startdate'=>$rec->contact_person_startdate,
                            'contact_person_enddate'=>$rec->contact_person_enddate,
                            'applicant_contact_person'=>$rec->applicant_contact_person,
@@ -1154,56 +1166,63 @@ class GmpinspectionController extends Controller
         return response()->json($res);
 }
 
-public function getGmpProductLinedetails(Request $req){
+public function getGmpProductLinedetails(Request $request)
+    {
        
-    try{
-        $manufacturing_site_id = $req->manufacturing_site_id;
-        $data = array();
-        //get the records 
-        $records = DB::table('wb_gmp_productline_details as t1')
-                ->select('t1.*', 't2.*', 't1.id as record_id')
-                ->leftJoin('wb_manufacturingsite_blocks as t2','t1.manufacturingsite_block_id','=','t2.id' )
-                ->where(array('t1.manufacturing_site_id' => $manufacturing_site_id))
-                 ->get();
-                 
-                 foreach ($records as $rec) {
-                  
-                    $data[] = array('id'=>$rec->record_id,
-                                    'product_line'=>getParameterItem('gmp_product_lines',$rec->product_line_id,'mis_db'),
-                                    'category'=>getParameterItem('gmp_product_categories',$rec->category_id,'mis_db'),
-                                    'prodline_description'=>getParameterItem('gmp_product_descriptions',$rec->prodline_description,'mis_db'),
-                                    'product_line_id'=>$rec->product_line_id,
-                                    'category_id'=>$rec->category_id,
-                                    'manufacturingsite_block_id'=>$rec->manufacturingsite_block_id,
-                                    'manufacturing_siteblock'=>$rec->name,
-                                    'manufacturing_siteblockactivites'=>$rec->activities,
-                                    'prodline_description'=>$rec->prodline_description
-                                );
-                                
-                 }
-                 $res = array('success'=>true, 'data'=>$data);
+        $manufacturing_site_id = $request->manufacturing_site_id;
+        $section_id = $request->input('section_id');
+        try {
+           $mis_db = DB::connection('mis_db')->getDatabaseName();
 
+           $qry = DB::table($mis_db.'.gmp_product_lines as t2')
+           ->leftJoin('wb_gmp_productline_details as t1', function ($join) use ($manufacturing_site_id) {
+                    $join->on('t2.id', '=', 't1.product_line_id')
+                             ->where('t1.manufacturing_site_id', $manufacturing_site_id);
+           })
+           ->leftJoin($mis_db.'.gmp_product_categories as t3', 't2.gmp_product_categories_id', '=', 't3.id')
+           ->leftJoin($mis_db.'.gmp_productlinestatus as t5', 't1.prodline_inspectionstatus_id', '=', 't5.id')
+           ->leftJoin($mis_db.'.gmp_prodlinerecommenddesc as t6', 't1.product_line_status_id', '=', 't6.id')
+           ->leftJoin('wb_manufacturingsite_blocks as t7', 't1.manufacturingsite_block_id', '=', 't7.id')
+            ->leftJoin($mis_db.'.par_manufacturinginspection_category as t10', 't7.inspection_category_id', '=', 't10.id')
+            ->leftJoin($mis_db.'.par_manufacturinginspection_activities as t11', 't7.inspection_activities_id', '=', 't11.id')
+           ->leftJoin($mis_db.'.gmp_productlinestatus as t8', 't1.prodline_tcmeetingstatus_id', '=', 't8.id')
+           ->leftJoin($mis_db.'.gmp_productlinestatus as t9', 't1.prodline_dgstatus_id', '=', 't9.id')
+           ->select('t1.*','t1.id as record_id','t10.name as inspection_manufacturing_category','t11.name as inspection_manufacturing_activities','t2.id as product_line_id', 't3.id as gmp_product_categories_id', 't2.name as product_line_name', 't3.name as product_line_category', 't1.product_line_description','t2.gmp_product_categories_id',
+               't7.name as block_name', 't6.name as product_line_status', 't5.name as inspection_recommendation', 't8.name as tc_recommendation', 't9.name as dg_recommendation');
+            if(validateIsNumeric($section_id)){
+
+                $qry->where(array('t3.section_id'=>$section_id));
+            }
+             $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'data' => $results,
+               // 'message' => returnMessage($results)
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
     }
-    catch (\Exception $e) {
-        $res = array(
-            'success' => false,
-            'message' => $e->getMessage()
-        );
-    } catch (\Throwable $throwable) {
-        $res = array(
-            'success' => false,
-            'message' => $throwable->getMessage()
-        );
-    }
-    return response()->json($res);
-}
 
 public function onLoadgmpManufacturingBlocksData(Request $req){
     try{
         $manufacturing_site_id = $req->manufacturing_site_id;
         $data = array();
-        //get the records 
+        $mis_db = DB::connection('mis_db')->getDatabaseName();                    
         $records = DB::table('wb_manufacturingsite_blocks as t1')
+                ->select('t1.*','t1.name as block_name','t2.name as inspection_manufacturing_activities','t3.name as inspection_manufacturing_category','t4.name as manufacturing_activities')
+                ->leftJoin($mis_db.'.par_manufacturinginspection_activities as t2', 't1.inspection_activities_id', '=', 't2.id')
+                ->leftJoin($mis_db.'.par_manufacturinginspection_category as t3', 't1.inspection_category_id', '=', 't3.id')
+                 ->leftJoin($mis_db.'.par_manufacturing_activities as t4', 't1.manufacturing_id', '=', 't4.id')
                 ->where(array('t1.manufacturing_site_id' => $manufacturing_site_id))
                  ->get();
                  $res = array(
@@ -1232,7 +1251,13 @@ public function getPersonnelInformations(Request $req){
                 ->get();
     return response()->json(array('data'=>$data));
 }
-
+public function getBillingPersonnelInformations(Request $req){
+    $trader_id = $req->mistrader_id;
+    $data = DB::connection('mis_db')->table('tra_billingpersonnel_information as t1')
+                ->where(array('trader_id'=>$trader_id))
+                ->get();
+    return response()->json(array('data'=>$data));
+}
 public function onSavePremisesPersonnel(Request $req){
             
     try {

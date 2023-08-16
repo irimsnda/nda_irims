@@ -47,6 +47,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'gmpinspection'], function
     Route::get('getPremisesArchivedApplicationLoading', 'GmpinspectionController@getPremisesArchivedApplicationLoading');
     
     Route::get('getPersonnelInformations', 'GmpinspectionController@getPersonnelInformations');
+    Route::get('getBillingPersonnelInformations', 'GmpinspectionController@getBillingPersonnelInformations');
     Route::get('getgmpApplicationDetails', 'GmpinspectionController@getgmpApplicationDetails');
     Route::get('getPersonnelQualifications', 'GmpinspectionController@getPersonnelQualifications');
     Route::get('getAppSubmissionGuidelines', 'GmpinspectionController@getAppSubmissionGuidelines');

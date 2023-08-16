@@ -131,11 +131,21 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopDirectorsDetails
         flex: 1
     },  {
         xtype: 'gridcolumn',
-        dataIndex: 'designation',
-         hidden:true,
-        text: 'Designation',
+        dataIndex: 'qualification',
+        text: 'Qualification',
         flex: 1
-    },  {
+    }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'country_name',
+        text: 'Country',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'shares',
+        text: 'Shares',
+        flex: 1
+    },
+        {
         text: 'Options',
         xtype: 'widgetcolumn',
         width: 90,

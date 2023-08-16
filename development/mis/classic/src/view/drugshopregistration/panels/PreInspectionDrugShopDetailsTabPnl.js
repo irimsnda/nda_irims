@@ -20,7 +20,11 @@ Ext.define('Admin.view.drugshopregistration.views.panels.PreInspectionDrugShopDe
         },
          {
             title: 'Other Details',
-            xtype: 'drugshopotherdetailstabPnl'
+            xtype: 'predrugshopotherdetailstabPnl'
+        },
+        {
+            xtype:'previewproductDocUploadsGrid',
+            title: 'Application Uploaded Documents (All)'
         }
         
     ]

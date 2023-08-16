@@ -108,7 +108,7 @@ Ext.define('Admin.view.administration.views.grids.SystemUserGroupsGrid', {
         flex: 1
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'zone',
+        dataIndex: 'region',
         text: 'User Region',
         flex: 1
     }, {

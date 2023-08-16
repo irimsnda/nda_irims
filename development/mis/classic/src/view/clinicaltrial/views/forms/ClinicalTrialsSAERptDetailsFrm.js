@@ -75,7 +75,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsSAERptDetailsFrm'
             name: 'date_of_protocol',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',readOnly: true,
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s'
         },{
             xtype: 'combo',
             queryMode: 'local',
@@ -143,38 +143,22 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsSAERptDetailsFrm'
                         }
                     },
                     isLoad: true
-                },
-                afterrender:function(cbo){
-                        var store = cbo.getStore(),
-                            frm = cbo.up('form');
-                            application_code =0;
-                            if(frm.up('ctrprogressreportappmoredetailswizard')){
-                               
-                                application_code = frm.up('ctrprogressreportappmoredetailswizard').down('hiddenfield[name=active_application_code]').getValue();
-                            }
-                            else if(frm.up('clinicaltrialprogressrptonlinepreviewpnl')){
-                                application_code = frm.up('clinicaltrialprogressrptonlinepreviewpnl').down('hiddenfield[name=application_code]').getValue();
-                            }
-                           
-                            store.removeAll();
-                            store.load({params:{application_code:application_code}});
-
                 }
             }
-        },{
+        }, {
             xtype: 'datefield',
             fieldLabel: 'Reporting Period Start Date',
             name: 'reporting_start_date',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s'
         },{
             xtype: 'datefield',
             fieldLabel: 'Reporting Period End Date',
             name: 'reporting_end_date',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s'
         },{
             xtype: 'numberfield',
             fieldLabel: 'Screened Participants(#)',
@@ -187,7 +171,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsSAERptDetailsFrm'
             name: 'dateof_first_screening',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s'
         },{
             xtype: 'numberfield',
             fieldLabel: 'Target Participants',
@@ -204,7 +188,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsSAERptDetailsFrm'
             name: 'dateof_first_enrollment',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s'
         },{
             xtype: 'numberfield',
             fieldLabel: 'Number of Withdrawals /Dropouts',

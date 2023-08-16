@@ -96,7 +96,10 @@ Ext.define('Admin.view.premiseregistration.views.sharedinterfaces.panels.NewPrem
             }, {
                 xtype: 'hiddenfield',
                 name: 'invoice_id'
-            }, {
+            },{
+                xtype: 'hiddenfield',
+                name: 'premise_id'
+            },  {
                 xtype: 'hiddenfield',
                 name: 'product_id'
             }, {

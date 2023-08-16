@@ -13,11 +13,15 @@ Ext.define('Admin.view.premiseregistration.views.panels.PremiseDetailsTabPnl', {
                 }
             }
         }
-    },
+    },  
     items: [
         {
             title: 'Premises Details',
             xtype: 'premisedetailsfrm'
+        },
+        {
+            title: 'Directors Details',
+            xtype: 'premisedirectorsdetailsgrid'
         },
         {
             title: 'Staff Details',
@@ -25,7 +29,7 @@ Ext.define('Admin.view.premiseregistration.views.panels.PremiseDetailsTabPnl', {
         },
          {
             title: 'Particulars of Nearest Pharmancy',
-            xtype: 'nearestpremisegrid'
+            xtype: 'premisenearestpremisegrid'
         },
 
         {

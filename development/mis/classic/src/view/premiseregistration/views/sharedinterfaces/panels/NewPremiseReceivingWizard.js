@@ -15,11 +15,27 @@ Ext.define('Admin.view.premiseregistration.views.sharedinterfaces.panels.NewPrem
     cls: 'wizardthree shadow',
     colorScheme: 'soft-green',
     items: [
+        
+        {
+            xtype: 'premisedetailstabpnl',
+            tbar:[ {
+                xtype: 'button',
+                iconCls: 'x-fa fa-search',
+                tooltip: 'Search',
+                text: 'Search Pre Inspection Application',
+                action: 'searchPreInspectionPremise',
+                name: 'search_PreInspection_Premise',
+                ui: 'soft-red',
+                childXtype: 'preinspectionpremiseselectiongrid',
+                winTitle: 'Pre Inspection Selection List',
+                winWidth: '90%',
+                margin: '30 0 0 0'
+            }]
+            
+        },
+
         {
             xtype: 'applicationapplicantpnl'
-        },
-        {
-            xtype: 'premisedetailstabpnl'
         },
         {
             xtype: 'premregappdocuploadsgenericgrid'
@@ -45,21 +61,21 @@ Ext.define('Admin.view.premiseregistration.views.sharedinterfaces.panels.NewPrem
             items: [
                 {
                     step: 0,
+                    iconCls: 'fa fa-university',
+                    enableToggle: true,
+                    iconAlign: 'top',
+                    text: 'PREMISE DETAILS',
+                    wizard_pnl : 'newpremisereceivingwizard',
+                    action: 'quickNav'
+                },
+                {
+                    step: 1,
                     iconCls: 'fa fa-user',
                     enableToggle: true,
                     pressed: true,
                     iconAlign: 'top',
                     wizard_pnl : 'newpremisereceivingwizard',
                     text: 'APPLICANT DETAILS',
-                    action: 'quickNav'
-                },
-                {
-                    step: 1,
-                    iconCls: 'fa fa-university',
-                    enableToggle: true,
-                    iconAlign: 'top',
-                    text: 'PREMISE DETAILS & ACTIVITIES',
-                    wizard_pnl : 'newpremisereceivingwizard',
                     action: 'quickNav'
                 },
                 {

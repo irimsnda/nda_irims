@@ -109,6 +109,14 @@ Ext.define('Admin.view.premiseregistration.views.maininterfaces.new.NewPremiseCo
             },{
                 xtype: 'hiddenfield',
                 name: 'invoice_id'
+            },{
+                xtype: 'hiddenfield',
+                name: 'report_type_id',
+                value:3
+            },
+            {
+                xtype: 'hiddenfield',
+                name: 'premise_id'
             }
             ]
         }

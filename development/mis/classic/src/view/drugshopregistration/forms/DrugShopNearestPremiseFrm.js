@@ -229,7 +229,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopNearestPremiseFr
             iconCls: 'x-fa fa-save',
             formBind: true,
             table_name: 'tra_premises_storelocation',
-            storeID: 'nearestdrugshopstr',
+            storeID: 'nearestpremisestr',
             action_url: 'premiseregistration/onSavePremisesStoreLocationDetails',
             handler: 'doCreatePremiseRegParamWin'
         },

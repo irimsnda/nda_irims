@@ -44,6 +44,25 @@ export class PremisesApplicationsService {
       }));
   }
 
+
+    onPremisesApplicationPharmacist(filter_params) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+    filter_params.trader_id = this.trader_id;
+    this.config = {
+      params: filter_params,
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getPremisesApplicationPharmicts', this.config)
+      .pipe(map(data => {
+
+        return <any>data;
+
+      }));
+  }
+
   onPremisesArchivedApplicationLoading() {
     var headers = new HttpHeaders({
       "Accept": "application/json",
@@ -78,7 +97,7 @@ export class PremisesApplicationsService {
 
   }
 
-  onLoadTelephoneNos() {
+  onLoadBusinessTypesLoad() {
     var headers = new HttpHeaders({
       "Accept": "application/json",
       "Authorization": 'Bearer ' + this.authService.getAccessToken(),
@@ -89,7 +108,7 @@ export class PremisesApplicationsService {
       params: { mistrader_id: this.mistrader_id }
     };
 
-    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getTelephoneDetails', this.config)
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getBusinessTypeDetails', this.config)
       .pipe(map(data => {
         return <any>data;
       }));
@@ -145,7 +164,8 @@ export class PremisesApplicationsService {
         return <any>data;
       }));
 
-  }
+  }  
+
   onLoadRegisteredPremises(params) {
     var headers = new HttpHeaders({
       "Accept": "application/json",
@@ -190,7 +210,21 @@ onLoadRegisteredDrugShops(params) {
         return <any>data;
       }));
   }
-  o
+   onLoadNearestDrugShops(premise_id) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+    this.config = {
+      headers: headers,
+      params:{mistrader_id:this.mistrader_id,premise_id:premise_id}
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getNearestDrugShops', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+  
 
   onCheckPendingPremisesRenewal(premise_target_id) {
     var headers = new HttpHeaders({
@@ -304,7 +338,19 @@ onLoadRegisteredDrugShops(params) {
       .pipe(map(data => {
         return data;
       }));
+  } 
+  onSaveApprovalRecomDetails(personnelData, premise_id) {
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'premisesregistration/onSaveApprovalRecomDetails', personnelData, { params: { 'trader_id': this.trader_id, 'traderemail_address': this.email_address, 'mistrader_id': this.mistrader_id, premise_id: premise_id }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
   }
+
   onSavePremisesStaffDetails(personnelData, premise_id) {
     var headers = new Headers({
       "Accept": "application/json",
@@ -339,6 +385,21 @@ onLoadRegisteredDrugShops(params) {
       
     }
     return this.http.post(AppSettings.base_url + 'premisesregistration/onSavePremisesStoreLocationDetails', personnelData, { params: { 'trader_id': this.trader_id, 'traderemail_address': this.email_address, 'mistrader_id': this.mistrader_id, premise_id: premise_id }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  onSaveDrugShopStoreLocationDetails(personnelData, premise_id,uploadData ='') {
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    if(uploadData != ''){
+      
+    }
+    return this.http.post(AppSettings.base_url + 'premisesregistration/onSaveDrugShopStoreLocationDetails', personnelData, { params: { 'trader_id': this.trader_id, 'traderemail_address': this.email_address, 'mistrader_id': this.mistrader_id, premise_id: premise_id }, headers: headers })
       .pipe(map(data => {
         return data;
       }));
@@ -491,6 +552,20 @@ onLoadRegisteredDrugShops(params) {
       headers: headers
     };
     return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getPremisesStoreLocationDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+    onLoadDrugShopStoreLocationDetails(premise_id) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { premise_id: premise_id },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getDrugShopStoreLocationDetails', this.config)
       .pipe(map(data => {
         return <any>data;
       }));

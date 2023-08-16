@@ -172,7 +172,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ProgressReportManagerReviewGrid
                         text: 'Preview Details',
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 1,
-                        handler: 'showClinicalTrialApplicationMoreDetails'
+                        handler: 'showClinicalTrialReportMoreDetails'
                     }
                 ]
             }

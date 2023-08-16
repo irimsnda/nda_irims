@@ -14,16 +14,26 @@ Ext.define('Admin.view.premiseregistration.views.panels.PreInspectionPremiseDeta
         }
     },
     items: [
-        {
+          {
             title: 'Premises Details',
             xtype: 'premisedetailsfrm'
         },
         {
-            title: 'Premises Responsible Technician',
-            xtype: 'premisepersonneltabpnl'//'premisepersonneldetailsgrid'
+            title: 'Directors Details',
+            xtype: 'premisedirectorsdetailsgrid'
         },
         {
+            title: 'Staff Details',
+            xtype: 'premisepersonneldetailsgrid'//'premisepersonneldetailsgrid'
+        },
+         {
+            title: 'Particulars of Nearest Pharmancy',
+            xtype: 'premisenearestpremisegrid'
+        },
+
+        {
             title: 'Premises Main Activities/Product Information',
+            hidden: true,
             xtype: 'premiseotherdetailsgrid'
         },
         {

@@ -166,7 +166,7 @@
     
       <dxi-column  dataField="reference_no"></dxi-column>
 
-      <dxi-column dataField="business_type" ></dxi-column>
+      <dxi-column dataField="premise_category" ></dxi-column>
       <dxi-column  [groupIndex]="0" dataField="application_type"></dxi-column>
       <dxi-column  dataField="premises_name"></dxi-column>
       <dxi-column  dataField="physical_address"></dxi-column>
@@ -369,22 +369,17 @@
     <span>Select the Premises Category to Initiate the Application Process .</span>
     <br/>
   </div>
-      <div class="col-lg-12 apptype-selection apptype-selection bg-light text-dark">
+    <div class="col-lg-12 apptype-selection apptype-selection bg-light text-dark">
           <label>Select Premises Category</label>
          <dx-select-box [dataSource]="businessTypesData" valueExpr="id" displayExpr="name" 
-           placeholder="Select Business Types" (onValueChanged)="onWholesalepremise($event)" [value] ='business_type_id' [searchEnabled]="true" formControlName="business_type_id">
+           placeholder="Select Business Types" [value] ='business_type_id' [searchEnabled]="true" formControlName="business_type_id">
           <div *dxTemplate="let name of 'item'">
                 <p>{{name.name}} </p>
             </div>
         </dx-select-box>
-    <div class="col-lg-12 "*ngIf ="isWholePremises">
-    <label>Premises wholesale Category Details</label>
-      <dx-select-box [dataSource]="businessTypeDetailsData" valueExpr="id" displayExpr="name" placeholder="Select Category Type Details" [searchEnabled]="true" formControlName="business_typecategory_id">
-                </dx-select-box>
-        </div>
-      </div>          
+    </div>       
     <div class="col-lg-12  pull-right row" style="text-align: center;">
-        <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-right' }"   icon="fa fa-arrow-right" text="Initiate New Product Application" 
+        <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-right' }"   icon="fa fa-arrow-right" text="Initiate New Premises Application" 
           type="success" (onClick)="onPremisesAppSelection()">
         </dx-button>
       

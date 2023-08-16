@@ -34,28 +34,32 @@ export class GmpManufatcuringdetailsComponent implements OnInit {
   @Input() businessTypeDetailsData: any;
   @Input() manufatcuringSiteBlocksfrm: FormGroup;
   @Input() prodgmpAddinspectionFrm: FormGroup;
-  
-  
+  @Input() manufacturersSiteData: any = {};
   @Input() isManufatcuringSiteBlocks: boolean;
- 
+  @Input() isManufacturerPopupVisible: boolean;
   @Input() is_readonly: boolean;
   @Input() product_lineData: any;
   @Input() productlineCategoryData: any;
   @Input() productlineDescriptionData: any;
-  
+  @Input() gmp_type_id: number;
   @Input() isProductLinePopupVisible: any;
   @Input() isManufacturingSiteProductsDetails: boolean;
   @Input() manSiteRegisteredProductsData: any;
   @Input() isgmpAddProductsModalShow: boolean;
-  
+  @Input() manufacturingSiteLocationSet: any = true;
   @Input() gmpProductLineDetailsfrm: FormGroup;
   @Input() gmpapplicationGeneraldetailsfrm: FormGroup;
   @Input() manufacturing_site_id: number;
+  @Input() sub_module_id: number;
   @Input() section_id: number;
   title:string = 'Product Line';
   confirmDataParam:any;
+  inspectionCategoryData:any;
+  inspectionAtivitiesData:any;
+  manufacturingActivitiesData:any;
   betaLactamData:any;
   gmpproductTypeData:any;
+  isonContractGiverManufacturer:boolean = false;
   events: Array<string> = [];
   gmpAddProductLineDataRows:any;
   constructor(public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: GmpApplicationServicesService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public dmsService:DocumentManagementService,public utilityService:Utilities,public httpClient: HttpClient) { 
@@ -66,11 +70,20 @@ export class GmpManufatcuringdetailsComponent implements OnInit {
     if(this.section_id == 4){
 
         this.title = 'Medical Devices ';
+    }     
+    if(this.sub_module_id == 5){
+      this.manufacturingSiteLocationSet = true;
+    }
+    else{
+      this.manufacturingSiteLocationSet = false;
     }
     this.onLoadgmpManufacturingBlocksData(this.manufacturing_site_id);
     this.onLoadgmpproductTypeData();
     this.onLoadbetaLactamData();
     this.onLoadconfirmDataParm();
+    this.onLoadmanufacturingActivities();
+    this.onLoadmanufacturingInspectionCategory();
+    this.onLoadmanufacturingInspectionActivities();
 
   } onGMPBlocksProductsLineToolbar(e,is_readonly=false) {
 
@@ -425,7 +438,29 @@ onLoadbetaLactamData() {
       data => {
         this.betaLactamData = data;
       });
-}
+} 
+onLoadmanufacturingActivities() {
+  var data = {
+    table_name: 'par_manufacturing_activities',
+  };
+
+  this.config.onLoadConfigurationData(data)
+    .subscribe(
+      data => {
+        this.manufacturingActivitiesData = data;
+      });
+} 
+ onContractGiverManufacturer($event) {
+
+  if($event.value == 2){
+      this.isonContractGiverManufacturer = true;
+  }
+  else{
+    this.isonContractGiverManufacturer = false;
+
+
+  }
+} 
 
 onLoadgmpproductTypeData(){
 
@@ -436,10 +471,75 @@ onLoadgmpproductTypeData(){
   this.config.onLoadConfigurationData(data)
     .subscribe(
       data => {
-        this.betaLactamData = data;
+        this.gmpproductTypeData = data;
       });
-}
+} onLoadmanufacturingInspectionCategory() {
+  var data = {
+    table_name: 'par_manufacturinginspection_category',
+  };
 
+  this.config.onLoadConfigurationData(data)
+    .subscribe(
+      data => {
+        this.inspectionCategoryData = data;
+      });
+} 
+onLoadmanufacturingInspectionActivities() {
+  var data = {
+    table_name: 'par_manufacturinginspection_activities',
+  };
+
+  this.config.onLoadConfigurationData(data)
+    .subscribe(
+      data => {
+        this.inspectionAtivitiesData = data;
+      });
+}    
+funcSelectManufacturer(data) {
+    if (this.gmp_type_id == 2) {
+      let resp_data = data.data;
+      this.manufatcuringSiteBlocksfrm.patchValue({manufacturer_name:resp_data.manufacturer_name,man_site_id:resp_data.man_site_id});
+      this.manufatcuringSiteBlocksfrm.patchValue({section_id:this.section_id,gmp_type_id:2});
+    }
+    else {
+      this.gmp_type_id = 1
+      this.manufatcuringSiteBlocksfrm.patchValue(data.data);
+      
+      this.manufatcuringSiteBlocksfrm.patchValue({section_id:this.section_id,gmp_type_id:1});
+     
+    }
+     
+    this.isManufacturerPopupVisible = false;
+  }  
+  onSearchManufacturingSite() {
+    this.isManufacturerPopupVisible = true;
+    let me = this;
+    this.manufacturersSiteData.store = new CustomStore({
+        load: function (loadOptions: any) {
+            var params = '?';
+            params += 'skip=' + loadOptions.skip;
+            params += '&take=' + loadOptions.take;//searchValue
+            var headers = new HttpHeaders({
+              "Accept": "application/json",
+              "Authorization": "Bearer " + me.authService.getAccessToken(),
+            });
+            this.configData = {
+              headers: headers,
+              params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter }
+            };
+            return me.httpClient.get(AppSettings.base_url + 'gmpinspection/getContractManufacturingSiteInformation',this.configData)
+                .toPromise()
+                .then((data: any) => {
+                    return {
+                        data: data.data,
+                        totalCount: data.totalCount
+                    }
+                })
+                .catch(error => { throw 'Data Loading Error' });
+
+        }
+    });
+  }
 onCellProductLinePrepared(e) {
     
   if(e.rowType === "data" && e.column.dataField === "product_line_namecheck") {

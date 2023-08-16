@@ -67,6 +67,7 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
   qualificationsData:any;
   subCountyData:any;
   business_type_id:number;
+  premise_type_id:number;
   isaddNewPremisesPersonnelDetails:boolean=false;
   isDisabledVehicleReg:boolean;
   @Output() businessTypeEvent = new EventEmitter();
@@ -79,6 +80,8 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
   is_other_classification:boolean=false;
   sectorsData:any;
   district_id:number;
+  businessDetailsData:any;
+  premisesTypesData:any;
   cellsData:any;
   psuNo:any;
   sector_id:number;
@@ -99,14 +102,22 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
     this.onLoadapplicantTypesLoad();
     this.onLoadBusinessTypesLoad();
     this.onLoadQualificationDetails();
+    this.onLoadBusinessDetails();
+    this.onLoadPremiseTypesLoad();
+
     this.is_readonly = false;
     if(this.sub_module_id != 1){
       this.is_readonly = true;
     }
    
     if(!this.application_code){
-      //  this.premisesGeneraldetailsfrm.get('zone_id').setValue(2);
-        this.premisesGeneraldetailsfrm.get('country_id').setValue(37);
+      if(this.sub_module_id == 109){
+          this.premisesGeneraldetailsfrm.get('country_id').setValue(37);
+          this.premisesGeneraldetailsfrm.get('business_type_id').setValue(3);
+
+      }
+      this.premisesGeneraldetailsfrm.get('country_id').setValue(37);
+
     }        
     this.setupSearchByPsuNoHandler();
 
@@ -232,11 +243,11 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
         });
   }
 
-   oCountyCboSelect($event) {
+  oCountyCboSelect($event) {
+   if ($event.selectedItem) {
     this.county_id = $event.selectedItem.id;
-
     this.onLoadSubCounty(this.county_id);
-
+    }
   }
   onLoadapplicantTypesLoad() {
     var data = {
@@ -271,7 +282,7 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
     
     this.business_type_id = $event.value;
     this.onBusinessTypesDetailsLoad(this.business_type_id);
-    this.businessTypeEvent.emit(this.business_type_id);
+   this.businessTypeEvent.emit(this.business_type_id);
 
 
   }
@@ -380,11 +391,11 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
         });
   }
   
- oDistrictsCboSelect($event) {
+  oDistrictsCboSelect($event) {
+   if ($event.selectedItem) {
     this.district_id = $event.selectedItem.id;
-
     this.onLoadCounty(this.district_id);
-
+    }
   }
 
   
@@ -495,7 +506,20 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
           return false
         });
   }
-  
+    onLoadPremiseTypesLoad() {
+
+    var data = {
+      table_name: 'par_premises_types',
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.premisesTypesData = data;
+        },
+        error => {
+          return false
+        });
+  }
   onLoadBusinessTypesLoad() {
 
     var data = {
@@ -510,6 +534,24 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
           return false
         });
   }
+    onLoadBusinessDetails() {
+
+    var data = {
+      table_name: 'par_business_types',
+     // premise_type_id: premise_type_id
+    };
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.businessDetailsData = data;
+        },
+        error => {
+          return false
+        });
+  }
+
+
+
    funcSelectSupervisingDetails(data){
     this.premisesGeneraldetailsfrm.patchValue(data.data);
       this.isSupervisorPopupVisible= false;         

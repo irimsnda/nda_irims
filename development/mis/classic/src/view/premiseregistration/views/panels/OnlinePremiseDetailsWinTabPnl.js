@@ -6,15 +6,29 @@ Ext.define('Admin.view.premiseregistration.views.panels.OnlinePremiseDetailsWinT
     xtype: 'onlinepremisedetailswintabpnl',
     items: [
         {
-            title: 'Main Details',
+            title: 'Premises Details',
             xtype: 'premisedetailsfrm'
         },
         {
+            title: 'Directors Details',
+            xtype: 'premisedirectorsdetailsgrid'
+        },
+        {
+            title: 'Staff Details',
+            xtype: 'premisepersonneldetailsgrid'//'premisepersonneldetailsgrid'
+        },
+         {
+            title: 'Particulars of Nearest Pharmancy',
+            xtype: 'premisenearestpremisegrid'
+        },
+        {
             title: 'Personnel Details',
+            hidden:true,
             xtype: 'premisepersonneltabpnl'//'premisepersonneldetailsonlinegrid'
         },
         {
             title: 'Business Details',
+            hidden:true,
             xtype: 'premiseotherdetailsonlinegrid'
         }
     ]

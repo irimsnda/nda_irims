@@ -68,7 +68,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.PreClinicalTrialManagersAbstrac
                 flex: 1
             },{
                 xtype: 'gridcolumn',
-                dataIndex: 'clinicaltrial_description',
+                dataIndex: 'brief_description',
                 text: 'Brief Description',
                 flex: 1
             }, {

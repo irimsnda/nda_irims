@@ -24,6 +24,7 @@ import { PreviewAssessmentmedicinesComponent } from './views/admin-services/appl
 import { PreviewAssessmentgmpappsComponent } from './views/admin-services/application_details/preview-assessmentgmpapps/preview-assessmentgmpapps.component';
 import { SharedModulesModule } from './modules/shared-modules/shared-modules.module';
 import { AddproductApplicationdetailsComponent } from './views/online-services/product-registration/new-product-registration/addproduct-applicationdetails/addproduct-applicationdetails.component';
+import { PharmacistsaccountDashboardComponent } from './views/online-services/pharmacistsaccount-user/pharmacistsaccount-dashboard/pharmacistsaccount-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { AddproductApplicationdetailsComponent } from './views/online-services/p
     PreviewclinicaltrialComponent,
     ApprovedImportexportComponent,
     PreviewAssessmentmedicinesComponent,
-    PreviewAssessmentgmpappsComponent
+    PreviewAssessmentgmpappsComponent,
+    PharmacistsaccountDashboardComponent
   
   ],
   imports: [

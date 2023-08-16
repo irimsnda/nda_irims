@@ -19,42 +19,15 @@ Ext.define('Admin.view.administration.views.grids.SystemRolesTreeGrid', {
         clicksToEdit: 1
     }],
 
-    // autoScroll: true,
-    // store: 'systemrolestreestr',
-    // listeners: {
-    //     itemdblclick: 'onMenuItemTreeItemDblClick',
-    //     beforerender: function () {
-    //         var store = this.store;
-    //         store.removeAll();
-    //         store.load();
-    //     },
-    //     afterrender: function () {
-    //         var accessLevelsStr = Ext.getStore('systemaccesslevelsstr');
-    //         accessLevelsStr.removeAll();
-    //         accessLevelsStr.load();
-    //     }
-    // },
-
     autoScroll: true,
+    store: 'systemrolestreestr',
     listeners: {
-        beforerender: {
-            fn: 'setGridTreeStore',
-            config: {
-                storeId: 'systemrolestrees11tr',
-                proxy: {
-                    api: {
-                        read: 'administration/getSystemRoles'
-                    },
-                },
-            },
-            isLoad: true
-        },
         itemdblclick: 'onMenuItemTreeItemDblClick',
-        // beforerender: function () {
-        //     var store = this.store;
-        //     store.removeAll();
-        //     store.load();
-        // },
+        beforerender: function () {
+            var store = this.store;
+            store.removeAll();
+            store.load();
+        },
         afterrender: function () {
             var accessLevelsStr = Ext.getStore('systemaccesslevelsstr');
             accessLevelsStr.removeAll();
@@ -71,7 +44,7 @@ Ext.define('Admin.view.administration.views.grids.SystemRolesTreeGrid', {
         },
         {
             xtype: 'pagingtoolbar',
-            //store: 'systemrolestreestr',
+            store: 'systemrolestreestr',
             displayInfo: true,
             displayMsg: 'Showing {0} - {1} of {2} total records',
             emptyMsg: 'No Records',
