@@ -1464,6 +1464,8 @@ if(validateIsNumeric($section_id)){
                     set_time_limit(0); 
 
                     $public_dir=public_path().'/resources/uploads';
+
+                   
                     $file = file_get_contents($url);
                     $filetopath=$public_dir.'/'.$initial_file_name;
                     

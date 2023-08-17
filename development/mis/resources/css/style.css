@@ -56,8 +56,21 @@
     background: #fff !important;
   }
 
-.x-tab-bar-default-top > .x-tab-bar-body-default{
+/*.x-tab-bar-default-top > .x-tab-bar-body-default{
     margin-top: 3px !important;
+}*/
+.x-tab-default-top {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  border-radius: 0;
+  padding: 4px 6px 5px 5px;
+  border-width: 0;
+  border-style: solid;
+  background-color: transparent;
+}
+.x-tab-bar-default-top > .x-tab-bar-body-default {
+  padding: 1px 4px 0 8px;
 }
 .x-window-header-default .x-tool-img {
     background-color: #497d36 !important;

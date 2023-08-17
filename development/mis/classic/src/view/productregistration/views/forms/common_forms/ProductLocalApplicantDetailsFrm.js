@@ -32,7 +32,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
             items: [
                 {
                     xtype: 'textfield',
-                    name: 'applicant_name',
+                    name: 'condact_premise_name',
                     readOnly: true,
                     columnWidth: 0.7
                 },
@@ -44,20 +44,21 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
                     tooltip: 'Search LTR',
                     applicantType: 'local',
                     name: 'link_localagent',
-                    handler: 'showApplicantSelectionList'
+                    handler: 'showLTRSelectionList'
                 }
             ]
         },
         {
             xtype: 'textfield',
-            fieldLabel: 'Contact Person',
+            fieldLabel: 'Contact Premise Applicant',
             readOnly: true,
-            name: 'contact_person'
+            name: 'contact_premsie_applicant'
         },
         {
             xtype: 'textfield',
             fieldLabel: 'TIN',
             readOnly: true,
+            hidden:true,
             name: 'TIN'
         },
         {
@@ -66,6 +67,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
             name: 'app_country_id',
             store: 'countriesstr',
             forceSelection: true,
+            hidden:true,
             queryMode: 'local',
             valueField: 'id',
             readOnly: true,
@@ -83,6 +85,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
             fieldLabel: 'Region',
             name: 'app_region_id',
             store: 'regionsstr',
+            hidden:true,
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
@@ -101,6 +104,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
             fieldLabel: 'District',
             name: 'app_district_id',
             readOnly: true,
+            hidden:true,
             store: 'districtsstr',
             forceSelection: true,
             queryMode: 'local',
@@ -116,6 +120,19 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
         },
         {
             xtype: 'textfield',
+            fieldLabel: 'Registration No',
+            readOnly: true,
+            name: 'prem_registration_no'
+        },
+        {
+            xtype: 'textfield',
+            fieldLabel: 'Permit No',
+            readOnly: true,
+            name: 'prem_registration_no'
+        },
+
+        {
+            xtype: 'textfield',
             fieldLabel: 'Physical Address',
             readOnly: true,
             name: 'app_physical_address'
@@ -123,6 +140,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
         {
             xtype: 'textfield',
             readOnly: true,
+            hidden:true,
             fieldLabel: 'Postal Address',
             name: 'postal_address'
         },
@@ -130,11 +148,12 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
             xtype: 'textfield',
             readOnly: true,
             fieldLabel: 'Telephone',
-            name: 'app_telephone'
+            name: 'prem_telephone'
         },
         {
             xtype: 'textfield',
             fieldLabel: 'Fax',
+            hidden:true,
             readOnly: true,
             name: 'app_fax'
         },
@@ -142,11 +161,13 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
             xtype: 'textfield',
             fieldLabel: 'Email',
             readOnly: true,
+            hidden:true,
             name: 'app_email'
         },
         {
             xtype: 'textfield',
             readOnly: true,
+            hidden:true,
             fieldLabel: 'Website',
             name: 'app_website'
         }

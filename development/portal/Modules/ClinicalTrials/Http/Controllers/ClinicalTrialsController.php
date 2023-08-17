@@ -88,9 +88,9 @@ class ClinicalTrialsController extends Controller
                                         $previous_data = getPreviousRecords('wb_clinicaltrial_progressreports', $where_app);
                                         
                                         $resp =   updateRecord('wb_clinicaltrial_progressreports', $previous_data, $where_app, $reportingapp_data, $trader_email);
-										
+                                        
                                 $where_app = array('id'=>$application_id);
-										
+                                        
                                         $previous_data = getPreviousRecords('wb_clinical_trial_applications', $where_app);
                                      $application_code = $previous_data['results'][0]['application_code'];
                                     
@@ -140,14 +140,14 @@ class ClinicalTrialsController extends Controller
                                     $section_code = getSingleRecordColValue('par_sections', array('id' => $section_id), 'code','mis_db');
                                     
                                     $ref_id = getSingleRecordColValue('tra_submodule_referenceformats', array('sub_module_id' => $sub_module_id, 'module_id' => $module_id, 'reference_type_id' => 1), 'reference_format_id','mis_db');
-									$prev_refno = getSingleRecordColValue('tra_clinical_trial_applications', array('reg_clinical_trial_id' => $reg_clinical_trial_id,'sub_module_id'=>10), 'reference_no','mis_db');
+                                    $prev_refno = getSingleRecordColValue('tra_clinical_trial_applications', array('reg_clinical_trial_id' => $reg_clinical_trial_id,'sub_module_id'=>10), 'reference_no','mis_db');
 
                                         
                                     $application_code = generateApplicationCode($sub_module_id, 'wb_clinical_trial_applications');
                                     $codes_array = array(
                                         'section_code' => $section_code,
                                         'zone_code' => $zone_code,
-										'prev_refno'=>$prev_refno
+                                        'prev_refno'=>$prev_refno
                                     );
 
                                     $tracking_no = generateApplicationRefNumber($ref_id, $codes_array, date('Y'), $process_id, $zone_id, $trader_id);
@@ -597,70 +597,68 @@ public function saveCtrSaeReportingApplication(Request $req){
             $timespan_defination = getSingleRecordColValue('clinical_trial_duration_desc', array('id' => $duration_desc), 'name','mis_db');
                                 
             $study_end_date = date('Y-m-d', strtotime($req->study_start_date. " + $study_duration  $timespan_defination"));
-            $meeting_time = $req->meeting_time;
-
             $formattedMeetingTime = date("H:i", strtotime($meeting_time));
-
+            
                         /** Already Saved */ 
                         $app_data = array(
 
                             'study_title' => $req->study_title,
-							'protocol_no' => $req->protocol_no,
-							'primary_endpoints' => $req->primary_endpoints,
-							'secondary_endpoints' => $req->secondary_endpoints,
-							'version_no' => $req->version_no,
+                            'protocol_no' => $req->protocol_no,
+                            'primary_endpoints' => $req->primary_endpoints,
+                            'secondary_endpoints' => $req->secondary_endpoints,
+                            'version_no' => $req->version_no,
                             'other_study'=>$req->other_study,
                             'explorator_objective'=>$req->explorator_objective,
                             'other_objective'=>$req->other_objective,
-							 'date_of_protocol'=>formatDate($req->date_of_protocol),
-							'study_start_date'=>formatDate($req->study_start_date),
-							'meeting_date'=>formatDate($req->meeting_date), 
+                             'date_of_protocol'=>formatDate($req->date_of_protocol),
+                            'study_start_date'=>formatDate($req->study_start_date),
+                            'meeting_time' => $formattedMeetingTime,  
                             'brief_description'=>$req->brief_description, 
                             'uncst_no'=>$req->uncst_no,
-                            'meeting_time' => $formattedMeetingTime,  
                             'first_final_duration'=>$req->first_final_duration,
                             'duration_stimate'=>$req->duration_stimate,
-                            'meeting_type_id'=>$req->meeting_type_id, 
+                            'meeting_type_id'=>$req->meeting_type_id,
+                            'meeting_date'=>$req->meeting_date, 
                             'meeting_venue'=>$req->meeting_venue, 
                             'meeting_invitation_details'=>$req->meeting_invitation_details, 
-							'study_end_date'=>$study_end_date,
-							'sponsor_id' => $req->sponsor_id,
-							'investigator_id' => $req->investigator_id,
-							'study_duration' => $req->study_duration,
-							'duration_desc' => $req->duration_desc,
-							'clearance_no' => $req->clearance_no,
+                            'study_end_date'=>$study_end_date,
+                            'sponsor_id' => $req->sponsor_id,
+                            'investigator_id' => $req->investigator_id,
+                            'study_duration' => $req->study_duration,
+                            'duration_desc' => $req->duration_desc,
+                            'clearance_no' => $req->clearance_no,
                             'rec_no'=>$req->rec_no,
-							'clinical_prodsection_id' => $req->clinical_prodsection_id,
+                            'clinical_prodsection_id' => $req->clinical_prodsection_id,
                             'is_clinicaltrialin_uganda'=>$req->is_clinicaltrialin_uganda,
-							'phase_id' => $req->phase_id,
-							 'clinicaltrial_registry_id' => $req->clinicaltrial_registry_id,
-							'clinicaltrial_identification_no' => $req->clinicaltrial_identification_no,
+                            'phase_id' => $req->phase_id,
+                             'clinicaltrial_registry_id' => $req->clinicaltrial_registry_id,
+                            'clinicaltrial_identification_no' => $req->clinicaltrial_identification_no,
                             'is_clinicaltrialin_othercountry'=>$req->is_clinicaltrialin_othercountry,
-							'short_study_title' => $req->short_study_title,
-							'ctrethics_committee_id' => $req->ctrethics_committee_id,
-							'trial_design' => $req->trial_design,
-							'clinicaltrialprimary_objective' => $req->clinicaltrialprimary_objective,
-							'clinicaltrialsecondary_objective' => $req->clinicaltrialsecondary_objective,
-							'exclusion_criteria' => $req->exclusion_criteria,
-							'inclusion_criteria' => $req->inclusion_criteria,
-							'purpose_of_trial' => $req->purpose_of_trial,
-							'clinicaltrial_description' => $req->clinicaltrial_description,
-							'module_id' => $module_id,
-							'sub_module_id' => $req->sub_module_id,
-							'section_id' => $req->section_id,
+                            'short_study_title' => $req->short_study_title,
+                            'ctrethics_committee_id' => $req->ctrethics_committee_id,
+                            'trial_design' => $req->trial_design,
+                            'clinicaltrialprimary_objective' => $req->clinicaltrialprimary_objective,
+                            'clinicaltrialsecondary_objective' => $req->clinicaltrialsecondary_objective,
+                            'exclusion_criteria' => $req->exclusion_criteria,
+                            'inclusion_criteria' => $req->inclusion_criteria,
+                            'purpose_of_trial' => $req->purpose_of_trial,
+                            'clinicaltrial_description' => $req->clinicaltrial_description,
+                            'module_id' => $module_id,
+                            'sub_module_id' => $req->sub_module_id,
+                            'section_id' => $req->section_id,
                             'participant_no' => $req->participant_no,
                             'enrolled_worldwide_no' => $req->enrolled_worldwide_no,
                             'intended_no' => $req->intended_no,
                             'enrolled_uganda_no' => $req->enrolled_uganda_no,
                             'sites_no' => $req->sites_no,
-							'zone_id' => $req->zone_id,
+                            'zone_id' => $req->zone_id,
                             'clinicalin_othercountries_sites' => $req->clinicalin_othercountries_sites,
                             'clinicalin_otheruganda_sites' => $req->clinicalin_otheruganda_sites,
-							'clincialtrialfields_type_id' => $req->clincialtrialfields_type_id,
-							'clincialtrialfunding_source_id' => $req->clincialtrialfunding_source_id,
-							'trader_id' => $trader_id,
-							'applicant_id' => $trader_id
-					   );
+                            'clincialtrialfields_type_id' => $req->clincialtrialfields_type_id,
+                            'clincialtrialfunding_source_id' => $req->clincialtrialfunding_source_id,
+                            'trader_id' => $trader_id,
+                            'applicant_id' => $trader_id
+                       );
 
 
                         $sub_module_id = $req->sub_module_id;
@@ -684,11 +682,11 @@ public function saveCtrSaeReportingApplication(Request $req){
                                    
                                    
                                    $where_app = array('application_code'=>$application_code);
-									if (!recordExists('tra_application_uploadeddocuments', $where_app,'mis_db')) {
-										//initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
-									}
+                                    if (!recordExists('tra_application_uploadeddocuments', $where_app,'mis_db')) {
+                                        initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
+                                    }
                             }
-							
+                            
                         }
                         else{
                             $record = '';
@@ -724,7 +722,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                 else if( $tracking_no == ''){
                                     return \response()->json(array('success'=>false,'tracking_no'=>$tracking_no, 'message'=>$tracking_no));
                                 }
-								$app_data['reference_no'] =   $tracking_no;
+                                $app_data['reference_no'] =   $tracking_no;
                                $app_data['tracking_no'] =   $tracking_no;
                                $app_data['application_status_id'] =   1;
                                $app_data['application_code'] =   $application_code;
@@ -737,7 +735,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                             if($resp['success']){
                                                     //create all the details
                                                   
-                                                 //initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
+                                                 initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
                                                  saveApplicationSubmissionDetails($application_code,$table_name);
                                              }
                                
@@ -810,60 +808,71 @@ public function saveCtrSaeReportingApplication(Request $req){
             $study_end_date = date('Y-m-d', strtotime($req->study_start_date. " + $study_duration  $timespan_defination"));
                         
             
-						$app_data = array(
-							'study_title' => $req->study_title,
-							'protocol_no' => $req->protocol_no,
-							'primary_endpoints' => $req->primary_endpoints,
-							'secondary_endpoints' => $req->secondary_endpoints,
-							'version_no' => $req->version_no,
-							'date_of_protocol'=>formatDate($req->date_of_protocol),
-							'study_start_date'=>formatDate($req->study_start_date),
-                            'reg_clinical_trial_id'=>$req->reg_clinical_trial_id,
-							'study_end_date'=>$study_end_date,
-							'sponsor_id' => $req->sponsor_id,
-							'investigator_id' => $req->investigator_id,
-							'study_duration' => $req->study_duration,
-							'duration_desc' => $req->duration_desc,
-							'clearance_no' => $req->clearance_no,
-							'clinical_prodsection_id' => $req->clinical_prodsection_id,
-							'phase_id' => $req->phase_id,
-							 'clinicaltrial_registry_id' => $req->clinicaltrial_registry_id,
-							'clinicaltrial_identification_no' => $req->clinicaltrial_identification_no,
-							'short_study_title' => $req->short_study_title,
-							'ctrethics_committee_id' => $req->ctrethics_committee_id,
-							'trial_design' => $req->trial_design,
-							'clinicaltrialprimary_objective' => $req->clinicaltrialprimary_objective,
-							'clinicaltrialsecondary_objective' => $req->clinicaltrialsecondary_objective,
-							'exclusion_criteria' => $req->exclusion_criteria,
-							'inclusion_criteria' => $req->inclusion_criteria,
-							'purpose_of_trial' => $req->purpose_of_trial,
-							'clinicaltrial_description' => $req->clinicaltrial_description,
-							'module_id' => $req->module_id,
-							'sub_module_id' => $req->sub_module_id,
-							'section_id' => $req->section_id,
+                        $app_data = array(
+
+                            'study_title' => $req->study_title,
+                            'protocol_no' => $req->protocol_no,
+                            'primary_endpoints' => $req->primary_endpoints,
+                            'secondary_endpoints' => $req->secondary_endpoints,
+                            'version_no' => $req->version_no,
+                            'other_study'=>$req->other_study,
+                            'explorator_objective'=>$req->explorator_objective,
+                            'other_objective'=>$req->other_objective,
+                             'date_of_protocol'=>formatDate($req->date_of_protocol),
+                            'study_start_date'=>formatDate($req->study_start_date),
+                            'meeting_time'=>formatDate($req->meeting_time), 
+                            'brief_description'=>$req->brief_description, 
+                            'uncst_no'=>$req->uncst_no,
+                            'first_final_duration'=>$req->first_final_duration,
+                            'duration_stimate'=>$req->duration_stimate,
+                            'meeting_type_id'=>$req->meeting_type_id,
+                            'meeting_date'=>$req->meeting_date, 
+                            'meeting_venue'=>$req->meeting_venue, 
+                            'meeting_invitation_details'=>$req->meeting_invitation_details, 
+                            'study_end_date'=>$study_end_date,
+                            'sponsor_id' => $req->sponsor_id,
+                            'investigator_id' => $req->investigator_id,
+                            'study_duration' => $req->study_duration,
+                            'duration_desc' => $req->duration_desc,
+                            'clearance_no' => $req->clearance_no,
+                            'rec_no'=>$req->rec_no,
+                            'clinical_prodsection_id' => $req->clinical_prodsection_id,
+                            'is_clinicaltrialin_uganda'=>$req->is_clinicaltrialin_uganda,
+                            'phase_id' => $req->phase_id,
+                             'clinicaltrial_registry_id' => $req->clinicaltrial_registry_id,
+                            'clinicaltrial_identification_no' => $req->clinicaltrial_identification_no,
+                            'is_clinicaltrialin_othercountry'=>$req->is_clinicaltrialin_othercountry,
+                            'short_study_title' => $req->short_study_title,
+                            'ctrethics_committee_id' => $req->ctrethics_committee_id,
+                            'trial_design' => $req->trial_design,
+                            'clinicaltrialprimary_objective' => $req->clinicaltrialprimary_objective,
+                            'clinicaltrialsecondary_objective' => $req->clinicaltrialsecondary_objective,
+                            'exclusion_criteria' => $req->exclusion_criteria,
+                            'inclusion_criteria' => $req->inclusion_criteria,
+                            'purpose_of_trial' => $req->purpose_of_trial,
+                            'clinicaltrial_description' => $req->clinicaltrial_description,
+                            'module_id' => $module_id,
+                            'sub_module_id' => $req->sub_module_id,
+                            'section_id' => $req->section_id,
                             'participant_no' => $req->participant_no,
                             'enrolled_worldwide_no' => $req->enrolled_worldwide_no,
                             'intended_no' => $req->intended_no,
                             'enrolled_uganda_no' => $req->enrolled_uganda_no,
                             'sites_no' => $req->sites_no,
-							'zone_id' => $req->zone_id,
-							'clincialtrialfields_type_id' => $req->clincialtrialfields_type_id,
-							'clincialtrialfunding_source_id' => $req->clincialtrialfunding_source_id,
-                            'screening_period' => $req->screening_period,
-                            'screening_duration' => $req->screening_duration,
-                            'follow_up_period' => $req->follow_up_period,
-                            'follow_up_duration' => $req->follow_up_duration,
-                            'intervention_period'=>$req->intervention_period,
-                            'intervention_duration'=>$req->intervention_duration,
-							'trader_id' => $trader_id,
-							'applicant_id' => $trader_id
-                        );
+                            'zone_id' => $req->zone_id,
+                            'clinicalin_othercountries_sites' => $req->clinicalin_othercountries_sites,
+                            'clinicalin_otheruganda_sites' => $req->clinicalin_otheruganda_sites,
+                            'clincialtrialfields_type_id' => $req->clincialtrialfields_type_id,
+                            'clincialtrialfunding_source_id' => $req->clincialtrialfunding_source_id,
+                            'trader_id' => $trader_id,
+                            'applicant_id' => $trader_id
+                       );
                         /** Already Saved */ 
 
                         $sub_module_id = $req->sub_module_id;
                         $table_name = 'wb_clinical_trial_applications';
                         if(validateIsNumeric($application_id)){
-                           
+
                                 
                                $where_app = array('id'=>$application_id);
     
@@ -878,20 +887,22 @@ public function saveCtrSaeReportingApplication(Request $req){
                                    
                                    
                             }
-							$where_app = array('application_code'=>$application_code);
-							if (!recordExists('tra_application_uploadeddocuments', $where_app,'mis_db')) {
-								initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
-							}
-							
-							
+                            $where_app = array('application_code'=>$application_code);
+
+                            if (!recordExists('tra_application_uploadeddocuments', $where_app,'mis_db')) {
+                                initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
+                            }
+                            
+                            
                         }
                         else{
                             
                             $process_id = '';
                            // $anyOngoingApps = checkForOngoingApplications($req->reg_clinical_trial_id, 'tra_clinical_trial_applications', 'reg_clinical_trial_id', $process_id);
-							$prev_refno = getSingleRecordColValue('tra_clinical_trial_applications', array('reg_clinical_trial_id' => $reg_clinical_trial_id,'sub_module_id'=>10), 'reference_no','mis_db');
-							/*
-							$anyOngoingPortalApps = checkForPortalOngoingApplications($req->reg_clinical_trial_id, 'wb_clinical_trial_applications', 'reg_clinical_trial_id', $process_id);
+                            $prev_refno = getSingleRecordColValue('tra_clinical_trial_applications', array('reg_clinical_trial_id' => $reg_clinical_trial_id,'sub_module_id'=>10), 'reference_no','mis_db');
+
+                            /*
+                            $anyOngoingPortalApps = checkForPortalOngoingApplications($req->reg_clinical_trial_id, 'wb_clinical_trial_applications', 'reg_clinical_trial_id', $process_id);
                                 
                             if ($anyOngoingApps['exists'] == true || $anyOngoingPortalApps['exists'] == true) {
                                     $res = array(
@@ -900,8 +911,8 @@ public function saveCtrSaeReportingApplication(Request $req){
                                     );
                                     return \response()->json($res);
                             }
-							*/
-							
+                            */
+                            
                             $record = '';
                            
                              $where_statement = array('sub_module_id'=>10,'t1.reg_clinical_trial_id'=>$reg_clinical_trial_id);
@@ -923,7 +934,6 @@ public function saveCtrSaeReportingApplication(Request $req){
                                 $process_id = getSingleRecordColValue('wf_tfdaprocesses',array('module_id'=>$module_id, 'section_id'=>$section_id,'sub_module_id'=>$sub_module_id), 'id','mis_db');
                                
                                 $tra_clinical_trial_id = getSingleRecordColValue('registered_clinical_trials',array('id'=>$reg_clinical_trial_id), 'id','mis_db');
-                                   
                                 $ref_id = getSingleRecordColValue('tra_submodule_referenceformats', array('sub_module_id' => $sub_module_id, 'reference_type_id' => 1), 'reference_format_id','mis_db');
 
                                         $codes_array = array(
@@ -937,7 +947,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                  $tracking_no = generateSubRefNumber($where_statementref, 'tra_clinical_trial_applications', $ref_id, $codes_array, $sub_module_id, $trader_id);
                                 
                                 //change from CT to CT/ALT CTR
-								if (!validateIsNumeric($ref_id )) {
+                                if (!validateIsNumeric($ref_id )) {
                                         return \response()->json(array('success'=>false, 'message'=>'Reference No Format has not been set, contact the system administrator'));
                                     }
                                     else if( $tracking_no == ''){
@@ -953,28 +963,30 @@ public function saveCtrSaeReportingApplication(Request $req){
                               
     
                                             
-                                            $resp = insertRecord('wb_clinical_trial_applications', $app_data, $trader_email);
-   
-                                            $record_id = $resp['record_id'];
-                                            $application_id = $record_id;
-                                            //save the details 
-                                            $prev_sites = DB::connection('mis_db')->table('clinical_trial_sites as t1')
+                                $resp = insertRecord('wb_clinical_trial_applications', $app_data, $trader_email);
+
+                                    $record_id = $resp['record_id'];
+                                    $application_id = $record_id;
+                                        //save the details 
+
+                                         $prev_sites = DB::connection('mis_db')->table('clinical_trial_sites as t1')
                                                 ->select(DB::raw("t1.*,$application_id as application_id"))
-                                                ->where('application_id', $tra_clinical_trial_id)
+                                                ->where('t1.application_id', $tra_clinical_trial_id)
                                                 ->get();
                                             $prev_sites = convertStdClassObjToArray($prev_sites);
                                             $prev_sites = unsetPrimaryIDsInArray($prev_sites,'id');
                                             //prev other investigators
                                             $prev_investigators = DB::connection('mis_db')->table('clinical_trial_investigators as t1')
                                                 ->select(DB::raw("t1.*,$application_id as application_id"))
-                                                ->where('application_id', $tra_clinical_trial_id)
+                                                ->where('t1.application_id', $tra_clinical_trial_id)
                                                 ->get();
+
                                             $prev_investigators = convertStdClassObjToArray($prev_investigators);
                                             $prev_investigators = unsetPrimaryIDsInArray($prev_investigators,'id');
                                             //prev Imp Products
                                             $prev_products = DB::connection('mis_db')->table('clinical_trial_products as t2')
                                                 ->select(DB::raw("t2.*,$application_id as application_id"))
-                                                ->where('application_id', $tra_clinical_trial_id)
+                                                ->where('t2.application_id', $tra_clinical_trial_id)
                                                 ->get();
                                             $prev_products = convertStdClassObjToArray($prev_products);
                                             $prev_products = unsetPrimaryIDsInArray($prev_products,'id');
@@ -984,8 +996,9 @@ public function saveCtrSaeReportingApplication(Request $req){
                                             DB::table('wb_clinical_trial_products')->insert($prev_products);
 
                                             if($resp['success']){
+
                                                     //create all the details
-                                                    initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no, $trader_id);
+                                                    //initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no, $trader_id);
                                                     saveApplicationSubmissionDetails($application_code,$table_name);
                                              }
                                
@@ -1035,7 +1048,7 @@ public function saveCtrSaeReportingApplication(Request $req){
             $trader_id = $req->trader_id;
             $application_status_id = $req->application_status_id;
                 $sub_module_id = $req->sub_module_id;
-				 $application_code = $req->application_code;
+                 $application_code = $req->application_code;
                 
             $data = array();
             //get the records 
@@ -1046,12 +1059,12 @@ public function saveCtrSaeReportingApplication(Request $req){
                     $join->on('t1.sub_module_id', '=', 't4.sub_module_id');
                     $join->on('t1.application_status_id', '=', 't4.status_id');
                 })
-				->leftJoin('wb_processstatus_actions as t6',function($join){
+                ->leftJoin('wb_processstatus_actions as t6',function($join){
                         $join->on('t1.application_status_id', '=', 't6.status_id')
                              ->on('t6.is_default_action', '=', DB::raw(1));
 
                     })
-					
+                    
                     ->leftJoin('wb_statuses_actions as t7', 't6.action_id','t7.id')
                 ->where(array('t1.applicant_id' => $trader_id));
                 
@@ -1061,7 +1074,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                 }if(validateIsNumeric($sub_module_id)){
                      $records->where(array('t1.sub_module_id'=>$sub_module_id));
                 }
-				 if(validateIsNumeric($application_code)){
+                 if(validateIsNumeric($application_code)){
                     $records->where(array('t1.application_code'=>$application_code));
                 }
                 $records =  $records->get();
@@ -1096,9 +1109,11 @@ public function saveCtrSaeReportingApplication(Request $req){
         $permitCategoryData = getParameterItems('par_permit_category','','mis_db');
 
         $permitReasonData = getParameterItems('par_permit_category','','mis_db');
+        $meetingData = getParameterItems('par_meeting_types','','mis_db');
         
         foreach ($records as $rec) {
            $section = returnParamFromArray($sectionsData,$rec->section_id);
+            $meetingType = returnParamFromArray($meetingData,$rec->meeting_type_id);
            $clinical_trial_sponsor = getSingleRecordColValue('clinical_trial_personnel', array('id' => $rec->sponsor_id), 'name','mis_db');
            $principal_investigator = getSingleRecordColValue('clinical_trial_personnel', array('id' => $rec->investigator_id), 'name','mis_db');
            if($rec->sub_module_id == 23 ||$rec->sub_module_id == 102||$rec->sub_module_id == 103){
@@ -1111,13 +1126,12 @@ public function saveCtrSaeReportingApplication(Request $req){
                  }
                 if($report_data){
 
-                 
-					$data[] = array('application_code'=>$rec->application_code,
+                    $data[] = array('application_code'=>$rec->application_code,
                                 'module_id'=>$rec->module_id,
                                 'sub_module_id'=>$rec->sub_module_id,
                                 'action_name'=>$rec->action_name,
-								'iconCls'=>$rec->iconCls,
-								'action'=>$rec->action,
+                                'iconCls'=>$rec->iconCls,
+                                'action'=>$rec->action,
                                 'application_status_id'=>$rec->application_status_id,
                                 'reference_no'=>$rec->reference_no,
                                 'tracking_no'=>$rec->tracking_no,
@@ -1172,42 +1186,39 @@ public function saveCtrSaeReportingApplication(Request $req){
                                 'protocol_deviations'=>$report_data->protocol_deviations,
                                 'clinicalstudy_status_id'=>$report_data->clinicalstudy_status_id,
                                 'study_site_id'=>$report_data->study_site_id,
-								
-								
-								'primary_endpoints' => $rec->primary_endpoints,
-										'secondary_endpoints' => $rec->secondary_endpoints,
+                                
+                                
+                                'primary_endpoints' => $rec->primary_endpoints,
+                                        'secondary_endpoints' => $rec->secondary_endpoints,
 
-								'study_end_date'=>$rec->study_end_date,
-								 'clinicaltrial_registry_id' => $rec->clinicaltrial_registry_id,
-									'clinicaltrial_identification_no' => $rec->clinicaltrial_identification_no,
-									'short_study_title' => $rec->short_study_title,
-									'ctrethics_committee_id' => $rec->ctrethics_committee_id,
-									'trial_design' => $rec->trial_design,
-									'clinicaltrialprimary_objective' => $rec->clinicaltrialprimary_objective,
-									'clinicaltrialsecondary_objective' => $rec->clinicaltrialsecondary_objective,
-									'exclusion_criteria' => $rec->exclusion_criteria,
-									'inclusion_criteria' => $rec->inclusion_criteria,
-									'purpose_of_trial' => $rec->purpose_of_trial,
-									'clinicaltrial_description' => $rec->clinicaltrial_description,
-									
-									'clincialtrialfields_type_id' => $rec->clincialtrialfields_type_id,
-									'clincialtrialfunding_source_id' => $rec->clincialtrialfunding_source_id,
-									
-									
-									
-								'phase_id'=>$rec->phase_id,
-								'status_name'=>$rec->status_name,
-								'is_fast_track'=>$rec->is_fast_track,
+                                'study_end_date'=>$rec->study_end_date,
+                                 'clinicaltrial_registry_id' => $rec->clinicaltrial_registry_id,
+                                    'clinicaltrial_identification_no' => $rec->clinicaltrial_identification_no,
+                                    'short_study_title' => $rec->short_study_title,
+                                    'ctrethics_committee_id' => $rec->ctrethics_committee_id,
+                                    'trial_design' => $rec->trial_design,
+                                    'clinicaltrialprimary_objective' => $rec->clinicaltrialprimary_objective,
+                                    'clinicaltrialsecondary_objective' => $rec->clinicaltrialsecondary_objective,
+                                    'exclusion_criteria' => $rec->exclusion_criteria,
+                                    'inclusion_criteria' => $rec->inclusion_criteria,
+                                    'purpose_of_trial' => $rec->purpose_of_trial,
+                                    'clinicaltrial_description' => $rec->clinicaltrial_description,
+                                    
+                                    'clincialtrialfields_type_id' => $rec->clincialtrialfields_type_id,
+                                    'clincialtrialfunding_source_id' => $rec->clincialtrialfunding_source_id,
+                                'phase_id'=>$rec->phase_id,
+                                'status_name'=>$rec->status_name,
+                                'is_fast_track'=>$rec->is_fast_track,
                                 'clinicalin_othercountries_sites' => $rec->clinicalin_othercountries_sites,
-                                'clinicalin_otheruganda_sites' => $rec->clinicalin_otheruganda_sites,
-								'clinical_trial_sponsor'=>$clinical_trial_sponsor,
-								'principal_investigator'=>$principal_investigator,
+                               // 'clinicalin_otheruganda_sites' => $rec->clinicalin_otheruganda_sites,
+                                'clinical_trial_sponsor'=>$clinical_trial_sponsor,
+                                'principal_investigator'=>$principal_investigator,
                                 'contextMenu'=>returnActionColumn($rec->application_status_id,$actionColumnData)
                             );
-					
-				}
-				  
-						
+                    
+                }
+                  
+                        
 
 
            }
@@ -1216,9 +1227,9 @@ public function saveCtrSaeReportingApplication(Request $req){
                         'module_id'=>$rec->module_id,
                         'sub_module_id'=>$rec->sub_module_id,
                         'action_name'=>$rec->action_name,
-						'iconCls'=>$rec->iconCls,
-						'action'=>$rec->action,
-						'explorator_objective'=>$rec->explorator_objective,
+                        'iconCls'=>$rec->iconCls,
+                        'action'=>$rec->action,
+                        'explorator_objective'=>$rec->explorator_objective,
                         'other_objective'=>$rec->other_objective,
                         'application_status_id'=>$rec->application_status_id,
                         'reference_no'=>$rec->reference_no,
@@ -1244,6 +1255,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                         'version_no'=>$rec->version_no,
                         'date_of_protocol'=>formatDate($rec->date_of_protocol),
                         'study_start_date'=>formatDate($rec->study_start_date),
+                        'meeting_date'=>formatDate($rec->meeting_date),
                         'clearance_no'=>$rec->clearance_no,
                         'study_duration'=>$rec->study_duration,
                         'duration_desc'=>$rec->duration_desc,
@@ -1253,7 +1265,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                         'meeting_type_id'=>$rec->meeting_type_id,
                         'meeting_venue'=>$rec->meeting_venue,
                         'brief_description'=>$rec->brief_description,
-                        'meeting_time'=>$rec->meeting_time,
+                        'meeting_time'=>formatDate($rec->meeting_time),
                         'router_link'=>$rec->router_link,
                         'process_title'=>$rec->process_title,
                         'reg_clinical_trial_id'=>$rec->reg_clinical_trial_id,
@@ -1263,32 +1275,32 @@ public function saveCtrSaeReportingApplication(Request $req){
                         'application_id'=>$rec->id,
                         'clinical_prodsection_id'=>$rec->clinical_prodsection_id,
                         'is_clinicaltrialin_othercountry'=>$rec->is_clinicaltrialin_othercountry,
-						'primary_endpoints' => $rec->primary_endpoints,
-								'secondary_endpoints' => $rec->secondary_endpoints,
+                        'primary_endpoints' => $rec->primary_endpoints,
+                                'secondary_endpoints' => $rec->secondary_endpoints,
                                 'is_clinicaltrialin_uganda'=>$rec->is_clinicaltrialin_uganda,
-						'study_end_date'=>$rec->study_end_date,
-						 'clinicaltrial_registry_id' => $rec->clinicaltrial_registry_id,
-							'clinicaltrial_identification_no' => $rec->clinicaltrial_identification_no,
-							'short_study_title' => $rec->short_study_title,
-							'ctrethics_committee_id' => $rec->ctrethics_committee_id,
-							'trial_design' => $rec->trial_design,
-							'clinicaltrialprimary_objective' => $rec->clinicaltrialprimary_objective,
-							'clinicaltrialsecondary_objective' => $rec->clinicaltrialsecondary_objective,
-							'exclusion_criteria' => $rec->exclusion_criteria,
-							'inclusion_criteria' => $rec->inclusion_criteria,
-							'purpose_of_trial' => $rec->purpose_of_trial,
-							'clinicaltrial_description' => $rec->clinicaltrial_description,
-							
-							'clincialtrialfields_type_id' => $rec->clincialtrialfields_type_id,
-							'clincialtrialfunding_source_id' => $rec->clincialtrialfunding_source_id,
-							
-							 'screening_period' => $rec->screening_period,
+                        'study_end_date'=>$rec->study_end_date,
+                         'clinicaltrial_registry_id' => $rec->clinicaltrial_registry_id,
+                            'clinicaltrial_identification_no' => $rec->clinicaltrial_identification_no,
+                            'short_study_title' => $rec->short_study_title,
+                            'ctrethics_committee_id' => $rec->ctrethics_committee_id,
+                            'trial_design' => $rec->trial_design,
+                            'clinicaltrialprimary_objective' => $rec->clinicaltrialprimary_objective,
+                            'clinicaltrialsecondary_objective' => $rec->clinicaltrialsecondary_objective,
+                            'exclusion_criteria' => $rec->exclusion_criteria,
+                            'inclusion_criteria' => $rec->inclusion_criteria,
+                            'purpose_of_trial' => $rec->purpose_of_trial,
+                            'clinicaltrial_description' => $rec->clinicaltrial_description,
+                            
+                            'clincialtrialfields_type_id' => $rec->clincialtrialfields_type_id,
+                            'clincialtrialfunding_source_id' => $rec->clincialtrialfunding_source_id,
+                            
+                             'screening_period' => $rec->screening_period,
                             'screening_duration' => $rec->screening_duration,
                             'follow_up_period' => $rec->follow_up_period,
                             'follow_up_duration' => $rec->follow_up_duration,
                             'intervention_period'=>$rec->intervention_period,
                             'intervention_duration'=>$rec->intervention_duration,
-							
+                            
                         'phase_id'=>$rec->phase_id,
                         'status_name'=>$rec->status_name,
                         'clinicalin_othercountries_sites' => $rec->clinicalin_othercountries_sites,
@@ -1298,7 +1310,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                         'principal_investigator'=>$principal_investigator,
                         'contextMenu'=>returnActionColumn($rec->application_status_id,$actionColumnData)
                     );
- 
+                //dd($data);
            }
           
             
@@ -1591,21 +1603,21 @@ public function saveCtrSaeReportingApplication(Request $req){
    }
    
    public function saveComparatorProductDetailsDetails(Request $req){
-	   
-	   $res = $this-> saveClinicalTrialProductDetailsDetails($req,'wb_clinical_comparatorproducts');
-	    return response()->json($res);
+       
+       $res = $this-> saveClinicalTrialProductDetailsDetails($req,'wb_clinical_comparatorproducts');
+        return response()->json($res);
 
    }
       public function savePlaceboProductDetailsDetails(Request $req){
-	   
-	     $res = $this-> saveClinicalTrialProductDetailsDetails($req,'wb_clinical_placebaproducts');
-	    return response()->json($res);
+       
+         $res = $this-> saveClinicalTrialProductDetailsDetails($req,'wb_clinical_placebaproducts');
+        return response()->json($res);
 
    }
       public function saveiMPProductDetailsDetails(Request $req){
-	   
-	     $res = $this-> saveClinicalTrialProductDetailsDetails($req,'wb_clinical_trial_products');
-	    return response()->json($res);
+       
+         $res = $this-> saveClinicalTrialProductDetailsDetails($req,'wb_clinical_trial_products');
+        return response()->json($res);
 
    }
    
@@ -1882,7 +1894,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                 $previous_data = getPreviousRecords($table_name, $where);
                 
                 $resp = updateRecord($table_name, $previous_data, $where, $data, $traderemail_address);
-                
+
             }
         }
         else{
@@ -1893,12 +1905,14 @@ public function saveCtrSaeReportingApplication(Request $req){
             
             if (!recordExists($table_name, $where)) {
                 $resp = insertRecord($table_name, $data, $traderemail_address);
-               
+
                 $record_id = $resp['record_id'];           
             }
             else{
                 $error_message = "Data has already been added!!";
-                
+
+                return response()->json(['message' => $error_message]);
+
             }
         } 
         if($resp['success']){
@@ -2010,7 +2024,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                ->leftJoin('clinical_trial_personnel as t4', 't2.sponsor_id', '=', 't4.id')
                ->leftJoin('clinical_trial_personnel as t5', 't2.investigator_id', '=', 't5.id')
                ->leftJoin('tra_approval_recommendations as t6', 't2.application_code', '=', 't6.application_code')
-			   ->leftJoin('tra_payments as t7', 't2.application_code', '=', 't7.application_code')
+               ->leftJoin('tra_payments as t7', 't2.application_code', '=', 't7.application_code')
                ->select(DB::raw("DISTINCT t1.id as registered_id,t2.*,t2.id as previous_id,t6.certificate_no as permit_no,t6.approval_date as date_registered,t3.name as applicant_name,t4.name as             clinical_trial_sponsor,t5.name as principal_investigator,t1.id as reg_clinical_trial_id,
                    t3.id as applicant_id, t3.name as applicant_name, t3.contact_person, t3.tin_no,
                    t3.country_id as app_country_id, t3.region_id as app_region_id, t3.district_id as app_district_id,
@@ -2104,18 +2118,18 @@ public function saveCtrSaeReportingApplication(Request $req){
         $application_code = $req->application_code;
          $process_id = getSingleRecordColValue('wf_tfdaprocesses',array('module_id'=>$module_id, 'section_id'=>$section_id,'sub_module_id'=>$sub_module_id), 'id','mis_db');
         if(!validateIsNumeric($mistrader_id)){
-			 $applicant_data = getTableData('wb_trader_account', array('id'=>$trader_id));
+             $applicant_data = getTableData('wb_trader_account', array('id'=>$trader_id));
                                             $applicantidentification_no = $applicant_data->identification_no;
                                             $applicant  = getTableData('wb_trader_account', array('identification_no'=>$applicantidentification_no),'mis_db');
-					$mistrader_id = $applicant->id;
-		}
+                    $mistrader_id = $applicant->id;
+        }
         $app_data = array('section_id'=>$req->section_id,
                                 'sub_module_id'=>$req->sub_module_id,
                                 'module_id'=>$req->appmodule_id,
                                 'phase_id'=>$phase_id,
-								 'is_ctrapp_registered'=>$req->is_ctrapp_registered,
-								 'process_id'=>$process_id,
-								 'protocol_no'=>$protocol_no,
+                                 'is_ctrapp_registered'=>$req->is_ctrapp_registered,
+                                 'process_id'=>$process_id,
+                                 'protocol_no'=>$protocol_no,
                                 
                                 'ctrregistered_tracking_no'=>$req->ctrregistered_tracking_no,
                                 'acronym'=>$req->acronym,
@@ -2142,7 +2156,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                 'registered_institution_refno'=>$req->registered_institution_refno,
                             );
                       
-                  //  disease_being_studied	"" zone_id
+                  //  disease_being_studied "" zone_id
                     
                     $sub_module_id = $req->sub_module_id;
               
@@ -2311,16 +2325,16 @@ public function getClinicalRegistryAppData(Request $req){
        // 'applicant_id'=>$mistrader_id,
         $data = DB::connection('mis_db')->table('tra_clinical_trial_applications as t1')
                     ->select(DB::raw("t1.*,t3.name as principal_investigator, t1.id as application_id, if(t1.ctrregistered_tracking_no is null, t2.certificate_no, t1.ctrregistered_tracking_no) as ctrregistered_tracking_no,if(t1.public_title is null, t1.study_title, t1.public_title) as public_title"))
-					->leftJoin('tra_approval_recommendations as t2', 't1.application_code','t2.application_code')
-					->leftJoin('clinical_trial_personnel as t3', 't1.investigator_id','t3.id')
+                    ->leftJoin('tra_approval_recommendations as t2', 't1.application_code','t2.application_code')
+                    ->leftJoin('clinical_trial_personnel as t3', 't1.investigator_id','t3.id')
                     ->where(array('t1.application_code'=>$application_code))
                     ->first();
             $data = (array)$data;
-			$data['proposed_start_date']  = formatDate($data['proposed_start_date']);
-			$data['actualtrial_start_date']  = formatDate($data['actualtrial_start_date']);
-			$data['anticipatedfollow_uplast_date']  = formatDate($data['anticipatedfollow_uplast_date']);
-			$data['completion_date']  = formatDate($data['completion_date']);
-			
+            $data['proposed_start_date']  = formatDate($data['proposed_start_date']);
+            $data['actualtrial_start_date']  = formatDate($data['actualtrial_start_date']);
+            $data['anticipatedfollow_uplast_date']  = formatDate($data['anticipatedfollow_uplast_date']);
+            $data['completion_date']  = formatDate($data['completion_date']);
+            
             $data['disease_being_studied'] = $this->getClinicalTrialdiseases( $data['application_id']);
             //get the other datasets 
             $return_datasets['trial_details'] = $data;
@@ -3058,15 +3072,15 @@ public function onDeleteClinicalRegistryDetails(Request $req){
                 //delete functionality
                 $previous_data = getPreviousRecords($table_name, $where_state,'mis_db');
                 $resp = deleteRecordNoTransaction($table_name, $previous_data, $where_state,  $email_address,'mis_db');
-				$res = array('success'=>true, 'message'=>$title.' deleted successfully');
+                $res = array('success'=>true, 'message'=>$title.' deleted successfully');
 
         
         }else{
-			$res = array('success'=>false, 'message'=>'Error occurred, record not deleted successfully');
+            $res = array('success'=>false, 'message'=>'Error occurred, record not deleted successfully');
 
         
-		}
-		   
+        }
+           
     }
     catch (\Exception $e) {
         $res = array(

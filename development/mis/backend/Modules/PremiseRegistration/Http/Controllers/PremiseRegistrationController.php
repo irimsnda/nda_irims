@@ -3770,13 +3770,13 @@ public function funcAddNewPremisesDetails(Request $request){
 					}
 				} else {//Create
 					$anyOngoingApps = checkForOngoingApplications($registered_id, $applications_table, 'reg_premise_id', $process_id);
-					if ($anyOngoingApps['exists'] == true) {
-						$res = array(
-							'success' => false,
-							'message' => 'There is an ongoing application of the same nature on the selected Premise with tracking number ' . $anyOngoingApps['tracking_no']
-						);
-						return \response()->json($res);
-					}
+					// if ($anyOngoingApps['exists'] == true) {
+					// 	$res = array(
+					// 		'success' => false,
+					// 		'message' => 'There is an ongoing application of the same nature on the selected Premise with tracking number ' . $anyOngoingApps['tracking_no']
+					// 	);
+					// 	return \response()->json($res);
+					// }
 					$init_premise_params = getTableData($premise_table, $where_premise);
 					if (is_null($init_premise_params)) {
 						$res = array(
@@ -3804,7 +3804,7 @@ public function funcAddNewPremisesDetails(Request $request){
 					$premise_id = $prem_res['record_id'];
 					//copy premise personnel details and business details
 					$init_personnelDetails = DB::table('tra_premises_personnel as t1')
-						->select(DB::raw("t1.personnel_id,t1.temp_premise_id,t1.position_id,t1.qualification_id,t1.registration_no,
+						->select(DB::raw("t1.personnel_id,t1.temp_premise_id,t1.position_id,t1.personnel_name,t1.telephone_no,t1.email_address,t1.qualification_id,t1.registration_no,
 						   t1.study_field_id,t1.institution,t1.start_date,t1.end_date,t1.status_id,t1.portal_id,t1.is_temporal,
 						   $user_id as created_by,t1.premise_id as init_premise_id,$premise_id as premise_id"))
 						->where('premise_id', $init_premise_id)

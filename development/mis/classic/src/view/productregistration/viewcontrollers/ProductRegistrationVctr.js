@@ -910,6 +910,11 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
 
     // Sample Receiving Wizard ends
 
+    showLTRSelectionList: function (btn) {
+        var grid = Ext.widget('productltrselectiongrid');
+        funcShowCustomizableWindow('LTR Selection List1', '90%', grid, 'customizablewindow');
+    },
+
     showApplicantSelectionList: function (btn) {
         var grid = Ext.widget('productapplicantselectiongrid');
         if (btn.applicantType == 'local') {
@@ -919,6 +924,8 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
         }
         funcShowCustomizableWindow('Applicant Selection List', '90%', grid, 'customizablewindow');
     },
+
+
     saveProductReceivingBaseDetails: function (btn) {console.log( btn.action_url);
         var wizard = btn.wizardpnl,
              wizardPnl = btn.up(wizard),
