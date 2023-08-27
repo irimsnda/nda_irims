@@ -1,2 +1,2 @@
 // @tag full-page
-// @require C:\xampp3\htdocs\nda_irims\development\mis\app.js
+// @require D:\Xampp8.1\htdocs\irims-solutions\nda-irims\development\mis\app.js

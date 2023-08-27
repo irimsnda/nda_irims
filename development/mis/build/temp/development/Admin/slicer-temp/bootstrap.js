@@ -554,7 +554,7 @@ Ext.Boot = Ext.Boot || (function (emptyFn) {
                     Boot.isIE10m = true;
                 }
                 else {
-                    Boot.isIE10 = navigator.appVersion.indexOf('MSIE 10') !== -1;
+                    Boot.isIE10 = (new Function('/*@cc_on return @_jscript_version @*/')()) === 10;
                     Boot.isIE10m = Boot.isIE10 || Boot.isIE9 || Boot.isIE8;
                 }
                 
@@ -1835,11 +1835,9 @@ Ext.Microloader = Ext.Microloader || (function () {
         // ignore
     }
 
-    // appCache
-    var _cache;
-
-    // Local Storage Controller
-    var LocalStorage = {
+    var _cache = window['applicationCache'],
+        // Local Storage Controller
+        LocalStorage = {
             clearAllPrivate: function(manifest) {
                 if(_storage) {
 
@@ -2014,7 +2012,7 @@ Ext.Microloader = Ext.Microloader || (function () {
             },
 
             useAppCache: function() {
-                return this.content.appCacheEnabled;
+                return true;
             },
 
             // Concatenate all assets for easy access
@@ -2183,7 +2181,7 @@ Ext.Microloader = Ext.Microloader || (function () {
                         Ext.Boot.config.disableCaching = false;
                     }
                 }
-
+                
                 var assets = manifest.getAssets(),
                     cachedAssets = [],
                     asset, i, len, include, entry;
@@ -2243,6 +2241,7 @@ Ext.Microloader = Ext.Microloader || (function () {
                         // Un cache this asset so it is loaded next time
                         asset.uncache();
                     }
+
                         _debug("Checksum for Cached Asset: " + asset.assetConfig.path + " is " + checksum);
                     Boot.registerContent(asset.assetConfig.path, asset.type, result.content);
                     asset.updateContent(result.content);
@@ -2273,6 +2272,7 @@ Ext.Microloader = Ext.Microloader || (function () {
             onAllAssetsReady: function() {
                 _loaded = true;
                 Microloader.notify();
+
                 if (navigator.onLine !== false) {
                         _debug("Application is online, checking for updates");
                     Microloader.checkAllUpdates();
@@ -2333,7 +2333,7 @@ Ext.Microloader = Ext.Microloader || (function () {
                     window.removeEventListener('online', Microloader.checkAllUpdates, false);
                 }
 
-                if (Microloader.manifest.useAppCache()) {
+                if(_cache) {
                     Microloader.checkForAppCacheUpdate();
                 }
 
@@ -2344,22 +2344,7 @@ Ext.Microloader = Ext.Microloader || (function () {
             },
 
             checkForAppCacheUpdate: function() {
-                _debug("Checking App Cache status");
-
-                if (!_cache) {
-                    try {
-                        _cache = !!window.applicationCache && window.applicationCache
-                    } catch (e) {
-                          _debug("Application has enabled AppCache but it is not supported by this browser");
-                        return;
-                    }
-
-                    // If cache retrieval didn't throw an exception but cache is still not valid, bail
-                    if (!_cache) {
-                        return;
-                    }
-                }
-
+                    _debug("Checking App Cache status");
                 if (_cache.status === _cache.UPDATEREADY || _cache.status === _cache.OBSOLETE) {
                         _debug("App Cache is already in an updated");
                     Microloader.appCacheState = 'updated';
@@ -2443,6 +2428,7 @@ Ext.Microloader = Ext.Microloader || (function () {
                     // and trigger a appupdate as all content is now uncached
                     if (!manifest.shouldCache()) {
                         _debug("New Manifest has caching disabled, clearing out any private storage");
+
                         Microloader.updatedManifest = manifest;
                         LocalStorage.clearAllPrivate(manifest);
                         Microloader.onAllUpdatedAssetsReady();
@@ -2546,6 +2532,7 @@ Ext.Microloader = Ext.Microloader || (function () {
                         _debug("Checksum for Full asset: " + asset.assetConfig.path + " is " + checksum);
                     if (!checksum) {
                             _debug("Full Update Asset: " + asset.assetConfig.path + " has failed checksum. This asset will be uncached for future loading");
+
                         // uncache this asset as there is a new version somewhere that has not been loaded.
                         asset.uncache();
                     } else {
@@ -2554,6 +2541,7 @@ Ext.Microloader = Ext.Microloader || (function () {
                     }
                 } else {
                         _debug("Error loading file at" + asset.assetConfig.path + ". This asset will be uncached for future loading");
+
                     // uncache this asset as there is a new version somewhere that has not been loaded.
                     asset.uncache();
                 }
@@ -2577,6 +2565,7 @@ Ext.Microloader = Ext.Microloader || (function () {
                             _debug("Checksum for Delta Patched asset: " + asset.assetConfig.path + " is " + checksum);
                         if (!checksum) {
                                 _debug("Delta Update Asset: " + asset.assetConfig.path + " has failed checksum. This asset will be uncached for future loading");
+
                             // uncache this asset as there is a new version somewhere that has not been loaded.
                             asset.uncache();
                         } else {
