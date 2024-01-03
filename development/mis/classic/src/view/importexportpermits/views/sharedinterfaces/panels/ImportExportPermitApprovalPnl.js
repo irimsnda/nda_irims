@@ -1,5 +1,5 @@
 /**
- * Created by Kip on 10/17/2018.
+ * Created by softclans.
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportExportPermitApprovalPnl', {
     extend: 'Ext.panel.Panel',

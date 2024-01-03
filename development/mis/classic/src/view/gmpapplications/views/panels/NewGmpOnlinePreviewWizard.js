@@ -217,6 +217,11 @@ Ext.define('Admin.view.gmpapplications.views.panels.NewGmpOnlinePreviewWizard', 
                 }
             ]
         };
+
+
+
+
+        
         this.bbar = {
             reference: 'navigation-toolbar',
             name: 'navigation-toolbar',

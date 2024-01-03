@@ -7,7 +7,7 @@ Ext.define('Admin.view.administration.views.grids.SystemRolesTreeGrid', {
     useArrows: true,
     rootVisible: false,
     multiSelect: false,
-    singleExpand: true,
+    singleExpand: false,
     margin: '0 5 0 0',
     selType: 'cellmodel',
     requires: [
@@ -18,7 +18,7 @@ Ext.define('Admin.view.administration.views.grids.SystemRolesTreeGrid', {
         ptype: 'cellediting',
         clicksToEdit: 1
     }],
-
+   
     autoScroll: true,
     store: 'systemrolestreestr',
     listeners: {

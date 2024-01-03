@@ -24,6 +24,18 @@ Ext.define('Admin.view.revenuemanagement.viewcontrollers.RevenueManagementVctr',
     setWorkflowCombosStore: function (obj, options) {
         this.fireEvent('setWorkflowCombosStore', obj, options);
     },
+     showNewApplication: function (btn) {
+        var application_type = btn.app_type,
+            me = this;
+            me.fireEvent('showNewApplication', application_type, btn, 8);
+            //
+    },
+    showNewRefundApplication: function (btn) {
+        var application_type = btn.app_type,
+            me = this;
+            me.fireEvent('showNewRefundApplication', application_type, btn, 8);
+            //
+    },
 
     setOrgConfigCombosStore: function (obj, options) {
         this.fireEvent('setOrgConfigCombosStore', obj, options);
@@ -974,5 +986,754 @@ saveadhocInvoiceOtherDetails: function(btn) {
         filter_array = Ext.JSON.encode(filter_array);
         var action_url = "retentionmanagement/exportRevenueReportsData?filename=RetentionReport&function=getRetentionReport"+"&filter="+encodeURIComponent(filter_array);
             print_report(action_url);
+    },
+    printInvoice: function (btn) {
+        var me = this,
+            win = btn.up('panel'),
+            panel = win.up('panel'),
+            record = btn.getWidgetRecord(),
+            invoice_no = record.get('invoice_no');
+        if(panel.down('hiddenfield[name=active_application_code]')){
+            var application_code = panel.down('hiddenfield[name=active_application_code]').getValue(),
+                application_id = panel.down('hiddenfield[name=active_application_id]').getValue(),
+                invoice_id = '',
+                module_id = panel.down('hiddenfield[name=module_id]').getValue();
+        }else{
+            var panel = win.up('#contentPanel'),
+                application_code = panel.down('hiddenfield[name=active_application_code]').getValue(),
+                application_id = panel.down('hiddenfield[name=active_application_id]').getValue(),
+                invoice_id = '',
+                module_id = panel.down('hiddenfield[name=module_id]').getValue();
+        }
+
+
+       // var action_url = report_server_url+'invoice?invoice_no=' + invoice_no;
+       // print_report(action_url);
+       previewCorrespondence(application_code, module_id, 'invoice', JSON.stringify({invoice_no:invoice_no}));
+    },
+
+      printColumnReceipt: function (item) {
+        var record = item.getWidgetRecord(),
+            receipt_no = record.get('receipt_no');
+            application_code = record.get('application_code'),
+            module_id = record.get('module_id'),
+            sub_module_id = record.get('sub_module_id'),
+            section_id = record.get('section_id');
+        
+        previewCorrespondence(application_code, module_id, 'receipt',JSON.stringify({receipt_no:receipt_no,section_id:section_id,sub_module_id:sub_module_id}));
+    },
+
+    showAddConfigParamWinFrm: function (btn) {
+        var me = this,
+            childXtype = btn.childXtype,
+            winTitle=btn.winTitle,
+            winWidth=btn.winWidth,
+            child = Ext.widget(childXtype);
+
+        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+       
+    },
+    onViewMirApplication: function (grid, record) {
+        this.fireEvent('viewApplicationDetails', record);
+
+    },
+   
+    showPreviousNonGridPanelUploadedDocs: function (item) {
+        this.fireEvent('showPreviousNonGridPanelUploadedDocs', item);
+    },
+    onNextCardClick: function (btn) {
+        var wizard = btn.wizard,
+            wizardPnl = btn.up(wizard),
+            motherPnl = wizardPnl.up('panel');
+        motherPnl.getViewModel().set('atBeginning', false);
+        this.navigate(btn, wizardPnl, 'next');
+    },
+    onPrevCardClick: function (btn) {
+        var wizard = btn.wizard,
+            wizardPnl = btn.up(wizard),
+            motherPnl = wizardPnl.up('panel');
+            
+        motherPnl.getViewModel().set('atEnd', false);
+        this.navigate(btn, wizardPnl, 'prev');
+
+    },
+
+    navigate: function (button, wizardPanel, direction) {
+        var layout = wizardPanel.getLayout(),
+            progress = this.lookupReference('progress'),
+            motherPnl = wizardPanel.up('panel'),
+            application_id = motherPnl.down('hiddenfield[name=active_application_id]').getValue(),
+            model = motherPnl.getViewModel(),
+            progressItems = progress.items.items,
+            item, i, activeItem, activeIndex,
+            nextStep = wizardPanel.items.indexOf(layout.getNext());
+            activeItem = layout.getActiveItem();
+            activeIndex = wizardPanel.items.indexOf(activeItem);
+            if(direction == 'next'){
+                activeIndex++;
+            }else{
+                activeIndex--;
+            }
+            
+            if(activeIndex > 1 && direction == 'next'){
+                if(application_id){
+                    //fgdg
+                }else{
+                    toastr.warning('Please save patient details first!!', 'Warning Response');
+                    return false;
+                }
+            }
+            layout[direction]();
+            for (i = 0; i < progressItems.length; i++) {
+                item = progressItems[i];
+
+                if (activeIndex === item.step) {
+                    item.setPressed(true);
+                }
+                else {
+                    item.setPressed(false);
+                }
+
+                if (Ext.isIE8) {
+                    item.btnIconEl.syncRepaint();
+                }
+            }
+            activeItem.focus();
+            // beginning disables previous
+            if (activeIndex === 0) {
+                wizardPanel.down('button[name=save_btn]').setDisabled(false);
+                model.set('atBeginning', true);
+            } else {
+                wizardPanel.down('button[name=save_btn]').setDisabled(true);
+                model.set('atBeginning', false);
+            }
+
+            // wizardPanel.down('button[name=save_btn]').setVisible(true);
+
+            if (activeIndex === 4) {
+                model.set('atEnd', true);
+                wizardPanel.down('button[name=save_btn]').setDisabled(true);
+                
+            }else{
+                model.set('atEnd', false);
+            }
+       
+    },
+    quickNavigation: function (btn) {
+        var step = btn.step,
+            wizard = btn.wizard,
+            wizardPnl = btn.up(wizard),
+            motherPnl = wizardPnl.up('panel');
+            console.log(motherPnl);
+            application_id = motherPnl.down('hiddenfield[name=active_application_id]').getValue(),
+            progress = wizardPnl.down('#progress_tbar'),
+            progressItems = progress.items.items;
+
+        if (step > 1) {
+            var thisItem = progressItems[step];
+            if (!application_id) {
+                thisItem.setPressed(false);
+                toastr.warning('Please save application details first!!', 'Warning Response');
+                return false;
+            }
+        }
+        if (step == 0) {
+            wizardPnl.down('button[name=save_btn]').setDisabled(true);
+            motherPnl.getViewModel().set('atBeginning', true);
+        } else if (step == 1) {
+            wizardPnl.down('button[name=save_btn]').setDisabled(false);
+            motherPnl.getViewModel().set('atBeginning', false);
+        } else {
+            motherPnl.getViewModel().set('atBeginning', false);
+        }
+
+        if (step === 3) {
+            motherPnl.getViewModel().set('atEnd', true);
+            // wizardPnl.down('button[name=save_screening_btn]').setVisible(false);
+            // motherPnl.getViewModel().set('atEnd', true);
+
+        }
+        else {
+            motherPnl.getViewModel().set('atEnd', false);
+        }
+        
+        wizardPnl.getLayout().setActiveItem(step);
+        var layout = wizardPnl.getLayout(),
+            item = null,
+            i = 0,
+            activeItem = layout.getActiveItem();
+
+        for (i = 0; i < progressItems.length; i++) {
+            item = progressItems[i];
+
+            if (step === item.step) {
+                item.setPressed(true);
+            }
+            else {
+                item.setPressed(false);
+            }
+
+            if (Ext.isIE8) {
+                item.btnIconEl.syncRepaint();
+            }
+        }
+        activeItem.focus();
+    },
+    newquickNavigation: function (btn) {
+        var step = btn.step,
+            wizard = btn.wizard,
+            wizardPnl = btn.up(wizard),
+            motherPnl = wizardPnl.up('panel');
+            //console.log(motherPnl);
+            application_id = wizardPnl.down('hiddenfield[name=active_application_id]').getValue(),
+            progress = wizardPnl.down('#progress_tbar'),
+            progressItems = progress.items.items;
+
+        if (step > 1) {
+            var thisItem = progressItems[step];
+            if (!application_id) {
+                thisItem.setPressed(false);
+                toastr.warning('Please save application details first!!', 'Warning Response');
+                return false;
+            }
+        }
+        if (step == 0) {
+            wizardPnl.down('button[name=save_btn]').setDisabled(true);
+            wizardPnl.getViewModel().set('atBeginning', true);
+        } else if (step == 1) {
+            wizardPnl.down('button[name=save_btn]').setDisabled(false);
+            wizardPnl.getViewModel().set('atBeginning', false);
+            var thisItem = progressItems[step];
+            if (!application_id) {
+                thisItem.setPressed(false);
+                toastr.warning('Please save application details first!!', 'Warning Response');
+                return false;
+            }
+        } else {
+            wizardPnl.getViewModel().set('atBeginning', false);
+        }
+
+        if (step === 3) {
+            wizardPnl.getViewModel().set('atEnd', true);
+            // wizardPnl.down('button[name=save_screening_btn]').setVisible(false);
+            // motherPnl.getViewModel().set('atEnd', true);
+
+        }
+        else {
+            wizardPnl.getViewModel().set('atEnd', false);
+        }
+        
+        wizardPnl.getLayout().setActiveItem(step);
+        var layout = wizardPnl.getLayout(),
+            item = null,
+            i = 0,
+            activeItem = layout.getActiveItem();
+
+        for (i = 0; i < progressItems.length; i++) {
+            item = progressItems[i];
+
+            if (step === item.step) {
+                item.setPressed(true);
+            }
+            else {
+                item.setPressed(false);
+            }
+
+            if (Ext.isIE8) {
+                item.btnIconEl.syncRepaint();
+            }
+        }
+        activeItem.focus();
+    },
+    onPrevCardClick: function (btn) {
+        var wizard = btn.wizard,
+            wizardPnl = btn.up(wizard),
+            motherPnl = wizardPnl.up('panel');
+            
+        motherPnl.getViewModel().set('atEnd', false);
+        this.navigate(btn, wizardPnl, 'prev');
+
+    },
+    jointquickNavigation: function (btn) {
+        var step = btn.step,
+            wizard = btn.wizard,
+            wizardPnl = btn.up(wizard),
+            motherPnl = wizardPnl.up('panel'),
+            application_id = motherPnl.down('hiddenfield[name=active_application_id]').getValue(),
+            progress = wizardPnl.down('#progress_tbar'),
+            progressItems = progress.items.items;
+
+        if (step > 0) {
+            var thisItem = progressItems[step];
+            if (!application_id) {
+                thisItem.setPressed(false);
+                toastr.warning('Please Save Plan details first!!', 'Warning Response');
+                return false;
+            }
+        }
+        if (step == 0) {
+            wizardPnl.down('button[name=save_btn]').setDisabled(false);
+            motherPnl.getViewModel().set('atBeginning', true);
+        }else {
+            wizardPnl.down('button[name=save_btn]').setDisabled(true);
+            motherPnl.getViewModel().set('atBeginning', false);
+        }
+
+        if (step === 3) {
+            motherPnl.getViewModel().set('atEnd', true);
+        }else {
+            wizardPnl.down('button[name=save_btn]').setText('Save Application Details');
+            motherPnl.getViewModel().set('atEnd', false);
+        }
+        wizardPnl.getLayout().setActiveItem(step);
+        var layout = wizardPnl.getLayout(),
+            item = null,
+            i = 0,
+            activeItem = layout.getActiveItem();
+
+        for (i = 0; i < progressItems.length; i++) {
+            item = progressItems[i];
+
+            if (step === item.step) {
+                item.setPressed(true);
+            }
+            else {
+                item.setPressed(false);
+            }
+
+            if (Ext.isIE8) {
+                item.btnIconEl.syncRepaint();
+            }
+        }
+        activeItem.focus();
+    },
+
+    showUploadEvaluationDocuments: function (item) {
+        this.fireEvent('showUploadEvaluationDocuments', item);
+    },
+    showApplicationMoreDetails: function (btn) {
+        this.fireEvent('showApplicationMoreDetails', btn);
+    },
+    showSelectedApplicationMoreDetails: function(btn) {
+         var button = btn.up('button'),
+            grid = button.up('grid'),
+            container = grid.up('panel'),
+            record = button.getWidgetRecord(),
+            application_code = record.get('application_code');
+        container.down('hiddenfield[name=active_application_code]').setValue(application_code);
+        this.fireEvent('showApplicationMoreDetails', btn);
+    },
+    showApplicationUploadedDocument: function(btn) {
+         this.fireEvent('showPreviousUploadedDocs', btn);
+    },
+     onFindingsNextCardClick: function (btn) {
+        var wizard = btn.wizard,
+            wizardPnl = btn.up(wizard);
+        wizardPnl.getViewModel().set('atBeginning', false);
+        this.Findingsnavigate(btn, wizardPnl, 'next');
+    },
+    onFindingsPrevCardClick: function (btn) {
+        var wizard = btn.wizard,
+            wizardPnl = btn.up(wizard);
+        wizardPnl.getViewModel().set('atEnd', false);
+        this.Findingsnavigate(btn, wizardPnl, 'prev');
+
+    },
+
+   
+   
+    viewApplicationRecommendationLogs:function(btn) {
+        this.fireEvent('viewApplicationRecommendationLogs', btn);
+    },
+    reloadParentGridOnChange: function (combo) {
+        var grid = combo.up('grid'),
+            store = grid.getStore();
+        store.load();
+    },
+    showEditPvWinFrm: function (item) {
+        var me = this,
+            btn = item.up('button'),
+            record = btn.getWidgetRecord(),
+            childXtype = item.childXtype,
+            winTitle=item.winTitle,
+            winWidth=item.winWidth,
+            form = Ext.widget(childXtype);
+      
+        form.loadRecord(record);
+        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+       
+    },
+
+
+    showApplicantSelectionList: function (btn) {
+        var grid = Ext.widget('advancedCustomerApplicantSelectionGrid');
+        if (btn.applicantType == 'local') {
+            grid.applicantType = btn.applicantType;
+        } else {
+            grid.applicantType = 'nonlocal';
+        }
+        funcShowCustomizableWindow('Applicant Selection List', '90%', grid, 'customizablewindow');
+    },
+    showCustomerSelectionList: function (btn) {
+        var grid = Ext.widget('customerSelectionGrid');
+        if (btn.applicantType == 'local') {
+            grid.applicantType = btn.applicantType;
+        } else {
+            grid.applicantType = 'nonlocal';
+        }
+        funcShowCustomizableWindow('Applicant Selection List', '90%', grid, 'customizablewindow');
+    },
+    // getCustomerApplicationApprovalDetails: function (item) {
+
+    //     this.fireEvent('getCustomerApplicationApprovalDetails', item);
+    // },
+
+    showCustomerApplicationApprovalDetails: function(btn) {
+        var button = btn.up('button'),
+           grid = button.up('grid'),
+           form = Ext.widget(btn.childXtype),
+           frm = form.getForm(),
+           record = button.getWidgetRecord(),
+           application_code = record.get('application_code'),
+           module_id = record.get('module_id');
+           applicant_id = record.get('applicant_id');
+           sub_module_id = record.get('sub_module_id');
+            //form.loadRecord(record);
+            //approval_id
+            form.down('hiddenfield[name=application_code]').setValue(application_code);
+            form.down('hiddenfield[name=module_id]').setValue(module_id);
+            form.down('hiddenfield[name=applicant_id]').setValue(applicant_id);
+            form.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+          if(approval_decision_id = record.get('approval_decision_id')){
+            form.down('combo[name=approval_decision_id]').setValue(approval_decision_id);
+          }
+          else{
+
+          }
+          if(approval_id = record.get('approval_id')){
+            form.down('hiddenfield[name=id]').setValue(approval_id);
+          }
+          else{
+
+          }
+       funcShowCustomizableWindow('Approval form', '50%', form, 'customizablewindow',btn);
+   },
+
+   saveAdvancedCustomerApprovaldetails: function (btn) {
+    var me = this,
+        url = btn.action_url,
+        table = btn.table_name,
+        form = btn.up('form'),
+        win = form.up('window'),
+        storeID = btn.storeID,
+        store = Ext.getStore(storeID),
+        frm = form.getForm();
+        id= form.down('hiddenfield[name=id]');
+    if (frm.isValid()) {
+        frm.submit({
+            url: url,
+            waitMsg: 'Please wait...',
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            success: function (form, action) {
+                var response = Ext.decode(action.response.responseText),
+                    success = response.success,
+                    message = response.message;
+                    record_id = response.record_id
+                    console.log(record_id);
+                if (success == true || success === true) {
+                    store.removeAll();
+                    store.load();
+                    //id.setValue(record_id);
+                   // form.down('hiddenfield[name=id]').setValue(record_id)
+                    win.close();
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (form, action) {
+                var resp = action.result;
+                toastr.error(resp.message, 'Failure Response');
+            }
+        });
     }
+},
+
+onViewAdvancedCustomerApplication: function (grid, record) {
+    this.fireEvent('viewApplicationDetails', record);
+},
+printQuote: function (btn) {
+    var me = this,
+        win = btn.up('panel'),
+        record = btn.getWidgetRecord(),
+        application_code = record.get('application_code'),
+        module_id = record.get('module_id'),
+        // section_id = record.get('section_id'),
+        // sub_module_id = record.get('sub_module_id'),
+        invoice_no = record.get('invoice_no');
+      
+   previewCorrespondence(application_code, module_id, 'salesQuote', JSON.stringify({invoice_no:invoice_no}));
+},
+
+showAdvancedCustomerRegister: function(btn) {
+    var button = btn.up('button'),
+        record = button.getWidgetRecord(),
+        application_code = record.get('application_code');
+        panel = Ext.widget('advancedCustomerRegisterGrid');
+       funcShowCustomizableWindow(btn.winTitle, '70%', panel, 'customizablewindow');
+},
+showAdvancedCustomerRegisterMoreDetails: function(btn) {
+    var button = btn.up('button'),
+       grid = button.up('grid'),
+       record = button.getWidgetRecord(),
+       application_code = record.get('application_code');
+       module_id = record.get('module_id');
+       sub_module_id = record.get('sub_module_id');
+       section_id = record.get('section_id');
+       ref_no = record.get('tracking_no');
+       grid.down('hiddenfield[name=active_application_code]').setValue(application_code);
+   this.fireEvent('showAdvancedCustomerRegisterMoreDetails',btn,application_code,module_id,sub_module_id,section_id,ref_no);
+},
+showAppliedRefundInvoices: function(btn) {
+    var button = btn.up('button'),
+        grid = button.up('grid'),
+        record = button.getWidgetRecord(),
+        container = grid.up('panel'),
+        application_code = record.get('application_code');
+        container.down('hiddenfield[name=active_application_code]').setValue(application_code);
+        panel = Ext.widget('appliedRefundInvoicesGrid');
+       funcShowCustomizableWindow(btn.winTitle, '70%', panel, 'customizablewindow');
+},
+showInvoicesApprovalWin: function(btn) {
+    var button = btn.up('button'),
+        record = button.getWidgetRecord(),
+        application_code = record.get('application_code');
+        child=btn.childXtype;
+        panel = Ext.widget(child);
+       funcShowCustomizableWindow(btn.winTitle, '70%', panel, 'customizablewindow');
+},
+showInvoiceRefundApprovalFrm: function(btn) {
+    var button = btn.up('button'),
+       grid = button.up('grid'),
+       form = Ext.widget(btn.childXtype),
+       frm = form.getForm(),
+       record = button.getWidgetRecord(),
+       application_code = record.get('application_code'),
+       module_id = record.get('module_id');
+       applicant_id = record.get('applicant_id');
+       sub_module_id = record.get('sub_module_id');
+       invoice_no = record.get('invoice_no');
+        //form.loadRecord(record);
+        //approval_id
+        form.down('hiddenfield[name=application_code]').setValue(application_code);
+        form.down('hiddenfield[name=module_id]').setValue(module_id);
+        form.down('hiddenfield[name=applicant_id]').setValue(applicant_id);
+        form.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+        form.down('hiddenfield[name=invoice_no]').setValue(invoice_no);
+      if(approval_decision_id = record.get('approval_decision_id')){
+        form.down('combo[name=approval_decision_id]').setValue(approval_decision_id);
+      }
+      else{
+
+      }
+      if(approval_id = record.get('approval_id')){
+        form.down('hiddenfield[name=id]').setValue(approval_id);
+      }
+      else{
+
+      }
+   funcShowCustomizableWindow('Approval form', '50%', form, 'customizablewindow',btn);
+},
+onZoomUndo: function(btn) {
+        var pnl = btn.up('panel'),
+            chart = pnl.down('cartesian'),
+            interaction = chart && Ext.ComponentQuery.query('interaction', chart)[0],
+            undoButton = interaction && interaction.getUndoButton(),
+            handler = undoButton && undoButton.handler;
+
+        if (handler) {
+            handler();
+        }
+    },
+onSeriesRender: function(sprite, config, rendererData, index) {
+        var store = rendererData.store,
+            storeItems = store.getData().items,
+            currentRecord = storeItems[index],
+            previousRecord = (index > 0 ? storeItems[index - 1] : currentRecord),
+            current = currentRecord && currentRecord.data.g1,
+            previous = previousRecord && previousRecord.data.g1,
+            isUp = current >= previous,
+            changes = {};
+
+        switch (config.type) {
+            case 'marker':
+                changes.strokeStyle = (isUp ? 'cornflowerblue' : 'tomato');
+                changes.fillStyle = (isUp ? 'aliceblue' : 'lightpink');
+                break;
+            case 'line':
+                changes.strokeStyle = (isUp ? 'cornflowerblue' : 'tomato');
+                changes.fillStyle = (isUp ? 'rgba(100, 149, 237, 0.4)' : 'rgba(255, 99, 71, 0.4)');
+                break;
+        }
+
+        return changes;
+    },
+
+    onAxisRangeChange: function(axis, range) {
+        var max;
+
+        if (!range) {
+            return;
+        }
+
+        // expand the range slightly to make sure markers aren't clipped
+        max = range[1];
+
+        if (max >= 1000) {
+            range[1] = max - max % 100 + 100;
+        }
+        else if (max >= 500) {
+            range[1] = max - max % 50 + 50;
+        }
+        else {
+            range[1] = max - max % 20 + 20;
+        }
+    },
+
+    onRefresh: function() {
+        var pnl = btn.up('panel'),
+            chart = pnl.down('cartesian'),
+            store = chart.getStore();
+
+        store.refreshData();
+    },
+loadCustomerDetailsForm: function (form){
+    var pnl = form.up('panel'),
+        CustomerId = pnl.down('hiddenfield[name=CustomerId]').getValue();
+
+     Ext.Ajax.request({
+            url: 'tradermanagement/getApplicantsList',
+            method: 'GET',
+            params: {
+                applicant_id: CustomerId,
+                _token: token
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+            },
+            success: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message,
+                    results = resp.results,
+                    success = resp.success;
+                if (success == true || success === true) {
+                    // toastr.success(message, 'Success Response');
+                    if(results[0]){
+                        model = Ext.create('Ext.data.Model', results[0]);
+                        form.loadRecord(model);
+                    }
+                    
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error deleting data: ' + errorThrown, 'Error Response');
+            }
+        });
+    },
+    RefreshGridFilters: function(btn){
+        btn.up('grid').getStore().reload();
+    },
+    printInvoice: function (btn) {
+        var me = this,
+            win = btn.up('panel'),
+            panel = win.up('panel'),
+            record = btn.getWidgetRecord(),
+            invoice_no = record.get('invoice_no');
+        if(panel.down('hiddenfield[name=active_application_code]')){
+            var application_code = panel.down('hiddenfield[name=active_application_code]').getValue(),
+                application_id = panel.down('hiddenfield[name=active_application_id]').getValue(),
+                invoice_id = '',
+                module_id = panel.down('hiddenfield[name=module_id]').getValue();
+        }else{
+            var panel = win.up('#contentPanel'),
+                application_code = panel.down('hiddenfield[name=active_application_code]').getValue(),
+                application_id = panel.down('hiddenfield[name=active_application_id]').getValue(),
+                invoice_id = '',
+                module_id = panel.down('hiddenfield[name=module_id]').getValue();
+        }
+
+
+       // var action_url = report_server_url+'invoice?invoice_no=' + invoice_no;
+       // print_report(action_url);
+       previewCorrespondence(application_code, module_id, 'invoice', JSON.stringify({invoice_no:invoice_no}));
+    },
+    loadCustomerStatement: function(view, record, item, index, e, eOpts){
+        var grid = view.grid,
+            pnl = grid.up('panel'),
+            ledger = Ext.widget('advancedCustomerLedgerPnl');
+        console.log(record.get('applicant_id'));
+        ledger.down('hiddenfield[name=CustomerId]').setValue(record.get('applicant_id'));
+        pnl.removeAll();
+        pnl.add(ledger);
+    },
+    backTOCustomerList: function(btn){
+        var pnl = btn.up('panel').up('customerLedgerContPnl'),
+            ledger = Ext.widget('financeCustomerListGrid');
+
+        pnl.removeAll();
+        pnl.add(ledger);
+    },
+
+
+
+
+
+    onDownload: function() {
+        var chart;
+
+        if (Ext.isIE8) {
+            Ext.Msg.alert('Unsupported Operation', 'This operation requires a newer version of Internet Explorer.');
+
+            return;
+        }
+
+        chart = this.lookup('chart');
+
+        if (Ext.os.is.Desktop) {
+            chart.download({
+                filename: 'Redwood City Climate Data Chart'
+            });
+        }
+        else {
+            chart.preview();
+        }
+    },
+
+    onReloadData: function(btn) {
+        var pnl = btn.up('panel'),
+            chart = pnl.down('cartesian'),
+            advancedCustomerLedgerPnl = pnl.up('advancedCustomerLedgerPnl'),
+            date_from = pnl.down('datefield[name=date_from]').getValue(),
+            date_to = pnl.down('datefield[name=date_to]').getValue(), applicant_id;
+        if(advancedCustomerLedgerPnl.down('hiddenfield[name=CustomerId]')){
+            applicant_id = advancedCustomerLedgerPnl.down('hiddenfield[name=CustomerId]').getValue();
+        }
+        chart.getStore().reload({params:{date_to: date_to, date_from: date_from, applicant_id: applicant_id}});
+        this.fireEvent('getRevenueTotal', pnl);
+    },
+    onEditTipRender: function(tooltip, item, target, e) {
+        tooltip.setHtml('Average: ' + target.yValue.toFixed(1));
+    },
 });

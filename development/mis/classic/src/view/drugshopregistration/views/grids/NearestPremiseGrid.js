@@ -140,10 +140,12 @@ Ext.define('Admin.view.drugshopregistration.views.grids.NearestPremiseGrid', {
     },{
         xtype: 'gridcolumn',
         dataIndex: 'county_name',
+         hidden:true,
         text: 'County/Division',
         flex: 1
     },{
         xtype: 'gridcolumn',
+         hidden:true,
         dataIndex: 'sub_county_name',
         text: 'Sub County',
         flex: 1

@@ -1,5 +1,5 @@
 /**
- * Created by Softclans on 3/8/2019.
+ * Created by Softclans
  */
 Ext.define('Admin.view.commoninterfaces.forms.PremiseDetailsCmnFrm', {
     extend: 'Ext.form.Panel',
@@ -186,7 +186,8 @@ Ext.define('Admin.view.commoninterfaces.forms.PremiseDetailsCmnFrm', {
         {
             xtype: 'textfield',
             fieldLabel: 'Telephone',
-            name: 'telephone',
+            name: 'telephone_no',
+            allowBlank: true,
             bind: {
                 readOnly: '{isReadOnly}'
             }
@@ -204,6 +205,7 @@ Ext.define('Admin.view.commoninterfaces.forms.PremiseDetailsCmnFrm', {
             xtype: 'textfield',
             fieldLabel: 'Email Address',
             name: 'email',
+            allowBlank: true,
             bind: {
                 readOnly: '{isReadOnly}'
             }
@@ -225,52 +227,52 @@ Ext.define('Admin.view.commoninterfaces.forms.PremiseDetailsCmnFrm', {
                 readOnly: '{isReadOnly}'
             }
         },
-        {
-            xtype: 'textfield',
-            fieldLabel: 'Postal Address',
-            name: 'postal_address',
-            bind: {
-                readOnly: '{isReadOnly}'
-            }
-        },
-        {
-            xtype: 'combo',
-            fieldLabel: 'Business Scale',
-            name: 'business_scale_id',
-            store: 'businessscalesstr',
-            valueField: 'id',
-            displayField: 'name',
-            allowBlank: true,
-            queryMode: 'local',
-            forceSelection: true,
-            listeners:{
-                afterrender: function(){
-                    var store=this.getStore();
-                    store.removeAll();
-                    store.load();
-                }
-            },
-            bind: {
-                readOnly: '{isReadOnly}'
-            }
-        },
-        {
-            xtype: 'textfield',
-            fieldLabel: 'Longitude',
-            name: 'longitude',
-            allowBlank: true,
-            bind: {
-                readOnly: '{isReadOnly}'
-            }
-        },
-        {
-            xtype: 'textfield',
-            fieldLabel: 'Latitude',
-            name: 'latitude',
-            allowBlank: true,
-            bind: {
-                readOnly: '{isReadOnly}'
-            }
-        }
+        // {
+        //     xtype: 'textfield',
+        //     fieldLabel: 'Postal Address',
+        //     name: 'postal_address',
+        //     bind: {
+        //         readOnly: '{isReadOnly}'
+        //     }
+        // },
+        // {
+        //     xtype: 'combo',
+        //     fieldLabel: 'Business Scale',
+        //     name: 'business_scale_id',
+        //     store: 'businessscalesstr',
+        //     valueField: 'id',
+        //     displayField: 'name',
+        //     allowBlank: true,
+        //     queryMode: 'local',
+        //     forceSelection: true,
+        //     listeners:{
+        //         afterrender: function(){
+        //             var store=this.getStore();
+        //             store.removeAll();
+        //             store.load();
+        //         }
+        //     },
+        //     bind: {
+        //         readOnly: '{isReadOnly}'
+        //     }
+        // },
+        // {
+        //     xtype: 'textfield',
+        //     fieldLabel: 'Longitude',
+        //     name: 'longitude',
+        //     allowBlank: true,
+        //     bind: {
+        //         readOnly: '{isReadOnly}'
+        //     }
+        // },
+        // {
+        //     xtype: 'textfield',
+        //     fieldLabel: 'Latitude',
+        //     name: 'latitude',
+        //     allowBlank: true,
+        //     bind: {
+        //         readOnly: '{isReadOnly}'
+        //     }
+        // }
     ]
 });

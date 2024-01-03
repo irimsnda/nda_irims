@@ -73,50 +73,62 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopApprovalsGrid', 
         xtype: 'tbspacer',
         width: 5
      },
-    //   {
-    //     xtype: 'combo',
-    //     emptyText: 'COUNTRY',
-    //     flex: 1,
-    //     //labelWidth: 80,
-    //     width: 160,
-    //     valueField: 'id',
-    //     displayField: 'name',
-    //     forceSelection: true,
-    //     name: 'country_id',
-    //     queryMode: 'local', 
-    //     fieldStyle: {
-    //         'color': 'green',
-    //         'font-weight': 'bold'
-    //     },
-    //      listeners: {
-    //          beforerender: {
-    //             fn: 'setParamCombosStore',
-    //             config: {
-    //                 pageSize: 10000,
-    //                 proxy: {
-    //                     url: 'parameters/country'
-    //                 }
-    //             },
-    //             isLoad: true
-    //          },
-    //         change: function (cmbo, newVal) {
-    //         var grid = cmbo.up('grid'),
-    //         regionStore = grid.down('combo[name=region_id]').getStore(),
-    //         filterObj = {country_id: newVal},
-    //         filterStr = JSON.stringify(filterObj);
-    //         regionStore.removeAll();
-    //       regionStore.load({params: {filter: filterStr}});
-    //         }
-    //     },
-    //     triggers: {
-    //         clear: {
-    //             type: 'clear',
-    //             hideWhenEmpty: true,
-    //             hideWhenMouseOut: false,
-    //             clearOnEscape: true
-    //         }
-    //     }
-    // }, 
+         {
+        xtype: 'combo',
+        emptyText: 'DISTRICT',
+        flex: 1,
+        //labelWidth: 80,
+        width: 190,
+        valueField: 'id',
+        displayField: 'name',
+        forceSelection: true,
+        name: 'district_id',
+        queryMode: 'local',
+        fieldStyle: {
+            'color': 'green',
+            'font-weight': 'bold'
+        },
+        listeners: {
+                    beforerender: {
+                        fn: 'setParamCombosStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                 url: 'commonparam/getCommonParamFromTable',
+                                 extraParams: {
+                                 table_name: 'par_premise_districts'
+                        }
+                       }
+                    },
+                        isLoad: false
+            },afterrender: function (cmbo) {
+                 var grid = cmbo.up('grid'),
+                 store = cmbo.getStore(),
+                 filterObj = {country_id: 37},
+                 filterStr = JSON.stringify(filterObj);
+                 store.removeAll();
+                 store.load({params: {filters: filterStr}});
+              },
+            change: function (cmbo, newVal) {
+                var grid = cmbo.up('grid'),
+                regionStore = grid.down('combo[name=region_id]').getStore(),
+                filterObj = {district_id: newVal},
+                filterStr = JSON.stringify(filterObj);
+                regionStore.removeAll();
+                regionStore.load({params: {filters: filterStr}});
+                grid.getStore().load();
+            }
+        },
+        triggers: {
+            clear: {
+                type: 'clear',
+                hideWhenEmpty: true,
+                hideWhenMouseOut: false,
+                clearOnEscape: true
+            }
+        }
+    },
+
     {
         xtype: 'combo',
         emptyText: 'REGION',
@@ -138,62 +150,13 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopApprovalsGrid', 
                         config: {
                             pageSize: 10000,
                             proxy: {
-                                url: 'parameters/region'
-                            }
-                        },
-                        isLoad: false
-            },afterrender: function (cmbo) {
-                 var grid = cmbo.up('grid'),
-                 store = cmbo.getStore(),
-                 filterObj = {country_id: 37},
-                 filterStr = JSON.stringify(filterObj);
-                 store.removeAll();
-                 store.load({params: {filter: filterStr}});
-              },
-            change: function (cmbo, newVal) {
-                var grid = cmbo.up('grid'),
-                districtStore = grid.down('combo[name=district_id]').getStore(),
-                filterObj = {region_id: newVal},
-                filterStr = JSON.stringify(filterObj);
-                districtStore.removeAll();
-                districtStore.load({params: {filter: filterStr}});
-                grid.getStore().load();
-            }
-        },
-        triggers: {
-            clear: {
-                type: 'clear',
-                hideWhenEmpty: true,
-                hideWhenMouseOut: false,
-                clearOnEscape: true
-            }
-        }
-    },
-    {
-        xtype: 'combo',
-        emptyText: 'DISTRICT',
-        flex: 1,
-        //labelWidth: 80,
-        width: 190,
-        valueField: 'id',
-        displayField: 'name',
-        forceSelection: true,
-        name: 'district_id',
-        queryMode: 'local',
-        fieldStyle: {
-            'color': 'green',
-            'font-weight': 'bold'
-        },
-        listeners: {
-                    beforerender: {
-                        fn: 'setParamCombosStore',
-                        config: {
-                            pageSize: 10000,
-                            proxy: {
-                                url: 'parameters/district'
-                            }
-                        },
-                         isLoad: false
+                                 url: 'commonparam/getCommonParamFromTable',
+                                 extraParams: {
+                                 table_name: 'par_premise_regions'
+                        }
+                       }
+                    },
+                 isLoad: false
             },
             change: function (cmbo, newVal) {
                 var grid = cmbo.up('grid');
@@ -308,6 +271,25 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopApprovalsGrid', 
         }
     },
     columns: [{
+        xtype: 'widgetcolumn',
+        width: 120,
+        widget: {
+            width: 120,
+            textAlign: 'left',
+            xtype: 'button',
+            itemId: 'prints',
+            ui: 'soft-green',
+            text: 'Print License/Letter',
+            iconCls: 'x-fa fa-certificate',
+            backend_function: 'printPremiseRegistrationCertificate',
+            handler: 'printColumnPremisePermit',
+            bind: {
+                disabled: '{record.decision_id <= 0 || record.decision_id === null}'
+                //disabled: '{record.decision_id !== 1}'
+            }
+        }
+    },
+    {
         xtype: 'gridcolumn',
         dataIndex: 'tracking_no',
         text: 'Tracking No',
@@ -358,6 +340,20 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopApprovalsGrid', 
         dataIndex: 'application_status',
         text: 'Status',
         flex: 1
+    },{
+        xtype: 'widgetcolumn',
+        width: 150,
+        widget: {
+            width: 150,
+            textAlign: 'left',
+            xtype: 'button',
+            ui: 'soft-red',
+            text: 'Recommendation',
+            iconCls: 'x-fa fa-chevron-circle-up',
+            handler: 'getApplicationApprovalDetails',
+            stores: '["approvaldecisionsstr"]',
+            table_name: 'tra_premises_applications'
+        }
     }, {
         text: 'Options',
         xtype: 'widgetcolumn',
@@ -371,13 +367,14 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopApprovalsGrid', 
             menu: {
                 xtype: 'menu',
                 items: [
+                    // {
+                    //     text: 'Recommendation',
+                    //     iconCls: 'x-fa fa-chevron-circle-up',
+                    //     handler: 'getApplicationApprovalDetails',
+                    //     stores: '["approvaldecisionsstr"]',
+                    //     table_name: 'tra_premises_applications'
+                    // },  
                     {
-                        text: 'Recommendation',
-                        iconCls: 'x-fa fa-chevron-circle-up',
-                        handler: 'getApplicationApprovalDetails',
-                        stores: '["approvaldecisionsstr"]',
-                        table_name: 'tra_premises_applications'
-                    },  {
                         text: 'Inspection Report',
                         iconCls: 'x-fa fa-exchange',
                         menu: {
@@ -390,6 +387,7 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopApprovalsGrid', 
                                     childXtype: 'drugshopinspectiondetailstabpnl',
                                     winTitle: 'Inspection Report',
                                     winWidth: '60%',
+                                    hidden:true,
                                     name: 'inspection_details',
                                     stores: '[]',
                                     report_type_id:1,
@@ -401,19 +399,21 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopApprovalsGrid', 
                                     childXtype: 'drugshopinspectiondetailstabpnl',
                                     winTitle: 'Inspection Report(Regional Inspector)',
                                     winWidth: '60%',
+                                    hidden:true,
                                     name: 'inspection_details',
                                     stores: '[]',
                                     report_type_id:2,
                                     handler: 'showInspectionDetails'
                                 },
                                 {
-                                    text: 'CRID Recomendation',
+                                    text: 'Inspection Report',
                                     iconCls: 'x-fa fa-bars',
                                     childXtype: 'drugshopinspectiondetailstabpnl',
-                                    winTitle: 'Inspection Report(Lead Inspector)',
-                                    winWidth: '60%',
+                                    winTitle: 'Inspection Report',
+                                    winWidth: '80%',
                                     name: 'inspection_details',
                                     stores: '[]',
+                                    //hidden:true,
                                     report_type_id:3,
                                     handler: 'showInspectionDetails'
                                 },{
@@ -432,27 +432,27 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopApprovalsGrid', 
                         appDetailsReadOnly: 1,
                         handler: 'showDrugShopApplicationMoreDetails'
                     },
-                    {
-                        text: 'Print',
-                        iconCls: 'x-fa fa-print',
-                        name: 'prints',
-                        menu: {
-                            xtype: 'menu',
-                            items: [
-                                {
-                                    text: 'Premise Certificate',
-                                    iconCls: 'x-fa fa-certificate',
-                                    backend_function: 'printPremiseRegistrationCertificate',
-                                    handler: 'printPremiseCertificate'
-                                }, {
-                                    text: 'Premise Permit',
-                                    iconCls: 'x-fa fa-certificate',
-                                    backend_function: 'printPremiseBusinessPermit',
-                                    handler: 'printPremisePermit'
-                                }
-                            ]
-                        }
-                    },
+                    // {
+                    //     text: 'Print',
+                    //     iconCls: 'x-fa fa-print',
+                    //     name: 'prints',
+                    //     menu: {
+                    //         xtype: 'menu',
+                    //         items: [
+                    //             {
+                    //                 text: 'Premise Certificate',
+                    //                 iconCls: 'x-fa fa-certificate',
+                    //                 backend_function: 'printPremiseRegistrationCertificate',
+                    //                 handler: 'printPremiseCertificate'
+                    //             }, {
+                    //                 text: 'Premise Permit',
+                    //                 iconCls: 'x-fa fa-certificate',
+                    //                 backend_function: 'printPremiseBusinessPermit',
+                    //                 handler: 'printPremisePermit'
+                    //             }
+                    //         ]
+                    //     }
+                    // },
                     {
                         text: 'Application Details',
                         iconCls: 'x-fa fa-bars',
@@ -468,13 +468,14 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopApprovalsGrid', 
                     }
                 ]
             }
-        },onWidgetAttach: function (col, widget, rec) {
-            var decision_id = rec.get('decision_id');
-            if (decision_id === 1 || decision_id == 1) {//Granted
-                widget.down('menu menuitem[name=prints]').setVisible(true);
-            }else{
-                widget.down('menu menuitem[name=prints]').setVisible(false);
-            }
         }
+        // ,onWidgetAttach: function (col, widget, rec) {
+        //     var decision_id = rec.get('decision_id');
+        //     if (decision_id === 1 || decision_id == 1) {//Granted
+        //         widget.down('menu menuitem[name=prints]').setVisible(true);
+        //     }else{
+        //         widget.down('menu menuitem[name=prints]').setVisible(false);
+        //     }
+        // }
     }]
 });

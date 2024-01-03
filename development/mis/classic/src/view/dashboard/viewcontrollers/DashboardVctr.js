@@ -56,6 +56,8 @@ Ext.define('Admin.view.dashboard.viewcontrollers.DashboardVctr', {
         });
 
     },
+
+
     funcIntrayBeforerenderDetails:function(grid){
         var fasttrackappgrid = Ext.widget('fasttrackapplicationsgrid'),
             store = grid.getStore();

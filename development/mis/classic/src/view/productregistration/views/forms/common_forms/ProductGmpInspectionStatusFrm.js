@@ -8,6 +8,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductGmpIn
     extend: 'Ext.form.Panel',
     xtype: 'productgmpinspectionstatusfrm',
     itemId: 'productgmpinspectionstatusfrm',
+    scrollable:true,
     layout: {
         type: 'vbox'
     },

@@ -15,6 +15,11 @@ Ext.define('Admin.view.gmpapplications.views.panels.ManSiteDetailsTabPnl', {
             autoScroll:true,
             xtype: 'ltrfrm'
         },
+         {
+            title: 'Contract Manufacturing Activity Details',
+            autoScroll:true,
+            xtype: 'contractmanufacturingtabPnl'//'mansitepersonneldetailsgrid'
+        },
         {
             title: 'Personnel Details',
             autoScroll:true,

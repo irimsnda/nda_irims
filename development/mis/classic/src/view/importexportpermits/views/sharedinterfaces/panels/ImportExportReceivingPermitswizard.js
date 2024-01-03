@@ -1,7 +1,6 @@
 /**
  * Created by softclans
- * user robinson odhiambo
- * Kip on 9/24/2018.
+
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportExportReceivingPermitswizard', {
     extend: 'Ext.panel.Panel',
@@ -115,7 +114,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
             title: 'APPLICANT DETAILS'
         },
         {
-            xtype: 'importexportdetailspnl',//onlinefoodproductsdetailspnl
+            xtype: 'vcnonlicenceddetailspnl',//onlinefoodproductsdetailspnl
             dockedItems: [
                 {
                     xtype: 'toolbar',
@@ -136,6 +135,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                             valueField: 'id',
                             displayField: 'name',
                             queryMode: 'local',
+                            hidden: true,
                             forceSelection: true,
                             listeners: {
                                 beforerender: {
@@ -156,15 +156,17 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     ]
                 }
             ],
-        },{
+        },
+        {
             xtype: 'importexportpermitsproductsgrid',
-            title: 'Import/Export Permit Products Details',
-         },  {
+            title: 'Import/Export VC Products Details',
+         },
+           {
             xtype: 'importexportdocuploadsgrid',
             title: 'Documents Submission'
         },{
             xtype: 'productscreeninggrid',
-            title: 'Import/Export Permit Prechecking'
+            title: 'Import/Export VC Screening Checklists'
         },
         {
             xtype: 'hiddenfield',
@@ -203,17 +205,19 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     step: 1,
                     iconCls: 'fa fa-university',
                     enableToggle: true,iconAlign: 'top',
-                    text: ' Permit Application Details',max_step:4,
+                    text: ' VC Application Details',max_step:4,
                     action: 'quickNav', wizard: 'importexportreceivingpermitswizard',
                     handler: 'quickNavigation'
-                }, {
+                },
+                {
                     step: 2,
                     iconCls: 'fa fa-university',
                     enableToggle: true,iconAlign: 'top',
-                    text: 'Permit Products',max_step:4,
+                    text: 'VC Products',max_step:4,
                     action: 'quickNav', wizard: 'importexportreceivingpermitswizard',
                     handler: 'quickNavigation'
-                }, {
+                },
+                 {
                     step: 3,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,max_step:4,
@@ -242,7 +246,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     iconCls: 'fa fa-bars',
                     name: 'back_to_list',
                     hidden: true
-                },
+                }, 
                 '->',
                 {
                     text: 'Previous',
@@ -255,10 +259,18 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     handler: 'onPrevCardClick'
                 },
                 {
+                    xtype: 'button',
+                    text: "Raise/View Query & Responses(Request for Information)",
+                    tooltip: 'Raise Query/View Query(Request for Information) and query Responses',
+                    ui: 'soft-green',
+                    handler: 'showAddApplicationUnstrcuturedQueries',
+                },
+                {
                     text: 'Save/Update Application Details',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-save',
-                    name: 'save_btn', 
+                    name: 'save_btn',
+                    hidden: true, 
                     form_panel:'#importexportdetailsfrm',
                     action_url: 'saveImportPermittReceivingBaseDetails',
                     wizard: 'importexportreceivingpermitswizard',

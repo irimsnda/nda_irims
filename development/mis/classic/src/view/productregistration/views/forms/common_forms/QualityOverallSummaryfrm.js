@@ -55,7 +55,18 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.QualityOvera
                      
     }
     ],
-    buttons: [
+    buttons: [{
+                text: 'Home',
+                iconCls: 'x-fa fa-backward',
+                action: 'back',
+                currentPnlXtype: 'qualityoverallsummaryfrm',
+                containerPnlXtype: 'drugqualityreportpnl',
+                hiddenCompXtype: 'drugqualityreportgrid',
+                containerType: 'drugqualityreportpnl',
+                ui: 'soft-purple',
+                handler: 'backToDashboardFromActive'
+         },
+         '->',
         {
             xtype: 'button',
             text: 'Save Report',

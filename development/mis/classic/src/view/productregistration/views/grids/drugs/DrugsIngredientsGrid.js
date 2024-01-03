@@ -28,7 +28,7 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsIngredientsGri
         ui: 'soft-green',
         childXtype: 'drugsIngredientsFrm',
         winTitle: 'Product Ingredients Details',
-        winWidth: '40%',
+        winWidth: '60%',
         handler: 'showAddProductOtherdetailsWinFrm',
         stores: '[]',
         bind: {
@@ -120,7 +120,7 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsIngredientsGri
                     */
                     childXtype: 'drugsIngredientsFrm',
                     winTitle: 'Product Ingredients',
-                    winWidth: '40%',
+                    winWidth: '60%',
                     handler: 'showEditProductOtherdetailWinFrm',
                     stores: '[]'
                 }, {

@@ -5,7 +5,9 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsAddGrid', {
     extend: 'Admin.view.gmpapplications.views.grids.ProductLineAbstractGrid',
     controller: 'gmpapplicationsvctr',
     xtype: 'productLineDetailsaddgrid',
-    cls: 'dashboard-todo-list',
+
+
+cls: 'dashboard-todo-list',
     autoScroll: true,
     autoHeight: true,
     width: '100%',
@@ -19,30 +21,30 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsAddGrid', {
             }
         }
     },
-    tbar: [ {
-        xtype: 'button',
-        text: 'Update/Add Product Line Details',
-        iconCls: 'x-fa fa-plus',
-        name:'update_line',
-        ui: 'soft-green',
-        winWidth: '35%',
-        stores: '[]'
-    },{
+    tbar: [{
         xtype: 'hiddenfield',
         name: 'isReadOnly'
-    },{
+    }, {
         xtype:'hiddenfield',
         name: 'manufacturing_site_id'
 
     },{
         xtype:'hiddenfield',
-        name: 'section_id'
+        name: 'block_id'
 
     },{
-        xtype:'hiddenfield',
-        name: 'application_code'
-
-    },'->'],
+        xtype: 'button',
+        text: 'Add Product Line',
+        iconCls: 'x-fa fa-plus',
+        ui: 'soft-blue',
+        name: 'add_line',
+        winTitle: 'GMP Product Line Details',
+        childXtype: 'productlinedetailsfrm',
+        winWidth: '50%',
+        stores: '[]'
+    }, {
+        xtype: 'exportbtn'
+    }],
     plugins: [
         {
             ptype: 'gridexporter'
@@ -56,33 +58,18 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsAddGrid', {
         emptyMsg: 'No Records',
         beforeLoad: function () {
             var store = this.getStore(),
-                grid = this.up('grid')
-                site_id = grid.down('hiddenfield[name=manufacturing_site_id]').getValue(),
-                section_id = grid.down('hiddenfield[name=section_id]').getValue();
-
+                grid = this.up('grid'),
+                // mainTabPanel = grid.up('#contentPanel'),
+                // activeTab = mainTabPanel.getActiveTab(),
+            site_id = grid.down('hiddenfield[name=manufacturing_site_id]').getValue(),
+             block_id = grid.down('hiddenfield[name=block_id]').getValue();
             store.getProxy().extraParams = {
                 site_id: site_id,
-                section_id:section_id
+                block_id:block_id
             };
         }
     }],
-
-    selType: 'cellmodel',
-    plugins: [{
-        ptype: 'gridexporter'
-    }, {
-        ptype: 'cellediting',
-        clicksToEdit: 1,
-        editing: true
-    },{
-        ptype: 'filterfield'
-    }],
     features: [{
-        ftype: 'grouping',
-        startCollapsed: false,
-        hideGroupedHeader: true,
-        enableGroupingMenu: false
-    },{
         ftype: 'searching',
         minChars: 2,
         mode: 'local'
@@ -92,8 +79,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsAddGrid', {
             fn: 'setGmpApplicationGridsStore',
             config: {
                 pageSize: 1000,
-                storeId: 'productLineDetailsaddgridstr',
-                groupField:'product_line_category',
+                storeId: 'productlinedetailsstr',
                 proxy: {
                     url: 'gmpapplications/getGmpInspectionLineDetails'
                 }
@@ -103,7 +89,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsAddGrid', {
         afterrender: function () {
             var grid = this,
                 isReadOnly = grid.down('hiddenfield[name=isReadOnly]').getValue(),
-                add_btn = grid.down('button[name=update_line]'),
+                add_btn = grid.down('button[name=add_line]'),
                 widgetCol = grid.columns[grid.columns.length - 1];
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 add_btn.setVisible(false);
@@ -112,7 +98,24 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsAddGrid', {
             } else {
                 add_btn.setVisible(true);
                 widgetCol.setHidden(false);
-               
+                widgetCol.widget.menu.items = [{
+                    text: 'Edit',
+                    iconCls: 'x-fa fa-edit',
+                    stores: '[]',
+                    handler: 'showEditGmpInspectionLineDetails',
+                    winTitle: 'GMP Product Line Details',
+                    childXtype: 'productlinedetailsfrm',
+                    winWidth: '50%'
+                }, {
+                    text: 'Delete',
+                    iconCls: 'x-fa fa-trash',
+                    table_name: 'gmp_productline_details',
+                    storeID: 'productlinedetailsstr',
+                    action_url: 'gmpapplications/deleteGmpApplicationRecord',
+                    action: 'actual_delete',
+                    handler: 'doDeleteGmpApplicationWidgetParam',
+                    //hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
+                }];
             }
         }
     },
@@ -134,3 +137,4 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsAddGrid', {
             }
         }]
 });
+

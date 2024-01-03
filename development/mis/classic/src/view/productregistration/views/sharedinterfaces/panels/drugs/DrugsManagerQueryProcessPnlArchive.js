@@ -213,7 +213,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                     menu: {
                         xtype: 'menu',
                         items: [ {
-                                text: '1st Assessment  Comments',
+                                text: 'Assessment  Comments',
                                 iconCls: 'fa fa-weixin',
                                 childXtype: 'evaluationcommentspnl',
                                 winTitle: '1st Assessment  Comments',
@@ -234,17 +234,17 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                         ]
                     }
                 },{
-                    text: '2nd Assessment  Reports',
+                    text: 'Quality Review Reports',
                     ui: 'soft-purple', 
                     iconCls: 'fa fa-upload',
                     menu: {
                         xtype: 'menu',
                         items: [
                             {
-                                text: '2nd Assessment  Comments',
+                                text: 'Quality Review Comments',
                                 iconCls: 'fa fa-weixin',
                                 childXtype: 'evaluationcommentspnl',
-                                winTitle: '2nd Assessment Comments',
+                                winTitle: 'Quality ReviewComments',
                                 winWidth: '60%',  isReadOnly: 1,
                                 handler: 'showAddProductRegParamWinFrm',
                                 stores: '[]'
@@ -253,7 +253,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                                 text: 'Documents/Reports',
                                 iconCls: 'fa fa-upload',
                                 childXtype: 'productDocUploadsGrid',
-                                winTitle: '2nd Assessment uploaded Documents',
+                                winTitle: 'Quality Reviewuploaded Documents',
                                 winWidth: '60%',  isReadOnly: 1,
                                 handler: 'showApplicationEvaluationUploads',
                                 stores: '[]',
@@ -274,6 +274,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                                 childXtype: 'sampleanalysistestrequestspnl',
                                 winTitle: 'Sample Analysis Request',
                                 winWidth: '90%',  isReadOnly: 1,
+                                hidden:true,
                                 name: 'btnsample_analysis',
                                 handler: 'showSampleAnalysisrequestswin',
                                 stores: '[]'

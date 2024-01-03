@@ -7,6 +7,11 @@ Ext.define('Admin.view.gmpapplications.views.panels.ManSitePersonnelTabPnl', {
     margin: 3,
     items: [
         {
+            title: 'Billing Address Details',
+            xtype: 'billingdetailsfrm',
+            scrollable: true
+        },
+        {
             title: 'Application Contact Person',
             xtype: 'premisecontactpersonfrm',
             scrollable: true

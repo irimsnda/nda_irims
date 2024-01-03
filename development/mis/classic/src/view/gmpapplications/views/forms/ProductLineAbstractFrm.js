@@ -1,6 +1,5 @@
-/**
- * Created by Kip on 1/5/2019.
- */
+
+
 Ext.define('Admin.view.gmpapplications.views.forms.ProductLineAbstractFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'productlineabstractfrm',
@@ -21,154 +20,71 @@ Ext.define('Admin.view.gmpapplications.views.forms.ProductLineAbstractFrm', {
         },
         {
             xtype: 'hiddenfield',
+            name: '_token',
+            value: token
+        },
+        {
+            xtype: 'hiddenfield',
             name: 'table_name',
             value: 'gmp_productline_details'
         },
         {
             xtype: 'hiddenfield',
             name: 'manufacturing_site_id'
-        },{
-            xtype: 'combo',
+        },
+        {
+            xtype: 'combo', anyMatch: true,
+            fieldLabel: 'Pharmaceutical Dosage Form',
+            name: 'product_line_id',
+            store: 'gmpproductlinesstr',
+            forceSelection: true,
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'id'
+        },
+        {
+            xtype: 'combo', anyMatch: true,
             fieldLabel: 'Product Line Category',
             name: 'category_id',
             store: 'gmpproductlinecategoriesstr',
             forceSelection: true,
+            allowBlank: true,
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'id'
+        },
+        {
+            xtype: 'textarea',
+            fieldLabel: 'Dosage Form Description',
+            allowBlank: true,
+            name: 'prodline_description',
+          
+        }, {
+            xtype: 'combo',
+            fieldLabel: 'Manufacturing Activities',
+            name: 'manufacturing_activity_id',
+            forceSelection: true,
             queryMode: 'local',
             displayField: 'name',
             valueField: 'id',
             listeners: {
-                afterrender: {
-                    fn: 'setConfigCombosStoreWithSectionFilter',
+                beforerender: {
+                    fn: 'setGmpApplicationCombosStore',
                     config: {
                         pageSize: 10000,
-                        storeId: 'par_confirmationsStr',
                         proxy: {
-                            url: 'configurations/getproductApplicationParameters',
+                            url: 'commonparam/getCommonParamFromTable',
                             extraParams: {
-                                table_name: 'gmp_product_categories'
+                                table_name: 'par_manufacturing_activities'
                             }
                         }
                     },
                     isLoad: true
-                }, change: function (cmbo, newVal) {
-                        var form = cmbo.up('form'),
-                        product_line = form.down('combo[name=product_line_id]'),
-                        product_lineStr = product_line.getStore();
-
-                        filter = {
-                               gmp_product_categories_id: newVal
-                        };
-                        filter = JSON.stringify(filter);
-                        product_lineStr.removeAll();
-                        product_lineStr.load({params:{filters:filter}});
                 }
             }
-        },
-        {
-            xtype: 'combo',
-            fieldLabel: 'Product Line',
-            name: 'product_line_id',
-            forceSelection: true,
-            queryMode: 'local',
-            displayField: 'name',
-            valueField: 'id',
-            listeners: {
-                afterrender: {
-                    fn: 'setConfigCombosStoreWithSectionFilter',
-                    config: {
-                        pageSize: 10000,
-                        storeId: 'product_linestr',
-                        proxy: {
-                            url: 'configurations/getproductApplicationParameters',
-                            extraParams: {
-                                table_name: 'gmp_product_lines'
-                            }
-                        }
-                    },
-                    isLoad: false
-                },
-            }
-        }, 
-        {
-            xtype: 'combo',
-            fieldLabel: 'Non beta Lactam',
-            name: 'non_betalactam',
-            forceSelection: true,
-            queryMode: 'local',
-            displayField: 'name',
-            valueField: 'id',
-            listeners: {
-                afterrender: {
-                    fn: 'setParamCombosStore',
-                    config: {
-                        pageSize: 10000,
-                        storeId: 'non_betalactamstr',
-                        proxy: {
-                            url: 'configurations/getproductApplicationParameters',
-                            extraParams: {
-                                table_name: 'par_confirmations'
-                            }
-                        }
-                    },
-                    isLoad: false
-                },
-            }
-        }, {
-            xtype: 'combo',
-            fieldLabel: 'Beta Lactam',
-            name: 'beta_lactam_id',
-            forceSelection: true,
-            queryMode: 'local',
-            displayField: 'name',
-            valueField: 'id',
-            listeners: {
-                afterrender: {
-                    fn: 'setParamCombosStore',
-                    config: {
-                        pageSize: 10000,
-                        storeId: 'beta_lactamstr',
-                        proxy: {
-                            url: 'configurations/getproductApplicationParameters',
-                            extraParams: {
-                                table_name: 'par_beta_lactams'
-                            }
-                        }
-                    },
-                    isLoad: false
-                },
-            }
-        }, {
-            xtype: 'combo',
-            fieldLabel: 'Product Type',
-            name: 'gmpproduct_type_id',
-            forceSelection: true,
-            queryMode: 'local',
-            displayField: 'name',
-            valueField: 'id',
-            listeners: {
-                afterrender: {
-                    fn: 'setParamCombosStore',
-                    config: {
-                        pageSize: 10000,
-                        storeId: 'beta_lactamstr',
-                        proxy: {
-                            url: 'configurations/getproductApplicationParameters',
-                            extraParams: {
-                                table_name: 'par_gmpproduct_types'
-                            }
-                        }
-                    },
-                    isLoad: false
-                },
-            }
-        },  {
-            xtype: 'textarea',
-            fieldLabel: 'Product Line Description',
-            allowBlank: false,
-            name: 'prodline_description',
-          
         },{
-            xtype: 'combo',
+            xtype: 'combo', 
+            anyMatch: true,
             fieldLabel: 'Inspection Recommendation',
             name: 'prodline_inspectionstatus_id',
             store: 'gmpproductlinestatusstr',
@@ -183,7 +99,7 @@ Ext.define('Admin.view.gmpapplications.views.forms.ProductLineAbstractFrm', {
         {
             xtype: 'button',
             text: 'Save Details',
-            ui: 'soft-purple',
+            ui: 'soft-blue',
             iconCls: 'x-fa fa-save',
             formBind: true,
             table_name: 'gmp_product_details',
@@ -194,7 +110,7 @@ Ext.define('Admin.view.gmpapplications.views.forms.ProductLineAbstractFrm', {
         {
             xtype: 'button',
             text: 'Reset',
-            ui: 'soft-purple',
+            ui: 'soft-blue',
             iconCls: 'x-fa fa-close',
             handler: function () {
                 this.up('form').getForm().reset();

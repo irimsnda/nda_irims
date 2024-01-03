@@ -101,6 +101,7 @@
 
             xtype: 'numberfield',
             fieldLabel: 'Renewal of the GMP Clearance (months)',
+            allowBlank:true,
             name:'gmp_renewaltimeline',
             columnWidth: 0.5
         }

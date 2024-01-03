@@ -21,6 +21,7 @@ Route::group(['middleware' => ['web'], 'prefix' => 'importexportpermits'], funct
     Route::get('prepareReceivingpoeinspectionswizard', [ImportexportpermitsController::class, 'prepareReceivingpoeinspectionswizard']);
     Route::get('getOnlineControlDrugsImpermitsproductsDetails', [ImportexportpermitsController::class, 'getOnlineControlDrugsImpermitsproductsDetails']);
     Route::get('getOnlineImportexportpermitsproductsDetails', [ImportexportpermitsController::class, 'getOnlineImportexportpermitsproductsDetails']);
+    Route::get('getConsigneedetails', [ImportexportpermitsController::class, 'getConsigneedetails']);
     Route::get('getControlledImpproductsDetails', [ImportexportpermitsController::class, 'getControlledImpproductsDetails']);
     Route::get('getCompletedimportExportpermitsApps', [ImportexportpermitsController::class, 'getCompletedimportExportpermitsApps']);
     Route::get('getImportexportpermitsapps', [ImportexportpermitsController::class, 'getImportexportpermitsapps']);
@@ -48,7 +49,8 @@ Route::group(['middleware' => ['web'], 'prefix' => 'importexportpermits'], funct
     Route::post('onSaveImportPermitPremisesData', [ImportexportpermitsController::class, 'onSaveImportPermitPremisesData']);
     Route::post('onSaveImportPermitSenderReceiverData', [ImportexportpermitsController::class, 'onSaveImportPermitSenderReceiverData']);
     Route::post('onSavePermitinformation', [ImportexportpermitsController::class, 'onSavePermitinformation']);
-    Route::post('getPermitsApplicationMoreDetails', [ImportexportpermitsController::class, 'getPermitsApplicationMoreDetails']);
+    Route::post('updatesPermitsProductsrodrecommendtion', [ImportexportpermitsController::class, 'updatesPermitsProductsrodrecommendtion']);
+    Route::get('getPermitsApplicationMoreDetails', [ImportexportpermitsController::class, 'getPermitsApplicationMoreDetails']);
     Route::get('getImportExportManagerReviewApplications', [ImportexportpermitsController::class, 'getImportExportManagerReviewApplications']);
     Route::get('getNarcoticsPermitsManagerReviewApplications', [ImportexportpermitsController::class, 'getNarcoticsPermitsManagerReviewApplications']);
     Route::get('getISpecialmportExportApprovalApplications', [ImportexportpermitsController::class, 'getISpecialmportExportApprovalApplications']);

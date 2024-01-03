@@ -76,7 +76,6 @@ class ClinicalTrialController extends Controller
             if (isset($id) && $id != "") {
 
                 $res=recordExists($table_name, $where);
-                 dd($id);
                 if (recordExists($table_name, $where)) {
                     unset($table_data['created_on']);
                     unset($table_data['created_by']);
@@ -2543,6 +2542,7 @@ class ClinicalTrialController extends Controller
         $application_code = $request->input('application_code');
         $meeting_name = $request->input('meeting_name');
         $meeting_desc = $request->input('meeting_desc');
+        $meeting_type_id = $request->input('meeting_type_id');
         
         $meeting_venue = $request->input('meeting_venue');
         $meeting_time = $request->input('meeting_time');
@@ -2555,6 +2555,7 @@ class ClinicalTrialController extends Controller
                 'meeting_name' => $meeting_name,
                 'meeting_desc' => $meeting_desc,
                 'meeting_venue' => $meeting_venue,
+                'meeting_type_id' => $meeting_type_id,
                 'meeting_time' => $meeting_time,
                 'date_requested' => $date_requested
             );

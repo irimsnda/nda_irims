@@ -40,6 +40,159 @@ use ReportsTrait;
         return view('reports::index');
     }
 
+
+
+    public function getReportUrl(Request $req)
+    {
+    $sub_module_id = '';
+    $section_id = '';
+    $server_url = env('REPORT_SERVER_URL');
+    $application_code = $req->application_code;
+    $module_id = $req->module_id;
+    $sub_module_id=$req->sub_module_id;
+    $section_id=$req->module_id;
+    $report_type_id=$req->report_type_id;
+    $isPreview=$req->isPreview;
+   try{
+    if(validateIsNumeric($sub_module_id)){
+        $sub_module_id = $sub_module_id;
+        $decision_id = $this->checkApprovalDecision($application_code,$sub_module_id);
+    }
+    if(validateIsNumeric($section_id)){
+        $section_id = $section_id;
+    }
+
+    if (!validateIsNumeric($report_type_id)) {
+            $res = array(
+                'success' => false,
+                'message' => 'System Report type not set. Kindly contact System Admin!!'
+            );
+            echo json_encode($res);
+            exit();
+    }
+
+     if($module_id == 29){
+        if ($decision_id == 1 || $decision_id == 3) {
+            $report_path = $this->getReportPath($module_id, $sub_module_id, $report_type_id, $decision_id);
+            if (!is_null($report_path)) {
+                $url = $server_url . $report_path . "?application_code=" . $application_code;
+            } 
+        }else {
+
+            $res = array(
+                        'success'=>false,
+                        'message'=>'No Final Decision'
+            );
+            echo json_encode($res);
+            exit();
+        }
+    
+        }else{
+            $message='Missing Missing Report for this Module Kindly contact System admin';
+            if(validateIsNumeric($module_id)){
+                $module_name = $this->getModuleName($module_id);
+                $message = 'Missing Missing Report for ' . $module_name . ' . Kindly contact System admin';
+
+            }
+            $res = array(
+            'success'=>false,
+            'message'=>$message
+           );
+            echo json_encode($res);
+            exit();
+
+        }
+
+
+     if($url == ""){
+        $res = array(
+            'success'=>false,
+            'message'=>'Missing Report Kindly contact System admin'
+        );
+
+    }else{
+        $this -> saveReportDetails($module_id,$sub_module_id,$report_type_id,$report_path,$application_code);
+        $res = array(
+        'success' => true,
+        'document_url' => $url
+        );
+    }
+     
+   }catch (\Exception $exception) {
+        $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+    } catch (\Throwable $throwable) {
+        $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+    }
+    return response()->json($res);
+  }
+
+
+
+  public function checkApprovalDecision($application_code,$sub_module_id)
+  {
+    if($sub_module_id == 4){
+        $decision_id = getSingleRecordColValue('tra_permitsrelease_recommendation',['application_code'=>$application_code], 'decision_id');
+    }else{
+        $decision_id = getSingleRecordColValue('tra_approval_recommendations',['application_code'=>$application_code], 'decision_id');
+    }
+      return $decision_id;
+  }
+
+
+public function getModuleName($module_id)
+  {
+        $module_name = getSingleRecordColValue('modules',['id'=>$module_id], 'name');
+   
+      return $module_name;
+  }
+
+
+  public function getReportPath($module_id,$sub_module_id,$report_type_id,$decision_id)
+  {
+        $report_path = getSingleRecordColValue('par_systemreports_repconfig',['module_id'=>$module_id,'sub_module_id'=>$sub_module_id, 'sysreports_type_id' => $report_type_id,'decision_id' => $decision_id], 'report_path');
+   
+      return $report_path;
+  }
+
+   public function saveReportDetails($module_id,$sub_module_id,$report_type_id,$report_path,$application_code)
+  {
+    $server_url = env('REPORT_SERVER_URL');
+    $report_application_table = 'par_system_report_application';
+    $report_url = $server_url . $report_path;
+    $res=array();
+    try{
+        $report_name = getSingleRecordColValue('par_systemreport_types',['id'=>$report_type_id], 'name');
+
+        $where = array(
+            "application_code" => $application_code,
+            "report_type_id" =>$report_type_id
+        );
+
+        if(!recordExists($report_application_table,$where)){
+            $report_params = array(
+                'application_code' => $application_code,
+                'module_id' => $module_id,
+                'sub_module_id' => $sub_module_id,
+                'report_name' => $report_name,
+                'report_url' => $report_url,
+                'report_type_id' => $report_type_id,
+                'date_received' => Carbon::now(),
+                'created_on' => Carbon::now(),
+                );  
+            $res = insertRecord($report_application_table, $report_params);      
+        }
+        
+    }catch (\Exception $exception) {
+        $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+    } catch (\Throwable $throwable) {
+        $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+    }
+    return response()->json($res);
+  }
+
+
    public function generateApplicationInvoice(Request $request)
     {
         $invoice_id = $request->input('invoice_id');

@@ -7,6 +7,9 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
      */
    
 	// 
+    setParamCombosStore: function (obj, options) {
+        this.fireEvent('setParamCombosStore', obj, options);
+    },
     saveGmpproductStatusesdetails: function (btn) {
         var me = this,
             url = btn.action_url,
@@ -937,7 +940,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             module_id = containerPnl.down('hiddenfield[name=module_id]').getValue(),
             sub_module_id = containerPnl.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = containerPnl.down('hiddenfield[name=section_id]').getValue(),
-            zone_id = containerPnl.down('combo[name=zone_id]').getValue(),
+            // zone_id = containerPnl.down('combo[name=zone_id]').getValue(),
             workflow_stage_id = containerPnl.down('hiddenfield[name=workflow_stage_id]').getValue(),
             active_application_id = containerPnl.down('hiddenfield[name=active_application_id]').getValue(),
             checkapplication_id = containerPnl.down('hiddenfield[name=active_application_id]').getValue(),
@@ -946,9 +949,9 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             applicant_id = applicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue(),
             is_local_applicant = applicantDetailsForm.down('hiddenfield[name=is_local]').getValue(),
             localApplicantDetailsForm = containerPnl.down('productlocalapplicantdetailsfrm'),
-            local_applicant_id = localApplicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue(),
+            local_applicant_id = localApplicantDetailsForm.down('hiddenfield[name=premise_id]').getValue(),
             productDetailsForm = containerPnl.down('#productsDetailsFrm'),
-            zone_id = 2,
+            //zone_id = 2,
             productDetailsFrm = productDetailsForm.getForm();
 
         if (!applicant_id) {
@@ -962,10 +965,10 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             }
         }
       
-        if (!zone_id) {
-            //toastr.warning('Please select Zone Location!!', 'Warning Response');
-          // return false;
-        }
+        // if (!zone_id) {
+        //     //toastr.warning('Please select Zone Location!!', 'Warning Response');
+        //   // return false;
+        // }
         withdrawal_type_id = 0;
         //check types of withdrawal
         if(sub_module_id == 17){
@@ -999,7 +1002,6 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
                     module_id: module_id,
                     sub_module_id: sub_module_id,
                     section_id: section_id,
-                    zone_id: zone_id,
                     withdrawal_type_id:withdrawal_type_id,
                     appeal_type_id:appeal_type_id,
                     '_token': token,
@@ -1792,7 +1794,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             form = Ext.widget(childXtype);
 
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
 
     },
     showEditProductOtherdetailWinFrm: function (item) {
@@ -1806,7 +1808,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             form = Ext.widget(childXtype);
 
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
 
     },
     productPreviewEditProductsDetails: function (item) {
@@ -1876,7 +1878,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             selected = JSON.stringify(selected),
             childObject.down('hiddenfield[name=selected_appcodes]').setValue(selected);
             
-            funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
 
     },
     funcChangeDevTypeClass:function(cbo,value){
@@ -1948,7 +1950,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
                 queriesGrid.down('button[action=submit_app]').setVisible(false);
                 queriesGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
             }
-            funcShowCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
             
     },
     receiveWinOnlineApplicationDetails:function(btn){
@@ -2033,7 +2035,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             childObject.down('hiddenfield[name=table_name]').setValue(table_name);
             childObject.down('hiddenfield[name=module_id]').setValue(module_id);
             childObject.down('button[name=submit_queriedapp]').action_url = action_url;
-            funcShowCustomizableWindow('Online Application Submission - Queried', '35%', childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow('Online Application Submission - Queried', '35%', childObject, 'customizablewindow');
         });
     },
 
@@ -2159,7 +2161,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
                 if(grid.down('hiddenfield[name=status_id]')){
                     grid.down('hiddenfield[name=status_id]').setValue(status_id);
                 }
-            funcShowCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
             
         }
         else {
@@ -2995,10 +2997,58 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
        
     },
 
+     showEditSystemPersonnel: function (view, record, item, index, e, eOpts) {
+        var me = this,
+            grid = view.grid,
+            profile_url = record.get('saved_name'),
+            personnel_id = record.get('id'),
+            is_active = record.get('is_active'),
+            panel = grid.up('panel'),
+            userContainerPnl = Ext.widget('inchargepnl'),
+            userWizardPnl = userContainerPnl.down('inchargewizardfrm'),
+            basicFrm = userWizardPnl.down('inchargebasicinfofrm'),
+            document_type_id=33,
+            reference_table_name='tra_premise_incharge_personnel',
+            table_name='personnel_management_uploaddocuments',
+            childXtype = userContainerPnl.down('unstructureddocumentuploadsgrid');
+            childXtype.down('hiddenfield[name=document_type_id]').setValue(document_type_id);
+            childXtype.down('hiddenfield[name=table_name]').setValue(table_name);
+            childXtype.down('hiddenfield[name=reference_table_name]').setValue(reference_table_name);
+            userWizardPnl.down('hiddenfield[name=active_personnel_id]').setValue(personnel_id);
+            userWizardPnl.down('button[action=delete]').setVisible(true);
+            if(is_active==1 || is_active===1){
+            userWizardPnl.down('button[action=block]').setVisible(true);
+            }else{
+             userWizardPnl.down('button[action=activate]').setVisible(true);
+            }
+            basicFrm.loadRecord(record);
+       
+       
+        if (profile_url) {
+            basicFrm.down('image[name=user_photo]').setSrc(base_url + '/resources/images/personnel-profile/' + profile_url);
+        }
+        grid.hide();
+        panel.add(userContainerPnl);
+    },
+
+     backToDashboardFromActive: function(btn) {
+        var currentPnlXtype = btn.currentPnlXtype,
+        currentPnl = btn.up(currentPnlXtype),
+        containerPnlXtype = btn.containerPnlXtype,
+        hiddenCompXtype = btn.hiddenCompXtype,
+        containerPnl = btn.up(containerPnlXtype),
+        grid = containerPnl.down(hiddenCompXtype);
+        containerPnl.remove(currentPnl);
+        grid.store.removeAll();
+        grid.store.load();
+        grid.show();
+    },
+
 
     addQualitySummaryReport: function (view, record) {
         var grid = view.grid,
         wizard = grid.up('panel'),
+        panel = grid.up('panel'),
         mainTabPnl = grid.up('#contentPanel'),
         containerPnl = mainTabPnl.getActiveTab(),
         title=record.get('name'),
@@ -3029,6 +3079,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
                         if (success == true || success === true) {
                             var model = Ext.create('Ext.data.Model', resp.results[0]);    
                             quality_Frm.loadRecord(model);
+                            Ext.getBody().unmask();
                         } else {
                             toastr.error(message, 'Failure Response');
                             var model = Ext.create('Ext.data.Model', []);
@@ -3051,7 +3102,10 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
                     }
                 });
 
-        funcShowCustomizableWindow(title, '90%', quality_Frm, 'customizablewindow');
+        grid.hide();
+        panel.add(quality_Frm);
+
+        //funcShowCustomizableWindow(title, '90%', quality_Frm, 'customizablewindow');
         
     },
 

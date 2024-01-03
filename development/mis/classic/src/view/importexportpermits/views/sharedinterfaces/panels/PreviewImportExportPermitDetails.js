@@ -88,6 +88,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                             valueField: 'id',
                             displayField: 'name',
                             queryMode: 'local',
+                            hidden: true,
                             readOnly: true,
                             forceSelection: true,
                             listeners: {
@@ -111,7 +112,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
             ],
         },{
             xtype: 'importexportpermitsproductsgrid',
-            title: 'Import/Export Permit Products Details',
+            title: 'Import/Export VC Products Details',
         },{
             xtype: 'importexportapplicantdetailsfrm',
             title: 'APPLICANT DETAILS'
@@ -141,7 +142,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     step: 0,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
-                    text: 'Import/Export Permit Details',
+                    text: 'Import/Export VC Details',
                     action: 'quickNav', 
                     wizard: 'previewimportexportpermitdetails',
                     handler: 'prevquickNavigation'
@@ -150,7 +151,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     iconCls: 'fa fa-user',
                     enableToggle: true,
                     pressed: true,
-                    text: 'Permits Products Details',
+                    text: 'VC Products Details',
                     action: 'quickNav',
                     wizard: 'previewimportexportpermitdetails',
                     handler: 'prevquickNavigation'

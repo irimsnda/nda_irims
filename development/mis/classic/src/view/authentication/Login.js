@@ -11,7 +11,7 @@ Ext.define('Admin.view.authentication.Login', {
         'Admin.global.GlobalVars'
     ],
      bodyStyle:{
-        'background': 'linear-gradient(2deg,#497d36, #E2E2E2, #497d36);'
+        'background': 'linear-gradient(50deg,#497d36, #E2E2E2, #497d36);'
     }, 
     //title: 'MIS',
     defaultFocus: 'authdialog', // Focus the Auth Form to force field focus as well

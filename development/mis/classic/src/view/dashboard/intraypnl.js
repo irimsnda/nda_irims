@@ -24,7 +24,7 @@ Ext.define('Admin.view.dashboard.intraypnl', {
         autoScroll: true,
         split: true,
         titleCollapse: true,
-        collapsed: false,
+        collapsed: true,
         collapsible: true
     }, {
             xtype: 'intraygrid',

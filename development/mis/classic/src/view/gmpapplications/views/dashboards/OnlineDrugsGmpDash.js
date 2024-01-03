@@ -14,7 +14,7 @@ Ext.define('Admin.view.gmpapplications.views.dashboards.OnlineDrugsGmpDash', {
         {
             xtype: 'hiddenfield',
             name: 'section_id',
-            value: 2
+            value: 1
         },
         {
             xtype: 'onlinegmpapplicationsgrid',

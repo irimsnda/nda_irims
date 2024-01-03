@@ -1108,13 +1108,202 @@ trait ImportexportpermitsTraits
         }
         return $res;
     }
-    public function saveImpExpApplicationRecommendationDetails($request,$sub_module_id, $application_details)
-    {
-        
+
+    public function savebatchpermitReleaseRecommendation(Request $request,$document_types)
+    {  
         $table_name = $request->input('table_name');
         $application_id = $request->input('application_id');
         $application_code = $request->input('application_code');
-       
+        $qry = DB::table($table_name)
+            ->where(array('application_code'=> $application_code));
+        $app_details = $qry->first();
+        if (is_null($app_details)) {
+            $res = array(
+                'success' => false,
+                'message' => 'Problem encountered while getting application details!!'
+            );
+            return $res;
+        }
+        $res = array();
+
+
+        try {
+            DB::transaction(function () use ($qry, $application_id, $application_code, $table_name, $request, $app_details,$document_types, &$res) {
+                $premiseUpdateParams = array();
+                $id = $request->input('recommendation_id');
+                $process_id = $request->input('process_id');
+                $workflow_stage_id = $request->input('workflow_stage_id');
+                $decision_id = $request->input('decision_id');
+                $comment = $request->input('comment');
+                $approved_by = $request->input('approved_by');
+                $approval_date = $request->input('approval_date');
+                $expiry_date = $request->input('expiry_date');
+                $dg_signatory = $request->input('dg_signatory');
+                $signatory = $request->input('permit_signatory');
+                $user_id = $this->user_id;
+                if ($dg_signatory == 1) {
+                    $permit_signatory = getPermitSignatory($process_id);
+                } else {
+                    $permit_signatory = $signatory;
+                }
+                $sub_module_id = $app_details->sub_module_id;
+                $module_id = $app_details->module_id;
+                $section_id = $app_details->section_id;
+                if($sub_module_id == 1){
+                    $ref_id = 43;
+                }
+                else{$ref_id = 5;
+                    
+                }
+                if($decision_id == 1){
+                    $expiry_date =   getApplicationExpiryDate($approval_date,$sub_module_id,$module_id,$section_id);
+                    
+                }
+                $params = array(
+                    'application_id' => $application_id,
+                    'application_code' => $application_code,
+                    'workflow_stage_id' => $workflow_stage_id,
+                    'decision_id' => $decision_id,
+                    'comment' => $comment,
+                    'approval_date' => $approval_date,
+                    'expiry_date' => $expiry_date,
+                    'appvalidity_status_id' =>2,
+                    'appregistration_status_id' =>2,
+                    'approved_by' => $approved_by,
+                    'dg_signatory' => $dg_signatory,
+                    'permit_signatory' => $permit_signatory
+                );
+                $premiseUpdateParams['certificate_issue_date'] = $approval_date;
+                if (isset($id) && $id != '') {
+                    //update
+                    $where = array(
+                        'id' => $id
+                    );
+                    $params['dola'] = Carbon::now();
+                    $params['altered_by'] = $user_id;
+                    $prev_data = getPreviousRecords('tra_approval_recommendations', $where);
+                    if ($prev_data['success'] == false) {
+                        return \response()->json($prev_data);
+                    }
+                    $prev_data_results = $prev_data['results'];
+                    $prev_decision_id = $prev_data_results[0]['decision_id'];
+                    $prev_data_results[0]['record_id'] = $id;
+                    $prev_data_results[0]['update_by'] = $user_id;
+                    $prev_data_results[0]['recommendation_id'] = $prev_data_results[0]['id'];
+                    unset($prev_data_results[0]['id']);
+                    DB::table('tra_approval_recommendations_log')
+                        ->insert($prev_data_results);
+                        $premise_reg_no = '';
+                    if ($decision_id == 1) {
+                        if ($app_details->sub_module_id == 2 || $app_details->sub_module_id == 108) {
+                            $premise_reg_no = getSingleRecordColValue('registered_premises', array('id'=>$app_details->reg_premise_id), 'registration_no');
+                        }
+                        else{
+                            $premise_reg_no= $app_details->reference_no;
+                        }
+                        $premiseUpdateParams['premise_reg_no'] = $premise_reg_no;
+                        $validity_status_id = 2;
+                        $registration_status_id = 2;
+                        $qry->update(array('application_status_id' => 6));
+                        //permit
+                        if ($prev_decision_id != 1) {
+                            $permit_no = generatePremisePermitNo($app_details->zone_id, $app_details->section_id, $table_name, $user_id, $ref_id ,$sub_module_id);
+                            $params['permit_no'] = $permit_no;
+                        }
+                    } else {
+                        $premiseUpdateParams['premise_reg_no'] = null;
+                        $validity_status_id = 3;
+                        $registration_status_id = 3;
+                        $qry->update(array('application_status_id' => 7));
+                        $params['permit_no'] = '';
+                        $params['permit_no'] = null;
+                    }
+                    $res = updateRecord('tra_approval_recommendations', $prev_data['results'], $where, $params, $user_id);
+
+
+                } else {
+                    //insert
+                    $params['created_on'] = Carbon::now();
+                    $params['created_by'] = $user_id;
+                $premise_reg_no = '';
+                    if ($decision_id == 1) {
+                        if ($app_details->sub_module_id == 2 || $app_details->sub_module_id == 108) {
+                            $premise_reg_no = getSingleRecordColValue('registered_premises', array('id'=>$app_details->reg_premise_id), 'registration_no');
+                        }
+                        else{
+                            $premise_reg_no= $app_details->reference_no;
+                        }
+                        
+                        $premiseUpdateParams['premise_reg_no'] = $premise_reg_no;
+                        $validity_status_id = 2;
+                        $registration_status_id = 2;
+                        //permits
+                        $permit_no = generatePremisePermitNo($app_details->zone_id, $app_details->section_id, $table_name, $user_id, $ref_id ,$sub_module_id);
+                        $params['permit_no'] = $permit_no;
+                        $qry->update(array('application_status_id' => 6));
+                    } else {
+                        $premiseUpdateParams['premise_reg_no'] = null;
+                        $validity_status_id = 3;
+                        $registration_status_id = 3;
+                        $qry->update(array('application_status_id' => 7));
+                        $params['permit_no'] = '';
+                        $params['expiry_date'] = null;
+                    }
+                    $res = insertRecord('tra_approval_recommendations', $params, $user_id);
+                    $id = $res['record_id'];
+                }
+                $premiseUpdateParams['permit_id'] = $id;
+               
+                if($decision_id == 1){
+                    $portal_status_id = 10;
+                }
+                else{
+                    $portal_status_id = 11; 
+                }
+                updatePortalApplicationStatusWithCode($application_code, 'wb_premises_applications',$portal_status_id);
+
+                if ($app_details->sub_module_id == 1 || $app_details->sub_module_id == 2 || $app_details->sub_module_id == 96 || $app_details->sub_module_id == 97) {//we only update premise validity status on new applications
+                    $updates = array(
+                        'validity_status_id' => $validity_status_id,
+                        'registration_status_id' => $registration_status_id,
+                        'registration_no' => $premise_reg_no,
+                        'registration_date' => Carbon::now(),
+                        'approval_date' => Carbon::now()
+                    );
+                    DB::table('registered_premises')
+                        ->where('id', $app_details->reg_premise_id)
+                        ->update($updates);
+                }
+                DB::table('tra_premises')
+                    ->where('id', $app_details->premise_id)
+                    ->update($premiseUpdateParams);
+                DB::table('tra_premises_applications')
+                    ->where('id', $application_id)
+                    ->update(array('permit_id' => $id));
+                    
+                updateDocumentRegulatoryDetails($app_details, $document_types, $decision_id);
+            //log application Raw data to dump table
+            // \App::call('Modules\AuditReport\Http\Controllers\AuditReportController@logPremiseApplicationDetails',[$application_id]);
+
+            }, 5);
+
+            
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return $res;
+    }
+    public function saveImpExpApplicationRecommendationDetails($request,$sub_module_id, $application_details)
+    {
+
         if (is_null($application_details)) {
             $res = array(
                 'success' => false,
@@ -1122,6 +1311,49 @@ trait ImportexportpermitsTraits
             );
             return $res;
         }
+        
+        $table_name = $request->input('table_name');
+        $application_id = $request->input('application_id');
+        $application_code = $request->input('application_code');
+        
+        $selected_appcodes = $request->input('selected_appcodes');
+      
+        $res = array();
+
+        
+        try {
+            if($selected_appcodes != ''){
+                
+                $selected_ids = json_decode($selected_appcodes);
+               
+                foreach ($selected_ids as $application_code) {
+                   
+                    $res = $this->saveImportExportApprovalRecommendation($application_id, $application_code, $table_name, $request, $res, $application_details);
+                
+
+                }
+               
+            }
+            else{
+                     $res = $this->saveImportExportApprovalRecommendation($application_id, $application_code, $table_name, $request, $res, $application_details);
+
+            }
+         
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return $res;
+    }
+    public function saveImportExportApprovalRecommendation($application_id, $application_code, $table_name, $request,  &$res, $application_details){
+
         $qry = DB::table($table_name.'  as t1')
             ->where('t1.id', $application_id);
         $res = array();
@@ -1486,7 +1718,6 @@ trait ImportexportpermitsTraits
         $applications_table = 'tra_importexport_applications';
         
         $res= $this->funcImpApplicationSubmission($application_id,$responsible_user,$urgency,$comment,$user_id,$status_type_id,$application_code,$sub_module_id,$next_stage,$applications_table);
-
         return $res;
     }
     function funcImpApplicationSubmission($application_id,$responsible_user,$urgency,$comment,$user_id,$status_type_id,$application_code,$sub_module_id,$next_stage,$applications_table){
@@ -1519,11 +1750,28 @@ trait ImportexportpermitsTraits
                                         $section_id = $results->section_id;
                                       
                                         $portal_application_id = $results->id;
-                                        $where = array(
-                                            'module_id' => $results->module_id,
-                                            'sub_module_id' => $results->sub_module_id,
-                                            'section_id' => $results->section_id
-                                        );
+                                        if ($module_id == 4 || $module_id === 4) {
+                                            $records = DB::connection('portal_db')
+                                                ->table('wb_importexport_applications as t7')
+                                                ->where('t7.application_code', $application_code)
+                                                ->first(); // Retrieve the record
+                                        
+                                            if ($records) {
+                                                $where = array(
+                                                    'module_id' => $results->module_id,
+                                                    'sub_module_id' => $results->sub_module_id,
+                                                    'importexport_permittype_id' => $records->licence_type_id, // Access 'licence_type_id' from $records
+                                                    'importexport_applicationtype_id' => $records->has_registered_premises, // Access 'has_registered_premises' from $records
+                                                );
+                                            }
+                                        } else {
+                                            $where = array(
+                                                'module_id' => $results->module_id,
+                                                'sub_module_id' => $results->sub_module_id
+                                                //'t1.section_id' => $records->section_id
+                                            );
+                                        }
+                                        
                                         $process_details = getTableData('wf_tfdaprocesses', $where);
                                         if (is_null($process_details)) {
                                             $res = array(
@@ -1581,42 +1829,67 @@ trait ImportexportpermitsTraits
 						}
                         $application_details = array(
                             'application_code' => $results->application_code,
-                             'reg_importexport_id' => $results->reg_importexport_id,
-                            'tracking_no' => $results->tracking_no, 
-                            'reference_no' => $reference_no, 
-                            'applicant_id' => $applicant_id,
-                            'view_id' => $view_id,
-                            'date_added' => Carbon::now(),
-                            'submission_date'=>$results->submission_date,
-            
-                            'sub_module_id' => $sub_module_id,
-                            'module_id' => $module_id,
-                            'section_id' => $results->section_id,
-                            'permit_category_id' => $results->permit_category_id,
-                            'import_typecategory_id' => $results->import_typecategory_id,
-                             'mode_oftransport_id' => $results->mode_oftransport_id,
-                                            
-                            'permit_productscategory_id' => $results->permit_productscategory_id,
-                            'proforma_invoice_no' => $results->proforma_invoice_no,
-                            'proforma_invoice_date' => $results->proforma_invoice_date,
-                            'premise_id' => $results->premise_id,
-                            'paying_currency_id' => $results->paying_currency_id,
-                            'sender_receiver_id' => $results->sender_receiver_id,
-                            'zone_id' => $zone_id,
-                            'port_id' => $results->port_id,
-                            
-                            'application_status_id' => $results->application_status_id,
-                            'consignee_options_id' => $results->consignee_options_id,
-                            'consignee_id' => $results->consignee_id,
-                            
-                            'process_id' => $process_details->id,
-                            'workflow_stage_id' => $workflow_details->id,
-                            'application_status_id' => $app_status_id,
-                            'portal_id' => $portal_application_id,
-                            'created_on' => Carbon::now(),
-                            'created_by'=>$user_id
+                                     'tracking_no' => $results->tracking_no, 
+                                     'reference_no' => $results->reference_no, 
+                                     'applicant_id' => $applicant_id,
+                                     'view_id' => $view_id,
+                                     'date_added' => Carbon::now(),
+                                     'submission_date'=>$results->submission_date,
+                                      'mode_oftransport_id' => $results->mode_oftransport_id,
+                                       
+                                     'sub_module_id' => $sub_module_id,
+                                     'module_id' => $module_id,
+                                     'section_id' => $results->section_id,
+                                     'permit_category_id' => $results->permit_category_id,
+                                     'import_typecategory_id' => $results->import_typecategory_id,
+                                     
+                
+                                     
+                                     'eligible_importersdoctype_id' => $results->eligible_importersdoctype_id,
+                                     'eligible_importerscategory_id' => $results->eligible_importerscategory_id,
+                                     'document_upload_id' => $results->document_upload_id,
+                                     'product_classification_id'=>$results->product_classification_id,
+
+                                    'has_registered_premises' =>$results->has_registered_premises,
+                                    'licence_type_id' => $results->licence_type_id,
+                                    'tpin_no' => $results->tpin_no,
+                                    'physical_address' => $results->physical_address,
+                                    'email' => $results->email,
+                                    'company_registration_no' => $results->company_registration_no,
+                                    'name' => $results->name,
+
+                                     'business_type_id'=>$results->business_type_id,
+                                     'psu_no'=>$results->psu_no,
+                                      'full_names'=>$results->full_names,
+                                      'psu_date'=>$results->psu_date,
+                                      'pharmacist_telephone'=>$results->pharmacist_telephone,
+                                      'pharmacist_email'=>$results->pharmacist_email,
+                                     'pharmacist_qualification'=>$results->pharmacist_qualification,
+                                     'pharmacist_country_id'=>$results->pharmacist_country_id,
+                                     'pharmacist_district_id'=>$results->pharmacist_district_id,
+                                     'pharmacist_region_id'=>$results->pharmacist_region_id,
+                                       
+                                     'reason_fornonregister_outlet' => $results->reason_fornonregister_outlet,
+                                     'permit_productscategory_id' => $results->permit_productscategory_id,
+                                     'permit_reason_id' => $results->permit_reason_id,
+                                     'proforma_invoice_no' => $results->proforma_invoice_no,
+                                     'proforma_invoice_date' => $results->proforma_invoice_date,
+                                     'premise_id' => $results->premise_id,
+                                     'paying_currency_id' => $results->paying_currency_id,
+                                     'sender_receiver_id' => $results->sender_receiver_id,
+                                     'zone_id' => $results->zone_id,
+                                      'port_id' => $results->port_id,
+                                     
+                                     'application_status_id' => $results->application_status_id,
+                                      'consignee_options_id' => $results->consignee_options_id,
+                                      'consignee_id' => $results->consignee_id,
+                                     'process_id' => $process_id,
+                                     'application_status_id' => $app_status_id,
+                                     'portal_id' => $portal_application_id,
+                                     'created_on' => Carbon::now(),
+                                     'created_by'=>$user_id
                         );
-                        
+                       
                         $where_data = array('application_code'=>$application_code);
                            
                              $app_previousdata = getPreviousRecords($applications_table, $where_data);
@@ -1677,7 +1950,7 @@ trait ImportexportpermitsTraits
                         $application_details = array(
                             'application_code' => $results->application_code,
                             'tracking_no' => $results->tracking_no, 
-                            'reference_no' => $reference_no, 
+                            'reference_no' => $results->reference_no, 
                             'applicant_id' => $applicant_id,
                             'view_id' => $view_id,
                             'date_added' => Carbon::now(),
@@ -1690,6 +1963,35 @@ trait ImportexportpermitsTraits
                             'permit_category_id' => $results->permit_category_id,
                             'import_typecategory_id' => $results->import_typecategory_id,
                             
+       
+                            
+                            'eligible_importersdoctype_id' => $results->eligible_importersdoctype_id,
+                            'eligible_importerscategory_id' => $results->eligible_importerscategory_id,
+                            'document_upload_id' => $results->document_upload_id,
+                            'product_classification_id'=>$results->product_classification_id,
+
+                           'has_registered_premises' =>$results->has_registered_premises,
+                           'licence_type_id' => $results->licence_type_id,
+                           'tpin_no' => $results->tpin_no,
+                           'physical_address' => $results->physical_address,
+                           'email' => $results->email,
+                           'company_registration_no' => $results->company_registration_no,
+                           'name' => $results->name,
+
+
+                            'business_type_id'=>$results->business_type_id,
+                            'psu_no'=>$results->psu_no,
+                             'full_names'=>$results->full_names,
+                             'psu_date'=>$results->psu_date,
+                             'pharmacist_telephone'=>$results->pharmacist_telephone,
+                             'pharmacist_email'=>$results->pharmacist_email,
+                            'pharmacist_qualification'=>$results->pharmacist_qualification,
+                            'pharmacist_country_id'=>$results->pharmacist_country_id,
+                            'pharmacist_district_id'=>$results->pharmacist_district_id,
+                            'pharmacist_region_id'=>$results->pharmacist_region_id,
+                              
+                            'reason_fornonregister_outlet' => $results->reason_fornonregister_outlet,
+                            'permit_productscategory_id' => $results->permit_productscategory_id,
                             'permit_reason_id' => $results->permit_reason_id,
                             'proforma_invoice_no' => $results->proforma_invoice_no,
                             'proforma_invoice_date' => $results->proforma_invoice_date,
@@ -1697,14 +1999,12 @@ trait ImportexportpermitsTraits
                             'paying_currency_id' => $results->paying_currency_id,
                             'sender_receiver_id' => $results->sender_receiver_id,
                             'zone_id' => $results->zone_id,
-                            'port_id' => $results->port_id,
+                             'port_id' => $results->port_id,
                             
                             'application_status_id' => $results->application_status_id,
-                            'consignee_options_id' => $results->consignee_options_id,
-                            'consignee_id' => $results->consignee_id,
-                            
-                            'process_id' => $process_details->id,
-                            'workflow_stage_id' => $workflow_details->id,
+                             'consignee_options_id' => $results->consignee_options_id,
+                             'consignee_id' => $results->consignee_id,
+                            'process_id' => $process_id,
                             'application_status_id' => $app_status_id,
                             'portal_id' => $portal_application_id,
                             'created_on' => Carbon::now(),

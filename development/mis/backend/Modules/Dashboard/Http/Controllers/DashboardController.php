@@ -91,7 +91,7 @@ class DashboardController extends Controller
         try{
             $user_id = $this->user_id;
             $qry = DB::table('tra_submissions as t1')
-            ->join('wf_processes as t2', 't1.process_id', '=', 't2.id')
+            ->join('wf_tfdaprocesses as t2', 't1.process_id', '=', 't2.id')
             ->leftJoin('wf_workflow_stages as t3', 't1.previous_stage', '=', 't3.id')
             ->leftJoin('wf_workflow_stages as t4', 't1.current_stage', '=', 't4.id')
             ->leftJoin('par_system_statuses as t5', 't1.application_status_id', '=', 't5.id')
@@ -982,7 +982,11 @@ return $string;
         return \response()->json($res);
     }
     public function getOutTrayUserDetails($request,$is_internaluser){
-
+        
+        $section_id = $request->input('section_id');
+        $module_id = $request->input('module_id');
+        $sub_module_id = $request->input('sub_module_id');
+        $workflow_stage_id = $request->input('workflow_stage_id');
         $user_id = $this->user_id;
         try {
             

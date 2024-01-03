@@ -150,17 +150,18 @@ Ext.define('Admin.view.productregistration.views.grids.ProductManagerEvalAuditRe
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'evaluator_recommendation',
-        text: '1st Assessment Recommendation',
+        text: 'Assessment Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'auditor_recommendation',
-        text: '2nd Assessment Recommendation',
+        text: 'Quality Review Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'laboratory_analysis_recommendation',
         text: 'Laboratory Analysis Recommendation',
+        hidden:true,
         flex: 1
     }, {
         text: 'Options',
@@ -230,13 +231,13 @@ Ext.define('Admin.view.productregistration.views.grids.ProductManagerEvalAuditRe
                         ]
                     }
                 }, {
-                    text: '2nd Assessment Report',
+                    text: 'Quality Review Report',
                     iconCls: 'x-fa fa-exchange',
                     menu: {
                         xtype: 'menu',
                         items: [
                             {
-                                text: '2nd Assessment  Reports/Upload',
+                                text: 'Quality Review Reports/Upload',
                                 iconCls: 'x-fa fa-file',
                                 tooltip: 'Audit Reports/Upload',
                                 action: 'edit',
@@ -256,14 +257,14 @@ Ext.define('Admin.view.productregistration.views.grids.ProductManagerEvalAuditRe
                                 handler: 'showPreviousUploadedDocs',
                                 stores: '[]',
                                 document_type_id: 9,
-                                winTitle: '2nd Assessment Reports/Upload',
+                                winTitle: 'Quality Review Reports/Upload',
                                 isWin: 1
                             },
                             {
                                 text: 'Comments',
                                 iconCls: 'x-fa fa-weixin',
                                 childXtype: 'evaluationcommentspnl',
-                                winTitle: '2nd Assessment Final Recommendation',
+                                winTitle: 'Quality Review Final Recommendation',
                                 winWidth: '60%',
                                 isReadOnly: 1,
                                 handler: 'showApplicationCommentsGeneric',

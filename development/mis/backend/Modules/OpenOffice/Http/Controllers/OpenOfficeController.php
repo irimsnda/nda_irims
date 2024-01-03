@@ -4769,6 +4769,7 @@ public function getSurvellianceSampleSpreadsheetApplications(Request $request){
 }
  //export functions 
    public function exportData(request $req){
+        $org_info = DB::table('tra_organisation_information')->first();
         $req->request->add(['type' => 'report']);
         //data
         $function=$req->function;
@@ -4830,6 +4831,7 @@ public function getSurvellianceSampleSpreadsheetApplications(Request $request){
       $i=0;
       $k=0;
       $temp=[];
+
       if(empty($header)){
         if(isset($data_array[0])){
           $header=array_keys($data_array[0]);
@@ -4844,26 +4846,27 @@ public function getSurvellianceSampleSpreadsheetApplications(Request $request){
         
         $length=count($header);
        }
-        
-        //get the columns
+
+       $response = json_decode($response->getContent(), true);
+       $response = $response['results'];
+         //dd($response); //get the columns
       foreach ($header as $uheader){
                        $temp[$i]=$uheader;
                     $i++;
                   }
      $total=count($temp);
-     
-     foreach ($response as $udata)
-          {
-              //$sortedData[$k][] = $k+1;
-              for($v=0;$v<$total-1;$v++){
-                   $temp1=$temp[$v];
-                   if(strpos($temp1, '_id') === false){
-                        $sortedData[$k][]=$udata->$temp1;
-                    }
-              }
-             
-              $k++;  
-         }
+   
+     foreach ($response as $udata) {
+    //$sortedData[$k][] = $k+1;
+    for ($v = 0; $v < $total - 1; $v++) {
+        $temp1 = $temp[$v];
+        if (strpos($temp1, 'id') === false) {
+            $sortedData[$k][] = $udata[$temp1]; // Use array syntax
+        }
+    }
+    $k++;
+}
+
 
 
        $letter=$this->number_to_alpha($length,"");
@@ -4894,15 +4897,14 @@ public function getSurvellianceSampleSpreadsheetApplications(Request $request){
         $sheet->getColumnDimension('A')->setAutoSize(true);
 
           
-          //add heading title
-        $sheet->mergeCells('A1:'.$letter.'6')
+          //first heading
+            $sheet->mergeCells('A1:'.$letter.'6')
             ->getCell('A1')
-            ->setValue("TANZANIAN MEDICINE AND MEDICAL DEVICES AGENCY\nP.O. Box 77150, Nelson Mandela Road,Mabibo External\nTell : +255 22 2450512/2450751/2452108 Fax : +255 28 2541484\nWebsite: www.tfda.go.tzEmail: info@tfda.go.tz\n".$heading);
-        $sheet->getStyle('A1:'.$letter.'6')->applyFromArray($styleArray);
-        $sheet->getStyle('A1:'.$letter.'6')->getAlignment()->setWrapText(true);
-
-      //format row headers 
-       $sheet->getStyle('A7:'.$letter.'7')->applyFromArray($styleHeaderArray); 
+            ->setValue(strtoupper($org_info->name)."\n".$org_info->postal_address."  , ".$org_info->physical_address."."."\nTel: ".$org_info->telephone_nos.",  Fax:".$org_info->fax.".\nWebsite: ".$org_info->website." Email: ".$org_info->email_address."."."\n".$heading."\t\t Exported on ".Carbon::now());
+            $sheet->getStyle('A1:'.$letter.'6')->applyFromArray($styleArray);
+            $sheet->getStyle('A1:'.$letter.'6')->getAlignment()->setWrapText(true);
+            //headers 
+            $sheet->getStyle('A7:'.$letter.'7')->applyFromArray($styleHeaderArray);
         //create file
             $writer = new Xlsx($ApplicationSpreadsheet);
          

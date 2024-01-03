@@ -28,13 +28,9 @@ Ext.define('Admin.view.dashboard.SystemProcessDashboard', {
                     height: Ext.Element.getViewportHeight() - 161
                 },
                 {
-                    title: 'Out-Tray',
-                    xtype: 'outtraygrid',
-                    height: Ext.Element.getViewportHeight() - 161
-                },
-                {
                     xtype:'panel',
                     layout:'border',
+                    hidden:true,
                     title: 'Online Application Dashboard',
                     height: Ext.Element.getViewportHeight() - 161,
                     items:[{
@@ -55,13 +51,16 @@ Ext.define('Admin.view.dashboard.SystemProcessDashboard', {
                 },{
 
                     xtype: 'onlineevaluationqueryresponseappdashboardgrid',
+                    hidden:true,
                     title:'Online Application Evaluation/Inspection Query Response)'
                     
                 },{
                     title:'Application Enquiries(Tracking Applications Processing)',
+                    hidden:true,
                     xtype:'application_enquiriesGrid'
                 },{
                     xtype:'controllleddocumentsaccessdashboard',
+                    hidden:true,
                     title:'Shared Documents (Controlled Documents Dashboard)',
                     layout:'fit'
                 }

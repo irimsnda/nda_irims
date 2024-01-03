@@ -8,6 +8,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.ProductGmpInspectio
     extend: 'Ext.form.Panel',
     xtype: 'productgmpinspectiondetailsFrm',
     itemId: 'productgmpinspectiondetailsFrm',
+    scrollable:true,
     layout: {
         type: 'vbox'
     },

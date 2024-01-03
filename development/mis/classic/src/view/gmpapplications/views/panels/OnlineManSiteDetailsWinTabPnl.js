@@ -13,16 +13,23 @@ Ext.define('Admin.view.gmpapplications.views.panels.OnlineManSiteDetailsWinTabPn
             title: 'Local Technical Rep',
             xtype: 'ltrfrm'
         },
+         {
+            title: 'Contract Manufacturing Activity Details',
+            autoScroll:true,
+            xtype: 'contractmanufacturingtabPnl'//'mansitepersonneldetailsgrid'
+        },
         {
             title: 'Manufacturing Site Personnel',
             xtype: 'mansitepersonneltabpnl'//'mansitepersonneldetailsonlinegrid'
         },
         {
             title: 'Manufacturing Site Blocks',
+            hidden:true,
             xtype: 'mansiteblockdetailswingrid'
         },
         {
             title: 'Business Details',
+             hidden:true,
             xtype: 'mansiteotherdetailswingrid'//'mansiteotherdetailsonlinegrid'
         }
     ]

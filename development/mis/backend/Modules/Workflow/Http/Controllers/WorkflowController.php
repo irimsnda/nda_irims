@@ -1011,11 +1011,31 @@ class WorkflowController extends Controller
         $status_type_id = $request->input('status_type_id');
         $application_code = $request->input('application_code');
         $action_type = $request->action_type;
-        $where = array(
-            't1.module_id' => $module_id,
-            't1.sub_module_id' => $sub_module_id,
-            't1.section_id' => $section_id
-        );
+
+
+
+        if ($module_id == 4 || $module_id === 4) {
+            $records = DB::connection('portal_db')
+                ->table('wb_importexport_applications as t7')
+                ->where('t7.application_code', $application_code)
+                ->first(); 
+        
+            if ($records) {
+                $where = array(
+                    't1.module_id' => $request->module_id,
+                    't1.sub_module_id' => $request->sub_module_id,
+                    't1.importexport_permittype_id' => $records->licence_type_id, 
+                    't1.importexport_applicationtype_id' => $records->has_registered_premises, 
+                );
+            }
+        } else {
+            $where = array(
+                't1.module_id' => $request->module_id,
+                't1.sub_module_id' => $request->sub_module_id
+                //'t1.section_id' => $records->section_id
+            );
+        }
+        
         try {
             if ($status_type_id == 2) {
                /* if ($this->hasUnclosedStructuredQueries($application_code)) {

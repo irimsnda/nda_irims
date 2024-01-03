@@ -42,6 +42,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.onlineimport
         displayField: 'name',
         forceSelection: true,
         name: 'sub_module_id',
+         hidden: true,
         queryMode: 'local',
         fieldStyle: {
             'color': 'green',

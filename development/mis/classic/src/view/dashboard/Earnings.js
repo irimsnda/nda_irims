@@ -10,9 +10,9 @@ Ext.define('Admin.view.dashboard.Earnings', {
         'Ext.chart.interactions.PanZoom'
     ],
 
-    title: 'Earnings',
+    title: 'Application Summary',
     ui: 'light',
-    iconCls: 'x-fa fa-dollar',
+    iconCls: 'x-fa fa-dollar-sign',
     headerPosition: 'bottom',
 
     cls: 'quick-graph-panel shadow',

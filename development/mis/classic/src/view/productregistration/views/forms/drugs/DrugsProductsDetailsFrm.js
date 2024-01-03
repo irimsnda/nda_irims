@@ -25,13 +25,38 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             xtype: 'hiddenfield',
             name: 'product_id'
         },{
-            xtype: 'hiddenfield', allowBlank: true,
+            xtype: 'hiddenfield', 
+            allowBlank: true,
             name: 'reg_product_id'
         },  {
             xtype: 'hiddenfield',
             value: 'tra_product_information',
             name: 'table_name'
         },{
+            xtype: 'combo',
+            fieldLabel: 'Assessment Procedure',
+            name: 'assessment_procedure_id',
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',labelWidth: 110,
+            displayField: 'name',
+            listeners: {
+                 afterrender: {
+                        fn: 'setConfigCombosStore',
+                        config: {
+                        pageSize: 10000,
+                        proxy: {
+                        url: 'configurations/getRegistrationApplicationParameters',
+                        extraParams: {
+                                table_name: 'par_assessment_procedures'
+                         }
+                    }
+                },
+                isLoad: true
+                }
+            }
+                
+            },{
             xtype: 'combo',
             fieldLabel: 'Product Class Category',
             name: 'prodclass_category_id',
@@ -154,7 +179,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
 
          {
             xtype: 'combo',
-            fieldLabel: 'ATC Code',
+            fieldLabel: '<br> ATC Code',
             name: 'atc_code_id',
             forceSelection: true,
             queryMode: 'local',
@@ -208,7 +233,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
         {
             xtype:'textfield',
             name:'product_strength',
-            fieldLabel:'Product Strength',
+            fieldLabel:'<br> Product Strength',
             
             allowBlank: false, bind: {
                 readOnly: '{isReadOnly}'  // negated
@@ -241,79 +266,8 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             }, bind: {
                 readOnly: '{isReadOnly}'  // negated
             }
-        }, {
-            xtype: 'combo',
-            fieldLabel: 'Medical Devices Type',
-            name: 'device_type_id',
-            forceSelection: true,
-            allowBlank: true, 
-            hidden: true,
-            queryMode: 'local',
-            valueField: 'id',
-            displayField: 'name',
-            listeners: {
-                afterrender: {
-                    fn: 'setConfigCombosStore',
-                    config: {
-                        pageSize: 10000,
-                        proxy: {
-                            url: 'configurations/getRegistrationApplicationParameters',
-                            extraParams: {
-                                table_name: 'par_device_types'
-                            }
-                        }
-                    },
-                    isLoad: true
-                }, change:'funcChangeDevTypeClass'
-            },
-            bind: {
-                readOnly: '{isReadOnly}'  // negated
-            }
-        }, {
-            xtype: 'textfield',
-            name: 'gmdn_code',hidden: true,
-            allowBlank: true,
-            fieldLabel: 'GMDN Code',
-            allowBlank:true,
-            bind: {
-                readOnly: '{isReadOnly}'  // negated
-            }
-        }, {
-            xtype: 'textfield',
-            fieldLabel: 'GMDN Term',
-            name: 'gmdn_term',hidden: true,
-            allowBlank: true,
-            bind: {
-                readOnly: '{isReadOnly}'  // negated
-            }
-        },  {
-            xtype: 'combo',
-            fieldLabel: 'GMDN Category',
-            name: 'gmdn_category',
-            allowBlank: true,hidden: true,
-            forceSelection: true,
-            queryMode: 'local',
-            valueField: 'id',
-            displayField: 'name',
-            listeners: {
-                afterrender: {
-                    fn: 'setConfigCombosSectionfilterStore',
-                    config: {
-                        pageSize: 10000,
-                        proxy: {
-                            url: 'configurations/getproductApplicationParameters',
-                            extraParams: {
-                                table_name: 'par_gmdn_categories'
-                            }
-                        }
-                    },
-                    isLoad: true
-                }
-            },
-            bind: {
-                readOnly: '{isReadOnly}'  // negated
-            }
-        },{
+        }, 
+        {
             xtype: 'combo',
             fieldLabel: 'Distribution Category',
             name: 'distribution_category_id',
@@ -413,7 +367,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             }
         }, {
             xtype: 'tagfield',
-            fieldLabel: 'Route of Administration',
+            fieldLabel: '<br> Route of Administration',
             name: 'route_of_administration_id',
             allowBlank: true,
             forceSelection: true,
@@ -476,7 +430,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
         
         {
             xtype: 'numberfield',
-            fieldLabel: 'Proposed Shelf Life(Months)',
+            fieldLabel: '<br> Proposed Shelf Life(Months)',
             name: 'shelf_life', bind: {
                 readOnly: '{isReadOnly}'  // negated
             }
@@ -493,7 +447,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
 
          {
             xtype: 'numberfield',
-            fieldLabel: 'Proposed Shelf Life(after first opening container)',
+            fieldLabel: '<br> Proposed Shelf Life(after first opening container)',
             allowBlank:true,
             name: 'shelf_lifeafter_opening', bind: {
                 readOnly: '{isReadOnly}'  // negated

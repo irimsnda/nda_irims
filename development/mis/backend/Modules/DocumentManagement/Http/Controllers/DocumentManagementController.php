@@ -141,7 +141,7 @@ class DocumentManagementController extends Controller
             if(validateIsNumeric($prodclass_category_id)){
                 $qry->where('t1.prodclass_category_id', $prodclass_category_id);
             }
-if(validateIsNumeric($section_id)){
+           if(validateIsNumeric($section_id) && $module_id !=4 && $module_id !=2 && $module_id !=29 && $module_id !=12){
                 $qry->where('t1.section_id', $section_id);
             }
 
@@ -285,7 +285,7 @@ if(validateIsNumeric($section_id)){
             if(!validateIsNumeric($process_id)){
                 $process_id = getSingleRecordColValue('wf_tfdaprocesses', $where, 'id');
             }
-            if($module_id ==4 || $module_id ==12){
+            if($module_id ==4 ||$module_id ==2 ||$module_id ==29 || $module_id ==12){
                 unset($where['section_id']);
             }
 

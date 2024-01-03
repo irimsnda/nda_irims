@@ -11,7 +11,7 @@ Ext.define('Admin.view.dashboard.HDDUsage', {
 
     ],
 
-    title: 'HDD Usage',
+    title: ' Application Summary',
     ui: 'light',
     iconCls: 'x-fa fa-database',
     headerPosition: 'bottom',

@@ -20,6 +20,11 @@ Ext.define('Admin.view.gmpapplications.views.forms.GmpAddScheduleTeamFrm', {
             xtype: 'hiddenfield',
             name: 'section_id'
         },
+         {
+            xtype: 'hiddenfield',
+            name: '_token',
+            value: token
+        },
         {
             xtype: 'textfield',
             fieldLabel: 'Team Name',

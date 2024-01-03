@@ -52,13 +52,24 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premiseregistration'], fu
     Route::get('getOtherPremiseDetails', 'PremiseRegistrationController@getOtherPremiseDetails');
 
     Route::get('getPremisePharmacist', 'PremiseRegistrationController@getPremisePharmacist');
+
+    Route::get('getPremiseInspectionHistory', 'PremiseRegistrationController@getPremiseInspectionHistory');
     
+     Route::get('getPremiseRoomSizes', 'PremiseRegistrationController@getPremiseRoomSizes');
+
+
+
     Route::get('getPremiseRegParamFromModel', 'PremiseRegistrationController@getPremiseRegParamFromModel');
     Route::get('getApplicantsList', 'PremiseRegistrationController@getApplicantsList');
     Route::get('getPremisesList', 'PremiseRegistrationController@getPremisesList');
     Route::get('getAllPremisesList', 'PremiseRegistrationController@getAllPremisesList');
     
-  Route::get('getPremiseProprietorsDetails', 'PremiseRegistrationController@getPremiseProprietorsDetails');
+   Route::get('getPremiseProprietorsDetails', 'PremiseRegistrationController@getPremiseProprietorsDetails');
+
+
+    Route::post('savepremiseRoomSizes', 'PremiseRegistrationController@savepremiseRoomSizes');
+
+  
     
     Route::get('getPremiseApplications', 'PremiseRegistrationController@getPremiseApplications');
     Route::get('getPremiseApplicationsAtApproval', 'PremiseRegistrationController@getPremiseApplicationsAtApproval');

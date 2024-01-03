@@ -186,7 +186,8 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                     iconCls: 'fa fa-suitcase',
                     enableToggle: true,iconAlign: 'top',
                     name: 'line_details', max_step: 6,
-                    text: 'Product Line Details',wizard_pnl : 'newgmpreceivingwizard',
+                    text: 'Block & Product Line Details',
+                    wizard_pnl : 'newgmpreceivingwizard',
                     action: 'quickNav'
                 },
                 {
@@ -211,13 +212,13 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                     action: 'quickNav'
                 },
                 {
-                           step: 6,
-                           iconCls: 'fa fa-money',
-                           enableToggle: true,iconAlign:'top',
-                           text: 'Invoice & Payment Details',max_step: 6,
-                           wizard_pnl : 'newgmpreceivingwizard',
-                           action: 'quickNav'
-                       }
+                    step: 6,
+                    iconCls: 'fa fa-money-bill-wave',
+                    enableToggle: true,iconAlign:'top',
+                    text: 'Invoice & Payment Details',max_step: 6,
+                    wizard_pnl : 'newgmpreceivingwizard',
+                    action: 'quickNav'
+                }
             ]
         };
         this.bbar = {

@@ -52,7 +52,8 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.medical
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
-                                         'font-size': '12px',                     'margin-top': '-2px'
+                    'font-size': '12px', 
+                    'margin-top': '-2px'
                 }
             }, {
                 xtype: 'tbspacer',
@@ -64,7 +65,8 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.medical
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
-                                         'font-size': '12px',                     'margin-top': '-2px'
+                    'font-size': '12px',                     
+                    'margin-top': '-2px'
                 }
             }, {
                 xtype: 'hiddenfield',
@@ -218,46 +220,6 @@ dockedItems: [
         },
         {
             xtype: 'medicaldevicesProductsDetailsPnl',
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    ui: 'footer',
-                    dock: 'top',
-                    margin: 3,
-                    items: [
-                        {
-                            xtype: 'tbseparator',
-                            width: 2
-                        },
-                        {
-                            xtype: 'combo',
-                            fieldLabel: 'Zone',
-                            labelWidth: 50,
-                            width: 400,
-                            name: 'zone_id',
-                            valueField: 'id',
-                            displayField: 'name',
-                            queryMode: 'local',
-                            forceSelection: true,
-                            listeners: {
-                                beforerender: {
-                                    fn: 'setOrgConfigCombosStore',
-                                    config: {
-                                        pageSize: 1000,
-                                        proxy: {
-                                            extraParams: {
-                                                model_name: 'Zone'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            },
-                            labelStyle: 'font-weight:bold'
-                        }
-                    ]
-                }
-            ],
 
         },{ 
             xtype: 'qualityreportgrid'
@@ -318,8 +280,9 @@ dockedItems: [
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
                     text: 'Quality Summary Report',
-                    action: 'quickNav', iconAlign: 'top',
-                    wizard:'newdrugproductreceivingwizard',
+                    action: 'quickNav',
+                    iconAlign: 'top',
+                    wizard:'newmedicaldevicesproductreceivingwizard',
                     handler: 'quickNavigation'
                 }, {
                     step: 3,
@@ -330,7 +293,7 @@ dockedItems: [
                     handler: 'quickNavigation'
                 },{
                     step: 4,
-                    iconCls: 'fa fa-money',
+                    iconCls: 'fa fa-money-bill-wave',
                     enableToggle: true,
                     text: 'Invoice & Payment Details',
                     action: 'quickNav',iconAlign: 'top',

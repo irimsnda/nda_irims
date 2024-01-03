@@ -167,94 +167,179 @@ public function deleteWorkflowRecord(Request $req)
         }
         return response()->json($res);
     }
-    public function saveDocDefinationrequirement(Request $req){
-        try {
-            $user_id = \Auth::user()->id;
-            $post_data = $req->post();
-            $table_name = $post_data['table_name'];
-            $file = $req->file('document_template');
+    // public function saveDocDefinationrequirement(Request $req){
+    //     try {
+    //         $user_id = \Auth::user()->id;
+    //         $post_data = $req->post();
+    //         $table_name = $post_data['table_name'];
+    //         $file = $req->file('document_template');
             
-        $document_extension_ids = $req->input('document_extension_ids');
-        $document_extension_ids = json_decode($document_extension_ids);
-            $id = $post_data['id'];
-            $unsetData = $req->input('unset_data');
-            //unset unnecessary values
-            unset($post_data['_token']);
-            unset($post_data['document_template']);
-            unset($post_data['table_name']);
-            unset($post_data['model']);
-            unset($post_data['id']); unset($post_data['document_extension_ids']);
-            unset($post_data['unset_data']);
-            if (isset($unsetData)) {
-                $unsetData = explode(",", $unsetData);
-                $post_data = unsetArrayData($post_data, $unsetData);
-            }
-            $table_data = $post_data;
-            //add extra params
-            $table_data['created_on'] = Carbon::now();
-            $table_data['created_by'] = $user_id;
-            $where = array(
-                'id' => $id
-            );
-            $table_data = $this->uploadDocumentRequirementTemplate($req,$table_data);
+    //     $document_extension_ids = $req->input('document_extension_ids');
+    //     $document_extension_ids = json_decode($document_extension_ids);
+    //         $id = $post_data['id'];
+    //         $unsetData = $req->input('unset_data');
+    //         //unset unnecessary values
+    //         unset($post_data['_token']);
+    //         unset($post_data['document_template']);
+    //         unset($post_data['table_name']);
+    //         unset($post_data['model']);
+    //         unset($post_data['id']); unset($post_data['document_extension_ids']);
+    //         unset($post_data['unset_data']);
+    //         if (isset($unsetData)) {
+    //             $unsetData = explode(",", $unsetData);
+    //             $post_data = unsetArrayData($post_data, $unsetData);
+    //         }
+    //         $table_data = $post_data;
+    //         //add extra params
+    //         $table_data['created_on'] = Carbon::now();
+    //         $table_data['created_by'] = $user_id;
+    //         $where = array(
+    //             'id' => $id
+    //         );
+    //         $table_data = $this->uploadDocumentRequirementTemplate($req,$table_data);
 
-            if (isset($id) && $id != "") {
-                if (recordExists($table_name, $where)) {
+    //         if (isset($id) && $id != "") {
+    //             if (recordExists($table_name, $where)) {
 
-                    unset($table_data['created_on']);
-                    unset($table_data['created_by']);
-                    $table_data['dola'] = Carbon::now();
-                    $table_data['altered_by'] = $user_id;
-                    $previous_data = getPreviousRecords($table_name, $where);
-                    if ($previous_data['success'] == false) {
-                        return $previous_data;
-                    }
-                    $previous_data = $previous_data['results'];
-                    $res = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
-                }
-            } else {
+    //                 unset($table_data['created_on']);
+    //                 unset($table_data['created_by']);
+    //                 $table_data['dola'] = Carbon::now();
+    //                 $table_data['altered_by'] = $user_id;
+    //                 $previous_data = getPreviousRecords($table_name, $where);
+    //                 if ($previous_data['success'] == false) {
+    //                     return $previous_data;
+    //                 }
+    //                 $previous_data = $previous_data['results'];
+    //                 $res = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
+    //             }
+    //         } else {
 
-                $res = insertRecord($table_name, $table_data, $user_id);
+    //             $res = insertRecord($table_name, $table_data, $user_id);
                
-                $id = $res['record_id'];
+    //             $id = $res['record_id'];
 
-            }
-            //save the documetn extension types 
-            DB::table('tra_docupload_reqextensions')
-                    ->where('documentupload_requirement_id', $id)
-                    ->delete();
-                if (count($document_extension_ids) > 0) {
-                    foreach ($document_extension_ids as $document_extension_id) {
-                        $params[] = array(
-                            'documentupload_requirement_id' => $id,
-                            'document_extensionstype_id' => $document_extension_id,
-                            'created_on' => Carbon::now(),
-                            'created_by' => \Auth::user()->id
-                        );
-                    }
-                    DB::table('tra_docupload_reqextensions')
-                        ->insert($params);
-                }
+    //         }
+    //         //save the documetn extension types 
+    //         DB::table('tra_docupload_reqextensions')
+    //                 ->where('documentupload_requirement_id', $id)
+    //                 ->delete();
+    //             if (count($document_extension_ids) > 0) {
+    //                 foreach ($document_extension_ids as $document_extension_id) {
+    //                     $params[] = array(
+    //                         'documentupload_requirement_id' => $id,
+    //                         'document_extensionstype_id' => $document_extension_id,
+    //                         'created_on' => Carbon::now(),
+    //                         'created_by' => \Auth::user()->id
+    //                     );
+    //                 }
+    //                 DB::table('tra_docupload_reqextensions')
+    //                     ->insert($params);
+    //             }
 
-        } catch (\Exception $exception) {
-            $res = array(
-                'success' => false,
-                'message' => $exception->getMessage()
-            );
-        } catch (\Throwable $throwable) {
-            $res = array(
-                'success' => false,
-                'message' => $throwable->getMessage()
-            );
-        }
-        return response()->json($res);       
-        //
+    //     } catch (\Exception $exception) {
+    //         $res = array(
+    //             'success' => false,
+    //             'message' => $exception->getMessage()
+    //         );
+    //     } catch (\Throwable $throwable) {
+    //         $res = array(
+    //             'success' => false,
+    //             'message' => $throwable->getMessage()
+    //         );
+    //     }
+    //     return response()->json($res);       
+    //     //
         
 
 
-        //
+    //     //
 
+    // }
+
+public function saveDocDefinationrequirement(Request $req)
+{
+    try {
+        $user_id = \Auth::user()->id;
+        $post_data = $req->post();
+        $table_name = $post_data['table_name'];
+        $file = $req->file('document_template');
+
+        $document_extension_ids = $req->input('document_extension_ids');
+        $document_extension_ids = json_decode($document_extension_ids);
+        $id = $post_data['id'];
+        $unsetData = $req->input('unset_data');
+        //unset unnecessary values
+        unset($post_data['_token']);
+        unset($post_data['document_template']);
+        unset($post_data['table_name']);
+        unset($post_data['model']);
+        unset($post_data['id']);
+        unset($post_data['document_extension_ids']);
+        unset($post_data['unset_data']);
+        if (isset($unsetData)) {
+            $unsetData = explode(",", $unsetData);
+            $post_data = unsetArrayData($post_data, $unsetData);
+        }
+        $table_data = $post_data;
+        //add extra params
+        $table_data['created_on'] = Carbon::now();
+        $table_data['created_by'] = $user_id;
+        $where = array(
+            'id' => $id
+        );
+        $table_data = $this->uploadDocumentRequirementTemplate($req, $table_data);
+
+        if (isset($id) && $id != "") {
+            if (recordExists($table_name, $where)) {
+
+                unset($table_data['created_on']);
+                unset($table_data['created_by']);
+                $table_data['dola'] = Carbon::now();
+                $table_data['altered_by'] = $user_id;
+                $previous_data = getPreviousRecords($table_name, $where);
+                if ($previous_data['success'] == false) {
+                    return $previous_data;
+                }
+                $previous_data = $previous_data['results'];
+                $res = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
+            }
+        } else {
+
+            $res = insertRecord($table_name, $table_data, $user_id);
+
+            $id = $res['record_id'];
+        }
+
+        //save the document extension types
+        DB::table('tra_docupload_reqextensions')
+            ->where('documentupload_requirement_id', $id)
+            ->delete();
+        if (count($document_extension_ids) > 0) {
+            foreach ($document_extension_ids as $document_extension_id) {
+                $params[] = array(
+                    'documentupload_requirement_id' => $id,
+                    'document_extensionstype_id' => $document_extension_id,
+                    'created_on' => Carbon::now(),
+                    'created_by' => \Auth::user()->id
+                );
+            }
+            DB::table('tra_docupload_reqextensions')
+                ->insert($params);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
     }
+    return response()->json($res);
+}
+
     function uploadDocumentRequirementTemplate($req,$params){
         $file = $req->file('document_template');
         $user_id = $this->user_id;
@@ -647,6 +732,8 @@ public function deleteWorkflowRecord(Request $req)
         }
         return \response()->json($res);
     }
+
+
     public function getNonrefParameter(Request $req)
     {
         try {

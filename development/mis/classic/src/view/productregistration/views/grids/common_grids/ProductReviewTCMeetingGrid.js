@@ -75,12 +75,12 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRevie
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'evaluator_recommendation',
-        text: '1st Assessment Recommendation',
+        text: 'Assessment Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'auditor_recommendation',
-        text: '2nd Assessment Recommendation',
+        text: 'Quality Review Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
@@ -124,10 +124,10 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRevie
                         xtype: 'menu',
                         items: [
                             {
-                                text: '1st Assessment Reports/Upload',
+                                text: 'Assessment Reports/Upload',
                                 iconCls: 'x-fa fa-file',
-                                tooltip: '1st Assessment Reports/Upload',
-                                winTitle: '1st Assessment Reports/Upload',
+                                tooltip: 'Assessment Reports/Upload',
+                                winTitle: 'Assessment Reports/Upload',
                                 document_type_id: 8,
                                 action: 'edit',
                                 childXtype: '',
@@ -141,7 +141,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRevie
                                 iconCls: 'x-fa fa-upload',
                                 winWidth: '60%',
                                 document_type_id: 8,
-                                winTitle: '1st Assessment Reports/Upload',
+                                winTitle: 'Assessment Reports/Upload',
                                 handler: 'showPreviousUploadedDocs',
                                 stores: '[]',
                                 target_stage: 17,
@@ -163,18 +163,18 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRevie
                         ]
                     }
                 }, {
-                    text: '2nd Assessment Report',
+                    text: 'Quality Review Report',
                     iconCls: 'x-fa fa-exchange',
                     menu: {
                         xtype: 'menu',
                         items: [
                             {
-                                text: '2nd Assessment Reports/Upload',
+                                text: 'Quality Review Reports/Upload',
                                 iconCls: 'x-fa fa-file',
-                                tooltip: '2nd Assessment Reports/Upload',
+                                tooltip: 'Quality Review Reports/Upload',
                                 action: 'edit',
                                 childXtype: '',
-                                winTitle: '2nd Assessment report',
+                                winTitle: 'Quality Review report',
                                 winWidth: '40%',
                                 isReadOnly: 1,
                                 document_type_id: 9,

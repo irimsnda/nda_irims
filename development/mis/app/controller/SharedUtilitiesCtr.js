@@ -196,6 +196,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'saveApplicationChecklistDetails'
             },
 
+            'newpremiseinspectionpanel button[name=save_screening_btn]': {
+                click: 'saveApplicationChecklistDetails'
+            },
+
             'predrugshopinspectionpanel button[name=save_screening_btn]': {
                 click: 'saveApplicationChecklistDetails'
             },
@@ -353,6 +357,16 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
+            'vcnonlicencedpermitreleaseapproval': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+            'importvcreleaseapproval': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
 
             'gmpinspectionreportsreviewgrid': {
                 refresh: 'addApplicationWorkflowParams',
@@ -572,6 +586,15 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'importexportmanagersubmissionpnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
+            'vcnonlicencedmanagersubmissionpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+            'importexportdirectorapprovalpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+            'importexportlicenceddirectorapprovalpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
             'importexportproductsvalidationpnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
@@ -744,7 +767,12 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'clinicaltrialauditingpanel toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
-
+            'importexportlicencevaluationpnl toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+            'importexportnonlicencevaluationpnl toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
 
 
             'newdrugshopinspectionpanel toolbar menu menuitem[name=prev_comments]': {
@@ -1000,7 +1028,7 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'clinicaltrialmanagermeetinggrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationMeetingSubmissionWinGeneric'
             },'clinicaltrialrecommreviewgrid button[action=process_submission_btn]': {
-                click: 'showManagerApplicationMeetingSubmissionWinGeneric'
+                click: 'showManagerRecommendationApplicationMeetingSubmissionWinGeneric'
             },
             'clinicaltrialapprovalsgrid button[action=process_returnsubmission_btn]': {
                 click: 'showGridApplicationReturnSubmissionWinGeneric'
@@ -1102,6 +1130,15 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'impexppermitsmanagerevaluationgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
+
+            'impexpvcnonlicencedmanagerevaluationgrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+            'impexpvcnonlicencedmanagerevaluationgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
             'importexportqueryverificationgrid button[action=process_submission_btn]': {
                 click: 'showManagerQueryApplicationSubmissionWin'
             },
@@ -1163,6 +1200,12 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
 
             'newdrugshopinspectionpanel button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+            'importexportlicencevaluationpnl button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+            'importexportnonlicencevaluationpnl button[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
 
@@ -1261,7 +1304,11 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             }, 'foodsamplereceivingwizard button[name=save_screening_btn]': {
                 click: 'saveApplicationChecklistDetails'
             },
+            
             'importexportreceivingpermitswizard button[name=save_screening_btn]': {
+                click: 'saveApplicationChecklistDetails'
+            },
+            'importexportreceivinglicencewizard button[name=save_screening_btn]': {
                 click: 'saveApplicationChecklistDetails'
             },
             'drugnewevaluationpnl button[name=save_evaluationchecklist]': {
@@ -1284,6 +1331,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
 
           
              'newdrugshoponlinepreviewwizard button[name=assign_zone]': {
+                click: 'addZone'
+            },
+
+            'predrugshoponlinepreviewwizard button[name=assign_zone]': {
                 click: 'addZone'
             },
 
@@ -1530,7 +1581,9 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'impexplicenseonlinereceivingwizard button[name=prechecking_recommendation]': {
                 click: 'addPrecheckingRecommendation'
             },
-            
+            'importexportlicenseonlinereceivingwizard button[name=prechecking_recommendation]': {
+                click: 'addPrecheckingRecommendation'
+            },
             'declaredimportexportonlinereceivingwizard button[name=prechecking_recommendation]': {
                 click: 'addPrecheckingRecommendation'
             },
@@ -1554,6 +1607,11 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'impexplicenseonlinereceivingwizard button[name=submit_btn]': {
                 click: 'receiveOnlineApplicationDetailsFrmBtn'
             }, 
+            'importexportlicenseonlinereceivingwizard button[name=submit_btn]': {
+                click: 'receiveOnlineApplicationDetailsFrmBtn'
+            },
+
+            
             
             'declaredimportexportonlinereceivingwizard button[name=submit_btn]': {
                 click: 'receiveOnlineApplicationDetailsFrmBtn'
@@ -1574,10 +1632,16 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             }, 
             'importexportpermitapprovalpnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
+            },'importexportvcapprovalpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },'vcnonlicencedpermitreleaseapprovalpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
             },'permitdeclarationapprovalreleasepnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
-
+            'importexportnonlicenceapprovalpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
             'importexportpermitapprovalgrid': {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
@@ -1677,6 +1741,9 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },'permitReleaseRecommFrm button[name=save_recommendation]': {
                 click: 'savepermitReleaseRecommendation'
             },
+            'batchpermitreleaserecommfrm button[name=save_recommendation]': {
+                click: 'saveImpExpApplicationRecommendationDetails'
+            },
 
             'foodevaluationpnl  toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
@@ -1688,6 +1755,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'importexportpermitevaluationpnl button[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
+            'vcnonlicencedevaluationpnl button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
 
             'specialcaseapplicationapprovalgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
@@ -1872,7 +1943,12 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
             'inspectioninothercountriesGrid': {
                 refresh: 'findAndAttachAppCodetoStr',
-            },'controlleddrugsimpmanagerreviewwizrd button[name=submission_remark]': {
+            },
+            'otherregisterdproductapigrid': {
+                refresh: 'findAndAttachAppCodetoStr',
+            },
+
+            'controlleddrugsimpmanagerreviewwizrd button[name=submission_remark]': {
                     click: 'viewSubmissionRemark'
                 },'controlleddrugsimpmanagerreviewwizrd button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
@@ -1990,6 +2066,34 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'previewQueriesFromOnlineApp'
             },
             'newdrugshoponlinepreviewwizard button[name=receive_invoicebtn]': {
+                click: 'receiveAndInvoiceOnlineApplicationDetailsFrmBtn'
+            },
+
+
+
+            'predrugshoponlinepreviewwizard button[name=submit_btn]': {
+                click: 'receiveOnlineApplicationDetailsFrmBtn'
+            },
+             'predrugshoponlinepreviewwizard button[name=reject_btn]': {
+                submitApplication: 'submitRejectedOnlineApplication'
+            },
+             'predrugshoponlinepreviewwizard menu menuitem[name=action_dismiss2]': {
+                onlineManagerRejectionApplicationSubmit: 'onlineApplicationManagerRejectionAction'
+            },
+
+            'predrugshoponlinepreviewwizard menu menuitem[name=action_approve]': {
+                onlineManagerRejectionApplicationSubmit: 'onlineApplicationManagerRejectionAction'
+            },
+            'predrugshoponlinepreviewwizard button[name=save_screening_btn]': {
+                click: 'saveOnlineApplicationChecklistDetails'
+            },
+            'predrugshoponlinepreviewwizard button[name=prechecking_recommendation]': {
+                click: 'addPrecheckingRecommendation'
+            },
+             'predrugshoponlinepreviewwizard button[name=preview_queries_btn]': {
+                click: 'previewQueriesFromOnlineApp'
+            },
+            'predrugshoponlinepreviewwizard button[name=receive_invoicebtn]': {
                 click: 'receiveAndInvoiceOnlineApplicationDetailsFrmBtn'
             },
 
@@ -2256,7 +2360,7 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             childItem.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
             childItem.down('hiddenfield[name=section_id]').setValue(section_id);
 
-            funcShowCustomizableWindow(ref_no + ' CAPA Request(Corrective and Preventive Actions (CAPA) )', '85%', childItem, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(ref_no + ' CAPA Request(Corrective and Preventive Actions (CAPA) )', '85%', childItem, 'customizablewindow');
     },
     
 showApplicationEvaluationUploads:function(btn){
@@ -3820,6 +3924,7 @@ setCompStore: function (me, options) {
                     store = me.getStore(),
                 application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
                 application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+                console.log(activeTab);
 
         }
             
@@ -5550,8 +5655,8 @@ else{
             }
             
             if (invoiceDetailsGrid.getStore().data.length < 1) {
-                toastr.warning('No Invoice Generated, generate Invoice and proceed!!', 'Warning Response');
-                return false;
+               // toastr.warning('No Invoice Generated, generate Invoice and proceed!!', 'Warning Response');
+                //return false;
             } 
             return true;
     },
@@ -5868,6 +5973,9 @@ else{
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             gmp_type_id = (activeTab.down('combo[name=gmp_type_id]')) ? activeTab.down('combo[name=gmp_type_id]').getValue() : null,
             inspection_type_id = me.inspection_type_id,
+            region_id = (grid.down('combo[name=region_id]')) ? grid.down('combo[name=region_id]').getValue() : null,
+            district_id = (grid.down('combo[name=district_id]')) ? grid.down('combo[name=district_id]').getValue() : null,
+            zone_id = (grid.down('combo[name=zone_id]')) ? grid.down('combo[name=zone_id]').getValue() : null,
             inspection_id = null;
         if ((managerInspection) && managerInspection == 1) {
             inspection_id = activeTab.down('form').down('hiddenfield[name=id]').getValue();
@@ -5879,7 +5987,10 @@ else{
             section_id: section_id,
             gmp_type_id: gmp_type_id,
             inspection_type_id: inspection_type_id,
-            inspection_id: inspection_id
+            inspection_id: inspection_id,
+            region_id: region_id,
+            district_id: district_id,
+            zone_id:zone_id
         };
     },
 
@@ -6087,6 +6198,148 @@ else{
             Ext.getBody().unmask();
         }
     },
+
+
+    showManagerRecommendationApplicationMeetingSubmissionWinGeneric: function (btn) {
+        Ext.getBody().mask('Please wait...');
+        var mainTabPanel = this.getMainTabPanel(),
+            winWidth = btn.winWidth,
+            activeTab = mainTabPanel.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            valid = this.validateApplicationTcMeetingDetails(btn),
+            storeID = getApplicationStore(module_id, section_id),
+            table_name = getApplicationTable(module_id),
+            hasQueries = checkApplicationRaisedQueries(application_code, module_id);
+        if (valid != true) {
+            toastr.error('Enter meeting Details to proceed!!', 'Failure Response');
+            Ext.getBody().unmask();
+            return false;
+        }
+        if(hasQueries){
+                Ext.getBody().unmask();
+                toastr.warning('Application has open Request for additional Information!!', 'Warning Response');
+                return false;
+          }
+        var workflowaction_type_id = 1;
+
+        var mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            storeID = btn.storeID,
+            action_url = btn.action_url,
+            store = Ext.getStore(storeID),
+            intrayStore = Ext.getStore('intraystr'),
+            outtrayStore = Ext.getStore('outtraystr'),
+            onlineapplicationdashboardgridstr= Ext.getStore('onlineapplicationdashboardgridstr');
+
+            
+            
+        Ext.Ajax.request({
+            url: 'workflow/getApplicationNextStageActionDetails',
+            method: 'POST',
+            params: {
+                application_code:application_code,
+                application_id:application_id,
+                workflow_stage_id:workflow_stage_id,
+                workflowaction_type_id:workflowaction_type_id,
+                table_name : 'tra_premises_applications',
+                module_id:module_id,
+                sub_module_id:sub_module_id
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+            },
+            success: function (response) {
+               
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message,
+                    success = resp.success;
+                    if (success == true || success === true) {
+                        var results = resp.results,
+                            curr_stage_id = results.stage_id,
+                            action = results.action_id, 
+                            next_stage = results.nextstage_id;
+                          
+                            
+                        Ext.MessageBox.confirm('Approval Recommendation', 'Do you want to submit the Recommended Clinical Trial Application?', function (button) {
+                            if (button === 'yes') {
+                                Ext.getBody().mask('Submitting Application wait...');
+                                Ext.Ajax.request({
+                                    url: 'workflow/handleApplicationSubmission',
+                                    method: 'POST',
+                                    params: {
+                                        application_code:application_code,
+                                        application_id:application_id,
+                                        process_id:process_id,
+                                        workflowaction_type_id:workflowaction_type_id,
+                                        table_name : 'tra_clinical_trial_applications',
+                                        module_id:module_id,
+                                        sub_module_id:sub_module_id,
+                                        section_id:section_id,
+                                        curr_stage_id:curr_stage_id,
+                                        workflowaction_type_id:workflowaction_type_id,
+                                        next_stage:next_stage,
+                                        action:action
+                                    },
+                                    headers: {
+                                        'Authorization': 'Bearer ' + access_token,
+                                        'X-CSRF-Token': token
+                                    },
+                                    success: function (response) {
+                                       
+                                        var resp = Ext.JSON.decode(response.responseText),
+                                            message = resp.message,
+                                            success = resp.success;
+                                            if (success == true || success === true) {
+                                                toastr.success(message, "Success Response");
+                                                //store.load();
+                                                intrayStore.load();
+                                                outtrayStore.load();
+                                                externaluserintraystr = Ext.getStore('externaluserintraystr');
+                                                externaluserintraystr.load();
+                                                
+                                                onlineapplicationdashboardgridstr.load();
+                                                //win.close();
+                                                closeActiveWindow() ;
+                                                mainTabPanel.remove(activeTab);
+                                                
+                                            } Ext.getBody().unmask();
+                                    },
+                                    failure: function (response) {
+                                                
+                                                var resp = Ext.JSON.decode(response.responseText),
+                                                    message = resp.message;
+                                                toastr.error(message, 'Failure Response');
+                                                Ext.getBody().unmask();
+                                    }
+                                });
+                            }
+                        })
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                Ext.getBody().unmask();
+            },
+            failure: function (response) {
+                
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+                Ext.getBody().unmask();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
+                
+            }
+        });
+    },
     showGridApplicationReturnSubmissionWinGenericNoMeeting:function (item) {
         Ext.getBody().mask('Please wait...');
 
@@ -6216,6 +6469,7 @@ else{
             activeTab = mainTabPanel.getActiveTab(),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+           // module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
             winTitle = btn.winTitle,
             winWidth = btn.winWidth,
             childItem = Ext.widget(btn.childXtype),
@@ -6410,6 +6664,165 @@ else{
     }
 
     },
+
+    saveImpExpApplicationRecommendationDetails: function (btn) {
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            form = btn.up('form'),
+            frm = form.getForm(),
+            win = form.up('window'),
+            storeID = btn.storeID,
+            workflowaction_type_id = 1,
+            store = Ext.getStore(storeID),
+            intrayStore = Ext.getStore('intraystr'),
+            outtrayStore = Ext.getStore('outtraystr'),
+            onlineapplicationdashboardgridstr= Ext.getStore('onlineapplicationdashboardgridstr');
+            var module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            process_id= form.down('hiddenfield[name=process_id]').getValue(),
+            selected_appIds=form.down('hiddenfield[name=selected_appIds]').getValue(),
+            selected_appcodes= form.down('hiddenfield[name=selected_appcodes]').getValue(),
+            table_name = getApplicationTable(module_id),
+            workflow_stage_id= form.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            action_url = 'saveApplicationApprovalDetails';
+        if (frm.isValid()) {
+            frm.submit({
+                url: action_url,
+                headers: {
+                    'Authorization': 'Bearer ' + access_token,
+                    'X-CSRF-Token': token
+                },
+                waitMsg: 'Please wait...',
+                success: function (fm, action) {
+                    var response = Ext.decode(action.response.responseText),
+                        success = response.success,
+                        message = response.message;
+                    if (success == true || success === true) {
+                         win.close();
+                                        Ext.getBody().mask('Loading Submission...');
+                                        Ext.Ajax.request({
+                                                url: 'workflow/getApplicationNextStageActionDetails',
+                                                method: 'POST',
+                                                params: {
+                                                    application_code:application_code,
+                                                    application_id:application_id,
+                                                    workflow_stage_id:workflow_stage_id,
+                                                    workflowaction_type_id:workflowaction_type_id,
+                                                    table_name : table_name,
+                                                    module_id:module_id,
+                                                    sub_module_id:sub_module_id
+                                                },
+                                                headers: {
+                                                    'Authorization': 'Bearer ' + access_token,
+                                                    'X-CSRF-Token': token
+                                                },
+                                                success: function (response) {
+                                                   
+                                                    var resp = Ext.JSON.decode(response.responseText),
+                                                        message = resp.message,
+                                                        success = resp.success;
+                                                        if (success == true || success === true) {
+                                                             win.close();
+                                                            var results = resp.results,
+                                                                curr_stage_id = results.stage_id,
+                                                                action = results.action_id, 
+                                                                next_stage = results.nextstage_id;
+                                                            Ext.MessageBox.confirm('License Recommendation', 'Do you want to submit the Recommended Permit Application(s)?', function (button) {
+                                                                if (button === 'yes') {
+                                                                    var hasQueries = checkApplicationRaisedQueries(application_code, module_id);
+                                                                    if(hasQueries){
+                                                                        Ext.getBody().unmask();
+                                                                        toastr.error('Please Note the application has Open Query. Kindly use query process to submit the application!!', 'Warning Response');
+                                                                        return false;
+                                                                   }
+                                                                    Ext.getBody().mask('Submitting Application wait...');
+                                                                    Ext.Ajax.request({
+                                                                        url: 'workflow/handleManagersApplicationSubmissions',
+                                                                        method: 'POST',
+                                                                        params: {
+                                                                            selected:selected_appIds,
+                                                                            selected_appCodes:selected_appcodes,
+                                                                            application_code:application_code,
+                                                                            application_id:application_id,
+                                                                            process_id:process_id,
+                                                                            workflowaction_type_id:workflowaction_type_id,
+                                                                            table_name : table_name,
+                                                                            module_id:module_id,
+                                                                            sub_module_id:sub_module_id,
+                                                                            curr_stage_id:curr_stage_id,
+                                                                            workflowaction_type_id:workflowaction_type_id,
+                                                                            next_stage:next_stage,
+                                                                            action:action
+                                                                        },
+                                                                        headers: {
+                                                                            'Authorization': 'Bearer ' + access_token,
+                                                                            'X-CSRF-Token': token
+                                                                        },
+                                                                        success: function (response) {
+                                                                           
+                                                                            var resp = Ext.JSON.decode(response.responseText),
+                                                                                message = resp.message,
+                                                                                success = resp.success;
+                                                                                if (success == true || success === true) {
+                                                                                    toastr.success(message, "Success Response");
+                                                                                    //store.load();
+                                                                                    intrayStore.load();
+                                                                                    outtrayStore.load();
+                                                                                    externaluserintraystr = Ext.getStore('externaluserintraystr');
+                                                                                    externaluserintraystr.load();
+                                                                                    
+                                                                                    //onlineapplicationdashboardgridstr.load();
+                                                                                    //win.close();
+                                                                                    closeActiveWindow() ;
+                                                                                    mainTabPanel.remove(activeTab);
+                                                                                    
+                                                                                } Ext.getBody().unmask();
+                                                                        },
+                                                                        failure: function (response) {
+                                                                                    
+                                                                                    var resp = Ext.JSON.decode(response.responseText),
+                                                                                        message = resp.message;
+                                                                                    toastr.error(message, 'Failure Response');
+                                                                                    Ext.getBody().unmask();
+                                                                        }
+                                                                    });
+                                                                }
+                                                            })
+                                                        } else {
+                                                            toastr.error(message, 'Failure Response');
+                                                        }
+                                                    Ext.getBody().unmask();
+                                                },
+                                                failure: function (response) {
+                                                    
+                                                    var resp = Ext.JSON.decode(response.responseText),
+                                                        message = resp.message;
+                                                    toastr.error(message, 'Failure Response');
+                                                    Ext.getBody().unmask();
+                                                },
+                                                error: function (jqXHR, textStatus, errorThrown) {
+                                                    Ext.getBody().unmask();
+                                                    toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
+                                                    
+                                                }
+                                            });
+                                    } else {
+                                        toastr.error(message, 'Failure Response');
+                                    }
+                               // Ext.getBody().unmask();
+                            },
+                failure: function (fm, action) {
+                    var resp = action.result;
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        }
+    },
+
     saveSpecialpermitApprovalRecommendation: function (btn) {
         var me = this,
             mainTabPanel = me.getMainTabPanel(),

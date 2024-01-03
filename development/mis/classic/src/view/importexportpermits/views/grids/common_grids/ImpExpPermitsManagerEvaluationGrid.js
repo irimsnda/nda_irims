@@ -1,7 +1,5 @@
 /**
  * Created by Softclans
- * User Robinson Odhiambo
- * on 10/16/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImpExpPermitsManagerEvaluationGrid', {
     extend: 'Ext.grid.Panel',
@@ -108,11 +106,6 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImpExpPermit
     },{
         xtype: 'gridcolumn',
         dataIndex: 'tracking_no',
-        text: 'Tracking Number',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'reference_no',
         text: 'Ref Number',
         flex: 1
     }, {
@@ -176,7 +169,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImpExpPermit
                     winTitle: 'Import/Export Permit Applications',
                     winWidth: '40%',
                     isReadOnly:1,
-                    handler: 'editpreviewPermitinformation'
+                    handler: 'editpreviewvcinformation'
                 },{
                     text: 'Application Documents',
                     iconCls: 'x-fa fa-file',

@@ -8,6 +8,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductManuc
     extend: 'Ext.form.Panel',
     xtype: 'productManuctureringFrm',
     itemId: 'productManuctureringFrm',
+    scrollable:true,
     layout: {
         type: 'vbox'
     },
@@ -131,7 +132,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductManuc
         xtype: 'combo',
         name: 'has_beeninspected',
         allowBlank: true,
-        fieldLabel: 'Has the Manufacturing Site been Inspected/Submitted Request for Inspection to the Rwanda FDA',
+        fieldLabel: 'Has the Manufacturing Site been Inspected/Submitted Request for Inspection to the NDA',
         queryMode: 'local',
         valueField: 'id',
         displayField: 'name',

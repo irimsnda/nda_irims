@@ -4,6 +4,7 @@
 Ext.define('Admin.view.gmpapplications.views.forms.ManSiteBlockDetailsFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'mansiteblockdetailsfrm',
+    itemId:'mansiteblockdetailsfrm',
     controller: 'gmpapplicationsvctr',
     layout: {
         type: 'column'
@@ -36,15 +37,368 @@ Ext.define('Admin.view.gmpapplications.views.forms.ManSiteBlockDetailsFrm', {
             value: token
         },
         {
+            xtype: 'combo',
+            fieldLabel: 'Inpection Manufacturing Category',
+            name: 'inspection_category_id',
+            forceSelection: true,
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'id',
+            listeners: {
+                beforerender: {
+                    fn: 'setGmpApplicationCombosStore',
+                    config: {
+                        pageSize: 10000,
+                        proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_manufacturinginspection_category'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+            }
+        },
+        {
+            xtype: 'combo',
+            fieldLabel: 'Inpection Manufacturing Activities',
+            name: 'inspection_activities_id',
+            forceSelection: true,
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'id',
+            listeners: {
+                beforerender: {
+                    fn: 'setGmpApplicationCombosStore',
+                    config: {
+                        pageSize: 10000,
+                        proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_manufacturinginspection_activities'
+                            }
+                        }
+                    },
+                    isLoad: true
+                },
+
+                 change: function(combo, newVal, oldValue, eopts) {
+                        if(newVal == 2){
+                            var form = combo.up('form'),
+                            approved = form.down('combo[name=nda_approved_id]');
+                            approved.setHidden(false);
+                            approved.allowBlank = false;
+                            approved.validate();
+
+                            site_permit = form.down('fieldcontainer[name=site_permit]');
+                            site_permit.setHidden(true);
+
+                            site_name = form.down('fieldcontainer[name=site_name]');
+                            site_name.setHidden(true);
+                        
+
+                            search_site_name = form.down('button[name=search_site_name]');
+                            search_site_name.setHidden(false);
+                            search_site_name.setDisabled(true);
+
+                            permit_no = form.down('textfield[name=permit_no]');
+                            permit_no.setHidden(true);
+                            permit_no.setReadOnly(true);
+                            permit_no.allowBlank = true;
+                            permit_no.validate();
+
+
+                            country_id = form.down('combo[name=country_id]');
+                            country_id.setHidden(true);
+                            country_id.setReadOnly(true);
+                            country_id.allowBlank = true;
+                            country_id.validate();
+
+                            physical_address = form.down('textfield[name=physical_address]');
+                            physical_address.setHidden(true);
+                            physical_address.setReadOnly(true);
+                            physical_address.allowBlank = true;
+                            physical_address.validate();
+
+                        }else if(newVal == 3){
+                            var form = combo.up('form'),
+                            approved = form.down('combo[name=nda_approved_id]');
+                            approved.setHidden(true);
+                            approved.allowBlank = false;
+
+                            permit_no = form.down('textfield[name=permit_no]');
+                            permit_no.setHidden(true);
+                            permit_no.setReadOnly(true);
+                            permit_no.allowBlank = true;
+                            permit_no.validate();
+                
+
+                            site_name = form.down('fieldcontainer[name=site_name]');
+                            site_name.setHidden(false);
+
+
+                            site_permit = form.down('fieldcontainer[name=site_permit]');
+                            site_permit.setHidden(true);
+                        
+
+                            search_site_name = form.down('button[name=search_site_name]');
+                            search_site_name.setHidden(false);
+                            search_site_name.setDisabled(true);
+                            
+                    
+
+                            country_id = form.down('combo[name=country_id]');
+                            country_id.setHidden(false);
+                            country_id.setReadOnly(false);
+                            country_id.allowBlank = false;
+                            country_id.validate();
+
+                            physical_address = form.down('textfield[name=physical_address]');
+                            physical_address.setHidden(false);
+                            physical_address.setReadOnly(false);
+                            physical_address.allowBlank = false;
+                            physical_address.validate();
+
+
+
+                        }else{
+                            var form = combo.up('form'),
+                            approved = form.down('combo[name=nda_approved_id]');
+                            approved.setVisible(false);
+                            approved.allowBlank = true;
+                            approved.validate();
+
+                            site_name = form.down('fieldcontainer[name=site_name]');
+                            site_name.setHidden(true);
+                        
+
+                            search_site_name = form.down('button[name=search_site_name]');
+                            search_site_name.setHidden(false);
+                            search_site_name.setDisabled(true);
+
+
+                            permit_no = form.down('textfield[name=permit_no]');
+                            permit_no.setHidden(true);
+                            permit_no.setReadOnly(true);
+                            permit_no.allowBlank = true;
+                            permit_no.validate();
+
+
+                            
+                            site_name2 = form.down('textfield[name=site_name]');
+                            site_name2.setHidden(true);
+                            site_name2.setReadOnly(true);
+                            site_name2.allowBlank = true;
+                            site_name2.validate();
+
+                            country_id = form.down('combo[name=country_id]');
+                            country_id.setHidden(true);
+                            country_id.setReadOnly(true);
+                            country_id.allowBlank = true;
+                            country_id.validate();
+
+                            physical_address = form.down('textfield[name=physical_address]');
+                            physical_address.setHidden(true);
+                            physical_address.setReadOnly(true);
+                            physical_address.allowBlank = true;
+                            physical_address.validate();
+                        }
+                        
+                    }
+                   
+                }
+            },{
+                xtype: 'combo',
+                fieldLabel: 'Are the Other Site Approved by NDA',
+                name: 'nda_approved_id',
+                columnWidth: 1,
+                allowBlank: false,
+                hidden:true,
+                valueField: 'id',
+                displayField: 'name',
+                forceSelection: true,
+                queryMode: 'local',
+                emptyText: 'Select',
+                listeners: {
+                    beforerender: {
+                        fn: 'setConfigCombosStore',
+                        config: {
+                            pageSize: 1000,
+                            proxy: {
+                                url: 'commonparam/getCommonParamFromTable',
+                                extraParams: {
+                                    table_name: 'par_confirmations'
+                                }
+                            }
+                        },
+                        isLoad: true
+                    },
+                    change: function(combo, newVal, oldValue, eopts) {
+                        if(newVal == 1){
+                            var form = combo.up('form'),
+                            site_permit = form.down('fieldcontainer[name=site_permit]');
+                            site_permit.setVisible(true);
+                            form.down('button[name=search_site]').setDisabled(false);
+                            site_permit.allowBlank = false;
+                            //site_permit.validate();
+
+
+                            site_name = form.down('fieldcontainer[name=site_name]');
+                            site_name.setHidden(false);
+                            //site_name.validate();
+
+                            search_site_name = form.down('button[name=search_site_name]');
+                            search_site_name.setVisible(true);
+                            search_site_name.setDisabled(true);
+                            //search_site_name.validate();
+
+                            country_id = form.down('combo[name=country_id]');
+                            country_id.setHidden(false);
+                            country_id.setReadOnly(false);
+                            country_id.allowBlank = false;
+                            country_id.validate();
+
+                            physical_address = form.down('textfield[name=physical_address]');
+                            physical_address.setHidden(false);
+                            physical_address.setReadOnly(false);
+                            physical_address.allowBlank = false;
+                            physical_address.validate();
+
+                        }else{
+                            var form = combo.up('form'),
+                            site_permit = form.down('fieldcontainer[name=site_permit]');
+                            site_permit.setVisible(false);
+                            site_permit.allowBlank = true;
+                            //site_permit.validate();
+
+                            site_permit = form.down('fieldcontainer[name=site_permit]');
+                            site_permit.setHidden(true);
+
+                            site_name = form.down('fieldcontainer[name=site_name]');
+                            site_name.setHidden(false);
+                        
+
+                            search_site_name = form.down('button[name=search_site_name]');
+                            search_site_name.setHidden(false);
+                            search_site_name.setDisabled(true);
+
+                            permit_no = form.down('textfield[name=permit_no]');
+                            permit_no.setHidden(true);
+                            permit_no.setReadOnly(true);
+                            permit_no.allowBlank = true;
+                            permit_no.validate();
+                            
+                    
+
+                            country_id = form.down('combo[name=country_id]');
+                            country_id.setHidden(false);
+                            country_id.setReadOnly(true);
+                            country_id.allowBlank = true;
+                            country_id.validate();
+
+                            physical_address = form.down('textfield[name=physical_address]');
+                            physical_address.setHidden(false);
+                            physical_address.setReadOnly(false);
+                            physical_address.allowBlank = true;
+                            physical_address.validate();
+                        }
+                        
+                    }
+                   
+                }
+             },
+              {
+                    xtype: 'fieldcontainer',
+                    layout: 'column',
+                    defaults: {
+                        labelAlign: 'top'
+                    },
+                    name:'site_permit',
+                    hidden:true,
+                    fieldLabel: 'Permit No',
+                    items: [
+                        {
+                            xtype: 'textfield',
+                            name: 'permit_no',
+                            columnWidth: 0.9
+                        },
+                        {
+                            xtype: 'button',
+                            iconCls: 'x-fa fa-search',
+                            columnWidth: 0.1,
+                            tooltip: 'Search',
+                            name: 'search_site',
+                            childXtype: 'mansitesselectiongrid',
+                            winTitle: 'Manufacturing Sites Selection List',
+                            winWidth: '90%',
+                            stores: '[]'
+                        }
+                    ]
+                },
+             {
+                    xtype: 'fieldcontainer',
+                    layout: 'column',
+                    defaults: {
+                        labelAlign: 'top'
+                    },
+                    name:'site_name',
+                    hidden:true,
+                    fieldLabel: 'Site name',
+                    items: [
+                        {
+                            xtype: 'textfield',
+                            name: 'site_name',
+                            columnWidth: 0.9
+                        },
+                        {
+                            xtype: 'button',
+                            iconCls: 'x-fa fa-search',
+                            columnWidth: 0.1,
+                            tooltip: 'Search',
+                            name: 'search_site_name',
+                            childXtype: 'mansitesselectiongrid',
+                            winTitle: 'Manufacturing Sites Selection List',
+                            winWidth: '90%',
+                            stores: '[]'
+                        }
+                    ]
+                },
+             {
+                    xtype: 'combo',
+                    fieldLabel: 'Country',
+                    name: 'country_id',
+                    allowBlank:true,
+                    hidden:true,
+                    forceSelection: true,
+                    queryMode: 'local',
+                    valueField: 'id',
+                    displayField: 'name',
+                    listeners: {
+                        beforerender: {
+                            fn: 'setParamCombosStore',
+                            config: {
+                                pageSize: 10000,
+                                proxy: {
+                                    url: 'parameters/country'
+                                }
+                            },
+                            isLoad: true
+                        }
+                    }
+        },{
+            xtype: 'textfield',
+            name: 'physical_address',
+            hidden:true,
+            fieldLabel: 'Physical Address of Site',
+            readOnly: true
+        }, 
+        {
             xtype: 'textfield',
             fieldLabel: 'Block Name/Identity',
             name: 'name'
         },
-        {
-            xtype: 'textarea',
-            fieldLabel: 'Description of Activities Undertaken',
-            name: 'activities'
-        }
+        
     ],
     buttons: [
         {

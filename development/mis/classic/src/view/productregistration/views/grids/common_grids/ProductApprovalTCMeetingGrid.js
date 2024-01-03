@@ -112,17 +112,17 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'evaluator_recommendation',
-        text: '1st Assessment Recommendation',
+        text: 'Assessment Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'auditor_recommendation',
-        text: '2nd Assessment Recommendation',
+        text: 'Quality Review Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'tc_recomm',
-        text: 'TC Recommendation',
+        text: 'CNF Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
@@ -197,9 +197,9 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
                         menu: {
                             xtype: 'menu',
                             items: [{
-                                text: '1st Assessment  Reports/Upload',
+                                text: 'Assessment  Reports/Upload',
                                 iconCls: 'x-fa fa-file',
-                                tooltip: '1st Assessment  Reports/Upload',
+                                tooltip: 'Assessment  Reports/Upload',
                                 action: 'edit',
                                 childXtype: '',
                                 winTitle: 'Application Documents',
@@ -207,9 +207,9 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
                                 isReadOnly: 1,
                                 handler: 'funcPrevEvaluationReportUpload'
                             }, {
-                                text: '2nd Assessment  Reports/Upload',
+                                text: 'Quality Review Reports/Upload',
                                 iconCls: 'x-fa fa-file',
-                                tooltip: '2nd Assessment  Reports/Upload',
+                                tooltip: 'Quality Review Reports/Upload',
                                 action: 'edit',
                                 childXtype: '',
                                 winTitle: 'Audit report',

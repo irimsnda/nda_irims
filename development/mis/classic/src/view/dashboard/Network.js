@@ -12,7 +12,7 @@ Ext.define('Admin.view.dashboard.Network', {
     ],
 
     cls: 'dashboard-main-chart shadow',
-    height: 380,
+    height: 320,
 
     bodyPadding: 15,
 
@@ -78,7 +78,7 @@ Ext.define('Admin.view.dashboard.Network', {
                                     xtype: 'component',
                                     flex: 1,
                                     cls: 'top-info-container',
-                                    html: '<div class="inner"><span class="x-fa fa-pie-chart"></span><span class="dashboard-analytics-percentage"> 25% </span>server load</div>',
+                                    html: '<div class="inner"><span class="x-fa fa-chart-pie"></span><span class="dashboard-analytics-percentage"> 25% </span>server load</div>',
                                     padding: '15 10 10 0'
                                 },
                                 {

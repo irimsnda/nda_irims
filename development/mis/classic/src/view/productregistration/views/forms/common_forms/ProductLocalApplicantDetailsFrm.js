@@ -15,7 +15,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
     items: [
         {
             xtype: 'hiddenfield',
-            name: 'applicant_id'
+            name: 'premise_id'
         },
         {
             xtype: 'hiddenfield',
@@ -32,7 +32,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
             items: [
                 {
                     xtype: 'textfield',
-                    name: 'condact_premise_name',
+                    name: 'name',
                     readOnly: true,
                     columnWidth: 0.7
                 },
@@ -50,9 +50,9 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
         },
         {
             xtype: 'textfield',
-            fieldLabel: 'Contact Premise Applicant',
+            fieldLabel: 'LTR Premise Applicant',
             readOnly: true,
-            name: 'contact_premsie_applicant'
+            name: 'applicant_name'
         },
         {
             xtype: 'textfield',
@@ -122,20 +122,20 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
             xtype: 'textfield',
             fieldLabel: 'Registration No',
             readOnly: true,
-            name: 'prem_registration_no'
+            name: 'premise_reg_no'
         },
         {
             xtype: 'textfield',
             fieldLabel: 'Permit No',
             readOnly: true,
-            name: 'prem_registration_no'
+            name: 'permit_no'
         },
 
         {
             xtype: 'textfield',
             fieldLabel: 'Physical Address',
             readOnly: true,
-            name: 'app_physical_address'
+            name: 'physical_address'
         },
         {
             xtype: 'textfield',

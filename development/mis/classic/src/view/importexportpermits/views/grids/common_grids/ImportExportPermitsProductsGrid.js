@@ -23,13 +23,13 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
     },
     tbar: [{
         xtype: 'button',
-        text: 'Add Permit Products Details',
+        text: 'Add VC Products Details',
         iconCls: 'x-fa fa-plus',
         action: 'add',
         name: 'add_products',
         ui: 'soft-green',
         childXtype: 'importexportpermitsproductspnl',
-        winTitle: 'Add Permit Products Details',
+        winTitle: 'Add VC Products Details',
         winWidth: '80%',
         handler: 'showAddImpPermitProductsWinFrm',
         stores: '[]',
@@ -45,7 +45,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             value: '{isReadOnly}'  // negated
         }
     }],
-    export_title: 'Impor/Export Permits Products',
+    export_title: 'Impor/Export VC Products',
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '80%',
@@ -129,11 +129,11 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
           xtype: 'gridcolumn',
           dataIndex: 'quantity',
           tdCls: 'wrap-text',
-          text: 'Quantity',
+          text: 'Quantity',hidden: true,
           flex: 1,
       }, {
           xtype: 'gridcolumn',
-          dataIndex: 'packaging_units',
+          dataIndex: 'si_unit',
           tdCls: 'wrap-text',
           text: 'Packaging Units',
           flex: 1,
@@ -148,6 +148,11 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
           dataIndex: 'pack_unit',hidden: true,
           text: 'Unit Pack',
   
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'total_units',
+          text: 'Total Units',
           flex: 1,
       },{
           xtype: 'gridcolumn',
@@ -168,22 +173,23 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
           dataIndex: 'total_value',
           tdCls: 'wrap-text',
           text: 'Total Value',
-          width: 200,
-          summaryType: 'sum',
-          renderer: function (val, meta, record) {
-              return Ext.util.Format.number(val, '0,000.00');
-          },
-          summaryRenderer: function (val) {
-              val = Ext.util.Format.number(val, '0,000.00');
-              return 'Total Fob '+val
-          }
+          flex: 1
+          //width: 200,
+          // summaryType: 'sum',
+          // renderer: function (val, meta, record) {
+          //     return Ext.util.Format.number(val, '0,000.00');
+          // },
+          // summaryRenderer: function (val) {
+          //     val = Ext.util.Format.number(val, '0,000.00');
+          //     return 'Total Fob '+val
+          // }
       },{
         xtype: 'gridcolumn',
         text: 'Registration Status', 
         tdCls: 'wrap-text',
-        dataIndex: 'certificate_no',
+        dataIndex: 'is_registered',
         renderer: function (value, metaData) {
-            if (value !='') {
+            if (value == 1) {
                 metaData.tdStyle = 'color:white;background-color:green';
                 return "Registered/Authorised";
             }

@@ -342,7 +342,8 @@
         dataIndex: 'TraderPostalA',
         name: 'TraderPostalA',
         text: 'Trader Postal Address',
-        width: 200, hidden: true,
+        width: 200, 
+        hidden: true,
         filter: {
                 xtype: 'textfield',
             }
@@ -545,7 +546,7 @@
         name: 'registration_status',
         text: 'Registration Status',
         width: 200, 
-       filter: {
+        filter: {
                     xtype: 'combobox',
                     queryMode: 'local',
                     displayField: 'name',
@@ -609,42 +610,43 @@
                      }
                  }                
             }
-     },{
-        xtype: 'gridcolumn',
-        dataIndex: 'application_status',
-        name: 'application_status',
-        text: 'Application Status',
-        width: 200,
-        filter: {
-                    xtype: 'combobox',
-                    queryMode: 'local',
-                    displayField: 'name',
-                    valueField: 'id',
-                    name: 'validity_status',
-                    listeners:
-                     {
-                         afterrender: {//getConfigParamFromTable
-                            fn: 'setConfigCombosStore',
-                            config: {
-                                pageSize: 10000,
-                                proxy: {
-                                    url: 'configurations/getConfigParamFromTable',
-                                     extraParams: {
-                                        table_name: 'par_system_statuses'
-                                    }
-                                }
-                            },
-                           isLoad: true
-                        },
+     }
+     // ,{
+     //    xtype: 'gridcolumn',
+     //    dataIndex: 'application_status',
+     //    name: 'application_status',
+     //    text: 'Application Status',
+     //    width: 200,
+     //    filter: {
+     //                xtype: 'combobox',
+     //                queryMode: 'local',
+     //                displayField: 'name',
+     //                valueField: 'id',
+     //                name: 'validity_status',
+     //                listeners:
+     //                 {
+     //                     afterrender: {//getConfigParamFromTable
+     //                        fn: 'setConfigCombosStore',
+     //                        config: {
+     //                            pageSize: 10000,
+     //                            proxy: {
+     //                                url: 'configurations/getConfigParamFromTable',
+     //                                 extraParams: {
+     //                                    table_name: 'par_system_statuses'
+     //                                }
+     //                            }
+     //                        },
+     //                       isLoad: true
+     //                    },
                                    
                      
-                     change: function(cmb, newValue, oldValue, eopts) {
-                        var grid = cmb.up('grid');
-                            grid.getStore().reload();
-                     }
-                 }                
-            }
-     }
+     //                 change: function(cmb, newValue, oldValue, eopts) {
+     //                    var grid = cmb.up('grid');
+     //                        grid.getStore().reload();
+     //                 }
+     //             }                
+     //        }
+     // }
     ],bbar: [{
         xtype: 'pagingtoolbar',
         store: 'spreadsheetpremiseapplicationcolumnsstr',

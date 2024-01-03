@@ -40,7 +40,17 @@ Ext.define('Admin.view.commoninterfaces.grids.ApplicationDocUploadsGrid', {
     },{
         xtype: 'hiddenfield',
         name: 'document_type_id'
-    }, {
+    }, 
+    {
+        xtype: 'hiddenfield',
+        name: 'reference_record_id'        
+    },{
+        xtype: 'hiddenfield',
+        name: 'table_name'           
+    },{
+        xtype: 'hiddenfield',
+        name: 'reference_table_name'           
+    },{
         xtype: 'button',
         text: 'Upload Document/Report',
         name: 'add_upload',

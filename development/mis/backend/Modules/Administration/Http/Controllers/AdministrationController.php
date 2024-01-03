@@ -366,7 +366,193 @@ public function getSystemNavigationMenuItems(Request $request)
         if (count($row)) {
             $menu_count = count($row);
             $menu_counter = 0;
+            foreach ($row as $item) {
+                $menu_counter++;
+                $id = $item['id'];
+                $name = $item['name'];
+                $tab_title = $item['tab_title'];
+                $parent_module_name=$tab_title;
+                $text = $name;
+                $level = $item['level'];
+                $parent_id = $item['parent_id'];
+                $child_id = $item['parent_id'];
+                $viewType = $item['viewType'];
+                $iconCls = $item['iconCls'];
+                $background = $item['background'];
+                $routeId = $item['routeId'];
+                $order_no = $item['order_no'];
+                $is_menu = $item['is_menu'];
+                $is_disabled = $item['is_disabled'];
+                $workflow_id = $item['workflow_id'];
+                $parameter_id =  $item['parameter_id'];
+                $access_level = $this->getMenuAccessLevel($id);
 
+                $menus .= '{';
+                $menus .= '"text": "' . $text . '",';
+                $menus .= '"name": "' . $name . '",';
+                $menus .= '"tab_title": "' . $tab_title . '",';
+                $menus .= '"module_name": "' . $parent_module_name . '",';
+                $menus .= '"iconCls": "' . $iconCls . '",';
+                $menus .= '"background": "' . $background . '",';
+                $menus .= '"menu_id": "' . $id . '",';
+                $menus .= '"id": "' . $id . '",';
+                $menus .= '"access_level": "' . $access_level . '",';
+                $menus .= '"viewType": "' . $viewType . '",';
+                $menus .= '"routeId": "' . $routeId . '",';
+                $menus .= '"level": "' . $level . '",';
+                $menus .= '"order_no": "' . $order_no . '",';
+                $menus .= '"is_menu": "' . $is_menu . '",';
+                $menus .= '"workflow_id": "' . $workflow_id . '",';
+                $menus .= '"is_disabled": "' . $is_disabled . '",';
+                $menus .= '"parameter_id": "' . $parameter_id . '",';
+                $children = $this->getSystemMenuItem(1, $id);
+                if (count($children) > 0) {
+                    $menus .= '"selectable": false,';
+                    $children_count = count($children);
+                    $children_counter = 0;
+                    $menus .= '"children": [';
+                    foreach ($children as $child) {
+                        $children_counter++;
+                        $child_id = $child['id'];
+                        $child_name = $child['name'];
+                        $child_title = $child['tab_title'];
+                        $module_name=$parent_module_name.' >> '.$child_title;
+                        $child_text = $child_name;
+                        $child_level = $child['level'];
+                        $child_viewType = $child['viewType'];
+                        $child_iconCls = 'x-fa fa-angle-double-right';//$child['iconCls'];
+                        $child_route = $child['routeId'];
+                        $child_order_no = $child['order_no'];
+                        $child_is_menu = $child['is_menu'];
+                        $child_is_disabled = $child['is_disabled'];
+                        $child_parent_id = $child['parent_id'];
+                        $child_workflow_id = $child['workflow_id'];
+                        $child_parameter_id = $child['parameter_id'];
+                        $child_access_level = $this->getMenuAccessLevel($child_id);
+
+                        if ($id == 254) {//online applications
+                            //$child_title = $child_name . ' Online Applications-' . $child_name;
+                        }
+
+                        $menus .= '{';
+                        $menus .= '"text": "' . $child_text . '",';
+                        $menus .= '"name": "' . $child_name . '",';
+                        $menus .= '"tab_title": "' . $child_title . '",';
+                        $menus .= '"module_name": "' . $module_name . '",';
+                        $menus .= '"iconCls": "' . $child_iconCls . '",';
+                        $menus .= '"menu_id": "' . $child_id . '",';
+                        $menus .= '"id": "' . $child_id . '",';
+                        $menus .= '"access_level": "' . $child_access_level . '",';
+                        $menus .= '"viewType": "' . $child_viewType . '",';
+                        $menus .= '"routeId": "' . $child_route . '",';
+                        $menus .= '"level": "' . $child_level . '",';
+                        $menus .= '"order_no": "' . $child_order_no . '",';
+                        $menus .= '"is_menu": "' . $child_is_menu . '",';
+                        $menus .= '"is_disabled": "' . $child_is_disabled . '",';
+                        $menus .= '"workflow_id": "' . $child_workflow_id . '",';
+                        $menus .= '"parameter_id": "' . $child_parameter_id . '",';
+                        $menus .= '"parent_id": ' . $child_parent_id . ',';
+                        //level 2 menu items
+                        $grandchildren = $this->getSystemMenuItem(2, $child_id);
+                        if (count($grandchildren) > 0) {
+                            $menus .= '"selectable": false,';
+                            $grandchildren_count = count($grandchildren);
+                            $grandchildren_counter = 0;
+                            $menus .= '"children": [';
+                            foreach ($grandchildren as $grandchild) {
+                                $grandchildren_counter++;
+                                $grandchild_id = $grandchild['id'];
+                                $grandchild_name = $grandchild['name'];
+                                $grandchild_tab_title = $grandchild['tab_title'];
+                                $grandchild_text = $grandchild_name;
+                                $grandchild_level = $grandchild['level'];
+                                $grandchild_viewType = $grandchild['viewType'];
+                                $grandchild_iconCls = 'x-fa fa-arrow-circle-right';//$grandchild['iconCls'];
+                                $grandchild_route = $grandchild['routeId'];
+                                $grandchild_order_no = $grandchild['order_no'];
+                                $grandchild_is_menu = $grandchild['is_menu'];
+                                $grandchild_is_disabled = $grandchild['is_disabled'];
+                                $grandchild_parent_id = $child['parent_id'];
+                                $grandchild_child_id = $grandchild['parent_id'];
+                                $grandchild_workflow_id = $grandchild['workflow_id'];
+                                $grandchild_parameter_id = $grandchild['parameter_id'];
+                                $grandchild_access_level = $this->getMenuAccessLevel($grandchild_id);
+
+                                if ($id == 254) {//online applications
+                                    //$grandchild_tab_title = $child_name . ' Online Applications-' . $grandchild_name;
+                                }
+                                if ($id == 182) {//Registration module
+                                    //$grandchild_tab_title = $child_name . ' Registration-' . $grandchild_name;
+                                }
+                                if ($child_id == 277) {//GMP module
+                                    //$grandchild_tab_title = 'GMP-' . $grandchild_name;
+                                }
+                                if ($child_id == 327) {//PMS module
+                                    //$grandchild_tab_title = 'PMS-' . $grandchild_name;
+                                }
+
+                                $menus .= '{';
+                                $menus .= '"text": "' . $grandchild_text . '",';
+                                $menus .= '"name": "' . $grandchild_name . '",';
+                                $menus .= '"tab_title": "' . $grandchild_tab_title . '",';
+                                $menus .= '"module_name": "' . $module_name . '",';
+                                $menus .= '"iconCls": "' . $grandchild_iconCls . '",';
+                                $menus .= '"menu_id": "' . $grandchild_id . '",';
+                                $menus .= '"id": "' . $grandchild_id . '",';
+                                $menus .= '"access_level": "' . $grandchild_access_level . '",';
+                                $menus .= '"viewType": "' . $grandchild_viewType . '",';
+                                $menus .= '"routeId": "' . $grandchild_route . '",';
+                                $menus .= '"level": "' . $grandchild_level . '",';
+                                $menus .= '"order_no": "' . $grandchild_order_no . '",';
+                                $menus .= '"is_menu": "' . $grandchild_is_menu . '",';
+                                $menus .= '"is_disabled": "' . $grandchild_is_disabled . '",';
+                                $menus .= '"parent_id": ' . $grandchild_parent_id . ',';
+                                $menus .= '"child_id": ' . $grandchild_child_id . ',';
+                                $menus .= '"workflow_id": "' . $grandchild_workflow_id . '",';
+                                $menus .= '"parameter_id": "' . $grandchild_parameter_id . '",';
+                                $menus .= '"leaf": true';
+
+                                if ($grandchildren_counter == $grandchildren_count) {
+                                    //Last Child in this level. Level=2
+                                    $menus .= '}';
+                                } else {
+                                    $menus .= '},';
+                                }
+                            }
+                            $menus .= ']';
+                        } else {
+                            $menus .= '"leaf": true';
+                        }
+                        if ($children_counter == $children_count) {
+                            //Last Child in this level. Level=1
+                            $menus .= '}';
+                        } else {
+                            $menus .= '},';
+                        }
+                    }
+                    $menus .= ']';
+                } else {
+                    $menus .= '"leaf": true';
+                }
+                if ($menu_counter == $menu_count) {
+                    $menus .= '}';
+                } else {
+                    $menus .= '},';
+                }
+            }
+        }
+        $menus .= ']';
+        echo $menus;
+    }
+
+
+    public function getSystemLandingMenuItems(Request $request)
+    {
+        $row = $this->getSystemMenuItem(0, 0);
+        $menus = '[';
+        if (count($row)) {
+            $menu_count = count($row);
+            $menu_counter = 0;
             foreach ($row as $item) {
                 $menu_counter++;
                 $id = $item['id'];
@@ -543,8 +729,12 @@ public function getSystemNavigationMenuItems(Request $request)
         $menus .= ']';
         echo $menus;
     }
+
+
     function getSystemMenuItem($level = 0, $parent_id = 0)
     {
+       //dd('yyyy');
+        //$menu_id=182;
         $where = array(
             'par_menus.level' => $level,
             'par_menus.is_menu' => 1
@@ -564,6 +754,12 @@ public function getSystemNavigationMenuItems(Request $request)
             ->where('tra_permissions.accesslevel_id', '<>', 1)
             //->where('par_menus.is_disabled', 0)
             ->whereIn('tra_permissions.group_id', $groups);
+
+            // if(validateIsNumeric($menu_id)){
+            //    $qry->orWhere('par_menus.id', '=', $menu_id);
+            //    $qry->orWhere('par_menus.parent_id', '=', $menu_id);
+            // }
+
         $menus = $qry->get();
         $menus = convertStdClassObjToArray($menus);
         return $menus;
@@ -837,7 +1033,7 @@ public function getSystemNavigationMenuItems(Request $request)
             $qry = DB::table('par_groups as t1') 
                  ->leftjoin('par_regions as t2', 't1.region_id', '=', 't2.id')
                 // ->join('par_departments as t3', 't1.department_id', '=', 't3.id')
-                ->join('par_zones as t4', 't1.zone_id', '=', 't4.id')
+                ->leftjoin('par_zones as t4', 't1.zone_id', '=', 't4.id')
                 ->leftJoin('par_user_categories as t5', 't1.user_category_id', '=', 't5.id')
                 ->leftJoin('par_externaluser_categories as t6', 't1.externaluser_category_id', '=', 't6.id')
                 
@@ -920,8 +1116,133 @@ public function getSystemNavigationMenuItems(Request $request)
         }
         return response()->json($res);
     }
+public function getSystemRoles(Request $request)
+    {
+        $user_group = $request->input('user_group');
+        $row = $this->getSystemRole(0, 0, $user_group);
+		
+		$roles = '{"roles": "."';
+        $roles .= ',';
+		// $roles .= ',';
+        $roles .= '"children": [';
+        //$roles = '[';
+        if (count($row)) {
+            $menu_count = count($row);
+            $menu_counter = 0;
+            foreach ($row as $item) {
+                $menu_counter++;
 
-    public function getSystemRoles(Request $request)
+                $id = $item['menu_id'];
+                $permission_id = $item['permission_id'];
+               
+                $name = aes_decrypt($item['menu_name']);
+                $level = aes_decrypt($item['level_name']);
+                 $level_id = $item['level_id'];
+                $iconCls = $item['iconCls'];
+           
+                $roles .= '{';
+                 $roles .= '"menu_id": "' . $id . '",';
+                $roles .= '"menu_name": "' . $name . '",';
+               $roles .= '"level_name": "' . $level . '",';
+                  $roles .= '"level_id": "' . $level_id . '",';
+                $roles .= '"iconCls": "' . $iconCls . '",';
+               
+                
+                $children = $this->getSystemRole(1, $id, $user_group);
+                  if (count($children) > 0) {
+					$roles .= '"permission_id": "' . $permission_id . '",';
+              
+                    $roles .= '"expanded": false,';
+                    $children_count = count($children);
+                    $children_counter = 0;
+                    $roles .= '"children": [';
+					 foreach ($children as $child) {
+                        $children_counter++;
+                        $child_id = $child['menu_id'];
+                        $child_permission_id = $child['permission_id'];
+                        $child_name = aes_decrypt($child['menu_name']);
+                        $child_level = aes_decrypt($child['level_name']);
+                        $child_level_id = $child['level_id'];
+                        $child_iconCls = $item['iconCls'];
+
+                        $roles .= '{';
+                        
+						 $roles .= '"menu_id": "' . $child_id . '",';
+                        $roles .= '"permission_id": "' . $child_permission_id . '",';
+                        $roles .= '"menu_name": "' . $child_name . '",';
+                        $roles .= '"level_name": "' . $child_level . '",';
+                       $roles .= '"level_id": "' . $child_level_id . '",';
+                      
+                        
+                        //level 2 menu items
+                        $grandchildren = $this->getSystemRole(2, $child_id, $user_group);
+                        if (count($grandchildren) > 0) {
+							 $roles .= '"iconCls": "' . $child_iconCls . '",';
+                            $roles .= '"expanded": false,';
+                            $grandchildren_count = count($grandchildren);
+                            $grandchildren_counter = 0;
+                             $roles .= '"iconCls": "tree-parent",';
+                            $roles .= '"children": [';
+                            foreach ($grandchildren as $grandchild) {
+                               $grandchildren_counter++;
+                                $grandchild_id = $grandchild['menu_id'];
+                                $grand_permission_id = $grandchild['permission_id'];
+                                $grandchild_name = aes_decrypt($grandchild['menu_name']);
+                                $grandchild_level = aes_decrypt($grandchild['level_name']);
+                                $grandchild_level_id = $grandchild['level_id'];
+                                $grandchild_iconCls = $item['iconCls'];
+
+                                $roles .= '{';
+                                $roles .= '"menu_id": ' . $grandchild_id . ',';
+                                $roles .= '"permission_id": "' . $grand_permission_id . '",';
+                                $roles .= '"menu_name": "' . $grandchild_name . '",';
+                                $roles .= '"level_name": "' . $grandchild_level . '",';
+                                $roles .= '"level_id": "' . $grandchild_level_id . '",';
+                                $roles .= '"iconCls": "' . $grandchild_iconCls . '",';
+                                $roles .= '"leaf": true';
+
+                                if ($grandchildren_counter == $grandchildren_count) {
+                                    //Last Child in this level. Level=2
+                                    $roles .= '}';
+                                } else {
+                                    $roles .= '},';
+                                }
+                            }
+                            $roles .= ']';
+                        } else {
+							 $roles .= '"iconCls": "' . $child_iconCls . '",';
+                             $roles .= '"leaf": true';
+                        }
+						
+                        if ($children_counter == $children_count) {
+                            //Last Child in this level. Level=1
+                            $roles .= '}';
+                        } else {
+                            $roles .= '},';
+                        }
+						
+                    }
+                    
+                    $roles .= ']';
+					
+                } else {
+					$roles .= '"permission_id": "' . $permission_id . '",';
+              
+                    $roles .= '"leaf": true';
+                }
+				
+                if ($menu_counter == $menu_count) {
+                    $roles .= '}';
+                } else {
+                    $roles .= '},';
+                }
+                
+            }
+        }
+        $roles .= ']}';
+        echo $roles;
+    }
+    public function getSystemRolesArchive(Request $request)
     {
         $user_group = $request->input('user_group');
         $row = $this->getSystemRole(0, 0, $user_group);
@@ -1034,6 +1355,56 @@ public function getSystemNavigationMenuItems(Request $request)
         $roles .= ']}';
         return $roles;
     }
+
+
+
+// public function getSystemRoles(Request $request)
+// {
+//     $user_group = $request->input('user_group');
+//     $roles = $this->buildRoleTree(0, 0, $user_group);
+//     return response()->json(["roles" => $roles]);
+// }
+
+// private function buildRoleTree($level, $parent_id, $user_group)
+// {
+//     $roles = [];
+
+//     $rows = $this->getSystemRole($level, $parent_id, $user_group);
+
+//     foreach ($rows as $row) {
+//         $id = $row['menu_id'];
+//         $permission_id = $row['permission_id'];
+//         $name = aes_decrypt($row['menu_name']);
+//         $level_name = aes_decrypt($row['level_name']);
+//         $level_id = $row['level_id'];
+//         $iconCls = $row['iconCls'];
+
+//         $role = [
+//             "menu_id" => $id,
+//             "permission_id" => $permission_id,
+//             "node" => $id,
+//             "menu_name" => $name,
+//             "level_name" => $level_name,
+//             "level_id" => $level_id,
+//             "iconCls" => $iconCls
+//         ];
+
+//         $children = $this->buildRoleTree(1, $id, $user_group);
+//         if (!empty($children)) {
+//             $role["expanded"] = true;
+//             $role["leaf"] = false;
+//             $role["children"] = $children;
+//         } else {
+//             $role["leaf"] = true;
+//         }
+
+//         $roles[] = $role;
+//     }
+
+//     return $roles;
+// }
+
+
 
     function getSystemRole($level = 0, $parent_id = 0, $user_group)
     {

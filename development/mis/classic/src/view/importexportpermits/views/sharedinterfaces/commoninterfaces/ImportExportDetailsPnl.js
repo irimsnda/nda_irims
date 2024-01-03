@@ -1,6 +1,6 @@
-
+ 
 /**
- * Created by Kip on 11/12/2018.
+ * Created by softclans.
  */
 Ext.define('Admin.view.importexportpermits.views.commoninterfaces.ImportExportDetailsPnl', {
     extend: 'Ext.tab.Panel',
@@ -19,17 +19,21 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.ImportExportDe
     items: [{
             xtype: 'panel',
             autoScroll: true, 
-            title: 'Application Details(Permit, Sender/Receiver, Premises Licenses Outlets)',
+            title: 'Application Details',
             items:[{
-                xtype: 'importexportdetailsfrm',
+                xtype: 'onlineimportexportlicencedetailsfrm',
                 autoScroll: true,
                 title: 'Application Details', 
-                title: 'Import/Export Permit Information'
-            },  {
+                title: 'Import/Export Licence Information'
+            }, 
+             {
                 xtype: 'senderreceiverdetailsfrm',
+                hidden: true,
                 title: 'Sender/Receiver Details',
-            },{
+            },
+            {
                 xtype: 'importexportpremisesfrm',
+                hidden: true,
                 title: 'Licensed Outlet Details',
             }]
         },{

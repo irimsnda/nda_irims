@@ -144,7 +144,6 @@ Ext.define('Admin.view.premiseregistration.views.panels.NewPremiseOnlinePreviewW
                     ui: 'soft-purple',
                     iconCls: 'x-fa fa-thumbs-down',
                     hidden: true,
-
                     name: 'prev_rejections',
                     handler: 'showOnlineApplicationRejections',
                     childXtype: 'onlineappsrejectionsgrid',
@@ -167,8 +166,7 @@ Ext.define('Admin.view.premiseregistration.views.panels.NewPremiseOnlinePreviewW
                     ui: 'soft-purple',
                     iconCls: 'x-fa fa-thumbs-down',
                     name: 'reject_btn',
-                    //hidden: true,
-                    
+                    hidden: true,
                     handler: 'submitRejectedOnlineApplicationFrmBtn',
                     bind: {
                         disabled: '{!atEnd}'

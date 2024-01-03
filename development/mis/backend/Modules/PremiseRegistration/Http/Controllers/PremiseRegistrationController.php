@@ -1104,11 +1104,12 @@ public function funcAddNewPremisesDetails(Request $request){
 						->on('t1.application_code', '=', 't5.application_code');
 				})
 				->leftJoin('par_approval_decisions as t6', 't5.decision_id', '=', 't6.id')
+				->leftJoin('tra_processing_zones as t6a', 't1.application_code', '=', 't6a.application_code')
 				
 				->join('tra_submissions as t7', 't1.application_code', '=', 't7.application_code')
 				->leftJoin('par_regions as t8', 't2.region_id', '=', 't8.id')
 				->leftJoin('par_districts as t9', 't2.district_id', '=', 't9.id')
-				->leftJoin('par_zones as t10', 't1.zone_id', '=', 't10.id')
+				->leftJoin('par_zones as t10', 't6a.zone_id', '=', 't10.id')
 				->select('t1.*', 't1.application_code','t8.name as region_name', 't9.name as district_name','t10.name as zone_name','t2.physical_address', 't2.name as premise_name', 't3.name as applicant_name', 't4.name as application_status',
 					't6.name as approval_status', 't5.decision_id', 't1.id as active_application_id')
 				->where(array('current_stage'=>$workflow_stage, 'isDone'=>0))
@@ -1125,7 +1126,7 @@ public function funcAddNewPremisesDetails(Request $request){
                 $qry->where('t2.district_id', $district_id);
             }
             if (isset($zone_id) && $zone_id != '') {
-                $qry->where('t1.zone_id', $zone_id);
+                $qry->where('t6a.zone_id', $zone_id);
             }
 
             
@@ -1565,13 +1566,14 @@ public function funcAddNewPremisesDetails(Request $request){
 						->on('t1.application_code', '=', 't5.application_code');
 				})
 				->leftJoin('par_approval_decisions as t6', 't5.decision_id', '=', 't6.id')
+				->leftJoin('tra_processing_zones as t6a', 't1.application_code', '=', 't6a.application_code')
 				->join('wf_tfdaprocesses as t7', 't1.process_id', '=', 't7.id')
 				->leftJoin('wf_workflow_stages as t8', 't1.workflow_stage_id', '=', 't8.id')
 				->join('tra_submissions as t9', 't1.application_code', '=', 't9.application_code')
 				->leftjoin('par_regions as t10', 't2.region_id', '=', 't10.id')
 				->leftJoin('par_districts as t11', 't2.district_id', '=', 't11.id')
-				->leftJoin('par_zones as t12', 't1.zone_id', '=', 't12.id')
-				->select('t1.*', 't1.id as active_application_id', 't2.name as premise_name', 't3.name as applicant_name', 't4.name as application_status', 't6.name as approval_status',
+				->leftJoin('par_zones as t12', 't6a.zone_id', '=', 't12.id')
+				->select('t1.*', 't1.id as active_application_id','t2.business_type_id', 't2.name as premise_name', 't3.name as applicant_name', 't4.name as application_status', 't6.name as approval_status',
 					't2.init_premise_id', 't7.name as process_name', 't8.name as workflow_stage', 't8.is_general', 't5.decision_id', 't5.id as recommendation_id', 't6.name as recommendation','t10.name as region_name','t11.name as district_name','t12.name as zone_name')
 				->where(array('t9.current_stage'=>$workflow_stage,'isDone'=>0));
 
@@ -1585,7 +1587,7 @@ public function funcAddNewPremisesDetails(Request $request){
                 $qry->where('t2.district_id', $district_id);
             }
             if (isset($zone_id) && $zone_id != '') {
-                $qry->where('t2.zone_id', $zone_id);
+                $qry->where('t6a.zone_id', $zone_id);
             }
 			$results = $qry->get();
 
@@ -1629,12 +1631,13 @@ public function funcAddNewPremisesDetails(Request $request){
 						->on('t1.application_code', '=', 't5.application_code');
 				})
 				->leftJoin('par_approval_decisions as t6', 't5.decision_id', '=', 't6.id')
+				->leftJoin('tra_processing_zones as t6a', 't1.application_code', '=', 't6a.application_code')
 				->join('wf_tfdaprocesses as t7', 't1.process_id', '=', 't7.id')
 				->leftJoin('wf_workflow_stages as t8', 't1.workflow_stage_id', '=', 't8.id')
 				->join('tra_submissions as t9', 't1.application_code', '=', 't9.application_code')
 				->leftjoin('par_regions as t10', 't2.region_id', '=', 't10.id')
 				->leftJoin('par_districts as t11', 't2.district_id', '=', 't11.id')
-				->leftJoin('par_zones as t12', 't1.zone_id', '=', 't12.id')
+				->leftJoin('par_zones as t12', 't6a.zone_id', '=', 't12.id')
 				->select('t1.*', 't1.id as active_application_id', 't2.name as premise_name', 't3.name as applicant_name', 't4.name as application_status', 't6.name as approval_status','t10.name as region_name','t11.name as district_name','t12.name as zone_name','t2.physical_address',
 					't2.init_premise_id', 't7.name as process_name', 't8.name as workflow_stage', 't8.is_general', 't5.decision_id', 't5.id as recommendation_id', 't6.name as recommendation')
 				->where(array('t9.current_stage'=>$workflow_stage,'t1.module_id'=>29,'isDone'=>0));
@@ -1650,7 +1653,7 @@ public function funcAddNewPremisesDetails(Request $request){
                 $qry->where('t2.district_id', $district_id);
             }
             if (isset($zone_id) && $zone_id != '') {
-                $qry->where('t2.zone_id', $zone_id);
+                $qry->where('t6a.zone_id', $zone_id);
             }
 
 			$results = $qry->get();
@@ -1672,6 +1675,8 @@ public function funcAddNewPremisesDetails(Request $request){
 		}
 		return \response()->json($res);
 	}
+
+
 
 
 	public function getPremiseWithdrawalApplicationsAtApproval(Request $request)
@@ -1735,6 +1740,35 @@ public function funcAddNewPremisesDetails(Request $request){
 						->orWhereNull('t1.is_temporal');
 				});
 			}
+			$results = $qry->get();
+			$res = array(
+				'success' => true,
+				'results' => $results,
+				'message' => 'All is well'
+			);
+		} catch (\Exception $exception) {
+			$res = array(
+				'success' => false,
+				'message' => $exception->getMessage()
+			);
+		} catch (\Throwable $throwable) {
+			$res = array(
+				'success' => false,
+				'message' => $throwable->getMessage()
+			);
+		}
+		return \response()->json($res);
+	}
+
+
+	public function getPremiseRoomSizes(Request $request)
+	{
+		$premise_id = $request->input('premise_id');
+		try {
+			$qry = DB::table('tra_premise_room_sizes as t1')
+			
+				->where('t1.premise_id', $premise_id);
+			
 			$results = $qry->get();
 			$res = array(
 				'success' => true,
@@ -4377,7 +4411,7 @@ public function funcAddNewPremisesDetails(Request $request){
 			$qry = DB::table('tra_premiseinspection_applications as t1')
 				->leftJoin('tra_premise_inspection_details as t2', 't1.inspection_id', '=', 't2.id')
 				->Join('tra_premises as t3', 't1.premise_id', '=', 't3.id')
-				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.product_classification_id')
+				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.company_registration_no','t3.product_classification_id')
 				->where(array('t1.application_code' => $application_code,'report_type_id' =>1));
 			$inspection_details = $qry->first();
 			
@@ -4452,7 +4486,7 @@ public function funcAddNewPremisesDetails(Request $request){
 			$qry = DB::table('tra_premiseinspection_applications as t1')
 				->leftJoin('tra_premise_inspection_details as t2', 't1.inspection_id', '=', 't2.id')
 				->Join('tra_premises as t3', 't1.premise_id', '=', 't3.id')
-				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.product_classification_id')
+				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.company_registration_no','t3.product_classification_id')
 				->where(array('t1.application_code' => $application_code,'report_type_id' =>2));
 			$inspection_details = $qry->first();
 
@@ -4460,7 +4494,7 @@ public function funcAddNewPremisesDetails(Request $request){
 			$qryPrev = DB::table('tra_premiseinspection_applications as t1')
 				->leftJoin('tra_premise_inspection_details as t2', 't1.inspection_id', '=', 't2.id')
 				->leftJoin('tra_premises as t3', 't1.premise_id', '=', 't3.id')
-				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.product_classification_id')
+				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.company_registration_no','t3.name','t3.tpin_no','t3.registration_date','t3.product_classification_id')
 				->where(array('t1.application_code' => $application_code,'report_type_id' =>1));
 			$previous_inspection_details = $qryPrev->first();
 			
@@ -4538,7 +4572,7 @@ public function funcAddNewPremisesDetails(Request $request){
 			$qry = DB::table('tra_premiseinspection_applications as t1')
 				->leftJoin('tra_premise_inspection_details as t2', 't1.inspection_id', '=', 't2.id')
 				->Join('tra_premises as t3', 't1.premise_id', '=', 't3.id')
-				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.product_classification_id')
+				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.company_registration_no','t3.product_classification_id')
 				->where(array('t1.application_code' => $application_code,'report_type_id' =>3));
 			$inspection_details = $qry->first();
 
@@ -4546,7 +4580,7 @@ public function funcAddNewPremisesDetails(Request $request){
 			$qryPrev = DB::table('tra_premiseinspection_applications as t1')
 				->leftJoin('tra_premise_inspection_details as t2', 't1.inspection_id', '=', 't2.id')
 				->Join('tra_premises as t3', 't1.premise_id', '=', 't3.id')
-				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.product_classification_id')
+				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.company_registration_no','t3.product_classification_id')
 				->where(array('t1.application_code' => $application_code,'report_type_id' =>2));
 			$previous_inspection_details = $qryPrev->first();
 			
@@ -4586,6 +4620,40 @@ public function funcAddNewPremisesDetails(Request $request){
 				->select(DB::raw("DISTINCT t1.id as record_id,t1.*,t3.applicant_type_id,t3.name,t3.tpin_no,t3.registration_date,t3.business_type_id,t3.product_classification_id,t1.created_on as report_date,CONCAT_WS(' ',t5.name,decrypt(t4.first_name),decrypt(t4.last_name)) as report_by"))
 				->where(array('t1.application_code' => $application_code,'report_type_id' =>$report_type_id));
 			$results = $qry->first();
+
+			$res = array(
+				'success' => true,
+				'results' => $results,
+				'message' => 'Records fetched successfully'
+			);
+		   
+		} catch (\Exception $exception) {
+			$res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+		} catch (\Throwable $throwable) {
+			$res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+		}
+		return \response()->json($res);
+	}
+
+
+	public function getPremiseInspectionHistory(Request $request)
+	{
+		$application_code = $request->input('application_code');
+		$report_type_id = $request->input('report_type_id');
+		try {
+
+			$qry = DB::table('tra_premiseinspection_applications as t1')
+				->leftJoin('tra_premise_inspection_details as t2', 't1.inspection_id', '=', 't2.id')
+				->Join('tra_premises as t3', 't1.premise_id', '=', 't3.id')
+				->Join('tra_premises_applications as t3a', 't1.application_code', '=', 't3a.application_code')
+				->LeftJoin('users as t4','t1.created_by','t4.id')
+                ->leftJoin('par_titles as t5', 't4.title_id', '=', 't5.id')
+                ->leftJoin('par_premiseinspection_recommendations as t6', 't1.recommendation_id', '=', 't6.id')
+                ->leftJoin('par_inspection_types as t7', 't1.inspection_type_id', '=', 't7.id')
+				->select(DB::raw("DISTINCT t1.id as record_id,t3a.sub_module_id,t1.*,t3.applicant_type_id,t3.name,t3.tpin_no,t3.registration_date,t3.business_type_id,t3.product_classification_id,t1.created_on as report_date,CONCAT_WS(' ',t5.name,decrypt(t4.first_name),decrypt(t4.last_name)) as report_by,t6.name as recommendation,t7.name as inspection_type"))
+				->where(array('t1.application_code' => $application_code,'report_type_id' =>$report_type_id));
+			$results = $qry->get();
 
 			$res = array(
 				'success' => true,
@@ -5358,6 +5426,51 @@ public function funcAddNewPremisesDetails(Request $request){
 		return \response()->json($res);
 	}
 
+
+	public function savepremiseRoomSizes(Request $request)
+	{
+		try {
+			
+			$id = $request->input('id');
+			$table_name = $request->input('table_name');
+			$user_id = \Auth::user()->id;
+			$params = array(
+				'premise_id' => $request->input('premise_id'),
+				'name' => $request->input('name'),
+				'length' => $request->input('length'),
+				'width' => $request->input('width')
+			);
+			if (validateIsNumeric($id)) {
+				$where2 = array(
+					'id' => $id
+				);
+				$params['dola'] = Carbon::now();
+				$params['altered_by'] = $user_id;
+				$previous_data = getPreviousRecords($table_name, $where2);
+				if ($previous_data['success'] == false) {
+					return $previous_data;
+				}
+				$previous_data = $previous_data['results'];
+				$res = updateRecord($table_name, $previous_data, $where2, $params, $user_id);
+			} else {
+				$params['created_on'] = Carbon::now();
+				$params['created_by'] = $user_id;
+				$res = insertRecord($table_name, $params, $user_id);
+			}
+		} catch (\Exception $exception) {
+			$res = array(
+				'success' => false,
+				'message' => $exception->getMessage()
+			);
+		} catch (\Throwable $throwable) {
+			$res = array(
+				'success' => false,
+				'message' => $throwable->getMessage()
+			);
+		}
+		return \response()->json($res);
+	}
+
 	public function getPremiseCancellationReasons(Request $request)
 	{
 		$application_code = $request->input('application_code');
@@ -5396,7 +5509,8 @@ public function funcAddNewPremisesDetails(Request $request){
 			$user_id = \Auth::user()->id;
 			$where = array(
 				'id' => $record_id,
-				'report_type_id'=>$report_type_id
+				'report_type_id'=>$report_type_id,
+				'report_by' =>$user_id
 			);
 			$params = array(
 				'application_code' => $request->input('application_code'),
@@ -5406,16 +5520,30 @@ public function funcAddNewPremisesDetails(Request $request){
 				'recommendation_id' => $request->input('recommendation_id'),
 				'inspection_type_id' => $request->input('inspection_type_id'),
 				'remarks' => $request->input('remarks'),
+				'chiefregional_inspector_recommendation_id' => $request->input('chiefregional_inspector_recommendation_id'),
+				'chiefregional_inspector_remarks' => $request->input('chiefregional_inspector_remarks'),
+				'regional_inspector_recommendation_id' => $request->input('regional_inspector_recommendation_id'),
+				'regional_inspector_remarks' => $request->input('regional_inspector_remarks'),
 				'report_type_id' => $request->input('report_type_id'),
 				'premise_state' => $request->input('premise_state'),
 				'premise_size' => $request->input('premise_size'),
 				'proposed_changes' => $request->input('proposed_changes'),
+
+				'storage_details' => $request->input('storage_details'),
+				'storage_available' => $request->input('storage_available'),
+				'cold_storage_facilities' => $request->input('cold_storage_facilities'),
+
+				'latitude' => $request->input('latitude'),
+				'longitude' => $request->input('longitude'),
+
 				'system_in_use_descption' => $request->input('system_in_use_descption'),
 				'report_by' =>$user_id,
 				'created_by' => \Auth::user()->id,
                 'created_on' => Carbon::now()
 				
 			);
+
+
 			
 		if(validateIsNumeric($record_id)){
          $rec = DB::table('tra_premiseinspection_applications')
@@ -5941,12 +6069,14 @@ public function funcAddNewPremisesDetails(Request $request){
 				}
 				$previous_data = $previous_data['results'];
 				$res = updateRecord($table_name, $previous_data, $where2, $params, $user_id);
+				
 			} else {
 				
 				$params['created_on'] = Carbon::now();
 				$params['created_by'] = $user_id;
 				$params['screened_by'] = $user_id;
 				$res = insertRecord($table_name, $params, $user_id);
+				
 			}
 
 
@@ -5955,9 +6085,10 @@ public function funcAddNewPremisesDetails(Request $request){
 
                  $data = array('zone_id' => $zone_id, 'dola' => Carbon::now(),
 				'altered_by' => \Auth::user()->id);
-				$ff=DB::connection('portal_db')->table('wb_premises_applications')
+				DB::connection('portal_db')->table('wb_premises_applications')
 				->where(array('application_code' => $application_code))
 				->update($data);
+
 				
 			}
 

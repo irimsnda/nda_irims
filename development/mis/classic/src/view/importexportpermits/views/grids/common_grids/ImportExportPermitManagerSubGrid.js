@@ -1,6 +1,6 @@
 /**
 
- * Created by Kip on 1/24/2019.
+ * Created by softclans.
  */
 Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExportPermitManagerSubGrid', {
     extend: 'Ext.grid.Panel',
@@ -88,33 +88,19 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         flex: 1
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'reference_no',
-        text: 'Reference No',
+        dataIndex: 'id',
+        text: 'Application ID',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'applicant_name',
-        text: 'Applicant Name',
-        flex: 1
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'proforma_invoice_no',
-        text: 'Proforma Invoice No',
+        dataIndex: 'date_added',
+        text: 'Date of Application',
         flex: 1
     },{
         xtype: 'gridcolumn',
-        text: 'Has Licensed Premises', 
-        dataIndex: 'certificate_no',
-        renderer: function (value, metaData) {
-            if (value == 1) {
-                metaData.tdStyle = 'color:white;background-color:green';
-                return "Registered/Licensed";
-            }
-
-            metaData.tdStyle = 'color:white;background-color:red';
-            return "Not Registered";
-        }
-
+        dataIndex: 'reference_no',
+        text: 'Permit Number',
+        flex: 1
     },{
         xtype: 'gridcolumn',
         text: 'Premises Name',
@@ -124,34 +110,71 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         
     },{
         xtype: 'gridcolumn',
-        text: 'Premises Physical Address',
-        dataIndex: 'prem_physical_address',
+        text: 'Premises Number',
+        dataIndex: 'psu_no',
         flex: 1,
         tdCls: 'wrap'
         
     },{
         xtype: 'gridcolumn',
-        text: 'Premises Registration No',
-        dataIndex: 'premise_reg_no',
+        text: 'Premises Physical Address',
+        dataIndex: 'pre_physical_address',
         flex: 1,
         tdCls: 'wrap'
         
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'applicant_name',
+        text: 'Applicant Name',
+        flex: 1
     }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'importation_reason',
+        text: 'Reason',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'product_category',
+        text: 'Product Category',
+        flex: 1
+    },
+    {
+        xtype: 'gridcolumn',
+        text: 'Has Licensed Premises', 
+        dataIndex: 'has_registered_premises',
+        renderer: function (value, metaData) {
+            if (value == 1) {
+                metaData.tdStyle = 'color:white;background-color:green';
+                return "NDA Licensed";
+            }
+
+            metaData.tdStyle = 'color:white;background-color:red';
+            return "NDA Non-Licensed";
+        }
+
+    }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'proforma_invoice_no',
+        text: 'Proforma Invoice No',
+        flex: 1
+    },{
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
         text: 'Status',
         flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'premises_validation_recommendation',
-        text: 'Premises Validation Recommendation',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'products_validation_recommendation',
-        text: 'Products Validation Recommendation',
-        flex: 1
-    },{
+    },
+    // {
+    //     xtype: 'gridcolumn',
+    //     dataIndex: 'premises_validation_recommendation',
+    //     text: 'Premises Validation Recommendation',
+    //     flex: 1
+    // },{
+    //     xtype: 'gridcolumn',
+    //     dataIndex: 'products_validation_recommendation',
+    //     text: 'Products Validation Recommendation',
+    //     flex: 1
+    // },
+    {
         text: 'Options',
         xtype: 'widgetcolumn',
         width: 90,

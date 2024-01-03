@@ -6,7 +6,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.PreDru
     layout: 'fit',
     items: [
         {
-            xtype: 'drugshopmanagerevaluationgrid'
+            xtype: 'predrugshopmanagerevaluationgrid'
         }
     ]
 });

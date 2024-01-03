@@ -284,7 +284,9 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             child = Ext.widget(childXtype),
             storeArray = eval(btn.stores),
             grid = btn.up('grid'),
-            site_id = grid.up('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue(),
+            mainTabPanel = grid.up('#contentPanel'),
+            activeTab = mainTabPanel.getActiveTab(),
+            site_id = activeTab.down('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue();
             arrayLength = storeArray.length;
         child.down('hiddenfield[name=manufacturing_site_id]').setValue(site_id);
         if (arrayLength > 0) {
@@ -305,7 +307,10 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         if (frm.isValid()) {
             frm.submit({
                 url: url,
-                params: {model: table},
+                params: {
+                    model: table,
+                    '_token': token,
+                },
                 waitMsg: 'Please wait...',
                 headers: {
                     'Authorization': 'Bearer ' + access_token
@@ -340,6 +345,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             storeID = btn.storeID,
             store = Ext.getStore(storeID),
             tabPanel=form.up('panel'),
+            productLineDetailsaddgrid=tabPanel.down('productLineDetailsaddgrid'),
             activeTab = tabPanel.getActiveTab(),
             nextTab = activeTab.nextSibling(),
             frm = form.getForm();
@@ -354,14 +360,22 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
                 success: function (form, action) {
                     var response = Ext.decode(action.response.responseText),
                         success = response.success,
-                        message = response.message;
+                        message = response.message,
+                        block_id = response.record_id;
                     if (success == true || success === true) {
                         toastr.success(message, "Success Response");
+                        productLineDetailsaddgrid.down('hiddenfield[name=block_id]').setValue(block_id);
+                        store = productLineDetailsaddgrid.getStore();
                         store.removeAll();
                         store.load();
                         if (nextTab) {
                             tabPanel.setActiveTab(nextTab);
                             btn.setHidden(true);
+                            store = productLineDetailsaddgrid.getStore();
+                            store.removeAll();
+                            store.load();
+                            
+                            
                           }
                         //win.close();
                     } else {
@@ -375,6 +389,8 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             });
         }
     },
+
+
 
     showEditGmpApplicationWinFrm: function (item) {
         //if (this.fireEvent('checkFullAccess') || this.fireEvent('checkWriteUpdate')) {
@@ -397,6 +413,35 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
          }*/
+    },
+
+
+    showEditProductLineDetails: function (item) {
+        var me = this,
+            btn = item.up('button'),
+            grid=btn.up('grid'),
+            record = btn.getWidgetRecord(),
+            site_id=record.get('manufacturing_site_id'),
+            childXtype = item.childXtype,
+            title = item.winTitle,
+            winWidth = '80%',
+            tabPnl = Ext.widget(childXtype),
+            form = tabPnl.down('form'),
+            grid = tabPnl.down('grid');
+          
+            storeArray = eval(item.stores);
+
+            if (!site_id) {
+                toastr.warning('Please ensure Site Details are loaded first!!', 'Warning Response');
+                return;
+            }
+        
+           form.loadRecord(record);
+           
+            grid.down('hiddenfield[name=manufacturing_site_id]').setValue(record.get('manufacturing_site_id'));
+            grid.down('hiddenfield[name=block_id]').setValue(record.get('id'));
+          
+            funcShowOnlineCustomizableWindow(title, winWidth, tabPnl, 'customizablewindow');
     },
 
     doDeleteGmpApplicationWidgetParam: function (item) {
@@ -599,9 +644,9 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             recommendation_type = item.recommendation_type,
             record = btn.getWidgetRecord(),
             grid = btn.up('grid'),
-            mainTabPanel = grid.up('#contentPanel'),
-            activeTab = mainTabPanel.getActiveTab(),
-            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            // mainTabPanel = grid.up('#contentPanel'),
+            // activeTab = mainTabPanel.getActiveTab(),
+            section_id =  record.get('section_id'),
             childXtype = item.childXtype,
             title = item.winTitle,
             winWidth = item.winWidth,
@@ -610,6 +655,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             arrayLength = storeArray.length,
             productLineStr = childObject.down('combo[name=product_line_id]').getStore(),
             productLineCategoryStr = childObject.down('combo[name=category_id]').getStore();
+           // console.log(recommendation_type);
         if ((is_recommendation) && is_recommendation == 1) {
             var productLineStatusStr = childObject.down('combo[name=prodline_inspectionstatus_id]').getStore(),
                 productLineRecommendationStr = childObject.down('combo[name=product_line_status_id]').getStore();
@@ -637,7 +683,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        console.log(record);
+        //console.log(record);
         childObject.loadRecord(record);
         funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },

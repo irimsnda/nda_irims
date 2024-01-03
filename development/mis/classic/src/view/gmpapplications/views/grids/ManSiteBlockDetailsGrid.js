@@ -27,7 +27,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.ManSiteBlockDetailsGrid', {
         iconCls: 'x-fa fa-plus',
         ui: 'soft-green',
         name: 'add_block',
-        handler: 'showAddGmpBlockWinFrm',
+        //handler: 'showAddGmpBlockWinFrm',
         winTitle: 'Manufacturing Site Block Details',
         childXtype: 'mansiteblockdetailsfrm',
         winWidth: '50%',
@@ -50,12 +50,15 @@ Ext.define('Admin.view.gmpapplications.views.grids.ManSiteBlockDetailsGrid', {
         beforeLoad: function () {
             var store=this.getStore(),
                 grid=this.up('grid'),
-                site_id=grid.up('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue();
+                 mainTabPanel = grid.up('#contentPanel'),
+                 activeTab = mainTabPanel.getActiveTab(),
+                 site_id = activeTab.down('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue();
             store.getProxy().extraParams={
                 manufacturing_site_id: site_id
             };
         }
     }],
+
     features: [{
         ftype: 'searching',
         minChars: 2,
@@ -71,7 +74,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.ManSiteBlockDetailsGrid', {
                     url: 'gmpapplications/getSiteBlockDetails'
                 }
             },
-            isLoad: true
+            isLoad: false
         },
         afterrender: function () {
             var grid = this,

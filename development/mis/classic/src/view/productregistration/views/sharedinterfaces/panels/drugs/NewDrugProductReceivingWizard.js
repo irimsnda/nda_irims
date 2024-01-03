@@ -19,11 +19,11 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.N
             xtype: 'toolbar',
             dock: 'top',
             ui: 'footer',
-            height: 60,
+            height: 50,
             defaults: {
                 labelAlign: 'top',
-                margin: '-12 5 0 5',
-                labelStyle: "color:#595959;font-size:13px"
+                margin: '-12 3 0 3',
+                labelStyle: "color:#595959;font-size:11px"
             },//drugproductdocuploadsgrid
             items: ['->', {
                 xtype: 'displayfield',
@@ -32,7 +32,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.N
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
-                    'font-size': '12px'
+                    'font-size': '11px'
                 }
             }, {
                     xtype: 'tbseparator',
@@ -44,7 +44,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.N
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
-                        'font-size': '12px'
+                        'font-size': '11px'
                     }
                 }, {
                     xtype: 'tbseparator',
@@ -56,7 +56,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.N
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
-                        'font-size': '12px'
+                        'font-size': '11px'
                     }
                 }, {
                     xtype: 'tbseparator',
@@ -68,7 +68,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.N
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
-                        'font-size': '12px'
+                        'font-size': '11px'
                     }
                 },  {
                     xtype: 'displayfield',
@@ -77,7 +77,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.N
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
-                        'font-size': '12px'
+                        'font-size': '11px'
                     }
                 }, {
                     xtype: 'hiddenfield',
@@ -119,7 +119,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.N
             //layout: 'fit',
 
             defaults: {
-                margin: 3
+                margin: 2
             },
             items: [{
                 xtype: 'productapplicantdetailsfrm',
@@ -131,78 +131,10 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.N
             }]
         },
         {
-            xtype: 'drugsProductsDetailsPnl',
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    ui: 'footer',
-                    dock: 'top',
-                    margin: 3,
-                    items: [
-                        {
-                            xtype: 'tbspacer',
-                            width: 2
-                        },
-                        {
-                            xtype: 'combo',
-                            fieldLabel: 'Zone',
-                            labelWidth: 110,
-                            width: 400,
-                            name: 'zone_id',
-                            valueField: 'id',
-                            displayField: 'name',
-                            queryMode: 'local',
-                            forceSelection: true,
-                            listeners: {
-                                beforerender: {
-                                    fn: 'setOrgConfigCombosStore',
-                                    config: {
-                                        pageSize: 1000,
-                                        proxy: {
-                                            extraParams: {
-                                                model_name: 'Zone'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            },
-                            labelStyle: 'font-weight:bold'
-                        }, {
-                            xtype: 'tbseparator',
-                            width: 2
-                        }, {
-                            xtype: 'combo',
-                            fieldLabel: 'Assessment Procedure',
-                            name: 'assessment_procedure_id',
-                            forceSelection: true,
-                            queryMode: 'local',
-                            valueField: 'id',labelWidth: 110,
-                            width: 400,
-                            displayField: 'name',
-                            listeners: {
-                                afterrender: {
-                                    fn: 'setConfigCombosStore',
-                                    config: {
-                                        pageSize: 10000,
-                                        proxy: {
-                                            url: 'configurations/getRegistrationApplicationParameters',
-                                            extraParams: {
-                                                table_name: 'par_assessment_procedures'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            }
-                
-                        },
-                    ]
-                }
-            ],
+            xtype: 'drugsProductsDetailsPnl'
 
         },{
-            xtype: 'qualityreportgrid'
+            xtype: 'drugqualityreportpnl'
            
         }, {
             xtype: 'tabpanel',
@@ -257,7 +189,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.N
                     handler: 'quickNavigation'
                 }, {
                     step: 2,
-                    iconCls: 'fa fa-upload',
+                    iconCls: 'fa fa-check',
                     enableToggle: true,
                     text: 'Quality Summary Report',
                     action: 'quickNav', iconAlign: 'top',
@@ -273,7 +205,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.N
                     handler: 'quickNavigation'
                 },{
                     step: 4,
-                    iconCls: 'fa fa-money',
+                    iconCls: 'fa fa-money-bill-wave',
                     enableToggle: true,
                     text: 'Invoice & Payment Details',
                     action: 'quickNav',iconAlign: 'top',

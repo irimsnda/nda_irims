@@ -1,7 +1,5 @@
 /**
  * Created by softclans
- * user robinson odhiambo
- * Kip on 9/24/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importexportpermitevaluationpnl', {
     extend: 'Ext.panel.Panel',
@@ -121,7 +119,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
     items: [{
             xtype:'tabpanel',
             layout: 'fit',
-            title: 'Application Details((Permit, Sender/Receiver, Licenses Outlets and Documents)',
+            title: 'Application Details',
             items:[{
                 xtype: 'panel',
                 autoScroll: true, 
@@ -143,10 +141,10 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                     title: 'Sender/Receiver Details',
                 },{
                     xtype: 'importexportpremisesfrm',collapsible: true,
-                    title: 'Licensed Outlet Details',
+                    title: 'Premises Details',
                 }],
                 bbar:[{
-                    text: 'Update Permit Application Details',
+                    text: 'Update VC Application Details',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-save',
                     name: 'save_btn',
@@ -163,9 +161,9 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
         {
             xtype: 'importexportpermitsproductsgrid',
             itemId: 'importexportpermitsproductsgrid',
-            title: 'Recommendation on Import/Export Permit Products Details',
+            title: 'Recommendation on Import/Export VC Products Details',
             bind: {
-                title: '{application_title}'+' Permit Products Details Recommendations'
+                title:' Permit Products Details Recommendations'
             },
             selModel: {
                 selType: 'checkboxmodel',
@@ -267,7 +265,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                   dataIndex: 'total_value',
                   tdCls: 'wrap-text',
                   text: 'Total Value',
-                  width: 200,
+                  flex: 1,
                   summaryType: 'sum',
                   renderer: function (val, meta, record) {
                       return Ext.util.Format.number(val, '0,000.00');
@@ -290,47 +288,48 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                     metaData.tdStyle = 'color:white;background-color:red';
                     return "Not Registered";
                 }
-        
-            },{   
-                xtype: 'gridcolumn',
-                dataIndex: 'prodregistrationvalidation_recommendation_id',
-                tdCls:'wrap-text',
-                text: 'Product Registration Validation Recommendation',
-                flex: 1,
-                    renderer: function (val, meta, record, rowIndex, colIndex, store, view) {
-                        var textVal = '';
+         },
+               // {   
+            //     xtype: 'gridcolumn',
+            //     dataIndex: 'prodregistrationvalidation_recommendation_id',
+            //     tdCls:'wrap-text',
+            //     text: 'Product Registration Validation Recommendation',
+            //     width: 80,
+            //         renderer: function (val, meta, record, rowIndex, colIndex, store, view) {
+            //             var textVal = '';
                        
-                        if (val == 2) {
-                            textVal = "Accepted";
-                            meta.tdStyle = 'color:white;background-color:green';
+            //             if (val == 2) {
+            //                 textVal = "Accepted";
+            //                 meta.tdStyle = 'color:white;background-color:green';
                             
-                        }else if(val == 3){
-                            meta.tdStyle = 'color:white;background-color:red';
-                            textVal = "Rejected";
-                        }else{
-                           // meta.tdStyle = 'color:white;background-color:blue';
-                        }
-                        return textVal;
-                    }
-              },{   
-                xtype: 'gridcolumn',
-                dataIndex: 'prodregistrationvalidation_recommendation_remarks',
-                tdCls:'wrap-text',
-                text: 'Product Registration Validation Recommendation',
-                flex: 1,
-                renderer: function (val) {
-                    if (val == '') {
+            //             }else if(val == 3){
+            //                 meta.tdStyle = 'color:white;background-color:red';
+            //                 textVal = "Rejected";
+            //             }else{
+            //                // meta.tdStyle = 'color:white;background-color:blue';
+            //             }
+            //             return textVal;
+            //         }
+            //   },{   
+            //     xtype: 'gridcolumn',
+            //     dataIndex: 'prodregistrationvalidation_recommendation_remarks',
+            //     tdCls:'wrap-text',
+            //     text: 'Product Registration Validation Recommendation',
+            //     width: 80,
+            //     renderer: function (val) {
+            //         if (val == '') {
                        
-                             var val = 'Recommendation Remarks';
-                    }
-                    return val;
-                }
-              },{   
+            //                  var val = 'Recommendation Remarks';
+            //         }
+            //         return val;
+            //     }
+            //   },
+              {   
                 xtype: 'gridcolumn',
                 dataIndex: 'permitprod_recommendation_id',
                 tdCls:'wrap-text',
                 text: 'Permits Product Recommendation(Acceptance)',
-                flex: 1,
+                width: 80,
                     editor: {
                         xtype: 'combo',
                         store: 'permitprod_recommendationstr',
@@ -371,7 +370,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                 dataIndex: 'permitprod_recommendation_remarks',
                 tdCls:'wrap-text',
                 text: 'Recommendation Remarks',
-                flex: 1,
+                width: 100,
                 editor: {
                     xtype:'textfield'
                 },renderer: function (val) {
@@ -467,7 +466,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                     iconCls: 'fa fa-user',
                     enableToggle: true,
                     pressed: true,
-                    text: 'Application Details (Permit, Sender/Receiver, Licenses Outlets and Documents)',
+                    text: 'Application Details',
                     iconAlign: 'top',
                     action: 'quickNav',max_step:2,
                     wizard: 'importexportpermitevaluationpnl',
@@ -477,7 +476,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                     step: 1,
                     iconCls: 'fa fa-university',
                     enableToggle: true,iconAlign: 'top',
-                    text: 'Recommendation on Import/Export Permit Products Details',
+                    text: 'Recommendation on Import/Export VC Products Details',
                     max_step:2,
                     action: 'quickNav', wizard: 'importexportpermitevaluationpnl',
                     handler: 'quickScreeningNavigation'
@@ -499,7 +498,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                 {
                     xtype: 'transitionsbtn'
                 },{
-                    text: 'Preview & Edit Permit Details(Preview Option)',
+                    text: 'Preview & Edit VC Details(Preview Option)',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-edit',
                     hidden: true,
@@ -537,15 +536,57 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                     tooltip: 'Raise Query/View Query(Request for Information) and query Responses',
                     ui: 'soft-green',
                     handler: 'showAddApplicationUnstrcuturedQueries',
-                },{
-                    text: 'Submit Application',
-                    ui: 'soft-purple',
-                    hidden: true,
-                    iconCls: 'fa fa-check',
-                    name: 'process_submission_btn',
-                    table_name: 'tra_importexport_applications',
-                    winWidth: '50%'
                 },
+                
+            //     {
+                    
+            //         //text: 'Review & Approval Recommendation',
+            //         text: 'Approval Recommendation1',
+            //         ui: 'soft-purple',
+            //         iconCls: 'fa fa-check',
+            //         ui: 'soft-purple',
+            //         iconCls: 'fa fa-sliders',
+            //         menu: {
+            //             xtype: 'menu',
+            //             items: [
+            //                 {
+            //                     text: 'Reject Application',
+            //                     iconCls: 'x-fa fa-bars',
+            //                     decision_id: 3,
+            //                     winWidth: '90%', ui: 'soft-red',
+            //                     name: 'reject_recommendation',
+            //                     stores: '[]'
+            //                 },{
+            //                     text: 'Approve Application',
+            //                     iconCls: 'x-fa fa-bars', decision_id: 1,
+            //                     winWidth: '90%',ui: 'soft-green',
+            //                     name: 'approve_recommendation',
+            //                     stores: '[]'
+            //                 }
+            //             ]
+            //         }
+            // },
+            // {
+            //     text: 'Close & Release Application',
+            //     ui: 'soft-purple',
+            //     iconCls: 'fa fa-check',
+            //     wizard: 'importexportpermitmanagerreviewwizard',
+            //     name: 'process_submission_btn',
+            //     table_name: 'tra_importexport_applications',
+            //     winWidth: '50%',
+                
+            // },
+            {
+                text: 'Add Overrall Comments',
+                ui: 'soft-purple', 
+                iconCls: 'fa fa-weixin',
+                childXtype: 'applicationcommentspnl',
+                winTitle: 'Asssesment Process Comments',
+                winWidth: '60%',
+                name:'prev_comments',
+                comment_type_id: 2,
+                stores: '[]'
+         }, 
                 {
                     text: 'Next',
                     ui: 'soft-purple',
@@ -556,7 +597,17 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                         disabled: '{atEnd}'
                     },wizard:'importexportpermitevaluationpnl',
                     handler: 'onNextScreeningCardClick'
-                }
+                }, 
+
+                {
+                    text: 'Submit Application',
+                    ui: 'soft-purple',
+                    hidden: true,
+                    iconCls: 'fa fa-check',
+                    name: 'process_submission_btn',
+                    table_name: 'tra_importexport_applications',
+                    winWidth: '50%'
+                },
             ]
         };
         me.callParent(arguments);

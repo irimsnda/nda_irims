@@ -15,7 +15,7 @@ Ext.define('Admin.view.gmpapplications.views.containers.VeterinaryMedicinesGmpCn
         {
             xtype: 'hiddenfield',
             name: 'section_id',
-            value: 7
+            value: 2
         },
         {
             xtype: 'drugsgmpdashwrapper',

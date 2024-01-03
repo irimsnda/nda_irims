@@ -117,6 +117,13 @@ Ext.define('Admin.view.main.MainController', {
         }
     },
 
+    onMainViewRender: function () {
+        if (!window.location.hash) {
+            this.redirectTo("dashboard");
+        }
+    },
+
+
     onToggleNavigationSize: function () {
         var me = this,
             refs = me.getReferences(),
@@ -145,7 +152,7 @@ Ext.define('Admin.view.main.MainController', {
                 // text of the items in the navlist will be revealed by the animation.
                 // navigationList.setMicro(false);
                 navigationList.setMicro(false);
-                refs.senchaLogo.update('<div class="main-logo"><img src="resources/images/org-logo.jpg" style="width: 90px; height: 50px; margin-left:0;">iRIMS MIS</div>');
+                refs.senchaLogo.update('<div class="main-logo" style="color: #497d36 !important; font-weight: bold;"><img src="resources/images/nda_logo.png" style="width: 200px; height: 50px; margin-left: 0; margin-top: 0;"></div>');
             }
             navigationList.canMeasure = false;
             //treeContainer.canMeasure = false;
@@ -176,12 +183,6 @@ Ext.define('Admin.view.main.MainController', {
                     single: true
                 });
             }
-        }
-    },
-
-    onMainViewRender: function () {
-        if (!window.location.hash) {
-            this.redirectTo("admindashboard");
         }
     },
 
@@ -295,6 +296,8 @@ Ext.define('Admin.view.main.MainController', {
             }
         });
     },
+
+
 
     beforeTabChange: function (tabPnl, newTab, oldTab) {
         var me = this,

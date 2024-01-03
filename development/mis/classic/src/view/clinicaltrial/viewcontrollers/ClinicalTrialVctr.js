@@ -513,6 +513,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         }
         if (activeIndex === 3) {
             model.set('atEnd', true);
+            wizardPanel.down('button[name=save_screening_btn]').setDisabled(false);
         } else {
             model.set('atEnd', false);
         }
@@ -555,13 +556,13 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             model.set('atDetails', false);
         }
         if (activeIndex === 6) {
-            wizardPanel.down('button[name=print_invoice]').setVisible(true);
-            wizardPanel.down('button[name=receive_invoicebtn]').setVisible(true);
+           // wizardPanel.down('button[name=print_invoice]').setVisible(true);
+            //wizardPanel.down('button[name=receive_invoicebtn]').setVisible(true);
             wizardPanel.down('button[name=save_screening_btn]').setDisabled(false);
             model.set('atEnd', true);
         } else {
-            wizardPanel.down('button[name=print_invoice]').setVisible(false);
-            wizardPanel.down('button[name=receive_invoicebtn]').setVisible(false);
+            //wizardPanel.down('button[name=print_invoice]').setVisible(false);
+           // wizardPanel.down('button[name=receive_invoicebtn]').setVisible(false);
            
             model.set('atEnd', false);
         }
@@ -643,7 +644,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         }
         if (activeIndex === 3) {
             
-            
+            wizardPanel.down('button[name=save_screening_btn]').setDisabled(false);
             model.set('atEnd', true);
         } else {
            
@@ -679,6 +680,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         if (step == 12) {
            
             wizardPnl.getViewModel().set('atEnd', true);
+            wizardPanel.down('button[name=save_screening_btn]').setDisabled(false);
         } else {
             
             wizardPnl.getViewModel().set('atEnd', false);
@@ -881,15 +883,15 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         }
         if (step == 6) {
             
-            wizardPnl.down('button[name=print_invoice]').setVisible(true);
-            wizardPnl.down('button[name=receive_invoicebtn]').setVisible(true);
+            //wizardPnl.down('button[name=print_invoice]').setVisible(true);
+           // wizardPnl.down('button[name=receive_invoicebtn]').setVisible(true);
             wizardPnl.down('button[name=save_screening_btn]').setDisabled(false);
            
             wizardPnl.getViewModel().set('atEnd', true);
         } else {
             
-            wizardPnl.down('button[name=print_invoice]').setVisible(false);
-            wizardPnl.down('button[name=receive_invoicebtn]').setVisible(false);
+            //wizardPnl.down('button[name=print_invoice]').setVisible(false);
+            //wizardPnl.down('button[name=receive_invoicebtn]').setVisible(false);
            
             wizardPnl.getViewModel().set('atEnd', false);
         }
@@ -926,14 +928,14 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         }
         if (step == 3) {
             
-            wizardPnl.down('button[name=print_invoice]').setVisible(true);
-            wizardPnl.down('button[name=receive_invoicebtn]').setVisible(true);
-           
+            //wizardPnl.down('button[name=print_invoice]').setVisible(true);
+            //wizardPnl.down('button[name=receive_invoicebtn]').setVisible(true);
+            wizardPanel.down('button[name=save_screening_btn]').setDisabled(false); 
             wizardPnl.getViewModel().set('atEnd', true);
         } else {
             
-            wizardPnl.down('button[name=print_invoice]').setVisible(false);
-            wizardPnl.down('button[name=receive_invoicebtn]').setVisible(false);
+            //wizardPnl.down('button[name=print_invoice]').setVisible(false);
+            w//izardPnl.down('button[name=receive_invoicebtn]').setVisible(false);
            
             wizardPnl.getViewModel().set('atEnd', false);
         }
@@ -971,7 +973,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         }
         if (step == 3) {
             
-           
+           wizardPanel.down('button[name=save_screening_btn]').setDisabled(false);
             wizardPnl.getViewModel().set('atEnd', true);
         } else {
             
@@ -1012,7 +1014,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         }
         if (step == 3) {
             
-           
+            wizardPanel.down('button[name=save_screening_btn]').setDisabled(false);
             wizardPnl.getViewModel().set('atEnd', true);
         } else {
             
@@ -1053,7 +1055,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         }
         if (step == 3) {
             
-           
+           wizardPanel.down('button[name=save_screening_btn]').setDisabled(false);
             wizardPnl.getViewModel().set('atEnd', true);
         } else {
             
@@ -1399,8 +1401,8 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
-    showTcRecommendation: function (item) {
-        this.fireEvent('showTcRecommendationUploads', item);
+    showTcRecommendation: function (btn) {
+        this.fireEvent('showClinicalTrialTcRecommendationUploads', btn);
     },
     
     showGCPInspectionDetailsWizard: function (view, record) {
@@ -1436,20 +1438,20 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         this.fireEvent('showGCPInspectionDetailsWizard', application_id,'gcpapprovalinspectionprocesswizard', app_inspection_id,application_code, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly, is_temporal);
     },
     
-    getApplicationApprovalDetails: function (item) {
+    getApplicationApprovalDetails: function (btn) {
         Ext.getBody().mask('Please wait...');
         var me = this,
-            is_update = item.is_update,
-            btn = item.up('button'),
+            is_update = btn.is_update,
+           // btn = btn.up('button'),
             record = btn.getWidgetRecord(),
             application_id = record.get('active_application_id'),
             application_code = record.get('application_code'),
             process_id = record.get('process_id'),
             workflow_stage_id = record.get('workflow_stage_id'),
-            table_name = item.table_name, 
-            approvalfrm = item.approvalfrm,
+            table_name = btn.table_name, 
+            approvalfrm = btn.approvalfrm,
             form =  approvalfrm,// Ext.widget('clinicaltrialapprovalrecommfrm'),
-            storeArray = eval(item.stores),
+            storeArray = eval(btn.stores),
             arrayLength = storeArray.length;
             if(form == ''){
                 form = 'clinicaltrialapprovalrecommfrm';
@@ -1490,7 +1492,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
                     form.down('hiddenfield[name=application_code]').setValue(application_code);
                     form.down('hiddenfield[name=process_id]').setValue(process_id);
                     form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
-                    funcShowCustomizableWindow('Recommendation', '40%', form, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('Recommendation', '50%', form, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -1846,15 +1848,15 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
     },
     
     showApplicationComments: function (item) {
-        var btn = item.up('button'),
+           var me = this,
             record = btn.getWidgetRecord(),
             application_code = record.get('application_code'),
             application_id = record.get('active_application_id');
         this.fireEvent('showApplicationCommentsWin', item, application_id, application_code);
     },
 
-    printClinicalTrialCertificate: function (item) {
-        var btn = item.up('button'),
+    printClinicalTrialCertificate: function (btn) {
+        var me = this,
             record = btn.getWidgetRecord(),
             application_id = record.get('active_application_id'),
             application_code = record.get('application_code');

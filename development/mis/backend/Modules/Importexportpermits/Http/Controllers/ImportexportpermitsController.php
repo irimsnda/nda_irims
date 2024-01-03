@@ -227,11 +227,22 @@ class ImportexportpermitsController extends Controller
                 ->select('t3.*')
                     ->where(array('id'=>$premise_id));
             $premisesDetails = $qry3->first();
-            $where = array(
-                'module_id' => $results->module_id,
-                'sub_module_id' => $results->sub_module_id,
-                'section_id' => $results->section_id
-            );
+            if($results->module_id==4 || $results->module_id===4){
+                $where = array(
+                    'module_id' => $results->module_id,  
+                     'sub_module_id' => $results->sub_module_id,
+                     'importexport_permittype_id' => $results->licence_type_id,
+                     'importexport_applicationtype_id' => $results->has_registered_premises
+                     );
+
+             }else{
+                $where = array(
+                    'module_id' => $results->module_id,
+                    'sub_module_id' => $results->sub_module_id,
+                    //'section_id' => $results->section_id
+                     );
+             }
+         
             $results->process_name = getSingleRecordColValue('wf_tfdaprocesses', $where, 'name');
             $res = array(
                 'success' => true,
@@ -676,19 +687,23 @@ class ImportexportpermitsController extends Controller
             //get the records 
             //
              //   ->leftJoin('tra_approval_recommendations as t4', 't3.application_code','=','t4.application_code')
+             // if(t11.brand_name IS NULL, t1.permitbrand_name, t11.brand_name) AS brand_name,if(t12.name IS NULL, 
+             //        t1.permitcommon_name, t12.name) as common_name, t1.id as permit_prod_id, t2.section_id,
+                    // t4.registration_no as certificate_no,regulated_prodpermit_id,authorised_permit_no, t7.name as packaging_units,t6.name as weight_units, t5.name as currency_name, t8.name as product_category,t9.name as device_type, (unit_price*quantity) as  total_value"
             $records = DB::table('tra_permits_products as t1')
                 ->join('tra_importexport_applications as t2', 't1.application_code','=','t2.application_code')
                 ->leftJoin('tra_product_applications as t3', 't1.product_id','=','t3.product_id')
                 ->leftJoin('tra_registered_products as t4', 't3.reg_product_id','=','t4.id')
                 ->leftJoin('par_currencies as t5', 't1.currency_id','=','t5.id')
                 ->leftJoin('par_weights_units as t6', 't1.weights_units_id','=','t6.id')
-                ->leftJoin('par_packaging_units as t7', 't1.packaging_unit_id','=','t7.id')
-                ->leftJoin('par_product_categories as t8', 't1.product_category_id','=','t8.id')
+                ->leftJoin('par_packaging_units as t7', 't1.si_unit_id','=','t7.id')
+                ->leftJoin('par_importexport_product_category as t8', 't1.product_category_id','=','t8.id')
                 ->leftJoin('par_device_types as t9', 't1.device_type_id','=','t9.id')
                 ->leftJoin('tra_trader_regulatedproducts as t10', 't1.regulated_prodpermit_id','=','t10.id')
                 ->leftJoin('tra_product_information as t11', 't1.product_id','=','t11.id')
-                ->leftJoin('par_common_names as t12', 't11.common_name_id','=','t12.id')
-                ->select(DB::raw("t1.*, t1.id as permit_prod_id, t2.section_id,if(t11.brand_name IS NULL, t1.permitbrand_name, t11.brand_name) AS brand_name,if(t12.name IS NULL, t1.permitcommon_name, t12.name) as common_name,  t4.registration_no as certificate_no,regulated_prodpermit_id,authorised_permit_no, t7.name as packaging_units,t6.name as weight_units, t5.name as currency_name, t8.name as product_category,t9.name as device_type, (unit_price*quantity) as  total_value"))
+                ->leftJoin('par_common_names as t12', 't1.common_name_id','=','t12.id')
+                ->select(DB::raw("t1.*, t12.name as common_name, t8.name as product_category, t7.name as si_unit, t5.name as currency_name, if(t11.brand_name IS NULL, t1.permitbrand_name, t11.brand_name) AS brand_name,if(t12.name IS NULL, 
+                    t1.permitcommon_name, t12.name) as common_name "))
                ->where(array('t1.application_code' => $application_code));
             $records = $records->get();
                 
@@ -1358,7 +1373,9 @@ class ImportexportpermitsController extends Controller
         }
             
         public function getPermitsApplicationMoreDetails(Request $request)
+       
         {
+           
             $application_id = $request->input('application_id');
             $applicant_id = $request->input('applicant_id');
             try {
@@ -1377,6 +1394,8 @@ class ImportexportpermitsController extends Controller
                     );
 
             $permit_details = $qry1->first();
+          //  dd($permit_details);
+
             $premise_id = $permit_details->premise_id;
             $sender_receiver_id = $permit_details->sender_receiver_id;
             $qry2 = DB::table('tra_permitsenderreceiver_data as t3')
@@ -2866,15 +2885,16 @@ $res = array("success"=>false,'message'=>'Pemrit Details failed to update' );
 
                 $qry = DB::table($table_name . ' as t1')
                     ->join('wb_trader_account as t2', 't1.applicant_id', '=', 't2.id')
-                    ->leftJoin('tra_application_invoices as t3', function ($join) use ($application_code) {
-                        $join->on('t1.id', '=', 't3.application_id')
-                            ->on('t3.application_code', '=', DB::raw($application_code));
-                    })
+                        ->leftJoin('tra_application_invoices as t3', function ($join) use ($application_code) {
+                            $join->on('t3.application_code', '=', DB::raw($application_code));
+                        })
                     ->select(DB::raw("t1.applicant_id,CONCAT_WS(',',t2.name,t2.postal_address) as applicant_details, t3.id as invoice_id, t3.invoice_no,
                     t1.section_id,t1.module_id,'' as product_details"))
                     ->where('t1.application_code', $application_code);
                 $results = $qry->first();
                 $payment_details = getApplicationPaymentsRunningBalance($application_id, $application_code, $results->invoice_id);
+
+                
                 $res = array(
                     'success' => true,
                     'results' => $results,
@@ -3555,7 +3575,7 @@ if($reference_no != ''){
 
                 $qry1 = clone $main_qry;
                 $qry1->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
-                    ->select('t1.*','q.name as application_status', 't1.id as active_application_id',
+                    ->select('t1.*','q.name as application_status', 't1.id as active_application_id','t1.tpin_no', 't1.name', 't1.physical_address', 't1.email', 't1.company_registration_no',
                         't3.name as applicant_name', 't3.contact_person',
                         't3.tin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
                         't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website'
@@ -3577,6 +3597,19 @@ if($reference_no != ''){
                     ->select('t3.*')
                         ->where(array('id'=>$premise_id));
                 $premisesDetails = $qry3->first();
+ 
+            
+                // $qry4 = DB::table('tra_onlinesubmissions as t1')
+                //          ->select('t1.*', 't4.name as importexport_product_range_id')
+                //          ->leftJoin('par_importexport_productrange_details as t2', 't2.application_id', '=', 't1.application_id')
+                //          ->leftJoin('par_importexport_product_range as t4', 't4.id', '=', 't2.importexport_product_range_id')
+                           
+                //             ->where('t1.application_id', $application_id);
+                //             $productRangeDetails = $qry4->first();
+
+                //             dd($productRangeDetails);
+
+
             }
             
             $res = array(
@@ -3585,6 +3618,7 @@ if($reference_no != ''){
                 'permit_details' => $permit_details,
                 'senderReceiverDetails'=>$senderReceiverDetails,
                 'premisesDetails'=>$premisesDetails,
+               // 'productRangeDetails'=>$productRangeDetails,
                 'message' => 'All is well'
             );
 
@@ -4664,6 +4698,8 @@ $whereClauses = array();
                 ->leftJoin('par_approval_decisions as t9', 't8.decision_id', '=', 't9.id')
                 ->leftJoin('tra_submissions as t10', 't1.application_code', '=', 't10.application_code')
                 ->leftJoin('wf_workflow_stages as t11', 't10.current_stage', '=', 't11.id')
+                ->leftJoin('par_importexport_reasons as t17', 't1.importation_reason_id', '=', 't17.id' )
+                ->leftJoin('par_importexport_product_category as t18', 't1.product_category_id', '=', 't18.id' )
                  
                 ->leftJoin('users as t12', 't10.usr_from', '=', 't12.id')
                 ->leftJoin('users as t13', 't10.usr_to', '=', 't13.id')
@@ -4674,7 +4710,8 @@ $whereClauses = array();
                 })
                 ->join('wf_tfdaprocesses as t16', 't10.process_id', '=', 't16.id')
                 ->leftJoin('par_evaluation_recommendations as t15', 't14.recommendation_id', '=', 't15.id')
-                ->select('t1.*', 't3.name as applicant_name','t5.name as premises_name','t9.name as special_caseapproval', 't8.decision_id as specialcaseapproval_id','t4.name as application_status','t7.id as recommendation_id', 't6.name as recommendation','t6.name as approval_status','t15.name as screening_recommendation', 
+                ->leftJoin('par_business_types as t19', 't19.id', '=', 't1.business_type_id')
+                ->select('t1.*', 't19.name as business_type', 't1.name', 't1.physical_address', 't1.company_registration_no', 't3.name as applicant_name', 't17.name as importation_reason','t18.name as product_category','t5.name as premises_name','t9.name as special_caseapproval', 't8.decision_id as specialcaseapproval_id','t4.name as application_status','t7.id as recommendation_id', 't6.name as recommendation','t6.name as approval_status','t15.name as screening_recommendation', 
                     't1.id as active_application_id',DB::raw("t10.date_received, CONCAT_WS(' ',decrypt(t12.first_name),decrypt(t12.last_name)) as from_user,t16.name as process_name, t11.name as workflow_stage"))
                 ->where(array('t10.current_stage' => $workflow_stage,'isDone'=>0, 't1.section_id'=>$section_id ));
                // ->where('t10.usr_to', $user_id);
@@ -6048,16 +6085,20 @@ function saveImportProductDetails($record_id, $data,$user_id,$table_name){
             $prod_details = $request->input('prod_details');
             $prod_details = json_decode($prod_details);
             $table_name = 'tra_permits_products';
-
             $user_id = $this->user_id;
+
+
             try {
                 $insert_params = array();
+               
                 foreach ($prod_details as $prod_detail) {
-                    
-                    $permit_prod_id = $prod_detail->permit_prod_id;
+                     
+                    $permit_prod_id = $prod_detail->application_code;
+
+
                     if (validateIsNumeric($permit_prod_id)) {
                         $where = array(
-                            'id' => $permit_prod_id
+                            'application_code' => $permit_prod_id
                         );
                         $permitprod_recommendation_id = $prod_detail->permitprod_recommendation_id;
                         $permitprod_recommendation_remarks = $prod_detail->permitprod_recommendation_remarks;
@@ -6071,6 +6112,7 @@ function saveImportProductDetails($record_id, $data,$user_id,$table_name){
                         $prev_data = getPreviousRecords($table_name, $where);
 
                         updateRecord($table_name, $prev_data['results'], $where, $update_params, $user_id);
+                       // dd($dd);
                     }
                 }
                 

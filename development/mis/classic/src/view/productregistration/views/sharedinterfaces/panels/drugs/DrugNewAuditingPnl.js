@@ -112,7 +112,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
         }
     ],
     items: [{
-            title: 'Product Application & 2nd Assessment Uploads',
+            title: 'Product Application & Quality Review Uploads',
             region: 'center',
             xtype:'tabpanel', autoScroll: true,
             items: [{
@@ -122,7 +122,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                 title: 'Preview Product Details'
              },{
                 
-                title: '2nd Assessment Uploads',itemId:'auditing_panel',
+                title: 'Quality Review Uploads',itemId:'auditing_panel',
                 layout:'fit', margin:5,
                 items:[{
                     xtype: 'productAuditingUploadsGrid',
@@ -205,7 +205,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                                     ui: 'soft-purple',
                                     iconCls: 'fa fa-weixin',
                                     childXtype: 'applicationprevcommentsgrid',
-                                    winTitle: '1st Assessment  Comments & Recommendations',
+                                    winTitle: 'Assessment  Comments & Recommendations',
                                     winWidth: '60%',
                                     comment_type_id: 2,
                                     name: 'comments_btn',
@@ -262,11 +262,11 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                             handler: 'showAddProductGmpInspectionStatusWin',
                             stores: '[]'
                         }, {
-                            text: '2nd Assessments Recommendation & Comments',
+                            text: 'Quality Reviews Recommendation & Comments',
                             ui: 'soft-purple', 
                             iconCls: 'fa fa-weixin',
                             childXtype: 'applicationcommentspnl',
-                            winTitle: '2nd Assessments Process Comments',
+                            winTitle: 'Quality Reviews Process Comments',
                             winWidth: '60%',
                             name:'prev_comments',
                             comment_type_id: 3,

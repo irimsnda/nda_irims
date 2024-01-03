@@ -167,7 +167,10 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.O
                     ]
                 }
             ],
-        }, {
+        },,{
+            xtype: 'drugqualityreportpnl'
+           
+        },{
             xtype: 'tabpanel',
             items: [{
                 xtype: 'onlineproductdocuploadsgrid',
@@ -226,8 +229,16 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.O
                     action: 'quickNav', iconAlign: 'top',
                     wizard: 'onlinedrugproductreceivingwizard',
                     handler: 'quickNavigationonlineprev'
-                }, {
+                },{
                     step: 2,
+                    iconCls: 'fa fa-check',
+                    enableToggle: true,
+                    text: 'Quality Summary Report',
+                    action: 'quickNav', iconAlign: 'top',
+                    wizard:'newdrugproductreceivingwizard',
+                    handler: 'quickNavigationonlineprev'
+                }, {
+                    step: 3,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
                     text: 'Product Application Documents Submission',
@@ -235,7 +246,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.O
                     wizard: 'onlinedrugproductreceivingwizard',
                     handler: 'quickNavigationonlineprev'
                 },{
-                    step: 3,
+                    step: 4,
                     iconCls: 'fa fa-check-square',
                     enableToggle: true,
                     text: 'PRE-CHECKING',
@@ -246,7 +257,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.O
                         text:'{prechecking_querytitle}'
                     }
                 }, {
-                    step: 4,
+                    step: 5,
                     iconCls: 'fa fa-check-square',
                     enableToggle: true,
                     text: 'Invoice & Payment Details',
@@ -256,6 +267,8 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.O
                 }
             ]
         };
+
+
        
         this.bbar = {
             reference: 'navigation-toolbar',

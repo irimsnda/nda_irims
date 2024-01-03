@@ -32,10 +32,10 @@ Ext.define('Admin.view.registers.views.premisesregister.grid.PremisesRegisterGri
             ptype: 'filterfield'
         }],
     columns: [{
-        text: 'Product Type',
+        text: 'Business Type',
         sortable: false,
         width: 150,
-        dataIndex: 'section_name',
+        dataIndex: 'business_type',
     },{
         xtype: 'gridcolumn',
         dataIndex: 'reference_no',
@@ -69,6 +69,7 @@ Ext.define('Admin.view.registers.views.premisesregister.grid.PremisesRegisterGri
         dataIndex: 'postal_address',
         name: 'postal_address',
         text: 'Premise Postal Address',
+        hidden:true,
         width: 200,
         filter: {
                 xtype: 'textfield',
@@ -88,6 +89,7 @@ Ext.define('Admin.view.registers.views.premisesregister.grid.PremisesRegisterGri
         xtype: 'gridcolumn',
         dataIndex: 'email',
         name: 'email',
+        hidden:true,
         text: 'Premise Email',
         width: 200, 
         filter: {

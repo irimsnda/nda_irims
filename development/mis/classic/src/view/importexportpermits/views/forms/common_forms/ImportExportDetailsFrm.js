@@ -2,8 +2,7 @@
 
 /**
  * Created by Softclans
- * User robinson odhiambo
- * on 9/24/2018.
+ *
  */
 Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExportDetailsFrm', {
     extend: 'Ext.form.Panel',
@@ -41,6 +40,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         displayField: 'name',
         forceSelection: true,
         name: 'sub_module_id',
+         hidden: true,
         queryMode: 'local',
         fieldStyle: {
             'color': 'green',
@@ -66,12 +66,16 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         }
     },{
         xtype: 'combo',
-        fieldLabel: 'Application Category/Reason',
-        name: 'permit_category_id',
-        forceSelection: true,
-        queryMode: 'local',
+        fieldLabel: 'Type Of Application',
+        labelWidth: 80,
+   
         valueField: 'id',
         displayField: 'name',
+        forceSelection: true,
+        name: 'has_registered_premises',
+        queryMode: 'local',bind: {
+            readOnly: '{isReadOnly}'
+        },
         listeners: {
             beforerender: {
                 fn: 'setWorkflowCombosStore',
@@ -80,20 +84,33 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
                     proxy: {
                         url: 'configurations/getNonrefParameter',
                         extraParams: {
-                            table_name: 'par_permit_category'
+                            table_name: 'par_importexport_application_type',
+                            has_filter: 0
                         }
                     }
                 },
                 isLoad: true
             },
-            change:'funcOnChangePermitCategory'
-        },bind: {
-            readOnly: '{isReadOnly}'
-        },
-    }, {
+
+            
+            // change: function(cbo, value){
+            //         var form = cbo.up('form'),
+            //         eligible_importerscategory_id = form.down('combo[name=eligible_importerscategory_id]');
+            //         if(value != 1){
+            //             eligible_importerscategory_id.setVisible(false);
+            //         }
+            //         else{
+            //             eligible_importerscategory_id.setVisible(true);
+            //         }
+
+
+            // }
+        }
+    },
+    {
         xtype: 'combo',
-        fieldLabel: 'Permit Product Categories',
-        name: 'permit_productscategory_id',
+        fieldLabel: 'Licence Type',
+        name: 'licence_type_id',
         forceSelection: true,
         queryMode: 'local',
         valueField: 'id',
@@ -104,18 +121,161 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
                 config: {
                     pageSize: 10000,
                     proxy: {
-                        url: 'configurations/getRegistrationApplicationParameters',
+                       // url: 'configurations/getRegistrationApplicationParameters',
+                        url: 'configurations/getNonrefParameter',
                         extraParams: {
-                            table_name: 'par_permitsproduct_categories'
+                            table_name: 'par_licence_type'
                         }
                     }
                 },
-                isLoad: false
+                isLoad: true
             }
         },bind: {
             readOnly: '{isReadOnly}'
         },
-    },{
+    },
+    // {
+    //     xtype: 'combo',
+    //     fieldLabel: 'Application Category/Reason',
+    //     name: 'permit_category_id',
+    //     forceSelection: true,
+    //     queryMode: 'local',
+    //     valueField: 'id',
+    //     displayField: 'name',
+    //     listeners: {
+    //         beforerender: {
+    //             fn: 'setWorkflowCombosStore',
+    //             config: {
+    //                 pageSize: 10000,
+    //                 proxy: {
+    //                     url: 'configurations/getNonrefParameter',
+    //                     extraParams: {
+    //                         table_name: 'par_permit_category'
+    //                     }
+    //                 }
+    //             },
+    //             isLoad: true
+    //         },
+    //         change:'funcOnChangePermitCategory'
+    //     },bind: {
+    //         readOnly: '{isReadOnly}'
+    //     },
+    // },
+
+    {
+        xtype: 'combo',
+        fieldLabel: 'Product Classification',
+        name: 'product_classification_id',
+        forceSelection: true,
+        queryMode: 'local',
+        valueField: 'id',
+        displayField: 'name',
+        listeners: {
+            beforerender: {
+                fn: 'setConfigCombosSectionfilterStore',
+                config: {
+                    pageSize: 10000,
+                    proxy: {
+                       // url: 'configurations/getRegistrationApplicationParameters',
+                        url: 'configurations/getNonrefParameter',
+                        extraParams: {
+                            table_name: 'par_premise_class'
+                        }
+                    }
+                },
+                isLoad: true
+            }
+        },bind: {
+            readOnly: '{isReadOnly}'
+        },
+    },
+    // {
+    //     xtype: 'combo',
+    //     fieldLabel: 'Permit Product Categories',
+    //     name: 'product_type_id',
+    //     forceSelection: true,
+    //     queryMode: 'local',
+    //     valueField: 'id',
+    //     displayField: 'name',
+    //     listeners: {
+    //         beforerender: {
+    //             fn: 'setConfigCombosSectionfilterStore',
+    //             config: {
+    //                 pageSize: 10000,
+    //                 proxy: {
+    //                    // url: 'configurations/getRegistrationApplicationParameters',
+    //                     url: 'configurations/getNonrefParameter',
+    //                     extraParams: {
+    //                         table_name: 'par_premises_products'
+    //                     }
+    //                 }
+    //             },
+    //             isLoad: true
+    //         }
+    //     },bind: {
+    //         readOnly: '{isReadOnly}'
+    //     },
+    // },
+    {
+        xtype: 'combo',
+        fieldLabel: 'Business Type',
+        name: 'business_type_id',
+        forceSelection: true,
+        queryMode: 'local',
+        valueField: 'id',
+        displayField: 'name',
+        listeners: {
+            beforerender: {
+                fn: 'setConfigCombosSectionfilterStore',
+                config: {
+                    pageSize: 10000,
+                    proxy: {
+                       // url: 'configurations/getRegistrationApplicationParameters',
+                        url: 'configurations/getNonrefParameter',
+                        extraParams: {
+                            table_name: 'par_business_types'
+                        }
+                    }
+                },
+                isLoad: true
+            }
+        },bind: {
+            readOnly: '{isReadOnly}'
+        },
+    },
+    {
+        xtype: 'tagfield',
+        fieldLabel: 'Product Range',
+        columnWidth: 0.33,
+        name: 'importexport_product_range_id',
+        allowBlank: true,
+        forceSelection: true,
+        filterPickList: true,
+        encodeSubmitValue: true,
+        emptyText: 'Product Range',
+        growMax: 100,
+        queryMode: 'local',
+        valueField: 'id',
+        displayField: 'name',
+        listeners: {
+            beforerender: {
+                fn: 'setParamCombosStore',
+                config: {
+                    pageSize: 100,
+                    proxy: {
+                        url: 'commonparam/getCommonParamFromTable',
+                      // url: 'configurations/getImportExportProductRange',
+                        extraParams: {
+                            table_name: 'par_importexport_product_range'
+                        }
+                    }
+                },
+                isLoad: true
+            }
+        }
+    },
+
+    {
         xtype: 'combo',
         fieldLabel: 'Port Of Entry/Exit',
         labelWidth: 80,
@@ -123,6 +283,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         valueField: 'id',
         displayField: 'name',
         forceSelection: true,
+        hidden: false,
         name: 'port_id',
         queryMode: 'local',
         listeners: {
@@ -145,12 +306,43 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         },
     },{
         xtype: 'combo',
+        fieldLabel: 'VC Application Type',
+        labelWidth: 80,
+        allowBlank: true,
+        valueField: 'id',
+        displayField: 'name',
+        hidden: false,
+        forceSelection: true,
+        name: 'vc_application_type_id',
+        queryMode: 'local',
+        listeners: {
+            beforerender: {
+                fn: 'setWorkflowCombosStore',
+                config: {
+                    pageSize: 10000,
+                    proxy: {
+                        url: 'configurations/getNonrefParameter',
+                        extraParams: {
+                            table_name: 'par_vc_application_type',
+                            has_filter: 0
+                        }
+                    }
+                },
+                isLoad: true
+            }
+        },bind: {
+            readOnly: '{isReadOnly}'
+        },
+    },
+    {
+        xtype: 'combo',
         fieldLabel: 'Mode of Transport',
         labelWidth: 80,
         allowBlank: true,
         valueField: 'id',
         displayField: 'name',
         forceSelection: true,
+        hidden: false,
         name: 'mode_oftransport_id',
         queryMode: 'local',
         listeners: {
@@ -170,62 +362,70 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         },bind: {
             readOnly: '{isReadOnly}'
         },
-    },{
+    },
+     {
         xtype: 'textfield',
-        name: 'proforma_invoice_no',bind: {
+        hidden: false,
+        name: 'proforma_invoice_no',
+        bind: {
             readOnly: '{isReadOnly}'
         },
         fieldLabel: 'Invoice No',
     }, {
         xtype: 'datefield',
-        name: 'proforma_invoice_date',bind: {
+        hidden: false,
+        name: 'proforma_invoice_date',
+        bind: {
             readOnly: '{isReadOnly}'
         },
         format:'Y-m-d',
         altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
         fieldLabel: 'Invoice Date',
-    }, {
-        xtype: 'combo',
-        fieldLabel: 'Paying Currency',
-        labelWidth: 80,
-        allowBlank: true,
-        valueField: 'id',
-        displayField: 'name',bind: {
-            readOnly: '{isReadOnly}',
-            hidden: 'isVisaApplication'
-        },
-        forceSelection: true,
-        name: 'paying_currency_id',
-        queryMode: 'local',
-        listeners: {
-            beforerender: {
-                fn: 'setConfigCombosSectionfilterStore',
-                config: {
-                    pageSize: 10000,
-                    proxy: {
-                        url: 'configurations/getPayingCurrency',
-                        extraParams: {
-                            table_name: 'par_currencies',
-                            has_filter: 0
-                        }
-                    }
-                },
-                isLoad: true
-            }
-        }
-    }, {
+    }, 
+    // {
+    //     xtype: 'combo',
+    //     fieldLabel: 'Paying Currency',
+    //     labelWidth: 80,
+    //     allowBlank: true,
+    //     hidden: true,
+    //     valueField: 'id',
+    //     displayField: 'name',bind: {
+    //         readOnly: '{isReadOnly}',
+    //         hidden: 'isVisaApplication'
+    //     },
+    //     forceSelection: true,
+    //     name: 'paying_currency_id',
+    //     queryMode: 'local',
+    //     listeners: {
+    //         beforerender: {
+    //             fn: 'setConfigCombosSectionfilterStore',
+    //             config: {
+    //                 pageSize: 10000,
+    //                 proxy: {
+    //                     url: 'configurations/getPayingCurrency',
+    //                     extraParams: {
+    //                         table_name: 'par_currencies',
+    //                         has_filter: 0
+    //                     }
+    //                 }
+    //             },
+    //             isLoad: true
+    //         }
+    //     }
+    // }, 
+    {
         xtype: 'combo',
         fieldLabel: 'Consignee Options',
         labelWidth: 80,
          allowBlank: true,
         valueField: 'id',
         displayField: 'name',
+        hidden: false,
         forceSelection: true,
-        name: 'consignee_options_id',
+        name: 'applicant_as_consignee',
         queryMode: 'local',bind: {
             readOnly: '{isReadOnly}'
         },
-        hidden: true,
         listeners: {
             beforerender: {
                 fn: 'setWorkflowCombosStore',
@@ -260,6 +460,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         }
     }, {
         xtype: 'fieldcontainer',
+        hidden: false,
         layout: 'column',
         defaults: {
             labelAlign: 'top'
@@ -270,7 +471,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
             {
                 xtype: 'textfield',
                 name: 'consignee_name',
-                hidden: true,
+                hidden: false,
                 readOnly: true,bind: {
                     readOnly: '{isReadOnly}'
                 },allowBlank: true,
@@ -282,7 +483,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
                 columnWidth: 0.1,
                 tooltip: 'Link Consignee',
                 name: 'link_consignee',  
-                hidden: true,
+                hidden: false,
                 bind: 
                 {
                     disabled: '{isReadOnly}'
@@ -293,72 +494,34 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
                 name:'consignee_id'
             }
         ]
-    },{
-        xtype: 'combo',
-        fieldLabel: 'Has Registered/Licensed Premises Outlet',
-        labelWidth: 80,
-   
-        valueField: 'id',
-        displayField: 'name',
-        forceSelection: true,
-        name: 'has_registered_outlets',
-        queryMode: 'local',bind: {
-            readOnly: '{isReadOnly}'
-        },
-        listeners: {
-            beforerender: {
-                fn: 'setWorkflowCombosStore',
-                config: {
-                    pageSize: 10000,
-                    proxy: {
-                        url: 'configurations/getNonrefParameter',
-                        extraParams: {
-                            table_name: 'par_confirmations',
-                            has_filter: 0
-                        }
-                    }
-                },
-                isLoad: true
-            },
-            change: function(cbo, value){
-                    var form = cbo.up('form'),
-                    eligible_importerscategory_id = form.down('combo[name=eligible_importerscategory_id]');
-                    if(value != 1){
-                        eligible_importerscategory_id.setVisible(false);
-                    }
-                    else{
-                        eligible_importerscategory_id.setVisible(true);
-                    }
-
-
-            }
-        }
-    },{
-        xtype: 'combo',
-        fieldLabel: 'Select Importer Category(Eligible Importers)',
-        labelWidth: 80,
-        valueField: 'id',
-        displayField: 'name',
-        forceSelection: true,
-        name: 'eligible_importerscategory_id',
-        queryMode: 'local',bind: {
-            readOnly: '{isReadOnly}'
-        },
-        listeners: {
-            beforerender: {
-                fn: 'setProductRegCombosStore',
-                config: {
-                    pageSize: 10000,
-                    proxy: {
-                        url: 'configurations/getNonrefParameter',
-                        extraParams: {
-                            table_name: 'par_eligible_importerscategories',
-                            has_filter: 0
-                        }
-                    }
-                },
-                isLoad: true
-            }
-        }
-    }]   
+    },
+    // {
+    //     xtype: 'combo',
+    //     fieldLabel: 'Select Importer Category(Eligible Importers)',
+    //     labelWidth: 80,
+    //     valueField: 'id',
+    //     displayField: 'name',
+    //     forceSelection: true,
+    //     name: 'eligible_importerscategory_id',
+    //     queryMode: 'local',bind: {
+    //         readOnly: '{isReadOnly}'
+    //     },
+    //     listeners: {
+    //         beforerender: {
+    //             fn: 'setProductRegCombosStore',
+    //             config: {
+    //                 pageSize: 10000,
+    //                 proxy: {
+    //                     url: 'configurations/getNonrefParameter',
+    //                     extraParams: {
+    //                         table_name: 'par_eligible_importerscategories',
+    //                         has_filter: 0
+    //                     }
+    //                 }
+    //             },
+    //             isLoad: true
+    //         }
+    //     }
+    // }
+]   
 });

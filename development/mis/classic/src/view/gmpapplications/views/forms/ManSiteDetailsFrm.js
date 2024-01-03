@@ -315,42 +315,42 @@ Ext.define('Admin.view.gmpapplications.views.forms.ManSiteDetailsFrm', {
                     fieldLabel: 'Postal Address',
                     name: 'postal_address'
                 },
-                {
-                    xtype: 'combo',
-                    fieldLabel: 'Business Scale',
-                    name: 'business_scale_id',
-                    store: 'businessscalesstr',
-                    valueField: 'id',
-                    displayField: 'name',
-                    hidden: true,
-                    queryMode: 'local',
-                    forceSelection: true,
-                    listeners: {
-                        afterrender: function () {
-                            var store = this.getStore();
-                            store.removeAll();
-                            store.load();
-                        }
-                    }
-                },
-                {
-                    xtype: 'combo',
-                    fieldLabel: 'Business Category',
-                    name: 'business_category_id',
-                    store: 'businesscategoriesstr',
-                    valueField: 'id', hidden: true,
-                    displayField: 'name',
-                    queryMode: 'local',
-                    allowBlank: true,
-                    forceSelection: true,
-                    listeners: {
-                        afterrender: function () {
-                            var store = this.getStore();
-                            store.removeAll();
-                            store.load();
-                        }
-                    }
-                },
+                // {
+                //     xtype: 'combo',
+                //     fieldLabel: 'Business Scale',
+                //     name: 'business_scale_id',
+                //     store: 'businessscalesstr',
+                //     valueField: 'id',
+                //     displayField: 'name',
+                //     hidden: true,
+                //     queryMode: 'local',
+                //     forceSelection: true,
+                //     listeners: {
+                //         afterrender: function () {
+                //             var store = this.getStore();
+                //             store.removeAll();
+                //             store.load();
+                //         }
+                //     }
+                // },
+                // {
+                //     xtype: 'combo',
+                //     fieldLabel: 'Business Category',
+                //     name: 'business_category_id',
+                //     store: 'businesscategoriesstr',
+                //     valueField: 'id', hidden: true,
+                //     displayField: 'name',
+                //     queryMode: 'local',
+                //     allowBlank: true,
+                //     forceSelection: true,
+                //     listeners: {
+                //         afterrender: function () {
+                //             var store = this.getStore();
+                //             store.removeAll();
+                //             store.load();
+                //         }
+                //     }
+                // },
                 {
                     xtype: 'combo',
                     fieldLabel: 'Business Type',
@@ -359,7 +359,7 @@ Ext.define('Admin.view.gmpapplications.views.forms.ManSiteDetailsFrm', {
                     valueField: 'id',
                     displayField: 'name',
                     queryMode: 'local',
-                    allowBlank: false,
+                    allowBlank: true,
                     forceSelection: true,
                     listeners: {
                         beforerender: {
@@ -384,6 +384,33 @@ Ext.define('Admin.view.gmpapplications.views.forms.ManSiteDetailsFrm', {
                         }
                     }
                 },
+
+                {
+                    xtype: 'combo',
+                    fieldLabel: 'Inpection Manufacturing Activities',
+                    name: 'inspection_activities_id',
+                    forceSelection: true,
+                    allowBlank: true,
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    listeners: {
+                        beforerender: {
+                            fn: 'setGmpApplicationCombosStore',
+                            config: {
+                                pageSize: 10000,
+                                proxy: {
+                                    url: 'commonparam/getCommonParamFromTable',
+                                    extraParams: {
+                                        table_name: 'par_manufacturinginspection_activities'
+                                    }
+                                }
+                            },
+                            isLoad: true
+                        }
+                    }
+                },
+
                 // {
                 //     xtype: 'combo',
                 //     fieldLabel: "SME's Option Selection(Optional)",

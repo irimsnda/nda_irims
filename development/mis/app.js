@@ -71,6 +71,38 @@ window.onbeforeunload = function (evt) {
     }
    //return message;
   }
+  function previewCorrespondence(application_code, module_id, correspondence_name, params='') {
+    var url = '';
+    Ext.Ajax.request({
+        method: 'GET',
+        async: false,
+        url: 'summaryreport/getCorrespodenceUrl',
+        params: {
+            application_code: application_code,
+            module_id: module_id,
+            params: params,
+            correspondence_name: correspondence_name
+        },
+        headers: {
+            'Authorization': 'Bearer ' + access_token
+        },
+        success: function (response) {
+            var resp = Ext.JSON.decode(response.responseText),
+                success = resp.success;
+            if (success || success == true || success === true) {
+                url = resp.url;
+            }
+        }
+    });
+    if(url != ''){
+        print_report(url);
+    }else{
+        toastr.error('Report not Set please contact system admin', 'Missing Correspondence');
+    }
+}
+
+
+
 function onLogoutClick(){
 
     //logout user from MIS
@@ -336,7 +368,69 @@ function funcShowCustomizableWindow(title, width, childObject, winXtype) {
         xtype: winXtype,
         title: title,
         bodyPadding: 3,
-        height: '60%',
+        height: '70%',
+        width: width,
+        autoScroll: true,
+        items: [
+            Ext.apply(
+                childObject
+            )
+        ]
+    });
+    Ext.create(view);
+}
+
+
+// function funcShowNonCustomizableWindow(title, width, childObject, winXtype) {
+//     var view = Ext.apply({
+//         xtype: winXtype,
+//         title: title,
+//         bodyPadding: 3,
+//         width: width,
+//         height: '98%',
+//         autoScroll: true,
+//         closable: false, // Disable the close button
+//         modal: true,    // Make it modal
+//         items: [
+//             Ext.apply(
+//                 childObject
+//             )
+//         ]
+//     });
+//     Ext.create(view);
+// }
+
+function funcShowNonCustomizableWindow(width, childObject, winXtype) {
+    var view = Ext.apply({
+        xtype: winXtype,
+        id:winXtype,
+        bodyPadding: 3,
+        width: width,
+        height: '90%',
+        autoScroll: true,
+        closable: false, // Disable the close button
+        modal: true,    // Make it modal
+        draggable: false, // Disable dragging
+        resizable: false, // Disable resizing
+        style: {
+         border: 'none'
+        },
+        items: [
+            Ext.apply(
+                childObject
+            )
+        ]
+    });
+    Ext.create(view);
+}
+
+
+function funcShowOnlineCustomizableWindow(title, width, childObject, winXtype) {
+    var view = Ext.apply({
+        xtype: winXtype,
+        title: title,
+        bodyPadding: 3,
+        height: '90%',
         width: width,
         autoScroll: true,
         items: [

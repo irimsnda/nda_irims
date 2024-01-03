@@ -2,8 +2,8 @@
 Ext.define('Admin.view.dashboard.grids.InTrayGrid', {
     extend: 'Ext.grid.Panel',
     xtype: 'intraygrid',
+    id: 'intraygrid',
     controller: 'dashboardvctr',
-   
     viewConfig: {
         deferEmptyText: false,
         preserveScrollOnReload: true,
@@ -73,6 +73,7 @@ Ext.define('Admin.view.dashboard.grids.InTrayGrid', {
         flex: 1,
         //labelWidth: 80,
         width: 150,
+        //readOnly:true,
         valueField: 'id',
         displayField: 'name',
         forceSelection: true,
@@ -103,15 +104,16 @@ Ext.define('Admin.view.dashboard.grids.InTrayGrid', {
                 sub_module_str.load({params: {module_id: newVal}});
                 grid.getStore().load();
             }
-        },
-        triggers: {
-            clear: {
-                type: 'clear',
-                hideWhenEmpty: true,
-                hideWhenMouseOut: false,
-                clearOnEscape: true
-            }
         }
+        // ,
+        // triggers: {
+        //     clear: {
+        //         type: 'clear',
+        //         hideWhenEmpty: true,
+        //         hideWhenMouseOut: false,
+        //         clearOnEscape: true
+        //     }
+        // }
     }, {
         xtype: 'combo',
         emptyText: 'SUB MODULE',
@@ -260,7 +262,14 @@ Ext.define('Admin.view.dashboard.grids.InTrayGrid', {
     },{
         xtype: 'button',
         text: 'Clear',
+        //ui: 'soft-red',
+        //cls:
         ui: 'soft-red',
+        style: {
+            backgroundColor: '#900603',
+            color: 'white', 
+        },
+        //'color:white;background-color:#900603';
         iconCls: 'x-fa fa-times',
         handler: function(btn) {
           var grid = btn.up('grid'),
@@ -321,6 +330,10 @@ Ext.define('Admin.view.dashboard.grids.InTrayGrid', {
             type: 1,
             is_internaluser: 1,
             ui:'soft-red',
+            style: {
+                backgroundColor: '#900603',
+                color: 'white', 
+            },
             iconCls: 'x-fa fa-print',
             handler: 'funcPreviewFasttrackApplications'
         },
@@ -335,7 +348,7 @@ Ext.define('Admin.view.dashboard.grids.InTrayGrid', {
         }
     ],
     listeners: {
-        beforerender: 'funcIntrayBeforerenderDetails',
+        //beforerender: 'funcIntrayBeforerenderDetails',
         afterrender:function(){
             var view = this.getView();
            // var groupingFeature = view.findFeature("grouping");
@@ -367,10 +380,10 @@ Ext.define('Admin.view.dashboard.grids.InTrayGrid', {
             renderer: function (val, meta, record) {
                 var isRead = record.get('isRead');
                 if (isRead == 1 || isRead === 1) {
-                    meta.tdStyle = 'color:white;background-color:green';
+                    meta.tdStyle = 'color:white;background-color:#2e8B57';
                     return 'Reviewed';
                 } else {
-                    meta.tdStyle = 'color:white;background-color:red';
+                    meta.tdStyle = 'color:white;background-color:#900603';
                     return 'New Submission';
                 }
             }
@@ -383,12 +396,12 @@ Ext.define('Admin.view.dashboard.grids.InTrayGrid', {
             tdCls: 'wrap',
             renderer: function (val, meta, record) {
                 if(val == 'Normal'){
-                    meta.tdStyle = 'color:white;background-color:green';
+                    meta.tdStyle = 'color:white;background-color:#2e8B57';
                     return val;
                 }
                 else{
-                    meta.tdStyle = 'color:white;background-color:red';
-return val;
+                    meta.tdStyle = 'color:white;background-color:#900603';
+                    return val;
                 }
 
 
@@ -405,20 +418,20 @@ return val;
                 var time_span = record.get('time_span');
                 if(servicedelivery_timeline >0){
                     if(val < 1){
-                        meta.tdStyle = 'color:white;background-color:red';
+                        meta.tdStyle = 'color:white;background-color:#900603';
                         return ' Application OverDue for ' +val +'(days)';
                     }else if (val < 3) {
-                        meta.tdStyle = 'color:white;background-color:blue';
+                        meta.tdStyle = 'color:white;background-color:#89cff0';
                         
                         return ' Application Due in ' +val +'(days)';
                     } else {
-                        meta.tdStyle = 'color:white;background-color:green';
+                        meta.tdStyle = 'color:white;background-color:#2e8B57';
                         return 'Within Delivery Timeline';
                     }
 
                 }
                 else{
-                    meta.tdStyle = 'color:white;background-color:green';
+                    meta.tdStyle = 'color:white;background-color:#2e8B57';
                     return 'Within Delivery Timeline Span ('+time_span+')';
 
                 }

@@ -21,7 +21,7 @@ Ext.define('Admin.view.RevenueManagement.views.panels.AccountOverviewPnl', {
                 xtype: 'displayfield',
                 name: 'total_receivables',
                 fieldLabel: 'Total Receivables',
-                value: '0.00 BWP',
+                value: '0.00 UGX',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
@@ -35,7 +35,7 @@ Ext.define('Admin.view.RevenueManagement.views.panels.AccountOverviewPnl', {
                 xtype: 'displayfield',
                 name: 'total_payables',
                 fieldLabel: 'Total Payables',
-                value: '0.00 BWP',
+                value: '0.00 UGX',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
@@ -49,7 +49,7 @@ Ext.define('Admin.view.RevenueManagement.views.panels.AccountOverviewPnl', {
                 xtype: 'displayfield',
                 name: 'account_balance',
                 fieldLabel: 'Account Balance',
-                value: '0.00 BWP',
+                value: '0.00 UGX',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',

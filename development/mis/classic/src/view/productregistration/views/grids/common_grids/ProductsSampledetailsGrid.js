@@ -85,17 +85,14 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductsSamp
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'sample_status',
+        hidden:true,
         text: 'sample Status',
         flex: 1,
-    }, {
+    }, 
+     {
         xtype: 'gridcolumn',
-        dataIndex: 'mode_of_delivery',
-        text: 'Mode of delivery',
-        flex: 1,
-    },  {
-        xtype: 'gridcolumn',
-        dataIndex: 'sample_tracking_no',
-        text: 'Sample Tracking No',
+        dataIndex: 'fle_no',
+        text: 'File Number',
         flex: 1,
     }, {
         text: 'Options',
@@ -116,7 +113,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductsSamp
                     action: 'edit',
                     childXtype: 'productsSampledetailsFrm',
                     winTitle: 'Product Sample Details',
-                    winWidth: '40%', bind: {
+                    winWidth: '60%', bind: {
                         hidden: '{isReadOnly}'  // negated
                     },
                     handler: 'showEditProductOtherdetailWinFrm',

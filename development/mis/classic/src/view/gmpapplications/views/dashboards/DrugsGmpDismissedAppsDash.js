@@ -11,7 +11,7 @@ Ext.define('Admin.view.gmpapplications.views.dashboards.DrugsGmpDismissedAppsDas
             region: 'center',
             title: 'Dismissed Applications',
             margin: 2,
-            section: 2
+            section: 1
         }, {
             xtype: 'dashboardguidelinesgrid',
             region: 'south',

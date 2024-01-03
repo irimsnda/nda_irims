@@ -43,7 +43,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManuc
         ui: 'soft-green',
         childXtype: 'productManuctureringFrm',
         winTitle: 'Product Manufacturer',
-        winWidth: '40%',
+        winWidth: '60%',
         handler: 'showAddProductOtherdetailsWinFrm',
         stores: '[]',
         bind: {

@@ -24,7 +24,8 @@ Ext.define('Admin.store.administration.NavigationStr', {
             type: 'json',
             idProperty: 'id',
             messageProperty: 'msg'
-        },
+        }
+        ,
         extraParams: {
             strict_check: true
         }

@@ -237,6 +237,7 @@ Ext.define('Admin.view.productregistration.views.forms.medicaldevices.MedicalDev
             fieldLabel: 'Intended Use',
             name: 'intended_use',
             allowBlank: true,
+            columnWidth: 0.99,
             readOnly: true,
             bind: {
                 readOnly: '{isReadOnly}'  // negated
@@ -477,9 +478,21 @@ Ext.define('Admin.view.productregistration.views.forms.medicaldevices.MedicalDev
         },
 
         {
-            xtype: 'textfield',
+            xtype: 'textarea',
+            name: 'labelling_description', columnWidth: 0.99,
+            allowBlank: false,
+            fieldLabel: 'Labelling Description', bind: {
+                readOnly: '{isReadOnly}'  // negated
+            }
+        },
+
+
+        {
+            xtype: 'textarea',
             fieldLabel: 'Storage Condition',
             name: 'storage_condition',
+            allowBlank: false,
+            columnWidth: 0.99,
             allowBlank: true,
             bind: {
                 readOnly: '{isReadOnly}'  // negated
@@ -529,7 +542,7 @@ Ext.define('Admin.view.productregistration.views.forms.medicaldevices.MedicalDev
             name: 'physical_description',
             colspan: 1,
             allowBlank: false,
-            columnWidth: 0.5,
+            columnWidth: 0.99,
             fieldLabel: 'Variations in shape, style or size of the appliance, if applicable',
             bind: {
                 readOnly: '{isReadOnly}'  // negated

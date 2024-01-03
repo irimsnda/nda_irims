@@ -7,7 +7,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
     layout: {
         type: 'column'
     },
-    autoScroll: true,
+    //autoScroll: true,
     bodyPadding: 5,
     defaults: {
         columnWidth: 0.33,
@@ -169,6 +169,12 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                         margin: '30 0 0 0'
                     }
                 ]
+            }, 
+             {
+                xtype: 'textfield',
+                name: 'company_registration_no',
+                fieldLabel: 'Company Registration',
+                allowBlank: true
             },  
             {
             xtype: 'datefield',
@@ -190,7 +196,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                 valueField: 'id',
                 displayField: 'name',
                 queryMode: 'local',
-                allowBlank: true,
+                allowBlank: false,
                 forceSelection: true,
                 listeners: {
                     beforerender: {
@@ -586,7 +592,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
 
               },
         
-               {
+                 {
                 xtype: 'combo',
                 fieldLabel: 'Country',
                 name: 'incharge_country_id',
@@ -605,8 +611,40 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                             }
                         },
                         isLoad: true
+                    },change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                            districtStore = form.down('combo[name=incharge_district_id]').getStore(),
+                            filterObj = {country_id: newVal},
+                            filterStr = JSON.stringify(filterObj);
+                        districtStore.removeAll();
+                        districtStore.load({params: {filters: filterStr}});
+                    }
+                   
+                }
+            }, {
+                xtype: 'combo',
+                fieldLabel: 'District',
+                name: 'incharge_district_id',
+                allowBlank:true,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                    beforerender: {
+                        fn: 'setParamCombosStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_premise_districts'
+                                }
+                               }
+                        },
+                        isLoad: false
                     },
-                    change: function (cmbo, newVal) {
+                     change: function (cmbo, newVal) {
                         var form = cmbo.up('form'),
                             regionStore = form.down('combo[name=incharge_region_id]').getStore(),
                             filterObj = {country_id: newVal},
@@ -614,8 +652,9 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                         regionStore.removeAll();
                         regionStore.load({params: {filter: filterStr}});
                     }
+                  
                 }
-            },
+              },
             {
                 xtype: 'combo',
                 fieldLabel: 'Region',
@@ -632,44 +671,16 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                         config: {
                             pageSize: 10000,
                             proxy: {
-                                url: 'parameters/region'
-                            }
-                        },
-                        isLoad: false
-                    },
-                    change: function (cmbo, newVal) {
-                        var form = cmbo.up('form'),
-                            districtStore = form.down('combo[name=incharge_district_id]').getStore(),
-                            filterObj = {region_id: newVal},
-                            filterStr = JSON.stringify(filterObj);
-                        districtStore.removeAll();
-                        districtStore.load({params: {filter: filterStr}});
-                    }
-                }
-            },
-            {
-                xtype: 'combo',
-                fieldLabel: 'District',
-                name: 'incharge_district_id',
-                allowBlank:true,
-                forceSelection: true,
-                queryMode: 'local',
-                valueField: 'id',
-                displayField: 'name',
-                listeners: {
-                    beforerender: {
-                        fn: 'setParamCombosStore',
-                        config: {
-                            pageSize: 10000,
-                            proxy: {
-                                url: 'parameters/district'
-                            }
-                        },
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_premise_regions'
+                                }
+                               }
+                            },
                         isLoad: false
                     }
-                  
                 }
-              }
+            }
             ]
             },{
             xtype:'fieldset',
@@ -708,74 +719,92 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                     },
                     change: function (cmbo, newVal) {
                         var form = cmbo.up('form'),
-                            regionStore = form.down('combo[name=region_id]').getStore(),
+                            districtStore = form.down('combo[name=district_id]').getStore(),
                             filterObj = {country_id: newVal},
                             filterStr = JSON.stringify(filterObj);
-                        regionStore.removeAll();
-                        regionStore.load({params: {filter: filterStr}});
+                        districtStore.removeAll();
+                        districtStore.load({params: {filters: filterStr}});
                     }
                 }
             },
-            {
+             {
                 xtype: 'combo',
-                fieldLabel: 'Region',
+                fieldLabel: 'DISTRICT',
+                name: 'district_id',
+                //store: 'regionsstr',
+                allowBlank:true,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_premise_districts'
+                                }
+                               }
+                            },
+                                isLoad: false
+                    },
+                    change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        regionStore = form.down('combo[name=region_id]').getStore(),
+                        filterObj = {district_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        regionStore.removeAll();
+                        regionStore.load({params: {filters: filterStr}});
+                        
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+            },
+
+             {
+                xtype: 'combo',
+                fieldLabel: 'REGION',
                 name: 'region_id',
                 //store: 'regionsstr',
+                allowBlank:true,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
                 displayField: 'name',
                 listeners: {
-                    beforerender: {
-                        fn: 'setParamCombosStore',
-                        config: {
-                            pageSize: 10000,
-                            proxy: {
-                                url: 'parameters/region'
-                            }
-                        },
-                        isLoad: false
-                    },
-                    change: function (cmbo, newVal) {
-                        var form = cmbo.up('form'),
-                            districtStore = form.down('combo[name=district_id]').getStore(),
-                            filterObj = {region_id: newVal},
-                            filterStr = JSON.stringify(filterObj);
-                        districtStore.removeAll();
-                        districtStore.load({params: {filter: filterStr}});
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_premise_regions'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
                     }
                 }
             },
-            {
-                xtype: 'combo',
-                fieldLabel: 'District',
-                name: 'district_id',
-                //store: 'districtsstr',
-                forceSelection: true,
-                queryMode: 'local',
-                valueField: 'id',
-                displayField: 'name',
-                listeners: {
-                    beforerender: {
-                        fn: 'setParamCombosStore',
-                        config: {
-                            pageSize: 10000,
-                            proxy: {
-                                url: 'parameters/district'
-                            }
-                        },
-                        isLoad: false
-                    },
-                    change: function (cmbo, newVal) {
-                        var form = cmbo.up('form'),
-                            districtStore = form.down('combo[name=county_id]').getStore(),
-                            filterObj = {region_id: newVal},
-                            filterStr = JSON.stringify(filterObj);
-                        districtStore.removeAll();
-                        districtStore.load({params: {filter: filterStr}});
-                    }
-                }
-            }, 
 
             {
                 xtype: 'combo',
@@ -795,7 +824,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                                 url: 'parameters/county'
                             }
                         },
-                        isLoad: false
+                        isLoad: true
                     },
                     change: function (cmbo, newVal) {
                         var form = cmbo.up('form'),
@@ -838,7 +867,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
             },{
                 xtype: 'textfield',
                 name: 'street',
-                allowBlank:true,
+                allowBlank:false,
                 fieldLabel: 'Street/Road'
             },
 
@@ -862,12 +891,12 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                         xtype: 'textfield',
                         fieldLabel: 'Latitude',
                         name: 'latitude',
-                        allowBlank: true
+                        allowBlank: false
                     },{
                         xtype: 'textfield',
                         fieldLabel: 'Longitude',
                         name: 'longitude',
-                        allowBlank: true
+                        allowBlank: false
                     }
                 ]
             } 

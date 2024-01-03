@@ -35,10 +35,16 @@ Ext.define('Admin.controller.DashboardCtr', {
             },
             'systemguidelinesfrm button[action=save_guideline]': {
                 click: 'doCreateDashboardGuideline'
-            }
+            },
+
+            // 'admindashboard': {
+            //     afterrender: 'onAfterRenderLandingDashboard'
+            // },
         }
 
     },
+
+
 
     /**
      * Called when the view is created
@@ -46,6 +52,235 @@ Ext.define('Admin.controller.DashboardCtr', {
     init: function () {
 
     },
+
+
+
+    //  onAfterRenderLandingDashboard: function () {
+    //     var me = this,
+    //     mainTabPanel = me.getMainTabPanel();
+    //     if (mainTabPanel) {
+    //         //Ext.getBody().mask('Fetching Modules...');
+    //         Ext.Ajax.request({
+    //             url: 'administration/getSystemNavigationMenuItems',
+    //             method: 'GET',
+    //             headers: {
+    //                 'Authorization': 'Bearer ' + access_token,
+    //                 'X-CSRF-Token': token
+    //             },
+    //             success: function (response) {
+    //                 var jsonData = Ext.decode(response.responseText);
+    //                 var cardContainer = Ext.create('Ext.container.Container', {
+    //                     layout: 'column', 
+    //                     width: '90%',
+    //                     defaults: {
+    //                         columnWidth: 0.25, 
+    //                         padding: 10 
+    //                     },
+    //                     style: {
+    //                         margin: '0 auto' 
+    //                     }
+    //                 });
+    //                 Ext.each(jsonData, function (dataItem) {
+                    
+    //                         var salesPanel = {
+    //                             xtype: 'panel',
+    //                             userCls: 'big-20 small-50',
+    //                             title: '<span style="font-size: 10px;">' + dataItem.name + '</span>', // Apply font size inline
+    //                             ui: 'light',
+    //                             menu_id: dataItem.menu_id,
+    //                             iconCls: dataItem.iconCls,
+    //                             headerPosition: 'bottom',
+    //                             cls: 'quick-graph-panel shadow',
+    //                             height: 130,
+    //                             layout: 'fit',
+    //                             items: [
+    //                                  {
+    //                                     xtype: 'container', 
+    //                                     animation: !Ext.isIE9m && Ext.os.is.Desktop,
+    //                                     height: 75,
+    //                                     style: {
+    //                                         backgroundColor: dataItem.background
+    //                                     },
+    //                                     bind: '{quarterlyGrowth}',
+    //                                     layout: 'fit', 
+    //                                 }
+    //                             ],
+    //                         listeners: {
+    //                             itemdblclick: function () {
+                                    // console.log('yyyyy');
+                                    // window.location.href = 'main-app';
+    //                             }
+    //                         }
+    //                         };
+
+    //                         cardContainer.add(salesPanel);
+    //                 });
+
+    //                 mainTabPanel.add(cardContainer);
+    //                 mainTabPanel.updateLayout();
+    //             },
+    //             failure: function (response) {          
+    //                 var resp = Ext.JSON.decode(response.responseText),
+    //                     message = resp.message;
+    //                     toastr.error(message, 'Failure Response');
+    //                 //Ext.getBody().unmask();
+    //             },
+    //             error: function (jqXHR, textStatus, errorThrown) {
+    //                 Ext.getBody().unmask();
+    //                 toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
+                                
+    //             },
+    //             scope: this 
+    //         });
+    //     }
+    // },
+
+
+    onAfterRenderLandingDashboard: function () {
+    var me = this,
+        mainTabPanel = me.getMainTabPanel();
+
+    if (mainTabPanel) {
+        // Ext.getBody().mask('Fetching Modules...');
+        Ext.Ajax.request({
+            url: 'administration/getSystemNavigationMenuItems',
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+            },
+            success: function (response) {
+                var jsonData = Ext.decode(response.responseText);
+                var cardContainer = Ext.create('Ext.container.Container', {
+                    layout: 'column',
+                    width: '90%',
+                    defaults: {
+                        columnWidth: 0.25,
+                        padding: 10
+                    },
+                    style: {
+                        margin: '0 auto'
+                    }
+                });
+
+                Ext.each(jsonData, function (dataItem) {
+                    // Create a button instead of a panel
+                    var salesButton = Ext.create('Ext.button.Button', {
+                        text: '<span style="font-size: 10px;">' + dataItem.name + '</span>',
+                        ui: 'light',
+                        menu_id: dataItem.menu_id,
+                        iconCls: dataItem.iconCls,
+                        cls: 'quick-graph-panel shadow',
+                        height: 130,
+                        style: {
+                            backgroundColor: dataItem.background
+                        },
+                        handler: function () {
+                        Ext.create({
+                            xtype:'main-app' 
+                        });
+                            
+                        }
+                    });
+
+                    cardContainer.add(salesButton);
+                });
+
+                mainTabPanel.add(cardContainer);
+                mainTabPanel.updateLayout();
+            },
+            failure: function (response) {
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+                // Ext.getBody().unmask();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
+            },
+            scope: this
+        });
+    }
+},
+
+
+// onAfterRenderLandingDashboard: function () {
+//         var me = this,
+//         mainTabPanel = me.getMainTabPanel();
+//         if (mainTabPanel) {
+//             //Ext.getBody().mask('Fetching Modules...');
+//             Ext.Ajax.request({
+//                 url: 'administration/getSystemNavigationMenuItems',
+//                 method: 'GET',
+//                 headers: {
+//                     'Authorization': 'Bearer ' + access_token,
+//                     'X-CSRF-Token': token
+//                 },
+//                 success: function (response) {
+//                     var jsonData = Ext.decode(response.responseText);
+//                     var cardContainer = Ext.create('Ext.container.Container', {
+//                         layout: 'column', 
+//                         width: '90%',
+//                         defaults: {
+//                             columnWidth: 0.25, 
+//                             padding: 10 
+//                         },
+//                         style: {
+//                             margin: '0 auto' 
+//                         }
+//                     });
+//                     Ext.each(jsonData, function (dataItem) {
+                    
+//                             var salesPanel = {
+//                                 xtype: 'panel',
+//                                 userCls: 'big-20 small-50',
+//                                 title: '<span style="font-size: 10px;">' + dataItem.name + '</span>', // Apply font size inline
+//                                 ui: 'light',
+//                                 menu_id: dataItem.menu_id,
+//                                 iconCls: dataItem.iconCls,
+//                                 headerPosition: 'bottom',
+//                                 cls: 'quick-graph-panel shadow',
+//                                 height: 130,
+//                                 layout: 'fit',
+//                                 items: [
+//                                      {
+//                                         xtype: 'container', 
+//                                         animation: !Ext.isIE9m && Ext.os.is.Desktop,
+//                                         height: 75,
+//                                         style: {
+//                                             backgroundColor: dataItem.background
+//                                         },
+//                                         bind: '{quarterlyGrowth}',
+//                                         layout: 'fit', 
+//                                     }
+//                                 ]
+//                             };
+
+//                             cardContainer.add(salesPanel);
+//                     });
+
+//                     mainTabPanel.add(cardContainer);
+//                     mainTabPanel.updateLayout();
+//                 },
+//                 failure: function (response) {          
+//                     var resp = Ext.JSON.decode(response.responseText),
+//                         message = resp.message;
+//                         toastr.error(message, 'Failure Response');
+//                     //Ext.getBody().unmask();
+//                 },
+//                 error: function (jqXHR, textStatus, errorThrown) {
+//                     Ext.getBody().unmask();
+//                     toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
+                                
+//                 },
+//                 scope: this 
+//             });
+//         }
+//     },
+
+
+
 
     showAddGuidelineWin: function () {
         var me = this,

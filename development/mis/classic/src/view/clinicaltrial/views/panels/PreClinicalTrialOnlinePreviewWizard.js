@@ -163,6 +163,7 @@ Ext.define('Admin.view.clinicaltrial.views.panels.PreClinicalTrialOnlinePreviewW
                     ui: 'soft-purple',
                     iconCls: 'x-fa fa-thumbs-down',
                     name: 'reject_btn',
+                    hidden: true,
                     handler: 'submitRejectedOnlineApplicationFrmBtn',
                     bind: {
                         disabled: '{!atEnd}'

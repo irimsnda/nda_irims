@@ -55,6 +55,12 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             'productapplicantselectiongrid': {
                 itemdblclick: 'onApplicantSelectionListDblClick'
             },
+            'productltrselectiongrid': {
+                itemdblclick: 'onLTRselectionListDblClick'
+            },
+
+
+
             /* 'productscreeninggrid': {
                  refresh: 'refreshScreeningChecklistItemsGrid'
              },*/
@@ -204,7 +210,12 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             },
             'productGmpInspectionDetailsGrid': {
                 refresh: 'refreshProductsOtherDetailsGrid'
-            }, 'productsSampledetailsGrid': {
+            }, 
+            'otheraccesoriesDetailsGrid': {
+                refresh: 'refreshProductsOtherDetailsGrid'
+            }, 
+
+            'productsSampledetailsGrid': {
                 refresh: 'refreshProductsOtherDetailsGrid'
             },
             'foodproductpackaginggrid': {
@@ -607,19 +618,19 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
         classificationStr.load({params:{filters:filter}});
         
         if(section_id == 1 || section_id == 1){
-            if(is_medical_devices == 1){
-                frm.down('combo[name=device_type_id]').setVisible(true);
-                frm.down('textfield[name=gmdn_code]').setVisible(true);
-                frm.down('textfield[name=gmdn_term]').setVisible(true);
-                frm.down('combo[name=gmdn_category]').setVisible(true);
+            // if(is_medical_devices == 1){
+            //     frm.down('combo[name=device_type_id]').setVisible(true);
+            //     frm.down('textfield[name=gmdn_code]').setVisible(true);
+            //     frm.down('textfield[name=gmdn_term]').setVisible(true);
+            //     frm.down('combo[name=gmdn_category]').setVisible(true);
                 
-            }else{
-                frm.down('combo[name=device_type_id]').setVisible(false);
-                frm.down('textfield[name=gmdn_code]').setVisible(false);
-                frm.down('textfield[name=gmdn_term]').setVisible(false);
-                frm.down('combo[name=gmdn_category]').setVisible(false);
+            // }else{
+            //     frm.down('combo[name=device_type_id]').setVisible(false);
+            //     frm.down('textfield[name=gmdn_code]').setVisible(false);
+            //     frm.down('textfield[name=gmdn_term]').setVisible(false);
+            //     frm.down('combo[name=gmdn_category]').setVisible(false);
                 
-            }
+            // }
         
                 
         }else if(section_id ==3 || section_id ==15 || section_id ==17 || section_id ==20 || section_id ==21){
@@ -945,7 +956,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
 
             onlinePanel.down('hiddenfield[name=status_type_id]').setValue(status_type_id);
             //docsGrid.store.load();
-            funcShowCustomizableWindow(tracking_no, '90%', onlinePanel, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(tracking_no, '90%', onlinePanel, 'customizablewindow');
             //alert(prodclass_category_id)
            // onlinePanel.getViewModel().set('isReadOnly', true);
                 
@@ -1509,7 +1520,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             }
 
 
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         child.down('hiddenfield[name=product_id]').setValue(product_id);
        
         if (arrayLength > 0) {
@@ -1644,7 +1655,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
         //if for the products forms 
         productqueriespanel.down('hiddenfield[name=application_code]').setValue(record.get('application_code'));
 
-        funcShowCustomizableWindow(ref_no, '85%', productqueriespanel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no, '85%', productqueriespanel, 'customizablewindow');
       
     },
     showPreviousUploadedDocs: function (item) {
@@ -1721,7 +1732,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
 
        grid.down('hiddenfield[name=section_id]').setValue(section_id);
        grid.down('combo[name=applicable_documents]').setValue(document_type_id);
-        funcShowCustomizableWindow(winTitle , winWidth, grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle , winWidth, grid, 'customizablewindow');
        
 
     },
@@ -1756,7 +1767,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             store = grid.store;
             grid.height = 450;
             //grid.setController('productregistrationvctr');
-            funcShowCustomizableWindow(ref_no, '85%', grid, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(ref_no, '85%', grid, 'customizablewindow');
             grid.down('hiddenfield[name=process_id]').setValue(record.get('process_id'));
             grid.down('hiddenfield[name=section_id]').setValue(record.get('section_id'));
             grid.down('hiddenfield[name=module_id]').setValue(record.get('module_id'));
@@ -1800,7 +1811,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             store = grid.store;
             grid.height = 450;
            // grid.setController('productregistrationvctr');
-            funcShowCustomizableWindow(ref_no, '85%', grid, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(ref_no, '85%', grid, 'customizablewindow');
             grid.down('hiddenfield[name=process_id]').setValue(record.get('process_id'));
             grid.down('hiddenfield[name=section_id]').setValue(record.get('section_id'));
             grid.down('hiddenfield[name=module_id]').setValue(record.get('module_id'));
@@ -1842,7 +1853,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
           grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
           grid.down('hiddenfield[name=application_code]').setValue(application_code);
           grid.down('combo[name=applicable_documents]').setValue(8);
-            funcShowCustomizableWindow(ref_no, '85%', grid, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(ref_no, '85%', grid, 'customizablewindow');
            
 
         }
@@ -1952,7 +1963,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                         var model2 = Ext.create('Ext.data.Model', product_details);
                         products_form.loadRecord(model2);
                     }
-                    funcShowCustomizableWindow(ref_no, '85%', productdetails_panel, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', productdetails_panel, 'customizablewindow');
 
                     if(sub_module_id == 9){
                             
@@ -2615,7 +2626,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                     var model = Ext.create('Ext.data.Model', results);
                     child.loadRecord(model);
                     child.down('textfield[name=drawer]').setValue(results.applicant_name);
-                    funcShowCustomizableWindow(title, width, child, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(title, width, child, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -3227,8 +3238,7 @@ prepareNewSummaryQualityReport: function () {
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
-            zone_cbo = activeTab.down('combo[name=zone_id]'),
-            assessment_procedure = activeTab.down('combo[name=assessment_procedure_id]'),
+            assessment_procedure = products_detailsfrm.down('combo[name=assessment_procedure_id]'),
             filter = {section_id: section_id},
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
 
@@ -3277,7 +3287,7 @@ prepareNewSummaryQualityReport: function () {
                         products_detailsfrm.loadRecord(model);
                         // zone_cbo.setReadOnly(true);
                         
-                        zone_cbo.setValue(zone_id);
+        
                         if(section_id ==2){
 
                             assessment_procedure.setValue(results.assessment_procedure_id);
@@ -4038,6 +4048,30 @@ prepareNewSummaryQualityReport: function () {
         
     },
 
+
+    onLTRselectionListDblClick: function (view, record, item, index, e, eOpts) {
+        var me = this,
+            grid = view.grid,
+            win = grid.up('window'),
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            mask = new Ext.LoadMask({
+                msg: 'Please wait...',
+                target: win
+            });
+        mask.show();
+        
+        var applicantForm = activeTab.down('productlocalapplicantdetailsfrm');
+        applicantForm.loadRecord(record);
+        Ext.Function.defer(function () {
+            mask.hide();
+            win.close();
+        }, 200);
+        
+    },
+
+
+
     refreshScreeningChecklistItemsGrid: function (me) {
 
         var store = me.getStore(),
@@ -4470,7 +4504,7 @@ prepareNewSummaryQualityReport: function () {
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
-            hasRecommendation = checkApplicationEvaluationOverralRecom(application_code, 2),
+            hasRecommendation = checkApplicationEvaluationOverralRecom(application_code, 3),
             storeID = getApplicationStore(module_id, section_id);
             hasQueries = checkApplicationUnstructuredQueries(application_code,module_id);
 
@@ -4481,16 +4515,16 @@ prepareNewSummaryQualityReport: function () {
             value: hasQueries
         }];
         if(!hasRecommendation){
-            toastr.warning('Enter the 2nd Assessment Overrall Recommendation to Proceed!!', 'Warning Response');
+            toastr.warning('Enter the Quality Review Overrall Recommendation to Proceed!!', 'Warning Response');
             Ext.getBody().unmask();
             return false;
         }
-        if(!form.isValid()){
-            toastr.warning('Enter all the product application details to proceed!!', 'Warning Response');
-            Ext.getBody().unmask();
-            return false;
+        // if(!form.isValid()){
+        //     toastr.warning('Enter all the product application details to proceed!!', 'Warning Response');
+        //     Ext.getBody().unmask();
+        //     return false;
 
-        }
+        // }
         if (valid == true || valid === true) {
             showRecommendationWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsstrictrecommfrm', winWidth, storeID,1,extraParams,workflow_stage_id);
         } else {
@@ -4614,7 +4648,7 @@ prepareNewSummaryQualityReport: function () {
         form.down('button[name=uploadimage_btn]').isWin = isWin;
         form.down('hiddenfield[name=document_type_id]').setValue(6);
         
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
        // docReqStr = Ext.getStore('document_requirementsStr');
         docReqStr =  form.down('combo[name=document_requirement_id]').getStore()
         docReqStr.load({
@@ -5077,7 +5111,7 @@ prepareNewSummaryQualityReport: function () {
                         applicant_details.setValue(results.applicant_details);
                         product_details.setValue(results.product_details);
 
-                        productsDetailsFrm = activeTab.down('#productsDetailsFrm'),
+                        productsDetailsFrm = activeTab.down('#productsDetailsFrm');
                         productsDetailsFrm.loadRecord(model);
                         
                        

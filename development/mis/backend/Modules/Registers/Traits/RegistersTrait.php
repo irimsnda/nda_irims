@@ -148,10 +148,11 @@ public function DateFilterImportExport(request $req){
                  ->LeftJoin('par_registration_statuses as t23','t15.appregistration_status_id','t23.id')
                  ->LeftJoin('par_validity_statuses as t24','t15.appvalidity_status_id','t24.id')
                  ->LeftJoin('par_sections as t25','t1.section_id','t25.id')
+                  ->LeftJoin('par_business_types as t26','t3.business_type_id','t26.id')
                     
                     
 
-                ->addselect('t1.reference_no','t3.name','t3.email','t3.postal_address','t3.physical_address','t8.name as Trader','t8.physical_address as TraderPhysicalA','t8.email as TraderEmail','t13.name as TraderCountry','t15.expiry_date as CertExpiryDate','t15.certificate_issue_date as CertIssueDate','t15.permit_no as certificate_no', 't23.name as registration_status', 't24.name as validity_status','t25.name as section_name')
+                ->addselect('t1.reference_no','t3.name','t3.email','t3.postal_address','t3.physical_address','t8.name as Trader','t8.physical_address as TraderPhysicalA','t8.email as TraderEmail','t13.name as TraderCountry','t15.expiry_date as CertExpiryDate','t15.certificate_issue_date as CertIssueDate','t15.permit_no as certificate_no', 't23.name as registration_status', 't24.name as validity_status','t25.name as section_name','t26.name as business_type')
                 ->groupBy('t1.application_code');
 
         return $qry;
@@ -645,7 +646,7 @@ public function DateFilterImportExport(request $req){
              
               if( $i == count( $headers ) - 1) {
                  PDF::SetFillColor(249,249,249); // Grey
-\                 PDF::MultiCell(0, $h_1, $header, 1,'C','fill',1);
+                PDF::MultiCell(0, $h_1, $header, 1,'C','fill',1);
               }else{
                   PDF::SetFillColor(249,249,249); // Grey
                   PDF::MultiCell($w, $h_1,  $header, 1,'C','fill',0);     

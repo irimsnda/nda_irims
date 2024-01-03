@@ -54,7 +54,9 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreClinicalTrialDetailsFrm', {
                 fieldLabel: 'Proposed Meeting Date',labelAlign: 'top',
                 name: 'meeting_date',
                 submitFormat: 'Y-m-d',
-                format: 'd/m/Y',width: '60%',
+                format: 'd/m/Y',
+                width: '60%',
+                //columnWidth: 0.5,
                 altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s',
                 bind: {
                     readOnly: '{isReadOnly}'  // negated
@@ -67,7 +69,9 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreClinicalTrialDetailsFrm', {
                 format: 'H:i',
                 // allowBlank:true,
                 altFormats:'H:i',
-                increment: 30,width: '40%',
+                increment: 30,
+                width: '40%',
+                columnWidth: 0.49,
                 bind: {
                     readOnly: '{isReadOnly}'  // negated
                 }
@@ -79,6 +83,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreClinicalTrialDetailsFrm', {
             queryMode: 'local',
             forceSelection: true,
             // allowBlank: true,
+           columnWidth: 0.99,
             valueField: 'id',
             displayField: 'name',
             listeners: {
@@ -109,7 +114,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreClinicalTrialDetailsFrm', {
                 }
             }
         },{
-            xtype: 'textfield',
+            xtype: 'textarea',
             fieldLabel: 'Meeting Venue',
             columnWidth: 0.99,
             name: 'meeting_venue', 
@@ -118,10 +123,11 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreClinicalTrialDetailsFrm', {
                 readOnly: '{isReadOnly}'  // negated
             }
         },{
-            xtype: 'textfield',
+            xtype: 'textarea',
             fieldLabel: 'Meeting Invitation Details(Copy & Paste the Meeting Invitation Details & link) ', columnWidth: 0.99,
             name: 'meeting_invitation_details', 
              hidden: true,
+             columnWidth: 0.99,
              allowBlank: true,
             bind: {
                 readOnly: '{isReadOnly}'  // negated

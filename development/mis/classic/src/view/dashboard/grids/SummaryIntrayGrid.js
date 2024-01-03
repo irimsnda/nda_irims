@@ -4,6 +4,7 @@
 Ext.define('Admin.view.dashboard.grids.SummaryIntrayGrid', {
     extend: 'Ext.grid.Panel',
     xtype: 'summaryintraygrid',
+    id: 'summaryintraygrid',
     controller: 'dashboardvctr',
    
     viewConfig: {
@@ -75,6 +76,7 @@ Ext.define('Admin.view.dashboard.grids.SummaryIntrayGrid', {
         flex: 1,
         //labelWidth: 80,
         width: 150,
+        readOnly:true,
         valueField: 'id',
         displayField: 'name',
         forceSelection: true,
@@ -105,15 +107,16 @@ Ext.define('Admin.view.dashboard.grids.SummaryIntrayGrid', {
                 sub_module_str.load({params: {module_id: newVal}});
                 grid.getStore().load();
             }
-        },
-        triggers: {
-            clear: {
-                type: 'clear',
-                hideWhenEmpty: true,
-                hideWhenMouseOut: false,
-                clearOnEscape: true
-            }
         }
+        // ,
+        // triggers: {
+        //     clear: {
+        //         type: 'clear',
+        //         hideWhenEmpty: true,
+        //         hideWhenMouseOut: false,
+        //         clearOnEscape: true
+        //     }
+        // }
     }, {
         xtype: 'combo',
         emptyText: 'SUB MODULE',
@@ -284,10 +287,10 @@ Ext.define('Admin.view.dashboard.grids.SummaryIntrayGrid', {
             tdCls: 'wrap',
             renderer: function (val, meta, record) {
                 if (val < 100) {
-                    meta.tdStyle = 'color:white;background-color:green';
+                    meta.tdStyle = 'color:white;background-color:#2e8B57';
                     return val;
                 } else {
-                    meta.tdStyle = 'color:white;background-color:red';
+                    meta.tdStyle = 'color:white;background-color:#900603';
                     return val+ "(over 100 app.)";
                 }
             }

@@ -20,8 +20,8 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
         height: 60,
             defaults: {
                 labelAlign: 'top',
-                margin: '-12 5 0 5',
-                labelStyle: "color:#595959;font-size:13px"
+                margin: '-5 5 0 5',
+                labelStyle: "color:#595959;font-size:12px"
             },
         items: ['->', {
             xtype: 'displayfield',
@@ -30,7 +30,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
             fieldStyle: {
                 'color': 'green',
                 'font-weight': 'bold',
-                'font-size': '12px'
+                'font-size': '11px'
             }
         }, {
                 xtype: 'tbspacer',
@@ -42,7 +42,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
-                    'font-size': '12px'
+                    'font-size': '11px'
                 }
             }, {
                 xtype: 'tbspacer',
@@ -54,7 +54,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
-                    'font-size': '12px'
+                    'font-size': '11px'
                 }
             }, {
                 xtype: 'tbspacer',
@@ -66,7 +66,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
-                    'font-size': '12px'
+                    'font-size': '11px'
                 }
             },{
                 xtype: 'displayfield',
@@ -75,7 +75,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
-                    'font-size': '12px'
+                    'font-size': '11px'
                 }
             }, {
                 xtype: 'hiddenfield',

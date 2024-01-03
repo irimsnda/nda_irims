@@ -1,6 +1,6 @@
 /**
 
- * Created by Kip on 1/24/2019.
+ * Created by Softclans
  */
 Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExportPermitReleaseApprovalGrid', {
     extend: 'Ext.grid.Panel',
@@ -22,14 +22,15 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                 selCount = grid.getSelectionModel().getCount();
             if (selCount > 0) {
                 grid.down('button[name=submit_selected]').setDisabled(false);
+                grid.down('button[name=batch_approval_recommendation]').setDisabled(false);
             }
         },
         beforeselect: function (sel, record, index, eOpts) {
             var recommendation_id = record.get('release_recommendation_id');
             if (recommendation_id > 0) {
-               return true;
+               //return true;
             } else {
-               return false;
+               //return false;
             }
         },
         deselect: function (sel, record, index, eOpts) {
@@ -37,6 +38,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                 selCount = grid.getSelectionModel().getCount();
             if (selCount < 1) {
                 grid.down('button[name=submit_selected]').setDisabled(true);
+                grid.down('button[name=batch_approval_recommendation]').setDisabled(true);
             }
         }
     },
@@ -62,6 +64,17 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
     tbar: [{
         xtype: 'exportbtn'
     }, {
+        text:'Batch Approval Recommendation',
+        name:'batch_approval_recommendation',
+        disabled: true,
+        table_name: 'tra_importexport_applications',
+        stores: '[]',
+        handler:'getBatchPermitApplicationApprovalDetails',
+        approval_frm: 'batchpermitreleaserecommfrm',
+        iconCls: 'x-fa fa-chevron-circle-up',
+        margin: 5
+    
+  },{
         xtype: 'tbspacer'
     },'->',{
         xtype: 'combo',
@@ -118,27 +131,34 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             width: 120,
             textAlign: 'left',
             xtype: 'button',
+            itemId: 'prints',
             ui: 'soft-green',
-            text: 'Print/Preview Permit',
+            text: 'Print License/Letter',
             iconCls: 'x-fa fa-certificate',
-            name: 'certificate',
-            handler: 'generateColumnImportExportPermit'
+            handler: 'generateImportExportPermit',
+            bind: {
+                disabled: '{record.release_recommendation_id <= 0 || record.release_recommendation_id === null}'
+                //disabled: '{record.decision_id !== 1}'
+            }
         }
-    },{
-        xtype: 'widgetcolumn',
-        width: 120,
-        hidden: true,
-        widget: {
-            width: 120,
-            textAlign: 'left',
-            xtype: 'button',
-            ui: 'soft-green',
-            text: 'Permit Release Recommendation',
-            iconCls: 'x-fa fa-chevron-circle-up',
-            approval_frm: 'permitReleaseRecommFrm',
-            handler: 'getPermitReleaseRecommendationDetails',
-        }
-    },{
+    },
+    // {
+    //     xtype: 'widgetcolumn',
+    //     width: 120,
+    //     hidden: true,
+    //     widget: {
+    //         width: 120,
+    //         textAlign: 'left',
+    //         xtype: 'button',
+    //         ui: 'soft-green',
+    //         text: 'Permit Release Recommendation',
+    //         iconCls: 'x-fa fa-chevron-circle-up',
+    //         approval_frm: 'permitReleaseRecommFrm',
+    //         handler: 'getPermitReleaseRecommendationDetails',
+    //     }
+    // },
+    
+    {
         xtype: 'gridcolumn',
         dataIndex: 'tracking_no',
         text: 'Tracking No',
@@ -156,6 +176,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'proforma_invoice_no',
+        hidden: true,
         text: 'Proforma Invoice No',
         flex: 1
     },  {
@@ -171,6 +192,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
     },{
         xtype: 'gridcolumn',
         dataIndex: 'prechecking_recommendation',
+        hidden: true,
         text: 'Prechecking Recommendation',
         flex: 1
     },{
@@ -183,7 +205,23 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         dataIndex: 'release_recommendation',
         text: 'Permit Release Recommendation',
         flex: 1
-    },  {
+    }, {
+        xtype: 'widgetcolumn',
+        width: 150,
+        widget: {
+            width: 150,
+            textAlign: 'left',
+            xtype: 'button',
+            ui: 'soft-red',
+            text: 'Approve',
+             iconCls: 'x-fa fa-chevron-circle-up',
+                    handler: 'getPermitReleaseRecommendationDetails',
+                    approval_frm:'permitReleaseRecommFrm',
+                    vwcontroller: '',
+                    stores: '[]',
+                    table_name: 'tra_importexport_applications'
+        }
+    }, {
         text: 'Options',
         xtype: 'widgetcolumn',
         width: 90,
@@ -200,6 +238,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                     iconCls: 'x-fa fa-chevron-circle-up',
                     handler: 'getPermitReleaseRecommendationDetails',
                     approval_frm:'permitReleaseRecommFrm',
+                    hidden: true,
                     vwcontroller: '',
                     stores: '[]',
                     table_name: 'tra_importexport_applications'
@@ -209,13 +248,14 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                         iconCls: 'x-fa fa-certificate',
                         handler: '',
                         name: 'certificate',
+                        hidden: true,
                         handler: 'generateImportExportPermit'
                     },
                     {
                         text: 'Preview Import/Export Details',
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 0,
-                        handler: 'editpreviewPermitinformation'
+                        handler: 'editpreviewLicencedPermitinformation'
                     }
                 ]
             }

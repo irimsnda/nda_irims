@@ -131,6 +131,19 @@ Ext.define('Admin.controller.WorkflowManagementCtr', {
             },'paymentVerificationPnl button[name=returnback_submission_btn]': {
                 click: 'showReturnBackApplicationSubmissionWin'
             }, 
+
+            'newpremiseinspectionpanel button[name=returnback_submission_btn]': {
+                click: 'showReturnBackApplicationSubmissionWin'
+            }, 
+
+            'newdrugshopinspectionpanel button[name=returnback_submission_btn]': {
+                click: 'showReturnBackApplicationSubmissionWin'
+            }, 
+            
+              'predrugshopinspectionpanel button[name=returnback_submission_btn]': {
+                click: 'showReturnBackApplicationSubmissionWin'
+            }, 
+
             'paymentVerificationPnl button[name=rejection_submission_btn]': {
                 click: 'showRejectionApplicationSubmissionWin'
             },  
@@ -138,6 +151,10 @@ Ext.define('Admin.controller.WorkflowManagementCtr', {
                 click: 'showQueryApplicationSubmissionWin'
             },
             'applicationunstructuredqueriesgrid button[name=query_submission_btn]': {
+                click: 'showQueryApplicationSubmissionWin'
+            },
+
+             'applicationqueriesgrid button[name=query_submission_btn]': {
                 click: 'showQueryApplicationSubmissionWin'
             },
             

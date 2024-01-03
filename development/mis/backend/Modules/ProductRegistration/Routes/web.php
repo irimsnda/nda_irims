@@ -73,6 +73,11 @@ Route::post('/saveQualityReport', [ProductRegistrationController::class,'saveQua
     Route::get('/onLoadproductPackagingDetails', [ProductRegistrationController::class,'onLoadproductPackagingDetails']);
     Route::get('/onLoaddrugsMaximumResidueLimitsGrid', [ProductRegistrationController::class,'onLoaddrugsMaximumResidueLimitsGrid']);
     Route::get('/onLoadManufacturersDetails', [ProductRegistrationController::class,'onLoadManufacturersDetails']);
+
+    Route::get('/onLoadOtherAccessoriesDetails', [ProductRegistrationController::class,'onLoadOtherAccessoriesDetails']);
+
+
+
     Route::get('/onLoadManufacturingSitesDetails', [ProductRegistrationController::class,'onLoadManufacturingSitesDetails']);
 
     

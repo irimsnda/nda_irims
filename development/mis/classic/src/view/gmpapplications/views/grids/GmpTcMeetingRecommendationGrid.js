@@ -194,7 +194,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpTcMeetingRecommendationGri
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'tc_recomm',
-        text: 'TC Recommendation',
+        text: 'Peer Review Recommendation',
         flex: 1
     },{
         text: 'Options',
@@ -209,12 +209,12 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpTcMeetingRecommendationGri
             menu: {
                 xtype: 'menu',
                 items: [{
-                    text: 'TC Recommendation',
+                    text: 'Peer Review Recommendation',
                     iconCls: 'x-fa fa-retweet',
                     handler: 'showTcRecommendation',
                     childXtype: 'gmptcrecommendationFrm',
-                    winTitle: 'TC Recommendation',
-                    winWidth: '30%',
+                    winTitle: 'Peer Review Recommendation',
+                    winWidth: '40%',
                     stores: '["tcrecommendationdecisionsstr"]'
                 },
                     {

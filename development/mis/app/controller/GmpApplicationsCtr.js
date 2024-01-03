@@ -232,6 +232,16 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             'productlinedetailsinspectiongrid button[name=add_line]': {
                 click: 'showAddGmpProductLineDetails'
             },
+
+            'productLineDetailsaddgrid button[name=add_line]': {
+                click: 'showAddProductLine'
+            },
+
+
+            'mansiteblockdetailsgrid button[name=add_block]': {
+                click: 'showAddGmpBlockWinFrm'
+            },
+
             'noncomplianceobservationsgrid button[name=add_observation]': {
                 click: 'showAddGmpNonComplianceDetails'
             },
@@ -307,6 +317,16 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             'cancelgmpreceivingwizard button[name=process_submission_btn]': {
                 click: 'showRenewReceivingApplicationSubmissionWin'
             },
+            'billingdetailsfrm button[action=link_personnel]': {
+                click: 'showTraderPersonnelSelectionGrid'
+            },
+
+             'contractmanufacturingfrm button[action=link_personnel]': {
+                click: 'showContractPersonnelSelectionGrid'
+            },
+
+
+            
             //Submission ALTERATION
             'altgmpreceivingwizard button[name=process_submission_btn]': {
                 click: 'showRenewReceivingApplicationSubmissionWin'
@@ -379,12 +399,18 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             'mansitedetailsfrm button[action=search_site]': {
                 click: 'showManufacturingSitesSelectionList'
             },
+
+            'contractmanufacturingfrm button[name=search_site]': {
+                click: 'showContactManufacturingSitesSelectionList'
+            },
+
+
             'mansitedetailsfrm button[name=search_site]': {
                 click: 'showManufacturingSitesSelectionList'
             },
-            'mansitesselectiongrid': {
-                itemdblclick: 'onManSiteSelectionListDblClick'
-            },
+            // 'mansitesselectiongrid': {
+            //     itemdblclick: 'onManSiteSelectionListDblClick'
+            // },
             'manufacturingsitesselectiongrid': {
                 itemdblclick: 'onManufacturingSiteSelectionListDblClick'
             },
@@ -420,9 +446,13 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             },
             'applicationwithdrawalreasonsgrid button[name=add_reason]': {
                 click: 'showAddGmpWithdrawalReason'
+
+
             }, 'productlinedetailsgrid button[name=add_line]': {
                 click: 'showAddGmpProductLineDetails'
-            },'productlinedetailsgrid button[name=update_line]': {
+            },
+
+            'productlinedetailsgrid button[name=update_line]': {
                 click: 'saveGmpproductlinedetails'
             },
             'productlinedetailsinspectiongrid button[name=update_line]': {
@@ -630,10 +660,10 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
      
 
         if (section_id != 2) {
-            productlinedetailsgrid.columns[4].setHidden(true);
-            productlinedetailsgrid.columns[5].setHidden(true);
-            productlinedetailsgrid.columns[6].setHidden(true);
-            productlinedetailsgrid.columns[7].setHidden(true);
+            // productlinedetailsgrid.columns[4].setHidden(true);
+            // productlinedetailsgrid.columns[5].setHidden(true);
+            // productlinedetailsgrid.columns[6].setHidden(true);
+            // productlinedetailsgrid.columns[7].setHidden(true);
         }
         if (status_type_id == 2 || status_type_id === 2 || status_type_id == 3 || status_type_id === 3) {//pre checking and manager query response
             wizardPnl.down('button[name=preview_queries_btn]').setVisible(true);
@@ -1309,8 +1339,9 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
 
     prepareNewGmpOnlinePreview: function (pnl) {
         var me = this,
-            applicantFrm = pnl.down('applicantdetailsfrm'),
-            siteFrm = pnl.down('mansitedetailsfrm'),
+            applicantFrm = pnl.down('applicantdetailsfrm');
+
+            var siteFrm = pnl.down('mansitedetailsfrm'),
             productLineDetailsGrid = pnl.down('onlineproductlinedetailsgrid'),
             productLineDetailsStr = productLineDetailsGrid.getStore(),
             ltrFrm = pnl.down('ltrfrm'),
@@ -1416,6 +1447,8 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             manufacturingSiteFrm = activeTab.down('mansitedetailsfrm'),
             ltrFrm = activeTab.down('ltrfrm'),
             contactPersonFrm = activeTab.down('premisecontactpersonfrm'),
+            billingPersonFrm = activeTab.down('billingdetailsfrm'),
+            contractManufacturingFrm = activeTab.down('contractmanufacturingfrm'),
             productLinesGrid = activeTab.down('productlinedetailsgrid'),
             productline_store = productLinesGrid.getStore(),
             gmpproducts_store = activeTab.down('gmpproductslinkagedetailsgrid').getStore(),
@@ -1444,10 +1477,10 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         });
        
         if (section_id != 2) {
-            productLinesGrid.columns[4].setHidden(true);
-            productLinesGrid.columns[5].setHidden(true);
-            productLinesGrid.columns[6].setHidden(true);
-            productLinesGrid.columns[7].setHidden(true);
+            // productLinesGrid.columns[4].setHidden(true);
+            // productLinesGrid.columns[5].setHidden(true);
+            // productLinesGrid.columns[6].setHidden(true);
+            // productLinesGrid.columns[7].setHidden(true);
         }
         if (application_id) {
             gmpType_fld.setReadOnly(false);
@@ -1469,7 +1502,9 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                         success = resp.success,
                         results = resp.results,
                         ltrResults = resp.ltrDetails,
-                        contactPersonDetails = resp.contactPersonDetails;
+                        contactPersonDetails = resp.contactPersonDetails,
+                        billingPersonDetails = resp.billingPersonDetails,
+                        contractmanufacturingDetails = resp.contractmanufacturingDetails;
                     if (success == true || success === true) {
                         if (results) {
                             var model = Ext.create('Ext.data.Model', results);
@@ -1490,6 +1525,18 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                             var model3 = Ext.create('Ext.data.Model', contactPersonDetails);
                             contactPersonFrm.loadRecord(model3);
                         }
+
+
+                        if (billingPersonDetails) {
+                            var model4 = Ext.create('Ext.data.Model', billingPersonDetails);
+                            billingPersonFrm.loadRecord(model4);
+                        }
+
+                        if (contractmanufacturingDetails) {
+                            var model5 = Ext.create('Ext.data.Model', contractmanufacturingDetails);
+                            contractManufacturingFrm.loadRecord(model5);
+                        }
+
                         productline_store.removeAll();
                         productline_store.load();
                         gmpproducts_store.removeAll();
@@ -1656,7 +1703,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                         }
                         applicant_details.setValue(results.applicant_details);
 
-                        product_details.setValue(results.product_details);
+                        //product_details.setValue(results.product_details);
 
                         running_balance.setValue(balance + txt);
                        
@@ -2148,10 +2195,10 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         inspectiondetailsupdatefrm.down('hiddenfield[name=application_code]').setValue(application_code);
 
         if (section_id != 2) {
-            productlinedetailsgrid.columns[4].setHidden(true);
-            productlinedetailsgrid.columns[5].setHidden(true);
-            productlinedetailsgrid.columns[6].setHidden(true);
-            productlinedetailsgrid.columns[7].setHidden(true);
+            // productlinedetailsgrid.columns[4].setHidden(true);
+            // productlinedetailsgrid.columns[5].setHidden(true);
+            // productlinedetailsgrid.columns[6].setHidden(true);
+            // productlinedetailsgrid.columns[7].setHidden(true);
         }
 
 
@@ -2881,7 +2928,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue();
         if (sub_module_id == 5) {//NEW
-            if (tabPnl.items.indexOf(newTab) > 1) {
+            if (tabPnl.items.indexOf(newTab) > 4) {
                 if (!application_id) {
                     toastr.warning('Save Application details first!!', 'Warning Response');
                     return false;
@@ -2893,7 +2940,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
     },
 
     saveGmpNewReceivingBaseDetails: function (btn) {
-        var me = this,
+        var me = this, 
             toaster = btn.toaster,
             mainTabPanel = me.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
@@ -2911,6 +2958,8 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             applicantDetailsForm = activeTab.down('applicantdetailsfrm'),
             ltrForm = activeTab.down('ltrfrm'),
+            billingForm = activeTab.down('billingdetailsfrm'),
+            contractManufactureForm = activeTab.down('contractmanufacturingfrm'),
             contactPersonForm = activeTab.down('premisecontactpersonfrm'),
             applicant_contact_person = contactPersonForm.down('combo[name=applicant_contact_person]').getValue(),
             contact_person_id = contactPersonForm.down('hiddenfield[name=id]').getValue(),
@@ -2919,6 +2968,19 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             applicant_id = applicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue(),
             ltr_id = ltrForm.down('hiddenfield[name=ltr_id]').getValue(),
             applicant_as_ltr = ltrForm.down('combo[name=applicant_as_ltr]').getValue(),
+            applicant_as_billingperson = billingForm.down('combo[name=applicant_as_billingperson]').getValue(),
+            billing_person_id = billingForm.down('hiddenfield[name=id]').getValue(),
+            manufacturing_site_id = contractManufactureForm.down('hiddenfield[name=manufacturing_site_id]').getValue();
+            console.log(manufacturing_site_id);
+            var contract_manufacturing_id = contractManufactureForm.down('combo[name=contract_manufacturing_id]').getValue(),
+            contract_manufacturer_name = contractManufactureForm.down('textfield[name=contract_manufacturer_name]').getValue(),
+            contract_physical_address = contractManufactureForm.down('textfield[name=contract_physical_address]').getValue(),
+            contract_country_id = contractManufactureForm.down('combo[name=contract_country_id]').getValue(),
+            contract_region_id = contractManufactureForm.down('combo[name=contract_region_id]').getValue(),
+            contract_personnel_name = contractManufactureForm.down('textfield[name=contract_personnel_name]').getValue(),
+            contract_telephone_no = contractManufactureForm.down('textfield[name=contract_telephone_no]').getValue(),
+            inspected_activity_id = contractManufactureForm.down('combo[name=inspected_activity_id]').getValue(),
+            contract_email_address = contractManufactureForm.down('textfield[name=contract_email_address]').getValue(),
             manSiteDetailsForm = activeTab.down('mansitedetailsfrm'),
             manSiteDetailsFrm = manSiteDetailsForm.getForm(),
             action_url = 'gmpapplications/saveNewGmpReceivingBaseDetails';
@@ -2938,6 +3000,22 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 toastr.warning('Please select Local Technical Representative!!', 'Warning Response');
                 return false;
             }
+            if (!applicant_as_billingperson) {
+                toastr.warning('Please select Billing Address!!', 'Warning Response');
+                return false;
+            } else if (applicant_as_billingperson == 2 && !billing_person_id) {
+                toastr.warning('Please select Billing Address!!', 'Warning Response');
+                return false;
+            }
+             if (!contract_manufacturing_id) {
+                toastr.warning('Please select Contract Manufacturing Acitivity!!', 'Warning Response');
+                return false;
+            } 
+            // else if (contract_manufacturing_id == 1 || contract_manufacturing_id == 2 && !manufacturing_site_id) {
+            //     toastr.warning('Please note application can not be received until all manufacturing parties have applied for an inspection!!', 'Warning Response');
+            //     return false;
+
+            // }
             manSiteDetailsFrm.submit({
                 url: action_url,
                 waitMsg: 'Please wait...',
@@ -2954,10 +3032,23 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                     assessment_type_id: assessment_type_id,
                     device_type_id: device_type_id,
                     applicant_as_ltr: applicant_as_ltr,
+                    applicant_as_billingperson: applicant_as_billingperson,
                     applicant_contact_person: applicant_contact_person,
                     contact_person_id: contact_person_id,
                     contact_person_startdate: contact_person_startdate,
-                    contact_person_enddate: contact_person_enddate
+                    contact_person_enddate: contact_person_enddate,
+
+                    applicant_as_billingperson: applicant_as_billingperson,
+                    billing_person_id: billing_person_id,
+                    contract_manufacturing_id: contract_manufacturing_id,
+                    contract_manufacturer_name: contract_manufacturer_name,
+                    contract_physical_address: contract_physical_address,
+                    contract_country_id: contract_country_id,
+                    contract_region_id: contract_region_id,
+                    contract_personnel_name: contract_personnel_name,
+                    contract_telephone_no: contract_telephone_no,
+                    contract_email_address: contract_email_address,
+                    inspected_activity_id: inspected_activity_id
                 },
                 headers: {
                     'Authorization': 'Bearer ' + access_token,
@@ -3021,6 +3112,8 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             applicantDetailsForm = activeTab.down('applicantdetailsfrm'),
             ltrForm = activeTab.down('ltrfrm'),
+            billingForm = activeTab.down('billingdetailsfrm'),
+            contractManufactureForm = activeTab.down('contractmanufacturingfrm'),
             contactPersonForm = activeTab.down('premisecontactpersonfrm'),
             applicant_contact_person = contactPersonForm.down('combo[name=applicant_contact_person]').getValue(),
             contact_person_id = contactPersonForm.down('hiddenfield[name=id]').getValue(),
@@ -3029,6 +3122,21 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             applicant_id = applicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue(),
             ltr_id = ltrForm.down('hiddenfield[name=ltr_id]').getValue(),
             applicant_as_ltr = ltrForm.down('combo[name=applicant_as_ltr]').getValue(),
+
+            applicant_as_billingperson = billingForm.down('combo[name=applicant_as_billingperson]').getValue(),
+            billing_person_id = billingForm.down('hiddenfield[name=id]').getValue(),
+
+            
+            manufacturing_site_id = contractManufactureForm.down('hiddenfield[name=manufacturing_site_id]').getValue(),
+            contract_manufacturing_id = contractManufactureForm.down('combo[name=contract_manufacturing_id]').getValue(),
+            contract_manufacturer_name = contractManufactureForm.down('textfield[name=contract_manufacturer_name]').getValue(),
+            contract_physical_address = contractManufactureForm.down('textfield[name=contract_physical_address]').getValue(),
+            contract_country_id = contractManufactureForm.down('combo[name=contract_country_id]').getValue(),
+            contract_region_id = contractManufactureForm.down('combo[name=contract_region_id]').getValue(),
+            contract_personnel_name = contractManufactureForm.down('textfield[name=contract_personnel_name]').getValue(),
+            contract_telephone_no = contractManufactureForm.down('textfield[name=contract_telephone_no]').getValue(),
+            inspected_activity_id = contractManufactureForm.down('combo[name=inspected_activity_id]').getValue(),
+            contract_email_address = contractManufactureForm.down('textfield[name=contract_email_address]').getValue(),
             productLineDetailsStore = activeTab.down('productlinedetailsgrid').getStore(),
             manSiteDetailsForm = activeTab.down('mansitedetailsfrm'),
             manSiteDetailsFrm = manSiteDetailsForm.getForm(),
@@ -3053,6 +3161,24 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 toastr.warning('Please select Local Technical Representative!!', 'Warning Response');
                 return false;
             }
+             if (!applicant_as_billingperson) {
+                toastr.warning('Please select Billing Address!!', 'Warning Response');
+                return false;
+            } else if (applicant_as_billingperson == 2 && !billing_person_id) {
+                toastr.warning('Please select Billing Address!!', 'Warning Response');
+                return false;
+            }
+             if (!contract_manufacturing_id) {
+                toastr.warning('Please select Contract Manufacturing Acitivity!!', 'Warning Response');
+                return false;
+            }
+            //  else if(contract_manufacturing_id == 1 || contract_manufacturing_id == 2 && !manufacturing_site_id) {
+            //     toastr.warning('Please note application can not be received until all manufacturing parties have applied for an inspection!!', 'Warning Response');
+            //     return false;
+            // }
+
+
+
             manSiteDetailsFrm.submit({
                 url: action_url,
                 waitMsg: 'Please wait...',
@@ -3072,7 +3198,19 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                     applicant_contact_person: applicant_contact_person,
                     contact_person_id: contact_person_id,
                     contact_person_startdate: contact_person_startdate,
-                    contact_person_enddate: contact_person_enddate
+                    contact_person_enddate: contact_person_enddate,
+
+                    applicant_as_billingperson: applicant_as_billingperson,
+                    billing_person_id: billing_person_id,
+                    contract_manufacturing_id: contract_manufacturing_id,
+                    contract_manufacturer_name: contract_manufacturer_name,
+                    contract_physical_address: contract_physical_address,
+                    contract_country_id: contract_country_id,
+                    contract_region_id: contract_region_id,
+                    contract_personnel_name: contract_personnel_name,
+                    contract_telephone_no: contract_telephone_no,
+                    contract_email_address: contract_email_address,
+                    inspected_activity_id: inspected_activity_id
                 },
                 headers: {
                     'Authorization': 'Bearer ' + access_token,
@@ -3142,9 +3280,24 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
 
             applicantDetailsForm = wizardPnl.down('applicantdetailsfrm'),
             ltrForm = wizardPnl.down('ltrfrm'),
+            billingForm = activeTab.down('billingdetailsfrm'),
+            contractManufactureForm = activeTab.down('contractmanufacturingfrm'),
             applicant_id = applicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue(),
             ltr_id = ltrForm.down('hiddenfield[name=ltr_id]').getValue(),
             applicant_as_ltr = ltrForm.down('combo[name=applicant_as_ltr]').getValue(),
+
+            applicant_as_billingperson = billingForm.down('combo[name=applicant_as_billingperson]').getValue(),
+            billing_person_id = billingForm.down('hiddenfield[name=id]').getValue(),
+            manufacturing_site_id = contractManufactureForm.down('hiddenfield[name=manufacturing_site_id]').getValue(),
+            contract_manufacturing_id = contractManufactureForm.down('combo[name=contract_manufacturing_id]').getValue(),
+            contract_manufacturer_name = contractManufactureForm.down('textfield[name=contract_manufacturer_name]').getValue(),
+            contract_physical_address = contractManufactureForm.down('textfield[name=contract_physical_address]').getValue(),
+            contract_country_id = contractManufactureForm.down('combo[name=contract_country_id]').getValue(),
+            contract_region_id = contractManufactureForm.down('combo[name=contract_region_id]').getValue(),
+            contract_personnel_name = contractManufactureForm.down('textfield[name=contract_personnel_name]').getValue(),
+            contract_telephone_no = contractManufactureForm.down('textfield[name=contract_telephone_no]').getValue(),
+            inspected_activity_id = contractManufactureForm.down('combo[name=inspected_activity_id]').getValue(),
+            contract_email_address = contractManufactureForm.down('textfield[name=contract_email_address]').getValue(),
             siteDetailsForm = wizardPnl.down('mansitedetailsfrm'),
             siteDetailsFrm = siteDetailsForm.getForm(),
             action_url = 'gmpapplications/saveRenewalGmpReceivingBaseDetails';
@@ -3171,6 +3324,21 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 toastr.warning('Please select Local Technical Representative!!', 'Warning Response');
                 return false;
             }
+             if (!applicant_as_billingperson) {
+                toastr.warning('Please select Billing Address!!', 'Warning Response');
+                return false;
+            } else if (applicant_as_billingperson == 2 && !billing_person_id) {
+                toastr.warning('Please select Billing Address!!', 'Warning Response');
+                return false;
+            }
+             if (!contract_manufacturing_id) {
+                toastr.warning('Please select Contract Manufacturing Acitivity!!', 'Warning Response');
+                return false;
+             } 
+            //else if (contract_manufacturing_id == 1 || contract_manufacturing_id == 2 && !manufacturing_site_id) {
+            //     toastr.warning('Please note application can not be received until all manufacturing parties have applied for an inspection!!', 'Warning Response');
+            //     man_site_id
+            // }
             siteDetailsFrm.submit({
                 url: action_url,
                 waitMsg: 'Please wait...',
@@ -3190,7 +3358,20 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                     applicant_contact_person: applicant_contact_person,
                     contact_person_id: contact_person_id,
                     contact_person_startdate: contact_person_startdate,
-                    contact_person_enddate: contact_person_enddate
+                    contact_person_enddate: contact_person_enddate,
+
+
+                    applicant_as_billingperson: applicant_as_billingperson,
+                    billing_person_id: billing_person_id,
+                    contract_manufacturing_id: contract_manufacturing_id,
+                    contract_manufacturer_name: contract_manufacturer_name,
+                    contract_physical_address: contract_physical_address,
+                    contract_country_id: contract_country_id,
+                    contract_region_id: contract_region_id,
+                    contract_personnel_name: contract_personnel_name,
+                    contract_telephone_no: contract_telephone_no,
+                    contract_email_address: contract_email_address,
+                    inspected_activity_id: inspected_activity_id
                 },
                 headers: {
                     'Authorization': 'Bearer ' + access_token,
@@ -3226,7 +3407,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             winWidth = btn.winWidth,
             childObject = Ext.widget(childXtype);
             childObject.applicantType = 'local';
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     showSearch_inspectionteam: function (btn) {
         var me = this,
@@ -3238,7 +3419,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             childObject = Ext.widget(childXtype);
            // childObject.down('hiddenfield[name=section_id]').setValue(section_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
 
@@ -3301,7 +3482,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
         positionsStore.removeAll();
         positionsStore.load();
     },
@@ -3325,7 +3506,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
         positionsStore.removeAll();
         positionsStore.load();
     },
@@ -3354,7 +3535,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },
 
     showAddSiteOtherDetailsWin: function (btn) {
@@ -3379,7 +3560,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },
 
     showAddGmpProductLineDetails: function (btn) {
@@ -3387,46 +3568,139 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             grid=btn.up('grid');
         
            
-           if(grid.up('window')){
-                    var win = grid.up('window');
-                    site_id = win.down('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue(),
-                    section_id = win.down('hiddenfield[name=section_id]').getValue();
-                    application_code = win.down('hiddenfield[name=active_application_code]').getValue();
+           // if(grid.up('window')){
+           //          var win = grid.up('window');
+           //          site_id = win.down('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue(),
+           //          section_id = win.down('hiddenfield[name=section_id]').getValue();
+           //          application_code = win.down('hiddenfield[name=active_application_code]').getValue();
 
-                }
-                else{
+           //      }
+           //      else{
 
-                    mainTabPanel = grid.up('#contentPanel'),
+                    var mainTabPanel = grid.up('#contentPanel'),
                     activeTab = mainTabPanel.getActiveTab(),
                     site_id = activeTab.down('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue(),
                     section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
                     application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
 
-                }
+               // }
                
+       
+            if (!site_id) {
+                toastr.warning('Please save siteDetails first!!', 'Warning Response');
+                return;
+            }
 
-           
             var childXtype = btn.childXtype,
             title = btn.winTitle,
             winWidth = '80%',
-            childObject = Ext.widget('productLineDetailsaddgrid'),
-            tabPnl = Ext.widget('productlinetabpnl'),
-            blockFrm = Ext.widget('mansiteblockdetailsfrm'),
+            tabPnl = Ext.widget(childXtype),
+            form = tabPnl.down('form'),
+            grid = tabPnl.down('grid');
+          
             storeArray = eval(btn.stores);
 
-            if (section_id != 2 && section_id != 7) {
-                childObject.columns[4].setHidden(true);
-                childObject.columns[5].setHidden(true);
-                childObject.columns[6].setHidden(true);
-                childObject.columns[7].setHidden(true);
-            }
-            childObject.down('hiddenfield[name=manufacturing_site_id]').setValue(site_id);
-            childObject.down('hiddenfield[name=section_id]').setValue(section_id);
-            childObject.down('hiddenfield[name=application_code]').setValue(application_code);
-            blockFrm.down('hiddenfield[name=manufacturing_site_id]').setValue(site_id);
+            // if (section_id != 2 && section_id != 7) {
+            //     childObject.columns[4].setHidden(true);
+            //     childObject.columns[5].setHidden(true);
+            //     childObject.columns[6].setHidden(true);
+            //     childObject.columns[7].setHidden(true);
+            // }
+           form.down('hiddenfield[name=manufacturing_site_id]').setValue(site_id);
+            // childObject.down('hiddenfield[name=section_id]').setValue(section_id);
+            // childObject.down('hiddenfield[name=application_code]').setValue(application_code);
+            grid.down('hiddenfield[name=manufacturing_site_id]').setValue(site_id);
           
-            funcShowCustomizableWindow(title, winWidth, tabPnl, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(title, winWidth, tabPnl, 'customizablewindow');
     },
+
+     showAddProductLine: function (btn) {
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            site_id = activeTab.down('hiddenfield[name=manufacturing_site_id]').getValue(),
+            childXtype = btn.childXtype,
+            title = btn.winTitle,
+            grid=btn.up('grid'),
+            block_id = grid.down('hiddenfield[name=block_id]').getValue(),
+            winWidth = btn.winWidth,
+            childObject = Ext.widget(childXtype),
+            storeArray = eval(btn.stores),
+            arrayLength = storeArray.length,
+            productLineStr = childObject.down('combo[name=product_line_id]').getStore(),
+            productLineCategoryStr = childObject.down('combo[name=category_id]').getStore();
+            childObject.down('hiddenfield[name=manufacturing_site_id]').setValue(site_id);
+            childObject.down('hiddenfield[name=manufacturingsite_block_id]').setValue(block_id);
+            //console.log(block_id);
+        //switch recommendation combo
+        if(activeTab.down('newgmpreceivingwizard')){
+            if(childObject.down('combo[name=prodline_inspectionstatus_id]')){
+                childObject.down('combo[name=prodline_inspectionstatus_id]').setVisible(false);
+            }
+        }
+        productLineStr.removeAll();
+        productLineStr.load({params: {section_id: section_id}});
+        productLineCategoryStr.removeAll();
+        productLineCategoryStr.load({params: {section_id: section_id}});
+        if (arrayLength > 0) {
+            me.fireEvent('refreshStores', storeArray);
+        }
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+    },
+     showAddGmpBlockWinFrm: function (btn) {
+
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            childXtype = btn.childXtype,
+            winTitle = btn.winTitle,
+            winWidth = btn.winWidth,
+            child = Ext.widget(childXtype),
+            storeArray = eval(btn.stores),
+             site_id = activeTab.down('hiddenfield[name=manufacturing_site_id]').getValue(),
+            arrayLength = storeArray.length;
+        child.down('hiddenfield[name=manufacturing_site_id]').setValue(site_id);
+        if (arrayLength > 0) {
+            me.fireEvent('refreshStores', storeArray);
+        }
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+    },
+
+
+    showAddGmpProductLine: function (btn) {
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            site_id = activeTab.down('hiddenfield[name=manufacturing_site_id]').getValue(),
+            childXtype = btn.childXtype,
+            title = btn.winTitle,
+            winWidth = btn.winWidth,
+            childObject = Ext.widget(childXtype),
+            storeArray = eval(btn.stores),
+            arrayLength = storeArray.length,
+            productLineStr = childObject.down('combo[name=product_line_id]').getStore(),
+            productLineCategoryStr = childObject.down('combo[name=category_id]').getStore();
+        childObject.down('hiddenfield[name=manufacturing_site_id]').setValue(site_id);
+        //switch recommendation combo
+        if(activeTab.down('newgmpreceivingwizard')){
+            if(childObject.down('combo[name=prodline_inspectionstatus_id]')){
+                childObject.down('combo[name=prodline_inspectionstatus_id]').setVisible(false);
+            }
+        }
+        productLineStr.removeAll();
+        productLineStr.load({params: {section_id: section_id}});
+        productLineCategoryStr.removeAll();
+        productLineCategoryStr.load({params: {section_id: section_id}});
+        if (arrayLength > 0) {
+            me.fireEvent('refreshStores', storeArray);
+        }
+        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+    },
+
+
+
 
 
     showAddGmpNonComplianceDetails1: function (btn) {
@@ -3478,7 +3752,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },
 
     showPrevProductLineDetails: function (btn) {
@@ -4000,8 +4274,8 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             siteReadOnly = 0;
         }
         contactPersonFrm.setMoreDetails(1);
-        personnelTabPnl.remove(personnelTabPnl.items.getAt(1));
-        personnelTabPnl.add(personnelDetailsGrid);
+        //personnelTabPnl.remove(personnelTabPnl.items.getAt(1));
+        //personnelTabPnl.add(personnelDetailsGrid);
         wizardPnl.setHeight(550);
         applicantFrm.down('button[action=link_applicant]').setDisabled(false);
         siteFrm.down('button[action=search_site]').setDisabled(false);
@@ -4028,18 +4302,18 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         siteFrm.down('hiddenfield[name=isReadOnly]').setValue(siteReadOnly);
         if (section_id != 2) {
             if(wizardPnl.down('productlinedetailsgrid')){
-                productLinesGrid.columns[4].setHidden(true);
-                productLinesGrid.columns[5].setHidden(true);
-                productLinesGrid.columns[6].setHidden(true);
-                productLinesGrid.columns[7].setHidden(true);
+                // productLinesGrid.columns[4].setHidden(true);
+                // productLinesGrid.columns[5].setHidden(true);
+                // productLinesGrid.columns[6].setHidden(true);
+                // productLinesGrid.columns[7].setHidden(true);
 
             }
             else if(wizardPnl.down('gmpproductslinkagedetailswingrid')){
                 productLinesGrid = wizardPnl.down('gmpproductslinkagedetailswingrid');
-                productLinesGrid.columns[4].setHidden(true);
-                productLinesGrid.columns[5].setHidden(true);
-                productLinesGrid.columns[6].setHidden(true);
-                productLinesGrid.columns[7].setHidden(true);
+                // productLinesGrid.columns[4].setHidden(true);
+                // productLinesGrid.columns[5].setHidden(true);
+                // productLinesGrid.columns[6].setHidden(true);
+                // productLinesGrid.columns[7].setHidden(true);
             }
           
         }
@@ -4086,7 +4360,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                         var model4 = Ext.create('Ext.data.Model', contactPersonDetails);
                         contactPersonFrm.loadRecord(model4);
                     }
-                    funcShowCustomizableWindow('Preview GMP Inspection Application '+ref_no, '85%', wizardPnl, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('Preview GMP Inspection Application '+ref_no, '85%', wizardPnl, 'customizablewindow');
                     if (sub_module_id == 6 || sub_module_id === 6) {
                         if (isReadOnly < 1) {
                             siteFrm.getForm().getFields().each(function (field) {
@@ -4260,7 +4534,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         childObject.columns[childObject.columns.length - 1].setHidden(false);
         childObject.columns[childObject.columns.length - 2].setHidden(false);
         childObject.columns[childObject.columns.length - 3].setHidden(false);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showProductsSelectionList: function (btn) {
@@ -4281,7 +4555,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         childObject.down('hiddenfield[name=man_site_id]').setValue(man_site_id);
         childObject.down('hiddenfield[name=reg_site_id]').setValue(reg_site_id);
         childObject.down('button[name=add_selected]').storeID = storeID;
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showProductsSelectionListWin: function (btn) {
@@ -4301,7 +4575,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         childObject.down('hiddenfield[name=man_site_id]').setValue(man_site_id);
         childObject.down('hiddenfield[name=reg_site_id]').setValue(reg_site_id);
         childObject.down('button[name=add_selected]').storeID = storeID;
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     addGmpProductLinkageDetails1: function (btn) {
@@ -4374,7 +4648,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             activeTab = mainTabPanel.getActiveTab(),
             manufacturing_site_id = activeTab.down('hiddenfield[name=manufacturing_site_id]').getValue();
         childObject.down('hiddenfield[name=manufacturing_site_id]').setValue(manufacturing_site_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showManufacturingSitesSelectionList: function (btn) {
@@ -4401,10 +4675,78 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         }
 
         var childObject = Ext.widget(childXtype);
+        childObject.addListener('itemdblclick', 'onManSiteSelectionListDblClick', this);
         childObject.down('hiddenfield[name=section_id]').setValue(section_id);
         childObject.down('hiddenfield[name=gmp_type_id]').setValue(gmp_type_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
+
+
+    showContactManufacturingSitesSelectionList: function (btn) {
+        var me = this,
+            childXtype = btn.childXtype,
+            winTitle = btn.winTitle,
+            winWidth = btn.winWidth,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            gmp_type_id = 0;
+        if (module_id == 3 || module_id === 3) {//GMP
+            if (sub_module_id == 5 || sub_module_id === 5) {//New
+                childXtype = 'mansitesselectiongrid';
+                gmp_type_id = activeTab.down('hiddenfield[name=gmp_type_id]').getValue();
+            } else {
+                childXtype = 'manufacturingsitesselectiongrid';
+            }
+            /* if (sub_module_id == 6 || sub_module_id === 6 || sub_module_id == 39 || sub_module_id === 39) {//Renewal,Cancellation
+                 childXtype = 'manufacturingsitesselectiongrid';
+             }*/
+        }
+
+        var childObject = Ext.widget(childXtype);
+        childObject.addListener('itemdblclick', 'onContractManSiteSelectionListDblClick', this);
+        childObject.down('hiddenfield[name=section_id]').setValue(section_id);
+        childObject.down('hiddenfield[name=gmp_type_id]').setValue(gmp_type_id);
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+    },
+
+     showTraderPersonnelSelectionGrid: function (btn) {
+        var form = btn.up('form'),
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            applicant_id = activeTab.down('hiddenfield[name=applicant_id]').getValue(),
+            width = btn.winWidth,
+            moreDetails = form.getMoreDetails(),
+            personnel_type = form.down('hiddenfield[name=personnel_type]').getValue(),
+            childItem = Ext.widget(btn.childXtype);
+        childItem.setMoreDetails(moreDetails);
+        childItem.down('hiddenfield[name=trader_id]').setValue(applicant_id);
+        childItem.down('hiddenfield[name=personnel_type]').setValue('billing_person');
+        funcShowOnlineCustomizableWindow('Personnel', width, childItem, 'customizablewindow');
+    },
+
+
+
+    showContractPersonnelSelectionGrid: function (btn) {
+        var form = btn.up('form'),
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            applicant_id = activeTab.down('hiddenfield[name=applicant_id]').getValue(),
+            width = btn.winWidth,
+            moreDetails = form.getMoreDetails(),
+           // personnel_type = form.down('hiddenfield[name=personnel_type]').getValue(),
+            childItem = Ext.widget(btn.childXtype);
+        childItem.setMoreDetails(moreDetails);
+        childItem.down('hiddenfield[name=trader_id]').setValue(applicant_id);
+        childItem.down('hiddenfield[name=personnel_type]').setValue('contract_manufacturing_person');
+        funcShowOnlineCustomizableWindow('Personnel', width, childItem, 'customizablewindow');
+    },
+
+
+
+
 
     onManSiteSelectionListDblClick: function (view, record, item, index, e, eOpts) {//New applications
         var me = this,
@@ -4432,6 +4774,49 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             });
         mask.show();
         manSiteForm.loadRecord(record);
+        //applicantForm.loadRecord(record);
+        //activeTab.down('premiseotherdetailsgrid').getStore().load();
+        //activeTab.down('premisepersonneldetailsgrid').getStore().load();
+        //me.getPremiseContactPersonDetails(premise_id, contactPersonFrm);
+        Ext.Function.defer(function () {
+            mask.hide();
+            win.close();
+        }, 200);
+    },
+
+
+     onContractManSiteSelectionListDblClick: function (view, record, item, index, e, eOpts) {//New applications
+        var me = this,
+            grid = view.grid,
+            premise_id = record.get('premise_id'),
+            win = grid.up('window'),
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue();
+            if(activeTab.down('contractmanufacturingfrm')){
+               var manSiteForm = activeTab.down('contractmanufacturingfrm');
+
+            }else{
+                var pnl_wizard = me.getMansiteappmoredetailswizard();
+
+                manSiteForm = pnl_wizard.down('contractmanufacturingfrm');
+            }
+                 
+           // applicantForm = activeTab.down('applicantdetailsfrm'),
+            //contactPersonFrm,
+            mask = new Ext.LoadMask({
+                msg: 'Please wait...',
+                target: win
+            });
+        mask.show();
+
+        //manSiteForm.loadRecord(record);
+        manSiteForm.down('hiddenfield[name=manufacturing_site_id]').setValue(record.get('man_site_id'));
+        manSiteForm.down('textfield[name=contract_manufacturer_name]').setValue(record.get('name'));
+        manSiteForm.down('textfield[name=contract_physical_address]').setValue(record.get('physical_address'));
+        manSiteForm.down('combo[name=contract_country_id]').setValue(record.get('country_id'));
+        manSiteForm.down('combo[name=contract_region_id]').setValue(record.get('region_id'));
         //applicantForm.loadRecord(record);
         //activeTab.down('premiseotherdetailsgrid').getStore().load();
         //activeTab.down('premisepersonneldetailsgrid').getStore().load();
@@ -4512,7 +4897,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         if (is_assign == 1) {
             childObject.down('button[name=sync_btn]').setVisible(true);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     addGmpApplicationIntoInspectionSchedule: function (btn) {
@@ -4622,7 +5007,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                     form.down('hiddenfield[name=application_code]').setValue(application_code);
                     form.down('hiddenfield[name=process_id]').setValue(process_id);
                     form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
-                    funcShowCustomizableWindow('Recommendation', '40%', form, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('Recommendation', '40%', form, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -4709,7 +5094,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             return;
         }
         childObject.down('hiddenfield[name=inspection_id]').setValue(inspection_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showPreviousUploadedDocs: function (btn) {
@@ -4745,7 +5130,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     }
 
 });

@@ -73,7 +73,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManag
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'auditor_recommendation',
-        text: '2nd Assessment Recommendation',
+        text: 'Quality Review Recommendation',
         flex: 1
     }, {
         text: 'Options',
@@ -104,7 +104,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManag
                         xtype: 'menu',
                         items: [
                             {
-                                text: '1st Assessment Reports/Upload',
+                                text: 'Assessment Reports/Upload',
                                 iconCls: 'x-fa fa-file',
                                 tooltip: '1st Assessment Reports/Upload',
                                 winTitle: '1st Assessment Reports/Upload',
@@ -143,28 +143,27 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManag
                         ]
                     }
                 }, {
-                    text: '2nd Assessment Report',
+                    text: 'Quality Review Report',
                     iconCls: 'x-fa fa-exchange',
                     menu: {
                         xtype: 'menu',
                         items: [
                             {
-                                text: '2nd Assessment Reports/Upload',
+                                text: 'Quality Review Reports/Upload',
                                 iconCls: 'x-fa fa-file',
-                                tooltip: '2nd Assessment Reports/Upload',
+                                tooltip: 'Quality Review Reports/Upload',
                                 action: 'edit',
                                 childXtype: '',
-                                winTitle: '2nd Assessment report',
                                 winWidth: '40%',
                                 isReadOnly: 1,
                                 document_type_id: 9,
-                                winTitle: '2nd Assessment Reports/Upload',
+                                winTitle: 'Quality Review Reports/Upload',
                                 handler: 'funcPrevAuditReportUpload'
                             },
                             {
                                 text: 'Documents',
                                 iconCls: 'x-fa fa-upload',
-                                winTitle: '2nd Assessments uploaded Documents',
+                                winTitle: 'Quality Review uploaded Documents',
                                 winWidth: '60%',
                                 handler: 'showPreviousUploadedDocs',
                                 stores: '[]',

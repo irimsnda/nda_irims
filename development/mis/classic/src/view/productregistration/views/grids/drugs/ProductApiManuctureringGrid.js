@@ -27,7 +27,7 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.ProductApiManucture
         ui: 'soft-green',
         childXtype: 'productApiManuctureringFrm',
         winTitle: 'Product API Manufacturer ',
-        winWidth: '40%',
+        winWidth: '60%',
         handler: 'showAddProductOtherdetailsWinFrm',
         stores: '[]',
         /*  bind: {
@@ -112,7 +112,7 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.ProductApiManucture
                     action: 'edit',
                     childXtype: 'productApiManuctureringFrm',
                     winTitle: 'Product API Manufacturer',
-                    winWidth: '40%',
+                    winWidth: '60%',
                     handler: 'showEditProductOtherdetailWinFrm',
                     stores: '[]',
                     bind: {

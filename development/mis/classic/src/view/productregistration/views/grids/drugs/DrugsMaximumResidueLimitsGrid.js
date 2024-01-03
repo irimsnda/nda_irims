@@ -28,7 +28,7 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsMaximumResidue
         ui: 'soft-green',
         childXtype: 'drugsMaximumResidueLimitsFrm',
         winTitle: 'Maximum Residue Limits (MRLs)',
-        winWidth: '40%',
+        winWidth: '60%',
         handler: 'showAddProductOtherdetailsWinFrm',
         stores: '[]',
         bind: {
@@ -103,7 +103,7 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsMaximumResidue
                     action: 'edit',
                     childXtype: 'drugsMaximumResidueLimitsFrm',
         winTitle: 'Maximum Residue Limits (MRLs)',
-                    winWidth: '40%',
+                    winWidth: '60%',
                     /*  bind: {
                         hidden: '{isReadOnly}'  // negated
                     },

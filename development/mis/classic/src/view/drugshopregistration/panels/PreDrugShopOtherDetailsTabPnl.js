@@ -5,12 +5,7 @@ Ext.define('Admin.view.drugshopregistration.views.panels.PreDrugShopOtherDetails
     margin: 3,
     items: [
        
-        // {
-        //     title: 'Director(s)',
-        //     itemId:'drugshopdirectorsdetailsgrid',
-        //     hidden:true,
-        //     xtype: 'drugshopdirectorsdetailsgrid'
-        // },
+        
         {
             title: 'Nearest Pharmacies',
             xtype: 'nearestpremisegrid'
@@ -18,6 +13,12 @@ Ext.define('Admin.view.drugshopregistration.views.panels.PreDrugShopOtherDetails
         {
             title: 'Nearest DrugShop',
             xtype: 'nearestdrugshopgrid'
+        },
+        {
+            title: 'Director(s)',
+            itemId:'drugshopdirectorsdetailsgrid',
+            hidden:true,
+            xtype: 'drugshopdirectorsdetailsgrid'
         },
          {
             title: 'Other License(S)',

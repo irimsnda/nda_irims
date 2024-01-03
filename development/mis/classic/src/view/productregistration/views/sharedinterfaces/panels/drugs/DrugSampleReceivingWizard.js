@@ -23,75 +23,75 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
         {
             xtype: 'drugsProductsDetailsPnl',
             itemId:'product_detailspanel',
-            autoScroll: true,
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    ui: 'footer',
-                    dock: 'top',
-                    margin: 3,
-                    items: [
-                        {
-                            xtype: 'tbspacer',
-                            width: 2
-                        },
-                        {
-                            xtype: 'combo',
-                            fieldLabel: 'Zone',
-                            labelWidth: 110,
-                            width: 400,
-                            name: 'zone_id',hidden: true,
-                            valueField: 'id',
-                            displayField: 'name',
-                            queryMode: 'local',
-                            forceSelection: true,
-                            listeners: {
-                                beforerender: {
-                                    fn: 'setOrgConfigCombosStore',
-                                    config: {
-                                        pageSize: 1000,
-                                        proxy: {
-                                            extraParams: {
-                                                model_name: 'Zone'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            },
-                            labelStyle: 'font-weight:bold'
-                        }, {
-                            xtype: 'tbseparator',
-                            width: 2
-                        }, {
-                            xtype: 'combo',
-                            fieldLabel: 'Assessment Procedure',
-                            name: 'assessment_procedure_id',
-                            forceSelection: true,hidden: true,
-                            queryMode: 'local',
-                            valueField: 'id',labelWidth: 110,
-                            width: 400,
-                            displayField: 'name',
-                            listeners: {
-                                afterrender: {
-                                    fn: 'setConfigCombosStore',
-                                    config: {
-                                        pageSize: 10000,
-                                        proxy: {
-                                            url: 'configurations/getRegistrationApplicationParameters',
-                                            extraParams: {
-                                                table_name: 'par_assessment_procedures'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            }
+            autoScroll: true
+            // dockedItems: [
+            //     {
+            //         xtype: 'toolbar',
+            //         ui: 'footer',
+            //         dock: 'top',
+            //         //margin: 3,
+            //         items: [
+            //             {
+            //                 xtype: 'tbspacer',
+            //                 width: 2
+            //             },
+            //             {
+            //                 xtype: 'combo',
+            //                 fieldLabel: 'Zone',
+            //                 labelWidth: 110,
+            //                 width: 400,
+            //                 name: 'zone_id',hidden: true,
+            //                 valueField: 'id',
+            //                 displayField: 'name',
+            //                 queryMode: 'local',
+            //                 forceSelection: true,
+            //                 listeners: {
+            //                     beforerender: {
+            //                         fn: 'setOrgConfigCombosStore',
+            //                         config: {
+            //                             pageSize: 1000,
+            //                             proxy: {
+            //                                 extraParams: {
+            //                                     model_name: 'Zone'
+            //                                 }
+            //                             }
+            //                         },
+            //                         isLoad: true
+            //                     }
+            //                 },
+            //                 labelStyle: 'font-weight:bold'
+            //             }, {
+            //                 xtype: 'tbseparator',
+            //                 width: 2
+            //             }, {
+            //                 xtype: 'combo',
+            //                 fieldLabel: 'Assessment Procedure',
+            //                 name: 'assessment_procedure_id',
+            //                 forceSelection: true,hidden: true,
+            //                 queryMode: 'local',
+            //                 valueField: 'id',labelWidth: 110,
+            //                 width: 400,
+            //                 displayField: 'name',
+            //                 listeners: {
+            //                     afterrender: {
+            //                         fn: 'setConfigCombosStore',
+            //                         config: {
+            //                             pageSize: 10000,
+            //                             proxy: {
+            //                                 url: 'configurations/getRegistrationApplicationParameters',
+            //                                 extraParams: {
+            //                                     table_name: 'par_assessment_procedures'
+            //                                 }
+            //                             }
+            //                         },
+            //                         isLoad: true
+            //                     }
+            //                 }
                 
-                        },
-                    ]
-                }
-            ]
+            //             },
+            //         ]
+            //     }
+            // ]
         },
         {
             xtype: 'tabpanel',
@@ -153,7 +153,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                 iconCls: 'fa fa-user',
                 enableToggle: true,
                 pressed: true,
-                text: 'Product Information',
+                text: 'PRODUCT INFORMATION',
                 action: 'quickNav',
                 iconAlign: 'top',
                 wizard:'drugsamplereceivingwizard',
@@ -255,10 +255,10 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                     iconCls: 'fa fa-check',
                     name: 'process_submission_btn',
                     table_name: 'tra_product_applications',
-                    winWidth: '30%',
+                    winWidth: '50%',
                     childXtype:'documentssubmissionrecommendationfrm',
                     winTitle:'Documents Submission Recommendation',
-                    winWidth: '30%',
+                    winWidth: '50%',
                     handler: 'saveSampleSubmissionRemarks'
                 },  
                 {

@@ -66,7 +66,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsTCRecommGri
     columns: [{
         xtype: 'gridcolumn',
         dataIndex: 'tc_recommendation',
-        text: 'TC Recommendation',
+        text: 'Peer Review Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',

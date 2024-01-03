@@ -28,7 +28,7 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsProductPackagi
         ui: 'soft-green',
         childXtype: 'drugsProductPackagingFrm',
         winTitle: 'Product Packaging Details',
-        winWidth: '40%',
+        winWidth: '60%',
         handler: 'showAddProductOtherdetailsWinFrm',
         stores: '[]',
         bind: {
@@ -87,12 +87,23 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsProductPackagi
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'retail_packaging',
+        hidden:true,
         text: 'Retail Packaging Size',
         flex: 1,
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'unit_pack',
-        text: 'Unit pack',
+        dataIndex: 'no_of_units',
+        text: 'No Of Units',
+        flex: 1,
+    }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'no_of_packs',
+        text: 'No of Packs',
+        flex: 1,
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'si_unit',
+        text: 'SI Unit',
         flex: 1,
     }, {
         text: 'Options',
@@ -113,7 +124,7 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsProductPackagi
                     action: 'edit',
                     childXtype: 'drugsProductPackagingFrm',
                     winTitle: 'Product Packaging',
-                    winWidth: '40%',
+                    winWidth: '60%',
                     /*  bind: {
                         hidden: '{isReadOnly}'  // negated
                     },

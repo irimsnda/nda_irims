@@ -237,6 +237,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.medical
                                 childXtype: 'sampleanalysistestrequestspnl',
                                 winTitle: 'Sample Analysis Request',
                                 winWidth: '90%', 
+                                hidden:true,
                                 name: 'btnsample_analysis',
                                 handler: 'showSampleAnalysisrequestswin',
                                 stores: '[]'
@@ -269,11 +270,11 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.medical
                             handler: 'showAddProductGmpInspectionStatusWin',
                             stores: '[]'
                         }, {
-                            text: '2nd Assessments Recommendation & Comments',
+                            text: 'Quality Review Recommendation & Comments',
                             ui: 'soft-purple', 
                             iconCls: 'fa fa-weixin',
                             childXtype: 'applicationcommentspnl',
-                            winTitle: '2nd Assessments Process Comments',
+                            winTitle: 'Quality Review Process Comments',
                             winWidth: '60%',
                             name:'prev_comments',
                             comment_type_id: 3,

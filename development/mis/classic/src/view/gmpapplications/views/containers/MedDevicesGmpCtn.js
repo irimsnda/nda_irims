@@ -15,7 +15,7 @@ Ext.define('Admin.view.gmpapplications.views.containers.MedDevicesGmpCtn', {
         {
             xtype: 'hiddenfield',
             name: 'section_id',
-            value: 4
+            value: 5
         },
         {
             xtype: 'meddevicesgmpdashwrapper',

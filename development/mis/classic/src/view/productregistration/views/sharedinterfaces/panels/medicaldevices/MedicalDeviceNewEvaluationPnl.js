@@ -135,10 +135,10 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.medical
                         ui: 'soft-green',
                         iconCls: 'fa fa-check',
                         table_name: 'tra_product_applications',
-                        winWidth: '30%',
+                        winWidth: '50%',
                         childXtype:'documentssubmissionrecommendationfrm',
                         winTitle:'Documents Submission Recommendation',
-                        winWidth: '30%',
+                        winWidth: '50%',
                         isReadOnly: 1,
                         handler: 'saveSampleSubmissionRemarks'
                     }, {

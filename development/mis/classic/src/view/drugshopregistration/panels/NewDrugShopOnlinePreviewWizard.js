@@ -144,7 +144,6 @@ Ext.define('Admin.view.drugshopregistration.views.panels.NewDrugShopOnlinePrevie
                     ui: 'soft-purple',
                     iconCls: 'x-fa fa-thumbs-down',
                     hidden: true,
-
                     name: 'prev_rejections',
                     handler: 'showOnlineApplicationRejections',
                     childXtype: 'onlineappsrejectionsgrid',
@@ -167,7 +166,7 @@ Ext.define('Admin.view.drugshopregistration.views.panels.NewDrugShopOnlinePrevie
                     ui: 'soft-red',
                     iconCls: 'x-fa fa-thumbs-down',
                     name: 'reject_btn',
-                   // hidden: true,
+                    hidden: true,
                     
                     handler: 'submitRejectedOnlineApplicationFrmBtn',
                     bind: {

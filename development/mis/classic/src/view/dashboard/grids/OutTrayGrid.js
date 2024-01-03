@@ -4,6 +4,7 @@
 Ext.define('Admin.view.dashboard.grids.OutTrayGrid', {
     extend: 'Ext.grid.Panel',
     xtype: 'outtraygrid',
+    id: 'outtraygrid',
     controller: 'dashboardvctr',
     viewConfig: {
         deferEmptyText: false,
@@ -60,6 +61,7 @@ Ext.define('Admin.view.dashboard.grids.OutTrayGrid', {
         emptyText: 'MODULE',
          // labelWidth: 80,
         width: 150,
+        readOnly:true,
         flex: 1,
         valueField: 'id',
         displayField: 'name',
@@ -91,15 +93,16 @@ Ext.define('Admin.view.dashboard.grids.OutTrayGrid', {
                 sub_module_str.load({params: {module_id: newVal}});
                 //grid.getStore().load();
             }
-        },
-        triggers: {
-            clear: {
-                type: 'clear',
-                hideWhenEmpty: true,
-                hideWhenMouseOut: false,
-                clearOnEscape: true
-            }
         }
+        // ,
+        // triggers: {
+        //     clear: {
+        //         type: 'clear',
+        //         hideWhenEmpty: true,
+        //         hideWhenMouseOut: false,
+        //         clearOnEscape: true
+        //     }
+        // }
     }, {
         xtype: 'combo',
         emptyText: 'SUB MODULE',

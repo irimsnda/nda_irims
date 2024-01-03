@@ -1,5 +1,5 @@
 /**
- * Created by Kip on 9/24/2018.
+ * Created softclans.
  */
 Ext.define('Admin.view.importexportpermits.views.maininterfaces.import.ImportExportManagerSubmission', {
   extend: 'Ext.panel.Panel',

@@ -50,12 +50,13 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialApprovalsGrid', {
                 {
                     text: 'Export Recommendation',
                     ui: 'soft-purple',
+                    hidden:true,
                     iconCls: 'x-fa fa-file-excel-o',
                     menu:{
                         xtype: 'menu',
                         items:[
                             {
-                                text: 'TC Recommendation',
+                                text: 'Peer Review Recommendation',
                                 iconCls: 'x-fa fa-arrow-right'
                             },
                             {
@@ -76,7 +77,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialApprovalsGrid', {
                     handler: 'funcUploadTCMeetingtechnicalDocuments',
                     document_type_id: 4,
                     childXtype:'unstructureddocumentuploadsgrid',
-                    winTitle: 'Technical Meeting Documents Upload',
+                    winTitle: 'Peer Review Meeting Documents Upload',
                     winWidth: '80%',
                     toaster: 0
                 },
@@ -135,7 +136,28 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialApprovalsGrid', {
             }
         }
     },
-    columns: [{
+    columns: [
+    {
+        xtype: 'widgetcolumn',
+        width: 120,
+        widget: {
+            width: 120,
+            textAlign: 'left',
+            xtype: 'button',
+            itemId: 'prints',
+            ui: 'soft-green',
+            text: 'Print Approvals',
+            //text: 'Clinical Trial Certificate',
+            iconCls: 'x-fa fa-certificate',
+            handler: 'printClinicalTrialCertificate',
+            name: 'certificate',
+            bind: {
+                disabled: '{record.recommendation_id <= 0 || record.recommendation_id === null}'
+               // disabled: '{record.recommendation_id !== 1}'
+            }
+        }
+    },
+    {
         xtype: 'gridcolumn',
         dataIndex: 'tracking_no',
         text: 'Tracking No',
@@ -164,19 +186,34 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialApprovalsGrid', {
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'tc_recomm',
-        text: 'TC Recommendation',
+        text: 'Peer Review Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'comments',
-        text: 'TC Comments',
+        text: 'Peer ReviewComments',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'recommendation',
         text: 'Approval Recommendation',
         flex: 1
-    }, {
+    },  {
+        xtype: 'widgetcolumn',
+        width: 150,
+        widget: {
+            width: 150,
+            textAlign: 'left',
+            xtype: 'button',
+            ui: 'soft-red',
+            text: 'Recommendation',
+            iconCls: 'x-fa fa-chevron-circle-up',
+            handler: 'getApplicationApprovalDetails',
+            approvalfrm: 'clinicaltrialapprovalrecommfrm',
+            stores: '["clinicalapprovaldecisionsstr"]',
+            table_name: 'tra_clinical_trial_applications'
+        }
+    },{
         text: 'Options',
         xtype: 'widgetcolumn',
         width: 90,
@@ -189,14 +226,15 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialApprovalsGrid', {
             menu: {
                 xtype: 'menu',
                 items: [
-                    {
-                        text: 'Approval Recommendation',
-                        iconCls: 'x-fa fa-chevron-circle-up',
-                        handler: 'getApplicationApprovalDetails',
-                        approvalfrm: 'clinicaltrialapprovalrecommfrm',
-                        stores: '["clinicalapprovaldecisionsstr"]',
-                        table_name: 'tra_clinical_trial_applications'
-                    }, {
+                    // {
+                    //     text: 'Approval Recommendation',
+                    //     iconCls: 'x-fa fa-chevron-circle-up',
+                    //     handler: 'getApplicationApprovalDetails',
+                    //     approvalfrm: 'clinicaltrialapprovalrecommfrm',
+                    //     stores: '["clinicalapprovaldecisionsstr"]',
+                    //     table_name: 'tra_clinical_trial_applications'
+                    // },
+                     {
                         text: 'Reports',
                         iconCls: 'x-fa fa-exchange',
                         menu: {
@@ -208,14 +246,15 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialApprovalsGrid', {
                                     action: 'inspection_report',
                                     handler: 'printManagersReport',
                                     report_type: 'Inspection Report'
-                                },
-                                {
-                                    text: 'Audit Report',
-                                    iconCls: 'x-fa fa-clipboard',
-                                    action: 'inspection_report',
-                                    handler: 'printManagersReport',
-                                    report_type: 'Evaluation Report'
                                 }
+                                // ,
+                                // {
+                                //     text: 'Audit Report',
+                                //     iconCls: 'x-fa fa-clipboard',
+                                //     action: 'inspection_report',
+                                //     handler: 'printManagersReport',
+                                //     report_type: 'Evaluation Report'
+                                // }
                             ]
                         }
                     }, {
@@ -223,18 +262,20 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialApprovalsGrid', {
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 1,
                         handler: 'showClinicalTrialApplicationMoreDetails'
-                    }, {
-                        text: 'Clinical Trial Certificate',
-                        iconCls: 'x-fa fa-certificate',
-                        handler: 'printClinicalTrialCertificate',
-                        name: 'certificate'
-                    },
-                    {
-                        text: 'Rejection Letter',
-                        iconCls: 'x-fa fa-file-text-o',
-                        handler: '',
-                        name: 'rejection'
-                    }, {
+                    }, 
+                    // {
+                    //     text: 'Clinical Trial Certificate',
+                    //     iconCls: 'x-fa fa-certificate',
+                    //     handler: 'printClinicalTrialCertificate',
+                    //     name: 'certificate'
+                    // },
+                    // {
+                    //     text: 'Rejection Letter',
+                    //     iconCls: 'x-fa fa-file-text-o',
+                    //     handler: '',
+                    //     name: 'rejection'
+                    // },
+                     {
                         xtype: 'button',
                         text: 'Return Back Application(s)',
                         iconCls: 'x-fa fa-check',
@@ -247,15 +288,16 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialApprovalsGrid', {
                     }
                 ]
             }
-        },onWidgetAttach: function (col, widget, rec) {
-            var status_id = rec.get('application_status_id');
-            if (status_id === 6 || status_id == 6) {//Approved
-                widget.down('menu menuitem[name=rejection]').setVisible(false);
-                widget.down('menu menuitem[name=certificate]').setVisible(true);
-            } else {//Rejected
-                widget.down('menu menuitem[name=rejection]').setVisible(true);
-                widget.down('menu menuitem[name=certificate]').setVisible(false);
-            }
         }
+        // ,onWidgetAttach: function (col, widget, rec) {
+        //     var status_id = rec.get('application_status_id');
+        //     if (status_id === 6 || status_id == 6) {//Approved
+        //         widget.down('menu menuitem[name=rejection]').setVisible(false);
+        //         widget.down('menu menuitem[name=certificate]').setVisible(true);
+        //     } else {//Rejected
+        //         widget.down('menu menuitem[name=rejection]').setVisible(true);
+        //         widget.down('menu menuitem[name=certificate]').setVisible(false);
+        //     }
+        // }
      }]
 });

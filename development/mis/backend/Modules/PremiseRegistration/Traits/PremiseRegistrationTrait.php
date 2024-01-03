@@ -1610,6 +1610,12 @@ trait PremiseRegistrationTrait
                    $data=get_object_vars($premise_personnelsdetail);
                    unset($data['premise_id']);
                    unset($data['id']);
+                   unset($data['mis_created_by']);
+                   unset($data['mis_created_on']);
+                   unset($data['mis_altered_by']);
+                   unset($data['mis_dola']);
+
+                       
                    $data['premise_id'] = $premise_id;
                    DB::table('tra_premises_personnel')->insert($data);
                    
@@ -1675,6 +1681,7 @@ trait PremiseRegistrationTrait
             $application_details = array(
                 //'reference_no' => $ref_no,
                 'tracking_no' => $tracking_no,
+                'reference_no' => $tracking_no,
                 'view_id' => $view_id,
                 'applicant_id' => $applicant_id,
                 'application_code' => $application_code,

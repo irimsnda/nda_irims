@@ -14,6 +14,31 @@ Ext.define('Admin.view.productregistration.views.forms.medicaldevices.MedicalDev
         title: 'Product Manufacturing Details',
         
     },
+    {
+        xtype: 'drugsProductPackagingGrid',
+        title: 'Product Packaging details',
+        autoScroll:true,
+        listeners: {
+            beforerender: {
+                fn: 'setConfigGridsStore',
+                config: {
+                    pageSize: 1000,
+                    storeId: 'drugproductPackagingdetailsstr',
+                    proxy: {
+                        url: 'productregistration/onLoadproductPackagingDetails',
+                    }
+                },
+                isLoad: true
+            }
+        },
+    },
+    {
+        xtype: 'otheraccesoriesDetailsGrid',
+        title: 'Accessories/appliances/Equipments used in Combination'
+        
+    },
+
+    
 
     //  {
     //     xtype: 'productGmpInspectionDetailsGrid',

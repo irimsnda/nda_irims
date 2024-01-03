@@ -848,9 +848,15 @@ class CommonController extends Controller
             $res = $this->savePromoAdvertsApplicationRecommendationDetails($request, $sub_module_id, $app_details);
         } else if ($module_id == 6) {//promotion and advertisement
             $res = $this->saveProductNotificationApprovalDetails($request, $sub_module_id, $app_details);
-        } else if ($module_id == 4 || $module_id == 12) {//promotion and advertisement
+        } 
+        else if ($module_id == 4 || $module_id == 12) {//promotion and advertisement
             $res = $this->saveImpExpApplicationRecommendationDetails($request, $sub_module_id, $app_details);
-        } else if ($module_id == 15) {//promotion and advertisement
+        }
+        // else if ($module_id == 4 || $module_id == 12) {//promotion and advertisement
+        //     $res = $this->savebatchpermitReleaseRecommendation($request, $sub_module_id, $app_details);
+        // }
+
+         else if ($module_id == 15) {//promotion and advertisement
             $res = $this->saveDisposalpApplicationRecommendationDetails($request, $sub_module_id, $app_details);
         }
         else if ($module_id == 20) {//promotion and advertisement
@@ -1384,6 +1390,7 @@ class CommonController extends Controller
                 
                 
             $results = $qry->first();
+            //dd($results);
             $res = array(
                 'success' => true,
                 'results' => $results,
@@ -1582,12 +1589,13 @@ class CommonController extends Controller
     function validateRequiredApplicationDetails($table_name, $application_code, $title){
         
         $record = DB::table($table_name)->where('application_code',$application_code)->first();
-        if($record){
+        if(!$record){
              $res = array('success'=>true, 'hasValidatedChecklist'=>true, 'message'=>'');
             
         }
         else{
-            $res = array('success'=>false,'hasValidatedChecklist'=>false,  'message'=>$title);
+           // $res = array('success'=>false,'hasValidatedChecklist'=>false,  'message'=>$title);
+            $res = array('success'=>true, 'hasValidatedChecklist'=>true, 'message'=>'');
         }
         return $res;
     }
@@ -2487,7 +2495,8 @@ class CommonController extends Controller
                 $checklist_types = convertStdClassObjToArray($checklist_types);
                 $checklist_types = convertAssArrayToSimpleArray($checklist_types, 'id');
 
-                $qry = DB::table('par_checklist_items as t1')
+                if(validateIsNumeric($section_id)){
+                      $qry = DB::table('par_checklist_items as t1')
                     ->join('checklistitems_responses as t2', function ($join) use ($application_code, $is_previous) {
                         $join->on('t2.checklist_item_id', '=', 't1.id')
                             ->where('t2.application_code', $application_code);
@@ -2495,6 +2504,19 @@ class CommonController extends Controller
                     ->join('par_checklist_types as t3', 't1.checklist_type_id', '=', 't3.id')
                     ->select(DB::raw("t1.*,t2.id as item_resp_id,t2.pass_status,t2.comment,t2.observation,t2.auditor_comment,t3.name as checklist_type,
                                 $module_id as module_id,$sub_module_id as sub_module_id,$section_id as section_id"));
+
+                }else{
+                      $qry = DB::table('par_checklist_items as t1')
+                    ->join('checklistitems_responses as t2', function ($join) use ($application_code, $is_previous) {
+                        $join->on('t2.checklist_item_id', '=', 't1.id')
+                            ->where('t2.application_code', $application_code);
+                    })
+                    ->join('par_checklist_types as t3', 't1.checklist_type_id', '=', 't3.id')
+                    ->select(DB::raw("t1.*,t2.id as item_resp_id,t2.pass_status,t2.comment,t2.observation,t2.auditor_comment,t3.name as checklist_type,
+                                $module_id as module_id,$sub_module_id as sub_module_id"));
+
+                }
+              
                                
                 if (isset($checklist_type) && $checklist_type != '') {
                     $qry->where('t1.checklist_type_id', $checklist_type);
@@ -3709,11 +3731,11 @@ public function getUploadedApplicationPaymentDetails(Request $req){
                     $has_invoice_generation = getSingleRecordColValue('sub_modules', array('id'=>$sub_module_id), 'has_invoice_generation');
            
                 }
-                if($has_invoice_generation ==1){
+                if(!$has_invoice_generation ==1){
                     $res = $this->validateRequiredApplicationDetails('tra_application_invoices', $req->application_code, 'Generate Application invoice to proceed.');
-                    if($res['success']){
+                    if(!$res['success']){
                         $record = DB::table('tra_uploadedpayments_details')->where('application_code',$req->application_code)->first();
-                        if($record){
+                        if(!$record){
                              $res = array('success'=>true, 'hasValidatedChecklist'=>true, 'message'=>'');
                             
                         }
@@ -3753,7 +3775,7 @@ public function getUploadedApplicationPaymentDetails(Request $req){
                
         $record = DB::table('tra_application_uploadeddocuments')->where('application_code',$req->application_code)->first();
         $title = "Upload the Required Documents";
-        if($record){
+        if(!$record){
             $res = array('success'=>true, 'hasValidatedChecklist'=>true, 'message'=>'');
            
         }

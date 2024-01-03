@@ -534,10 +534,56 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
                 previewOnlineClincialTrialApplication:'previewOnlineClincialTrialApplication',
                 showClinicalTrialRegistryMoreDetails:'showClinicalTrialRegistryMoreDetails',
                 showGCPInspectionDetailsWizard:'showGCPInspectionDetailsWizard',
-                loadClinicalTrialRegistryEditApp:'loadClinicalTrialRegistryEditApp'
+                loadClinicalTrialRegistryEditApp:'loadClinicalTrialRegistryEditApp',
+                showClinicalTrialTcRecommendationUploads:'showClinicalTrialTcRecommendationUploads'
             }
         }
-    }, onRegisteredProductGridDoubleClick: function (view, record, item, index, e, eOpts)
+    }, 
+
+
+
+ showClinicalTrialTcRecommendationUploads: function (btn) {
+
+        var me = this,
+         
+            record = btn.getWidgetRecord(),
+            application_code = record.get('application_code'),
+            childXtype = btn.childXtype,
+            isReadOnly = btn.isReadOnly,
+            winTitle = btn.winTitle,
+            winWidth = btn.winWidth,
+            storeArray = eval(btn.stores),
+            arrayLength = storeArray.length,
+            childObject = Ext.widget(childXtype),
+            tc_reviewform = childObject.down('form'),
+            application_upload = childObject.down('productEvaluationUploadsGrid');
+        if (arrayLength > 0) {
+            me.fireEvent('refreshStores', storeArray);
+        }
+        tc_reviewform.down('hiddenfield[name=application_code]').setValue(application_code);
+        tc_reviewform.down('hiddenfield[name=id]').setValue(record.get('recomm_id'));
+        tc_reviewform.down('combo[name=decision_id]').setValue(record.get('decision_id'));
+        tc_reviewform.down('textarea[name=comments]').setValue(record.get('comments'));
+        if(isReadOnly){
+            tc_reviewform.down('button[name=save_tcrecommendation]').setVisible(false);
+            tc_reviewform.down('combo[name=decision_id]').setReadOnly(true);
+            tc_reviewform.down('textarea[name=comments]').setReadOnly(true);
+            
+        }
+        application_upload.down('hiddenfield[name=process_id]').setValue(record.get('process_id'));
+        application_upload.down('hiddenfield[name=module_id]').setValue(record.get('module_id'));
+        application_upload.down('hiddenfield[name=sub_module_id]').setValue(record.get('sub_module_id'));
+        application_upload.down('hiddenfield[name=section_id]').setValue(record.get('section_id'));
+        application_upload.down('hiddenfield[name=workflow_stage_id]').setValue(record.get('workflow_stage_id'));
+        application_upload.down('hiddenfield[name=application_code]').setValue(record.get('application_code'));
+        application_upload.down('hiddenfield[name=prodclass_category_id]').setValue(record.get('prodclass_category_id'));
+        childObject.setHeight(400);
+        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+    },
+
+
+
+    onRegisteredProductGridDoubleClick: function (view, record, item, index, e, eOpts)
     {
             var me = this,
                 grid = view.grid,
@@ -1062,7 +1108,7 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
         if(id != ''){
             var childObject = Ext.widget(childXtype);
             childObject.down('hiddenfield[name=section_id]').setValue(section_id);
-            funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
         }
         else{
             toastr.warning('Please save GCP Inspection Details before Registered Clinical Trial Selection!!', 'Warning Response');
@@ -1142,7 +1188,7 @@ Ext.getBody().unmask();
         docsGrid.down('hiddenfield[name=section_id]').setValue(section_id);
         docsGrid.down('hiddenfield[name=module_id]').setValue(module_id);
         docsGrid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
-    funcShowCustomizableWindow(ref_no, panel_width, onlinePanel, 'customizablewindow');
+    funcShowOnlineCustomizableWindow(ref_no, panel_width, onlinePanel, 'customizablewindow');
     },
     setClinicalTrialGridsStore: function (me, options) {
         var config = options.config,
@@ -1651,7 +1697,7 @@ Ext.getBody().unmask();
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue();
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
         childObject.down('hiddenfield[name=personnel_type]').setValue(personnel_type);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     saveSafetyalertReportsassessmentappmoredetails:function(btn){
         var me = this,
@@ -5060,7 +5106,7 @@ Ext.getBody().unmask();
                                
                             }
                             
-                            funcShowCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow'); 
+                            funcShowOnlineCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow'); 
                             //the CAPA recponses
                           
 
@@ -5155,7 +5201,7 @@ Ext.getBody().unmask();
                         detailsFrm.loadRecord(model2);
                     }
                    
-                    funcShowCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -5288,7 +5334,7 @@ Ext.getBody().unmask();
                     documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
                     documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);   
 
-                    funcShowCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -5400,7 +5446,7 @@ Ext.getBody().unmask();
                     documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
                     documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);   
 
-                    funcShowCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -5513,7 +5559,7 @@ Ext.getBody().unmask();
                     documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
                     documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);   
 
-                    funcShowCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }

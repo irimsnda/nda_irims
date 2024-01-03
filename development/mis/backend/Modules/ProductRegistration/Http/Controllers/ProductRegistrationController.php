@@ -422,16 +422,14 @@ class ProductRegistrationController extends Controller
                     "obtaining_appropriate_mrls" => $request->input('obtaining_appropriate_mrls'),
                     "has_maximum_residue_limits" => $request->input('has_maximum_residue_limits'),
                     "target_species_id" => $request->input('target_species_id'),
-
                     "therapeutic_group" => $request->input('therapeutic_group'),
                     "therapeutic_code" => $request->input('therapeutic_code'),
-            'productrisk_category_id'=>$request->productrisk_category_id,
-
+                   'productrisk_category_id'=>$request->productrisk_category_id,
                                     
-                                    'reagents_accessories'=>$request->reagents_accessories,
-                                    'has_medical_family'=>$request->has_medical_family,
-                                    'has_medical_systemmodel_series'=>$request->has_medical_systemmodel_series,
-                                    'has_reagents_accessories'=>$request->has_reagents_accessories,
+                    'reagents_accessories'=>$request->reagents_accessories,
+                    'has_medical_family'=>$request->has_medical_family,
+                    'has_medical_systemmodel_series'=>$request->has_medical_systemmodel_series,
+                    'has_reagents_accessories'=>$request->has_reagents_accessories,
 
                     "shelf_lifeafter_opening" => $request->input('shelf_lifeafter_opening'),
                     "shelf_life" => $request->input('shelf_life'),
@@ -448,25 +446,26 @@ class ProductRegistrationController extends Controller
                     "specific_density" => $request->input('specific_density'),
                 
                     
-                                    'tar_content'=>$request->tar_content,
-                                    'nicotine_content'=>$request->nicotine_content,
-                                    'tobacco_flavour_id'=>$request->tobacco_flavour_id,
-                                    'gtin_number'=>$request->gtin_number,
-                                    'glocation_number'=>$request->glocation_number,
-                                    'has_maximum_residue_limit'=>$request->has_maximum_residue_limit,
-                                    'maximum_residue_limit'=>$request->maximum_residue_limit,
-                                    'who_class_id'=>$request->who_class_id,
-                                    'pestcide_id'=>$request->pestcide_id,
-                                    'applied_product_id'=>$request->applied_product_id,
-                                    'formulation_id'=>$request->formulation_id,
-                                    'flash_flame_form'=>$request->flash_flame_form,
-                                    'require_child_resistant'=>$request->require_child_resistant,
-                                    'solid_product_density'=>$request->solid_product_density,
-                                    'liquid_gravity'=>$request->liquid_gravity,
-                                    'product_usecategory_id'=>$request->product_usecategory_id
+                    'tar_content'=>$request->tar_content,
+                    'nicotine_content'=>$request->nicotine_content,
+                    'tobacco_flavour_id'=>$request->tobacco_flavour_id,
+                    'gtin_number'=>$request->gtin_number,
+                    'glocation_number'=>$request->glocation_number,
+                    'has_maximum_residue_limit'=>$request->has_maximum_residue_limit,
+                    'maximum_residue_limit'=>$request->maximum_residue_limit,
+                    'who_class_id'=>$request->who_class_id,
+                    'pestcide_id'=>$request->pestcide_id,
+                    'applied_product_id'=>$request->applied_product_id,
+                    'formulation_id'=>$request->formulation_id,
+                    'flash_flame_form'=>$request->flash_flame_form,
+                    'require_child_resistant'=>$request->require_child_resistant,
+                    'solid_product_density'=>$request->solid_product_density,
+                    'liquid_gravity'=>$request->liquid_gravity,
+                    'product_usecategory_id'=>$request->product_usecategory_id,
+                    'labelling_description'=>$request->labelling_description
                     );
 
-                    return $prod_data;
+                return $prod_data;
     }
     
     public function saveNewProductReceivingBaseDetails(Request $request)
@@ -485,8 +484,8 @@ class ProductRegistrationController extends Controller
             $product_id = $request->input('product_id');
             $classification_id = $request->input('classification_id');
             $assessment_procedure_id = $request->input('assessment_procedure_id');
-$res = 'save'; 
-           
+            $res = 'save'; 
+          
             $prod_data = $this->returnProductDataSets($request);
             if (validateIsNumeric($active_application_id)) {
                 //update
@@ -497,7 +496,7 @@ $res = 'save';
                 $application_params = array(
                     'applicant_id' => $applicant_id,
                     'local_agent_id' => $local_agent_id,
-                    'zone_id' => $zone_id
+                    'assessment_procedure_id' => $assessment_procedure_id
                 );
                 $where_product = array(
                     'id' => $product_id
@@ -1323,11 +1322,14 @@ if(validateIsNumeric($section_id)){
 
             $results = $qry1->first();
 
+
+
             $qry2 = clone $main_qry;
-            $qry2->join('wb_trader_account as t3', 't1.local_agent_id', '=', 't3.id')
-                ->select('t3.id as applicant_id', 't3.name as applicant_name', 't3.contact_person',
-                    't3.tin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
-                    't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website');
+            $qry2->join('tra_premises as t3a', 't1.local_agent_id', '=', 't3a.id')
+                 ->Join('tra_premises_applications as t3b', 't3b.premise_id', '=', 't3a.id')
+                ->Join('tra_approval_recommendations as t3c', 't3a.permit_id', '=', 't3c.id')
+                ->Join('wb_trader_account as t3d', 't3b.applicant_id', '=', 't3d.id')  
+                ->select('t3a.id as premise_id', 't3a.*','t3d.name as applicant_name', 't3d.contact_person','t3a.name','t3c.permit_no');
             $ltrDetails = $qry2->first();
 
             $qualityReport_main = DB::table('tra_quality_overrallsummaryreport as t1')
@@ -2235,13 +2237,14 @@ if(validateIsNumeric($section_id)){
             $data = array();
             //get the records
             $data = DB::table('tra_product_packaging as t1')
-                ->select(DB::raw("t1.*, t2.name as container_type, t3.name as container_name, t4.name as container_material, t5.name as closure_materials, t4.name as container_material, t5.name as closure_material, t6.name as seal_type, t7.name as packaging_units, retail_packaging_size as retail_packaging"))
+                ->select(DB::raw("t1.*, t2.name as container_type, t3.name as container_name, t4.name as container_material, t5.name as closure_materials, t4.name as container_material, t5.name as closure_material, t6.name as seal_type, t7.name as packaging_units, retail_packaging_size as retail_packaging,t8.name as si_unit"))
                 ->leftJoin('par_containers_types as t2', 't1.container_type_id', '=', 't2.id')
                 ->leftJoin('par_containers as t3', 't1.container_id', '=', 't3.id')
                 ->leftJoin('par_containers_materials as t4', 't1.container_material_id', '=', 't4.id')
                 ->leftJoin('par_closure_materials as t5', 't1.closure_material_id', '=', 't5.id')
                 ->leftJoin('par_seal_types as t6', 't1.seal_type_id', '=', 't6.id')
                 ->leftJoin('par_packaging_units as t7', 't1.packaging_units_id', '=', 't7.id')
+                ->leftJoin('par_si_units as t8', 't1.si_unit_id', '=', 't8.id')
                 ->where(array('t1.product_id' => $product_id))
                 ->get();
 
@@ -2525,6 +2528,54 @@ if(validateIsNumeric($section_id)){
 
     }
 
+     public function onLoadOtherAccessoriesDetails(Request $request)
+    {
+        $filter = $request->input('filter');
+        $whereClauses = array();
+        $filter_string = '';
+        if (isset($filter)) {
+            $filters = json_decode($filter);
+            if ($filters != NULL) {
+                foreach ($filters as $filter) {
+                    switch ($filter->property) {
+                        case 'name' :
+                            $whereClauses[] = "t1.name like '%" . ($filter->value) . "%'";
+                            break;
+                
+                    }
+                }
+                $whereClauses = array_filter($whereClauses);
+            }
+            if (!empty($whereClauses)) {
+                $filter_string = implode(' AND ', $whereClauses);
+            }
+        }
+        try {
+            $qry = DB::table('tra_product_other_accessories as t1');
+            
+            if ($filter_string != '') {
+                $qry->whereRAW($filter_string);
+            }
+            $records = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $records
+            );
+        } catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+
+    }
+
     public function onLoadManufacturingSitesDetails(Request $request)
     {
         $manufacturer_id = $request->input('manufacturer_id');
@@ -2698,7 +2749,8 @@ if(validateIsNumeric($section_id)){
                 $sample_storage = getSingleRecordColValue('storage_conditions', array('id' => $rec->storage_id), 'name', 'mysql');
                 $sample_status = getSingleRecordColValue('sample_status', array('id' => $rec->sample_status_id), 'name', 'mysql');
 
-                $data[] = array('product_id' => $rec->product_id,
+                $data[] = array('id' => $rec->id,
+                    'product_id' => $rec->product_id,
                     'section_id' => $rec->section_id,
                     'batch_no' => $rec->batch_no,
                     'brand_name' => $rec->brand_name,

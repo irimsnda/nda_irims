@@ -1,7 +1,5 @@
 /**
  * Created by softclans
- * user robinson odhiambo
- * Kip on 9/24/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportExportPermitManagerReviewWizard', {
     extend: 'Ext.panel.Panel',
@@ -118,7 +116,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
         {
                      xtype:'tabpanel',
                 layout: 'fit',
-                title: 'Application Details((Permit, Sender/Receiver, Licenses Outlets and Documents)',
+                title: 'Application Details',
                 dockedItems: [
                     {
                         xtype: 'toolbar',
@@ -137,6 +135,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                                 width: 400,
                                 name: 'zone_id',
                                 valueField: 'id',
+                                hidden: true,
                                 displayField: 'name',
                                 queryMode: 'local',
                                 forceSelection: true,
@@ -256,13 +255,15 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                         autoScroll: true,
                         collapsible: true,
                         title: 'Application Details', 
-                        title: 'Permit Information'
-                    },  {
+                        title: 'VC Information'
+                    }, 
+                     {
                         xtype: 'senderreceiverdetailsfrm',collapsible: true,
                         title: 'Sender/Receiver Details',
-                    },{
-                        xtype: 'importexportpremisesfrm',collapsible: true,
-                        title: 'Licensed Outlet Details',
+                    },
+                    {
+                        xtype: 'onlineimportexportnonlicencebusinessdetailsfrm',collapsible: true,
+                        title: 'Non Licensed Outlet Details',
                     }]
                 },{
                     xtype: 'panel',
@@ -271,9 +272,9 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                 },{
                     xtype: 'importexportpermitsproductsgrid',
                     itemId: 'importexportpermitsproductsgrid',
-                    title: 'Recommendation on Import/Export Permit Products Details',
+                    title: 'Recommendation on Import/Export VC Products Details',
                     bind: {
-                        title: '{application_title}'+' Permit Products Details Recommendations'
+                        title: 'VC Products Details Recommendations'
                     },
                     selModel: {
                         selType: 'checkboxmodel',
@@ -549,7 +550,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     wizard: 'importexportpermitmanagerreviewwizard',
                     handler: 'quickNavigationReview',
                     bind: {
-                        text: '{application_title}'+' Details'
+                        text: 'Import/Export VC Application Details'
                     },
                 }
             ]
@@ -627,7 +628,8 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                         ]
                     }
                 }, {
-                        text: 'Review & Approval Recommendation',
+                        //text: 'Review & Approval Recommendation',
+                        text: 'Approval Recommendation',
                         ui: 'soft-purple',
                         iconCls: 'fa fa-check',
                         ui: 'soft-purple',

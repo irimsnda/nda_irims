@@ -113,7 +113,12 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
             'impexplicenseonlinereceivingwizard': {
                 afterrender: 'prepapreImportExportOnlineReceiving'
             },
-            
+            'importexportlicenseonlinereceivingwizard': {
+                afterrender: 'prepapreImportExportOnlineReceiving'
+            },
+            'importexportlicenseonlinereceivingwizard': {
+                afterrender: 'prepapreImportExportOnlineReceiving'
+            },
             
             'declaredimportexportonlinereceivingwizard': {
                 afterrender: 'prepapreDeclaredImportExportOnlineReceiving'
@@ -125,6 +130,17 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
             'importexportreceivingpermitswizard': {
                     afterrender: 'prepapreImportExportReceiving'
             },
+
+            'vcreceivingpermitswizard' : {
+                afterrender: 'prepapreImportExportReceiving'
+            },
+            'nonlicencedreceivingwizard': {
+                afterrender: 'prepapreImportExportReceiving'
+            },
+
+            'importexportreceivinglicencewizard': {
+                afterrender: 'prepapreImportExportReceiving'
+        },
             'licenceapplicationreceivingpermitswizard': {
                 afterrender: 'prepapreImportExportReceiving'
              },
@@ -132,6 +148,17 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
             'importexportpermitmanagerreviewwizard': {
                     afterrender: 'prepapreImportExportManagerReview'
             },
+
+            'importexportlicencemanagerreviewwizard': {
+                afterrender: 'prepapreImportExportManagerReview'
+        },
+
+        'importexportvcmanagerreviewwizard': {
+                afterrender: 'prepapreImportExportManagerReview'
+        },
+        'importexportnonlicencemanagerreviewwizard': {
+            afterrender: 'prepapreImportExportManagerReview'
+    },
             
             'importexportdeclaredpermitmanagerreviewwizard': {
                     afterrender: 'prepapreImportExportManagerReview'
@@ -145,21 +172,78 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
             'specialimportexportpermitapprovalwizard button[name=process_submission_btn]': {
                 click: 'showApplicationApprovalApplicationSubmissionWin'
             },
-           
+            
             'importexportpermitmanagerreviewwizard button[name=process_submission_btn]': {
                 click: 'showImpManagerReviewApplicationSubmissionWin'
             },
 
+            'importexportlicencemanagerreviewwizard button[name=process_submission_btn]': {
+                click: 'showImpManagerReviewApplicationSubmissionWin'
+            },
+
+            'importexportvcmanagerreviewwizard button[name=process_submission_btn]': {
+                click: 'showImpManagerReviewApplicationSubmissionWin'
+            },
+
+            'importexportnonlicencemanagerreviewwizard button[name=process_submission_btn]': {
+                click: 'showImpManagerReviewApplicationSubmissionWin'
+            },
+
+            'importexportpermitevaluationpnl button[name=process_submission_btn]': {
+                click: 'showImpManagerReviewApplicationSubmissionWin'
+            },
+            'vcnonlicencedevaluationpnl button[name=process_submission_btn]': {
+                click: 'showImpManagerReviewApplicationSubmissionWin'
+            },
+
+            'importexportlicencevaluationpnl button[name=process_submission_btn]': {
+                click: 'showPermitEvaluationApplicationSubmissionWin'
+            },
+            'importexportnonlicencevaluationpnl button[name=process_submission_btn]': {
+                click: 'showPermitEvaluationApplicationSubmissionWin'
+            },
             
             'importexportpermitmanagerreviewwizard button[name=process_tradersubmission_btn]': {
                 click: 'showManagerReviewApplicationTraderSubmissionWin'
             },
+
+            'importexportlicencemanagerreviewwizard button[name=process_tradersubmission_btn]': {
+                click: 'showManagerReviewApplicationTraderSubmissionWin'
+            },
+
+            'importexportvcmanagerreviewwizard button[name=process_tradersubmission_btn]': {
+                click: 'showManagerReviewApplicationTraderSubmissionWin'
+            },
+
+            'importexportnonlicencemanagerreviewwizard button[name=process_tradersubmission_btn]': {
+                click: 'showManagerReviewApplicationTraderSubmissionWin'
+            },
+            
             
             'importexportpermitmanagerreviewwizard button[name=returnback_submission_btn]': {
                 click: 'showReturnBackApplicationSubmissionWin'
             },
+            'importexportlicencemanagerreviewwizard button[name=returnback_submission_btn]': {
+                click: 'showReturnBackApplicationSubmissionWin'
+            },
+            'importexportvcmanagerreviewwizard button[name=returnback_submission_btn]': {
+                click: 'showReturnBackApplicationSubmissionWin'
+            },
+            'importexportnonlicencemanagerreviewwizard button[name=returnback_submission_btn]': {
+                click: 'showReturnBackApplicationSubmissionWin'
+            },
+            
             
             'importexportpermitmanagerreviewwizard button[name=review_recommendation]': {
+                click: 'showManagerReviewRecommendationWin'
+            },
+            'importexportlicencemanagerreviewwizard button[name=review_recommendation]': {
+                click: 'showManagerReviewRecommendationWin'
+            },
+            'importexportvcmanagerreviewwizard button[name=review_recommendation]': {
+                click: 'showManagerReviewRecommendationWin'
+            },
+            'importexportnonlicencemanagerreviewwizard button[name=review_recommendation]': {
                 click: 'showManagerReviewRecommendationWin'
             },
             'importexportdeclaredpermitmanagerreviewwizard button[name=review_recommendation]': {
@@ -223,20 +307,73 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
             },'importexportpermitevaluationpnl button[name=more_app_details]': {
                 click: 'showPermitApplicationMoreDetails'
             },
+            'importexportpermitevaluationpnl button[name=more_app_details]': {
+                click: 'showNonLicenceApplicationMoreDetails'
+            },
+            'importexportpermitevaluationpnl button[name=more_app_details]': {
+                click: 'showLicenceApplicationMoreDetails'
+            },'vcnonlicencedevaluationpnl': {
+                afterrender: 'prepareImportExportPermitEvaluationPnl'
+            },'vcnonlicencedevaluationpnl button[name=more_app_details]': {
+                click: 'showPermitApplicationMoreDetails'
+            },
+            'vcnonlicencedevaluationpnl button[name=more_app_details]': {
+                click: 'showNonLicenceApplicationMoreDetails'
+            },
+            'vcnonlicencedevaluationpnl button[name=more_app_details]': {
+                click: 'showLicenceApplicationMoreDetails'
+            },
+            'importexportlicencevaluationpnl': {
+                afterrender: 'prepareImportExportPermitEvaluationPnl'
+            },'importexportlicencevaluationpnl button[name=more_app_details]': {
+                click: 'showPermitApplicationMoreDetails'
+            },
+            'importexportlicencevaluationpnl button[name=more_app_details]': {
+                click: 'showNonLicenceApplicationMoreDetails'
+            },
+            'importexportlicencevaluationpnl button[name=more_app_details]': {
+                click: 'showLicenceApplicationMoreDetails'
+            },
+            'importexportnonlicencevaluationpnl': {
+                afterrender: 'prepareImportExportPermitEvaluationPnl'
+            },'importexportnonlicencevaluationpnl button[name=more_app_details]': {
+                click: 'showPermitApplicationMoreDetails'
+            },
+            'importexportnonlicencevaluationpnl button[name=more_app_details]': {
+                click: 'showNonLicenceApplicationMoreDetails'
+            },
+            'importexportnonlicencevaluationpnl button[name=more_app_details]': {
+                click: 'showLicenceApplicationMoreDetails'
+            },
             'importpermitinvoicingpanel form toolbar button[name=more_app_details]': {
                 click: 'showPermitApplicationMoreDetails'
+            },
+            'importpermitinvoicingpanel form toolbar button[name=more_app_details]': {
+                click: 'showNonLicenceApplicationMoreDetails'
+            },
+            'importpermitinvoicingpanel form toolbar button[name=more_app_details]': {
+                click: 'showLicenceApplicationMoreDetails'
             },
            
             'importpermitinvoicingpanel form toolbar button[name=more_app_details]': {
                 click: 'showPermitApplicationMoreDetails'
             },
+            'importpermitinvoicingpanel form toolbar button[name=more_app_details]': {
+                click: 'showNonLicenceApplicationMoreDetails'
+            },
+            'importpermitinvoicingpanel form toolbar button[name=more_app_details]': {
+                click: 'showLicenceApplicationMoreDetails'
+            },
             'importexportpermitreceiptingpnl form toolbar button[name=more_app_details]': {
                 click: 'showPermitApplicationMoreDetails'
             },
-            'controldrugsimpevaluationpnl button[name=process_submission_btn]': {
-                click: 'showPermitEvaluationApplicationSubmissionWin'
+            'importexportpermitreceiptingpnl form toolbar button[name=more_app_details]': {
+                click: 'showNonLicenceApplicationMoreDetails'
             },
-            'importexportpermitevaluationpnl button[name=process_submission_btn]': {
+            'importexportpermitreceiptingpnl form toolbar button[name=more_app_details]': {
+                click: 'showLicenceApplicationMoreDetails'
+            },
+            'controldrugsimpevaluationpnl button[name=process_submission_btn]': {
                 click: 'showPermitEvaluationApplicationSubmissionWin'
             },
             'importpermitinvoicingpnl': {
@@ -262,6 +399,13 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
                 afterrender: 'prepapareImportpermitUniformStage'
             }, 'importexportmanagersubmissionpnl': {
                 afterrender: 'prepapareImportpermitUniformStage'
+            }, 'vcnonlicencedmanagersubmissionpnl': {
+                afterrender: 'prepapareImportpermitUniformStage'
+            },'importexportdirectorapprovalpnl': {
+                afterrender: 'prepapareImportpermitUniformStage'
+            }, 
+            'importexportlicenceddirectorapprovalPnl': {
+                afterrender: 'prepapareImportpermitUniformStage'
             },
             'importexportpremisesvalidationpnl': {
                 afterrender: 'prepapareImportpermitUniformStage'
@@ -273,8 +417,24 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
                 refresh: 'importpermitApplicationsGridRefresh'
             },'importexportpermitreleaseapprovalgrid': {
                 refresh: 'importpermitApplicationsGridRefresh'
+            },'importexportvcreleaseapprovalgrid': {
+                refresh: 'importpermitApplicationsGridRefresh'
+            }, 'vcnonlicencedpermitreleaseapprovalgrid': {
+                refresh: 'importpermitApplicationsGridRefresh'
+            }, 
+            'importexportnonlicenceapprovalgrid': {
+                refresh: 'importpermitApplicationsGridRefresh'
             },
             'importexportpermitmanagersubgrid': {
+                refresh: 'importpermitApplicationsSubmissionGridRefresh'
+            },
+            'vcnonlicencedmanagersubgrid': {
+                refresh: 'importpermitApplicationsSubmissionGridRefresh'
+            },
+            'importexportnonlicencedirectorapprovalgrid': {
+                refresh: 'importpermitApplicationsSubmissionGridRefresh'
+            },
+            'importexportlicencedirectorapprovalgrid': {
                 refresh: 'importpermitApplicationsSubmissionGridRefresh'
             },
             'importexportproductsvalidationgrid': {
@@ -317,6 +477,8 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
             'exportpermitinvoicingpnl': {
                 afterrender: 'prepareNewImportsInvoicing'
             },'impexppermitsmanagerevaluationgrid': { 
+                refresh: 'importpermitApplicationsGridRefresh'
+            },'impexpvcnonlicencedmanagerevaluationgrid': { 
                 refresh: 'importpermitApplicationsGridRefresh'
             },'specialcaseapplicationapprovalgrid': { 
                 refresh: 'importpermitApplicationsGridRefresh'
@@ -419,6 +581,8 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
                 
                 'impexppermitsmanagerevaluationgrid button[action=process_submission_btn]': {
                     click: 'showManagerQueryApplicationSubmissionWin'
+                },'impexpvcnonlicencedmanagerevaluationgrid button[action=process_submission_btn]': {
+                    click: 'showManagerQueryApplicationSubmissionWin'
                 },'controldrugsimpmanagerevaluationgrid button[action=process_submission_btn]': {
                     click: 'showManagerApplicationSubmissionWin'
                 },
@@ -468,12 +632,23 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
             },'controldrugsimpevaluationpnl button[name=more_app_details]': {
                 click: 'showPermitApplicationMoreDetails'
             },
-            
+            'controldrugsimpevaluationpnl button[name=more_app_details]': {
+                click: 'showNonLicenceApplicationMoreDetails'
+            },
+            'controldrugsimpevaluationpnl button[name=more_app_details]': {
+                click: 'showLicenceApplicationMoreDetails'
+            },
+            'controlleddrugspaymentverificationpnl form toolbar button[name=more_app_details]': {
+                click: 'showLicenceApplicationMoreDetails'
+            },
             
              'controlleddrugspaymentverificationpnl form toolbar button[name=more_app_details]': {
                 click: 'showPermitApplicationMoreDetails'
             },  'controlleddrugspaymentverificationpnl': {
                 afterrender: 'prepareNewImportExportPayments'
+            },
+            'controlleddrugspaymentverificationpnl form toolbar button[name=more_app_details]': {
+                click: 'showNonLicenceApplicationMoreDetails'
             },
              'controlleddrugsimppermitreleasepnl': {
                 afterrender: 'prepapareImportpermitUniformStage'
@@ -514,12 +689,75 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
                 click: 'saveApprovalReviewRecommendationDetails'
             },
 
+            'importexportlicencemanagerreviewwizard  toolbar menu menuitem[name=reject_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            },
+            'importexportvcmanagerreviewwizard toolbar menu menuitem[name=reject_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            },
+
+             'importexportlicencemanagerreviewwizard  toolbar menu menuitem[name=approve_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            },
+            'importexportvcmanagerreviewwizard  toolbar menu menuitem[name=approve_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            },
+
+
+            'importexportnonlicencemanagerreviewwizard  toolbar menu menuitem[name=reject_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            }, 'importexportnonlicencemanagerreviewwizard  toolbar menu menuitem[name=approve_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            },
+
+
+            
+            'importexportpermitevaluationpnl  toolbar menu menuitem[name=reject_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            }, 'importexportpermitevaluationpnl  toolbar menu menuitem[name=approve_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            },
+
+            'vcnonlicencedevaluationpnl  toolbar menu menuitem[name=reject_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            }, 'vcnonlicencedevaluationpnl  toolbar menu menuitem[name=approve_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            },
+
+            'importexportlicencevaluationpnl  toolbar menu menuitem[name=reject_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            }, 'importexportlicencevaluationpnl  toolbar menu menuitem[name=approve_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            },
+            'importexportnonlicencevaluationpnl  toolbar menu menuitem[name=reject_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            }, 'importexportnonlicencevaluationpnl  toolbar menu menuitem[name=approve_recommendation]': {
+                click: 'saveApprovalReviewRecommendationDetails'
+            },
+
+            
+
             'importexportpermitmanagerreviewwizard  toolbar menu menuitem[name=print_importexportpermit]': {
                 click: 'funcPrintImportExportPermit'
             }, 'importexportpermitmanagerreviewwizard  toolbar menu menuitem[name=preview_importexportpermit]': {
                 click: 'funcPrintImportExportPermit'
             },
 
+            'importexportlicencemanagerreviewwizard  toolbar menu menuitem[name=print_importexportpermit]': {
+                click: 'funcPrintImportExportPermit'
+            }, 'importexportlicencemanagerreviewwizard  toolbar menu menuitem[name=preview_importexportpermit]': {
+                click: 'funcPrintImportExportPermit'
+            },
+            'importexportvcmanagerreviewwizard  toolbar menu menuitem[name=print_importexportpermit]': {
+                click: 'funcPrintImportExportPermit'
+            }, 'importexportvcmanagerreviewwizard  toolbar menu menuitem[name=preview_importexportpermit]': {
+                click: 'funcPrintImportExportPermit'
+            },
+            'importexportnonlicencemanagerreviewwizard  toolbar menu menuitem[name=print_importexportpermit]': {
+                click: 'funcPrintImportExportPermit'
+            }, 'importexportnonlicencemanagerreviewwizard  toolbar menu menuitem[name=preview_importexportpermit]': {
+                click: 'funcPrintImportExportPermit'
+            },
             'controlleddrugsimpmanagerreviewwizrd  toolbar menu menuitem[name=reject_recommendation]': {
                 click: 'saveApprovalReviewRecommendationDetails'
             }, 'controlleddrugsimpmanagerreviewwizrd  toolbar menu menuitem[name=approve_recommendation]': {
@@ -547,6 +785,7 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
                showImportPermitApplication:'showImportPermitApplication',
                getImportpermitApplicationApprovalDetails:'getImportpermitApplicationApprovalDetails',
                getPermitReleaseRecommendationDetails:'getPermitReleaseRecommendationDetails',
+               getBatchPermitApplicationApprovalDetails: 'getBatchPermitApplicationApprovalDetails',
 			   onInitializeControlledDrugsImpPermits:'onInitializeControlledDrugsImpPermits',
                previewControlDrugsOnlineApplication:'previewControlDrugsOnlineApplication',
                  //getPermitReleaseRecommendationDetails:'getPermitReleaseRecommendationDetails',
@@ -556,6 +795,13 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
                  savePermitInformation: 'savePermitInformation',
                  editpreviewNarcoticsPermitinformation:'editpreviewNarcoticsPermitinformation',
                  editpreviewPermitinformation: 'editpreviewPermitinformation',
+                 editpreviewvcnonlicencedinformation: 'editpreviewvcnonlicencedinformation',
+                 editpreviewvcinformation: 'editpreviewvcinformation',
+                 editnonlicencedpreviewPermitinformation: 'editnonlicencedpreviewPermitinformation',
+                 editimpexpvcnonlicencedmanagerevaluationinformation: 'editimpexpvcnonlicencedmanagerevaluationinformation',
+                 editpreviewLicencedPermitinformation: 'editpreviewLicencedPermitinformation',
+                 editPreviewLicenceinformation: 'editPreviewLicenceinformation',
+                 editpreviewNonLicenceinformation: 'editpreviewNonLicenceinformation',
                  editpreviewPermitQueryinformation:'editpreviewPermitQueryinformation',
                  editpreviewDisposalQueryinformation:'editpreviewDisposalQueryinformation',
                  editDisposalpreviewPermitinformation:'editDisposalpreviewPermitinformation',
@@ -587,9 +833,10 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
             activeTab = mainTabPanel.getActiveTab();
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue();
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue();
             review_recommendation_id = activeTab.down('combo[name=review_recommendation_id]').getValue();
             if(is_preview){
-                this.funcPrintPermit(application_code,module_id,is_preview);
+                this.fireEvent('generateImportExportPermit', application_code,module_id,sub_module_id,report_type_id,1);
 
             }
             else{
@@ -597,16 +844,26 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
                     toastr.warning('Submit the Review and Approval recommendation!!', 'Warning Response');
                     return false;
                 }
-                this.funcPrintPermit(application_code,module_id,is_preview);
+                this.fireEvent('generateImportExportPermit', application_code,module_id,sub_module_id,report_type_id,1);
 
             }
             
     },
-    funcPrintPermit:function(application_code,module_id,is_preview=0){
+    // funcPrintPermit:function(application_code,module_id,is_preview=0){
 
-        var action_url = 'reports/genenerateImportExportPermit?application_code=' + application_code + '&module_id=' + module_id+ '&is_preview=' + is_preview;
-        print_report(action_url);
+    //     var action_url = 'reports/genenerateImportExportPermit?application_code=' + application_code + '&module_id=' + module_id+ '&is_preview=' + is_preview;
+    //     print_report(action_url);
 
+    // },
+
+    generateImportExportPermit: function (item) {
+        var record = item.getWidgetRecord(),
+            application_code = record.get('application_code');
+            module_id = record.get('module_id');
+            sub_module_id = record.get('sub_module_id');
+            report_type_id = 3;
+            isPreview = 0;
+        this.fireEvent('generateImportExportPermit', application_code,module_id,sub_module_id,report_type_id,isPreview);
     },
     saveApprovalReviewRecommendationDetails:function(btn){
         var me = this,
@@ -663,7 +920,7 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
                                         }
                                         toastr.success(message, "Success Response");
                                        
-                                        me.funcPrintPermit(application_code,module_id);
+                                      //  me.funcPrintPermit(application_code,module_id);
                 
                                     } else {
                                         toastr.error(message, 'Failure Response');
@@ -721,7 +978,7 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
                         toastr.success(message, "Success Response");
                         win.close();
                         
-                        me.funcPrintPermit(application_code,module_id);
+                      //  me.funcPrintPermit(application_code,module_id);
 
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -999,7 +1256,7 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
              me = this,
             mainTabPanel = me.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab();
-            section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+            //section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
             permit_type_id = record.get('permit_type_id');
 
         this.funcChangePermitSubModuleDetails(permit_type_id,section_id,frm);
@@ -1007,18 +1264,33 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
     },
     funcChangePermitSubModuleDetails:function(permit_type_id,section_id,frm){
         sub_module_id = frm.down('combo[name=sub_module_id]').getValue();
-        if(sub_module_id != 49 && sub_module_id != 84){
-            if(permit_type_id == 1){
+        if(sub_module_id != 49 && sub_module_id == 81){
+           // if(permit_type_id == 1){
                 frm.down('combo[name=port_id]').setVisible(false)
                 frm.down('combo[name=mode_oftransport_id]').setVisible(false)
-                frm.down('combo[name=paying_currency_id]').setVisible(false)
+                frm.down('combo[name=vc_application_type_id]').setVisible(false)
+               // frm.down('combo[name=paying_currency_id]').setVisible(false)
+                frm.down('textfield[name=proforma_invoice_no]').setVisible(false)
+                frm.down('textfield[name=proforma_invoice_date]').setVisible(false)
+                //frm.down('combo[name=consignee_options_id]').setVisible(false)
+                frm.down('combo[name=applicant_as_consignee]').setVisible(false)
+                frm.down('textfield[name=consignee_name]').setVisible(false)
+                frm.down('button[name=link_consignee]').setVisible(false)
             }
             else{
                 frm.down('combo[name=port_id]').setVisible(true)
                 frm.down('combo[name=mode_oftransport_id]').setVisible(true)
-                frm.down('combo[name=paying_currency_id]').setVisible(true)
+                frm.down('combo[name=vc_application_type_id]').setVisible(true)
+               // frm.down('combo[name=paying_currency_id]').setVisible(true)
+                frm.down('textfield[name=proforma_invoice_no]').setVisible(true)
+                frm.down('textfield[name=proforma_invoice_date]').setVisible(true)
+                //frm.down('combo[name=consignee_options_id]').setVisible(true)
+                frm.down('combo[name=applicant_as_consignee]').setVisible(true)
+
+                frm.down('textfield[name=consignee_name]').setVisible(true)
+                frm.down('button[name=link_consignee]').setVisible(true)
             }
-        }
+        //}
        
 
     },
@@ -1086,7 +1358,8 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
             $reference_no = record.get('application_code')
             workflow_stage_id = wrapper.down('hiddenfield[name=workflow_stage_id]').getValue(),
             
-            app_pnl = wrapper.down('importexportdetailspnl'),
+           
+                            //app_pnl = wrapper.down('importexportdetailspnl'),
             importexportapplicantdetailsfrm  = wrapper.down('importexportapplicantdetailsfrm'),
             app_form = app_pnl.down('importexportdetailsfrm'),
             sender_receiver_frm = wrapper.down('senderreceiverdetailsfrm'),
@@ -1094,6 +1367,13 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
             licensepermitsproductsgrid = wrapper.down('licensepermitsproductsgrid').getStore(),
             importexportdocuploadsgrid = wrapper.down('importexportdocuploadsgrid').getStore(),
             grid = view.up('grid');
+
+             if (wrapper.down('importexportdetailspnl')) {
+                    app_pnl = wrapper.down('importexportdetailspnl');
+                } else{
+                    // If 'importexportdetailspnl' doesn't exist, check for 'vcdetailspnl'
+                    app_pnl = wrapper.down('vcnonlicenceddetailspnl');
+                }
             Ext.MessageBox.confirm('Initiate License Application', 'Do you want to initiate license application for the selected Visa Application '+$reference_no+'?', function (button) {
                 if (button === 'yes') {
                     Ext.getBody().mask('Initiating License Application...');
@@ -1346,7 +1626,7 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
         docsGrid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
 
     
-        funcShowCustomizableWindow(ref_no, '80%', onlinePanel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no, '80%', onlinePanel, 'customizablewindow');
 
         onlinePanel.getViewModel().set('isReadOnly', true);
 
@@ -1416,7 +1696,7 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
             docsGrid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
 
          
-            funcShowCustomizableWindow(ref_no, '80%', onlinePanel, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(ref_no, '80%', onlinePanel, 'customizablewindow');
 
             onlinePanel.getViewModel().set('isReadOnly', true);
 
@@ -1555,7 +1835,7 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
         docsGrid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
 
         docsGrid.portal_uploads =3;
-        funcShowCustomizableWindow(ref_no, '80%', onlinePanel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no, '80%', onlinePanel, 'customizablewindow');
 
         onlinePanel.getViewModel().set('isReadOnly', true);
     },
@@ -1595,8 +1875,10 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
 
             if(sub_module_id == 78 || sub_module_id == 81  || sub_module_id == 82){
 
-                if(module_id == 4){
+                if(module_id == 4 && sub_module_id!= 81 ){
                     wizard_pnl = 'impexplicenseonlinereceivingwizard';
+                }else if(sub_module_id==81){
+                    wizard_pnl = 'importexportlicenseonlinereceivingwizard';
                 }
                 else{
                         if(sub_module_id == 60){
@@ -1678,7 +1960,7 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
               onlinePanel.down('displayfield[name=application_status]').setValue(application_status);
 
               onlinePanel.setHeight(490);
-            funcShowCustomizableWindow(process_name+' Applications', '80%', onlinePanel, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(process_name+' Applications', '80%', onlinePanel, 'customizablewindow');
 
     },
     funcREceiveSingleApplication:function(wizard_pnl,view,record){
@@ -1723,7 +2005,7 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
             docsGrid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
 
         
-            funcShowCustomizableWindow(ref_no, '80%', onlinePanel, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(ref_no, '80%', onlinePanel, 'customizablewindow');
 
             onlinePanel.getViewModel().set('isReadOnly', true);
 
@@ -1781,7 +2063,7 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
         docsGrid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
 
      
-        funcShowCustomizableWindow(ref_no, '80%', onlinePanel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no, '80%', onlinePanel, 'customizablewindow');
 
         onlinePanel.getViewModel().set('isReadOnly', true);
 
@@ -1818,7 +2100,7 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
     docsGrid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
 
  
-    funcShowCustomizableWindow(ref_no, '80%', onlinePanel, 'customizablewindow');
+    funcShowOnlineCustomizableWindow(ref_no, '80%', onlinePanel, 'customizablewindow');
 
     onlinePanel.getViewModel().set('isReadOnly', true);
 
@@ -1971,7 +2253,7 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
             storeArray = eval(btn.stores),
             arrayLength = storeArray.length;
             child.setHeight(450);
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
@@ -2195,7 +2477,7 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
                     form.down('hiddenfield[name=application_code]').setValue(application_code);
                     form.down('hiddenfield[name=process_id]').setValue(process_id);
                     form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
-                    funcShowCustomizableWindow('Special Import/Export Approval Recommendation', '40%', form, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('Special Import/Export Approval Recommendation', '40%', form, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -2260,7 +2542,7 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
                     form.down('hiddenfield[name=application_code]').setValue(application_code);
                     form.down('hiddenfield[name=process_id]').setValue(process_id);
                     form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
-                    funcShowCustomizableWindow('Review Recommendation', '40%', form, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('Review Recommendation', '40%', form, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -2327,7 +2609,7 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
                     form.down('hiddenfield[name=process_id]').setValue(process_id);
 
                     form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
-                    funcShowCustomizableWindow('Permit release Recommendation', '40%', form, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('Permit release Recommendation', '40%', form, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -2344,6 +2626,45 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
             }
         });
 
+    },
+
+    getBatchPermitApplicationApprovalDetails:function(btn){
+        //Ext.getBody().mask('Please wait...');
+
+        var me = this,
+            grid = btn.up('grid'),
+            table_name = btn.table_name,
+            approval_frm = btn.approval_frm,
+            form = Ext.widget(approval_frm),
+            storeArray = eval(btn.stores),
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(), 
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(), 
+            arrayLength = storeArray.length,
+            sm = grid.getSelectionModel(),
+            selected_records = sm.getSelection(),
+            selected= [],
+            selected_appIds= [];
+
+
+             Ext.each(selected_records, function (item) {
+                selected.push(item.data.application_code);
+                selected_appIds.push(item.data.active_application_id);
+            });
+
+        form.setController('importexportpermitsvctr');
+        if (arrayLength > 0) {
+            me.fireEvent('refreshStores', storeArray);
+        }
+        var selected = JSON.stringify(selected);
+        var selected_appIds = JSON.stringify(selected_appIds);
+        form.down('hiddenfield[name=table_name]').setValue(table_name);
+        form.down('hiddenfield[name=process_id]').setValue(process_id);
+        form.down('hiddenfield[name=selected_appIds]').setValue(selected_appIds);
+        form.down('hiddenfield[name=selected_appcodes]').setValue(selected);
+        form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+        funcShowOnlineCustomizableWindow('Recommendation', '40%', form, 'customizablewindow');
     },
    
     getImportpermitApplicationApprovalDetails: function (btn) {
@@ -2392,7 +2713,7 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
                     form.down('hiddenfield[name=application_code]').setValue(application_code);
                     form.down('hiddenfield[name=process_id]').setValue(process_id);
                     form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
-                    funcShowCustomizableWindow('Recommendation', '40%', form, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('Recommendation', '40%', form, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -2502,7 +2823,7 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
                         success = resp.success,
                         permit_details = resp.results;
                     if(permitsdetails_panel != ''){
-                        funcShowCustomizableWindow('Disposal Permit Verification Details', '85%', permitsdetails_panel, 'customizablewindow');
+                        funcShowOnlineCustomizableWindow('Disposal Permit Verification Details', '85%', permitsdetails_panel, 'customizablewindow');
                         permitsdetails_panel.down('button[name=save_btn]').setVisible(false);
                         permitsdetails_panel.down('button[name=save_btn]').setDisabled(true);
                         permitsdetails_panel.down('button[name=previewpermitsdetailsbtn]').setVisible(false);
@@ -3083,12 +3404,12 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
             hasQueries = checkApplicationRaisedQueries(application_code, module_id),
             storeID = getApplicationStore(module_id, section_id);
         valid = true;
-        //this.validateFoodPremisePaymentSubmission();
-        hasEvalUploadChecklist = checkApplicationChecklistDetails(application_code, module_id,sub_module_id,section_id,'',workflow_stage_id,process_id);
+        //this.validateFoodPremisePaymentSubmission();     ,workflow_stage_id
+        hasEvalUploadChecklist = checkApplicationChecklistDetails(application_code, module_id,sub_module_id,section_id,'',process_id);
         if(!hasEvalUploadChecklist && !hasQueries){
-            toastr.warning('Fill in the Screening checklist details(for checklist based checklist)!!', 'Warning Response');
-            Ext.getBody().unmask();
-            return false;
+            // toastr.warning('Fill in the Screening checklist details(for checklist based checklist)!!', 'Warning Response');
+            // Ext.getBody().unmask();
+            // return false;
            
         }
         extraParams = [{
@@ -3117,7 +3438,7 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
         form.down('hiddenfield[name=application_code]').setValue(application_code);
         form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
         form.down('button[name=upload_file_btn]').isWin = isWin;
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     },
     prepareImportExportPermitEvaluationPnl: function (pnl) {
 
@@ -3127,16 +3448,21 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
             activeTab = mainTabPanel.getActiveTab(),
             checklist_grid = activeTab.down('grid'),
             otherDetailsFrm = activeTab.down('form'),
-            applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
-            premises_details = otherDetailsFrm.down('displayfield[name=premises_details]'),
+            // applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
+            // premises_details = otherDetailsFrm.down('displayfield[name=premises_details]'),
             permit_form = activeTab.down('form'),
             doc_grid = activeTab.down('previewpermitdocuploadsgrid'),
             permitsdetails_panel = activeTab.down('#permitsdetails_panel'),
             
             importexportapplicantdetailsfrm = activeTab.down('importexportapplicantdetailsfrm');
-            importexportdetailsfrm = activeTab.down('#importexportdetailsfrm');
-            senderreceiverdetailsfrm = activeTab.down('#senderreceiverdetailsfrm');
-            importexportpremisesfrm = activeTab.down('#importexportpremisesfrm'),
+            
+            if(activeTab.down('#onlineimportexportlicencedetailsfrm')){
+                importexportdetailsfrm = activeTab.down('#onlineimportexportlicencedetailsfrm');
+            }else{
+                importexportdetailsfrm = activeTab.down('#importexportdetailsfrm');
+            }
+            var senderreceiverdetailsfrm = activeTab.down('#senderreceiverdetailsfrm'),
+            //importexportpremisesfrm = activeTab.down('#importexportpremisesfrm'),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
@@ -3145,20 +3471,45 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
 
-            activeTab.down('button[name=save_btn]').setVisible(false);
-        var applicable_checkliststore = activeTab.down('combo[name=applicable_checklist]').getStore();
-        applicable_checkliststore.removeAll();
-        applicable_checkliststore.load({
+            var importexportpremisesfrm, importexportnonLicencedfrm;
+            if(activeTab.down('#importexportpremisesfrm')){
+              importexportpremisesfrm = activeTab.down('#importexportpremisesfrm');
+            }else {
+              importexportnonLicencedfrm = activeTab.down('#onlineimportexportnonlicencebusinessdetailsfrm');
+
+            }
+
+            // if (sub_module_id == 81 || sub_module_id === 81) {
+            //     activeTab.down('importexportpermitsproductsgrid').setVisible(false);
+            //     if(activeTab.down('importexportpermitsproductsgrid')){
+            //         activeTab.down('importexportpermitsproductsgrid').destroy();
+                    
+            //     }
+            // } 
+
+        if(activeTab.down('button[name=save_btn]')){
+                activeTab.down('button[name=save_btn]').setVisible(false);
+            }
+        if(activeTab.down('combo[name=applicable_checklist]')){
+          var applicable_checkliststore = activeTab.down('combo[name=applicable_checklist]').getStore();
+          applicable_checkliststore.removeAll();
+          applicable_checkliststore.load({
             params: {
                 process_id: process_id,
                 workflow_stage: workflow_stage_id
             }
         });
-        doc_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+        }  
+
+        if(doc_grid){
+                 doc_grid.down('hiddenfield[name=process_id]').setValue(process_id);
                                 doc_grid.down('hiddenfield[name=section_id]').setValue(section_id);
                                 doc_grid.down('hiddenfield[name=module_id]').setValue(module_id);
                                 doc_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
                                 doc_grid.down('hiddenfield[name=application_code]').setValue(application_code);
+
+        }  
+
                                 
         if (application_id) {
             Ext.Ajax.request({
@@ -3185,7 +3536,7 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
 
                     if (success == true || success === true) {
                       
-                     //   applicant_details.setValue(results.applicant_details);
+                       // applicant_details.setValue(results.applicant_details);
                        // premises_details.setValue(results.premises_details);
                       
                         if (permit_details) {
@@ -3194,11 +3545,26 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
                            var senderReceiverDetails = Ext.create('Ext.data.Model', senderReceiverDetails),
                                 premisesDetails = Ext.create('Ext.data.Model', premisesDetails);
                                 if(permit_details.module_id != 20){
-                                    importexportpremisesfrm.loadRecord(premisesDetails);
+
+                                    if(importexportpremisesfrm){
+                                        importexportpremisesfrm.loadRecord(premisesDetails);
+                                    }else{
+                                        importexportnonLicencedfrm.loadRecord(model2);
+                                    }
+                                    
                                 }
+
+                                if(senderreceiverdetailsfrm){
                                 senderreceiverdetailsfrm.loadRecord(senderReceiverDetails);
+                            }
+
+                            if(importexportapplicantdetailsfrm){
                                 importexportapplicantdetailsfrm.loadRecord(model2);
+                            }
+
+                            if(importexportdetailsfrm){   
                                 importexportdetailsfrm.loadRecord(model2);
+                            }
                                 permitsdetails_panel.getViewModel().set('isReadOnly', true);
                                 permitsdetails_panel.getViewModel().set('readOnly', true);
                                 
@@ -3355,7 +3721,7 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
                        
                     }
                     permitsdetails_panel.height = 550;
-                    funcShowCustomizableWindow(ref_no, '85%', permitsdetails_panel, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', permitsdetails_panel, 'customizablewindow');
 
                     if (isReadOnly == 1) {
 
@@ -3504,7 +3870,7 @@ showNarcoticsPermitApplicationMoreDetailsGeneric: function (permitsdetails_panel
                         application_code = permit_details.application_code;
                 }
                 permitsdetails_panel.height = 550;
-                funcShowCustomizableWindow(ref_no, '85%', permitsdetails_panel, 'customizablewindow');
+                funcShowOnlineCustomizableWindow(ref_no, '85%', permitsdetails_panel, 'customizablewindow');
 
                 if (isReadOnly == 1) {
                     me.fireEvent('formAuth', process_id, 1, permitsdetails_panel);
@@ -3545,7 +3911,7 @@ showPermitApplicationMoreDetails: function (btn) {
     this.showPermitApplicationMoreDetailsGeneric(permitsdetails_panel,application_id, applicant_id, ref_no, process_id,  isReadOnly);
 
     },
-    editpreviewPermitinformation: function (item) {
+    editPreviewLicenceinformation: function (item) {
         var btn = item.up('button'),
             record = btn.getWidgetRecord();
             isReadOnly = item.isReadOnly,
@@ -3564,10 +3930,10 @@ showPermitApplicationMoreDetails: function (btn) {
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
 
-        this.showPermitApplicationMoreDetailsGeneric(permitsdetails_panel, application_id,  applicant_id, ref_no, process_id,  isReadOnly);
+        this.showLicenceApplicationMoreDetailsGeneric(permitsdetails_panel, application_id,  applicant_id, ref_no, process_id,  isReadOnly);
 
     },
-    showPermitApplicationMoreDetails: function (btn) {
+    showLicenceApplicationMoreDetails: function (btn) {
         var isReadOnly = btn.isReadOnly,
             mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
@@ -3577,13 +3943,13 @@ showPermitApplicationMoreDetails: function (btn) {
             permitsdetails_panel = 'previewimportexportpermitdetails',
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue();
 
-        this.showPermitApplicationMoreDetailsGeneric(permitsdetails_panel,application_id, '', ref_no, process_id,  isReadOnly);
+        this.showLicenceApplicationMoreDetailsGeneric(permitsdetails_panel,application_id, '', ref_no, process_id,  isReadOnly);
     },
-    showPermitApplicationMoreDetailsGeneric: function (permitsdetails_panel, application_id,  applicant_id, ref_no, process_id, isReadOnly) {
+    showLicenceApplicationMoreDetailsGeneric: function (permitsdetails_panel, application_id,  applicant_id, ref_no, process_id, isReadOnly) {
         Ext.getBody().mask('Please wait...');
 
         var me = this,
-          //  permitsdetails_panel = Ext.widget(permitsdetails_panel),
+            permitsdetails_panel = Ext.widget(permitsdetails_panel),
             permitsdetails_panel = Ext.create('Ext.tab.Panel', { viewModel:'importexportpermitsvm', layout: 'fit',items:[{xtype: permitsdetails_panel, title: 'Application Details '}]}),
             imp_pnl = permitsdetails_panel.down('permitsdetails_panel'),
             tab = permitsdetails_panel.down('panel'),
@@ -3599,7 +3965,7 @@ showPermitApplicationMoreDetails: function (btn) {
                 
             }
            
-            senderreceiverdetailsfrm = permitsdetails_panel.down('#senderreceiverdetailsfrm');
+          senderreceiverdetailsfrm = permitsdetails_panel.down('#senderreceiverdetailsfrm');
             
         if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
             permitsdetails_panel.down('button[name=save_btn]').setVisible(false);
@@ -3607,7 +3973,7 @@ showPermitApplicationMoreDetails: function (btn) {
         }
 
         Ext.Ajax.request({
-            method: 'POST',
+            method: 'GET',
             url: 'importexportpermits/getPermitsApplicationMoreDetails',
             params: {
                 application_id: application_id,
@@ -3646,7 +4012,7 @@ showPermitApplicationMoreDetails: function (btn) {
                             permitsdetails_panel.down('combo[name=zone_id]').setValue(permit_details.zone_id);
                     }
                     permitsdetails_panel.height = 550;
-                    funcShowCustomizableWindow(ref_no, '85%', permitsdetails_panel, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', permitsdetails_panel, 'customizablewindow');
 
                     if (isReadOnly == 1) {
 
@@ -3678,7 +4044,822 @@ showPermitApplicationMoreDetails: function (btn) {
                     permitsdetails_panel.add({
                                                 xtype: 'tabpanel', 
                                                 layout: 'fit', 
-                                                title: 'Screening/Assessment Checklist',
+                                                title: 'Reccommendation/Assessment Checklist',
+                                                items: [{
+                                                    title: 'Screening Recommendation',
+                                                    xtype: 'applicationcommentspnl'
+                                                },{
+                                                    xtype: 'allchecklistsgrid',
+                                                    title: 'Screening Checklist'
+
+                                                }]
+                                            });
+                        //prepapreImportExportManagerReview
+                    allchecklistsgrid = permitsdetails_panel.down('allchecklistsgrid');
+                    allchecklistsgrid.down('hiddenfield[name=process_id]').setValue(process_id);
+                    allchecklistsgrid.down('hiddenfield[name=application_id]').setValue(application_id);
+                    allchecklistsgrid.down('hiddenfield[name=application_code]').setValue(application_code);
+
+                    applicationcommentspnl = permitsdetails_panel.down('applicationcommentspnl');
+                    applicationcommentspnl.down('hiddenfield[name=application_id]').setValue(application_id);
+                    applicationcommentspnl.down('hiddenfield[name=application_code]').setValue(application_code);
+                    applicationcommentspnl.down('button[name=add_btn]').setHidden(true);
+
+                    
+
+                    permitsdetails_panel.add({xtype:'applicationqueriesgrid',title: 'Request for Additional Information(Queries)'});
+                    queries_panel = permitsdetails_panel.down('applicationqueriesgrid');
+                    queries_panel.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+                    queries_panel.down('hiddenfield[name=application_code]').setValue(permit_details.application_code);
+                    queries_panel.down('hiddenfield[name=module_id]').setValue(permit_details.module_id);
+                    queries_panel.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    queries_panel.down('hiddenfield[name=section_id]').setValue(section_id);
+                    
+                    //the screening checklists 
+
+                    
+
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+    },
+    editpreviewNonLicenceinformation: function (item) {
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord();
+            isReadOnly = item.isReadOnly,
+            is_temporal = btn.is_temporal,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            permitsdetails_panel = activeTab.down('#main_processpanel').permitsdetails_panel,
+            application_id = record.get('active_application_id'),
+            product_id = record.get('product_id'),
+            section_id = record.get('section_id'),
+            applicant_id = record.get('applicant_id'),
+            ref_no = record.get('reference_no'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+
+        this.showNonLicenceApplicationMoreDetailsGeneric(permitsdetails_panel, application_id,  applicant_id, ref_no, process_id,  isReadOnly);
+
+    },
+    showNonLicenceApplicationMoreDetails: function (btn) {
+        var isReadOnly = btn.isReadOnly,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            
+            ref_no = activeTab.down('displayfield[name=reference_no]').getValue(),
+            permitsdetails_panel = 'previewimportexportpermitdetails',
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue();
+
+        this.showNonLicenceApplicationMoreDetailsGeneric(permitsdetails_panel,application_id, '', ref_no, process_id,  isReadOnly);
+    },
+    showNonLicenceApplicationMoreDetailsGeneric: function (permitsdetails_panel, application_id,  applicant_id, ref_no, process_id, isReadOnly) {
+        Ext.getBody().mask('Please wait...');
+
+        var me = this,
+            permitsdetails_panel = Ext.widget(permitsdetails_panel),
+            permitsdetails_panel = Ext.create('Ext.tab.Panel', { viewModel:'importexportpermitsvm', layout: 'fit',items:[{xtype: permitsdetails_panel, title: 'Application Details '}]}),
+            imp_pnl = permitsdetails_panel.down('permitsdetails_panel'),
+            tab = permitsdetails_panel.down('panel'),
+            permit_form = permitsdetails_panel.down('form'),
+            importexportapplicantdetailsfrm = permitsdetails_panel.down('importexportapplicantdetailsfrm');
+            onlineimportexportlicencedetailsfrm = permitsdetails_panel.down('onlineimportexportlicencedetailsfrm');
+            if(permitsdetails_panel.down('onlineimportexportlicencedetailsfrm')){
+                onlineimportexportlicencedetailsfrm = permitsdetails_panel.down('onlineimportexportlicencedetailsfrm');
+            
+            }
+            else{
+                onlineimportexportlicencedetailsfrm = permitsdetails_panel.down('#declaredimportexportdetailsfrm');
+            
+                
+            }
+            if(activeTab.down('onlineimportexportlicencedetailsfrm')){
+                importexportdetailsfrm = activeTab.down('onlineimportexportlicencedetailsfrm');
+            }else{
+                importexportdetailsfrm = activeTab.down('#importexportdetailsfrm');
+            }
+           
+           senderreceiverdetailsfrm = permitsdetails_panel.down('#senderreceiverdetailsfrm');
+            
+        if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+            permitsdetails_panel.down('button[name=save_btn]').setVisible(false);
+            //   prepareNewProductReceivingStage
+        }
+
+        Ext.Ajax.request({
+            method: 'GET',
+            url: 'importexportpermits/getPermitsApplicationMoreDetails',
+            params: {
+                application_id: application_id,
+                applicant_id: applicant_id
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            success: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    success = resp.success,
+                    message = resp.message,
+                    permit_details = resp.permit_details,
+                    senderReceiverDetails = resp.senderReceiverDetails,
+                    senderReceiverDetails = resp.senderReceiverDetails,
+                    application_code = permit_details.application_code,
+                    premisesDetails = resp.premisesDetails;
+
+                if (success == true || success === true) {
+
+                    if (permit_details) {
+                        var model2 = Ext.create('Ext.data.Model', permit_details);
+                        
+                       var senderReceiverDetails = Ext.create('Ext.data.Model', senderReceiverDetails),
+                            premisesDetails = Ext.create('Ext.data.Model', premisesDetails);
+                            if(permit_details.module_id != 20){
+                                importexportpremisesfrm = permitsdetails_panel.down('#importexportpremisesfrm'),
+                                importexportpremisesfrm.loadRecord(premisesDetails);
+                            }
+                            
+                            senderreceiverdetailsfrm.loadRecord(senderReceiverDetails);
+                        
+                            importexportapplicantdetailsfrm.loadRecord(model2);
+                            onlineimportexportlicencedetailsfrm.loadRecord(model2);
+                            permitsdetails_panel.down('combo[name=zone_id]').setValue(permit_details.zone_id);
+                    }
+                    permitsdetails_panel.height = 550;
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', permitsdetails_panel, 'customizablewindow');
+
+                    if (isReadOnly == 1) {
+
+
+                        me.fireEvent('formAuth', process_id, 1, permitsdetails_panel);
+                        
+                    }
+                   
+                   
+                    permitsdetails_panel.down('hiddenfield[name=active_application_code]').setValue(permit_details.application_code);
+                    permitsdetails_panel.down('hiddenfield[name=section_id]').setValue(permit_details.section_id);
+                    permitsdetails_panel.down('hiddenfield[name=module_id]').setValue(permit_details.module_id);
+                    permitsdetails_panel.down('hiddenfield[name=sub_module_id]').setValue(permit_details.sub_module_id);
+
+                    permitsdetails_panel.getViewModel().set('isReadOnly', true);
+                    permitsdetails_panel.down('hiddenfield[name=active_application_id]').setValue(application_id);
+
+                    
+                   // documents_grid = Ext.widget('previewproductDocUploadsGrid');
+                   permitsdetails_panel.add({xtype:'previewproductDocUploadsGrid',title: 'Application Uploaded Documents (All)'});
+
+                    documents_grid = permitsdetails_panel.down('previewproductDocUploadsGrid');
+                    documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+                    documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+                    documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+                    documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    documents_grid.down('hiddenfield[name=application_code]').setValue(permit_details.application_code);
+
+                    permitsdetails_panel.add({
+                                                xtype: 'tabpanel', 
+                                                layout: 'fit', 
+                                                title: 'Reccommendation/Assessment Checklist',
+                                                items: [{
+                                                    title: 'Screening Recommendation',
+                                                    xtype: 'applicationcommentspnl'
+                                                },{
+                                                    xtype: 'allchecklistsgrid',
+                                                    title: 'Screening Checklist'
+
+                                                }]
+                                            });
+                        //prepapreImportExportManagerReview
+                    allchecklistsgrid = permitsdetails_panel.down('allchecklistsgrid');
+                    allchecklistsgrid.down('hiddenfield[name=process_id]').setValue(process_id);
+                    allchecklistsgrid.down('hiddenfield[name=application_id]').setValue(application_id);
+                    allchecklistsgrid.down('hiddenfield[name=application_code]').setValue(application_code);
+
+                    applicationcommentspnl = permitsdetails_panel.down('applicationcommentspnl');
+                    applicationcommentspnl.down('hiddenfield[name=application_id]').setValue(application_id);
+                    applicationcommentspnl.down('hiddenfield[name=application_code]').setValue(application_code);
+                    applicationcommentspnl.down('button[name=add_btn]').setHidden(true);
+
+                    
+
+                    permitsdetails_panel.add({xtype:'applicationqueriesgrid',title: 'Request for Additional Information(Queries)'});
+                    queries_panel = permitsdetails_panel.down('applicationqueriesgrid');
+                    queries_panel.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+                    queries_panel.down('hiddenfield[name=application_code]').setValue(permit_details.application_code);
+                    queries_panel.down('hiddenfield[name=module_id]').setValue(permit_details.module_id);
+                    queries_panel.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    queries_panel.down('hiddenfield[name=section_id]').setValue(section_id);
+                    
+                    //the screening checklists 
+
+                    
+
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+    },
+
+    editimpexpvcnonlicencedmanagerevaluationinformation: function (item) {
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord();
+            isReadOnly = item.isReadOnly,
+            is_temporal = btn.is_temporal,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            //permitsdetails_panel = activeTab.down('#main_processpanel').permitsdetails_panel,
+            permitsdetails_panel = Ext.widget('importexportpermitmanagerreviewpnl'),
+            application_id = record.get('active_application_id'),
+            product_id = record.get('product_id'),
+            section_id = record.get('section_id'),
+            applicant_id = record.get('applicant_id'),
+            ref_no = record.get('reference_no'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+
+        this.showPermitApplicationMoreDetailsGeneric(permitsdetails_panel, application_id,  applicant_id, ref_no, process_id,  isReadOnly);
+
+    },
+
+    editpreviewvcinformation: function (item) {
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord();
+            isReadOnly = item.isReadOnly,
+            is_temporal = btn.is_temporal,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            //permitsdetails_panel = activeTab.down('#main_processpanel').permitsdetails_panel,
+            permitsdetails_panel = Ext.widget('importexportvcmanagerreviewwizard'),
+            application_id = record.get('active_application_id'),
+            product_id = record.get('product_id'),
+            section_id = record.get('section_id'),
+            applicant_id = record.get('applicant_id'),
+            ref_no = record.get('reference_no'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+
+        this.showPermitApplicationMoreDetailsGeneric(permitsdetails_panel, application_id,  applicant_id, ref_no, process_id,  isReadOnly);
+
+    },
+
+    editpreviewvcnonlicencedinformation: function (item) {
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord();
+            isReadOnly = item.isReadOnly,
+            is_temporal = btn.is_temporal,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            //permitsdetails_panel = activeTab.down('#main_processpanel').permitsdetails_panel,
+            permitsdetails_panel = Ext.widget('vcnonlicencedevaluationpnl'),
+            application_id = record.get('active_application_id'),
+            product_id = record.get('product_id'),
+            section_id = record.get('section_id'),
+            applicant_id = record.get('applicant_id'),
+            ref_no = record.get('reference_no'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+
+        this.showPermitApplicationMoreDetailsGeneric(permitsdetails_panel, application_id,  applicant_id, ref_no, process_id,  isReadOnly);
+
+    },
+    editpreviewPermitinformation: function (item) {
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord();
+            isReadOnly = item.isReadOnly,
+            is_temporal = btn.is_temporal,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            //permitsdetails_panel = activeTab.down('#main_processpanel').permitsdetails_panel,
+            permitsdetails_panel = Ext.widget('importexportpermitevaluationpnl'),
+            application_id = record.get('active_application_id'),
+            product_id = record.get('product_id'),
+            section_id = record.get('section_id'),
+            applicant_id = record.get('applicant_id'),
+            ref_no = record.get('reference_no'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+
+        this.showPermitApplicationMoreDetailsGeneric(permitsdetails_panel, application_id,  applicant_id, ref_no, process_id,  isReadOnly);
+
+    },
+
+    editpreviewLicencedPermitinformation: function (item) {
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord();
+            isReadOnly = item.isReadOnly,
+            is_temporal = btn.is_temporal,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+           // permitsdetails_panel = activeTab.down('#main_processpanel').permitsdetails_panel,
+            permitsdetails_panel = Ext.widget('importexportlicencemanagerreviewpnl'),
+            application_id = record.get('active_application_id'),
+            product_id = record.get('product_id'),
+            section_id = record.get('section_id'),
+            applicant_id = record.get('applicant_id'),
+            ref_no = record.get('reference_no'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+
+        this.showLicencedApplicationMoreDetailsGeneric(permitsdetails_panel, application_id,  applicant_id, ref_no, process_id,  isReadOnly);
+
+    },
+
+    showLicencedApplicationMoreDetailsGeneric: function (permitsdetails_panel, application_id,  applicant_id, ref_no, process_id, isReadOnly) {
+        Ext.getBody().mask('Please wait...');
+
+        var me = this,
+            permitsdetails_panel = Ext.widget(permitsdetails_panel),
+            permitsdetails_panel = Ext.create('Ext.tab.Panel', { viewModel:'importexportpermitsvm', layout: 'fit',items:[{xtype: permitsdetails_panel, title: 'Application Details '}]}),
+            imp_pnl = permitsdetails_panel.down('permitsdetails_panel'),
+            tab = permitsdetails_panel.down('panel'),
+            permit_form = permitsdetails_panel.down('form'),
+            importexportapplicantdetailsfrm = permitsdetails_panel.down('importexportapplicantdetailsfrm');
+            if(permitsdetails_panel.down('importexportlicencedetailsfrm')){
+                importexportdetailsfrm = permitsdetails_panel.down('importexportlicencedetailsfrm');
+                console.log('anytdtd');
+            
+            }
+            else{
+                importexportdetailsfrm = permitsdetails_panel.down('#declaredimportexportdetailsfrm');
+            
+                
+            }
+           
+            senderreceiverdetailsfrm = permitsdetails_panel.down('#senderreceiverdetailsfrm');
+            
+        if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+            permitsdetails_panel.down('button[name=save_btn]').setVisible(false);
+            //   prepareNewProductReceivingStage
+        }
+
+        Ext.Ajax.request({
+            method: 'GET',
+            url: 'importexportpermits/getPermitsApplicationMoreDetails',
+            params: {
+                application_id: application_id,
+                applicant_id: applicant_id
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            success: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    success = resp.success,
+                    message = resp.message,
+                    permit_details = resp.permit_details,
+                    senderReceiverDetails = resp.senderReceiverDetails,
+                    senderReceiverDetails = resp.senderReceiverDetails,
+                    application_code = permit_details.application_code,
+                    premisesDetails = resp.premisesDetails;
+
+                if (success == true || success === true) {
+
+                    if (permit_details) {
+                        var model2 = Ext.create('Ext.data.Model', permit_details);
+                        
+                       var senderReceiverDetails = Ext.create('Ext.data.Model', senderReceiverDetails),
+                            premisesDetails = Ext.create('Ext.data.Model', premisesDetails);
+                            if(permit_details.module_id != 20){
+                                importexportpremisesfrm = permitsdetails_panel.down('importexportpremisesfrm'),
+                                importexportpremisesfrm.loadRecord(premisesDetails);
+                            }
+                            if(senderreceiverdetailsfrm){
+                                senderreceiverdetailsfrm.loadRecord(senderReceiverDetails);
+                            }
+                            
+                            importexportapplicantdetailsfrm.loadRecord(model2);
+                            importexportdetailsfrm.loadRecord(model2);
+                            permitsdetails_panel.down('combo[name=zone_id]').setValue(permit_details.zone_id);
+                    }
+                    permitsdetails_panel.height = 550;
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', permitsdetails_panel, 'customizablewindow');
+
+                    if (isReadOnly == 1) {
+
+
+                        me.fireEvent('formAuth', process_id, 1, permitsdetails_panel);
+                        
+                    }
+                   
+                    permitsdetails_panel.down('hiddenfield[name=active_application_code]').setValue(permit_details.application_code);
+                    permitsdetails_panel.down('hiddenfield[name=section_id]').setValue(permit_details.section_id);
+                    permitsdetails_panel.down('hiddenfield[name=module_id]').setValue(permit_details.module_id);
+                    permitsdetails_panel.down('hiddenfield[name=sub_module_id]').setValue(permit_details.sub_module_id);
+
+                    permitsdetails_panel.getViewModel().set('isReadOnly', true);
+                    permitsdetails_panel.down('hiddenfield[name=active_application_id]').setValue(application_id);
+
+                    
+                   // documents_grid = Ext.widget('previewproductDocUploadsGrid');
+                   permitsdetails_panel.add({xtype:'previewproductDocUploadsGrid',title: 'Application Uploaded Documents (All)'});
+
+                    documents_grid = permitsdetails_panel.down('previewproductDocUploadsGrid');
+                    documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+                    documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+                    documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+                    documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    documents_grid.down('hiddenfield[name=application_code]').setValue(permit_details.application_code);
+
+                    permitsdetails_panel.add({
+                                                xtype: 'tabpanel', 
+                                                layout: 'fit', 
+                                                title: 'Reccommendation/Assessment Checklist',
+                                                items: [{
+                                                    title: 'Screening Recommendation',
+                                                    xtype: 'applicationcommentspnl'
+                                                },{
+                                                    xtype: 'allchecklistsgrid',
+                                                    title: 'Screening Checklist'
+
+                                                }]
+                                            });
+                        //prepapreImportExportManagerReview
+                    allchecklistsgrid = permitsdetails_panel.down('allchecklistsgrid');
+                    allchecklistsgrid.down('hiddenfield[name=process_id]').setValue(process_id);
+                    allchecklistsgrid.down('hiddenfield[name=application_id]').setValue(application_id);
+                    allchecklistsgrid.down('hiddenfield[name=application_code]').setValue(application_code);
+
+                    applicationcommentspnl = permitsdetails_panel.down('applicationcommentspnl');
+                    applicationcommentspnl.down('hiddenfield[name=application_id]').setValue(application_id);
+                    applicationcommentspnl.down('hiddenfield[name=application_code]').setValue(application_code);
+                    applicationcommentspnl.down('button[name=add_btn]').setHidden(true);
+
+                    
+
+                    permitsdetails_panel.add({xtype:'applicationqueriesgrid',title: 'Request for Additional Information(Queries)'});
+                    queries_panel = permitsdetails_panel.down('applicationqueriesgrid');
+                    queries_panel.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+                    queries_panel.down('hiddenfield[name=application_code]').setValue(permit_details.application_code);
+                    queries_panel.down('hiddenfield[name=module_id]').setValue(permit_details.module_id);
+                    queries_panel.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    queries_panel.down('hiddenfield[name=section_id]').setValue(section_id);
+                    
+                    //the screening checklists 
+
+                    
+
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+    },
+    editnonlicencedpreviewPermitinformation: function (item) {
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord();
+            isReadOnly = item.isReadOnly,
+            is_temporal = btn.is_temporal,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+           // permitsdetails_panel = activeTab.down('#main_processpanel').permitsdetails_panel,
+            permitsdetails_panel = Ext.widget('importexportnonlicencemanagerreviewpnl'),
+            application_id = record.get('active_application_id'),
+            product_id = record.get('product_id'),
+            section_id = record.get('section_id'),
+            applicant_id = record.get('applicant_id'),
+            ref_no = record.get('reference_no'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+
+        this.showNonLicencedApplicationMoreDetailsGeneric(permitsdetails_panel, application_id,  applicant_id, ref_no, process_id,  isReadOnly);
+
+    },
+    showPermitApplicationMoreDetails: function (btn) {
+        var isReadOnly = btn.isReadOnly,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            
+            ref_no = activeTab.down('displayfield[name=reference_no]').getValue(),
+            permitsdetails_panel = 'previewimportexportpermitdetails',
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue();
+
+        this.showPermitApplicationMoreDetailsGeneric(permitsdetails_panel,application_id, '', ref_no, process_id,  isReadOnly);
+    },
+
+    showNonLicencedApplicationMoreDetailsGeneric: function (permitsdetails_panel, application_id,  applicant_id, ref_no, process_id, isReadOnly) {
+        Ext.getBody().mask('Please wait...');
+
+        var me = this,
+            permitsdetails_panel = Ext.widget(permitsdetails_panel),
+            permitsdetails_panel = Ext.create('Ext.tab.Panel', { viewModel:'importexportpermitsvm', layout: 'fit',items:[{xtype: permitsdetails_panel, title: 'Application Details '}]}),
+            imp_pnl = permitsdetails_panel.down('permitsdetails_panel'),
+            tab = permitsdetails_panel.down('panel'),
+            permit_form = permitsdetails_panel.down('form'),
+            importexportapplicantdetailsfrm = permitsdetails_panel.down('importexportapplicantdetailsfrm');
+            if(permitsdetails_panel.down('onlineimportexportlicencedetailsfrm')){
+                importexportdetailsfrm = permitsdetails_panel.down('onlineimportexportlicencedetailsfrm');
+                console.log('anytdtd');
+            
+            }
+            else{
+                importexportdetailsfrm = permitsdetails_panel.down('#declaredimportexportdetailsfrm');
+            
+                
+            }
+           
+            senderreceiverdetailsfrm = permitsdetails_panel.down('#senderreceiverdetailsfrm');
+            
+        if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+            permitsdetails_panel.down('button[name=save_btn]').setVisible(false);
+            //   prepareNewProductReceivingStage
+        }
+
+        Ext.Ajax.request({
+            method: 'GET',
+            url: 'importexportpermits/getPermitsApplicationMoreDetails',
+            params: {
+                application_id: application_id,
+                applicant_id: applicant_id
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            success: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    success = resp.success,
+                    message = resp.message,
+                    permit_details = resp.permit_details,
+                    senderReceiverDetails = resp.senderReceiverDetails,
+                    senderReceiverDetails = resp.senderReceiverDetails,
+                    application_code = permit_details.application_code,
+                    premisesDetails = resp.premisesDetails;
+
+                if (success == true || success === true) {
+
+                    if (permit_details) {
+                        var model2 = Ext.create('Ext.data.Model', permit_details);
+                        
+                      var senderReceiverDetails = Ext.create('Ext.data.Model', senderReceiverDetails),
+                            premisesDetails = Ext.create('Ext.data.Model', premisesDetails);
+                            if(permit_details.module_id != 20){
+                                importexportpremisesfrm = permitsdetails_panel.down('onlineimportexportlicencedetailsfrm'),
+                                importexportpremisesfrm.loadRecord(premisesDetails);
+                            }
+
+                            if(senderreceiverdetailsfrm){
+                                 senderreceiverdetailsfrm.loadRecord(senderReceiverDetails);
+                            }
+                            
+                        
+                            importexportapplicantdetailsfrm.loadRecord(model2);
+                            importexportdetailsfrm.loadRecord(model2);
+                            permitsdetails_panel.down('combo[name=zone_id]').setValue(permit_details.zone_id);
+                    }
+                    permitsdetails_panel.height = 550;
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', permitsdetails_panel, 'customizablewindow');
+
+                    if (isReadOnly == 1) {
+
+
+                        me.fireEvent('formAuth', process_id, 1, permitsdetails_panel);
+                        
+                    }
+                   
+                   
+                    permitsdetails_panel.down('hiddenfield[name=active_application_code]').setValue(permit_details.application_code);
+                    permitsdetails_panel.down('hiddenfield[name=section_id]').setValue(permit_details.section_id);
+                    permitsdetails_panel.down('hiddenfield[name=module_id]').setValue(permit_details.module_id);
+                    permitsdetails_panel.down('hiddenfield[name=sub_module_id]').setValue(permit_details.sub_module_id);
+
+                    permitsdetails_panel.getViewModel().set('isReadOnly', true);
+                    permitsdetails_panel.down('hiddenfield[name=active_application_id]').setValue(application_id);
+
+                    
+                   // documents_grid = Ext.widget('previewproductDocUploadsGrid');
+                   permitsdetails_panel.add({xtype:'previewproductDocUploadsGrid',title: 'Application Uploaded Documents (All)'});
+
+                    documents_grid = permitsdetails_panel.down('previewproductDocUploadsGrid');
+                    documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+                    documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+                    documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+                    documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    documents_grid.down('hiddenfield[name=application_code]').setValue(permit_details.application_code);
+
+                    permitsdetails_panel.add({
+                                                xtype: 'tabpanel', 
+                                                layout: 'fit', 
+                                                title: 'Reccommendation/Assessment Checklist',
+                                                items: [{
+                                                    title: 'Screening Recommendation',
+                                                    xtype: 'applicationcommentspnl'
+                                                },{
+                                                    xtype: 'allchecklistsgrid',
+                                                    title: 'Screening Checklist'
+
+                                                }]
+                                            });
+                        //prepapreImportExportManagerReview
+                    allchecklistsgrid = permitsdetails_panel.down('allchecklistsgrid');
+                    allchecklistsgrid.down('hiddenfield[name=process_id]').setValue(process_id);
+                    allchecklistsgrid.down('hiddenfield[name=application_id]').setValue(application_id);
+                    allchecklistsgrid.down('hiddenfield[name=application_code]').setValue(application_code);
+
+                    applicationcommentspnl = permitsdetails_panel.down('applicationcommentspnl');
+                    applicationcommentspnl.down('hiddenfield[name=application_id]').setValue(application_id);
+                    applicationcommentspnl.down('hiddenfield[name=application_code]').setValue(application_code);
+                    applicationcommentspnl.down('button[name=add_btn]').setHidden(true);
+
+                    
+
+                    permitsdetails_panel.add({xtype:'applicationqueriesgrid',title: 'Request for Additional Information(Queries)'});
+                    queries_panel = permitsdetails_panel.down('applicationqueriesgrid');
+                    queries_panel.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+                    queries_panel.down('hiddenfield[name=application_code]').setValue(permit_details.application_code);
+                    queries_panel.down('hiddenfield[name=module_id]').setValue(permit_details.module_id);
+                    queries_panel.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    queries_panel.down('hiddenfield[name=section_id]').setValue(section_id);
+                    
+                    //the screening checklists 
+
+                    
+
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+    },
+    showPermitApplicationMoreDetailsGeneric: function (permitsdetails_panel, application_id,  applicant_id, ref_no, process_id, isReadOnly) {
+        Ext.getBody().mask('Please wait...');
+
+        var me = this,
+            permitsdetails_panel = Ext.widget(permitsdetails_panel),
+            permitsdetails_panel = Ext.create('Ext.tab.Panel', { viewModel:'importexportpermitsvm', layout: 'fit',items:[{xtype: permitsdetails_panel, title: 'Application Details '}]}),
+            imp_pnl = permitsdetails_panel.down('permitsdetails_panel'),
+            tab = permitsdetails_panel.down('panel'),
+            permit_form = permitsdetails_panel.down('form'),
+            importexportapplicantdetailsfrm = permitsdetails_panel.down('importexportapplicantdetailsfrm');
+            if(permitsdetails_panel.down('importexportdetailsfrm')){
+                importexportdetailsfrm = permitsdetails_panel.down('importexportdetailsfrm');
+            
+            }
+            else{
+                importexportdetailsfrm = permitsdetails_panel.down('#declaredimportexportdetailsfrm');
+            
+                
+            }
+           
+            senderreceiverdetailsfrm = permitsdetails_panel.down('senderreceiverdetailsfrm');
+            
+        if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+            permitsdetails_panel.down('button[name=save_btn]').setVisible(false);
+            //   prepareNewProductReceivingStage
+        }
+
+        Ext.Ajax.request({
+            method: 'GET',
+            url: 'importexportpermits/getPermitsApplicationMoreDetails',
+            params: {
+                application_id: application_id,
+                applicant_id: applicant_id
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            success: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    success = resp.success,
+                    message = resp.message,
+                    permit_details = resp.permit_details,
+                    senderReceiverDetails = resp.senderReceiverDetails,
+                    senderReceiverDetails = resp.senderReceiverDetails,
+                    application_code = permit_details.application_code,
+                    premisesDetails = resp.premisesDetails;
+
+                if (success == true || success === true) {
+
+                    if (permit_details) {
+                        var model2 = Ext.create('Ext.data.Model', permit_details);
+                        
+                       var senderReceiverDetails = Ext.create('Ext.data.Model', senderReceiverDetails),
+                            premisesDetails = Ext.create('Ext.data.Model', premisesDetails);
+                            if(permit_details.module_id != 20){
+
+                           var importexportpremisesfrm, importexportnonLicencedfrm;
+                if(permitsdetails_panel.down('importexportpremisesfrm')){
+                   importexportpremisesfrm = permitsdetails_panel.down('importexportpremisesfrm');
+                }else {
+                  importexportnonLicencedfrm = permitsdetails_panel.down('#onlineimportexportnonlicencebusinessdetailsfrm');
+
+                }
+
+                if(importexportpremisesfrm){
+                            importexportpremisesfrm.loadRecord(premisesDetails);
+                }else{
+                            importexportnonLicencedfrm.loadRecord(model2);
+                        }
+                              //  importexportpremisesfrm = permitsdetails_panel.down('importexportpremisesfrm'),
+                                //importexportpremisesfrm.loadRecord(premisesDetails);
+                            }
+                            
+                            senderreceiverdetailsfrm.loadRecord(senderReceiverDetails);
+                        
+                            importexportapplicantdetailsfrm.loadRecord(model2);
+                            importexportdetailsfrm.loadRecord(model2);
+                           // permitsdetails_panel.down('combo[name=zone_id]').setValue(permit_details.zone_id);
+                    }
+                    permitsdetails_panel.height = 550;
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', permitsdetails_panel, 'customizablewindow');
+
+                    if (isReadOnly == 1) {
+
+
+                        me.fireEvent('formAuth', process_id, 1, permitsdetails_panel);
+                        
+                    }
+                   
+                   
+                    permitsdetails_panel.down('hiddenfield[name=active_application_code]').setValue(permit_details.application_code);
+                    permitsdetails_panel.down('hiddenfield[name=section_id]').setValue(permit_details.section_id);
+                    permitsdetails_panel.down('hiddenfield[name=module_id]').setValue(permit_details.module_id);
+                    permitsdetails_panel.down('hiddenfield[name=sub_module_id]').setValue(permit_details.sub_module_id);
+
+                    permitsdetails_panel.getViewModel().set('isReadOnly', true);
+                    permitsdetails_panel.down('hiddenfield[name=active_application_id]').setValue(application_id);
+
+                    
+                   // documents_grid = Ext.widget('previewproductDocUploadsGrid');
+                   permitsdetails_panel.add({xtype:'previewproductDocUploadsGrid',title: 'Application Uploaded Documents (All)'});
+
+                    documents_grid = permitsdetails_panel.down('previewproductDocUploadsGrid');
+                    documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+                    documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+                    documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+                    documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    documents_grid.down('hiddenfield[name=application_code]').setValue(permit_details.application_code);
+
+                    permitsdetails_panel.add({
+                                                xtype: 'tabpanel', 
+                                                layout: 'fit', 
+                                                title: 'Reccommendation/Assessment Checklist',
                                                 items: [{
                                                     title: 'Screening Recommendation',
                                                     xtype: 'applicationcommentspnl'
@@ -4168,7 +5349,7 @@ showPermitApplicationMoreDetails: function (btn) {
         childObject.setHeight(450);
             childObject.down('hiddenfield[name=section_id]').setValue(section_id);
             childObject.down('hiddenfield[name=application_code]').setValue(application_code);
-            funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
 
     },
     showImpSenderReceiverlectionList:function(btn){
@@ -4181,7 +5362,7 @@ showPermitApplicationMoreDetails: function (btn) {
             gmp_type_id = 0;
        
         var childObject = Ext.widget(childXtype);
-            funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
 
     },
     showApplicantSelectionList: function (btn) {
@@ -4189,7 +5370,7 @@ showPermitApplicationMoreDetails: function (btn) {
             winTitle = btn.winTitle,
             winWidth = btn.winWidth,
             childObject = Ext.widget(childXtype);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     onPermitApplicantSelectionListDblClick: function (view, record, item, index, e, eOpts) {
         var me = this,
@@ -4226,7 +5407,7 @@ showPermitApplicationMoreDetails: function (btn) {
             win = grid.up('window'),
             application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
             importexportdetailsfrm = activeTab.down('#importexportdetailsfrm'),
-            importexportpremisesfrm = activeTab.down('#importexportpremisesfrm'),
+           // importexportpremisesfrm = activeTab.down('#importexportpremisesfrm'),
             senderreceiverdetailsfrm = activeTab.down('#senderreceiverdetailsfrm'),
             poeinspectionpermitsproductsgrid = activeTab.down('#poeinspectionpermitsproductsgrid'),
             active_application_id = record.get('active_application_id'),
@@ -4240,6 +5421,13 @@ showPermitApplicationMoreDetails: function (btn) {
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             zone_cbo = activeTab.down('combo[name=zone_id]');
+
+            if(activeTab.down('#importexportpremisesfrm')){
+              importexportpremisesfrm = activeTab.down('#importexportpremisesfrm');
+            }else {
+              importexportnonLicencedfrm = activeTab.down('#onlineimportexportnonlicencebusinessdetailsfrm');
+
+            }
             
         if(is_permitexpired == 1){
             toastr.error('The selected permit has already Expired, kindly reject or request for permit Extension.', 'Alert');
@@ -4616,7 +5804,6 @@ showPermitApplicationMoreDetails: function (btn) {
             application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
             applicantFrm = activeTab.down('importexportapplicantdetailsfrm'),
             importexportdetailsfrm = activeTab.down('#importexportdetailsfrm'),
-            importexportpremisesfrm = activeTab.down('#importexportpremisesfrm'),
             senderreceiverdetailsfrm = activeTab.down('#senderreceiverdetailsfrm'),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
@@ -4625,6 +5812,14 @@ showPermitApplicationMoreDetails: function (btn) {
             zone_cbo = activeTab.down('combo[name=zone_id]');
             filter = { section_id: section_id },
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+
+            var importexportpremisesfrm, importexportnonLicencedfrm;
+            if(activeTab.down('#importexportpremisesfrm')){
+              importexportpremisesfrm = activeTab.down('#importexportpremisesfrm');
+            }else {
+              importexportnonLicencedfrm = activeTab.down('#onlineimportexportnonlicencebusinessdetailsfrm');
+
+            }
             
         if (application_status_id == 4 || application_status_id === 4) {
             activeTab.down('button[name=queries_responses]').setVisible(true);
@@ -4657,8 +5852,18 @@ showPermitApplicationMoreDetails: function (btn) {
                         applicantFrm.loadRecord(model);
                         importexportdetailsfrm.loadRecord(model);
 
-                        importexportpremisesfrm.loadRecord(premisesDetails);
+                        if(importexportpremisesfrm){
+                            importexportpremisesfrm.loadRecord(premisesDetails);
+                        }else {
+                            if(importexportnonLicencedfrm){
+
+                            importexportnonLicencedfrm.loadRecord(model);
+                            }
+                        }
+
+                        if(senderreceiverdetailsfrm){
                         senderreceiverdetailsfrm.loadRecord(senderReceiverDetails);
+                        }
 
                         zone_cbo.setValue(zone_id);
 
@@ -4669,10 +5874,17 @@ showPermitApplicationMoreDetails: function (btn) {
                         
                         var parent_pnl = pnl.up('panel');
                             parent_pnl.getViewModel().set('isReadOnly', false);
-                            activeTab.down('button[action=search_premise]').setDisabled(true);
+                            if(activeTab.down('button[action=search_premise]')){
+                               activeTab.down('button[action=search_premise]').setDisabled(true);
+                            }
+
+                            if(activeTab.down('button[action=link_applicant]')){
                             activeTab.down('button[action=link_applicant]').setDisabled(true);
+                            }
                             
-                            activeTab.down('combo[name=sub_module_id]').setDisabled(true);
+                            if( activeTab.down('combo[name=sub_module_id]')){
+                                activeTab.down('combo[name=sub_module_id]').setDisabled(true);
+                            }
                     } else {
                         toastr.error(message, 'Failure Response');
                     }
@@ -4795,6 +6007,7 @@ showPermitApplicationMoreDetails: function (btn) {
             zone_cbo = activeTab.down('combo[name=zone_id]');
           
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+
             
         if (application_id) {
             Ext.Ajax.request({
@@ -4890,7 +6103,7 @@ showPermitApplicationMoreDetails: function (btn) {
 
             applicantFrm = activeTab.down('importexportapplicantdetailsfrm'),
             importexportdetailsfrm = activeTab.down('#importexportdetailsfrm'),
-            importexportpremisesfrm = activeTab.down('#importexportpremisesfrm'),
+           // importexportpremisesfrm = activeTab.down('#importexportpremisesfrm'),
             senderreceiverdetailsfrm = activeTab.down('#senderreceiverdetailsfrm'),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
@@ -4899,6 +6112,14 @@ showPermitApplicationMoreDetails: function (btn) {
             zone_cbo = activeTab.down('combo[name=zone_id]');
             filter = { section_id: section_id },
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+
+            var importexportpremisesfrm, importexportnonLicencedfrm;
+            if(activeTab.down('#importexportpremisesfrm')){
+              importexportpremisesfrm = activeTab.down('#importexportpremisesfrm');
+            }else {
+              importexportnonLicencedfrm = activeTab.down('#onlineimportexportnonlicencebusinessdetailsfrm');
+
+            }
         
         if (application_status_id == 4 || application_status_id === 4) {
             activeTab.down('button[name=queries_responses]').setVisible(true);
@@ -4931,8 +6152,15 @@ showPermitApplicationMoreDetails: function (btn) {
                         
                         applicantFrm.loadRecord(model);
                         if(results.module_id != 20){
+                            if(importexportpremisesfrm){
                             importexportpremisesfrm.loadRecord(premisesDetails);
+                            }else {
+                            importexportnonLicencedfrm.loadRecord(model);  
+                            }
+
+                            if(activeTab.down('button[action=search_premise]')){
                             activeTab.down('button[action=search_premise]').setDisabled(true);
+                            }
                         }
                         importexportdetailsfrm.loadRecord(model);
 
@@ -4945,7 +6173,7 @@ showPermitApplicationMoreDetails: function (btn) {
                         activeTab.down('displayfield[name=reference_no]').setValue(results.tracking_no);
                         activeTab.down('displayfield[name=tracking_no]').setValue(results.reference_no);
                         if(results.module_id != 20){
-                            if(results.sub_module_id == 13 || results.sub_module_id == 15){
+                            if(results.sub_module_id == 13 || results.sub_module_id == 12 || results.sub_module_id == 81){
                                 activeTab.down('combo[name=approval_recommendation_id]').setValue(results.approval_recommendation_id);
                                 activeTab.down('combo[name=approval_recommendation_id]').setVisible(true);
                             }else{
@@ -4967,7 +6195,7 @@ showPermitApplicationMoreDetails: function (btn) {
                         activeTab.down('combo[name=review_recommendation_id]').setValue(results.review_recommendation_id);
                         
                         
-                        activeTab.down('combo[name=sub_module_id]').setDisabled(true);
+                        //activeTab.down('combo[name=sub_module_id]').setDisabled(true);
                         allchecklistsgrid = activeTab.down('allchecklistsgrid');
                         allchecklistsgrid.down('hiddenfield[name=process_id]').setValue(process_id);
                         allchecklistsgrid.down('hiddenfield[name=application_id]').setValue(application_id);
@@ -5194,7 +6422,7 @@ showPermitApplicationMoreDetails: function (btn) {
             application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
             applicantFrm = activeTab.down('importexportapplicantdetailsfrm'),
             importexportdetailsfrm = activeTab.down('#importexportdetailsfrm'),
-            importexportpremisesfrm = activeTab.down('#importexportpremisesfrm'),
+           // importexportpremisesfrm = activeTab.down('#importexportpremisesfrm'),
             senderreceiverdetailsfrm = activeTab.down('#senderreceiverdetailsfrm'),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
@@ -5205,6 +6433,15 @@ showPermitApplicationMoreDetails: function (btn) {
             filter = { section_id: section_id };
         
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+                console.log('6305')
+            if(activeTab.down('#importexportpremisesfrm')){
+                console.log('6307')
+              importexportpremisesfrm = activeTab.down('#importexportpremisesfrm');
+            }else {
+                console.log('6310')
+              importexportpremisesfrm = activeTab.down('#onlineimportexportnonlicencebusinessdetailsfrm');
+
+            }
 
         if (application_status_id == 4 || application_status_id === 4) {
             activeTab.down('button[name=queries_responses]').setVisible(true);
@@ -5716,7 +6953,9 @@ console.log(application_code);
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             hasReviewRecommendation  = checkReviewREcommendationDEtails(application_code),
             storeID = getApplicationStore(module_id, section_id);
+            if( activeTab.down('combo[name=review_recommendation_id]')){
             approval_recommendation_id = activeTab.down('combo[name=review_recommendation_id]').getValue();
+            }
         if(!hasReviewRecommendation){
             toastr.error('Response: Enter the Review recommendation to proceed', 'Error Response'); 
             Ext.getBody().unmask();

@@ -1,8 +1,6 @@
-/**
- * Created by Kip on 12/18/2018.
- */
+
 Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsGrid', {
-    extend: 'Admin.view.gmpapplications.views.grids.ProductLineAbstractGrid',
+   extend: 'Admin.view.gmpapplications.views.grids.ProductBlockLineAbstractGrid',
     controller: 'gmpapplicationsvctr',
     xtype: 'productlinedetailsgrid',
     cls: 'dashboard-todo-list',
@@ -20,90 +18,57 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsGrid', {
         }
     },
     tbar: [{
-        xtype: 'button',
-        text: 'Add Product Line Details',
-        iconCls: 'x-fa fa-plus',
-        name:'add_line',
-        winTitle: 'GMP Product Line Details',
-        ui: 'soft-green',
-        winWidth: '35%',
-        stores: '[]'
-    }, {
-        xtype: 'button',
-        text: 'Update/Add Product Line Details',
-        iconCls: 'x-fa fa-plus',
-        name:'update_line',
-        ui: 'soft-green',
-        winWidth: '35%',
-        stores: '[]'
-    },{
         xtype: 'hiddenfield',
         name: 'isReadOnly'
-    },'->'],
+    }, {
+        xtype: 'button',
+        text: 'Add Block & Product Line',
+        iconCls: 'x-fa fa-plus',
+        ui: 'soft-blue',
+        name: 'add_line',
+        winTitle: 'GMP Product Line Details',
+        childXtype: 'productlinetabpnl',
+        winWidth: '50%',
+        stores: '[]'
+    }, {
+        xtype: 'exportbtn'
+    }],
     plugins: [
         {
             ptype: 'gridexporter'
     }],
     export_title: 'Product line Details',
-    bbar: [{
+     bbar: [{
         xtype: 'pagingtoolbar',
         width: '100%',
         displayInfo: true,
         displayMsg: 'Showing {0} - {1} of {2} total records',
         emptyMsg: 'No Records',
         beforeLoad: function () {
-            var store = this.getStore(),
-                grid = this.up('grid')
-                if(grid.up('window')){
-                    var win = grid.up('window');
-                    site_id = win.down('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue(),
-                    section_id = win.down('hiddenfield[name=section_id]').getValue();
-
-                }
-                else{
-
-                    mainTabPanel = grid.up('#contentPanel'),
-                    activeTab = mainTabPanel.getActiveTab(),
-                    site_id = activeTab.down('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue(),
-                    section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
-
-                }
-               
-            store.getProxy().extraParams = {
-                site_id: site_id,
-                section_id:section_id
+            var store=this.getStore(),
+                grid=this.up('grid'),
+                 mainTabPanel = grid.up('#contentPanel'),
+                 activeTab = mainTabPanel.getActiveTab(),
+                 site_id = activeTab.down('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue();
+            store.getProxy().extraParams={
+                manufacturing_site_id: site_id
             };
         }
     }],
-    selType: 'cellmodel',
-    plugins: [{
-        ptype: 'gridexporter'
-    }, {
-        ptype: 'cellediting',
-        clicksToEdit: 1,
-        editing: true
-    },{
-        ptype: 'filterfield'
-    }],
+
     features: [{
-        ftype: 'grouping',
-        startCollapsed: false,
-        hideGroupedHeader: true,
-        enableGroupingMenu: false
-    },{
         ftype: 'searching',
         minChars: 2,
         mode: 'local'
     }],
     listeners: {
         beforerender: {
-            fn: 'setGmpApplicationGridsStore',
+            fn: 'setPremiseRegGridsStore',
             config: {
                 pageSize: 1000,
-                storeId: 'productlinedetailsstr',
-                groupField:'product_line_category',
+                storeId: 'mansiteblockdetailsstr',
                 proxy: {
-                    url: 'gmpapplications/getManufacturingSiteGmpInspectionLineDetails'
+                    url: 'gmpapplications/getSiteBlockDetails'
                 }
             },
             isLoad: true
@@ -116,29 +81,244 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsGrid', {
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 add_btn.setVisible(false);
                 widgetCol.setHidden(true);
-                widgetCol.widget.menu.items = [z];
+                widgetCol.widget.menu.items = [];
             } else {
                 add_btn.setVisible(true);
-                widgetCol.setHidden(false);
-               
+                widgetCol.widget.menu.items = [{
+                    text: 'Edit',
+                    iconCls: 'x-fa fa-edit',
+                    winTitle: 'Product Line Details',
+                    childXtype: 'productlinetabpnl',
+                    winWidth: '50%',
+                    stores: '[]',
+                    handler: 'showEditProductLineDetails'
+                }, {
+                    text: 'Delete',
+                    iconCls: 'x-fa fa-trash',
+                    table_name: 'tra_manufacturing_sites_blocks',
+                    storeID: 'mansiteblockdetailsstr',
+                    action_url: 'gmpapplications/deleteGmpApplicationRecord',
+                    action: 'actual_delete',
+                    handler: 'doDeleteGmpApplicationWidgetParam',
+                    hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
+                }
+                ];
             }
         }
     },
-    columns: [
-        {
-            text: 'Options',
-            xtype: 'widgetcolumn',
-            width: 90,
-            widget: {
-                width: 75,
-                textAlign: 'left',
-                xtype: 'splitbutton',
-                iconCls: 'x-fa fa-th-list',
-                ui: 'gray',
-                menu: {
-                    xtype: 'menu',
-                    items: []
-                }
+    columns: [ {
+        text: 'Options',
+        xtype: 'widgetcolumn',
+        width: 90,
+        widget: {
+            width: 75,
+            textAlign: 'left',
+            xtype: 'splitbutton',
+            iconCls: 'x-fa fa-th-list',
+            ui: 'gray',
+            menu: {
+                xtype: 'menu',
+                items: []
             }
-        }]
+        }
+    }],
+    leadingBufferZone: 8,
+    trailingBufferZone: 8,
+   
+   plugins: [{
+       ptype: 'rowwidget',
+           widget: {
+                   xtype: 'tabpanel',
+                   bind: {
+                       title: 'Product Lines'
+                   },header:false,
+                   tbar:[{
+                       xtype: 'hiddenfield',
+                       name:'manufacturing_site_id',
+                       bind: {
+                           value: '{record.manufacturing_site_id}'
+                       }
+                   },
+                   
+                   {
+                       xtype: 'hiddenfield',
+                       name:'block_id',
+                       bind: {
+                           value: '{record.id}'
+                       }
+                   }],
+                   items:[{
+                       xtype:'grid',
+                       height: 200,
+                       width: '100%',
+                       bind: {
+                           title: 'Product Lines'
+                       },
+                       tbar:[{
+                           xtype: 'hiddenfield',
+                           name:'manufacturing_site_id',
+                           bind: {
+                               value: '{record.manufacturing_site_id}'
+                           }
+                       },
+                       
+                       {
+                           xtype: 'hiddenfield',
+                           name:'block_id',
+                           bind: {
+                               value: '{record.id}'
+                           }
+                       }],
+                        features: [{
+                            ftype: 'searching',
+                            minChars: 2,
+                            mode: 'local'
+                        }],
+                        listeners: {
+                            beforerender: {
+                                fn: 'setConfigGridsStore',
+                                config: {
+                                    pageSize: 1000,
+                                    storeId: 'productlinetr', 
+                                   
+                                    proxy: {
+                                        url: 'gmpapplications/getGmpInspectionLineDetails'
+                                    }
+                                },
+                                isLoad: false
+                            },
+                            afterrender:function(grid){
+                                    grid.getStore().load();
+                            }
+                        },
+                        columns: [{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'product_line_name',
+                            text: 'DOSAGE FORM (line type)',
+                            flex: 1
+                        }, {
+                            xtype: 'gridcolumn',
+                            dataIndex: 'product_line_category',
+                            tdCls:'wrap-text',
+                            text: 'PRODUCT CATEGORY',
+                            flex: 1
+                        }, {
+                            xtype: 'gridcolumn',
+                            dataIndex: 'product_line_description',
+                            tdCls:'wrap-text',
+                            text: 'Dosage Form Description',
+                            flex: 1
+                        },{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'block',tdCls:'wrap-text',
+                            text: 'BLOCK',
+                            flex: 1
+                        },{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'activities',
+                            text: 'MANUFACTURING ACTIVITY',
+                            flex: 2,
+                            tdCls: 'wrap-text'
+                        }],
+                       bbar: [{
+                           xtype: 'pagingtoolbar',
+                           width: '60%',
+                           displayInfo: true,
+                           displayMsg: 'Showing {0} - {1} of {2} total records',
+                           emptyMsg: 'No Records',
+                      
+                           beforeLoad: function() {
+                               var grid = this.up('grid'),
+                                   store= grid.getStore(),
+                                   manufacturing_site_id = grid.down('hiddenfield[name=manufacturing_site_id]').getValue();
+                                   block_id = grid.down('hiddenfield[name=block_id]').getValue();
+                                  
+                                   store.removeAll();
+                                   store.getProxy().extraParams = {
+                                    site_id: manufacturing_site_id,
+                                    block_id:block_id
+                                          
+                                   };
+                           }
+                       },'->']
+                   }
+            //,
+           //         {
+           //          xtype:'grid',
+           //          height: 200,
+           //          width: '100%',
+           //          bind: {
+           //              title: 'Conditions to be fulfilled'
+           //          },
+           //          features: [{
+           //              ftype: 'searching',
+           //              minChars: 2,
+           //              mode: 'local'
+           //          }],
+           //          tbar:[{
+           //               xtype: 'hiddenfield',
+           //               name:'variationsummary_guidelinesconfig_id',
+           //               bind: {
+           //                   value: '{record.variationsummary_guidelinesconfig_id}'
+           //               }
+           //           }],
+           //           listeners: {
+           //              beforerender: {
+           //                  fn: 'setConfigGridsStore',
+           //                  config: {
+           //                      pageSize: 1000,
+           //                      storeId: 'variationsupportingdatastr', 
+           //                      proxy: {
+           //                          url: 'commonparam/getVariationConditionsDetails',
+           //                          extraParams: {
+           //                              table_name: 'par_variationsupporting_datadocs'
+           //                          }
+           //                      }
+           //                  },
+           //                  isLoad: false
+           //              },
+           //              afterrender:function(grid){
+           //                      grid.getStore().load();
+           //              }
+           //          },
+           //          columns: [{
+           //              xtype: 'gridcolumn',
+           //              dataIndex: 'id',
+           //              text: 'code/Number',
+           //              flex: 0.2,
+           //              tdCls: 'wrap-text'
+           //          },  {
+           //              xtype: 'gridcolumn',
+           //              dataIndex: 'name',
+           //              text: 'Conditions',
+           //              flex: 1,
+           //              tdCls: 'wrap-text'
+           //          }],
+           //          bbar: [{
+           //              xtype: 'pagingtoolbar',
+           //              width: '60%',
+           //              displayInfo: true,
+           //              displayMsg: 'Showing {0} - {1} of {2} total records',
+           //              emptyMsg: 'No Records',
+                      
+           //              beforeLoad: function() {
+           //                  var grid = this.up('grid'),
+           //                      store= grid.getStore(),
+           //                      variationsummary_guidelinesconfig_id = grid.down('hiddenfield[name=variationsummary_guidelinesconfig_id]').getValue();
+           //                      store.removeAll();
+           //                      store.getProxy().extraParams = {
+           //                       variationsummary_guidelinesconfig_id: variationsummary_guidelinesconfig_id,
+                                       
+           //                      };
+           //              }
+           //          },'->']
+
+           //      }
+
+           ]
+        }
+       
+   }]
 });
+
+

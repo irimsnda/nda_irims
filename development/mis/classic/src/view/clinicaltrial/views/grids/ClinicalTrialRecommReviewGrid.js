@@ -115,19 +115,36 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialRecommReviewGrid',
     columns: [{
         xtype: 'gridcolumn',
         dataIndex: 'assessment_recomm',
-        text: 'Assessment Recommendation',
+        text: 'Assessment  Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'audit_recomm',
+        hidden:true,
         text: 'Audit Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'tc_recomm',
-        text: 'TC Recommendation',
+        text: 'Peer Review Recommendation',
         flex: 1
-    }, {
+    },  {
+        xtype: 'widgetcolumn',
+        width: 150,
+        widget: {
+            width: 150,
+            textAlign: 'left',
+            xtype: 'button',
+            ui: 'soft-red',
+            text: 'Recommendation',
+            iconCls: 'x-fa fa-retweet',
+            handler: 'showTcRecommendation',
+            childXtype: 'clinicaltrialtcrecommendationpnl',
+            winTitle: 'Committee Recommendation',
+            winWidth: '70%',
+            stores: '["tcrecommendationdecisionsstr"]'
+        }
+    },{
         text: 'Options',
         xtype: 'widgetcolumn',
         width: 90,
@@ -141,21 +158,13 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialRecommReviewGrid',
                 xtype: 'menu',
                 items: [
                     {
-                        text: 'Committee Recommendation',
-                        iconCls: 'x-fa fa-retweet',
-                        handler: 'showTcRecommendation',
-                        childXtype: 'clinicaltrialtcrecommendationpnl',
-                        winTitle: 'Committee Recommendation',
-                        winWidth: '70%',
-                        stores: '["tcrecommendationdecisionsstr"]'
-                    },
-                    {
-                        text: 'Assessment Report',
+                        text: 'Request for Additional Information',
                         iconCls: 'x-fa fa-file-pdf-o',
                         handler: 'showApplicationQueries'
                     },
                     {
                         text: 'Audit Report',
+                        hidden:true,
                         iconCls: 'x-fa fa-file-pdf-o',
                         handler: 'showApplicationChecklists'
                     },

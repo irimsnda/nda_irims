@@ -11,7 +11,7 @@ Ext.define('Admin.view.gmpapplications.views.dashboards.MedDevicesGmpSchedulingD
         {
             xtype: 'hiddenfield',
             name: 'section_id',
-            value: 4
+            value: 5
         },
         {
             xtype: 'inspectionschedulingpnl'

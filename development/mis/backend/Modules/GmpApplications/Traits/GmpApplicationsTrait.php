@@ -91,17 +91,18 @@ trait GmpApplicationsTrait
         $process_id = $request->input('process_id');
         $table_name = $request->input('table_name');
         $user_id = $this->user_id;
-        $table_name = $request->input('table_name');
+        $table_name = returnTableNamefromModule($table_name,$module_id);
         
-			if($table_name == ''){
-				$table_name = getSingleRecordColValue('modules', array('id' => $module_id), 'table_name');
-				$table_name = $table_name;
+			// if($table_name == ''){
+			// 	$table_name = getSingleRecordColValue('modules', array('id' => $module_id), 'table_name');
+			// 	$table_name = $table_name;
 				
-			}
+			// }
         //todo: get application details
         $application_details = DB::table($table_name)
             ->where('id', $application_id)
             ->first();
+        //dd($application_details);
         if (is_null($application_details)) {
             $res = array(
                 'success' => false,

@@ -113,36 +113,118 @@ Ext.define('Admin.view.gmpapplications.views.forms.LTRFrm', {
                     name: 'tin_no'
                 },
                 {
+                    xtype: 'combo',
+                    fieldLabel: 'Country',
+                    name: 'link_country_id',
+                    store: 'countriesstr',
+                    forceSelection: true,
+                    hidden:true,
+                    queryMode: 'local',
+                    valueField: 'id',
+                    readOnly: true,
+                    displayField: 'name',
+                    listeners: {
+                        beforerender: function () {
+                            var store = this.store;
+                            store.removeAll();
+                            store.load();
+                        }
+                    }
+                },
+                {
+                    xtype: 'combo',
+                    fieldLabel: 'Region',
+                    name: 'link_region_id',
+                    store: 'regionsstr',
+                    hidden:true,
+                    forceSelection: true,
+                    queryMode: 'local',
+                    valueField: 'id',
+                    readOnly: true,
+                    displayField: 'name',
+                    listeners: {
+                        beforerender: function () {
+                            var store = this.store;
+                            store.removeAll();
+                            store.load();
+                        }
+                    }
+                },
+                {
+                    xtype: 'combo',
+                    fieldLabel: 'District',
+                    name: 'link_district_id',
+                    readOnly: true,
+                    hidden:true,
+                    store: 'districtsstr',
+                    forceSelection: true,
+                    queryMode: 'local',
+                    valueField: 'id',
+                    displayField: 'name',
+                    listeners: {
+                        beforerender: function () {
+                            var store = this.store;
+                            store.removeAll();
+                            store.load();
+                        }
+                    }
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'Registration No',
+                    readOnly: true,
+                    name: 'link_premise_reg_no'
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'Permit No',
+                    readOnly: true,
+                    name: 'link_permit_no'
+                },
+
+                {
                     xtype: 'textfield',
                     fieldLabel: 'Physical Address',
                     readOnly: true,
-                    name: 'ltr_physical_address'
+                    name: 'link_physical_address'
                 },
                 {
                     xtype: 'textfield',
                     readOnly: true,
+                    hidden:true,
                     fieldLabel: 'Postal Address',
-                    name: 'ltr_postal_address'
+                    name: 'link_postal_address'
                 },
                 {
                     xtype: 'textfield',
                     readOnly: true,
                     fieldLabel: 'Telephone',
-                    name: 'ltr_telephone'
+                    name: 'link_telephone'
                 },
                 {
                     xtype: 'textfield',
                     fieldLabel: 'Fax',
+                    hidden:true,
                     readOnly: true,
-                    name: 'ltr_fax'
+                    name: 'link_fax'
                 },
                 {
                     xtype: 'textfield',
                     fieldLabel: 'Email',
                     readOnly: true,
-                    name: 'ltr_email'
+                    hidden:true,
+                    name: 'link_email'
+                },
+                {
+                    xtype: 'textfield',
+                    readOnly: true,
+                    hidden:true,
+                    fieldLabel: 'Website',
+                    name: 'link_website'
                 }
             ]
         }
     ]
 });
+
+

@@ -98,6 +98,111 @@ class RevenuemanagementController extends Controller
     
         
     }
+
+     public function getApplicationPaymentDetails(Request $request)
+    {
+        $application_id = $request->input('application_id');
+        $application_code = $request->input('application_code');
+        $invoice_no = $request->input('invoice_no');
+        $applicant_id = $request->applicant_id;
+        $receipt_number = $request->receipt_number;
+        $date_to = $request->date_to;
+        $date_from = $request->date_from;
+        $is_report = $request->is_report;
+        try {
+            if(!$invoice_no & $is_report != 1){
+                $res = array(
+                    'success' => true,
+                    'results' => [],
+                    'message' => 'Please share the invoice with the Customer'
+                );
+            }
+            else{
+                $qry = DB::table('tra_payments as t1')
+                    ->leftJoin('par_payment_modes as t2', 't1.payment_mode_id', '=', 't2.id')
+                    ->leftJoin('par_currencies as t3', 't1.currency_id', '=', 't3.id')
+                    ->leftJoin('par_receipt_types as t4', 't1.receipt_type_id', '=', 't4.id')
+                    ->select(DB::raw("t1.*,t2.name as payment_mode,t3.name as currency,t4.name as receipt_type, t1.amount_paid*exchange_rate as equivalent_paid"));
+
+                if(validateIsNumeric($invoice_no)){
+                    $qry->where('t1.invoice_no', $invoice_no);
+                }
+                if(validateIsNumeric($application_code)){
+                    $qry->where('t1.application_code', $application_code);
+                }
+                //for rpeort
+                if(validateIsNumeric($applicant_id)){
+                    $qry->where('t1.applicant_id', $applicant_id);
+                }
+                if(validateIsNumeric($receipt_number)){
+                    $qry->where('t1.receipt_no', $receipt_number);
+                }
+                if(isset($date_to) & $date_to != ''){
+                    $qry->whereDate('t1.trans_date','<', $date_to);
+                }
+                if(isset($date_from) & $date_from != ''){
+                    $qry->whereDate('t1.trans_date', '>', $date_from);
+                }
+                $results = $qry->get();
+                $res = array(
+                    'success' => true,
+                    'results' => $results,
+                    'message' => 'All is well'
+                );
+            }
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+    public function checkInvoicePaymentsLimit(Request $request)
+    {
+        $module_id = $request->input('module_id');
+        $section_id = $request->input('section_id');
+        $currency_id = $request->input('currency_id');
+        $amount = $request->input('amount');
+        try {
+            $where = array(
+                'section_id' => $section_id,
+                'module_id' => $module_id,
+                'currency_id' => $currency_id
+            );
+            $limit_amount = DB::table('par_invoicespayments_limitsetup')
+                ->where($where)
+                ->value('limit_amount');
+            if (is_numeric($limit_amount) && $limit_amount > 1) {
+                if ($amount > $limit_amount) {
+                    $res = array(
+                        'status_code' => 2,//limit exceeded
+                        'limit_amount' => $limit_amount
+                    );
+                } else {
+                    $res = array(
+                        'status_code' => 1,//limit not exceeded
+                        'limit_amount' => $limit_amount
+                    );
+                }
+            } else {
+                $res = array(
+                    'status_code' => 3,//limit not set
+                    'limit_amount' => $limit_amount
+                );
+            }
+        } catch (\Exception $exception) {
+            $res = array(
+                'status_code' => 4,//error
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'status_code' => 4,//error
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+    }
     public function getApplicationReferenceCodes($application_details)
     {
          

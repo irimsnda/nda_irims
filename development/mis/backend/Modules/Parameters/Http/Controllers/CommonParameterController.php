@@ -23,6 +23,8 @@ use Modules\Parameters\Entities\Locations\SubCounty;
 use Modules\Parameters\Entities\Locations\City;
 use Modules\Parameters\Entities\PortalParameter;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class CommonParameterController extends BaseController
 {
@@ -537,7 +539,7 @@ class CommonParameterController extends BaseController
         return response()->json($res);
     }
 
-      public function getCommonParamFromTable(Request $request)
+    public function getCommonParamFromTable(Request $request)
     {
         $table_name = $request->input('table_name');
         $strict_mode = $request->input('strict_mode');
@@ -548,6 +550,7 @@ class CommonParameterController extends BaseController
         if (isset($con) && $con != '') {
             $db_con = $con;
         }
+       
         $filters = (array)json_decode($filters);
         $filters=array_filter($filters);
         
@@ -555,15 +558,43 @@ class CommonParameterController extends BaseController
             if($table_name == 'par_business_types'){
                 $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')
-                        ->whereIn('id',[1,2,4])
+                        //->whereIn('id',[1,2,4])
                         ->select('t1.*');
-            } else if($table_name == 'pms_program_details'){
+            } else if($table_name == 'par_premise_districts'){
+                 $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->select('t1.*');
+
+            }
+
+            else if($table_name == 'par_premise_regions' && isset($filters['district_id'])){
+                 $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->leftJoin('par_premise_district_region as t2','t1.id', 't2.region_id')
+                            ->select('t1.*')
+                            ->where('t2.district_id', $filters['district_id']);
+
+            }
+            
+
+             else if($table_name == 'pms_program_details'){
                  $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')
                         //->join('par_sections as t2','t1.section_id','=','t2.id')
                         ->select('t1.*');
 
             }
+            // else if ($table_name == 'par_importexport_product_range') {
+            //     $qry = DB::connection($db_con)
+            //             ->table($table_name . ' as t1')
+            //             ->leftJoin('par_importexport_productrange_details as t2', 't1.id', '=', 't2.importexport_product_range_id')
+            //             ->leftJoin('tra_importexport_applications as t3', function ($join) {
+            //                 $join->on('t3.id', '=', 't2.application_id');
+            //             })
+            //             ->select('t1.name as importexport_product_range_id');
+            // }
+            
+            
              else if($table_name == 'par_inspection_types'){
                 $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')

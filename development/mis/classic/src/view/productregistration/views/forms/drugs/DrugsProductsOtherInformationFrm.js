@@ -113,6 +113,17 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsOtherI
 
         
     },{
+        xtype: 'otherregisterdproductapigrid',
+         autoScroll:true,
+        title: 'Registered Products with Same API'
+        
+    },
+    {
+        xtype: 'inspectioninothercountriesGrid',
+         autoScroll:true,
+        title: 'Ongoing Application for Products with Same API'
+        
+    },{
         xtype: 'inspectioninothercountriesGrid',
          autoScroll:true,
         title: 'GMP inspection from other countries'

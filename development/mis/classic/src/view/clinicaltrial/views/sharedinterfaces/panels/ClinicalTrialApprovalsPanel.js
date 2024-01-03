@@ -13,6 +13,7 @@ Ext.define('Admin.view.clinicaltrial.views.sharedinterfaces.panels.ClinicalTrial
             title: 'Meeting Details',
             region: 'north',
             height: 170,
+            hidden:true,
             xtype: 'meetingdetailsfrm'
         },
         {
@@ -27,6 +28,7 @@ Ext.define('Admin.view.clinicaltrial.views.sharedinterfaces.panels.ClinicalTrial
             xtype: 'tcmeetingparticipantsgrid',
             region: 'west',
             width: 400,
+            hidden:true,
             collapsed: true,
             collapsible: true,
             titleCollapse: true

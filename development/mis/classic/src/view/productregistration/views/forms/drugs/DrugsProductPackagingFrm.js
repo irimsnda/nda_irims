@@ -124,16 +124,64 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductPackagi
                 isLoad: true
             }
         }
-    }, {
-        xtype: 'textfield',
-        name: 'retail_packaging_size',
-        allowBlank:true,
-        fieldLabel:'Retail Pack Size (No Of Units In a Pack)'  ,
-        columnwidth: 0.05
-    }],
+    },
+    //  {
+    //     xtype: 'textfield',
+    //     name: 'retail_packaging_size',
+    //     allowBlank:true,
+    //     fieldLabel:'Retail Pack Size (No Of Units In a Pack)'  ,
+    //     columnwidth: 0.05
+    // }
+    {
+                xtype:'fieldcontainer',
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.33,
+                    labelAlign: 'top'
+                },
+                items:[
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: 'No Of Units',
+                        name: 'no_of_units',
+                        allowBlank: false
+                    },{
+                        xtype: 'textfield',
+                        fieldLabel: 'No of Packs',
+                        name: 'no_of_packs',
+                        allowBlank: false
+                    },
+                    {
+                        xtype: 'combo',
+                        name: 'si_unit_id',
+                        fieldLabel: "SI Unit",
+                        queryMode: 'local',
+                        forceSelection: true,
+                        allowBlank: true,
+                        valueField: 'id',
+                        displayField: 'name',
+                        listeners: {
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 100,
+                                    proxy: {
+                                        url: 'commonparam/getCommonParamFromTable',
+                                        extraParams: {
+                                            table_name: 'par_si_units'
+                                        }
+                                    }
+                                },
+                                isLoad: true
+                            }
+                        }
+                 }
+                ]
+            } 
 
-
-
+    ],
 
     dockedItems: [{
         xtype: 'toolbar',

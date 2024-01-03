@@ -71,7 +71,7 @@ Ext.define('Admin.view.commoninterfaces.grids.ApplicationQueriesGrid', {
     export_title: 'Queries',
     bbar: [{
         xtype: 'pagingtoolbar',
-        width: '100%',
+        width: '80%',
         displayInfo: true,
         displayMsg: 'Showing {0} - {1} of {2} total records',
         emptyMsg: 'No Records',
@@ -94,7 +94,15 @@ Ext.define('Admin.view.commoninterfaces.grids.ApplicationQueriesGrid', {
                 workflow_stage_id: workflow_stage_id
             };
         }
-    }],
+    },'->',{
+        text: 'Submit Request Details',
+        ui: 'soft-red',
+        iconCls: 'fa fa-check',
+        name: 'query_submission_btn',
+        storeID: 'commonuseregistrationstr',
+        table_name: '',
+        winWidth: '50%'
+    },],
     features: [{
         ftype: 'searching',
         minChars: 2,

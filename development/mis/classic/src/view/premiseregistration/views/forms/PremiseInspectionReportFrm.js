@@ -162,6 +162,12 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseInspectionReportFr
                         margin: '30 0 0 0'
                     }
                 ]
+            }, 
+             {
+                xtype: 'textfield',
+                name: 'company_registration_no',
+                fieldLabel: 'Company Registration',
+                allowBlank: true
             },  
             {
             xtype: 'datefield',
@@ -262,10 +268,135 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseInspectionReportFr
             fieldLabel: 'State of finishing; walls, roof and floor',
             allowBlank: true
         },
-        {
+          {
+                xtype: 'fieldcontainer',
+                name:'new_room',
+                columnWidth: 1,
+                fieldLabel: 'Size of premises in square meters (indicate dimensions)',
+                layout: 'fit',
+                items:[{
+                    xtype:'grid',
+                tbar: [
+                    {
+                    xtype: 'button',
+                    text: 'Add Room Size',
+                    iconCls: 'x-fa fa-plus',
+                    name: 'new_room',
+                    ui: 'soft-green',
+                    childXtype: 'premiseroomsizeFrm',
+                    winWidth: '30%',
+                    winTitle:'Add New Room'
+                     }
+                    ],
+                    bbar: [{
+                        xtype: 'pagingtoolbar',
+                        width: '100%',
+                        displayInfo: true,
+                        displayMsg: 'Showing {0} - {1} of {2} total records',
+                        emptyMsg: 'No Records',
+                        beforeLoad: function () {
+                            var store = this.getStore(),
+                            grid = this.up('grid'),
+                            form= grid.up('form'),
+                            premise_id = Ext.ComponentQuery.query("#premisedetailsfrm")[0].down('hiddenfield[name=premise_id]').getValue();
+                            store.getProxy().extraParams = {
+                                premise_id: premise_id
+                            };
+                        }
+                    }],
+                    listeners: {
+                        beforerender: {
+                            fn: 'setPremiseRegGridsStore',
+                            config: {
+                                pageSize: 1000,
+                                storeId: 'roomsizesstr',
+                                proxy: {
+                                    url: 'premiseregistration/getPremiseRoomSizes'
+                                }
+                            },
+                            isLoad: true
+                     }
+                    },
+                        columns:[{
+                        xtype: 'gridcolumn',
+                        dataIndex: 'name',
+                        text: 'Room Name',
+                        flex: 1
+   
+                    },{
+                        xtype: 'gridcolumn',
+                        dataIndex: 'length',
+                        text: 'length(Meters)',
+                        flex: 1
+                    },{
+                        xtype: 'gridcolumn',
+                        dataIndex: 'width',
+                        text: 'width(Meters)',
+                        flex: 1
+                    },{
+                        text: 'Options',
+                        xtype: 'widgetcolumn',
+                        width: 90,
+                        widget: {
+                            width: 75,
+                            textAlign: 'left',
+                            xtype: 'splitbutton',
+                            iconCls: 'x-fa fa-th-list',
+                            ui: 'gray',
+                            menu: {
+                                xtype: 'menu',
+                                items: [{
+                                   text: 'Edit',
+                                    iconCls: 'x-fa fa-edit',
+                                    winTitle: 'Update Room Size',
+                                    childXtype: 'premiseroomsizeFrm',
+                                    winWidth: '30%',
+                                    handler: 'showEditPremiseRegParamWinFrm',
+                                    storeID: 'roomsizesstr',
+                                    stores: '[]'
+                                }, {
+                                    text: 'Delete',
+                                    iconCls: 'x-fa fa-trash',
+                                    table_name: 'tra_premise_room_sizes',
+                                    storeID: 'roomsizesstr',
+                                    action_url: 'premiseregistration/deletePremiseRegRecord',
+                                    action: 'actual_delete',
+                                    handler: 'doDeleteNonAppPremiseOtherDetailsWin'
+                             }]
+                          }
+                     }
+                },]
+                }]
+            },
+             {
+                xtype:'fieldcontainer',
+                columnWidth: 1,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.49,
+                    labelAlign: 'top'
+                },
+                items:[
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: 'Latitude',
+                        name: 'latitude',
+                        allowBlank: true
+                    },{
+                        xtype: 'textfield',
+                        fieldLabel: 'Longitude',
+                        name: 'longitude',
+                        allowBlank: true
+                    }
+                ]
+            }, 
+         {
             xtype: 'textarea',
             name: 'premise_size',
             columnWidth: 1,
+            hidden:true,
             fieldLabel: 'Size of premises in square meters (indicate dimensions)',
             allowBlank: true
         },
@@ -276,11 +407,43 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseInspectionReportFr
             fieldLabel: 'Proposed changes/adjustments to premises if any',
             allowBlank: true
         },
+
         {
-            xtype: 'textarea',
+            xtype: 'htmleditor',
+            fieldLabel: 'Storage Details',
+            columnWidth: 1,
+            hidden:true,
+            name: 'storage_details',
+            allowBlank: true
+        },
+        {
+            xtype: 'htmleditor',
+            fieldLabel: 'Type of Storage Available',
+            columnWidth: 1,
+            hidden:true,
+            name: 'storage_available',
+            allowBlank: true
+        },
+        {
+            xtype: 'htmleditor',
+            fieldLabel: 'Cold Storage Facilities(describe number and type)',
+            columnWidth: 1,
+            hidden:true,
+            name: 'cold_storage_facilities',
+            allowBlank: true
+        },
+        // {
+        //     xtype: 'textarea',
+        //     columnWidth: 1,
+        //     name: 'remarks',
+        //     fieldLabel: 'Any other comments',
+        //     allowBlank: true
+        // },
+        {
+            xtype: 'htmleditor',
+            fieldLabel: 'Comment',
             columnWidth: 1,
             name: 'remarks',
-            fieldLabel: 'Any other comments',
             allowBlank: true
         },
         {
@@ -338,6 +501,13 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseInspectionReportFr
                     isLoad: true
                 }
             }
+        }, {
+            xtype: 'htmleditor',
+            columnWidth: 1,
+            readOnly:true,
+            name: 'remarks',
+            fieldLabel: 'Any other comments',
+            allowBlank: true
         },
         {
             xtype: 'combo',
@@ -365,11 +535,119 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseInspectionReportFr
                     isLoad: true
                 }
             }
+        }
+        ]
+     },  {
+            xtype:'fieldset',
+            columnWidth: 1,
+           // hidden:true,
+            name:'regional_inspector',
+            title: 'Regional Inspector Recommendations',
+            collapsible: true,
+            defaults: {
+                labelAlign: 'top',
+                allowBlank: false,
+                labelAlign: 'top',
+                margin: 5,
+                xtype: 'textfield',
+                allowBlank: false,
+                columnWidth: 0.33,
+            },
+            layout: 'column',
+            items:[ {
+            xtype: 'combo',
+            name: 'regional_inspector_recommendation_id',
+            fieldLabel: "Regional Inspector's Recommendation",
+            queryMode: 'local',
+            forceSelection: true,
+            readOnly:true,
+            allowBlank: true,
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setParamCombosStore',
+                    config: {
+                        pageSize: 100,
+                        proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_premiseinspection_recommendations'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+            }
         },
+        
+         {
+            xtype: 'htmleditor',
+            fieldLabel: 'Comment',
+            columnWidth: 1,
+            readOnly:true,
+            name: 'regional_inspector_remarks',
+            allowBlank: true
+        }
 
+        ]
+      },
+      {
+            xtype:'fieldset',
+            columnWidth: 1,
+            //hidden:true,
+            name:'chiefregional_inspector',
+            title: 'Chief Regional Inspector Recommendations',
+            collapsible: true,
+
+            defaults: {
+                labelAlign: 'top',
+                allowBlank: false,
+                labelAlign: 'top',
+                margin: 5,
+                xtype: 'textfield',
+                allowBlank: false,
+                columnWidth: 0.33,
+            },
+            layout: 'column',
+            items:[ {
+            xtype: 'combo',
+            name: 'chiefregional_inspector_recommendation_id',
+            fieldLabel: "Chief Regional Inspector's Recommendation",
+            queryMode: 'local',
+            readOnly:true,
+            forceSelection: true,
+            allowBlank: true,
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setParamCombosStore',
+                    config: {
+                        pageSize: 100,
+                        proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_premiseinspection_recommendations'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+            }
+        },
+        
+         {
+            xtype: 'htmleditor',
+            fieldLabel: 'Comment',
+            columnWidth: 1,
+            readOnly:true,
+            name: 'chiefregional_inspector_remarks',
+            allowBlank: true
+        },
         {
             xtype: 'textfield',
-            fieldLabel: "Report By",
+            fieldLabel: "Recommended By",
             readOnly:true,
             name: 'report_by',
             },
@@ -380,9 +658,10 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseInspectionReportFr
             altFormats: 'Y-m-d H:i:s|Y-m-d',
             name: 'report_date',
             readOnly:true,
-            fieldLabel: 'Report Submitted on',
+            fieldLabel: 'Report Recommended on',
             allowBlank: false
             }
+
         ]
      }
         

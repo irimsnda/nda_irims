@@ -125,6 +125,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialManagerMeetingGrid
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
+        hidden:true,
         text: 'Audit Recommendation',
         flex: 1
     }, {
