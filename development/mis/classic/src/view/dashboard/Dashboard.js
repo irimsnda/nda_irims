@@ -79,7 +79,7 @@ Ext.define('Admin.view.main.MainController', {
             // we don't add it to the card layout.
             if (existingItem) {
                 // We don't have a newView, so activate the existing view.
-                if (existingItem !== lastView) {
+            if (existingItem !== lastView) {
                     mainLayout.setActiveItem(existingItem);
                 }
                 newView = existingItem;

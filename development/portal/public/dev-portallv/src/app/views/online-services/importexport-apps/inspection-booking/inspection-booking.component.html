@@ -43,10 +43,11 @@
             [zoneData] ="zoneData"  
             [module_id] ="module_id"  
             [application_code] ="application_code"  
+            [declaration_application_code] = "declaration_application_code"
             [ispremisesSearchWinVisible] ="ispremisesSearchWinVisible"  
             [registered_premisesData] ="registered_premisesData"  
-            [modeOfTransportData] ="modeOfTransportData"  
-
+            [modeOfTransportData] ="modeOfTransportData" 
+            [productImportationCategoryData] = "productImportationCategoryData" 
             
             [issenderreceiverSearchWinVisible] ="issenderreceiverSearchWinVisible"  
             [consignee_sendertitle] ="consignee_sendertitle"  
@@ -68,17 +69,17 @@
             
             <button type="button" (click)="onSaveImportExportApplication()"
                class="btn btn-primary  pull-right"
-              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Proceed to Consignment Products Details</button>
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
 
           </div>
         
       </wizard-step>
-      <wizard-step stepTitle="Consignment Product Selection " navigationSymbol="Step 2"  (stepEnter)="validateApplicationDetails($event)" class="wizardStep-height">
+      <!--  <wizard-step stepTitle="Consignment Product Selection " navigationSymbol="Step 2"  (stepEnter)="validateApplicationDetails($event)" class="wizardStep-height">
         <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
           <button type="button" class="btn btn-primary" previousStep>&nbsp;<i
               class="fa fa-angle-double-left"></i>Previous
             Application Details</button>
-            <!-- [disabled] ="isprodnextdisable"-->
+       [disabled] ="isprodnextdisable"
           <button type="button" class="btn btn-primary"
             (click)="funcValidatePermitProductDetails('Add Permit Product Details to proceed',2)">Next Documents
             Upload &nbsp;<i class="fa fa-angle-double-right"></i></button>
@@ -116,16 +117,109 @@
               class="fa fa-angle-double-left"></i>Previous
             Application Details</button>
             
-            <!-- [disabled] ="isprodnextdisable"-->
+             [disabled] ="isprodnextdisable"
           <button type="button" class="btn btn-primary" 
             (click)="funcValidatePermitProductDetails('Add Permit Product Details to proceed',2)">Next Documents
             Upload &nbsp;<i class="fa fa-angle-double-right"></i></button>
         </div>
+      </wizard-step> -->
+
+       <wizard-step stepTitle="Product Details" navigationSymbol="Step 2"   class="wizardStep-height">
+        <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
+          <button type="button" class="btn btn-primary" previousStep>&nbsp;<i
+              class="fa fa-angle-double-left"></i>Previous
+            Application Details</button>
+            <!-- [disabled] ="isprodnextdisable"-->
+          <!-- <button type="button" class="btn btn-primary"
+            (click)="funcValidateStepDetails('Add Permit Product Details to proceed',2)">Next Documents
+            Upload &nbsp;<i class="fa fa-angle-double-right"></i></button>
+        </div> -->
+        <button type="button" class="btn btn-primary  pull-right" style="margin:5px;" nextStep>Go
+                  to next step<i
+                  class="fa fa-angle-double-right"></i></button>
+                  </div>
+        <app-permit-productsdetails  [permitProductsData] ="permitProductsData"  
+            [isPermitproductsPopupVisible] ="isPermitproductsPopupVisible" 
+            [declaredProductsData] = "declaredProductsData" 
+            [isBatchPopupVisible] = "isBatchPopupVisible"
+            [registeredProductsData] ="registeredProductsData" 
+            [permitDrugDetailsData] ="permitDrugDetailsData" 
+            [isPermitproductsAddPopupVisible] ="isPermitproductsAddPopupVisible"  
+            [confirmDataParam] ="confirmDataParam"  
+            [premisesOtherDetailsRows] ="premisesOtherDetailsRows" 
+            [is_regulatedproducts] ="is_regulatedproducts"   
+            [productCategoryData] ="productCategoryData"  
+            [deviceTypeData] ="deviceTypeData"  
+            [packagingUnitsData] ="packagingUnitsData"  
+            [siUnitsData]="siUnitsData"
+            [weightsUnitData] ="weightsUnitData"  
+            [currencyData] ="currencyData" 
+            [proforma_currency_id] ="proforma_currency_id" 
+            [verificationData] = "verificationData"
+            [dosageFormData] = "dosageFormData"
+            [countries] ="countries"  
+            [permitProductsFrm] ="permitProductsFrm"  
+            [productGeneraldetailsfrm] ="productGeneraldetailsfrm"  
+            [classificationData] ="classificationData"  
+            [commonNamesData] ="commonNamesData"   
+            [application_code] ="application_code" 
+            [declaration_application_code] = "declaration_application_code"
+            [product_category_id] = "product_category_id"
+            [importation_reason_id] = "importation_reason_id" 
+            [enabled_newproductadd] ="enabled_newproductadd"   
+            [sub_module_id] ="sub_module_id"   
+            [tracking_no] ="tracking_no"   
+            [module_id] ="module_id"   
+            [module_id] ="module_id"   
+            [section_id] ="section_id"   
+            
+            >
+            </app-permit-productsdetails>
+        <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
+          <button type="button" class="btn btn-primary" previousStep>&nbsp;<i
+              class="fa fa-angle-double-left"></i>Previous
+            Application Details</button>
+            
+            <!-- [disabled] ="isprodnextdisable"-->
+         <!--  <button type="button" class="btn btn-primary" 
+            (click)="funcValidatePermitProductDetails('Add Permit Product Details to proceed',2)">Next Documents
+            Upload &nbsp;<i class="fa fa-angle-double-right"></i></button> -->
+            <button type="button" class="btn btn-primary  pull-right" style="margin:5px;" nextStep>Go
+                  to next step<i
+                  class="fa fa-angle-double-right"></i></button>
+        </div>
       </wizard-step>
-      <wizard-step stepTitle="Documents" navigationSymbol="Step 3"  class="wizardStep-height" (stepEnter)="validateProdApplicationDetails($event)">
+       <wizard-step stepTitle="Documents" navigationSymbol="Step 3"  class="wizardStep-height" >
         <div class="wizard-divbottom">
-          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Permit
+          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>
             Products Details</button>
+          <!-- <button type="button" class="btn btn-primary"
+            (click)="funcValidatePermitDocumentsDetails(3)">Next
+            Application Submission<i class="fa fa-angle-double-right"></i></button> -->
+            <button type="button" class="btn btn-primary  pull-right" style="margin:5px;" nextStep>Go
+                  to next step<i
+                  class="fa fa-angle-double-right"></i></button>
+
+        </div>
+        <div class=" wizard-content">
+          <app-application-documents [section_id] ="section_id"  [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-application-documents>
+        </div>
+        <div class="wizard-divbottom">
+          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>
+            Products Details</button>
+          <!-- <button type="button" class="btn btn-primary"
+            (click)="funcValidatePermitDocumentsDetails(3)">Next
+            Application Submission<i class="fa fa-angle-double-right"></i></button> -->
+            <button type="button" class="btn btn-primary  pull-right" style="margin:5px;" nextStep>Go
+                  to next step<i
+                  class="fa fa-angle-double-right"></i></button>
+
+        </div>
+
+      </wizard-step>
+      <!-- <wizard-step stepTitle="Documents" navigationSymbol="Step 3"  class="wizardStep-height" (stepEnter)="validateProdApplicationDetails($event)">
+        <div class="wizard-divbottom">
+          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Inspection Details</button>
           <button type="button" class="btn btn-primary"
             (click)="funcValidatePermitDocumentsDetails(3)">Next
             Application Submission<i class="fa fa-angle-double-right"></i></button>
@@ -135,15 +229,14 @@
           <app-application-documents [section_id] ="section_id"  [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-application-documents>
         </div>
         <div class="wizard-divbottom">
-          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Permit
-            Products Details</button>
+          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Inspection Details</button>
           <button type="button" class="btn btn-primary"
             (click)="funcValidatePermitDocumentsDetails(3)">Next
             Application Submission<i class="fa fa-angle-double-right"></i></button>
 
         </div>
 
-      </wizard-step>
+      </wizard-step> -->
       <wizard-step stepTitle="Completion & Submission"  (stepEnter)="validateSubmissionApplicationDetails($event)" navigationSymbol="Submit" >
         
         <form [formGroup]="onApplicationSubmissionFrm" class="col-lg-12 row div-nopadding wizard-content" style="background: #fff;" enctype="multipart/form-data" role="form" (ngSubmit)="onPermitsApplicationSubmit()">
@@ -156,10 +249,10 @@
               </ul>
           </div>
           
-          <div class="col-lg-12">
+          <!-- <div class="col-lg-12">
             <b> <label>Submission Comments(Optional)</label></b>
               <dx-text-area formControlName="submission_comments" placeholder="Enter Comments(optional)"></dx-text-area>
-          </div>
+          </div> -->
           <div class="col-lg-12">
             <dx-check-box text="Agree to the Declaration" [value]="undefined"
               (onValueChanged)="submissionsTermscheckbox($event)">
@@ -170,7 +263,7 @@
             <button class="btn btn-primary" type="button" previousStep>Previous Step</button>
             
             <button class="btn btn-primary" type="button" [disabled]="!termscheckbox"
-              (click)="onPermitsApplicationSubmit()">Submit Consignment Inspection Booking</button>
+              (click)="onPermitsApplicationSubmit()">Submit Inspection Booking</button>
           </div>
 </form>
       </wizard-step>

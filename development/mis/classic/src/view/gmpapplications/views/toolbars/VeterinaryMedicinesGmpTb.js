@@ -104,7 +104,7 @@ Ext.define('Admin.view.gmpapplications.views.toolbars.VeterinaryMedicinesGmpTb',
                         app_type: 39
                     },
                     {
-                        text: 'Drugs  Alteration',
+                        text: 'Drugs  Variation',
                         iconCls: 'x-fa fa-check',
                         handler:'showGmpApplicationWorkflow',
                         wrapper_xtype: 'drugsgmpdashwrapper',

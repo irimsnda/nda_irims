@@ -3,8 +3,9 @@
  */
 Ext.define('Admin.view.gmpapplications.views.grids.GmpProductLineSelectionGrid', {
     extend: 'Admin.view.gmpapplications.views.grids.ProductLineAbstractGrid',
-    controller: 'gmpapplicationsvctr',
     xtype: 'gmpproductlineselectiongrid',
+    controller: 'gmpapplicationsvctr',
+    xtype: 'gmpproductlineProductLinkageDetails',
     autoScroll: true,
     autoHeight: true,
     height: 500,

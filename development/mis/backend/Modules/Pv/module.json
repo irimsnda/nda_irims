@@ -7,5 +7,7 @@
     "providers": [
         "Modules\\Pv\\Providers\\PvServiceProvider"
     ],
-    "files": []
+    "aliases": {},
+    "files": [],
+    "requires": []
 }

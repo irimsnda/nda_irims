@@ -186,7 +186,7 @@ Ext.define('Admin.view.gmpapplications.views.panels.alteration.AltGmpOnlinePrevi
                     step: 2,
                     iconCls: 'fa fa-suitcase',
                     enableToggle: true,
-                    text: 'PRODUCT LINES DETAILS',
+                    text: 'MANUFACTURING ACTIVITY(S) DETAILS',
                     action: 'quickNav',
                     name: 'line_details',
                     handler: 'quickNavigationOnlineCancelAlt'

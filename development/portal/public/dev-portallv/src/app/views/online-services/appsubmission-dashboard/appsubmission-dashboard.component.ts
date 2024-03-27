@@ -415,29 +415,29 @@ funcViewApplicationProcessing(data) {
             this.app_data =  resp_data.data;
             switch (this.module_id) {
                 case 1:
-                  this.report_url = this.mis_url+'reports/generateProductRegCertificate?application_code='+this.app_data.application_code+"&product_id="+this.app_data.product_id+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_product_applications";
+                  this.report_url = this.mis_url+'reports/getReportUrl?application_code='+this.app_data.application_code+"&product_id="+this.app_data.product_id+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_product_applications";
                     break;
                 case 2:
-                    this.report_url = this.mis_url+'reports/generatePremiseCertificate?application_code='+this.app_data.application_code+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_premises_applications";
+                    this.report_url = this.mis_url+'reports/getReportUrl?application_code='+this.app_data.application_code+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_premises_applications";
                     break;
                 case 3:
-                  this.report_url = this.mis_url+'reports/generateGmpCertificate?application_code='+this.app_data.application_code+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_gmp_applications";
+                  this.report_url = this.mis_url+'reports/getReportUrl?application_code='+this.app_data.application_code+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_gmp_applications";
                   
                     break;
                 case 4:
-                  this.report_url = this.mis_url+'reports/genenerateImportExportPermit?application_code='+ this.app_data.application_code+"&module_id="+ this.app_data.module_id+"&sub_module_id="+ this.app_data.sub_module_id+"&table_name=tra_importexport_applications";
+                  this.report_url = this.mis_url+'reports/getReportUrl?application_code='+ this.app_data.application_code+"&module_id="+ this.app_data.module_id+"&sub_module_id="+ this.app_data.sub_module_id+"&table_name=tra_importexport_applications";
                     break;
                     case 7:
-                      this.report_url =   this.mis_url+'reports/generateClinicalTrialCertificate?application_code='+this.app_data.application_code+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_clinical_trial_applications";
+                      this.report_url =   this.mis_url+'reports/getReportUrl?application_code='+this.app_data.application_code+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_clinical_trial_applications";
                   break;
                    case 15:
-                    this.report_url =   this.mis_url+'reports/generateDisposalpermit?application_code='+this.app_data.application_code+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_disposal_applications";
+                    this.report_url =   this.mis_url+'reports/getReportUrl?application_code='+this.app_data.application_code+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_disposal_applications";
                   break;
                   case 12:
-                    this.report_url =  this.mis_url+'reports/genenerateImportExportPermit?application_code='+this.app_data.application_code+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_importexport_applications";
+                    this.report_url =  this.mis_url+'reports/getReportUrl?application_code='+this.app_data.application_code+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_importexport_applications";
                 break;
                 case 14:
-                  this.report_url =  this.mis_url+'reports/generatePromotionalRegCertificate?application_code='+this.app_data.application_code+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_promotion_adverts_applications";
+                  this.report_url =  this.mis_url+'reports/getReportUrl?application_code='+this.app_data.application_code+"&module_id="+this.app_data.module_id+"&sub_module_id="+this.app_data.sub_module_id+"&table_name=tra_promotion_adverts_applications";
               break;
                 default:
                   this.toastr.error("The application process route has not been mapped, contact SUpport Team!!", 'Alert!');
@@ -461,7 +461,7 @@ funcViewApplicationProcessing(data) {
     
 }funcPrintApplicationInvoice(app_data){
 
-  let report_url = this.mis_url+'reports/generateApplicationInvoice?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name="+app_data.table_name;
+  let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name="+app_data.table_name;
   this.funcGenerateRrp(report_url,"Application Invoice")
   
 }

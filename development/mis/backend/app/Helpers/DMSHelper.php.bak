@@ -1277,7 +1277,6 @@ class DMSHelper
                     'created_by' => $trader_email,
                     'created_on' => Carbon::now());
 
-
                 $response = insertRecord('tra_application_documentstypedefination', $dmsapp_data, $trader_email, 'mysql');
                 $record = (object)$dmsapp_data;
 

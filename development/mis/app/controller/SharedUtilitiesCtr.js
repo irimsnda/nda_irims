@@ -44,8 +44,18 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'saveApplicationApprovalDetails'
             },
 
+            'batchdrugdhopinspectiontecommfrm button[name=btn_preminsprecommendation]': {
+                click: 'doSaveBatchInspectionRecommendationDetails'
+            },
+             'meetingGroupSelectionGrid': {
+                itemdblclick: 'onMeetingGroupSelectionListDblClick'
+            },
+
             'inspectionscaparequestsgrid': {
                 refresh: 'addApplicationIdCodeParams'
+            },
+            'multitransitionsgrid': {
+                refresh: 'addGridApplicationIdCodeParams'
             },
             
             'transitionsgrid': {
@@ -61,9 +71,34 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 refresh: 'addApplicationIdCodeParams'
             },
 
+             'clinicaltrialstaffgrid': {
+                refresh: 'addApplicationIdCodeParams'
+            },
+
+            'clinicaltrialnonclinicaldetailsgrid': {
+                refresh: 'addApplicationIdCodeParams'
+            },
+
+
+            'clinicalcomparatorproductsgrid': {
+                refresh: 'addApplicationIdCodeParams'
+            },
+
+            'impProductshandlinggrid': {
+                refresh: 'addApplicationIdCodeParams'
+            },
+
+
             'impproductsgrid': {
                 refresh: 'addApplicationIdCodeParams'
             },
+
+
+            'clinicalplaceboproductsgrid': {
+                refresh: 'addApplicationIdCodeParams'
+            },
+
+
             'sampledetailsgrid': {
                 refresh: 'addApplicationIdCodeParams'
             },'samplenonstructuredetailsgrid': {
@@ -138,6 +173,12 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'premiseManagerMeetingGrid button[action=process_returnsubmission_btn]': {
                 click: 'showGridApplicationReturnSubmissionWinGeneric'
             },
+
+            'promotionmaterialsmanagerevaluationgrid button[action=process_returnsubmission_btn]': {
+                click: 'showGridApplicationReturnSubmissionWinGeneric'
+            },
+
+
             'gmponlinescreeninggrid': {
                 refresh: 'refreshOnlineScreeningChecklistItemsGrid'
             },
@@ -173,6 +214,17 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'applicationdocuploadsgrid': {
                 refresh: 'refreshApplicationDocUploadsGrid'
             },
+
+            'qualityassessmentapplicationdocuploadsgrid': {
+                refresh: 'refreshApplicationDocUploadsGrid'
+            },
+
+            'bioequivalencetrialinformationapplicationdocuploadsgrid': {
+                refresh: 'refreshApplicationDocUploadsGrid'
+            },
+
+
+
             'gmpprovisionalinspectionpanel button[name=save_btn]': {
                 click: 'saveApplicationChecklistDetails'
             },
@@ -197,6 +249,11 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
 
             'newpremiseinspectionpanel button[name=save_screening_btn]': {
+                click: 'saveApplicationChecklistDetails'
+            },
+
+
+            'prepresiapremiseinspectionpanel button[name=save_screening_btn]': {
                 click: 'saveApplicationChecklistDetails'
             },
 
@@ -357,16 +414,6 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
-            'vcnonlicencedpermitreleaseapproval': {
-                refresh: 'addApplicationWorkflowParams',
-                moveRowTop: 'moveSelectedRecordRowToTop'
-            },
-
-            'importvcreleaseapproval': {
-                refresh: 'addApplicationWorkflowParams',
-                moveRowTop: 'moveSelectedRecordRowToTop'
-            },
-
 
             'gmpinspectionreportsreviewgrid': {
                 refresh: 'addApplicationWorkflowParams',
@@ -380,6 +427,19 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
+
+
+            'gmpnewmanagerreviewgrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+            'gmpcustomerconfirmationgrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+
             'gmpinspectionschedulinggrid': {
                 refresh: 'addApplicationWorkflowParams'
             },
@@ -534,6 +594,12 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'gmpmanagerevaluation': {
                 afterrender: 'prepareManagersInterfaceGeneric'
             },
+
+            //  'pvDetailsFrm': {
+            //     beforerender: 'prepareInterfaceBasedonConfig'
+            // },
+
+
             'gmpmanagerreview': {
                 afterrender: 'prepareManagersInterfaceGeneric'
             },
@@ -562,6 +628,26 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
 
+            'pvReviewRcSchedulingPnl button[name=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+             'importexportpoemanagersubmissionpnl button[name=submit_selected]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'importexportpoeevaluationpnl button[name=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'pvExportImportPnl button[name=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+             'pvReviewRcMeetingPnl button[name=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
             'onlineimpexportmanagersubmissionpnl button[action=process_submission_btn]': {
                 click: 'showOnlineManagerApplicationSubmissionWinGeneric'
             },
@@ -583,16 +669,11 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'importexportpermitreleasepnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
+             'importexportdeclarationmanagersubmission button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+            
             'importexportmanagersubmissionpnl button[action=process_submission_btn]': {
-                click: 'showManagerApplicationSubmissionWinGeneric'
-            },
-            'vcnonlicencedmanagersubmissionpnl button[action=process_submission_btn]': {
-                click: 'showManagerApplicationSubmissionWinGeneric'
-            },
-            'importexportdirectorapprovalpnl button[action=process_submission_btn]': {
-                click: 'showManagerApplicationSubmissionWinGeneric'
-            },
-            'importexportlicenceddirectorapprovalpnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
             'importexportproductsvalidationpnl button[action=process_submission_btn]': {
@@ -690,6 +771,16 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'gmpaltmanagerreviewgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
+
+             'gmpnewmanagerreviewgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'gmpcustomerconfirmationgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+
             'gmpevaluationpanel button[name=process_submission_btn]': {
                 click: 'showApplicationSubmissionWithoutValidationWin'
             },
@@ -723,6 +814,19 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'newpremiseinspectionpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
+
+
+
+            'gmpgprcmeetingrecommendationpanel button[name=comments_btn]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+            'singlegmpapprovalpanel button[name=comments_btn]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+
+
             'renewpremiseinspectionpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
@@ -767,15 +871,18 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'clinicaltrialauditingpanel toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
+
             'importexportlicencevaluationpnl toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
-            'importexportnonlicencevaluationpnl toolbar menu menuitem[name=prev_comments]': {
-                click: 'showApplicationCommentsWin'
-            },
+
 
 
             'newdrugshopinspectionpanel toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+            'prepresiapremiseinspectionpanel toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
 
@@ -788,6 +895,11 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'newpremiseevaluationpanel toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
+
+            'importexportlicencevaluationpnl toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
             'renewpremiseevaluationpanel toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
@@ -959,9 +1071,23 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'showApplicationDocUploadWin'
             },
 
+            'productqualityassessmentDocUploadsGrid button[name=add_upload]': {
+                click: 'showApplicationDocUploadWin'
+            },
+
+            'productbioequivalencetrialinformationDocUploadsGrid button[name=add_upload]': {
+                click: 'showApplicationDocUploadWin'
+            },
+           
             'unstructureddocumentuploadsgrid button[name=add_upload]': {
                 click: 'showUnstructuredDocUploadWin'
             },
+
+
+            'pvguidelinesdocumentuploadsgrid button[name=add_upload]': {
+                click: 'showUnstructuredDocUploadWin'
+            },
+
 
             'productappealapprovalgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
@@ -995,12 +1121,25 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'gmptcmeetingrecommendationgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationMeetingSubmissionWinGeneric'
             },
-            'gmptcmeetingrecommendationpanel button[name=process_submission_btn]': {
-                click: 'showManagerApplicationMeetingSubmissionWinGeneric'
-            },
+
+
+            // 'gmptcmeetingrecommendationpanel button[name=process_submission_btn]': {
+            //     click: 'showManagerApplicationMeetingSubmissionWinGeneric'
+            // },
+
+
             'newProductTcMeetingpnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationMeetingSubmissionWinGeneric'
             },
+
+            'pvReviewPeerSchedulingPnl button[name=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+             'pvReviewPeerMeetingPnl button[name=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+            
             'newProductTcMeetingpnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationMeetingSubmissionWinGeneric'
             },
@@ -1019,7 +1158,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'newPremiseTcapprovalReviewMeetingpnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
-
+        
+           'pvManagerAllocationPnl button[name=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
 
 
             'clinicaltrialmanagermeetinggrid button[action=process_returnsubmission_btn]': {
@@ -1027,7 +1169,20 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
             'clinicaltrialmanagermeetinggrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationMeetingSubmissionWinGeneric'
-            },'clinicaltrialrecommreviewgrid button[action=process_submission_btn]': {
+            },
+
+
+            'preclinicaltrialmanagermeetinggrid button[action=process_returnsubmission_btn]': {
+                click: 'showGridApplicationReturnSubmissionWinGeneric'
+            },
+            'preclinicaltrialmanagermeetinggrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationMeetingSubmissionWinGeneric'
+            },
+
+
+
+
+            'clinicaltrialrecommreviewgrid button[action=process_submission_btn]': {
                 click: 'showManagerRecommendationApplicationMeetingSubmissionWinGeneric'
             },
             'clinicaltrialapprovalsgrid button[action=process_returnsubmission_btn]': {
@@ -1075,6 +1230,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
 
             'unstructureddocumentuploadsgrid': {
+                refresh: 'refreshunstructureddocumentuploadsgrid'
+            },
+
+             'pvguidelinesdocumentuploadsgrid': {
                 refresh: 'refreshunstructureddocumentuploadsgrid'
             },
 
@@ -1130,15 +1289,6 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'impexppermitsmanagerevaluationgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
-
-            'impexpvcnonlicencedmanagerevaluationgrid': {
-                refresh: 'addApplicationWorkflowParams',
-                moveRowTop: 'moveSelectedRecordRowToTop'
-            },
-
-            'impexpvcnonlicencedmanagerevaluationgrid button[action=process_submission_btn]': {
-                click: 'showManagerApplicationSubmissionWinGeneric'
-            },
             'importexportqueryverificationgrid button[action=process_submission_btn]': {
                 click: 'showManagerQueryApplicationSubmissionWin'
             },
@@ -1174,6 +1324,13 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
+
+            'promotionmaterialsdirectorreviewgrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+
             
             'promotionandadvertqueryverificationgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
@@ -1202,12 +1359,15 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'newdrugshopinspectionpanel button[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
-            'importexportlicencevaluationpnl button[name=prev_comments]': {
+
+            'prepresiapremiseinspectionpanel toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
-            'importexportnonlicencevaluationpnl button[name=prev_comments]': {
+
+            'prepresiapremiseinspectionpanel button[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
+
 
 
             'predrugshopinspectionpanel toolbar menu menuitem[name=prev_comments]': {
@@ -1218,7 +1378,9 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'showApplicationCommentsWin'
             },
 
-
+            'importexportlicencevaluationpnl button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
 
             'promotionmaterialevaluationcontentpanel button[name=docs_btn]': {
                 click: 'showApplicationUploads'
@@ -1228,7 +1390,13 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
             'promotionmaterialsmanagerreviewgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
-            }, 'promotionandadvertqueryverificationgrid button[action=process_submission_btn]': {
+            }, 
+
+             'promotionmaterialsdirectorreviewgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            }, 
+
+            'promotionandadvertqueryverificationgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
 
@@ -1280,6 +1448,14 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 refresh: 'tCMMeetingSchedulingRefreshGrid'
             },
 
+
+            'preclinicaltrialmanagermeetinggrid': {
+                refresh: 'tCMMeetingSchedulingRefreshGrid'
+            },
+
+
+            
+
             'gmptcmeetingrecommendationgrid': {
                 refresh: 'tCMMeetingSchedulingRefreshGrid',
                 moveRowTop: 'moveSelectedRecordRowToTop'
@@ -1304,11 +1480,7 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             }, 'foodsamplereceivingwizard button[name=save_screening_btn]': {
                 click: 'saveApplicationChecklistDetails'
             },
-            
             'importexportreceivingpermitswizard button[name=save_screening_btn]': {
-                click: 'saveApplicationChecklistDetails'
-            },
-            'importexportreceivinglicencewizard button[name=save_screening_btn]': {
                 click: 'saveApplicationChecklistDetails'
             },
             'drugnewevaluationpnl button[name=save_evaluationchecklist]': {
@@ -1393,12 +1565,78 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'controldrugsimppermitapprovalpnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
+
+
+            'importexportlicenceddirectorapprovalpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'vcnonlicencedpermitreleaseapprovalpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'importexportvcapprovalpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+             'importexportdeclarationevaluationpnl button[name=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+
+             'importexportnonlicenceapprovalpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'importexportdirectorapprovalpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'vcnonlicencedmanagersubmissionpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
             
             'controlleddrugsreceivingpermitswizard button[name=prechecking_recommendation]': {
                 click: 'addPrecheckingRecommendation'
-            }, 'controldrugsimpevaluationpnl button[name=prev_comments]': {
+            }, 
+            'controldrugsimpevaluationpnl button[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
+
+
+            'importexportnonlicencevaluationpnl button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+             'promotionadvertsscreeningdocpanel button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+            'promotionadvertsevaluationdocpanel button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+            'promotionandadvertsmanagerreviewpanel button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+            'promotionandadvertsdirectorreviewpanel button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+            'promotionandadvertscommunicationpanel button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+            'promotionandadvertapprovalspanel button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+             'promotionadvertsauditingdocpanel button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+            
             'onlinealtdrugproductreceivingwizard button[name=save_screening_btn]': {
                 click: 'saveOnlineApplicationChecklistDetails'
             },
@@ -1516,6 +1754,11 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'applicationunstructuredqueriesgrid': {
                 refresh: 'refreshapplicationunstructuredqueriesgrid'
             },
+
+            'applicationinternalqueriesgrid': {
+                refresh: 'refreshapplicationinternalqueriesgridd'
+            },
+
             'productqueryapprovalgrid': {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
@@ -1535,6 +1778,7 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'promoadvertonlinepreviewwizard button[name=submit_btn]': {
                 click: 'receiveOnlineApplicationDetailsFrmBtn'
             },
+
 
 
             'newpremiseonlinepreviewwizard menu menuitem[name=action_dismiss1]': {
@@ -1581,9 +1825,7 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'impexplicenseonlinereceivingwizard button[name=prechecking_recommendation]': {
                 click: 'addPrecheckingRecommendation'
             },
-            'importexportlicenseonlinereceivingwizard button[name=prechecking_recommendation]': {
-                click: 'addPrecheckingRecommendation'
-            },
+            
             'declaredimportexportonlinereceivingwizard button[name=prechecking_recommendation]': {
                 click: 'addPrecheckingRecommendation'
             },
@@ -1607,11 +1849,6 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'impexplicenseonlinereceivingwizard button[name=submit_btn]': {
                 click: 'receiveOnlineApplicationDetailsFrmBtn'
             }, 
-            'importexportlicenseonlinereceivingwizard button[name=submit_btn]': {
-                click: 'receiveOnlineApplicationDetailsFrmBtn'
-            },
-
-            
             
             'declaredimportexportonlinereceivingwizard button[name=submit_btn]': {
                 click: 'receiveOnlineApplicationDetailsFrmBtn'
@@ -1632,16 +1869,11 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             }, 
             'importexportpermitapprovalpnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
-            },'importexportvcapprovalpnl button[action=process_submission_btn]': {
-                click: 'showManagerApplicationSubmissionWinGeneric'
-            },'vcnonlicencedpermitreleaseapprovalpnl button[action=process_submission_btn]': {
-                click: 'showManagerApplicationSubmissionWinGeneric'
+
             },'permitdeclarationapprovalreleasepnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
-            'importexportnonlicenceapprovalpnl button[action=process_submission_btn]': {
-                click: 'showManagerApplicationSubmissionWinGeneric'
-            },
+
             'importexportpermitapprovalgrid': {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
@@ -1741,9 +1973,6 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },'permitReleaseRecommFrm button[name=save_recommendation]': {
                 click: 'savepermitReleaseRecommendation'
             },
-            'batchpermitreleaserecommfrm button[name=save_recommendation]': {
-                click: 'saveImpExpApplicationRecommendationDetails'
-            },
 
             'foodevaluationpnl  toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
@@ -1755,10 +1984,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'importexportpermitevaluationpnl button[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
-            'vcnonlicencedevaluationpnl button[name=prev_comments]': {
+
+            'importexportnonlicencevaluationpnl button[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
-
 
             'specialcaseapplicationapprovalgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
@@ -1804,7 +2033,23 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'showApplicationCommentsWin'
             }, 'promotionadvertsevaluationdocpanel  toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
-            },'clinicaltrialauditingpanel toolbar menu menuitem[name=prev_uploads]': {
+            },
+            'promotionadvertsauditingdocpanel  toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+            'promotionandadvertsmanagerreviewpanel  toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+            'promotionandadvertsdirectorreviewpanel  toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+            'promotionadvertsscreeningdocpanel  toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+            'clinicaltrialauditingpanel toolbar menu menuitem[name=prev_uploads]': {
            //     click: 'showPreviousUploadedDocs'
             },'productCertificateReleasePnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
@@ -1879,7 +2124,13 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
             'batchproductapprovalrecommfrm button[name=save_recommendation]': {
                 click: 'saveApplicationApprovalDetails'
-            },'newgmponlinepreviewwizard button[name=receive_invoicebtn]': {
+            },
+
+            'batchpremiseapprovalrecommfrm button[name=save_recommendation]': {
+                click: 'savePremiseApplicationApprovalDetails'
+            },
+
+            'newgmponlinepreviewwizard button[name=receive_invoicebtn]': {
                 click: 'receiveAndInvoiceOnlineApplicationDetailsFrmBtn'
             },'onlinealtdrugproductreceivingwizard button[name=receive_invoicebtn]': {
                 click: 'receiveAndInvoiceOnlineApplicationDetailsFrmBtn'
@@ -1999,6 +2250,32 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
 
+            'siapremisemanagerevaluationgrid': {
+                refresh: 'addDrugShopApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+            'siapremisemanagerevaluationgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'predrugshopbatchchiefinspectiongrid': {
+                refresh: 'addDrugShopApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+            'predrugshopbatchchiefinspectiongrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'drugshopbatchchiefinspectiongrid': {
+                refresh: 'addDrugShopApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+            'drugshopbatchchiefinspectiongrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            
+
             'predrugshopmanagerevaluationgrid': {
                 refresh: 'addDrugShopApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
@@ -2006,6 +2283,19 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'predrugshopmanagerevaluationgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             }, 
+
+
+
+             'presiapremisemanagerevaluationgrid': {
+                refresh: 'addDrugShopApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+            'presiapremisemanagerevaluationgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            }, 
+
+
+            
 
 
             'drugshopapprovalsgrid': {
@@ -2020,6 +2310,19 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
 
 
+            'siapremiseapprovalsgrid': {
+                refresh: 'addDrugShopApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+            
+
+            'siapremiseapprovalsgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+            
+
+
             'predrugshopapprovalsgrid': {
                 refresh: 'addDrugShopApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
@@ -2030,6 +2333,20 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'predrugshopapprovalsgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
+
+
+
+
+            'presiapremiseapprovalsgrid': {
+                refresh: 'addDrugShopApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+            
+
+            'presiapremiseapprovalsgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
             
 
 
@@ -2038,10 +2355,38 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
 
+            'drugshopcommunicationsgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'siapremisecommunicationsgrid': {
+                refresh: 'addDrugShopApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+            'siapremisecommunicationsgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+            
+
             'predrugshopcommunicationsgrid': {
                 refresh: 'addDrugShopApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
+            'predrugshopcommunicationsgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+             'presiapremisecommunicationsgrid': {
+                refresh: 'addDrugShopApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+
+            'presiapremisecommunicationsgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+            
+
 
              'newdrugshoponlinepreviewwizard button[name=submit_btn]': {
                 click: 'receiveOnlineApplicationDetailsFrmBtn'
@@ -2159,7 +2504,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 showReinspectionRequestswin:'showReinspectionRequestswin',
                 showRejectionDetailsRequestswin:'showRejectionDetailsRequestswin',
                 doSaveappdatamigrationrequest:'doSaveappdatamigrationrequest',
-                doUploadappdatamigrationrequest:'doUploadappdatamigrationrequest'
+                doUploadappdatamigrationrequest:'doUploadappdatamigrationrequest',
+                viewApplicationRecommendationLogs:'viewApplicationRecommendationLogs',
+                previewApplicationProcessingTransitions:'previewApplicationProcessingTransitions',
+                renderParameterMenu:'renderParameterMenu',
 
             }
         }
@@ -2228,6 +2576,22 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 }
             });
         }
+    },
+
+viewApplicationRecommendationLogs:function(btn) {
+        var button = btn.up('button'),
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            grid = Ext.widget('applicationRecommendationLogGrid');
+      
+       
+        grid.down('hiddenfield[name=application_code]').setValue(application_code);
+        grid.down('hiddenfield[name=module_id]').setValue(module_id);
+        
+        funcShowCustomizableWindow('Findings Recommendations', '60%', grid, 'customizablewindow', btn);
+        
     },
     doUploadappdatamigrationrequest: function (btn) {
         var me = this,
@@ -2604,6 +2968,8 @@ showApplicationEvaluationUploads:function(btn){
                 if (success == true || success === true) {
                     toastr.success(message, 'Success Response');
                     win.close();
+                    closeActiveWindow();   
+
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -2868,12 +3234,17 @@ setCompStore: function (me, options) {
         var child = Ext.widget(btn.childXtype);
         child.down('hiddenfield[name=application_code]').setValue(application_code);
         funcShowCustomizableWindow(btn.winTitle, btn.winWidth, child, 'customizablewindow');
-    }, showManagerApplicationSubmissionWinGeneric: function (btn) {
+    }, 
+
+    showManagerApplicationSubmissionWinGeneric: function (btn) {
         Ext.getBody().mask('Please wait...');
         var mainTabPanel = this.getMainTabPanel(),
             winWidth = btn.winWidth,
+            isApprovalSubmission = btn.isApprovalSubmission,
             activeTab = mainTabPanel.getActiveTab(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
@@ -2882,17 +3253,185 @@ setCompStore: function (me, options) {
             is_dataammendment_request =0,
             storeID = getApplicationStore(module_id, section_id),
             table_name = getApplicationTable(module_id);
+            if(btn.up('grid')){
+              grid = btn.up('grid'); 
+            }else{
+            grid = btn.up('panel').down('grid');
+            }
+            var sm = grid.getSelectionModel(),
+            selected_records = sm.getSelection();
+            var selected_appcodes = [];
+            var selected_appIds = [];
+
+            // console(grid):
+            //  if(grid)
+            //  if (selected_appcodes.length===0 || selected_appcodes.length==0) {
+            //     console.log(selected_appcodes);
+            //     Ext.getBody().unmask();
+            //     toastr.error('Please ensure you have selected application(s) to proceed!!', 'Warning Response');
+            //     throw 'BreakLoopException'; // Throw an exception to break out of the loop
+            // }
+            // }
+
+            // Assuming selected_records is an array of records
+            try {
+                Ext.each(selected_records, function (item) {
+                    selected_appcodes.push(item.data.application_code);
+                    selected_appIds.push(item.data.active_application_id);
+                    if (isApprovalSubmission) {
+                        var decision_id = item.data.decision_id;
+                        // release_recommendation_id=item.data.release_recommendation_id;//import export
+                        if (!decision_id) {
+                            Ext.getBody().unmask();
+                            toastr.error('Please ensure all selected applications have an approval decision to proceed!!', 'Warning Response');
+                            throw 'BreakLoopException'; // Throw an exception to break out of the loop
+                        }
+                    }
+
+                    if (btn.isLicenseApprovalSubmission) {
+                        var release_recommendation_id = item.data.release_recommendation_id;
+                        // release_recommendation_id=item.data.release_recommendation_id;//import export
+                        if (!release_recommendation_id) {
+                            Ext.getBody().unmask();
+                            toastr.error('Please ensure all selected applications have an approval decision to proceed!!', 'Warning Response');
+                            throw 'BreakLoopException'; // Throw an exception to break out of the loop
+                        }
+                    }
+                });
+            }catch (e) {
+                if (e === 'BreakLoopException') {
+                    return false; 
+                } else {
+                    throw e;
+                }
+            }
+             var isPopupSubmission = validateIsPopupSubmission(workflow_stage_id);
+
             if(activeTab.down('hiddenfield[name=is_dataammendment_request]')){
                 is_dataammendment_request =activeTab.down('hiddenfield[name=is_dataammendment_request]').getValue();
             }
             
         if (valid == true || valid === true) {
-            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth, storeID,'','','',workflow_stage_id,is_dataammendment_request);
+
+             if(!isPopupSubmission){
+                this.directWorkflowSubmission(mainTabPanel,activeTab,table_name,selected_appcodes,selected_appIds,application_code,application_id,workflow_stage_id,process_id,module_id,sub_module_id,section_id);
+            }else{
+               showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth, storeID,'','','',workflow_stage_id,is_dataammendment_request);
+            }
          
         } else {
             Ext.getBody().unmask();
         }
-    },showOnlineManagerApplicationSubmissionWinGeneric: function (btn) {
+    },
+
+     directWorkflowSubmission: function (mainTabPanel,activeTab,table_name,selected_appcodes,selected_appIds,application_code,application_id,workflow_stage_id,process_id,module_id,sub_module_id,section_id) {
+         var workflowaction_type_id = 1, 
+            intrayStore = Ext.getStore('intraystr'),
+            outtrayStore = Ext.getStore('outtraystr'),
+            onlineapplicationdashboardgridstr= Ext.getStore('onlineapplicationdashboardgridstr');  
+          Ext.Ajax.request({
+            url: 'workflow/getApplicationNextStageActionDetails',
+            method: 'POST',
+            params: {
+                application_code:application_code,
+                application_id:application_id,
+                workflow_stage_id:workflow_stage_id,
+                workflowaction_type_id:workflowaction_type_id,
+                table_name : table_name,
+                module_id:module_id,
+                sub_module_id:sub_module_id
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+            },
+            success: function (response) {
+               
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message,
+                    success = resp.success;
+                    if (success == true || success === true) {
+                        var results = resp.results,
+                            curr_stage_id = results.stage_id,
+                            action = results.action_id, 
+                            next_stage = results.nextstage_id;
+                          
+                         Ext.getBody().unmask();  
+                        Ext.MessageBox.confirm('Application Submission', 'Do you want to submit selected Application(s)?', function (button) {
+                            if (button === 'yes') {
+                                Ext.getBody().mask('Submitting Application wait...');
+                                Ext.Ajax.request({
+                                    url: 'workflow/handleManagersApplicationSubmissions',
+                                    method: 'POST',
+                                    params: {
+                                        selected:JSON.stringify(selected_appIds),
+                                        selected_appCodes:JSON.stringify(selected_appcodes),
+                                        application_code:application_code,
+                                        application_id:application_id,
+                                        process_id:process_id,
+                                        workflowaction_type_id:workflowaction_type_id,
+                                        table_name : table_name,
+                                        module_id:module_id,
+                                        sub_module_id:sub_module_id,
+                                        section_id:section_id,
+                                        curr_stage_id:curr_stage_id,
+                                        next_stage:next_stage,
+                                        action:action
+                                    },
+                                    headers: {
+                                        'Authorization': 'Bearer ' + access_token,
+                                        'X-CSRF-Token': token
+                                    },
+                                    success: function (response) {
+                                       
+                                        var resp = Ext.JSON.decode(response.responseText),
+                                            message = resp.message,
+                                            success = resp.success;
+                                            if (success == true || success === true) {
+                                                toastr.success(message, "Success Response");
+                                                //store.load();
+                                                intrayStore.load();
+                                                outtrayStore.load();
+                                                externaluserintraystr = Ext.getStore('externaluserintraystr');
+                                                externaluserintraystr.load();
+                                                //onlineapplicationdashboardgridstr.load();
+                                                //win.close();
+                                                closeActiveWindow() ;
+                                                mainTabPanel.remove(activeTab);
+                                                
+                                            } Ext.getBody().unmask();
+                                    },
+                                    failure: function (response) {
+                                                
+                                                var resp = Ext.JSON.decode(response.responseText),
+                                                    message = resp.message;
+                                                toastr.error(message, 'Failure Response');
+                                                Ext.getBody().unmask();
+                                    }
+                                });
+                            }
+                        })
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                Ext.getBody().unmask();
+            },
+            failure: function (response) {
+                
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+                Ext.getBody().unmask();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
+                
+            }
+        });
+    },
+
+    showOnlineManagerApplicationSubmissionWinGeneric: function (btn) {
         Ext.getBody().mask('Please wait...');
         var mainTabPanel = this.getMainTabPanel(),
             winWidth = btn.winWidth,
@@ -3123,31 +3662,33 @@ setCompStore: function (me, options) {
             Ext.getBody().unmask();
         }
     },
-    showManagerApplicationSubmissionWinGeneric: function (btn) {
-        Ext.getBody().mask('Please wait...');
-        var mainTabPanel = this.getMainTabPanel(),
-            winWidth = btn.winWidth,
-            activeTab = mainTabPanel.getActiveTab(),
-            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
-            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
-            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
-            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
-            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
-            valid = true,
-            is_dataammendment_request =0,
-            storeID = getApplicationStore(module_id, section_id),
-            table_name = getApplicationTable(module_id);
-            if(activeTab.down('hiddenfield[name=is_dataammendment_request]')){
-                is_dataammendment_request =activeTab.down('hiddenfield[name=is_dataammendment_request]').getValue();
-            }
+    // showManagerApplicationSubmissionWinGeneric: function (btn) {
+    //     Ext.getBody().mask('Please wait...');
+    //     var mainTabPanel = this.getMainTabPanel(),
+    //         winWidth = btn.winWidth,
+    //         activeTab = mainTabPanel.getActiveTab(),
+    //         module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+    //         section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+    //         application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+    //         application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+    //         workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+    //         valid = true,
+    //         is_dataammendment_request =0,
+    //         storeID = getApplicationStore(module_id, section_id),
+    //         table_name = getApplicationTable(module_id);
+    //         if(activeTab.down('hiddenfield[name=is_dataammendment_request]')){
+    //             is_dataammendment_request =activeTab.down('hiddenfield[name=is_dataammendment_request]').getValue();
+    //         }
             
-        if (valid == true || valid === true) {
-            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth, storeID,'','','',workflow_stage_id,is_dataammendment_request);
+    //     if (valid == true || valid === true) {
+    //         showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth, storeID,'','','',workflow_stage_id,is_dataammendment_request);
          
-        } else {
-            Ext.getBody().unmask();
-        }
-    }, showResearchOrgListGrid: function(item){
+    //     } else {
+    //         Ext.getBody().unmask();
+    //     }
+    // }, 
+
+    showResearchOrgListGrid: function(item){
         var me = this,
             childXtype = item.childXtype,
             winTitle = item.winTitle,
@@ -3222,8 +3763,8 @@ setCompStore: function (me, options) {
          payment_pnl.down('hiddenfield[name=section_id]').setValue(section_id);
         payment_pnl.down('hiddenfield[name=application_feetype_id]').setValue(application_feetype_id);
         payment_pnl.down('hiddenfield[name=fasttrack_option_id]').setValue(fasttrack_option_id);
-        payment_pnl.setHeight(650);
-        funcShowCustomizableWindow('Invoice Quotation', '75%', payment_pnl, 'customizablewindow');
+        payment_pnl.setHeight('95%');
+        funcShowOnlineCustomizableWindow('Invoice Quotation', '95%', payment_pnl, 'customizablewindow');
     }, showApplicationChecklistRevisions: function(btn){
         var mainTabPanel = this.getMainTabPanel(),
             panel = mainTabPanel.getActiveTab(),
@@ -3235,7 +3776,7 @@ setCompStore: function (me, options) {
         child.down('hiddenfield[name=application_code]').setValue(application_code);
         child.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
 
-        funcShowCustomizableWindow('Checklist Revisions', '70%', child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Checklist Revisions', '70%', child, 'customizablewindow');
     },refreshpreviousgmpdocuploadsgrid: function (me) {
 
         var grid = me.up('grid'),
@@ -3407,6 +3948,7 @@ setCompStore: function (me, options) {
     },
 
     showInspectionApplicationSubmissionWin: function (btn) {
+        console.log(77777);
         Ext.getBody().mask('Please wait...');
         var mainTabPanel = this.getMainTabPanel(),
             winWidth = btn.winWidth,
@@ -3421,7 +3963,7 @@ setCompStore: function (me, options) {
             storeID = getApplicationStore(module_id, section_id,sub_module_id),
             table_name = getApplicationTable(module_id),
             inspection_id = activeTab.down('form').down('hiddenfield[name=id]').getValue(),
-            leadInspectorDetails = inspectorsStore.findRecord('role_id', 2);
+            leadInspectorDetails = inspectorsStore.findRecord('role_id', 1);
           //  alert(application_id)
 
             extraParams = [{
@@ -3467,20 +4009,20 @@ setCompStore: function (me, options) {
         funcShowCustomizableWindow(tracking_no, '90%', onlinePanel, 'customizablewindow');
 
     },
-    funcUploadTCMeetingtechnicalDocuments:function(btn){
-        var me = this,
-        mainTabPnl = btn.up('#contentPanel'),
-        containerPnl = mainTabPnl.getActiveTab(),
 
-        grid = btn.up('grid'),
-        childXtype = btn.childXtype,
-        childXtype= Ext.widget(childXtype),
-        winTitle = btn.winTitle,
-        winWidth = btn.winWidth,
-        document_type_id = btn.document_type_id,
-        reference_table_name = btn.reference_table_name,
-        table_name = btn.table_name,
-        meeting_id = containerPnl.down('premisesinspectiondetailsfrm').down('hiddenfield[name=id]').getValue();
+     funcUploadTCMeetingtechnicalDocuments:function(btn){
+        var me = this,
+            mainTabPnl = btn.up('#contentPanel'),
+            containerPnl = mainTabPnl.getActiveTab(),
+            grid = btn.up('grid'),
+            childXtype = btn.childXtype,
+            childXtype= Ext.widget(childXtype),
+            winTitle = btn.winTitle,
+            winWidth = btn.winWidth,
+            document_type_id = btn.document_type_id,
+            reference_table_name = btn.reference_table_name,
+            table_name = btn.table_name,
+            meeting_id = containerPnl.down('hiddenfield[name=id]').getValue();
 
         if(meeting_id != ''){
             childXtype.down('hiddenfield[name=document_type_id]').setValue(document_type_id);
@@ -3576,6 +4118,56 @@ setCompStore: function (me, options) {
             invoice_id: invoice_id
         };
         */
+    },
+
+    onMeetingGroupSelectionListDblClick: function (view, record, item, index, e, eOpts) {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            grid = view.grid,
+            win = grid.up('window'),
+            pnl= grid.up('panel'),
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            group_id = record.get('id'),
+            meeting_id = pnl.down('hiddenfield[name=meeting_id]').getValue(),
+            storeID = 'tcmeetingparticipantsstr',
+            store = Ext.getStore(storeID);
+            Ext.Ajax.request({
+                method: 'POST',
+                url: 'common/syncTcMeetingGroupParticipants',
+                waitMsg: 'Please wait...',
+                params: {
+                    group_id: group_id,
+                    meeting_id: meeting_id,
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token,
+                     'X-CSRF-Token': token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        success = resp.success,
+                        message = resp.message;
+                        store.removeAll();
+                        store.load();
+                        win.close();
+                    if (success == true || success === true) {
+
+                      toastr.success(message, "Success Response"); 
+                    
+                    } else {
+                        toastr.error(message, "Failure Response");
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        success = resp.success,
+                        message = resp.message;
+                    toastr.error(message, "Failure Response");
+                }
+            });
     },
     impaddInvoiceCostElement: function (sel, record) {
         var mainTabPanel = this.getMainTabPanel(),
@@ -3865,17 +4457,23 @@ setCompStore: function (me, options) {
     },
     tCMMeetingSchedulingRefreshGrid: function (me) {
         var store = me.store,
+            application_code='',
             table_name = me.table_name,
             strict_mode = me.strict_mode,
             mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             meeting_id = activeTab.down('form').down('hiddenfield[name=id]').getValue();
+            if(activeTab.down('hiddenfield[name=active_application_code]')){
+               application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(); 
+            }
+            
         store.getProxy().extraParams = {
             table_name: table_name,
             workflow_stage_id: workflow_stage_id,
             meeting_id: meeting_id,
-            strict_mode: strict_mode
+            strict_mode: strict_mode,
+            application_code:application_code
         };
     },
 
@@ -3895,6 +4493,19 @@ setCompStore: function (me, options) {
         this.fireEvent('setWorkflowGridsStore', grid, storeConfig);
     },
 
+      addGridApplicationIdCodeParams: function (me) {
+        var store = me.store,
+            grid = me.up('grid'),
+            application_code = grid.down('hiddenfield[name=application_code]').getValue();
+       
+        store.getProxy().extraParams = {
+            application_code: application_code
+        };
+
+    },
+
+    
+
     addApplicationIdCodeParams: function (me) {
        
         if(me.up('window')){
@@ -3903,12 +4514,12 @@ setCompStore: function (me, options) {
                     store = me.getStore();
 
                 if(popupview.down('hiddenfield[name=active_application_id]')){
-                    application_id = popupview.down('hiddenfield[name=active_application_id]').getValue(),
+                    var application_id = popupview.down('hiddenfield[name=active_application_id]').getValue(),
                     application_code = popupview.down('hiddenfield[name=active_application_code]').getValue();
                 }
                 else if(popupview.down('hiddenfield[name=application_id]')){
 
-                    application_id = popupview.down('hiddenfield[name=application_id]').getValue(),
+                    var application_id = popupview.down('hiddenfield[name=application_id]').getValue(),
                     application_code = popupview.down('hiddenfield[name=application_code]').getValue();
                 }else{
                     application_id = 0;
@@ -4438,7 +5049,10 @@ setCompStore: function (me, options) {
             ref_no = record.get('reference_no'),
             tracking_no = record.get('tracking_no'),
             isGeneral = record.get('is_general'),
-            view_id = record.get('view_id'),
+            view_id = record.get('view_id'),  
+            is_multi_Interface=record.get('is_multi_Interface'),
+            module_id= record.get('module_id'),
+            sub_module_id= record.get('sub_module_id'),
             html_id = record.get('destination_html_id'),
             title_suffix = ref_no;
 
@@ -4467,11 +5081,57 @@ if(html_id == 'laboratoryaccounts_receivable' || html_id == 'presample_accounts'
         }
 
 }
+else if(is_multi_Interface==1){
+    workflow_details = getAllWorkflowDetails(process_id, workflow_stage_id);
+    if (!workflow_details || workflow_details.length < 1) {
+        Ext.getBody().unmask();
+        toastr.warning('Problem encountered while fetching workflow details-->Possibly workflow not set!!', 'Warning Response');
+        return false;
+    }
+     if (!workflow_details.viewtype) {
+        Ext.getBody().unmask();
+        toastr.warning('Problem encountered while fetching workflow details-->Possibly Stage Interface not set!!', 'Warning Response');
+        return false;
+    }
+     Ext.MessageBox.show({
+                    title: 'Appication Processing',
+                    message: 'Do you want to Process Application as Single Application or Multi Applications(Batch Applications)?',
+                    buttons: Ext.Msg.YESNO,
+                    icon: Ext.window.MessageBox.INFO,
+                    buttonText: {
+                        yes: 'Single Application',
+                        no: 'Multi Apps(Batch Applications)'
+                    },
+                    fn: function(btn, text){
+                        if (btn == 'yes'){
+                            viewtype = workflow_details.viewtype;
+                            me.onViewBatchApplicationDetails(viewtype, record);
+                            
+                        }else if(btn == 'no'){
+                            if (!workflow_details.altviewtype) {
+                                Ext.getBody().unmask();
+                                toastr.warning('Problem encountered while fetching workflow details-->Possibly Stage Interface not set!!', 'Warning Response');
+                                return false;
+                           }
+                            viewtype = workflow_details.altviewtype;
+                            me.onViewBatchApplicationDetails(viewtype, record);
+                        }else{
+                            return;
+                            
+                        }
+                    },
+                });
+ }
 else{
     workflow_details = getAllWorkflowDetails(process_id, workflow_stage_id);
     if (!workflow_details || workflow_details.length < 1) {
         Ext.getBody().unmask();
         toastr.warning('Problem encountered while fetching workflow details-->Possibly workflow not set!!', 'Warning Response');
+        return false;
+    }
+     if (!workflow_details.viewtype) {
+        Ext.getBody().unmask();
+        toastr.warning('Problem encountered while fetching workflow details-->Possibly Stage Interface not set!!', 'Warning Response');
         return false;
     }
     if (!ref_no || ref_no == '' || ref_no == null) {
@@ -4499,7 +5159,7 @@ else{
         mainTabPanel.setActiveTab(tab);
     }
 
-}
+    }
 
 
         Ext.Function.defer(function () {
@@ -4508,6 +5168,50 @@ else{
         }, 300);
 
     },
+
+    onViewBatchApplicationDetails: function (viewtype,record) {
+           var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            process_id = record.get('process_id'),
+            workflow_stage_id = record.get('workflow_stage_id'),
+            workflow_stage = record.get('workflow_stage'),
+            ref_no = record.get('reference_no'),
+            tracking_no = record.get('tracking_no'),
+            isGeneral = record.get('is_general'),
+            view_id = record.get('view_id'),
+            module_id= record.get('module_id'),
+            sub_module_id= record.get('sub_module_id'),
+            html_id = record.get('destination_html_id'),
+            title_suffix = ref_no;
+        if (!ref_no || ref_no == '' || ref_no == null) {
+            title_suffix = tracking_no;
+        }
+        var tab = mainTabPanel.getComponent(view_id),
+            title = workflow_stage + '-' + title_suffix;
+            title = workflow_stage; //+ '-' + title_suffix;
+        if ((isGeneral) && (isGeneral == 1 || isGeneral === 1)) {
+            title = workflow_stage;
+            view_id = view_id + Math.floor(Math.random() * 100015);
+        }
+        if (!tab) {//
+            var newTab = Ext.widget(viewtype, {
+                title: title,
+                id: view_id,
+                closable: true
+            });
+            me.prepareApplicationBaseDetails(newTab, record);
+            mainTabPanel.add(newTab);
+            var lastTab = mainTabPanel.items.length - 1;
+            mainTabPanel.setActiveTab(lastTab);
+        } else {
+            mainTabPanel.setActiveTab(tab);
+        }
+         Ext.Function.defer(function () {
+            Ext.getBody().unmask();
+            me.updateSubmissionsTable(record, 'isRead');
+        }, 300);
+    },
+
 
     onViewReceivedApplicationDetails: function (record) {
         Ext.getBody().mask('Please wait...');
@@ -4523,6 +5227,11 @@ else{
             toastr.warning('Problem encountered while fetching workflow details-->Possibly workflow not set!!', 'Warning Response');
             return false;
         }
+         if (!workflow_details.viewtype) {
+        Ext.getBody().unmask();
+        toastr.warning('Problem encountered while fetching workflow details-->Possibly Stage Interface not set!!', 'Warning Response');
+        return false;
+       }
         var tab = mainTabPanel.items.find(function (i) {
             if (i.title.indexOf(ref_no) !== -1) {
                 return i;
@@ -4562,6 +5271,11 @@ else{
             Ext.getBody().unmask();
             toastr.warning('Problem encountered while fetching workflow details-->Possibly workflow not set!!', 'Warning Response');
             return false;
+        }
+        if (!workflow_details.viewtype) {
+        Ext.getBody().unmask();
+        toastr.warning('Problem encountered while fetching workflow details-->Possibly Stage Interface not set!!', 'Warning Response');
+        return false;
         }
         var tab = mainTabPanel.getComponent(view_id);
         /*var tab = mainTabPanel.items.find(function (i) {
@@ -4733,12 +5447,28 @@ else{
         });
     },
 
-    showApplicationTransitioning: function () {
-        var childObject = Ext.widget('transitionsgrid'),
+     showApplicationTransitioning: function () {
+        var childObject = Ext.widget('multitransitionappotherdetails'),
             mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
             ref_no = activeTab.down('displayfield[name=reference_no]').getValue();
-        funcShowCustomizableWindow(ref_no + ' Transitions', '70%', childObject, 'customizablewindow');
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue();
+
+            childObject.down('hiddenfield[name=application_code]').setValue(application_code);
+             childObject.down('hiddenfield[name=active_application_code]').setValue(application_code);
+            
+            childObject.down('hiddenfield[name=reference_no]').setValue(ref_no);
+            childObject.down('hiddenfield[name=application_id]').setValue(application_id);
+
+            var grid = childObject.down('grid');
+            grid.down('hiddenfield[name=application_code]').setValue(application_code);
+            
+            grid.down('hiddenfield[name=reference_no]').setValue(ref_no);
+            grid.down('hiddenfield[name=application_id]').setValue(application_id);
+
+            childObject.setHeight(450);
+        funcShowOnlineCustomizableWindow(ref_no + ' Transitions', '90%', childObject, 'customizablewindow');
     },
 
     showApplicationDismissalForm: function () {
@@ -5783,10 +6513,14 @@ else{
                             child.loadRecord(model);
 
                             child.down('textfield[name=drawer]').setValue(results.applicant_name);
+                            child.down('textfield[name=invoice_no]').setValue(record.get('invoice_no'));
                             child.down('hiddenfield[name=invoice_no]').setValue(record.get('invoice_no'));
                             child.down('hiddenfield[name=invoice_id]').setValue(record.get('invoice_id'));
                             child.down('combo[name=currency_id]').setValue(record.get('paying_currency_id'));
-                            funcShowCustomizableWindow(title, width, child, 'customizablewindow');
+                            child.down('numberfield[name=amount_paid]').setValue(record.get('balance'));
+                            child.down('datefield[name=date_of_invoicing]').setValue(record.get('date_of_invoicing'));
+                            //child.down('numberfield[name=amount_paid]').setValue(readOnly(true))
+                            funcShowOnlineCustomizableWindow(title, width, child, 'customizablewindow');
                         } else {
                             toastr.error(message, 'Failure Response');
                         }
@@ -6042,6 +6776,1448 @@ else{
         
     },
 
+     prepareInterfaceBasedonConfig: function(me){//me - the form
+         var frm_cont = me.up('panel'),
+            wizard = frm_cont.up('panel'),
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            premise_type_id,prodclass_category_id,importexport_permittype_id, start_index=1;
+            console.log(wizard);
+            console.log(activeTab);
+            
+        if(wizard.down('hiddenfield[name=module_id]')){
+            if(wizard.down('hiddenfield[name=module_id]').getValue()){
+                var module_id = wizard.down('hiddenfield[name=module_id]').getValue(),
+                    sub_module_id = wizard.down('hiddenfield[name=sub_module_id]').getValue(),
+                    section_id = wizard.down('hiddenfield[name=section_id]').getValue();
+                if(wizard.down('hiddenfield[name=prodclass_category_id]')){
+                    prodclass_category_id = wizard.down('hiddenfield[name=prodclass_category_id]').getValue();
+                }
+                if(wizard.down('hiddenfield[name=importexport_permittype_id]')){
+                    importexport_permittype_id = wizard.down('hiddenfield[name=importexport_permittype_id]').getValue();
+                }
+            }else{
+                var wizard = wizard.up(),
+                    module_id = wizard.down('hiddenfield[name=module_id]').getValue(),
+                    sub_module_id = wizard.down('hiddenfield[name=sub_module_id]').getValue(),
+                    section_id = wizard.down('hiddenfield[name=section_id]').getValue();
+                   
+                if(wizard.down('hiddenfield[name=prodclass_category_id]')){
+                    prodclass_category_id = wizard.down('hiddenfield[name=prodclass_category_id]').getValue();
+                }
+                if(wizard.down('hiddenfield[name=importexport_permittype_id]')){
+                    importexport_permittype_id = wizard.down('hiddenfield[name=importexport_permittype_id]').getValue();
+                }
+           }
+
+        }else if(activeTab.down('hiddenfield[name=module_id]')){
+            var mainTabPanel = this.getMainTabPanel(),
+                activeTab = mainTabPanel.getActiveTab(),
+                module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+                sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+                section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+            if(activeTab.down('hiddenfield[name=importexport_permittype_id]')){
+                    importexport_permittype_id = activeTab.down('hiddenfield[name=importexport_permittype_id]').getValue();
+                } 
+        }else{
+            var win = wizard.up('window'), module_id,sub_module_id,section_id;
+            if(win.down('hiddenfield[name=module_id]')){
+                 module_id = win.down('hiddenfield[name=module_id]').getValue();
+            }
+            if(win.down('hiddenfield[name=sub_module_id]')){
+                 sub_module_id = win.down('hiddenfield[name=sub_module_id]').getValue();
+            } 
+             if(win.down('hiddenfield[name=section_id]')){
+                 section_id = win.down('hiddenfield[name=section_id]').getValue();
+            } 
+            
+            if(win.down('hiddenfield[name=importexport_permittype_id]')){
+                    importexport_permittype_id = win.down('hiddenfield[name=importexport_permittype_id]').getValue();
+                }
+        }
+
+        if(module_id == 1 && me.down('hiddenfield[name=prodclass_category_id]') && me.down('hiddenfield[name=prodclass_category_id]').getValue()){
+            prodclass_category_id = me.down('hiddenfield[name=prodclass_category_id]').getValue();
+        }
+        else if(activeTab && module_id == 1 && activeTab.down('hiddenfield[name=prodclass_category_id]') && activeTab.down('hiddenfield[name=prodclass_category_id]').getValue()){
+            prodclass_category_id = activeTab.down('hiddenfield[name=prodclass_category_id]').getValue();
+        }
+        if(module_id == 2){
+            premise_type_id = wizard.down('hiddenfield[name=premise_type_id]').getValue();
+        }  
+        // if(module_id == 8){
+        //     report_type_id=wizard.down('hiddenfield[name=report_type_id]').getValue();
+        // } 
+        // if(sub_module_id == 2 || sub_module_id == 6){
+        //     start_index = 8;
+        // }
+        // if(sub_module_id == 8){
+        //     start_index = 5;
+        // }
+        // if(sub_module_id == 68){
+        //     start_index = 8;
+        // }
+         Ext.Ajax.request({
+                url: 'configurations/prepareInterfaceBasedonConfig',
+                params: {
+                    module_id:module_id,
+                    sub_module_id:sub_module_id,
+                    section_id:section_id,
+                    prodclass_category_id: prodclass_category_id,
+                    premise_type_id: premise_type_id,
+                    importexport_permittype_id: importexport_permittype_id
+                    // report_type_id:report_type_id
+                },
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + access_token,
+                    'X-CSRF-Token': token
+                },
+                success: function (response) {
+              
+                    var resp = Ext.JSON.decode(response.responseText),
+                        success = resp.success,
+                        message = resp.message;
+                        result = resp.results;
+                    if (success == true || success === true) {
+                        //render form
+                        for (var i = result.length - 1; i >= 0; i--) {
+                            var base_result = result[i];
+                            var field_name =  base_result.field_name;
+                            var label =  base_result.label;
+                            var is_enabled =  base_result.is_enabled;
+                            var is_mandatory =  base_result.is_mandatory;
+                            var is_readOnly =  base_result.is_readOnly;
+                            var has_relation =  base_result.has_relation;
+                            var bind_column =  base_result.bind_column;
+                            var child_combo =  base_result.child_combo;
+                            var parent_combo =  base_result.parent_combo;
+                            var xtype =  base_result.xtype;
+                            var table =  base_result.combo_table;
+                            var displayfield =  base_result.displayfield;
+                            var valuefield =  base_result.valuefield;
+                            var is_parent =  base_result.is_parent;
+                            var is_hidden =  base_result.is_hidden;
+                            var is_multiparent =  base_result.is_multiparent;
+                            var total_children =  base_result.total_children;
+                            var has_logic =  base_result.has_logic;
+                            var tpl_block =  base_result.tpl_block;
+                            var other_logic = base_result.other_logic;
+                            var def_id = base_result.def_id;
+                            var column_width = base_result.column_width;
+                            var formfield = base_result.formfield;
+
+                            
+                            if(is_mandatory == 1 ){
+                                is_mandatory = false;
+                            }else{
+                                is_mandatory = true;
+                            }
+                            if(is_hidden == 1 ){
+                                is_hidden = true;
+                            }else{
+                                is_hidden = false;
+                            }
+                            if( result[i].form_field_type_id == 6 ){
+                                if(is_multiparent){
+                                    if(is_readOnly == 1){
+                                        var configs = {
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            hidden: is_hidden,
+                                            columnWidth: column_width,
+                                            total_children: total_children,
+                                            displayField: displayfield,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            readOnly: true,
+                                            anyMatch: true,
+                                            forceSelection: true,
+                                            queryMode: 'local',
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        pageSize: 1000,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    // //console.log('rendered');
+                                                    me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                       var form = combo.up('form'),
+                                                           total_children = me.total_children;
+                                                        //console.log(me);
+                                                       for (var i = total_children - 1; i >= 0; i--) {
+                                                        //console.log(me);
+                                                          var child_combo = 'child_combo'+i,
+                                                              bind_column = 'bind_column'+i,
+                                                              store = form.down('combo[name='+me[child_combo]+']').getStore(),
+                                                              filters = JSON.stringify({[me[bind_column]]:newVal});
+                                                              
+                                                              store.removeAll();
+                                                              store.load({params:{filters:filters}});
+                                                       }
+                                                       // if(combo.has_logic == 1){
+                                                       //      eval(combo.other_logic);
+                                                       // }
+                                                     });
+                                                    if(me.has_logic == 1){
+                                                            eval(me.other_logic);
+                                                       }
+                                                    // me.fireEvent('addListenerToConfig', me);
+                                                }
+                                               
+                                            }
+                                        };
+                                    }else{
+                                        var configs = {
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            hidden: is_hidden,
+                                            total_children: total_children,
+                                            displayField: displayfield,
+                                            has_logic: has_logic,
+                                            anyMatch: true,
+                                            columnWidth: column_width,
+                                            other_logic: other_logic,
+                                            bind: {
+                                                readOnly: '{isReadOnly}' 
+                                            },
+                                            forceSelection: true,
+                                            queryMode: 'local',
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        pageSize: 1000,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    // //console.log('rendered');
+                                                    me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                       var form = combo.up('form'),
+                                                           total_children = me.total_children;
+                                                        //console.log(me);
+                                                       for (var i = total_children - 1; i >= 0; i--) {
+                                                        //console.log(me);
+                                                          var child_combo = 'child_combo'+i,
+                                                              bind_column = 'bind_column'+i,
+                                                              store = form.down('combo[name='+me[child_combo]+']').getStore(),
+                                                              filters = JSON.stringify({[me[bind_column]]:newVal});
+                                                              
+                                                              store.removeAll();
+                                                              store.load({params:{filters:filters}});
+                                                       }
+                                                       // if(combo.has_logic == 1){
+                                                       //      eval(combo.other_logic);
+                                                       // }
+                                                     });
+                                                    if(me.has_logic == 1){
+
+                                                            eval(me.other_logic);
+                                                       }
+                                                    // me.fireEvent('addListenerToConfig', me);
+                                                }
+                                               
+                                            }
+                                        };
+                                    }
+                                    
+                                    for (var i = total_children - 1; i >= 0; i--) {
+                                        var child_combo = 'child_combo'+i;
+                                        var bind_column = 'bind_column'+i;
+                                        configs[child_combo] = base_result[child_combo];
+                                        configs[bind_column] = base_result[bind_column];
+                                    }
+                                     var field = Ext.create('Ext.form.ComboBox', configs);
+                                }
+                                else if(is_parent){
+                                    if(is_readOnly==1){
+                                        var field = Ext.create('Ext.form.ComboBox',{
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            child_combo: child_combo,
+                                            bind_column: bind_column,
+                                            anyMatch: true,
+                                            hidden: is_hidden,
+                                            columnWidth: column_width,
+                                            displayField: displayfield,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            readOnly: true,
+                                            forceSelection: true,
+                                            queryMode: 'local',
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        pageSize: 1000,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    //console.log('rendered');
+                                                    me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                       var form = combo.up('form'),
+                                                        store = form.down('combo[name='+me.child_combo+']').getStore(),
+                                                        filters = JSON.stringify({[me.bind_column]:newVal});
+                                                        store.removeAll();
+                                                        store.load({params:{filters:filters}});
+                                                       //  if(combo.has_logic == 1){
+                                                       //      eval(combo.other_logic);
+                                                       // }
+                                                     });
+                                                    if(me.has_logic == 1){
+                                                            eval(me.other_logic);
+                                                       }
+                                                }
+                                               
+                                            }
+                                        });
+                                    }else{
+                                        var field = Ext.create('Ext.form.ComboBox',{
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            child_combo: child_combo,
+                                            bind_column: bind_column,
+                                            anyMatch: true,
+                                            hidden: is_hidden,
+                                            columnWidth: column_width,
+                                            displayField: displayfield,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            bind: {
+                                                readOnly: '{isReadOnly}' 
+                                            },
+                                            forceSelection: true,
+                                            queryMode: 'local',
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        pageSize: 1000,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    //console.log('rendered');
+                                                    me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                       var form = combo.up('form'),
+                                                        store = form.down('combo[name='+me.child_combo+']').getStore(),
+                                                        filters = JSON.stringify({[me.bind_column]:newVal});
+                                                        store.removeAll();
+                                                        store.load({params:{filters:filters}});
+                                                       //  if(combo.has_logic == 1){
+                                                       //      eval(combo.other_logic);
+                                                       // }
+                                                     });
+                                                    if(me.has_logic == 1){
+                                                        eval(me.other_logic);
+                                                   }
+                                                }
+                                               
+                                            }
+                                        });
+                                    }
+                                    
+                                 }else{
+                                    if(is_readOnly == 1){
+                                       var field = Ext.create('Ext.form.ComboBox',{
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            displayField: displayfield,
+                                            anyMatch: true,
+                                            hidden: is_hidden,
+                                            columnWidth: column_width,
+                                            forceSelection: true,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            queryMode: 'local',
+                                            readOnly: true,
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        pageSize: 1000,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    //console.log('rendered');
+                                                    if(me.has_logic == 1){
+                                                        // me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                        //    var form = combo.up('form');
+                                                        //     eval(combo.other_logic);
+                                                        //  });
+                                                        eval(me.other_logic);
+                                                    }
+                                                }
+                                            }
+                                        }); 
+                                    }else{
+                                        var field = Ext.create('Ext.form.ComboBox',{
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            displayField: displayfield,
+                                            hidden: is_hidden,
+                                            columnWidth: column_width,
+                                            forceSelection: true,
+                                            anyMatch: true,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            queryMode: 'local',
+                                            bind: {
+                                                readOnly: '{isReadOnly}' 
+                                            },
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        pageSize: 1000,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    //console.log('rendered');
+                                                    if(me.has_logic == 1){
+                                                        // me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                        //    var form = combo.up('form');
+                                                        //     eval(combo.other_logic);
+                                                        //  });
+                                                        eval(me.other_logic);
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+
+                            }
+                            //for filterable combo
+                            else if( result[i].form_field_type_id == 9 ){
+                                if(is_multiparent){
+                                    if(is_readOnly == 1){
+                                        var configs = {
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            hidden: is_hidden,
+                                            anyMatch: true,
+                                            pageSize: 100,
+                                            columnWidth: column_width,
+                                            total_children: total_children,
+                                            displayField: displayfield,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            readOnly: true,
+                                            tpl: eval(tpl_block),
+                                            forceSelection: false,
+                                            queryMode: 'remote',
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        pageSize: 100,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    // //console.log('rendered');
+                                                    me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                       var form = combo.up('form'),
+                                                           total_children = me.total_children;
+                                                        //console.log(me);
+                                                       for (var i = total_children - 1; i >= 0; i--) {
+                                                        //console.log(me);
+                                                          var child_combo = 'child_combo'+i,
+                                                              bind_column = 'bind_column'+i,
+                                                              store = form.down('combo[name='+me[child_combo]+']').getStore(),
+                                                              filters = JSON.stringify({[me[bind_column]]:newVal});
+                                                              
+                                                              store.removeAll();
+                                                              store.load({params:{filters:filters}});
+                                                       }
+                                                       // if(combo.has_logic == 1){
+                                                       //      eval(combo.other_logic);
+                                                       // }
+                                                     });
+                                                    if(me.has_logic == 1){
+                                                            eval(me.other_logic);
+                                                       }
+                                                    // me.fireEvent('addListenerToConfig', me);
+                                                }
+                                               
+                                            },
+                                            triggers: {
+                                                refresh: {
+                                                    weight: 1,
+                                                    cls: 'x-fa fa-search',
+                                                    handler: function () {
+                                                        // this is the ComboBox
+                                                        var filter = this.getValue();
+                                                        this.mask();
+                                                        this.getStore().reload({params:{comboFilter:filter}});
+                                                        this.unmask();
+                                                    }
+                                                }
+
+                                            }
+                                        };
+                                    }else{
+                                        var configs = {
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            hidden: is_hidden,
+                                            pageSize: 100,
+                                            total_children: total_children,
+                                            displayField: displayfield,
+                                            anyMatch: true,
+                                            has_logic: has_logic,
+                                            columnWidth: column_width,
+                                            tpl: eval(tpl_block),
+                                            other_logic: other_logic,
+                                            bind: {
+                                                readOnly: '{isReadOnly}' 
+                                            },
+                                            forceSelection: false,
+                                            queryMode: 'remote',
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        pageSize: 100,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    // //console.log('rendered');
+                                                    me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                       var form = combo.up('form'),
+                                                           total_children = me.total_children;
+                                                        //console.log(me);
+                                                       for (var i = total_children - 1; i >= 0; i--) {
+                                                        //console.log(me);
+                                                          var child_combo = 'child_combo'+i,
+                                                              bind_column = 'bind_column'+i,
+                                                              store = form.down('combo[name='+me[child_combo]+']').getStore(),
+                                                              filters = JSON.stringify({[me[bind_column]]:newVal});
+                                                              
+                                                              store.removeAll();
+                                                              store.load({params:{filters:filters}});
+                                                       }
+                                                       // if(combo.has_logic == 1){
+                                                       //      eval(combo.other_logic);
+                                                       // }
+                                                     });
+                                                    if(me.has_logic == 1){
+
+                                                            eval(me.other_logic);
+                                                       }
+                                                    // me.fireEvent('addListenerToConfig', me);
+                                                }
+                                               
+                                            },
+                                            triggers: {
+                                                refresh: {
+                                                    weight: 1,
+                                                    cls: 'x-fa fa-search',
+                                                    handler: function () {
+                                                        // this is the ComboBox
+                                                        var filter = this.getValue();
+                                                        this.mask();
+                                                        this.getStore().reload({params:{comboFilter:filter}});
+                                                        this.unmask();
+                                                    }
+                                                }
+
+                                            }
+                                        };
+                                    }
+                                    
+                                    for (var i = total_children - 1; i >= 0; i--) {
+                                        var child_combo = 'child_combo'+i;
+                                        var bind_column = 'bind_column'+i;
+                                        configs[child_combo] = base_result[child_combo];
+                                        configs[bind_column] = base_result[bind_column];
+                                    }
+                                     var field = Ext.create('Ext.form.ComboBox', configs);
+                                }
+                                else if(is_parent){
+                                    if(is_readOnly==1){
+                                        var field = Ext.create('Ext.form.ComboBox',{
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            child_combo: child_combo,
+                                            bind_column: bind_column,
+                                            hidden: is_hidden,
+                                            anyMatch: true,
+                                            tpl: eval(tpl_block),
+                                            pageSize: 100,
+                                            columnWidth: column_width,
+                                            displayField: displayfield,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            readOnly: true,
+                                            forceSelection: false,
+                                            queryMode: 'remote',
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        pageSize: 100,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    //console.log('rendered');
+                                                    me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                       var form = combo.up('form'),
+                                                        store = form.down('combo[name='+me.child_combo+']').getStore(),
+                                                        filters = JSON.stringify({[me.bind_column]:newVal});
+                                                        store.removeAll();
+                                                        store.load({params:{filters:filters}});
+                                                       //  if(combo.has_logic == 1){
+                                                       //      eval(combo.other_logic);
+                                                       // }
+                                                     });
+                                                    if(me.has_logic == 1){
+                                                            eval(me.other_logic);
+                                                       }
+                                                }
+                                               
+                                            },
+                                            triggers: {
+                                                refresh: {
+                                                    weight: 1,
+                                                    cls: 'x-fa fa-search',
+                                                    handler: function () {
+                                                        // this is the ComboBox
+                                                        var filter = this.getValue();
+                                                        this.mask();
+                                                        this.getStore().reload({params:{comboFilter:filter}});
+                                                        this.unmask();
+                                                    }
+                                                }
+
+                                            }
+                                        });
+                                    }else{
+                                        var field = Ext.create('Ext.form.ComboBox',{
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            child_combo: child_combo,
+                                            bind_column: bind_column,
+                                            hidden: is_hidden,
+                                            anyMatch: true,
+                                            tpl: eval(tpl_block),
+                                            pageSize: 100,
+                                            columnWidth: column_width,
+                                            displayField: displayfield,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            bind: {
+                                                readOnly: '{isReadOnly}' 
+                                            },
+                                            forceSelection: false,
+                                            queryMode: 'remote',
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        pageSize: 100,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    //console.log('rendered');
+                                                    me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                       var form = combo.up('form'),
+                                                        store = form.down('combo[name='+me.child_combo+']').getStore(),
+                                                        filters = JSON.stringify({[me.bind_column]:newVal});
+                                                        store.removeAll();
+                                                        store.load({params:{filters:filters}});
+                                                       //  if(combo.has_logic == 1){
+                                                       //      eval(combo.other_logic);
+                                                       // }
+                                                     });
+                                                    if(me.has_logic == 1){
+                                                        eval(me.other_logic);
+                                                   }
+                                                }
+                                               
+                                            },
+                                            triggers: {
+                                                refresh: {
+                                                    weight: 1,
+                                                    cls: 'x-fa fa-search',
+                                                    handler: function () {
+                                                        // this is the ComboBox
+                                                        var filter = this.getValue();
+                                                        this.mask();
+                                                        this.getStore().reload({params:{comboFilter:filter}});
+                                                        this.unmask();
+                                                    }
+                                                }
+
+                                            }
+                                        });
+                                    }
+                                    
+                                 }else{
+                                    if(is_readOnly == 1){
+                                       var field = Ext.create('Ext.form.ComboBox',{
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            displayField: displayfield,
+                                            hidden: is_hidden,
+                                            columnWidth: column_width,
+                                            forceSelection: false,
+                                            anyMatch: true,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            tpl: eval(tpl_block),
+                                            pageSize: 100,
+                                            queryMode: 'remote',
+                                            readOnly: true,
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        pageSize: 100,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    //console.log('rendered');
+                                                    if(me.has_logic == 1){
+                                                        // me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                        //    var form = combo.up('form');
+                                                        //     eval(combo.other_logic);
+                                                        //  });
+                                                        eval(me.other_logic);
+                                                    }
+                                                }
+                                            },
+                                            triggers: {
+                                                refresh: {
+                                                    weight: 1,
+                                                    cls: 'x-fa fa-search',
+                                                    handler: function () {
+                                                        // this is the ComboBox
+                                                        var filter = this.getValue();
+                                                        this.mask();
+                                                        this.getStore().reload({params:{comboFilter:filter}});
+                                                        this.unmask();
+                                                    }
+                                                }
+
+                                            }
+                                        }); 
+                                    }else{
+                                        var field = Ext.create('Ext.form.ComboBox',{
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            displayField: displayfield,
+                                            hidden: is_hidden,
+                                            anyMatch: true,
+                                            tpl: eval(tpl_block),
+                                            pageSize: 100,
+                                            columnWidth: column_width,
+                                            forceSelection: false,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            queryMode: 'remote',
+                                            bind: {
+                                                readOnly: '{isReadOnly}' 
+                                            },
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        pageSize: 100,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    //console.log('rendered');
+                                                    if(me.has_logic == 1){
+                                                        // me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                        //    var form = combo.up('form');
+                                                        //     eval(combo.other_logic);
+                                                        //  });
+                                                        eval(me.other_logic);
+                                                    }
+                                                }
+                                            },
+                                            triggers: {
+                                                refresh: {
+                                                    weight: 1,
+                                                    cls: 'x-fa fa-search',
+                                                    handler: function () {
+                                                        // this is the ComboBox
+                                                        var filter = this.getValue();
+                                                        this.mask();
+                                                        this.getStore().reload({params:{comboFilter:filter}});
+                                                        this.unmask();
+                                                    }
+                                                }
+
+                                            }
+                                        });
+                                    }
+                                }
+
+                            }
+                            //for grid combo
+                            else if(result[i].form_field_type_id == 7 ){
+                                if(is_multiparent){
+                                    if(is_readOnly==1){
+                                        var configs = {
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            anyMatch: true,
+                                            hidden: is_hidden,
+                                            columnWidth: column_width,
+                                            total_children: total_children,
+                                            displayField: displayfield,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            readOnly: true,
+                                            pageSize: 20,
+                                            // listConfig:{
+                                            //     minWidth:400,
+                                            //     loadingText: 'Searching...',
+                                            //     emptyText: 'No match found.', 
+                                            // },
+                                            forceSelection: true,
+                                            queryMode: 'remote',
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        // enablePaging:true,
+                                                        // remoteFilter: true,
+                                                        pageSize: 20,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    // //console.log('rendered');
+                                                    me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                       var form = combo.up('form'),
+                                                           total_children = me.total_children;
+                                                        //console.log(me);
+                                                       for (var i = total_children - 1; i >= 0; i--) {
+
+                                                          var child_combo = 'child_combo'+i,
+                                                              bind_column = 'bind_column'+i,
+                                                              store = form.down('combo[name='+me[child_combo]+']').getStore(),
+                                                              filters = JSON.stringify({[me[bind_column]]:newVal});
+                                                              
+                                                              store.removeAll();
+                                                              store.load({params:{filters:filters}});
+                                                       }
+                                                     });
+                                                    if(me.has_logic == 1){
+                                                        eval(me.other_logic);
+                                                    }
+                                                    // me.fireEvent('addListenerToConfig', me);
+                                                }
+                                               
+                                            }
+                                        };
+                                    }else{
+                                        var configs = {
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            anyMatch: true,
+                                            hidden: is_hidden,
+                                            total_children: total_children,
+                                            columnWidth: column_width,
+                                            displayField: displayfield,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            bind: {
+                                                readOnly: '{isReadOnly}' 
+                                            },
+                                            pageSize: 20,
+                                            // listConfig:{
+                                            //     minWidth:400,
+                                            //     loadingText: 'Searching...',
+                                            //     emptyText: 'No match found.', 
+                                            // },
+                                            forceSelection: true,
+                                            queryMode: 'remote',
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        // enablePaging:true,
+                                                        // remoteFilter: true,
+                                                        pageSize: 20,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    // //console.log('rendered');
+                                                    me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                       var form = combo.up('form'),
+                                                           total_children = me.total_children;
+                                                        //console.log(me);
+                                                       for (var i = total_children - 1; i >= 0; i--) {
+
+                                                          var child_combo = 'child_combo'+i,
+                                                              bind_column = 'bind_column'+i,
+                                                              store = form.down('combo[name='+me[child_combo]+']').getStore(),
+                                                              filters = JSON.stringify({[me[bind_column]]:newVal});
+                                                              
+                                                              store.removeAll();
+                                                              store.load({params:{filters:filters}});
+                                                       }
+                                                       // if(combo.has_logic == 1){
+                                                       //      eval(combo.other_logic);
+                                                       // }
+                                                     });
+                                                     if(me.has_logic == 1){
+                                                        eval(me.other_logic);
+                                                    }
+                                                    // me.fireEvent('addListenerToConfig', me);
+                                                }
+                                               
+                                            }
+                                        };
+                                    }
+                                    for (var i = total_children - 1; i >= 0; i--) {
+                                        var child_combo = 'child_combo'+i;
+                                        var bind_column = 'bind_column'+i;
+                                        configs[child_combo] = base_result[child_combo];
+                                        configs[bind_column] = base_result[bind_column];
+                                    }
+                                     var field = Ext.create('Ext.form.ComboBox', configs);
+                                }
+                                else if(is_parent){
+                                    if(is_readOnly==1){
+                                        var field = Ext.create('Ext.form.ComboBox',{
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            anyMatch: true,
+                                            valueField: valuefield,
+                                            child_combo: child_combo,
+                                            bind_column: bind_column,
+                                            columnWidth: column_width,
+                                            hidden: is_hidden,
+                                            displayField: displayfield,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            readOnly: true,
+                                            forceSelection: true,
+                                            pageSize: 20,
+                                            // listConfig:{
+                                            //     minWidth:400,
+                                            //     loadingText: 'Searching...',
+                                            //     emptyText: 'No match found.', 
+                                            // },
+                                            queryMode: 'remote',
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        // enablePaging:true,
+                                                        // remoteFilter: true,
+                                                        pageSize: 20,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    //console.log('rendered');
+                                                    me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                       var form = combo.up('form'),
+                                                        store = form.down('combo[name='+me.child_combo+']').getStore(),
+                                                        filters = JSON.stringify({[me.bind_column]:newVal});
+                                                        store.removeAll();
+                                                        store.load({params:{filters:filters}});
+                                                       //  if(combo.has_logic == 1){
+                                                       //      eval(combo.other_logic);
+                                                       // }
+                                                     });
+                                                     if(me.has_logic == 1){
+                                                        eval(me.other_logic);
+                                                    }
+                                                }
+                                               
+                                            }
+                                        });
+                                    }else{
+                                        var field = Ext.create('Ext.form.ComboBox',{
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            child_combo: child_combo,
+                                            bind_column: bind_column,
+                                            anyMatch: true,
+                                            hidden: is_hidden,
+                                            columnWidth: column_width,
+                                            displayField: displayfield,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            bind: {
+                                                readOnly: '{isReadOnly}' 
+                                            },
+                                            forceSelection: true,
+                                            pageSize: 20,
+                                            // listConfig:{
+                                            //     minWidth:400,
+                                            //     loadingText: 'Searching...',
+                                            //     emptyText: 'No match found.', 
+                                            // },
+                                            queryMode: 'remote',
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        // enablePaging:true,
+                                                        // remoteFilter: true,
+                                                        pageSize: 20,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    //console.log('rendered');
+                                                    me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                       var form = combo.up('form'),
+                                                        store = form.down('combo[name='+me.child_combo+']').getStore(),
+                                                        filters = JSON.stringify({[me.bind_column]:newVal});
+                                                        store.removeAll();
+                                                        store.load({params:{filters:filters}});
+                                                       //  if(combo.has_logic == 1){
+                                                       //      eval(combo.other_logic);
+                                                       // }
+                                                     });
+                                                     if(me.has_logic == 1){
+                                                        eval(me.other_logic);
+                                                    }
+                                                }
+                                               
+                                            }
+                                        });
+                                    }
+                                 }else{
+                                    if(is_readOnly==1){
+                                        var field = Ext.create('Ext.form.ComboBox',{
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            displayField: displayfield,
+                                            anyMatch: true,
+                                            hidden: is_hidden,
+                                            forceSelection: true,
+                                            columnWidth: column_width,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            pageSize: 20,
+                                            // listConfig:{
+                                            //     minWidth:400,
+                                            //     loadingText: 'Searching...',
+                                            //     emptyText: 'No match found.', 
+                                            // },
+                                            queryMode: 'remote',
+                                            readOnly: true,
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        // enablePaging:true,
+                                                        // remoteFilter: true,
+                                                        pageSize: 20,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    //console.log('rendered');
+                                                    // if(me.has_logic == 1){
+                                                    //     me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                    //        var form = combo.up('form');
+                                                    //         eval(combo.other_logic);
+                                                    //      });
+                                                    // }
+                                                     if(me.has_logic == 1){
+                                                        eval(me.other_logic);
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }else{
+                                        var field = Ext.create('Ext.form.ComboBox',{
+                                            name: field_name,
+                                            fieldLabel: label,
+                                            allowBlank: is_mandatory,
+                                            valueField: valuefield,
+                                            displayField: displayfield,
+                                            anyMatch: true,
+                                            hidden: is_hidden,
+                                            forceSelection: true,
+                                            has_logic: has_logic,
+                                            other_logic: other_logic,
+                                            columnWidth: column_width,
+                                            pageSize: 20,
+                                            // listConfig:{
+                                            //     minWidth:400,
+                                            //     loadingText: 'Searching...',
+                                            //     emptyText: 'No match found.', 
+                                            // },
+                                            queryMode: 'remote',
+                                            bind: {
+                                                readOnly: '{isReadOnly}' 
+                                            },
+                                            listeners: {
+                                                beforerender: {
+                                                    fn: 'setCompStore',
+                                                    config: {
+                                                        // enablePaging:true,
+                                                        // remoteFilter: true,
+                                                        pageSize: 20,
+                                                        proxy: {
+                                                            extraParams: {
+                                                                table_name: table
+                                                            }
+                                                        }
+                                                    },
+                                                    isLoad: true
+                                                },
+                                                afterrender: function(me){
+                                                    //console.log('rendered');
+                                                    // if(me.has_logic == 1){
+                                                    //     me.addListener('change',function(combo, newVal, oldvalue, eopts) {
+                                                    //        var form = combo.up('form');
+                                                    //         eval(combo.other_logic);
+                                                    //      });
+                                                    // }
+                                                     if(me.has_logic == 1){
+                                                        eval(me.other_logic);
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                    
+                                }
+
+                            }
+                            //other fields
+                            else if(result[i].form_field_type_id == 8){
+                                if(is_readOnly==1){
+                                    var field = Ext.create('Ext.form.'+xtype,{
+                                        layout: 'column',
+                                        // name: field_name,
+                                        fieldLabel: label,
+                                        columnWidth: column_width,
+                                        // hidden: is_hidden,
+                                        // allowBlank: is_mandatory,
+                                        readOnly: true,
+                                        items: [
+                                            {
+                                                xtype: 'textfield',
+                                                name: field_name,
+                                                columnWidth: 0.9,
+                                                allowBlank: is_mandatory
+                                            },{
+                                                xtype: 'hiddenfield',
+                                                name: formfield,
+                                                columnWidth: 0.9,
+                                                allowBlank: false
+                                            },
+                                            {
+                                                xtype: 'button',
+                                                iconCls: 'x-fa fa-search',
+                                                columnWidth: 0.1,
+                                                tooltip: 'Click to search',
+                                                action: 'link_personnel',
+                                                winTitle: 'Search Details',
+                                                disabled: true,
+                                                table_name: table,
+                                                def_id: def_id,
+                                                handler: function(btn){
+                                                    var panel = btn.up('panel'),
+                                                        ctr =  Ext.getApplication().getController("DashboardCtr");
+                                                    Ext.getBody().mask('Loading List');
+                                                     ctr.fireEvent("showDynamicSelectionList", btn);
+                                                },//'showDynamicSelectionList',
+                                                winWidth: '70%'
+                                            }
+                                        ]
+                                    }); 
+                                }else{
+                                    var field = Ext.create('Ext.form.'+xtype,{
+                                        layout: 'column',
+                                        // name: field_name,
+                                        fieldLabel: label,
+                                        columnWidth: column_width,
+                                        // hidden: is_hidden,
+                                        // allowBlank: is_mandatory,
+                                        // readOnly: is_readOnly,
+                                        items: [
+                                            {
+                                                xtype: 'textfield',
+                                                name: displayfield,
+                                                columnWidth: 0.9,
+                                                readOnly: true,
+                                                allowBlank: is_mandatory
+                                            },{
+                                                xtype: 'hiddenfield',
+                                                name: formfield,
+                                                columnWidth: 0.9,
+                                                allowBlank: false
+                                            },
+                                            {
+                                                xtype: 'button',
+                                                iconCls: 'x-fa fa-search',
+                                                columnWidth: 0.1,
+                                                tooltip: 'Click to search',
+                                                action: 'link_personnel',
+                                                valuefield: valuefield,
+                                                displayfield: displayfield,
+                                                formfield: formfield,
+                                                table_name: table,
+                                                winTitle: 'Search Details',
+                                                def_id: def_id,
+                                                bind: {
+                                                    hidden: '{isReadOnly}'
+                                                },
+                                                handler: function(btn){
+                                                    var panel = btn.up('panel'),
+                                                        ctr =  Ext.getApplication().getController("DashboardCtr");
+                                                    Ext.getBody().mask('Loading List');
+                                                    ctr.fireEvent("showDynamicSelectionList", btn);
+                                                },
+                                                // handler: 'showDynamicSelectionList',
+                                                winWidth: '70%'
+                                            }
+                                        ]
+                                    }); 
+                                }
+                                
+                            }
+                            else if(result[i].form_field_type_id == 5){
+                               if(is_readOnly==1){
+
+                                    var field = Ext.create('Ext.form.'+xtype,{
+                                        name: field_name,
+                                        fieldLabel: label,
+                                        format:'Y-m-d',
+                                        altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+                                        hidden: is_hidden,
+                                        columnWidth: column_width,
+                                        allowBlank: is_mandatory,
+                                        readOnly: true
+                                    }); 
+                                }else{
+                                    var field = Ext.create('Ext.form.'+xtype,{
+                                        name: field_name,
+                                        fieldLabel: label,
+                                        format:'Y-m-d',
+                                        altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+                                        hidden: is_hidden,
+                                        columnWidth: column_width,
+                                        allowBlank: is_mandatory,
+                                        bind: {
+                                            readOnly: '{isReadOnly}' 
+                                        }
+                                    });
+                                } 
+                            }
+                            else{
+                                if(is_readOnly==1){
+
+                                    var field = Ext.create('Ext.form.'+xtype,{
+                                        name: field_name,
+                                        fieldLabel: label,
+                                        hidden: is_hidden,
+                                        columnWidth: column_width,
+                                        allowBlank: is_mandatory,
+                                        readOnly: true
+                                    }); 
+                                }else{
+                                    var field = Ext.create('Ext.form.'+xtype,{
+                                        name: field_name,
+                                        fieldLabel: label,
+                                        hidden: is_hidden,
+                                        columnWidth: column_width,
+                                        allowBlank: is_mandatory,
+                                        bind: {
+                                            readOnly: '{isReadOnly}' 
+                                        }
+                                    });
+                                }
+                                  
+                            }
+                            me.insert(start_index,field);
+                        }
+                        var found = false;
+                        if(me.up().up().getViewModel()){
+                            var vmodel = me.up().up().getViewModel();
+                                model = vmodel.get('model');
+                                if(!Ext.Object.isEmpty(model)){
+                                    me.loadRecord(model);
+                                    found = true;
+                                }
+                        }
+                        if(!found && activeTab.getViewModel()){
+                            var vmodel = activeTab.getViewModel();
+                            model = vmodel.get('model');
+                            if(!Ext.Object.isEmpty(model)){
+                                me.loadRecord(model);
+                            }
+                        }
+                        if(module_id == 2){
+                          //  me.down('combo[name=premise_type_id]').setValue(premise_type_id);
+                        }else{
+                           // me.down('combo[name=prodclass_category_id]').setValue(prodclass_category_id);
+                        }
+                        
+                        
+                        if(me.down('combo[name=section_id]')){
+                            me.down('combo[name=section_id]').setValue(section_id);
+                        }
+                        
+                        
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    btn.setLoading(false);
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    btn.setLoading(false);
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        
+    },
+
+
+
+
     prepareManagersInterfaceGeneric: function () {//for all
         Ext.getBody().mask('Please wait...');
         var me = this,
@@ -6110,31 +8286,31 @@ else{
             Ext.getBody().unmask();
         }
     },
-    showManagerApplicationSubmissionWinGeneric: function (btn) {
-        Ext.getBody().mask('Please wait...');
-        var mainTabPanel = this.getMainTabPanel(),
-            winWidth = btn.winWidth,
-            activeTab = mainTabPanel.getActiveTab(),
-            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
-            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
-            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
-            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
-            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
-            valid = true,
-            is_dataammendment_request =0,
-            storeID = getApplicationStore(module_id, section_id),
-            table_name = getApplicationTable(module_id);
-            if(activeTab.down('hiddenfield[name=is_dataammendment_request]')){
-                is_dataammendment_request =activeTab.down('hiddenfield[name=is_dataammendment_request]').getValue();
-            }
+    // showManagerApplicationSubmissionWinGeneric: function (btn) {
+    //     Ext.getBody().mask('Please wait...');
+    //     var mainTabPanel = this.getMainTabPanel(),
+    //         winWidth = btn.winWidth,
+    //         activeTab = mainTabPanel.getActiveTab(),
+    //         module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+    //         section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+    //         application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+    //         application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+    //         workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+    //         valid = true,
+    //         is_dataammendment_request =0,
+    //         storeID = getApplicationStore(module_id, section_id),
+    //         table_name = getApplicationTable(module_id);
+    //         if(activeTab.down('hiddenfield[name=is_dataammendment_request]')){
+    //             is_dataammendment_request =activeTab.down('hiddenfield[name=is_dataammendment_request]').getValue();
+    //         }
 
-        if (valid == true || valid === true) {
-            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth, storeID,'','','',workflow_stage_id,is_dataammendment_request);
+    //     if (valid == true || valid === true) {
+    //         showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth, storeID,'','','',workflow_stage_id,is_dataammendment_request);
 
-        } else {
-            Ext.getBody().unmask();
-        }
-    },
+    //     } else {
+    //         Ext.getBody().unmask();
+    //     }
+    // },
     showApprovalApplicationSubmissionWinGeneric: function (btn) {
         Ext.getBody().mask('Please wait...');
         var mainTabPanel = this.getMainTabPanel(),
@@ -6183,13 +8359,28 @@ else{
             winWidth = btn.winWidth,
             activeTab = mainTabPanel.getActiveTab(),
             gridXtype = btn.gridXtype,
+            participantsGrid = activeTab.down('tcmeetingparticipantsgrid'),
+            participantsStore = participantsGrid.getStore(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             valid = this.validateApplicationTcMeetingDetails(btn),
             storeID = getApplicationStore(module_id, section_id),
+            chairpersonDetails = participantsStore.findRecord('role_id', 1),
+            secretaryDetails = participantsStore.findRecord('role_id', 2)
             table_name = getApplicationTable(module_id);
+             if (!chairpersonDetails) {
+               Ext.getBody().unmask();
+               toastr.warning('No Chairperson found!!', 'Warning Response');
+               return false;
+             }
+
+             if (!secretaryDetails) {
+               Ext.getBody().unmask();
+               toastr.warning('No Secretary found!!', 'Warning Response');
+               return false;
+             }
         if (valid == true || valid === true) {
             showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth, storeID,'',gridXtype);
         } else {
@@ -6621,51 +8812,9 @@ else{
             });
         }
     },
-    savepermitReleaseRecommendation:function(btn){
 
-        var me = this,
-        mainTabPanel = me.getMainTabPanel(),
-        activeTab = mainTabPanel.getActiveTab(),
 
-        mainStore = activeTab.down('grid').getStore(),
-        form = btn.up('form'),
-        frm = form.getForm(),
-
-        win = form.up('window'),
-        action_url = 'importexportpermits/savepermitReleaseRecommendation';
-    if (frm.isValid()) {
-        frm.submit({
-            url: action_url,
-            headers: {
-                'Authorization': 'Bearer ' + access_token,
-                'X-CSRF-Token': token
-            },
-            waitMsg: 'Please wait...',
-            success: function (fm, action) {
-                var response = Ext.decode(action.response.responseText),
-                    success = response.success,
-                    message = response.message;
-                if (success == true || success === true) {
-
-                    toastr.success(message, "Success Response");
-                    mainStore.removeAll();
-                    mainStore.load();
-
-                    win.close();
-                } else {
-                    toastr.error(message, 'Failure Response');
-                }
-            },
-            failure: function (fm, action) {
-                var resp = action.result;
-                toastr.error(resp.message, 'Failure Response');
-            }
-        });
-    }
-
-    },
-
-    saveImpExpApplicationRecommendationDetails: function (btn) {
+     savePremiseApplicationApprovalDetails: function (btn) {
         var me = this,
             mainTabPanel = me.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
@@ -6753,6 +8902,7 @@ else{
                                                                             table_name : table_name,
                                                                             module_id:module_id,
                                                                             sub_module_id:sub_module_id,
+                                                                            section_id:section_id,
                                                                             curr_stage_id:curr_stage_id,
                                                                             workflowaction_type_id:workflowaction_type_id,
                                                                             next_stage:next_stage,
@@ -6823,6 +8973,251 @@ else{
         }
     },
 
+
+
+    doSaveBatchInspectionRecommendationDetails:function(btn){
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            url = btn.action_url,
+            table = btn.table_name,
+            form = btn.up('form'),
+            win = form.up('window'),
+            storeID = btn.storeID,
+            workflowaction_type_id = 1,
+            store = Ext.getStore(storeID),
+            intrayStore = Ext.getStore('intraystr'),
+            outtrayStore = Ext.getStore('outtraystr'),
+            onlineapplicationdashboardgridstr= Ext.getStore('onlineapplicationdashboardgridstr');
+            var module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            //workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            process_id= form.down('hiddenfield[name=process_id]').getValue(),
+            selected_appIds=form.down('hiddenfield[name=selected_appIds]').getValue(),
+            selected_appcodes= form.down('hiddenfield[name=selected_appcodes]').getValue(),
+            workflow_stage_id= form.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            chiefregional_inspector_recommendation_id= form.down('combo[name=chiefregional_inspector_recommendation_id]').getValue();
+            if(chiefregional_inspector_recommendation_id ==1){
+
+                title = "Do you want to Recommend the reviewed License Application?";
+            }else if(chiefregional_inspector_recommendation_id ==3){
+
+                title = "Do you want to Request for Re-Inspection for the reviewed License Application?";
+            }
+            else if(chiefregional_inspector_recommendation_id ==5){
+
+                title = "Do you want to Postponed Inspection for the reviewed License Application?";
+            }
+            else if(chiefregional_inspector_recommendation_id ==4){
+
+                title = "Do you want to Recommend after Query Response/CAPA Submission for the reviewed License Application?";
+            }
+            else{
+                title = "Do you want to Not Recommend the reviewed License Application?";
+
+            }
+            frm = form.getForm();
+            if (frm.isValid()) {
+               Ext.MessageBox.confirm('Inspection Recommendation', title, function (button) {
+                if (button === 'yes') {
+                   // Ext.getBody().mask('Saving Recommendation Application...');
+                    var formData = frm.getValues();
+
+                    Ext.Ajax.request({
+                            url: url,
+                            method: 'POST',
+                            params: Ext.apply({
+                                model: table,
+                                report_type_id:3
+                            }, formData),
+                            headers: {
+                                'Authorization': 'Bearer ' + access_token,
+                                'X-CSRF-Token': token
+                            },
+                            success: function (response) {
+                               
+                                var resp = Ext.JSON.decode(response.responseText),
+                                    message = resp.message,
+                                    success = resp.success;
+                                    if (success == true || success === true) {
+                                        win.close();
+                                        Ext.getBody().mask('Loading Submission...');
+                                        Ext.Ajax.request({
+                                                url: 'workflow/getApplicationNextStageActionDetails',
+                                                method: 'POST',
+                                                params: {
+                                                    application_code:application_code,
+                                                    application_id:application_id,
+                                                    workflow_stage_id:workflow_stage_id,
+                                                    workflowaction_type_id:workflowaction_type_id,
+                                                    table_name : 'tra_premises_applications',
+                                                    module_id:module_id,
+                                                    sub_module_id:sub_module_id
+                                                },
+                                                headers: {
+                                                    'Authorization': 'Bearer ' + access_token,
+                                                    'X-CSRF-Token': token
+                                                },
+                                                success: function (response) {
+                                                   
+                                                    var resp = Ext.JSON.decode(response.responseText),
+                                                        message = resp.message,
+                                                        success = resp.success;
+                                                        if (success == true || success === true) {
+                                                             win.close();
+                                                            var results = resp.results,
+                                                                curr_stage_id = results.stage_id,
+                                                                action = results.action_id, 
+                                                                next_stage = results.nextstage_id;
+                                                            Ext.MessageBox.confirm('License Recommendation', 'Do you want to submit the Recommended Permit Application(s)?', function (button) {
+                                                                if (button === 'yes') {
+                                                                    var hasQueries = checkApplicationRaisedQueries(application_code, module_id);
+                                                                    if(hasQueries){
+                                                                        Ext.getBody().unmask();
+                                                                        toastr.error('Please Note the application has Open Query. Kindly use query process to submit the application!!', 'Warning Response');
+                                                                        return false;
+                                                                   }
+                                                                    Ext.getBody().mask('Submitting Application wait...');
+                                                                    Ext.Ajax.request({
+                                                                        url: 'workflow/handleManagersApplicationSubmissions',
+                                                                        method: 'POST',
+                                                                        params: {
+                                                                            selected:selected_appIds,
+                                                                            selected_appCodes:selected_appcodes,
+                                                                            application_code:application_code,
+                                                                            application_id:application_id,
+                                                                            process_id:process_id,
+                                                                            workflowaction_type_id:workflowaction_type_id,
+                                                                            table_name : 'tra_premises_applications',
+                                                                            module_id:module_id,
+                                                                            sub_module_id:sub_module_id,
+                                                                            section_id:section_id,
+                                                                            curr_stage_id:curr_stage_id,
+                                                                            workflowaction_type_id:workflowaction_type_id,
+                                                                            next_stage:next_stage,
+                                                                            action:action
+                                                                        },
+                                                                        headers: {
+                                                                            'Authorization': 'Bearer ' + access_token,
+                                                                            'X-CSRF-Token': token
+                                                                        },
+                                                                        success: function (response) {
+                                                                           
+                                                                            var resp = Ext.JSON.decode(response.responseText),
+                                                                                message = resp.message,
+                                                                                success = resp.success;
+                                                                                if (success == true || success === true) {
+                                                                                    toastr.success(message, "Success Response");
+                                                                                    //store.load();
+                                                                                    intrayStore.load();
+                                                                                    outtrayStore.load();
+                                                                                    externaluserintraystr = Ext.getStore('externaluserintraystr');
+                                                                                    externaluserintraystr.load();
+                                                                                    
+                                                                                    //onlineapplicationdashboardgridstr.load();
+                                                                                    //win.close();
+                                                                                    closeActiveWindow() ;
+                                                                                    mainTabPanel.remove(activeTab);
+                                                                                    
+                                                                                } Ext.getBody().unmask();
+                                                                        },
+                                                                        failure: function (response) {
+                                                                                    
+                                                                                    var resp = Ext.JSON.decode(response.responseText),
+                                                                                        message = resp.message;
+                                                                                    toastr.error(message, 'Failure Response');
+                                                                                    Ext.getBody().unmask();
+                                                                        }
+                                                                    });
+                                                                }
+                                                            })
+                                                        } else {
+                                                            toastr.error(message, 'Failure Response');
+                                                        }
+                                                    Ext.getBody().unmask();
+                                                },
+                                                failure: function (response) {
+                                                    
+                                                    var resp = Ext.JSON.decode(response.responseText),
+                                                        message = resp.message;
+                                                    toastr.error(message, 'Failure Response');
+                                                    Ext.getBody().unmask();
+                                                },
+                                                error: function (jqXHR, textStatus, errorThrown) {
+                                                    Ext.getBody().unmask();
+                                                    toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
+                                                    
+                                                }
+                                            });
+                                    } else {
+                                        toastr.error(message, 'Failure Response');
+                                    }
+                               // Ext.getBody().unmask();
+                            },
+                            failure: function (response) {
+                                
+                                var resp = Ext.JSON.decode(response.responseText),
+                                    message = resp.message;
+                                toastr.error(message, 'Failure Response');
+                                //Ext.getBody().unmask();
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                //Ext.getBody().unmask();
+                                toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
+                                
+                            }
+                        });
+
+                }
+            })
+         }
+    },
+    savepermitReleaseRecommendation:function(btn){
+
+        var me = this,
+        mainTabPanel = me.getMainTabPanel(),
+        activeTab = mainTabPanel.getActiveTab(),
+
+        mainStore = activeTab.down('grid').getStore(),
+        form = btn.up('form'),
+        frm = form.getForm(),
+
+        win = form.up('window'),
+        action_url = 'importexportpermits/savepermitReleaseRecommendation';
+    if (frm.isValid()) {
+        frm.submit({
+            url: action_url,
+            headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+            },
+            waitMsg: 'Please wait...',
+            success: function (fm, action) {
+                var response = Ext.decode(action.response.responseText),
+                    success = response.success,
+                    message = response.message;
+                if (success == true || success === true) {
+
+                    toastr.success(message, "Success Response");
+                    mainStore.removeAll();
+                    mainStore.load();
+
+                    win.close();
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (fm, action) {
+                var resp = action.result;
+                toastr.error(resp.message, 'Failure Response');
+            }
+        });
+    }
+
+    },
     saveSpecialpermitApprovalRecommendation: function (btn) {
         var me = this,
             mainTabPanel = me.getMainTabPanel(),
@@ -7115,7 +9510,7 @@ else{
     },
 
     submitStructuredQueriedOnlineApplication: function (application_id, application_code, action_url, table_name) {
-        Ext.MessageBox.alert('Info', 'The application will be forwarded back to the trader because you have raise queries', function (button) {
+        Ext.MessageBox.alert('Info', 'The application will be forwarded back to the trader because you have raised queries', function (button) {
             var childObject = Ext.widget('onlineapplicationqueryfrm');
             childObject.down('hiddenfield[name=application_id]').setValue(application_id);
             childObject.down('hiddenfield[name=application_code]').setValue(application_code);
@@ -7496,7 +9891,7 @@ else{
         if(!btn.show_assessor){
             form.down('combo[name=assessment_by]').setVisible(false);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
         var docTypesStr = form.down('combo[name=doctype_id]').getStore();
             docTypesStr.removeAll();
             docTypesStr.load({
@@ -7575,12 +9970,13 @@ else{
             resumable.opts.query.assessment_end_date=formValues.assessment_end_date;
             resumable.opts.query.description=formValues.description;
            
-            funcShowCustomizableWindow("Upload Progress", '20%', progressBar, 'customizablewindow', btn);
+            funcShowResumableUploadWindow("Upload Progress", '20%', progressBar, 'customizablewindow', btn);
             resumable.upload();
         }else{
              toastr.error('Please select a file/document to upload!', 'Missing File');
         }
-    },initializeResumableUpload: function(btn){
+    },
+    initializeResumableUpload: function(btn){
         var me = this,
             mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
@@ -7592,6 +9988,7 @@ else{
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
             uploads_store = Ext.getStore('applicationDocumentsUploadsStr'),
             progressBar = Ext.widget('progress');
+            console.log(module_id);
         // let browseFile = $('#browseFile');
         let resumable = new Resumable({
             target: 'documentmanagement/resumableuploadApplicationDocumentFile',
@@ -7646,10 +10043,22 @@ else{
             response = JSON.parse(response);
             console.log(uploads_store);
             uploads_store.load();
+            if(module_id==1 || module_id===1){
+                 store2 = Ext.getStore('qualityassessmentapplicationdocuploadsStr');
+                 store3 = Ext.getStore('bioequivalencetrialinformationapplicationdocuploadsStr');
+                 store2.load();
+                 store3.load();
+            }
             success = response.success;
             if(success == true){
                 toastr.success("Uploaded Successfully", 'Success Response');
                 uploads_store.load();
+                if(module_id==1 || module_id===1){
+                 store2 = Ext.getStore('qualityassessmentapplicationdocuploadsStr');
+                 store3 = Ext.getStore('bioequivalencetrialinformationapplicationdocuploadsStr');
+                 store2.load();
+                 store3.load();
+                }
             }else{
                 toastr.error(response.message+ " If problem persist contact system admin", 'Failure Response!!');
             }
@@ -7662,6 +10071,12 @@ else{
             progressBar.up('window').close();
             res = JSON.parse(response);
             uploads_store.load();
+            if(module_id==1 || module_id===1){
+                 store2 = Ext.getStore('qualityassessmentapplicationdocuploadsStr');
+                 store3 = Ext.getStore('bioequivalencetrialinformationapplicationdocuploadsStr');
+                 store2.load();
+                 store3.load();
+            }
             win.close();
             toastr.error(res.message+ " If problem persist contact system admin", 'Failure Response!!');
         });
@@ -8120,7 +10535,7 @@ else{
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },
 
     showAddAppdataammendmentrequest: function (btn) {
@@ -8182,6 +10597,15 @@ else{
         };
     },
 
+    refreshapplicationinternalqueriesgridd: function (me) {
+        var store = me.store,
+            grid = me.up('grid'),
+            application_code = grid.down('hiddenfield[name=application_code]').getValue();
+        store.getProxy().extraParams = {
+            application_code: application_code,
+        };
+    },
+
     receiveOnlineApplicationDetailsFrmBtn1: function (btn) {
         Ext.getBody().mask('Please wait...');
         var win = btn.up('window'),
@@ -8198,6 +10622,26 @@ else{
             this.submitOnlineApplicationDetailsToOfficer(btn);
         }
     },
+
+     previewApplicationProcessingTransitions: function (item) {
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord();
+            ref_no = record.get('reference_no'),
+            application_code = record.get('application_code');
+
+        var childObject = Ext.widget('multitransitionsgrid'),
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            ref_no = activeTab.down('displayfield[name=reference_no]').getValue();
+
+            childObject.down('hiddenfield[name=application_code]').setValue(application_code);
+            childObject.down('hiddenfield[name=reference_no]').setValue(ref_no);
+
+        funcShowCustomizableWindow(ref_no + ' Transitions', '70%', childObject, 'customizablewindow');
+
+    },
+
+
     receiveAndInvoiceOnlineApplicationDetailsFrmBtn: function (btn) {
             Ext.getBody().mask('Please wait...');
             var storeID = btn.storeID,
@@ -8358,242 +10802,511 @@ else{
         };
 
     },
-    renderParameterMenu: function(parameter_id){
-       var def_id = parameter_id;
+    // renderParameterMenu: function(parameter_id){
+    //    var def_id = parameter_id;
         
-                Ext.Ajax.request({
-                        url: 'configurations/getParameterGridColumnsConfig',
-                        method: 'GET',
-                        params: {
-                            def_id: def_id
-                        },
-                        headers: {
-                            'Authorization': 'Bearer ' + access_token,
-                            'X-CSRF-Token': token
-                        },
-                        success: function (response) {
+    //             Ext.Ajax.request({
+    //                     url: 'configurations/getParameterGridColumnsConfig',
+    //                     method: 'GET',
+    //                     params: {
+    //                         def_id: def_id
+    //                     },
+    //                     headers: {
+    //                         'Authorization': 'Bearer ' + access_token,
+    //                         'X-CSRF-Token': token
+    //                     },
+    //                     success: function (response) {
 
-                            var resp = Ext.JSON.decode(response.responseText),
-                                success = resp.success,
-                                message = resp.message,
-                                result = resp.results,
-                                title = resp.title;
-                                table_name = resp.table_name;
-                            if (success == true || success === true) {
+    //                         var resp = Ext.JSON.decode(response.responseText),
+    //                             success = resp.success,
+    //                             message = resp.message,
+    //                             result = resp.results,
+    //                             title = resp.title;
+    //                             table_name = resp.table_name;
+    //                         if (success == true || success === true) {
                                 
-                                var panel = Ext.create('Ext.panel.Panel',{
-                                    viewModel: 'configurationsvm',
-                                    controller: 'configurationsvctr',
-                                    title: title,
-                                    closable: true,
-                                    userCls: 'big-100 small-100',
-                                    height: Ext.Element.getViewportHeight() - 118,
-                                    layout:{
-                                        type: 'fit'
-                                    },
-                                    items: []
-                                });
-                                var grid =  Ext.create('Ext.grid.Panel',{
-                                                cls: 'dashboard-todo-list',
-                                                autoScroll: true,
-                                                autoHeight: true,
-                                                width: '100%',
-                                                //height: Ext.Element.getViewportHeight() - 118,
-                                                viewConfig: {
-                                                    deferEmptyText: false,
-                                                    emptyText: 'Nothing to display',
-                                                    getRowClass: function (record, rowIndex, rowParams, store) {
-                                                        var is_enabled = record.get('is_enabled');
-                                                        if (is_enabled == 0 || is_enabled === 0) {
-                                                            return 'invalid-row';
-                                                        }
+    //                             var panel = Ext.create('Ext.panel.Panel',{
+    //                                 viewModel: 'configurationsvm',
+    //                                 controller: 'configurationsvctr',
+    //                                 title: title,
+    //                                 closable: true,
+    //                                 userCls: 'big-100 small-100',
+    //                                 height: Ext.Element.getViewportHeight() - 118,
+    //                                 layout:{
+    //                                     type: 'fit'
+    //                                 },
+    //                                 items: []
+    //                             });
+    //                             var grid =  Ext.create('Ext.grid.Panel',{
+    //                                             cls: 'dashboard-todo-list',
+    //                                             autoScroll: true,
+    //                                             autoHeight: true,
+    //                                             width: '100%',
+    //                                             //height: Ext.Element.getViewportHeight() - 118,
+    //                                             viewConfig: {
+    //                                                 deferEmptyText: false,
+    //                                                 emptyText: 'Nothing to display',
+    //                                                 getRowClass: function (record, rowIndex, rowParams, store) {
+    //                                                     var is_enabled = record.get('is_enabled');
+    //                                                     if (is_enabled == 0 || is_enabled === 0) {
+    //                                                         return 'invalid-row';
+    //                                                     }
+    //                                                 }
+    //                                             },
+    //                                             tbar: [{
+    //                                                 xtype: 'button',
+    //                                                 text: 'Add',
+    //                                                 iconCls: 'x-fa fa-plus',
+    //                                                 action: 'add',
+    //                                                 ui: 'soft-green',
+    //                                                 //childXtype: 'actingreasonFrm',
+    //                                                 winTitle: title+'',
+    //                                                 winWidth: '40%',
+    //                                                 handler: 'renderParameterForm',
+    //                                                 stores: '[]'
+    //                                             },{
+    //                                                 xtype: 'hiddenfield',
+    //                                                 name: 'def_id',
+    //                                                 fieldLabel: 'def_id',
+    //                                                 allowBlank: true
+    //                                             },{
+    //                                                 xtype: 'hiddenfield',
+    //                                                 name: 'db_con',
+    //                                                 fieldLabel: 'db_con',
+    //                                                 allowBlank: true
+    //                                             }, {
+    //                                                 xtype: 'exportbtn'
+    //                                             }],
+    //                                             plugins: [
+    //                                                 {
+    //                                                     ptype: 'gridexporter'
+    //                                                 }
+    //                                             ],
+    //                                             export_title: title+'',
+    //                                             bbar: [{
+    //                                                 xtype: 'pagingtoolbar',
+    //                                                 width: '100%',
+    //                                                 displayInfo: true,
+    //                                                 displayMsg: 'Showing {0} - {1} of {2} total records',
+    //                                                 emptyMsg: 'No Records',
+    //                                                 beforeLoad: function() {
+    //                                                     var grid=this.up('grid'),
+    //                                                         store = grid.getStore(),
+    //                                                         def_id=grid.down('hiddenfield[name=def_id]').getValue();
+
+    //                                                      var store=this.getStore();
+    //                                                      store.getProxy().extraParams = {
+    //                                                             def_id:def_id
+    //                                                         }
+    //                                                     }
+    //                                             }],
+    //                                             features: [{
+    //                                                 ftype: 'searching',
+    //                                                 minChars: 2,
+    //                                                 mode: 'local'
+    //                                             }],
+    //                                             listeners: {
+    //                                                 beforerender: {
+    //                                                     fn: 'setConfigGridsStore',
+    //                                                     config: {
+    //                                                         pageSize: 1000,
+    //                                                         storeId: table_name+'Str',
+    //                                                         proxy: {
+    //                                                             url: 'configurations/getParameterGridConfig',
+    //                                                         }
+    //                                                     },
+    //                                                     isLoad: true
+    //                                                 }
+    //                                             },
+                                            
+    //                                         columns:[{
+    //                                                 xtype: 'gridcolumn',
+    //                                                 dataIndex: 'id',
+    //                                                 text: 'Ref ID'
+    //                                             },{
+    //                                                 xtype: 'gridcolumn',
+    //                                                 dataIndex: 'is_enabled',
+    //                                                 text: 'Enable',
+    //                                                 flex: 1,
+    //                                                 renderer: function (value, metaData) {
+    //                                                     if (value) {
+    //                                                         metaData.tdStyle = 'color:white;background-color:green';
+    //                                                         return "True";
+    //                                                     }
+
+    //                                                     metaData.tdStyle = 'color:white;background-color:red';
+    //                                                     return "False";
+    //                                                 }
+    //                                             },{
+    //                                             text: 'Options',
+    //                                             xtype: 'widgetcolumn',
+    //                                             width: 90,
+    //                                             widget: {
+    //                                                 width: 75,
+    //                                                 textAlign: 'left',
+    //                                                 xtype: 'splitbutton',
+    //                                                 iconCls: 'x-fa fa-th-list',
+    //                                                 ui: 'gray',
+    //                                                 menu: {
+    //                                                     xtype: 'menu',
+    //                                                     items: [{
+    //                                                         text: 'Edit',
+    //                                                         iconCls: 'x-fa fa-edit',
+    //                                                         tooltip: 'Edit Record',
+    //                                                         action: 'edit',
+    //                                                         //childXtype: 'actingreasonFrm',
+    //                                                         winTitle: title+'',
+    //                                                         winWidth: '40%',
+    //                                                         handler: 'renderParameterForm',
+    //                                                         stores: '[]'
+    //                                                     }, {
+    //                                                         text: 'Disable',
+    //                                                         iconCls: 'x-fa fa-repeat',
+    //                                                         table_name: table_name,
+    //                                                         storeID: table_name+'Str',
+    //                                                         db_con: resp.db_con_name,
+    //                                                         action_url: 'configurations/softDeleteConfigRecord',
+    //                                                         action: 'soft_delete',
+    //                                                         handler: 'deleteRecordFromIDByConnection'
+    //                                                     }, {
+    //                                                         text: 'Delete',
+    //                                                         iconCls: 'x-fa fa-trash',
+    //                                                         tooltip: 'Delete Record',
+    //                                                         db_con: resp.db_con_name,
+    //                                                         table_name: table_name,
+    //                                                         storeID: table_name+'Str',
+    //                                                         action_url: 'configurations/deleteConfigRecord',  
+    //                                                         action: 'actual_delete',
+    //                                                         handler: 'deleteRecordFromIDByConnection',
+    //                                                         hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
+    //                                                     }, {
+    //                                                         text: 'Enable',
+    //                                                         iconCls: 'x-fa fa-undo',
+    //                                                         tooltip: 'Enable Record',
+    //                                                         db_con: resp.db_con_name,
+    //                                                         table_name: table_name,
+    //                                                         storeID: table_name+'Str',
+    //                                                         action_url: 'configurations/undoConfigSoftDeletes',
+    //                                                         action: 'enable',
+    //                                                         disabled: true,
+    //                                                         handler: 'deleteRecordFromIDByConnection'
+    //                                                     }
+    //                                                     ]
+    //                                                 }
+    //                                             }, onWidgetAttach: function (col, widget, rec) {
+    //                                                 var is_enabled = rec.get('is_enabled');
+    //                                                 if (is_enabled === 0 || is_enabled == 0) {
+    //                                                     widget.down('menu menuitem[action=enable]').setDisabled(false);
+    //                                                     widget.down('menu menuitem[action=soft_delete]').setDisabled(true);
+    //                                                 } else {
+    //                                                     widget.down('menu menuitem[action=enable]').setDisabled(true);
+    //                                                     widget.down('menu menuitem[action=soft_delete]').setDisabled(false);
+    //                                                 }
+    //                                             }
+    //                                         }]
+    //                                         });
+    //                             //add columns
+    //                             for (var i = result.length - 1; i >= 0; i--) {
+    //                                 var column = Ext.create('Ext.grid.column.Column', {
+    //                                         text: result[i]+'',
+    //                                         dataIndex: result[i]+'',
+    //                                         width: 150,
+    //                                         tbCls: 'wrap'
+    //                                     });
+    //                                  grid.headerCt.insert(
+    //                                       grid.columns.length-2, 
+    //                                       column);
+    //                               }
+    //                             grid.down('hiddenfield[name=def_id]').setValue(def_id);
+    //                             grid.down('hiddenfield[name=db_con]').setValue(resp.db_con_name);
+    //                             panel.add(grid);
+
+    //                             var main_panel =  Ext.ComponentQuery.query("#contentPanel")[0];
+    //                             main_panel.add(panel);
+    //                             main_panel.setActiveTab(main_panel.items.length-1);
+
+    //                         } else {
+    //                             toastr.error(message, 'Failure Response');
+    //                         }
+    //                     },
+    //                     failure: function (response) {
+    //                         var resp = Ext.JSON.decode(response.responseText),
+    //                             message = resp.message;
+    //                         toastr.error(message, 'Failure Response');
+    //                     },
+    //                     error: function (jqXHR, textStatus, errorThrown) {
+    //                         toastr.error('Error: ' + errorThrown, 'Error Response');
+    //                     }
+    //         });
+    // },
+
+    renderParameterMenu: function(parameter_id){
+       var def_id = parameter_id,
+           contentPnl = this.getMainTabPanel();
+       Ext.getBody().mask('Loading...');
+       //check if tab item is currently open
+       if(contentPnl.getComponent('item_id'+def_id)){
+        //set it as active and close
+         var index = contentPnl.items.indexOf(contentPnl.getComponent('item_id'+def_id));
+         contentPnl.setActiveTab(index);
+         Ext.getBody().unmask();
+         return false;
+       }
+       //render interface
+       else{
+        Ext.Ajax.request({
+
+                url: 'configurations/getParameterGridColumnsConfig',
+                method: 'GET',
+                params: {
+                    def_id: def_id
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token,
+                    'X-CSRF-Token': token
+                },
+                success: function (response) {
+
+                    var resp = Ext.JSON.decode(response.responseText),
+                        success = resp.success,
+                        message = resp.message,
+                        result = resp.results,
+                        title = resp.title;
+                        table_name = resp.table_name;
+                    if (success == true || success === true) {
+                        
+                        var panel = Ext.create('Ext.panel.Panel',{
+                            viewModel: 'configurationsvm',
+                            controller: 'configurationsvctr',
+                            title: title,
+                            itemId: 'item_id'+def_id,
+                            closable: true,
+                            userCls: 'big-100 small-100',
+                            height: Ext.Element.getViewportHeight() - 118,
+                            layout:{
+                                type: 'fit'
+                            },
+                            items: []
+                        });
+                        var grid = Ext.create('Ext.grid.Panel',{
+                                        cls: 'dashboard-todo-list',
+                                        autoScroll: true,
+                                        autoHeight: true,
+                                        width: '100%',
+                                        //height: Ext.Element.getViewportHeight() - 118,
+                                        viewConfig: {
+                                            deferEmptyText: false,
+                                            emptyText: 'Nothing to display',
+                                            getRowClass: function (record, rowIndex, rowParams, store) {
+                                                var is_enabled = record.get('is_enabled');
+                                                if (is_enabled == 0 || is_enabled === 0) {
+                                                    return 'invalid-row';
+                                                }
+                                            }
+                                        },
+                                        tbar: [{
+                                            xtype: 'button',
+                                            text: 'Add',
+                                            iconCls: 'x-fa fa-plus',
+                                            action: 'add',
+                                            ui: 'soft-blue',
+                                            //childXtype: 'actingreasonFrm',
+                                            winTitle: title+'',
+                                            winWidth: '40%',
+                                            handler: 'renderParameterForm',
+                                            stores: '[]'
+                                        },{
+                                            xtype: 'hiddenfield',
+                                            name: 'def_id',
+                                            fieldLabel: 'def_id',
+                                            allowBlank: true
+                                        },{
+                                            xtype: 'hiddenfield',
+                                            name: 'db_con',
+                                            fieldLabel: 'db_con',
+                                            allowBlank: true
+                                        }, {
+                                            xtype: 'exportbtn'
+                                        }],
+                                        plugins: [
+                                            {
+                                                ptype: 'gridexporter'
+                                            }
+                                        ],
+                                        export_title: title+'',
+                                        bbar: [{
+                                            xtype: 'pagingtoolbar',
+                                            width: '100%',
+                                            displayInfo: true,
+                                            displayMsg: 'Showing {0} - {1} of {2} total records',
+                                            emptyMsg: 'No Records',
+                                            beforeLoad: function() {
+                                                var grid=this.up('grid'),
+                                                    store = grid.getStore(),
+                                                    def_id=grid.down('hiddenfield[name=def_id]').getValue();
+
+                                                 var store=this.getStore();
+                                                 store.getProxy().extraParams = {
+                                                        def_id:def_id
+                                                    }
+                                                }
+                                        }],
+                                        features: [{
+                                            ftype: 'searching',
+                                            minChars: 2,
+                                            mode: 'local'
+                                        }],
+                                        listeners: {
+                                            beforerender: {
+                                                fn: 'setGridStore',
+                                                config: {
+                                                    pageSize: 1000,
+                                                    storeId: table_name+'Str',
+                                                    proxy: {
+                                                        url: 'configurations/getParameterGridConfig',
                                                     }
                                                 },
-                                                tbar: [{
-                                                    xtype: 'button',
-                                                    text: 'Add',
-                                                    iconCls: 'x-fa fa-plus',
-                                                    action: 'add',
-                                                    ui: 'soft-green',
+                                                isLoad: true
+                                            }
+                                        },
+                                    
+                                    columns:[{
+                                            xtype: 'gridcolumn',
+                                            dataIndex: 'id',
+                                            text: 'Ref ID'
+                                        },{
+                                            xtype: 'gridcolumn',
+                                            dataIndex: 'is_enabled',
+                                            text: 'Enable',
+                                            width: 150,
+                                            renderer: function (value, metaData) {
+                                                if (value) {
+                                                    metaData.tdStyle = 'color:white;background-color:green';
+                                                    return "True";
+                                                }
+
+                                                metaData.tdStyle = 'color:white;background-color:red';
+                                                return "False";
+                                            }
+                                        },{
+                                        text: 'Options',
+                                        xtype: 'widgetcolumn',
+                                        width: 90,
+                                        widget: {
+                                            width: 75,
+                                            textAlign: 'left',
+                                            xtype: 'splitbutton',
+                                            iconCls: 'x-fa fa-th-list',
+                                            ui: 'gray',
+                                            menu: {
+                                                xtype: 'menu',
+                                                items: [{
+                                                    text: 'Edit',
+                                                    iconCls: 'x-fa fa-edit',
+                                                    tooltip: 'Edit Record',
+                                                    action: 'edit',
                                                     //childXtype: 'actingreasonFrm',
                                                     winTitle: title+'',
                                                     winWidth: '40%',
                                                     handler: 'renderParameterForm',
                                                     stores: '[]'
-                                                },{
-                                                    xtype: 'hiddenfield',
-                                                    name: 'def_id',
-                                                    fieldLabel: 'def_id',
-                                                    allowBlank: true
-                                                },{
-                                                    xtype: 'hiddenfield',
-                                                    name: 'db_con',
-                                                    fieldLabel: 'db_con',
-                                                    allowBlank: true
                                                 }, {
-                                                    xtype: 'exportbtn'
-                                                }],
-                                                plugins: [
-                                                    {
-                                                        ptype: 'gridexporter'
-                                                    }
-                                                ],
-                                                export_title: title+'',
-                                                bbar: [{
-                                                    xtype: 'pagingtoolbar',
-                                                    width: '100%',
-                                                    displayInfo: true,
-                                                    displayMsg: 'Showing {0} - {1} of {2} total records',
-                                                    emptyMsg: 'No Records',
-                                                    beforeLoad: function() {
-                                                        var grid=this.up('grid'),
-                                                            store = grid.getStore(),
-                                                            def_id=grid.down('hiddenfield[name=def_id]').getValue();
-
-                                                         var store=this.getStore();
-                                                         store.getProxy().extraParams = {
-                                                                def_id:def_id
-                                                            }
-                                                        }
-                                                }],
-                                                features: [{
-                                                    ftype: 'searching',
-                                                    minChars: 2,
-                                                    mode: 'local'
-                                                }],
-                                                listeners: {
-                                                    beforerender: {
-                                                        fn: 'setConfigGridsStore',
-                                                        config: {
-                                                            pageSize: 1000,
-                                                            storeId: table_name+'Str',
-                                                            proxy: {
-                                                                url: 'configurations/getParameterGridConfig',
-                                                            }
-                                                        },
-                                                        isLoad: true
-                                                    }
-                                                },
-                                            
-                                            columns:[{
-                                                    xtype: 'gridcolumn',
-                                                    dataIndex: 'id',
-                                                    text: 'Ref ID'
-                                                },{
-                                                    xtype: 'gridcolumn',
-                                                    dataIndex: 'is_enabled',
+                                                    text: 'Disable',
+                                                    iconCls: 'x-fa fa-repeat',
+                                                    table_name: table_name,
+                                                    storeID: table_name+'Str',
+                                                    db_con: resp.db_con_name,
+                                                    action_url: 'configurations/softDeleteConfigRecord',
+                                                    action: 'soft_delete',
+                                                    handler: 'deleteRecordFromIDByConnection'
+                                                }, {
+                                                    text: 'Delete',
+                                                    iconCls: 'x-fa fa-trash',
+                                                    tooltip: 'Delete Record',
+                                                    db_con: resp.db_con_name,
+                                                    table_name: table_name,
+                                                    storeID: table_name+'Str',
+                                                    action_url: 'configurations/deleteConfigRecord',  
+                                                    action: 'actual_delete',
+                                                    handler: 'deleteRecordFromIDByConnection',
+                                                }, {
                                                     text: 'Enable',
-                                                    flex: 1,
-                                                    renderer: function (value, metaData) {
-                                                        if (value) {
-                                                            metaData.tdStyle = 'color:white;background-color:green';
-                                                            return "True";
-                                                        }
-
-                                                        metaData.tdStyle = 'color:white;background-color:red';
-                                                        return "False";
-                                                    }
-                                                },{
-                                                text: 'Options',
-                                                xtype: 'widgetcolumn',
-                                                width: 90,
-                                                widget: {
-                                                    width: 75,
-                                                    textAlign: 'left',
-                                                    xtype: 'splitbutton',
-                                                    iconCls: 'x-fa fa-th-list',
-                                                    ui: 'gray',
-                                                    menu: {
-                                                        xtype: 'menu',
-                                                        items: [{
-                                                            text: 'Edit',
-                                                            iconCls: 'x-fa fa-edit',
-                                                            tooltip: 'Edit Record',
-                                                            action: 'edit',
-                                                            //childXtype: 'actingreasonFrm',
-                                                            winTitle: title+'',
-                                                            winWidth: '40%',
-                                                            handler: 'renderParameterForm',
-                                                            stores: '[]'
-                                                        }, {
-                                                            text: 'Disable',
-                                                            iconCls: 'x-fa fa-repeat',
-                                                            table_name: table_name,
-                                                            storeID: table_name+'Str',
-                                                            db_con: resp.db_con_name,
-                                                            action_url: 'configurations/softDeleteConfigRecord',
-                                                            action: 'soft_delete',
-                                                            handler: 'deleteRecordFromIDByConnection'
-                                                        }, {
-                                                            text: 'Delete',
-                                                            iconCls: 'x-fa fa-trash',
-                                                            tooltip: 'Delete Record',
-                                                            db_con: resp.db_con_name,
-                                                            table_name: table_name,
-                                                            storeID: table_name+'Str',
-                                                            action_url: 'configurations/deleteConfigRecord',  
-                                                            action: 'actual_delete',
-                                                            handler: 'deleteRecordFromIDByConnection',
-                                                            hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
-                                                        }, {
-                                                            text: 'Enable',
-                                                            iconCls: 'x-fa fa-undo',
-                                                            tooltip: 'Enable Record',
-                                                            db_con: resp.db_con_name,
-                                                            table_name: table_name,
-                                                            storeID: table_name+'Str',
-                                                            action_url: 'configurations/undoConfigSoftDeletes',
-                                                            action: 'enable',
-                                                            disabled: true,
-                                                            handler: 'deleteRecordFromIDByConnection'
-                                                        }
-                                                        ]
-                                                    }
-                                                }, onWidgetAttach: function (col, widget, rec) {
-                                                    var is_enabled = rec.get('is_enabled');
-                                                    if (is_enabled === 0 || is_enabled == 0) {
-                                                        widget.down('menu menuitem[action=enable]').setDisabled(false);
-                                                        widget.down('menu menuitem[action=soft_delete]').setDisabled(true);
-                                                    } else {
-                                                        widget.down('menu menuitem[action=enable]').setDisabled(true);
-                                                        widget.down('menu menuitem[action=soft_delete]').setDisabled(false);
-                                                    }
+                                                    iconCls: 'x-fa fa-undo',
+                                                    tooltip: 'Enable Record',
+                                                    db_con: resp.db_con_name,
+                                                    table_name: table_name,
+                                                    storeID: table_name+'Str',
+                                                    action_url: 'configurations/undoConfigSoftDeletes',
+                                                    action: 'enable',
+                                                    disabled: true,
+                                                    handler: 'deleteRecordFromIDByConnection'
                                                 }
-                                            }]
-                                            });
-                                //add columns
-                                for (var i = result.length - 1; i >= 0; i--) {
-                                    var column = Ext.create('Ext.grid.column.Column', {
-                                            text: result[i]+'',
-                                            dataIndex: result[i]+'',
-                                            width: 150,
-                                            tbCls: 'wrap'
-                                        });
-                                     grid.headerCt.insert(
-                                          grid.columns.length-2, 
-                                          column);
-                                  }
-                                grid.down('hiddenfield[name=def_id]').setValue(def_id);
-                                grid.down('hiddenfield[name=db_con]').setValue(resp.db_con_name);
-                                panel.add(grid);
+                                                ]
+                                            }
+                                        }, onWidgetAttach: function (col, widget, rec) {
+                                            var is_enabled = rec.get('is_enabled');
+                                            if (is_enabled === 0 || is_enabled == 0) {
+                                                widget.down('menu menuitem[action=enable]').setDisabled(false);
+                                                widget.down('menu menuitem[action=soft_delete]').setDisabled(true);
+                                            } else {
+                                                widget.down('menu menuitem[action=enable]').setDisabled(true);
+                                                widget.down('menu menuitem[action=soft_delete]').setDisabled(false);
+                                            }
+                                        }
+                                    }]
+                                    });
+                        //add columns
+                        var tot = result.length-1;
+                        if(tot > 5){
+                            for (var i = result.length - 1; i >= 0; i--) {
+                                var column = Ext.create('Ext.grid.column.Column', {
+                                        text: result[i]+'',
+                                        dataIndex: result[i]+'',
+                                        width: 150,
+                                        tbCls: 'wrap'
+                                    });
+                                 grid.headerCt.insert(
+                                      grid.columns.length-2, 
+                                      column);
+                              }
+                          }else{
+                            for (var i = result.length - 1; i >= 0; i--) {
+                                var column = Ext.create('Ext.grid.column.Column', {
+                                        text: result[i]+'',
+                                        dataIndex: result[i]+'',
+                                        flex: 1,
+                                        tbCls: 'wrap'
+                                    });
+                                 grid.headerCt.insert(
+                                      grid.columns.length-2, 
+                                      column);
+                              }
+                          }
+                        grid.down('hiddenfield[name=def_id]').setValue(def_id);
+                        grid.down('hiddenfield[name=db_con]').setValue(resp.db_con_name);
+                        panel.add(grid);
 
-                                var main_panel =  Ext.ComponentQuery.query("#contentPanel")[0];
-                                main_panel.add(panel);
-                                main_panel.setActiveTab(main_panel.items.length-1);
-
-                            } else {
-                                toastr.error(message, 'Failure Response');
-                            }
-                        },
-                        failure: function (response) {
-                            var resp = Ext.JSON.decode(response.responseText),
-                                message = resp.message;
-                            toastr.error(message, 'Failure Response');
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            toastr.error('Error: ' + errorThrown, 'Error Response');
-                        }
+                        // var main_panel =  Ext.ComponentQuery.query("#contentPanel")[0];
+                        contentPnl.add(panel);
+                        contentPnl.setActiveTab(contentPnl.items.length-1);
+                        Ext.getBody().unmask();
+                    } else {
+                        Ext.getBody().unmask();
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
             });
+        }
     },
     showPremiseTCReviewSubmissionWinGeneric:function(btn){
         

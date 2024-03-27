@@ -88,5 +88,11 @@ Route::group(['middleware' => ['web'], 'prefix' => 'commonparam'], function(){
     //notification configurations
     Route::get('getDirectorateNotificationsConfig',[CommonParameterController::class,'getDirectorateNotificationsConfig']);
     Route::get('getDepartmentalNotificationsConfig',[CommonParameterController::class,'getDepartmentalNotificationsConfig']);
+    Route::get('getVariationsRequestConfiguration',[CommonParameterController::class,'getVariationsRequestConfiguration']);
+    Route::get('getVariationSupportingDataDetails',[CommonParameterController::class,'getVariationSupportingDataDetails']);
+    Route::get('getVariationConditionsDetails',[CommonParameterController::class,'getVariationConditionsDetails']);
+
+    Route::get('getVariationConfig',[CommonParameterController::class,'getVariationConfig']);
    
 });
+   

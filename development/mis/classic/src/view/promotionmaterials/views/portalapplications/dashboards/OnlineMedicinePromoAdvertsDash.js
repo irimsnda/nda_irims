@@ -11,7 +11,7 @@ Ext.define('Admin.view.promotionmaterials.views.portalapplications.dashboards.On
         {
             xtype: 'hiddenfield',
             name: 'section_id',
-            value: 2
+            value: 1
         },
         {
             xtype: 'onlinepromoadvertsmedicineappgrid',

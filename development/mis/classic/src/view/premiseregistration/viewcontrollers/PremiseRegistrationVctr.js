@@ -73,6 +73,71 @@ setConfigGridsStore: function (obj, options) {
         
 
     },
+
+
+    getCaseDashboardData: function (me) {
+        var dashPnl = me;
+        Ext.Ajax.request({
+            url: 'casemanagement/getCaseDashboardData',
+            method: 'GET',
+            success: function (response) {
+                var resp = Ext.decode(response.responseText);
+                dashPnl.down('displayfield[name=reported_cases]').setValue((resp.reported_cases) ? resp.reported_cases : 0);
+                dashPnl.down('displayfield[name=ongoing_cases]').setValue((resp.ongoing_cases) ? resp.ongoing_cases : 0);
+                dashPnl.down('displayfield[name=appealed_cases]').setValue((resp.appealed_cases) ? resp.appealed_cases : 0);
+                dashPnl.down('displayfield[name=closed_cases]').setValue((resp.closed_cases) ? resp.closed_cases : 0);
+            }
+        });
+    },
+
+
+    doSearchBussiness: function (btn) {
+        var me = this,
+            form = btn.up('form'),
+            company_registration_no = form.down('textfield[name=company_registration_no]').getValue();
+            if(company_registration_no){
+            Ext.getBody().mask('Retrieving Details. Please wait...');
+            Ext.Ajax.request({
+                params: {
+                    _token: token,
+                    company_registration_no:company_registration_no
+                },
+                method: 'GET',
+                //url: 'integration/getCompanyDetails',
+                url: 'integration/test',
+                headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+               }, 
+                success: function (response) {
+                    var response = Ext.JSON.decode(response.responseText),
+                        success = response.success,
+                        message = response.message;
+                        results = response.results;
+                   
+                    if (success == true || success === true) {
+                        if (results) {
+                            Ext.getBody().unmask();
+                            form.down('textfield[name=name]').setValue(results[0].name);
+                            form.down('textfield[name=registration_date]').setValue(results[0].registration_date);
+                        }
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                        Ext.getBody().unmask();
+                    }
+                },
+                 error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error(resp.message, 'Failure Response');
+                    Ext.getBody().unmask();
+                }
+            });
+        }else{
+            toastr.error('Please enter Bussines/Company Registration Number first', 'Warning Response');
+        }
+    },
+
+
+    
     showEditGmpInspectionLineDetails: function (item) {
         var me = this,
             btn = item.up('button'),
@@ -102,7 +167,7 @@ setConfigGridsStore: function (obj, options) {
         }
         console.log(record);
         childObject.loadRecord(record);
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },
     funcAddPremisesApplicationParamter:function(btn){
         var form = btn.up('form'),
@@ -114,7 +179,7 @@ setConfigGridsStore: function (obj, options) {
                 childXtype.down('hiddenfield[name=section_id]').setValue(section_id);
             }
 
-            funcShowCustomizableWindow('Parameter', '55%', childXtype, 'customizablewindow');
+            funcShowOnlineCustomizableWindow('Parameter', '55%', childXtype, 'customizablewindow');
             
     },setConfigCombosSectionfilterStore: function (obj, options) {
 
@@ -327,7 +392,7 @@ setConfigGridsStore: function (obj, options) {
         
         child.setHeight(600);
    
-    funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+    funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
    
     child.down('hiddenfield[name=application_code]').setValue(application_code);
     child.down('hiddenfield[name=section_id]').setValue(section_id);
@@ -339,51 +404,7 @@ setConfigGridsStore: function (obj, options) {
 
 
     },
-    // doSaveInspectionRecommendationDetails: function (btn) {
-    //     var me = this,
-    //         url = btn.action_url,
-    //         table = btn.table_name,
-    //         mainTabPnl = btn.up('#contentPanel'),
-    //         activeTab = mainTabPnl.getActiveTab(),
-    //         form = btn.up('form'),
-    //         win = form.up('window'),
-    //         application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
-    //         premise_id = activeTab.down('hiddenfield[name=premise_id]').getValue(),
-    //         report_type_id = activeTab.down('hiddenfield[name=report_type_id]').getValue(),
-    //         frm = form.getForm();
-    //     if (frm.isValid()) {
-    //         frm.submit({
-    //             url: url,
-    //             params: {
-    //                 model: table,
-    //                 application_code:application_code,
-    //                 premise_id:premise_id,
-    //                 report_type_id:report_type_id
-    //             },
-    //             waitMsg: 'Please wait...',
-    //             headers: {
-    //                 'Authorization': 'Bearer ' + access_token
-    //             },
-    //             success: function (form, action) {
-    //                 var response = Ext.decode(action.response.responseText),
-    //                     success = response.success,
-    //                     message = response.message;
-    //                 if (success == true || success === true) {
-    //                     toastr.success(message, "Success Response");
-    //                     activeTab.down('hiddenfield[name=is_report_saved]').setValue(1);
-    //                     activeTab.down('button[name=btn_print_inspection_report]').setVisible(true);
-                        
-    //                 } else {
-    //                     toastr.error(message, 'Failure Response');
-    //                 }
-    //             },
-    //             failure: function (form, action) {
-    //                 var resp = action.result;
-    //                 toastr.error(resp.message, 'Failure Response');
-    //             }
-    //         });
-    //     }
-    // },
+  
 
 
     doSaveInspectionRecommendationDetails:function(btn){
@@ -401,8 +422,6 @@ setConfigGridsStore: function (obj, options) {
             regional_inspector_recommendation_id= form.down('combo[name=regional_inspector_recommendation_id]').getValue();
             chiefregional_inspector_recommendation_id= form.down('combo[name=chiefregional_inspector_recommendation_id]').getValue();
 
-
-            
           if(report_type_id==1 ||report_type_id===1){
             if(recommendation_id ==1){
 
@@ -468,7 +487,7 @@ setConfigGridsStore: function (obj, options) {
            }
             frm = form.getForm();
             if (frm.isValid()) {
-               Ext.MessageBox.confirm('Approval Recommendatio', title, function (button) {
+               Ext.MessageBox.confirm('Approval Recommendation', title, function (button) {
                 if (button === 'yes') {
                     Ext.getBody().mask('Saving Recommendation Application...');
                     var formData = frm.getValues();
@@ -479,7 +498,7 @@ setConfigGridsStore: function (obj, options) {
                             params: Ext.apply({
                                 model: table,
                                 application_code:application_code,
-                                premise_id:premise_id,
+                                app_premise_id:premise_id,
                                 report_type_id:report_type_id
                             }, formData),
                             headers: {
@@ -520,18 +539,131 @@ setConfigGridsStore: function (obj, options) {
          }
     },
 
-     doPrintInspectionReport: function (btn) {
+
+    doSaveBatchInspectionRecommendationDetails:function(btn){
         var me = this,
-          
-            mainTabPnl = btn.up('#contentPanel'),
-            activeTab = mainTabPnl.getActiveTab(),
-            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
-            premise_id = activeTab.down('hiddenfield[name=premise_id]').getValue(),
-            report_type_id = activeTab.down('hiddenfield[name=report_type_id]').getValue(),
-            url = 'reports/printPremiseInspectionReport?application_code=' + application_code + '&premise_id=' + premise_id+ '&report_type_id=' + report_type_id;
-            print_report(url);
+            url = btn.action_url,
+            table = btn.table_name,
+            form = btn.up('form'),
+            win = form.up('window'),
+            storeID = btn.storeID,
+            process_id= form.down('hiddenfield[name=process_id]').getValue(),
+            selected_appcodes= form.down('hiddenfield[name=selected_appcodes]').getValue(),
+            workflow_stage_id= form.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            chiefregional_inspector_recommendation_id= form.down('combo[name=chiefregional_inspector_recommendation_id]').getValue();
+            if(chiefregional_inspector_recommendation_id ==1){
+
+                title = "Do you want to Recommend the reviewed License Application?";
+            }else if(chiefregional_inspector_recommendation_id ==3){
+
+                title = "Do you want to Request for Re-Inspection for the reviewed License Application?";
+            }
+            else if(chiefregional_inspector_recommendation_id ==5){
+
+                title = "Do you want to Postponed Inspection for the reviewed License Application?";
+            }
+            else if(chiefregional_inspector_recommendation_id ==4){
+
+                title = "Do you want to Recommend after Query Response/CAPA Submission for the reviewed License Application?";
+            }
+            else{
+                title = "Do you want to Not Recommend the reviewed License Application?";
+
+            }
+            frm = form.getForm();
+            if (frm.isValid()) {
+               Ext.MessageBox.confirm('Inspection Recommendation', title, function (button) {
+                if (button === 'yes') {
+                   // Ext.getBody().mask('Saving Recommendation Application...');
+                    var formData = frm.getValues();
+
+                    Ext.Ajax.request({
+                            url: url,
+                            method: 'POST',
+                            params: Ext.apply({
+                                model: table,
+                                report_type_id:3
+                            }, formData),
+                            headers: {
+                                'Authorization': 'Bearer ' + access_token,
+                                'X-CSRF-Token': token
+                            },
+                            success: function (response) {
+                               
+                                var resp = Ext.JSON.decode(response.responseText),
+                                    message = resp.message,
+                                    success = resp.success;
+                                    if (success == true || success === true) {
+                                         if(storeID != ''){
+                                            store = Ext.getStore(storeID);
+                                            store.removeAll();
+                                            store.load();
+                                         }
+                                        toastr.success(message, "Success Response");
+                                        win.close();
+                                    } else {
+                                        toastr.error(message, 'Failure Response');
+                                    }
+                               // Ext.getBody().unmask();
+                            },
+                            failure: function (response) {
+                                
+                                var resp = Ext.JSON.decode(response.responseText),
+                                    message = resp.message;
+                                toastr.error(message, 'Failure Response');
+                                //Ext.getBody().unmask();
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                //Ext.getBody().unmask();
+                                toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
+                                
+                            }
+                        });
+
+                }
+            })
+         }
     },
 
+     doPrintInspectionReport: function (btn) {
+        var me = this,
+            mainTabPnl = btn.up('#contentPanel'),
+            activeTab = mainTabPnl.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            premise_id = activeTab.down('hiddenfield[name=premise_id]').getValue(),
+            report_type_id = 5,
+            inspection_report_type_id = activeTab.down('hiddenfield[name=report_type_id]').getValue();
+            this.fireEvent('generatePremiseInspectionReport', application_code,module_id,sub_module_id,premise_id,report_type_id,inspection_report_type_id);
+    },
+
+      doPreviewDrugShopLicense: function (btn) {
+        var me = this,
+            mainTabPnl = btn.up('#contentPanel'),
+            activeTab = mainTabPnl.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            business_type_id = '',
+            report_type_id = 3,
+            isPreview = 1;
+            this.fireEvent('generatePremisePermit', application_code,module_id,sub_module_id,business_type_id,report_type_id,isPreview);
+    },
+
+     doPreviewPremiseLicense: function (btn) {
+        var me = this,
+            mainTabPnl = btn.up('#contentPanel'),
+            activeTab = mainTabPnl.getActiveTab(),
+            form=activeTab.down('premisedetailsfrm'),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            business_type_id = form.down('combo[name=business_type_id]').getValue(),
+            report_type_id = 3,
+            isPreview = 1;
+            this.fireEvent('generatePremisePermit', application_code,module_id,sub_module_id,business_type_id,report_type_id,isPreview);
+    },
 
     saveLegalityofStockprdRemarks: function (btn) {
         var me = this,
@@ -586,7 +718,7 @@ setConfigGridsStore: function (obj, options) {
 
         childObject.down('hiddenfield[name=trader_id]').setValue(trader_id);
         //childObject.down('button[action=link_personnel]').setDisabled(true);
-        funcShowCustomizableWindow('Premise Personnel', width, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Premise Personnel', width, childObject, 'customizablewindow');
     },
 
     savePremisePersonnelBasicInfo: function (btn) {
@@ -1436,7 +1568,7 @@ setConfigGridsStore: function (obj, options) {
             winTitle = btn.winTitle,
             winWidth = btn.winWidth,
             childObject = Ext.widget(childXtype);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     funcAddWinNewPremisesDetails: function (btn) {
         var childXtype = btn.childXtype,
@@ -1447,7 +1579,7 @@ setConfigGridsStore: function (obj, options) {
             winWidth = btn.winWidth,
             childObject = Ext.widget(childXtype);
             childObject.down('hiddenfield[name=section_id]').setValue(section_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     
     saveApplicationScreeningDetails: function (btn) {
@@ -1545,7 +1677,7 @@ setConfigGridsStore: function (obj, options) {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -1568,7 +1700,7 @@ setConfigGridsStore: function (obj, options) {
             me.fireEvent('refreshStores', storeArray);
         }
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -1605,7 +1737,7 @@ setConfigGridsStore: function (obj, options) {
             me.fireEvent('refreshStores', storeArray);
         }
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     },
 
     showEditPremiseOtherDetailsWin: function (item) {
@@ -1637,7 +1769,7 @@ setConfigGridsStore: function (obj, options) {
             me.fireEvent('refreshStores', storeArray);
         }
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     },
 
     showAddPremiseOtherDetailsWin: function (btn) {
@@ -1663,7 +1795,7 @@ setConfigGridsStore: function (obj, options) {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(title, '35%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, '35%', form, 'customizablewindow');
     },
 
     doDeletePremiseRegWidgetParam: function (item) {
@@ -1805,7 +1937,7 @@ setConfigGridsStore: function (obj, options) {
         grid.down('hiddenfield[name=item_resp_id]').setValue(item_resp_id);
         grid.down('hiddenfield[name=pass_status]').setValue(pass_status);
         grid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
-        funcShowCustomizableWindow(checklist_item + ' - Queries', '85%', grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(checklist_item + ' - Queries', '85%', grid, 'customizablewindow');
     },
 
     backToApplicationQueriesGrid: function (btn) {
@@ -2018,7 +2150,7 @@ setConfigGridsStore: function (obj, options) {
         Ext.each(misPanel.query('field'), function (field) {
             field.setReadOnly(true);
         });
-        funcShowCustomizableWindow(ref_no + ' Compare Details', '95%', comparePanel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no + ' Compare Details', '95%', comparePanel, 'customizablewindow');
     },
 
     acceptPortalAmendedDetails: function (button) {
@@ -2074,6 +2206,28 @@ setConfigGridsStore: function (obj, options) {
             form.down('htmleditor[name=storage_available]').setVisible(true);
             form.down('htmleditor[name=cold_storage_facilities]').setVisible(true);
         }
+
+        if(sub_module_id==96 ||sub_module_id===96 || sub_module_id==110 || sub_module_id===110){
+            form.down('textarea[name=state_of_walls]').setReadOnly(true);
+            form.down('textarea[name=state_of_walls]').setVisible(false);
+            form.down('textarea[name=state_of_roof]').setReadOnly(true);
+            form.down('textarea[name=state_of_roof]').setVisible(false);
+            form.down('textarea[name=state_of_floor]').setReadOnly(true);
+            form.down('textarea[name=state_of_floor]').setVisible(false);
+            form.down('textarea[name=premise_nature]').setReadOnly(true);
+            form.down('textarea[name=premise_nature]').setVisible(false);
+            form.down('fieldcontainer[name=new_room]').setVisible(false);
+            form.down('textfield[name=premise_latitude]').setReadOnly(true);
+            form.down('textfield[name=premise_latitude]').setVisible(false);
+            form.down('textfield[name=premise_longitude]').setReadOnly(true);
+            form.down('textfield[name=premise_longitude]').setVisible(false);
+
+            form.down('textarea[name=proposed_changes]').setReadOnly(true);
+            form.down('textarea[name=proposed_changes]').setVisible(false);
+            form.down('button[name=capture_location]').setVisible(false);
+         }
+
+
         if(form.down('button[name=btn_preminsprecommendation]')){
             form.down('button[name=btn_preminsprecommendation]').setHidden(true);
         }
@@ -2160,21 +2314,24 @@ setConfigGridsStore: function (obj, options) {
             report_type_id = item.report_type_id,
             form = childItem.down('form'),
             grid = childItem.down('grid');
+            nearestdrugshopgrid = childItem.down('nearestdrugshopgrid');
+            nearestpremisegrid = childItem.down('nearestpremisegrid');
+            nearest_pharmacy = childItem.down('nearest_pharmacy');
+
+            if(nearestdrugshopgrid){
+               nearestdrugshopgrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly); 
+            }
+             if(nearestpremisegrid){
+               nearestpremisegrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly); 
+            }
+             if(nearest_pharmacy){
+               nearest_pharmacy.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly); 
+            }
         grid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         form.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         form.down('fieldset[name=regional_inspector]').setVisible(false);
         form.down('fieldset[name=chiefregional_inspector]').setVisible(false);
-       
-        if(sub_module_id ==1 || sub_module_id ===1){
-            form.down('textarea[name=premise_state]').setVisible(false);
-            form.down('textarea[name=premise_size]').setVisible(false);
-            form.down('textarea[name=proposed_changes]').setVisible(false);
-            form.down('htmleditor[name=storage_details]').setVisible(true);
-            form.down('htmleditor[name=storage_available]').setVisible(true);
-            form.down('htmleditor[name=cold_storage_facilities]').setVisible(true);
-        }
-        
-      
+    
         if(form.down('button[name=btn_preminsprecommendation]')){
             form.down('button[name=btn_preminsprecommendation]').setHidden(true);
         }
@@ -2398,7 +2555,7 @@ setConfigGridsStore: function (obj, options) {
         premisePersonnelGrid.setIsWin(1);
         premisePersonnelGrid.setIsOnline(1);
         wizardPnl.down('premisecontactpersonfrm').down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
-        funcShowCustomizableWindow(tracking_no, '80%', onlinePanel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no, '80%', onlinePanel, 'customizablewindow');
     },
 
     onReceiveOnlineApplication: function (item) {
@@ -2440,7 +2597,7 @@ setConfigGridsStore: function (obj, options) {
             queriesGrid.down('button[action=submit_app]').setVisible(false);
             queriesGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
         }
-        funcShowCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
     },
 
     queryOnlineApplicationFrmBtn: function (btn) {
@@ -2459,7 +2616,7 @@ setConfigGridsStore: function (obj, options) {
             queriesGrid.down('button[action=submit_app]').setVisible(false);
             queriesGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
         }
-        funcShowCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
     },
 
     onAddOnlineQuery: function (btn) {
@@ -2500,7 +2657,7 @@ setConfigGridsStore: function (obj, options) {
         
             childXtype.setHeight(450);
        
-        funcShowCustomizableWindow('Illegal Stocks details(Product Details)', '65%', childXtype, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Illegal Stocks details(Product Details)', '65%', childXtype, 'customizablewindow');
     },
     onEditlegalityofstockprdDetails: function (grid,record) {
         var tockproductsfrm = Ext.widget('illegalitystockproductsfrm');
@@ -2508,7 +2665,7 @@ setConfigGridsStore: function (obj, options) {
             tockproductsfrm.loadRecord(record);
             tockproductsfrm.setHeight(450);
        
-        funcShowCustomizableWindow('Illegal Stocks details(Product Details)', '65%', tockproductsfrm, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Illegal Stocks details(Product Details)', '65%', tockproductsfrm, 'customizablewindow');
     },
     backToOnlineQueries: function (btn) {
         var queriesFrm = btn.up('form'),
@@ -2711,7 +2868,7 @@ setConfigGridsStore: function (obj, options) {
                     form.down('hiddenfield[name=application_code]').setValue(application_code);
                     form.down('hiddenfield[name=process_id]').setValue(process_id);
                     form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
-                    funcShowCustomizableWindow('Inspection Recommendation', '40%', form, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('Inspection Recommendation', '40%', form, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -2763,6 +2920,12 @@ setConfigGridsStore: function (obj, options) {
             isPreview = 0;
         this.fireEvent('generatePremisePermit', application_code,module_id,sub_module_id,business_type_id,report_type_id,isPreview);
     },
+
+     printTCPDFColumnPremisePermit: function (item) {
+        var record = item.getWidgetRecord(),
+            application_code = record.get('application_code');
+        this.fireEvent('generateTCPDPremisePermit', application_code);
+    },
     printManagersReport: function (item) {
         var report_type = item.report_type,
             action_url = base_url + '/premiseregistration/getManagersReports?report_type=' + report_type;
@@ -2780,7 +2943,7 @@ setConfigGridsStore: function (obj, options) {
             personnel_name = basicInfoFrm.down('textfield[name=name]').getValue(),
             childItem = Ext.widget(btn.childXtype);
         childItem.down('hiddenfield[name=personnel_id]').setValue(personnel_id);
-        funcShowCustomizableWindow(personnel_name + ' - ' + titleSuffix, winWidth, childItem, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(personnel_name + ' - ' + titleSuffix, winWidth, childItem, 'customizablewindow');
     },
 
     showAddPersonnelQualificationFrm: function (btn) {
@@ -2797,7 +2960,7 @@ setConfigGridsStore: function (obj, options) {
             return;
         }
         childItem.down('hiddenfield[name=personnel_id]').setValue(personnel_id);
-        funcShowCustomizableWindow(personnel_name + ' - ' + titleSuffix, winWidth, childItem, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(personnel_name + ' - ' + titleSuffix, winWidth, childItem, 'customizablewindow');
     },
 
     showEditPremisePersonnelDetails: function (item) {
@@ -2838,7 +3001,7 @@ setConfigGridsStore: function (obj, options) {
         childItem.down('personnelqualificationsgrid').down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         childItem.down('premisepersonneldocsgrid').down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         childItem.down('premisepersonneldetailsfrm').down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
-        funcShowCustomizableWindow(winTitle, winWidth, childItem, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childItem, 'customizablewindow');
     },
 
     showAddPremisePersonnelDetailsWin: function (btn) {
@@ -2869,7 +3032,7 @@ setConfigGridsStore: function (obj, options) {
         qualificationsStore.load();
         positionsStore.removeAll();
         positionsStore.load();
-        funcShowCustomizableWindow(title, winWidth, personnelTabPnl, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, personnelTabPnl, 'customizablewindow');
     },
 
     showEditPersonnelQualificationFrm: function (item) {
@@ -2889,7 +3052,7 @@ setConfigGridsStore: function (obj, options) {
         form.down('combo[name=study_field_id]').setReadOnly(true);
         form.down('combo[name=qualification_id]').setReadOnly(true);
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -2912,7 +3075,7 @@ setConfigGridsStore: function (obj, options) {
             return false;
         }
         childItem.down('hiddenfield[name=inspection_id]').setValue(inspection_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childItem, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childItem, 'customizablewindow');
     },
     funcPrintPremisesInspectionSchedules: function (btn) {
         var  mainTabPnl = btn.up('#contentPanel'),
@@ -3064,7 +3227,7 @@ setConfigGridsStore: function (obj, options) {
                         initialModel = Ext.create('Ext.data.Model', initialDetails);
                     amendedFrm.loadRecord(amendedModel);
                     initialFrm.loadRecord(initialModel);
-                    funcShowCustomizableWindow(ref_no, '85%', childObject, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', childObject, 'customizablewindow');
                     me.fireEvent('showAmendedFormFields', application_id, application_code, amendedFrm);
                     me.fireEvent('showAmendedFormFields', application_id, application_code, initialFrm);
                 } else {
@@ -3105,7 +3268,7 @@ setConfigGridsStore: function (obj, options) {
             childXtype = btn.childXtype,
             childObject = Ext.widget(childXtype);
         childObject.down('hiddenfield[name=application_code]').setValue(application_code);
-        funcShowCustomizableWindow(tracking_no + ' Rejections', winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no + ' Rejections', winWidth, childObject, 'customizablewindow');
     },
 
     showApplicationDismissalForm: function (item) {
@@ -3158,7 +3321,7 @@ setConfigGridsStore: function (obj, options) {
            winTitle = btn.winTitle,
            winWidth = btn.winWidth;
            grid.addListener('itemdblclick', "loadPremiseApplication", this);
-       funcShowCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
+       funcShowOnlineCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
     },
     loadPremiseApplication: function(view, record) {
         Ext.getBody().mask('Please wait...');
@@ -3375,8 +3538,9 @@ setConfigGridsStore: function (obj, options) {
                     toastr.error('Error: ' + errorThrown, 'Error Response');
                 }
         });
-        funcShowCustomizableWindow("Inspection Review", '60%', inspectionPreviewPnl, 'customizablewindow');
-    },showAddApplicationUnstrcuturedQueries: function (btn) {
+        funcShowOnlineCustomizableWindow("Inspection Review", '60%', inspectionPreviewPnl, 'customizablewindow');
+    },
+    showAddApplicationUnstrcuturedQueries: function (btn) {
         var grid = Ext.widget('applicationunstructuredqueriesgrid'),
             wizard = btn.up('panel'),
             mainTabPnl = btn.up('#contentPanel'),
@@ -3400,6 +3564,33 @@ setConfigGridsStore: function (obj, options) {
            
            funcShowOnlineCustomizableWindow('Query', "80%", grid, 'customizablewindow');
     },
+
+
+     showAddApplicationInternalQueries: function (btn) {
+        var grid = Ext.widget('applicationinternalqueriesgrid'),
+            wizard = btn.up('panel'),
+            mainTabPnl = btn.up('#contentPanel'),
+            containerPnl = mainTabPnl.getActiveTab();
+            application_code = containerPnl.down('hiddenfield[name=active_application_code]').getValue();
+            module_id = containerPnl.down('hiddenfield[name=module_id]').getValue();
+            sub_module_id = containerPnl.down('hiddenfield[name=sub_module_id]').getValue();
+            section_id = containerPnl.down('hiddenfield[name=section_id]').getValue();
+            application_id = containerPnl.down('hiddenfield[name=active_application_id]').getValue();
+            workflow_stage_id = containerPnl.down('hiddenfield[name=workflow_stage_id]').getValue();
+            
+            
+            grid.down('hiddenfield[name=module_id]').setValue(module_id);
+            grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            grid.down('hiddenfield[name=section_id]').setValue(section_id);
+
+            grid.down('hiddenfield[name=application_code]').setValue(application_code);
+            grid.down('hiddenfield[name=application_id]').setValue(application_id);
+            grid.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+            grid.setHeight(450);
+           
+           funcShowOnlineCustomizableWindow('Internal Query', "80%", grid, 'customizablewindow');
+    },
+
     showInspectionCAPApplicationQueries: function (item) {
         this.fireEvent('showInspectionCAPApplicationQueries', item);
     },
@@ -3451,6 +3642,58 @@ setConfigGridsStore: function (obj, options) {
         this.fireEvent('showDrugShopApplicationMoreDetailsGeneric', application_code,application_id, premise_id, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly, is_temporal);
     },
 
+     showpreDrugShopApplicationInpectionMoreDetails: function (item) {
+        Ext.getBody().mask('Please wait...');
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord(),
+            ref_no = record.get('reference_no'),
+            application_id = record.get('id'),
+            application_code = record.get('application_code'),
+            applicant_id = record.get('applicant_id'),
+            premise_id = record.get('premise_id'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = record.get('workflow_stage_id'),
+            module_id = record.get('module_id'),
+            sub_module_id = record.get('sub_module_id'),
+            section_id = record.get('section_id'),
+            isReadOnly = item.appDetailsReadOnly,
+            is_temporal = item.is_temporal;
+        this.fireEvent('showPreDrugShopApplicationInpectionMoreDetailsGeneric', application_code,application_id, premise_id, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly, is_temporal);
+    },
+
+
+      showDrugShopApplicationInpectionMoreDetails: function (item) {
+        Ext.getBody().mask('Please wait...');
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord(),
+            ref_no = record.get('reference_no'),
+            application_id = record.get('id'),
+            application_code = record.get('application_code'),
+            applicant_id = record.get('applicant_id'),
+            premise_id = record.get('premise_id'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = record.get('workflow_stage_id'),
+            module_id = record.get('module_id'),
+            sub_module_id = record.get('sub_module_id'),
+            section_id = record.get('section_id'),
+            isReadOnly = item.appDetailsReadOnly,
+            is_temporal = item.is_temporal;
+        this.fireEvent('showDrugShopApplicationInpectionMoreDetailsGeneric', application_code,application_id, premise_id, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly, is_temporal);
+    },
+
+
+     getBatchApplicationInspectionDetails: function (btn) {
+
+        this.fireEvent('getBatchApplicationInspectionDetails', btn);
+    },
+
+
+    getBatPremisechApplicationApprovalDetails: function (btn) {
+
+        this.fireEvent('getBatPremisechApplicationApprovalDetails', btn);
+    },
+
+
     showPreDrugShopApplicationMoreDetails: function (item) {
         Ext.getBody().mask('Please wait...');
         var btn = item.up('button'),
@@ -3490,7 +3733,7 @@ setConfigGridsStore: function (obj, options) {
         childItem.down('hiddenfield[name=trader_id]').setValue(applicant_id);
         //childItem.down('hiddenfield[name=personnel_type]').setValue(personnel_type);
         childItem.addListener('itemdblclick', "onTraderSupervisorItemdblclick", this);
-        funcShowCustomizableWindow('Personnel', width, childItem, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Personnel', width, childItem, 'customizablewindow');
     },
 
    
@@ -3501,7 +3744,7 @@ setConfigGridsStore: function (obj, options) {
         handlerFn=btn.handlerFn,
         childItem = Ext.widget(btn.childXtype);
         childItem.addListener('itemdblclick', handlerFn, this);
-        funcShowCustomizableWindow(winTitle, width, childItem, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, width, childItem, 'customizablewindow');
     },
 
      showPremisePharmacistSelectionGrid: function (btn) {
@@ -3510,19 +3753,27 @@ setConfigGridsStore: function (obj, options) {
         handlerFn=btn.handlerFn,
         childItem = Ext.widget(btn.childXtype);
         childItem.addListener('itemdblclick', handlerFn, this);
-        funcShowCustomizableWindow(winTitle, width, childItem, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, width, childItem, 'customizablewindow');
     },
 
 
 
     loadSelectedPremiseIncharge: function (view, record) {
         var grid = view.grid,
-            win = grid.up('window'),
-            form = Ext.ComponentQuery.query('#drugshopdetailsfrm')[0];
-            if (form) {
+            win = grid.up('window');
+            if (Ext.ComponentQuery.query('#drugshopdetailsfrm')[0]) {
              form = Ext.ComponentQuery.query('#drugshopdetailsfrm')[0];   
-            }else{
+            }
+            if (Ext.ComponentQuery.query('#preinspectiondrugshopdetailsfrm')[0]) {
             form = Ext.ComponentQuery.query('#preinspectiondrugshopdetailsfrm')[0];   
+            }
+
+            if (Ext.ComponentQuery.query('#preinspectionsiapremisedetailsfrm')[0]) {
+            form = Ext.ComponentQuery.query('#preinspectionsiapremisedetailsfrm')[0];   
+            }
+
+            if (Ext.ComponentQuery.query('#siapremisedetailsfrm')[0]) {
+            form = Ext.ComponentQuery.query('#siapremisedetailsfrm')[0];   
             }
             form.down('textfield[name=nin_no]').setValue(record.get('nin_no'));
             form.down('textfield[name=incharge_name]').setValue(record.get('incharge_name'));
@@ -3569,7 +3820,7 @@ setConfigGridsStore: function (obj, options) {
         winWidth = btn.winWidth,
         winTitle= btn.winTitle;
         grid.addListener('itemdblclick', btn.handlerFn, this);
-        funcShowCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
 
     },
 
@@ -3601,7 +3852,7 @@ setConfigGridsStore: function (obj, options) {
 
         childObject.down('hiddenfield[name=premise_id]').setValue(premise_id);
         //childObject.down('button[action=link_personnel]').setDisabled(true);
-        funcShowCustomizableWindow('Nearest DrugShop', width, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Nearest DrugShop', width, childObject, 'customizablewindow');
     },
 
 
@@ -3621,5 +3872,61 @@ setConfigGridsStore: function (obj, options) {
             isReadOnly = 1,
             is_temporal = 0;
         this.fireEvent('showDrugShopApplicationMoreDetailsGeneric', application_code,application_id, premise_id, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly, is_temporal);
+    },
+
+
+
+    viewPreInspectionSelectedpApplicationMoreDetails:function(view, record) {
+        Ext.getBody().mask('Please wait...');
+          var ref_no = record.get('reference_no'),
+            application_id = record.get('id'),
+            application_code = record.get('application_code'),
+            applicant_id = record.get('applicant_id'),
+            premise_id = record.get('premise_id'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = record.get('workflow_stage_id'),
+            module_id = record.get('module_id'),
+            sub_module_id = record.get('sub_module_id'),
+            section_id = record.get('section_id'),
+            isReadOnly = 1,
+            is_temporal = 0;
+        this.fireEvent('showPreDrugShopApplicationMoreDetailsGeneric', application_code,application_id, premise_id, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly, is_temporal);
+    },
+
+
+    viewSelectedApplicationPreInpectionMoreDetails:function(view, record) {
+        Ext.getBody().mask('Please wait...');
+          var ref_no = record.get('reference_no'),
+            application_id = record.get('id'),
+            application_code = record.get('application_code'),
+            applicant_id = record.get('applicant_id'),
+            premise_id = record.get('premise_id'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = record.get('workflow_stage_id'),
+            module_id = record.get('module_id'),
+            sub_module_id = record.get('sub_module_id'),
+            section_id = record.get('section_id'),
+            isReadOnly = 1,
+            is_temporal = 0;
+        this.fireEvent('showPreDrugShopApplicationInpectionMoreDetailsGeneric', application_code,application_id, premise_id, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly, is_temporal);
+    },
+
+
+
+      viewSelectedApplicationDrugShopInpectionMoreDetails:function(view, record) {
+        Ext.getBody().mask('Please wait...');
+          var ref_no = record.get('reference_no'),
+            application_id = record.get('id'),
+            application_code = record.get('application_code'),
+            applicant_id = record.get('applicant_id'),
+            premise_id = record.get('premise_id'),
+            process_id = record.get('process_id'),
+            workflow_stage_id = record.get('workflow_stage_id'),
+            module_id = record.get('module_id'),
+            sub_module_id = record.get('sub_module_id'),
+            section_id = record.get('section_id'),
+            isReadOnly = 1,
+            is_temporal = 0;
+        this.fireEvent('showDrugShopApplicationInpectionMoreDetailsGeneric', application_code,application_id, premise_id, applicant_id, ref_no, process_id, workflow_stage_id, module_id, sub_module_id, section_id, isReadOnly, is_temporal);
     },
 });

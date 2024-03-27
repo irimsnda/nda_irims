@@ -17,7 +17,12 @@ Route::group(['prefix' => 'clinicaltrial','middleware' => ['auth:api', 'web']], 
     Route::get('/', [ClinicalTrialController::class, 'index']);
     Route::get('printApplicationMeetingDetails', [ClinicalTrialController::class, 'printApplicationMeetingDetails']);
     Route::get('getClinicalTrialApplications',  [ClinicalTrialController::class,'getClinicalTrialApplications']);
+     Route::get('prepareAssesmentDetails',  [ClinicalTrialController::class,'prepareAssesmentDetails']);
+     Route::get('getProductHandling',  [ClinicalTrialController::class,'getProductHandling']);
     Route::post('saveClinicalTrialCommonData',  [ClinicalTrialController::class,'saveClinicalTrialCommonData']);
+
+    Route::post('saveClinicalTrialOnlineAssessmentdetails',  [ClinicalTrialController::class,'saveClinicalTrialOnlineAssessmentdetails']);
+    
     Route::get('getClinicalTrialParamFromModel',  [ClinicalTrialController::class,'getClinicalTrialParamFromModel']);
     Route::post('deleteClinicalTrialRecord',  [ClinicalTrialController::class,'deleteClinicalTrialRecord']);
     Route::post('softDeleteClinicalTrialRecord',  [ClinicalTrialController::class,'softDeleteClinicalTrialRecord']);
@@ -27,7 +32,7 @@ Route::group(['prefix' => 'clinicaltrial','middleware' => ['auth:api', 'web']], 
      
     Route::post('saveEvaluationDetails',  [ClinicalTrialController::class,'saveEvaluationDetails']);
     Route::get('getManagerReportReview',  [ClinicalTrialController::class,'getManagerReportReview']);
-     
+     Route::get('getComparatorProducts',  [ClinicalTrialController::class,'getComparatorProducts']);
      
     
     Route::post('saveNewApplicationClinicalTrialDetails',  [ClinicalTrialController::class,'saveNewReceivingBaseDetails']);
@@ -38,7 +43,8 @@ Route::group(['prefix' => 'clinicaltrial','middleware' => ['auth:api', 'web']], 
     Route::get('prepareNewClinicalTrialAssessmentStage',  [ClinicalTrialController::class,'prepareNewClinicalTrialAssessmentStage']);
     Route::get('prepareCtrProgressReportAssessment',  [ClinicalTrialController::class,'prepareCtrProgressReportAssessment']);
 
-    
+
+     Route::get('preparePreClinicalTrialManagerMeetingStage',  [ClinicalTrialController::class,'preparePreClinicalTrialManagerMeetingStage']);
     Route::get('prepareNewClinicalTrialManagerMeetingStage',  [ClinicalTrialController::class,'prepareNewClinicalTrialManagerMeetingStage']);
     Route::post('addClinicalStudySite',  [ClinicalTrialController::class,'addClinicalStudySite']);
     Route::get('getClinicalStudySites',  [ClinicalTrialController::class,'getClinicalStudySites']);
@@ -47,7 +53,11 @@ Route::group(['prefix' => 'clinicaltrial','middleware' => ['auth:api', 'web']], 
     Route::get('getClinicalTrialOtherInvestigators',  [ClinicalTrialController::class,'getClinicalTrialOtherInvestigators']);
     Route::get('getClinicalTrialMonitors',  [ClinicalTrialController::class,'getClinicalTrialMonitors']);
 
-    
+
+    Route::get('getClinicalPersonnelDetails',  [ClinicalTrialController::class,'getClinicalPersonnelDetails']);
+
+    Route::get('getNonClinicaltrailToxicologyData',  [ClinicalTrialController::class,'getNonClinicaltrailToxicologyData']);
+
     Route::get('getImpProducts',  [ClinicalTrialController::class,'getImpProducts']);
     Route::get('getImpProductIngredients',  [ClinicalTrialController::class,'getImpProductIngredients']);
     Route::get('getClinicalTrialManagerApplicationsGeneric',  [ClinicalTrialController::class,'getClinicalTrialManagerApplicationsGeneric']);

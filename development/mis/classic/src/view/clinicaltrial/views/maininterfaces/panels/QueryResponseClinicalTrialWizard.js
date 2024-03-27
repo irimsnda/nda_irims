@@ -34,8 +34,17 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.QueryResponseCl
             autoScroll: true
         },
         {
-            xtype: 'impproductsgrid',
-            autoScroll: true
+            
+            xtype: 'tabpanel',
+            title:'Clinical Trial Products',
+            layout: 'accordion',
+            items:[{
+                xtype: 'impproductsgrid',
+                title:'Clinical Trial Investigational Products'
+            },{
+                xtype: 'clinicalcomparatorproductsgrid',
+                title:'Clinical Trial Comparator Products'
+            }]
         },
         {
             xtype: 'clinicaltrialdocuploadsgenericgrid',
@@ -97,7 +106,7 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.QueryResponseCl
                     step: 4,
                     iconCls: 'fa fa-th-large',
                     enableToggle: true,
-                    text: 'IMP PRODUCTS',
+                    text: 'CLINICAL TRIAL PRODUCTS',
                     action: 'quickNav'
                 },
                 {

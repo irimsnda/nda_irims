@@ -40,8 +40,10 @@ Ext.define('Admin.view.surveillance.views.panels.unstructured.UnStructuredPmsRec
                     valueField: 'id',
                     displayField: 'name',
                     queryMode: 'local',
-                    allowBlank: false,
+                    allowBlank: true,
                     forceSelection: true,
+                    hidden:true,
+                    allowBlank: true,
                     listeners: {
                         beforerender: {
                             fn: 'setOrgConfigCombosStore',
@@ -63,7 +65,8 @@ Ext.define('Admin.view.surveillance.views.panels.unstructured.UnStructuredPmsRec
                     fieldLabel: 'Directorate',
                     labelWidth: 85,
                     width: 400,
-                    allowBlank: false,
+                    allowBlank: true,
+                    //hidden: true,
                     name: 'directorate_id',
                     valueField: 'id',
                     displayField: 'name',

@@ -110,104 +110,213 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.common.PromotionAndAd
             name:'batch_approval_recommendation',
             disabled: true,
             table_name: 'tra_promotion_adverts_applications',
-            stores: '["approvalsstr"]',
+            stores: '["productApprovalDecisionsStr"]',
             handler:'getBatchApplicationApprovalDetails',
             approval_frm: 'batchproductapprovalrecommfrm',
             iconCls: 'x-fa fa-chevron-circle-up',
             margin: 5
   }],
     columns: [
+    {
+        xtype: 'widgetcolumn',
+        text: 'Print',
+        widht: 150,
+        widget: {
+            xtype: 'button',
+            iconCls: 'x-fa fa-certificate',
+            ui: 'soft-green',
+            text: 'Print Certificate',
+            name: 'certificate',
+            tooltip: 'Print  Certificate',
+            backend_function: 'generatePromotionalRegCertificate',
+            handler: 'generatePromotionalRegCertificate',
+            bind: {
+                disabled: '{record.decision_id <= 0 || record.decision_id === null}'
+                //disabled: '{record.decision_id !== 1}'
+            }
+        }
+    },
         {
             xtype: 'gridcolumn',
             dataIndex: 'tracking_no',
             text: 'Tracking Number',
-            flex: 1
+            flex: 2,
+            tdCls: 'wrap-text'
         },
         {
             xtype: 'gridcolumn',
             dataIndex: 'reference_no',
             text: 'Ref Number',
-            flex: 1
+            flex: 2,
+            tdCls: 'wrap-text'
         },  {
             xtype: 'gridcolumn',
             text: 'From',
+            hidden:true,
             dataIndex: 'from_user',
-            flex: 1,
-            tdCls: 'wrap'
+            flex: 2,
+            tdCls: 'wrap-text'
         },
         {
             xtype: 'gridcolumn',
             text: 'To',
+            hidden:true,
             dataIndex: 'to_user',
-            flex: 1,
-            tdCls: 'wrap'
+            flex: 2,
+            tdCls: 'wrap-text'
         }, {
             xtype: 'gridcolumn',
             dataIndex: 'applicant_name',
             text: 'Applicant',
-            flex: 1
+            hidden:true,
+            flex: 2,
+            tdCls: 'wrap-text'
         },{
             xtype: 'gridcolumn',
             dataIndex: 'applicant_name',
             text: 'Applicant',
-            flex: 1
+            flex: 2,
+            tdCls: 'wrap-text'
         },
     
         {
             xtype: 'gridcolumn',
             dataIndex: 'advertisement_type',
             text: 'Advertisement Type',
-            flex: 1
+            flex: 2,
+            tdCls: 'wrap-text'
         },
         {
             xtype: 'gridcolumn',
             dataIndex: 'description_of_advert',
             text: 'Description of Advertisement',
-            flex: 1
+            flex: 2,
+            tdCls: 'wrap-text'
         }, {
             xtype: 'gridcolumn',
             dataIndex: 'venue_of_exhibition',
+            hidden:true,
             text: 'Venue of the Advertisement/Exhibition',
-            flex: 1
+            flex: 2,
+            tdCls: 'wrap-text'
         },{
             xtype: 'gridcolumn',
+            hidden:true,
             dataIndex: 'exhibition_start_date',
             text: ' Advertisement/Exhibition Start Date',
-            flex: 1
+            flex: 2,
+            tdCls: 'wrap-text'
         },{
             xtype: 'gridcolumn',
+            hidden:true,
             dataIndex: 'exhibition_start_date',
             text: ' Advertisement/Exhibition End Date',
-            flex: 1
+            flex: 2,
+            tdCls: 'wrap-text'
         },  {
             xtype: 'gridcolumn',
             dataIndex: 'sponsor_name',
             text: 'Sponsor Name',
-            flex: 1
+            flex: 2,
+            hidden:true,
+            tdCls: 'wrap-text'
         }, 	
         {
             xtype: 'gridcolumn',
             dataIndex: 'workflow_stage',
+            hidden:true,
             text: 'Workflow Stage',
-            flex: 1
+            flex: 2,
+            tdCls: 'wrap-text'
         }, {
             xtype: 'gridcolumn',
             dataIndex: 'application_status',
             text: 'Application Status',
-            flex: 1,
-            tdCls: 'wrap'
+            flex: 2,
+            hidden:true,
+            tdCls: 'wrap-text'
         }, {
             xtype: 'gridcolumn',
             text: 'Date Received',
+            hidden:true,
             dataIndex: 'date_received',
-            flex: 1,
+            flex: 2,
             tdCls: 'wrap-text',
             renderer: Ext.util.Format.dateRenderer('d/m/Y H:i:s')
-        },{
+        },
+        {
+            header: 'Manager Recommendation',
+            dataIndex: 'review_recommendation_id',
+            flex: 2,
+            renderer: function (value, metaData,record) {
+                var review_recommendation_id = record.get('review_recommendation_id')
+                if (review_recommendation_id==1 || review_recommendation_id===1) {
+                    metaData.tdStyle = 'color:white;background-color:green';
+                    return record.get('review_recomm');
+                }else if(review_recommendation_id==2 || review_recommendation_id===2){
+                  metaData.tdStyle = 'color:white;background-color:red';
+                  return record.get('review_recomm');
+              }else if(review_recommendation_id==3 || review_recommendation_id===3){
+                metaData.tdStyle = 'color:white;background-color:blue';
+                return record.get('review_recomm');
+               }else{
+                 return ' ';
+               }
+            }
+          },  
+        {
+            xtype: 'gridcolumn',
+            dataIndex: 'manager_comment',
+            text: 'Manager Comments',
+             flex: 2,
+            tdCls: 'wrap-text'
+        },
+         {
+            header: 'Director Recommendation',
+            dataIndex: 'director_recommendation_id',
+            flex: 2,
+            renderer: function (value, metaData,record) {
+                var director_recommendation_id = record.get('director_recommendation_id')
+                if (director_recommendation_id==1 || director_recommendation_id===1) {
+                    metaData.tdStyle = 'color:white;background-color:green';
+                    return record.get('director_recomm');
+                }else if(director_recommendation_id==2 || director_recommendation_id===2){
+                  metaData.tdStyle = 'color:white;background-color:red';
+                  return record.get('director_recomm');
+              }else if(director_recommendation_id==3 || director_recommendation_id===3){
+                metaData.tdStyle = 'color:white;background-color:blue';
+                return record.get('director_recomm');
+               }else{
+                 return ' ';
+               }
+            }
+          },  
+        {
+            xtype: 'gridcolumn',
+            dataIndex: 'director_comment',
+            text: 'Director Comments',
+             flex: 2,
+            tdCls: 'wrap-text'
+        }, 
+        {
         xtype: 'gridcolumn',
         dataIndex: 'recommendation',
         text: 'Recommendation',
         flex: 1
+    },{
+        xtype: 'widgetcolumn',
+        width: 150,
+        widget: {
+            width: 150,
+            textAlign: 'left',
+            xtype: 'button',
+            ui: 'soft-red',
+            text: 'Approve/Reject',
+            iconCls: 'x-fa fa-chevron-circle-up',
+            handler: 'getApplicationApprovalDetails',
+            stores: '["approvaldecisionsstr"]',
+            table_name: 'tra_promotion_adverts_applications'
+        }
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
@@ -231,6 +340,7 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.common.PromotionAndAd
                         iconCls: 'x-fa fa-chevron-circle-up',
                         handler: 'getApplicationApprovalDetails',
                         stores: '["approvaldecisionsstr"]',
+                        hidden:true,
                         table_name: 'tra_promotion_adverts_applications'
                     }, {
                         text: 'Reports',
@@ -240,11 +350,11 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.common.PromotionAndAd
                             items: [
                                 
                                 {
-                                    text: 'Evaluation Report ',
+                                    text: 'Asssesment Report ',
                                     iconCls: 'x-fa fa-clipboard',
                                     action: 'inspection_report',
                                     handler: 'printManagersReport',
-                                    report_type: 'Evaluation Report'
+                                    report_type: 'Asssesment Report'
                                 }
                             ]
                         }
@@ -259,6 +369,7 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.common.PromotionAndAd
                     {
                         text: 'Promot Certificate',
                          iconCls: 'x-fa fa-certificate',
+                         hidden:true,
                          handler: 'printPromotionalRegCertificate'
                     },
                     {
@@ -267,6 +378,10 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.common.PromotionAndAd
                         handler: 'onViewApprovalApplicationDetails',//viewPromotionMaterials
                         interfaceXtype: 'newsinglepremiseapproval',
                         hidden: true
+                    },{
+                        text: 'View Review Checklists & Recommendation',
+                        iconCls: 'x-fa fa-check-square',
+                        handler: 'showApplicationChecklists'
                     }
                 ]
             }

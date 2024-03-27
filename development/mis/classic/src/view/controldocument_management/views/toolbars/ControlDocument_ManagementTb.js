@@ -39,6 +39,7 @@ Ext.define('Admin.view.controldocument_management.views.toolbars.ControlDocument
                     {
                         text: 'Review of Control Document',
                         iconCls: 'x-fa fa-check',
+                        hidden:true,
                         handler:'showControlDocumentApplication',
                         app_type: 58
                     },

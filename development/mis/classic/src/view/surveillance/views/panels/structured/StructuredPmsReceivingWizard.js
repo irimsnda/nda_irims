@@ -44,8 +44,9 @@ Ext.define('Admin.view.surveillance.views.panels.structured.StructuredPmsReceivi
                     valueField: 'id',
                     displayField: 'name',
                     queryMode: 'local',
-                    allowBlank: false,
+                    allowBlank: true,
                     forceSelection: true,
+                    hidden: true,
                     listeners: {
                         beforerender: {
                             fn: 'setOrgConfigCombosStore',
@@ -101,7 +102,8 @@ Ext.define('Admin.view.surveillance.views.panels.structured.StructuredPmsReceivi
             items:[{
                 xtype:'applicationpmsplandetailsfrm',
                 region:'north'
-            }, {
+                    },
+                {
                 xtype: 'fieldset',
                 title: 'Sample Collection Site',
                 checkboxToggle: true,

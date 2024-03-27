@@ -1,6 +1,6 @@
 
 /**
- * Created by Kip on 11/12/2018.
+ * Created by Kip Softclans
  */
 Ext.define('Admin.view.importexportpermits.views.commoninterfaces.InspectionImportExportDetailsPnl', {
     extend: 'Ext.tab.Panel',
@@ -19,11 +19,11 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.InspectionImpo
         autoScroll: true, 
         itemId:'permitsdetails_panel', 
         viewModel: 'importexportpermitsvm',
-        title: 'Application Details(Permit, Sender/Receiver, Premises Licenses Outlets)',
+        title: 'Application Details',
         items:[{
             xtype: 'importexportinspectionbookingdetailsfrm',
             autoScroll: true,
-            title: 'Permit & Inspection Booking Information'
+            title: 'Inspection Booking Information'
         }, {
             xtype: 'senderreceiverdetailsfrm',
             title: 'Supplier/Receiver Details',

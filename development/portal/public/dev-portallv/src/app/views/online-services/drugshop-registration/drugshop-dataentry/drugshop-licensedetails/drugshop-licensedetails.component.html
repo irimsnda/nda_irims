@@ -12,10 +12,10 @@
         <dxo-group-panel [visible]="true"></dxo-group-panel>
         <dxi-column [width]="200" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false" cellTemplate="cellTemplate">
             <div *dxTemplate="let data of 'cellTemplate'">
-                <dx-button text="Edit" (click)="funcEditPersonnelDetails(data)" 
+                <dx-button text="Edit" [disabled]="is_readonly"(click)="funcEditPersonnelDetails(data)" 
                     type="success" icon="edit">
                     </dx-button> 
-                <dx-button text="Delete" (click)="funcDeletePersonnelDetails(data)" 
+                <dx-button text="Delete" [disabled]="is_readonly"(click)="funcDeletePersonnelDetails(data)" 
                     type="danger" icon="delete">
                 </dx-button> 
             </div>
@@ -27,18 +27,15 @@
 </div>
 
 
-<dx-popup class="popup"  [width]="funcpopWidth(80)" [showTitle]="true" title="Any other Pharmaceutical Business" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isBusinessPersonnelPopupVisible">
+<dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="auto" [showTitle]="true" title="Any other Pharmaceutical Business" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isBusinessPersonnelPopupVisible">
     <div *dxTemplate="let data of 'content'" class="row">
         <dx-scroll-view></dx-scroll-view>
-        <div class="col-lg-12">
-            <wizard style="background: #fff !important; height: 100% !important;">
-                <wizard-step stepTitle=" Other Pharmaceutical Premises" class="wizardStep-height">
+        <div class=" row col-lg-12">
                     <form role="form" enctype="multipart/form-data" role="form"
                          [formGroup]=" premisesDetailsfrm" class="col-lg-12" (ngSubmit)="onSavePremisesHolderDetails()">
-                        <div class="row wizard-contentwin">                            
                             <div class="col-lg-4">
                                 <label class="control-label">Does the applicant, any partner or director currently hold a licence Pharmaceutical business</label>
-                                 <dx-select-box  (onValueChanged)="onOtherPremisesnChange($event)" [dataSource]="confirmDataParam" valueExpr="id" 
+                                 <dx-select-box [readOnly]="is_readonly" (onValueChanged)="onOtherPremisesnChange($event)" [dataSource]="confirmDataParam" valueExpr="id" 
                                  displayExpr="name" [searchEnabled]="true"
                                    placeholder="Hold Pharmaceutical Business" 
                                     formControlName="hold_premise">
@@ -57,7 +54,6 @@
                                     </dx-button>
                                 </div>
                             </div>
-                        </div>
                         <div class="col-lg-12">
                             <input type="hidden" formControlName="id" />
                             <input type="hidden" formControlName="region_id" />
@@ -70,9 +66,7 @@
                             <dx-button text="Save Other Premises Details" [disabled]="!premisesDetailsfrm.valid" (click)="onSavePremisesHolderDetails()" type="success" class="btn" icon="save" [elementAttr]="{ class: 'btn btn-primary; pull-right' }">
                             </dx-button>
                         </div>
-                    </form>
-                </wizard-step>
-            </wizard>
+             </form>
         </div>
     </div>
 </dx-popup>

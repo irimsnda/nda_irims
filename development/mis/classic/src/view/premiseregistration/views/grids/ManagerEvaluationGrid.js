@@ -327,6 +327,21 @@ Ext.define('Admin.view.premiseregistration.views.grids.ManagerEvaluationGrid', {
                 xtype: 'menu',
                 items: [
                     {
+                        text: 'Request for Additional Information',
+                        iconCls: 'x-fa fa-file-pdf-o',
+                        handler: 'showApplicationQueries'
+                    },{
+                        xtype: 'button',
+                        text: 'Return Back Application(s)',
+                        iconCls: 'x-fa fa-check',
+                        ui: 'soft-green',
+                        storeID: 'productManagerMeetingStr',
+                        table_name: 'tra_premises_applications',
+                        action: 'process_returnsubmission_btn',
+                        winWidth: '50%',
+                        toaster: 0
+                    },
+                    {
                         text: 'Preview Details',
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 1,

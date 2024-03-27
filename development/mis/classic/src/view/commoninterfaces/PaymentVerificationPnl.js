@@ -258,7 +258,7 @@ Ext.define('Admin.view.commoninterfaces.PaymentVerificationPnl', {
                    // handler: 'previewUploadedDocument',
                     handler: 'funConfirmUploadedPaymentsDetails',
                     winTitle: 'Account Transactions',
-                    winWidth: '60%',
+                    winWidth: '80%',
                     //name: 'receive_payments',
                     childXtype: 'paymentsreceptionfrm',
                     stores: '["receipttypestr","paymentmodesstr","banksstr"]'
@@ -272,7 +272,12 @@ Ext.define('Admin.view.commoninterfaces.PaymentVerificationPnl', {
         this.bbar = {
             reference: 'navigation-toolbar',
             ui: 'footer',
-            items: [{
+            items: [
+                 { 
+                    xtype: 'transitionsbtn' 
+                },
+
+                 {
                     xtype: 'button',
                     text: "Raise/View Query & Responses",
                     tooltip: 'Raise Query/View Query(Request for Information) and query Responses',

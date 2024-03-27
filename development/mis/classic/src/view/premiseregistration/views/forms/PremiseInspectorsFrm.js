@@ -17,6 +17,10 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseInspectorsFrm', {
         {
             xtype: 'hiddenfield',
             name: 'inspection_id'
+        },{
+            xtype: 'hiddenfield',
+            name: '_token',
+            value: token
         },
         {
             xtype: 'combo',

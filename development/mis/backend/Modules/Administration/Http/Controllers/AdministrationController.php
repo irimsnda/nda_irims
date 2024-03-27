@@ -361,7 +361,21 @@ class AdministrationController extends Controller
     }
 public function getSystemNavigationMenuItems(Request $request)
     {
-        $row = $this->getSystemMenuItem(0, 0);
+        $strict_mode = $request->input('strict_mode');
+        $filters = $request->input('filters');
+        $filters = (array)json_decode($filters);
+        $filters=array_filter($filters);
+        $menu_id='';
+        if (!empty($filters)) {
+         $menu_id=$filters['menu_id'];
+        }
+        if(validateIsNumeric($menu_id)){
+          $row = $this->getSystemMenuItem(0, $menu_id);
+        }else{
+          $row = $this->getSystemMenuItem(0, 0);  
+        }
+    
+        //dd($row);
         $menus = '[';
         if (count($row)) {
             $menu_count = count($row);
@@ -379,6 +393,9 @@ public function getSystemNavigationMenuItems(Request $request)
                 $viewType = $item['viewType'];
                 $iconCls = $item['iconCls'];
                 $background = $item['background'];
+                $has_module = $item['has_module'];
+                $tied_module_id = $item['tied_module_id'];
+                $tied_module = $item['tied_module'];
                 $routeId = $item['routeId'];
                 $order_no = $item['order_no'];
                 $is_menu = $item['is_menu'];
@@ -394,6 +411,9 @@ public function getSystemNavigationMenuItems(Request $request)
                 $menus .= '"module_name": "' . $parent_module_name . '",';
                 $menus .= '"iconCls": "' . $iconCls . '",';
                 $menus .= '"background": "' . $background . '",';
+                $menus .= '"has_module": "' . $has_module . '",';
+                $menus .= '"tied_module_id": "' . $tied_module_id . '",';
+                $menus .= '"tied_module": "' . $tied_module . '",';
                 $menus .= '"menu_id": "' . $id . '",';
                 $menus .= '"id": "' . $id . '",';
                 $menus .= '"access_level": "' . $access_level . '",';
@@ -545,196 +565,12 @@ public function getSystemNavigationMenuItems(Request $request)
         echo $menus;
     }
 
+    
 
-    public function getSystemLandingMenuItems(Request $request)
-    {
-        $row = $this->getSystemMenuItem(0, 0);
-        $menus = '[';
-        if (count($row)) {
-            $menu_count = count($row);
-            $menu_counter = 0;
-            foreach ($row as $item) {
-                $menu_counter++;
-                $id = $item['id'];
-                $name = $item['name'];
-                $tab_title = $item['tab_title'];
-                $parent_module_name=$tab_title;
-                $text = $name;
-                $level = $item['level'];
-                $parent_id = $item['parent_id'];
-                $child_id = $item['parent_id'];
-                $viewType = $item['viewType'];
-                $iconCls = $item['iconCls'];
-                $routeId = $item['routeId'];
-                $order_no = $item['order_no'];
-                $is_menu = $item['is_menu'];
-                $is_disabled = $item['is_disabled'];
-                $workflow_id = $item['workflow_id'];
-                $parameter_id =  $item['parameter_id'];
-                $access_level = $this->getMenuAccessLevel($id);
-
-                $menus .= '{';
-                $menus .= '"text": "' . $text . '",';
-                $menus .= '"name": "' . $name . '",';
-                $menus .= '"tab_title": "' . $tab_title . '",';
-                $menus .= '"module_name": "' . $parent_module_name . '",';
-                $menus .= '"iconCls": "' . $iconCls . '",';
-                $menus .= '"menu_id": "' . $id . '",';
-                $menus .= '"id": "' . $id . '",';
-                $menus .= '"access_level": "' . $access_level . '",';
-                $menus .= '"viewType": "' . $viewType . '",';
-                $menus .= '"routeId": "' . $routeId . '",';
-                $menus .= '"level": "' . $level . '",';
-                $menus .= '"order_no": "' . $order_no . '",';
-                $menus .= '"is_menu": "' . $is_menu . '",';
-                $menus .= '"workflow_id": "' . $workflow_id . '",';
-                $menus .= '"is_disabled": "' . $is_disabled . '",';
-                $menus .= '"parameter_id": "' . $parameter_id . '",';
-                $children = $this->getSystemMenuItem(1, $id);
-                if (count($children) > 0) {
-                    $menus .= '"selectable": false,';
-                    $children_count = count($children);
-                    $children_counter = 0;
-                    $menus .= '"children": [';
-                    foreach ($children as $child) {
-                        $children_counter++;
-                        $child_id = $child['id'];
-                        $child_name = $child['name'];
-                        $child_title = $child['tab_title'];
-                        $module_name=$parent_module_name.' >> '.$child_title;
-                        $child_text = $child_name;
-                        $child_level = $child['level'];
-                        $child_viewType = $child['viewType'];
-                        $child_iconCls = 'x-fa fa-angle-double-right';//$child['iconCls'];
-                        $child_route = $child['routeId'];
-                        $child_order_no = $child['order_no'];
-                        $child_is_menu = $child['is_menu'];
-                        $child_is_disabled = $child['is_disabled'];
-                        $child_parent_id = $child['parent_id'];
-                        $child_workflow_id = $child['workflow_id'];
-                        $child_parameter_id = $child['parameter_id'];
-                        $child_access_level = $this->getMenuAccessLevel($child_id);
-
-                        if ($id == 254) {//online applications
-                            //$child_title = $child_name . ' Online Applications-' . $child_name;
-                        }
-
-                        $menus .= '{';
-                        $menus .= '"text": "' . $child_text . '",';
-                        $menus .= '"name": "' . $child_name . '",';
-                        $menus .= '"tab_title": "' . $child_title . '",';
-                        $menus .= '"module_name": "' . $module_name . '",';
-                        $menus .= '"iconCls": "' . $child_iconCls . '",';
-                        $menus .= '"menu_id": "' . $child_id . '",';
-                        $menus .= '"id": "' . $child_id . '",';
-                        $menus .= '"access_level": "' . $child_access_level . '",';
-                        $menus .= '"viewType": "' . $child_viewType . '",';
-                        $menus .= '"routeId": "' . $child_route . '",';
-                        $menus .= '"level": "' . $child_level . '",';
-                        $menus .= '"order_no": "' . $child_order_no . '",';
-                        $menus .= '"is_menu": "' . $child_is_menu . '",';
-                        $menus .= '"is_disabled": "' . $child_is_disabled . '",';
-                        $menus .= '"workflow_id": "' . $child_workflow_id . '",';
-                        $menus .= '"parameter_id": "' . $child_parameter_id . '",';
-                        $menus .= '"parent_id": ' . $child_parent_id . ',';
-                        //level 2 menu items
-                        $grandchildren = $this->getSystemMenuItem(2, $child_id);
-                        if (count($grandchildren) > 0) {
-                            $menus .= '"selectable": false,';
-                            $grandchildren_count = count($grandchildren);
-                            $grandchildren_counter = 0;
-                            $menus .= '"children": [';
-                            foreach ($grandchildren as $grandchild) {
-                                $grandchildren_counter++;
-                                $grandchild_id = $grandchild['id'];
-                                $grandchild_name = $grandchild['name'];
-                                $grandchild_tab_title = $grandchild['tab_title'];
-                                $grandchild_text = $grandchild_name;
-                                $grandchild_level = $grandchild['level'];
-                                $grandchild_viewType = $grandchild['viewType'];
-                                $grandchild_iconCls = 'x-fa fa-arrow-circle-right';//$grandchild['iconCls'];
-                                $grandchild_route = $grandchild['routeId'];
-                                $grandchild_order_no = $grandchild['order_no'];
-                                $grandchild_is_menu = $grandchild['is_menu'];
-                                $grandchild_is_disabled = $grandchild['is_disabled'];
-                                $grandchild_parent_id = $child['parent_id'];
-                                $grandchild_child_id = $grandchild['parent_id'];
-                                $grandchild_workflow_id = $grandchild['workflow_id'];
-                                $grandchild_parameter_id = $grandchild['parameter_id'];
-                                $grandchild_access_level = $this->getMenuAccessLevel($grandchild_id);
-
-                                if ($id == 254) {//online applications
-                                    //$grandchild_tab_title = $child_name . ' Online Applications-' . $grandchild_name;
-                                }
-                                if ($id == 182) {//Registration module
-                                    //$grandchild_tab_title = $child_name . ' Registration-' . $grandchild_name;
-                                }
-                                if ($child_id == 277) {//GMP module
-                                    //$grandchild_tab_title = 'GMP-' . $grandchild_name;
-                                }
-                                if ($child_id == 327) {//PMS module
-                                    //$grandchild_tab_title = 'PMS-' . $grandchild_name;
-                                }
-
-                                $menus .= '{';
-                                $menus .= '"text": "' . $grandchild_text . '",';
-                                $menus .= '"name": "' . $grandchild_name . '",';
-                                $menus .= '"tab_title": "' . $grandchild_tab_title . '",';
-                                $menus .= '"module_name": "' . $module_name . '",';
-                                $menus .= '"iconCls": "' . $grandchild_iconCls . '",';
-                                $menus .= '"menu_id": "' . $grandchild_id . '",';
-                                $menus .= '"id": "' . $grandchild_id . '",';
-                                $menus .= '"access_level": "' . $grandchild_access_level . '",';
-                                $menus .= '"viewType": "' . $grandchild_viewType . '",';
-                                $menus .= '"routeId": "' . $grandchild_route . '",';
-                                $menus .= '"level": "' . $grandchild_level . '",';
-                                $menus .= '"order_no": "' . $grandchild_order_no . '",';
-                                $menus .= '"is_menu": "' . $grandchild_is_menu . '",';
-                                $menus .= '"is_disabled": "' . $grandchild_is_disabled . '",';
-                                $menus .= '"parent_id": ' . $grandchild_parent_id . ',';
-                                $menus .= '"child_id": ' . $grandchild_child_id . ',';
-                                $menus .= '"workflow_id": "' . $grandchild_workflow_id . '",';
-                                $menus .= '"parameter_id": "' . $grandchild_parameter_id . '",';
-                                $menus .= '"leaf": true';
-
-                                if ($grandchildren_counter == $grandchildren_count) {
-                                    //Last Child in this level. Level=2
-                                    $menus .= '}';
-                                } else {
-                                    $menus .= '},';
-                                }
-                            }
-                            $menus .= ']';
-                        } else {
-                            $menus .= '"leaf": true';
-                        }
-                        if ($children_counter == $children_count) {
-                            //Last Child in this level. Level=1
-                            $menus .= '}';
-                        } else {
-                            $menus .= '},';
-                        }
-                    }
-                    $menus .= ']';
-                } else {
-                    $menus .= '"leaf": true';
-                }
-                if ($menu_counter == $menu_count) {
-                    $menus .= '}';
-                } else {
-                    $menus .= '},';
-                }
-            }
-        }
-        $menus .= ']';
-        echo $menus;
-    }
 
 
     function getSystemMenuItem($level = 0, $parent_id = 0)
     {
-       //dd('yyyy');
-        //$menu_id=182;
         $where = array(
             'par_menus.level' => $level,
             'par_menus.is_menu' => 1
@@ -744,11 +580,26 @@ public function getSystemNavigationMenuItems(Request $request)
 
         $belongsToSuperGroup = belongsToSuperGroup($groups);
         $qry = DB::table('par_menus')
+             ->leftjoin('modules', 'par_menus.tied_module_id', '=', 'modules.id')
             ->distinct()
-            ->select('par_menus.*')
+            ->select('par_menus.*','modules.name as tied_module')
             ->where($where)
-            ->where('par_menus.is_disabled', 0);//can be removed for a super user
-        $qry = $parent_id == 0 ? $qry->orderBy('par_menus.order_no') : $qry->where('par_menus.parent_id', $parent_id)->orderBy('par_menus.order_no');
+            ->where('par_menus.is_disabled', 0);
+
+       
+        if($level==0 || $level===0 && $parent_id!=0){
+
+            // $qry = $parent_id == 0 ? $qry->orderBy('par_menus.order_no') : $qry->where('par_menus.id', $parent_id)->orderBy('par_menus.order_no');
+          $qry = $parent_id == 0 ? $qry->orderBy('par_menus.order_no') : $qry->where(function ($query) use ($parent_id) {
+                $query->where('par_menus.id', $parent_id)
+                      ->orWhere('par_menus.id', 1);
+            })->orderBy('par_menus.order_no');
+
+        }else{
+         $qry = $parent_id == 0 ? $qry->orderBy('par_menus.order_no') : $qry->where('par_menus.parent_id', $parent_id)->orderBy('par_menus.order_no');
+
+        }
+    
         $qry = $belongsToSuperGroup == true ? $qry->whereRaw("1=1") : $qry->join('tra_permissions', 'par_menus.id', '=', 'tra_permissions.menu_id')
             ->where('tra_permissions.status', 1)
             ->where('tra_permissions.accesslevel_id', '<>', 1)
@@ -1898,97 +1749,211 @@ public function getSystemRoles(Request $request)
        
    }
     }
-    public function saveParameterConfig(Request $req)
-    {
-    try{
-        $id = $req->id;
-        //$menu_id = $req->menu_id;
-        $param_title = $req->param_title;
-        $param_name= $req->param_name;
-        $table_name= $req->table_name;
-        $no_joins= $req->no_joins;
-       
-        DB::beginTransaction();
-        //insert the defination
-          $user_id = \Auth::user()->id;
-          $table_data['created_on'] = Carbon::now();
-          $table_data['created_by'] = $user_id;
-          //$table_data['menu_id'] = $menu_id;
-          $table_data['param_title'] = $param_title;
-          $table_data['param_name'] = $param_name;
-          $table_data['table_name'] = $table_name;
-          $table_data['no_joins'] = $no_joins;
-          $param_def_table_name = 'par_parameter_definations';
-          $where = array(
-                            'id' => $id
-                        );
 
-            if (isset($id) && $id != "") {
-                if (recordExists($param_def_table_name, $where)) {
-                    unset($table_data['created_on']);
-                    unset($table_data['created_by']);
-                    $table_data['dola'] = Carbon::now();
-                    $table_data['altered_by'] = $user_id;
-                    $previous_data = getPreviousRecords($param_def_table_name, $where);
-                    if ($previous_data['success'] == false) {
-                        return $previous_data;
+
+   //  public function saveParameterConfig(Request $req)
+   //  {
+   //  try{
+   //      $id = $req->id;
+   //      //$menu_id = $req->menu_id;
+   //      $param_title = $req->param_title;
+   //      $param_name= $req->param_name;
+   //      $table_name= $req->table_name;
+   //      $no_joins= $req->no_joins;
+       
+   //      DB::beginTransaction();
+   //      //insert the defination
+   //        $user_id = \Auth::user()->id;
+   //        $table_data['created_on'] = Carbon::now();
+   //        $table_data['created_by'] = $user_id;
+   //        //$table_data['menu_id'] = $menu_id;
+   //        $table_data['param_title'] = $param_title;
+   //        $table_data['param_name'] = $param_name;
+   //        $table_data['table_name'] = $table_name;
+   //        $table_data['no_joins'] = $no_joins;
+   //        $param_def_table_name = 'par_parameter_definations';
+   //        $where = array(
+   //                          'id' => $id
+   //                      );
+
+   //          if (isset($id) && $id != "") {
+   //              if (recordExists($param_def_table_name, $where)) {
+   //                  unset($table_data['created_on']);
+   //                  unset($table_data['created_by']);
+   //                  $table_data['dola'] = Carbon::now();
+   //                  $table_data['altered_by'] = $user_id;
+            //         $previous_data = getPreviousRecords($param_def_table_name, $where);
+            //         if ($previous_data['success'] == false) {
+            //             return $previous_data;
+            //         }
+            //         $previous_data = $previous_data['results'];
+            //         $res = updateRecord($param_def_table_name, $previous_data, $where, $table_data, $user_id);
+            //     }
+            // } else {
+            //     $res = insertRecord($param_def_table_name, $table_data, $user_id);
+            // }
+
+   //      if($res['success']){
+   //          $param_id = $res['record_id'];
+   //          $next_is_child = false;
+   //           //delete existing trace of the param
+   //          DB::table('par_parameter_join_tables')->where('param_id',$param_id)->delete();
+   //          for ($i = $no_joins-1; $i >= 0; $i--) { 
+
+   //              $join_type_id = $req->input('join_type_id'.$i);
+   //              $join_table_name = $req->input('join_table_name'.$i);
+   //              $join_column_name = $req->input('join_column_name'.$i);
+   //              $param_column_name = $req->input('param_column_name'.$i);
+   //              $table_label = $req->input('table_label'.$i);
+   //              $join_disp_column_name = $req->input('join_disp_column_name'.$i);
+   //              $is_parent = $req->input('is_parent'.$i);
+   //              $link_column_name = $req->input('link_column_name'.$i);
+   //              if($next_is_child){
+   //                  $is_child = 1;
+   //              }else{
+   //                  $is_child = 0;
+   //              }
+   //              if($is_parent == 1){
+   //                  $next_is_child = true;
+   //              }else{
+   //                  $next_is_child = false;
+   //              }
+
+   //              //insert tables to depedent
+   //              DB::table('par_parameter_join_tables')->insert(array(
+   //                  'param_id'=>$param_id,
+   //                  'join_type_id'=>$join_type_id,
+   //                  'join_table_name'=>$join_table_name,
+   //                  'join_column_name'=>$join_column_name,
+   //                  'join_disp_column_name'=>$join_disp_column_name,
+   //                  'param_column_name'=>$param_column_name,
+   //                  'table_label'=>$table_label,
+   //                  'created_on'=>Carbon::now(),
+   //                  'created_by'=>$user_id,
+   //                  'is_parent'=>$is_parent,
+   //                  'is_child'=>$is_child,
+   //                  'link_column_name'=>$link_column_name
+   //              ));
+   //        }
+   //      }
+   //       $res = array(
+   //              'success' => true,
+   //              'message' => 'Saved successfully'
+   //          );
+       
+   //   DB::commit();
+   //      } catch (\Exception $exception) {
+   //          DB::rollBack();
+   //          $res = array(
+   //              'success' => false,
+   //              'message' => $exception->getMessage()
+   //          );
+   //      } catch (\Throwable $throwable) {
+   //          DB::rollBack();
+   //          $res = array(
+   //              'success' => false,
+   //              'message' => $throwable->getMessage()
+   //          );
+   //      }
+   //  return json_encode($res);
+   // }
+
+     public function saveParameterConfig(Request $req)
+        {
+        try{
+            $id = $req->id;
+            //$menu_id = $req->menu_id;
+            $param_title = $req->param_title;
+            $param_name= $req->param_name;
+            $table_name= $req->table_name;
+            $no_joins= $req->no_joins;
+
+            DB::beginTransaction();
+            //insert the defination
+            $user_id = \Auth::user()->id;
+            $table_data['created_on'] = Carbon::now();
+            $table_data['created_by'] = $user_id;
+            //$table_data['menu_id'] = $menu_id;
+            $table_data['param_title'] = $param_title;
+            $table_data['param_name'] = $param_name;
+            $table_data['table_name'] = $table_name;
+            $table_data['no_joins'] = $no_joins;
+            $param_def_table_name = 'par_parameter_definations';
+            $where = array(
+                                'id' => $id
+                            );
+
+                if (isset($id) && $id != "") {
+                    if (recordExists($param_def_table_name, $where)) {
+                        unset($table_data['created_on']);
+                        unset($table_data['created_by']);
+                        $table_data['dola'] = Carbon::now();
+                        $table_data['altered_by'] = $user_id;
+                        $previous_data = getPreviousRecords($param_def_table_name, $where);
+                        if ($previous_data['success'] == false) {
+                            return $previous_data;
+                        }
+                        $previous_data = $previous_data['results'];
+                        $res = updateRecord($param_def_table_name, $previous_data, $where, $table_data, $user_id);
                     }
-                    $previous_data = $previous_data['results'];
-                    $res = updateRecord($param_def_table_name, $previous_data, $where, $table_data, $user_id);
-                }
-            } else {
-                $res = insertRecord($param_def_table_name, $table_data, $user_id);
+                } else {
+                    $res = insertRecord($param_def_table_name, $table_data, $user_id);
             }
 
-        if($res['success']){
-            $param_id = $res['record_id'];
-            $next_is_child = false;
-             //delete existing trace of the param
-            DB::table('par_parameter_join_tables')->where('param_id',$param_id)->delete();
-            for ($i = $no_joins-1; $i >= 0; $i--) { 
+            if($res['success']){
+                $param_id = $res['record_id'];
+                $next_is_child = false;
+                //delete existing trace of the param
+                DB::table('par_parameter_join_tables')->where('param_id',$param_id)->delete();
+                for ($i = $no_joins-1; $i >= 0; $i--) {
 
-                $join_type_id = $req->input('join_type_id'.$i);
-                $join_table_name = $req->input('join_table_name'.$i);
-                $join_column_name = $req->input('join_column_name'.$i);
-                $param_column_name = $req->input('param_column_name'.$i);
-                $table_label = $req->input('table_label'.$i);
-                $join_disp_column_name = $req->input('join_disp_column_name'.$i);
-                $is_parent = $req->input('is_parent'.$i);
-                $link_column_name = $req->input('link_column_name'.$i);
-                if($next_is_child){
-                    $is_child = 1;
-                }else{
-                    $is_child = 0;
-                }
-                if($is_parent == 1){
-                    $next_is_child = true;
-                }else{
-                    $next_is_child = false;
-                }
+                    $join_type_id = $req->input('join_type_id'.$i);
+                    $join_table_name = $req->input('join_table_name'.$i);
+                    $join_column_name = $req->input('join_column_name'.$i);
+                    $param_column_name = $req->input('param_column_name'.$i);
+                    $table_label = $req->input('table_label'.$i);
+                    $join_disp_column_name = $req->input('join_disp_column_name'.$i);
+                    $is_parent = $req->input('is_parent'.$i);
+                    $logic = $req->input('logic'.$i);
+                    if($next_is_child){
+                        $is_child = 1;
+                    }else{
+                        $is_child = 0;
+                    }
+                    if($is_parent == 1){
+                        $next_is_child = true;
+                    }else{
+                        $next_is_child = false;
+                    }
 
-                //insert tables to depedent
-                DB::table('par_parameter_join_tables')->insert(array(
-                    'param_id'=>$param_id,
-                    'join_type_id'=>$join_type_id,
-                    'join_table_name'=>$join_table_name,
-                    'join_column_name'=>$join_column_name,
-                    'join_disp_column_name'=>$join_disp_column_name,
-                    'param_column_name'=>$param_column_name,
-                    'table_label'=>$table_label,
-                    'created_on'=>Carbon::now(),
-                    'created_by'=>$user_id,
-                    'is_parent'=>$is_parent,
-                    'is_child'=>$is_child,
-                    'link_column_name'=>$link_column_name
-                ));
-          }
-        }
-         $res = array(
-                'success' => true,
-                'message' => 'Saved successfully'
-            );
-       
-     DB::commit();
+                    //insert tables to depedent
+                    $data = array(
+                        'param_id'=>$param_id,
+                        'join_type_id'=>$join_type_id,
+                        'join_table_name'=>$join_table_name,
+                        'join_column_name'=>$join_column_name,
+                        'join_disp_column_name'=>$join_disp_column_name,
+                        'param_column_name'=>$param_column_name,
+                        'table_label'=>$table_label,
+                        'created_on'=>Carbon::now(),
+                        'created_by'=>$user_id,
+                        'is_parent'=>$is_parent,
+                        'is_child'=>$is_child,
+                        'logic'=>$logic
+                    );
+                    $res = insertRecord('par_parameter_join_tables', $data);
+                    if($res['success'] == false){
+                        return json_encode($res);
+                    }
+            }
+            $res = array(
+                    'success' => true,
+                    'message' => 'Saved successfully'
+                );
+            }
+
+
+         DB::commit();
         } catch (\Exception $exception) {
             DB::rollBack();
             $res = array(
@@ -2020,6 +1985,8 @@ public function getSystemRoles(Request $request)
                 $results['param_column_name'.$i] = $param_join->param_column_name;
                 $results['join_disp_column_name'.$i] = $param_join->join_disp_column_name;
                 $results['table_label'.$i] = $param_join->table_label;
+                $results['is_parent'.$i] = $param_join->is_parent;
+                $results['logic'.$i] = $param_join->logic;
                 $i++;
             }
            $results['id'] = $param->id;

@@ -292,7 +292,7 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.RenewalPromotio
                 }, 
 				{
                     step: 4,
-                    iconCls: 'fa fa-money',
+                    iconCls: 'fa fa-money-bill-wave',
                     enableToggle: true,
                     text: 'Invoice & Payment Details',
                     action: 'quickNav',iconAlign: 'top',  max_step: 4,

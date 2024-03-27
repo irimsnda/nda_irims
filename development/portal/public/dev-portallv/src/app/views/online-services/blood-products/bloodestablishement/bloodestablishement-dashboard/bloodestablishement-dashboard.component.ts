@@ -271,32 +271,32 @@ export class BloodestablishementDashboardComponent implements OnInit {
   funcPrintApplicationDetails(app_data){
     //print details
 
-      let report_url = this.base_url+'reports/generateProductsApplicationRpt?application_code='+app_data.application_code;
+      let report_url = this.base_url+'reports/getReportUrl?application_code='+app_data.application_code;
       this.funcGenerateRrp(report_url,"Application Details");
      
   }
   funcPrintProductRegistrationCertificate(app_data){
-    let report_url = this.base_url+'reports/generateProductRegCertificate?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_product_applications";
+    let report_url = this.base_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_product_applications";
     this.funcGenerateRrp(report_url,"Application Invoice")
     
   }
   
   funcPrintApplicationReceipts(app_data){
 
-    let report_url = this.base_url+'reports/generateApplicationReceipts?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_product_applications";
+    let report_url = this.base_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_product_applications";
     this.funcGenerateRrp(report_url,"Application Invoice")
     
   }
   funcPrintApplicationInvoice(app_data){
 
-    let report_url = this.base_url+'reports/generateApplicationInvoice?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_product_applications";
+    let report_url = this.base_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_product_applications";
     this.funcGenerateRrp(report_url,"Application Invoice")
     
   }
   funcPrintLetterofRejection(app_data){
       //print details
 
-      let report_url = this.base_url+'reports/generateProductRejectionLetter?application_code='+app_data.application_code;
+      let report_url = this.base_url+'reports/getReportUrl?application_code='+app_data.application_code;
       this.funcGenerateRrp(report_url,"Application Details");
 
   }

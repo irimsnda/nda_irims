@@ -85,6 +85,53 @@ class DbHelper
         }
     }
 
+
+        static function updateRecordNoPrevious($table_name, $where_opt, $current_data, $user_id, $con)
+    {
+        $res = array();
+        if($user_id == null){
+            $user_id = \Auth::user()->id;
+        }
+        try {
+            $previous_data = self::getPreviousRecords($table_name, $where_opt, $con);
+            if ($previous_data['success'] == false) {
+                $previous_data = [];
+            }
+            $previous_data = $previous_data['results'];
+            if(!isset($current_data['dola'])){
+                $current_data['dola'] = Carbon::now();
+            }
+            if(!isset($current_data['altered_by'])){
+                $current_data['altered_by'] = $user_id;
+            }
+            //unset just in case they were passed during update
+            unset($current_data['created_on']);
+            unset($current_data['created_by']);
+
+            DB::transaction(function () use ($con, $table_name, $previous_data, $where_opt, $current_data, $user_id, &$res) {
+                $update = self::updateRecordNoTransaction($con, $table_name, $previous_data, $where_opt, $current_data, $user_id);
+                if ($update['success'] == true) {
+                    $res = array(
+                        'success' => true,
+                        'record_id' => $update['record_id'],
+                        'message' => 'Data updated Successfully!!'
+                    );
+                } else {
+                    $res = $update;
+
+                }
+            }, 5);
+        }
+        catch (\PDOException $exception) {
+            $res = self::sys_error_handler($exception->getMessage(), 3, "Database Error Check error for details", "updateRecord");
+        } catch (\Exception $exception) {
+            $res = self::sys_error_handler($exception->getMessage(), 3, "Database Error Check error for details", "updateRecord");
+        } catch (\Throwable $throwable) {
+            $res = self::sys_error_handler($throwable->getMessage(), 3, "Database Error Check error for details", "updateRecord");
+        }
+        return $res;
+    }
+
     static function logAuditedTables($table_name, $record_id, $user_id, $event){
 
         $table_array = DB::table('par_audited_tables')->select('audited_table_name')->get();

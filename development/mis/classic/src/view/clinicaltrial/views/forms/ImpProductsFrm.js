@@ -395,6 +395,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ImpProductsFrm', {
             xtype: 'textarea',
             fieldLabel: 'Product Description(Summary of chemistry and manufacturing data,formulation,composition,excipients and strength)',
             columnWidth: 0.6,
+            grow: true, 
+            growMax: 200, 
             name: 'product_desc',
             allowBlank: true,
             bind:{

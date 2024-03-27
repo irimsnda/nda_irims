@@ -178,6 +178,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.StudySiteFrm', {
         },
          {
             xtype: 'textarea',
+            grow: true, 
+            growMax: 200, 
             allowBlank:true,
             columnWidth: 0.99,
             fieldLabel: 'Description of the Clinic and counselling rooms',
@@ -187,6 +189,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.StudySiteFrm', {
             xtype: 'textarea',
             allowBlank:true,
             columnWidth: 0.99,
+            grow: true, 
+            growMax: 200, 
             fieldLabel: 'Description of the Emergency facilities',
             name: 'emergency'
         },
@@ -194,11 +198,15 @@ Ext.define('Admin.view.clinicaltrial.views.forms.StudySiteFrm', {
             xtype: 'textarea',
             allowBlank:true,
             columnWidth: 0.99,
+              grow: true, 
+            growMax: 200, 
             fieldLabel: 'Description of the Facilities for special examinations (if required)',
             name: 'special_examination_facility'
         },{
             xtype: 'textarea',
             allowBlank:true,
+              grow: true, 
+            growMax: 200, 
             columnWidth: 0.99,
             fieldLabel: 'Capacity to collect, prepare, store and transport clinical samples',
             name: 'capacity'
@@ -206,6 +214,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.StudySiteFrm', {
             xtype: 'textarea',
             allowBlank:true,
             columnWidth: 0.99,
+            grow: true, 
+            growMax: 200, 
             fieldLabel: 'Storage and handling facilities for medicines',
             name: 'storage_facility'
         }
@@ -213,6 +223,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.StudySiteFrm', {
             xtype: 'textarea',
             allowBlank:true,
             columnWidth: 0.99,
+            grow: true, 
+            growMax: 200, 
             fieldLabel: 'Name and qualifications of person with responsibility for dispensing medicines',
             name: 'staff_qualification'
         }

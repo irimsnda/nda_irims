@@ -69,29 +69,34 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.PromtionAdverts
                 title: 'APPLICANT DETAILS'
             },{
                 xtype: 'promLocalapplicantdetailsfrm',
+                hidden:true,
                 title: 'LOCAL TECHNICAL REPRESENTATIVE DETAILS'
             },{
                 xtype: 'promotionalappdetailsfrm',
                 title: 'Application Details'
             }]
         },
-        {
-            xtype: 'promotiommaterialproductgrid',
-            title: 'Product Particulars',
-            listeners: {
-                beforerender: {
-                    fn: 'setCustomPromotionMaterialGridsStore',
-                    config: {
-                       
-                        storeId:'promotionmaterialproductparticularstr',
-                        proxy: {
-                            url: 'promotionmaterials/getPromotionMaterialsProductParticular'
-                        }
-                    },
-                    isLoad: true
-                },
-            },
+         {
+           xtype: 'promotionsotherinformationpnl',
+            //title: 'Product Particulars',
         },
+        // {
+        //     xtype: 'promotiommaterialproductgrid',
+        //     title: 'Product Particulars',
+        //     listeners: {
+        //         beforerender: {
+        //             fn: 'setCustomPromotionMaterialGridsStore',
+        //             config: {
+                       
+        //                 storeId:'promotionmaterialproductparticularstr',
+        //                 proxy: {
+        //                     url: 'promotionmaterials/getPromotionMaterialsProductParticular'
+        //                 }
+        //             },
+        //             isLoad: true
+        //         },
+        //     },
+        // },
 		
 		
 		  {
@@ -161,9 +166,9 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.PromtionAdverts
                     iconCls: 'fa fa-user',
                     enableToggle: true,
                     pressed: true,
-                    text: 'Applicant Details',
+                    text: 'Applicantion Details',
                     action: 'quickNav',
-                    handler: 'quickNavigationMoreDetails'
+                    handler: 'quickCustomNavigationMoreDetails'
                 },
                 {
                     step: 1,
@@ -171,7 +176,7 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.PromtionAdverts
                     enableToggle: true,
                     text: 'Products Particulars',
                     action: 'quickNav',
-                    handler: 'quickNavigationMoreDetails'
+                    handler: 'quickCustomNavigationMoreDetails'
                 }
 				
             ]
@@ -187,7 +192,7 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.PromtionAdverts
                     bind: {
                         disabled: '{atBeginning}'
                     },
-                    handler: 'onPrevCardClickMoreDetails'
+                    handler: 'onCustomPrevCardClickMoreDetails'
                 },
                 '->',
                {
@@ -240,7 +245,7 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.PromtionAdverts
                     bind: {
                         disabled: '{atEnd}'
                     },
-                    handler: 'onNextCardClickMoreDetails'
+                    handler: 'onCustomNextCardClickMoreDetails'
                 }
             ]
         };

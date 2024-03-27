@@ -29,13 +29,38 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.EditClinicalTri
             xtype: 'clinicaltrialstudysitesgrid',
             autoScroll: true
         },
-        {
-            xtype: 'clinicaltrialotherinvestigatorsgrid',
-            autoScroll: true
+         {
+            xtype:'tabpanel',
+            //layout: 'fit',
+            items:[{
+                xtype: 'onlineclinicaltrialotherinvestigatorsgrid',
+                title:'CO-/SUB INVESTIGATORS'
+            },{
+                xtype: 'onlineclinicaltrialmonitorsgrid',
+                title:' MONITORS'
+            },{
+                xtype: 'clinicaltrialmonitorsgrid',
+                title: 'Other Trial Staff(s)'
+            }]
         },
-        {
-            xtype: 'impproductsgrid',
-            autoScroll: true
+          {
+            
+            xtype: 'tabpanel',
+            //title:'Clinical Trial Products',
+            layout: 'accordion',
+            items:[{
+                xtype: 'impproductsgrid',
+                title:'Clinical Trial Investigational Products'
+            },{
+                xtype: 'impProductshandlinggrid',
+                title: 'Details of Handling Trial'
+            },{
+                xtype: 'clinicalcomparatorproductsgrid',
+                title:'Clinical Trial Comparator Products'
+            },{
+                xtype: 'clinicalcomparatorproductsgrid',
+                title:'Dose Toxicity Details(Mandatory Study Phase IV)'
+            }]
         },
         {
             xtype: 'clinicaltrialdocuploadsgenericgrid',
@@ -102,7 +127,7 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.EditClinicalTri
                     step: 4,
                     iconCls: 'fa fa-th-large',
                     enableToggle: true,
-                    text: 'IMP PRODUCTS',
+                     text: 'PRODUCTS & NON CLINICAL DETAILS',
                     wizard_pnl: 'newclinicaltrialreceivingwizard',
                     max_step: 7,
                     action: 'quickNav'

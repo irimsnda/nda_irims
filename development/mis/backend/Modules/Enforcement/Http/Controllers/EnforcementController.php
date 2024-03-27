@@ -2682,10 +2682,10 @@ class EnforcementController extends Controller
                $qry->where('t1.id', $application_id);
            }
            if($stage_category_id == 6 || $stage_category_id == 7){
-               $qry->whereRaw("(stage_category_id = 6 OR stage_category_id = 7)");
+               //$qry->whereRaw("(stage_category_id = 6 OR stage_category_id = 7)");
            }
            if($stage_category_id == 9){
-               $qry->whereRaw("(stage_category_id = 9)");
+               //$qry->whereRaw("(stage_category_id = 9)");
            }
            $results = $qry->first();
            $res = array(

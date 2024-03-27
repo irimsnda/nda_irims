@@ -53,7 +53,7 @@ Ext.define('Admin.view.gmpapplications.views.toolbars.DrugsGmpTb', {
                     },
                     '-',
                     {
-                        text: ' GMP Alteration',
+                        text: ' GMP Variation',
                         iconCls: 'x-fa fa-check',
                         handler:'showNewGmpApplication',
                         wrapper_xtype: 'drugsgmpdashwrapper',

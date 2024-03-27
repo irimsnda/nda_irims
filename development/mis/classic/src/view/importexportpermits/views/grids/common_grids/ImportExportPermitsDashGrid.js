@@ -70,7 +70,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         width: 10
     }, {
         xtype: 'combo',
-        fieldLabel: 'Workflow Stage',
+        fieldLabel: 'Application Status',
         valueField: 'id',
         name: 'workflow_stage_id',
         displayField: 'name',
@@ -108,7 +108,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             ptype: 'gridexporter'
         }
     ],
-    export_title: 'Import/Export Permits applications',
+    export_title: 'Import/Export Licence applications',
 
     listeners: {
         itemdblclick: 'onViewImportExportPermitApplication'
@@ -161,14 +161,18 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'proforma_invoice_no',
+        hidden: true,
         text: 'Proforma Invoice No',
         flex: 1
-    }, {
+    }, 
+    {
         xtype: 'gridcolumn',
         dataIndex: 'workflow_stage',
-        text: 'Workflow Stage',
+        hidden: true,
+        text: 'Application Status',
         flex: 1
-    }, {
+    }, 
+    {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
         text: 'Application Status',

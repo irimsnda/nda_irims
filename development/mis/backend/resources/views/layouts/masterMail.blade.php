@@ -24,22 +24,22 @@
 
     </style>
     <title>
-        TFDA MIS
+        NDA iRIMS
     </title>
 </header>
 <body >
 
 <div class="makers" >
-    <h2> TFDA MIS </h2>
+    <h2> NDA iRIMS </h2>
 </div>
 @yield('content')
 
 <footer>
     <div class="makers" >
-        <p>@2018 TFDA. All Rights Reserved</p>
-        <p>P.O. BOX 77150, Dar Es Salaam, Tanzania.</p>
-        <p>Email: info@tfda.go.</p>
-        <p>Telephone: +255 22 2450751, +255 22 2450512<p>
+        <p>@2023 NDA. All Rights Reserved</p>
+        <p>P. O Box 23096, Kampala, Uganda,Plot 19 Lumumba Avenue (opposite TWED plaza).</p>
+        <p>Email: ndaug@nda.or.ug</p>
+        <p>Telephone: Reception : +256 [0]417 788 100,Directorate of Product Safety : +256 [0]417 788 124, Directorate of Inspectorate Services : +256 [0]417 788 129<p>
     </div>
 </footer>
 </body>

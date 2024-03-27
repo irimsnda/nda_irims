@@ -289,7 +289,7 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.AmmendmentPromo
                 }, 
 				{
                     step: 4,
-                    iconCls: 'fa fa-money',
+                    iconCls: 'fa fa-money-bill-wave',
                     enableToggle: true, max_step: 4,
                     text: 'Invoice & Payment Details',
                     action: 'quickNav',iconAlign: 'top',

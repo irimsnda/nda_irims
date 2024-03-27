@@ -7,7 +7,7 @@ import { DxDataGridComponent } from 'devextreme-angular';
 import CustomStore from 'devextreme/data/custom_store';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { AppSettings } from 'src/app/app-settings';
-import { SharedImportexportclassComponent } from '../../shared-importexportclass/shared-importexportclass.component';
+import { SharedImportexportclassComponent } from '../../shared-importexportclass/SharedImportexportclassComponent';
 
 import DataSource from 'devextreme/data/data_source';
 

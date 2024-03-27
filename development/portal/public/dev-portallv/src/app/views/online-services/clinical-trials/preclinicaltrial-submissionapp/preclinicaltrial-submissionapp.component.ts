@@ -1,5 +1,6 @@
 
 import { Component, OnInit, ViewContainerRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { SharedClinicaltrialComponent } from '../shared-clinicaltrial/shared-clinicaltrial.component';
 @Component({
@@ -7,11 +8,11 @@ import { SharedClinicaltrialComponent } from '../shared-clinicaltrial/shared-cli
   templateUrl: './preclinicaltrial-submissionapp.component.html',
   styleUrls: ['./preclinicaltrial-submissionapp.component.css']
 })
-export class PreclinicaltrialSubmissionappComponent extends 
-SharedClinicaltrialComponent implements OnInit {
+export class PreclinicaltrialSubmissionappComponent extends SharedClinicaltrialComponent implements OnInit {
  
   sub_module_id: number = 69;
   appmodule_id:number;
+ // preSubmissionGeneraldetailsfrm:FormGroup;
 
   ngOnInit() {
     if (!this.application_details) {
@@ -26,10 +27,19 @@ SharedClinicaltrialComponent implements OnInit {
   }
 
   onSaveClincialTrialApplication() {
+
+
+      const invalid = [];
+    const controls = this.preSubmissionGeneraldetailsfrm.controls;
+    for (const name in controls) {
+        if (controls[name].invalid) {
+          this.toastr.error('Fill In All Mandatory fields with (*), missing value on '+ name.replace('_id',''), 'Alert');
+            return;
+        }
+    }
     if (this.preSubmissionGeneraldetailsfrm.invalid) {
       return;
     }
-    console.log( this.preSubmissionGeneraldetailsfrm.value);
     this.spinner.show();
     this.appService.onSavePermitApplication(this.application_id, this.preSubmissionGeneraldetailsfrm.value, this.tracking_no, 'clinicaltrials/saveClinicalTrialApplication')
       .subscribe(
@@ -42,6 +52,7 @@ SharedClinicaltrialComponent implements OnInit {
             this.application_id = this.app_resp.application_id;
             this.application_code = this.app_resp.application_code;
             this.toastr.success(this.app_resp.message, 'Response');
+             this.wizard.model.navigationMode.goToStep(1);
           } else {
             this.toastr.error(this.app_resp.message, 'Alert');
           }

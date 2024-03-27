@@ -4,7 +4,7 @@
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.VcNonLicencedPermitReleaseApprovalPnl', {
     extend: 'Ext.panel.Panel',
-    title: 'Import/Export Permit Permit Approval',
+    title: 'Import/Export VC Approval',
     xtype: 'vcnonlicencedpermitreleaseapprovalpnl',
     layout: 'fit',
     permitsdetails_panel: 'previewimportexportpermitdetails',
@@ -39,7 +39,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.VcNonLi
             }, {
                 xtype: 'displayfield',
                 name: 'workflow_stage',
-                fieldLabel: 'Workflow Stage',
+                fieldLabel: 'Application Status',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',

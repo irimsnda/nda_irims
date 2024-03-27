@@ -20,7 +20,12 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.VcDetailsPnl',
             xtype: 'panel',
             autoScroll: true, 
             title: 'Application Details',
-            items:[{
+            items:[
+            {
+            xtype: 'importexportapplicantdetailsfrm',
+            autoScroll: true,
+            title: 'APPLICANT DETAILS'
+            },{
                 xtype: 'importexportdetailsfrm',
                 autoScroll: true,
                 title: 'Application Details', 

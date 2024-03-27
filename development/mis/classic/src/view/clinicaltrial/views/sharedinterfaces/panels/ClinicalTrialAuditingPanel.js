@@ -10,77 +10,124 @@ Ext.define('Admin.view.clinicaltrial.views.sharedinterfaces.panels.ClinicalTrial
     defaults: {
         split: true
     },
+    // items: [
+    //     {
+    //         title: 'Application Auditing Uploads',
+    //         region: 'center',
+    //         xtype: 'tabpanel',
+    //         items: [
+    //             {
+    //                 xtype: 'clinicaltrialdocuploadsgenericgrid',
+    //                 title:'Clinical Trial Auditing Reports Upload'
+    //             },{
+    //                 xtype: 'clinicaltrialappmoredetailswizard',
+    //                 title:'Clinical Trial Details'
+    //             }
+    //         ]
+    //     },
+    //     {
+    //         title: 'Other Details',
+    //         region: 'south',
+    //         width: 200,
+    //         collapsed: true,
+    //         collapsible: true,
+    //         titleCollapse: true,
+    //         items: [
+    //             {
+    //                 xtype: 'form',
+    //                 bodyPadding: 5,
+    //                 layout: 'column',
+    //                 defaults: {
+    //                     margin: 2,
+    //                     labelAlign: 'top',
+    //                     columnWidth: 0.5
+    //                 },
+    //                 fieldDefaults: {
+    //                     fieldStyle: {
+    //                         'color': 'green',
+    //                         'font-weight': 'bold'
+    //                     }
+    //                 },
+    //                 items: [
+    //                     {
+    //                         xtype: 'displayfield',
+    //                         fieldLabel: 'Applicant Details',
+    //                         name: 'applicant_details'
+    //                     },
+    //                     {
+    //                         xtype: 'displayfield',
+    //                         fieldLabel: 'Product Details',
+    //                         name: 'product_details',
+    //                         hidden: true
+    //                     },
+    //                     {
+    //                         xtype: 'displayfield',
+    //                         fieldLabel: 'Premise Details',
+    //                         name: 'premise_details',
+    //                         hidden: true
+    //                     },
+    //                     {
+    //                         xtype: 'toolbar',
+    //                         ui: 'footer',
+    //                         columnWidth: 1,
+    //                         items:[
+    //                             {
+    //                                 text: 'More Details',
+    //                                 iconCls: 'fa fa-bars',
+    //                                 name: 'more_app_details',
+    //                                 isReadOnly: 0
+    //                             }
+    //                         ]
+    //                     }
+    //                 ]
+    //             }
+    //         ]
+    //     },
+
     items: [
         {
-            title: 'Application Auditing Uploads',
             region: 'center',
             xtype: 'tabpanel',
-            items: [
+            items: [{
+                xtype: 'clinicaltrialappmoredetailswizard',
+                title:'Preview Clinical Trial Details'
+              },
+           
+                {
+                    title: 'Clinical Trial Online Assessment',
+                    region: 'center',
+                    xtype: 'tabpanel',
+                    items:[{
+                        xtype: 'ClinicalTrialOnlineAssessmentfrm',
+                        title:'Clinical Assessment',
+                        type_id: 1,
+
+                    },{
+                        xtype: 'ClinicalTrialOnlineAssessmentfrm',
+                        title:'Non - Clinical Assessment',
+                        type_id: 4,
+
+                    },
+                    {
+                        xtype: 'ClinicalTrialOnlineAssessmentfrm',
+                        title:'Quality Assessment',
+                        type_id: 2,
+                    }, {
+                        xtype: 'ClinicalTrialOnlineAssessmentfrm',
+                        title:'Statistical Assessment',
+                        type_id: 3,
+                    }]
+                },
+                {
+                    xtype: 'clinicaltrialscreeninggrid',
+                    title:'Clinical Trial Evaluation Checklists'
+                },
                 {
                     xtype: 'clinicaltrialdocuploadsgenericgrid',
-                    title:'Clinical Trial Auditing Reports Upload'
-                },{
-                    xtype: 'clinicaltrialappmoredetailswizard',
-                    title:'Clinical Trial Details'
-                }
-            ]
-        },
-        {
-            title: 'Other Details',
-            region: 'south',
-            width: 200,
-            collapsed: true,
-            collapsible: true,
-            titleCollapse: true,
-            items: [
-                {
-                    xtype: 'form',
-                    bodyPadding: 5,
-                    layout: 'column',
-                    defaults: {
-                        margin: 2,
-                        labelAlign: 'top',
-                        columnWidth: 0.5
-                    },
-                    fieldDefaults: {
-                        fieldStyle: {
-                            'color': 'green',
-                            'font-weight': 'bold'
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'displayfield',
-                            fieldLabel: 'Applicant Details',
-                            name: 'applicant_details'
-                        },
-                        {
-                            xtype: 'displayfield',
-                            fieldLabel: 'Product Details',
-                            name: 'product_details',
-                            hidden: true
-                        },
-                        {
-                            xtype: 'displayfield',
-                            fieldLabel: 'Premise Details',
-                            name: 'premise_details',
-                            hidden: true
-                        },
-                        {
-                            xtype: 'toolbar',
-                            ui: 'footer',
-                            columnWidth: 1,
-                            items:[
-                                {
-                                    text: 'More Details',
-                                    iconCls: 'fa fa-bars',
-                                    name: 'more_app_details',
-                                    isReadOnly: 0
-                                }
-                            ]
-                        }
-                    ]
-                }
+                    isvalidate_uploaded_by:3,
+                    title:'Clinical Trial Assessment Report(s) Upload'
+                },
+               
             ]
         },
         {

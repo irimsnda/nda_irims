@@ -98,12 +98,21 @@ Ext.define('Admin.view.workflowmanagement.views.forms.TfdaProcessesFrm', {
             },
             change: function (cmbo, newVal) {
                 var form = cmbo.up('form'),
-                    subModuleStore = form.down('combo[name=sub_module_id]').getStore();
+                region_id=form.down('textfield[name=region_id]'),
+                subModuleStore = form.down('combo[name=sub_module_id]').getStore();
                 subModuleStore.removeAll();
                 subModuleStore.load({params: {module_id: newVal}});
+                if(newVal==2||newVal===29){
+                    var is_visible = true;
+                }else{
+                     var is_visible = false;
+                }
+                region_id.setVisible(is_visible);
             }
         }
-    },{
+    },
+
+    {
         xtype: 'combo',
         fieldLabel: 'Sub Module',
         margin: '0 20 20 0',
@@ -153,7 +162,46 @@ Ext.define('Admin.view.workflowmanagement.views.forms.TfdaProcessesFrm', {
                 isLoad: true
             }
         }
-    },{
+    },
+    {
+        xtype: 'combo',
+        fieldLabel: 'Region',
+        margin: '0 20 20 0',
+        name: 'region_id',
+        allowBlank: true,
+        hidden:true,
+        valueField: 'id',
+        displayField: 'name',
+        forceSelection: true,
+        queryMode: 'local',
+        anyMatch: true,
+        listeners: {
+            beforerender: {
+                fn: 'setWorkflowCombosStore',
+                config: {
+                    pageSize: 100,
+                    proxy: {
+                        url: 'commonparam/getCommonParamFromTable',
+                        extraParams: {
+                            table_name: 'par_premise_regions'
+                        }
+                    }
+                },
+                isLoad: true
+            }
+            //,
+            // afterrender: function (cmbo) {
+            //      var grid = cmbo.up('form'),
+            //      store = cmbo.getStore(),
+            //      filterObj = {country_id: 37},
+            //      filterStr = JSON.stringify(filterObj);
+            //      store.removeAll();
+            //      store.load({params: {filters: filterStr}});
+              
+            //  }
+         }
+    }, 
+     {
         xtype: 'combo',
         fieldLabel: 'Workflow',
         margin: '0 20 20 0',

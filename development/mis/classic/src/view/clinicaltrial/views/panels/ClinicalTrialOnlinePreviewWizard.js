@@ -38,10 +38,29 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialOnlinePreviewWiza
             },{
                 xtype: 'onlineclinicaltrialmonitorsgrid',
                 title:' MONITORS'
+            },{
+                xtype: 'clinicaltrialmonitorsgrid',
+                title: 'Other Trial Staff(s)'
             }]
         },
-        {
-            xtype: 'onlineimpproductsgrid'
+          {
+            
+            xtype: 'tabpanel',
+           // title:'Clinical Trial Products',
+            layout: 'accordion',
+            items:[{
+                xtype: 'impproductsgrid',
+                title:'Clinical Trial Investigational Products'
+            },{
+                xtype: 'impProductshandlinggrid',
+                title: 'Details of Handling Trial'
+            },{
+                xtype: 'clinicalcomparatorproductsgrid',
+                title:'Clinical Trial Comparator Products'
+            },{
+                xtype: 'clinicalcomparatorproductsgrid',
+                title:'Dose Toxicity Details(Mandatory Study Phase IV)'
+            }]
         },
         {
             xtype: 'clinicaltrialonlinedocuploadsgenericgrid'
@@ -70,7 +89,8 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialOnlinePreviewWiza
                     iconCls: 'fa fa-user',
                     enableToggle: true,
                     pressed: true,
-                    text: 'APPLICANT DETAILS',
+                    text: '<span style="font-size: 9px;"><b>APPLICANT DETAILS</b></span>', 
+                    //text: 'APPLICANT DETAILS',
                     action: 'quickNav',
                     handler: 'quickNavigationOnlineDetails'
                 },
@@ -78,7 +98,8 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialOnlinePreviewWiza
                     step: 1,
                     iconCls: 'fa fa-suitcase',
                     enableToggle: true,
-                    text: 'CLINICAL TRIAL DETAILS',
+                    text: '<span style="font-size: 9px;"><b>CLINICAL TRIAL DETAILS</b></span>', 
+                    //text: 'CLINICAL TRIAL DETAILS',
                     action: 'quickNav',
                     handler: 'quickNavigationOnlineDetails'
                 },
@@ -86,7 +107,8 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialOnlinePreviewWiza
                     step: 2,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
-                    text: 'STUDY SITES',
+                    text: '<span style="font-size: 9px;"><b>STUDY SITES</b></span>', 
+                   // text: 'STUDY SITES',
                     action: 'quickNav',
                     handler: 'quickNavigationOnlineDetails'
                 },
@@ -94,7 +116,8 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialOnlinePreviewWiza
                     step: 3,
                     iconCls: 'fa fa-plus-square',
                     enableToggle: true,
-                    text: 'CO-/SUB INVESTIGATORS & MONITORS',
+                    text: '<span style="font-size: 9px;"><b>OTHER INVESTIGATORS</b></span>', 
+                    //text: 'CO-/SUB INVESTIGATORS & MONITORS',
                     action: 'quickNav',
                     handler: 'quickNavigationOnlineDetails'
                 },
@@ -102,7 +125,8 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialOnlinePreviewWiza
                     step: 4,
                     iconCls: 'fa fa-th-large',
                     enableToggle: true,
-                    text: 'INVESTIGATIONAL PRODUCTS',
+                    text: '<span style="font-size: 9px;"><b>PRODUCTS & NON CLINICAL DETAILS</b></span>', 
+                    //text: 'PRODUCTS & NON CLINICAL DETAILS',
                     action: 'quickNav',
                     handler: 'quickNavigationOnlineDetails'
                 },
@@ -110,7 +134,8 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialOnlinePreviewWiza
                     step: 5,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'DOCUMENT UPLOADS',
+                    text: '<span style="font-size: 9px;"><b>DOCUMENTS</b></span>', 
+                    //text: 'DOCUMENT UPLOADS',
                     action: 'quickNav',
                     handler: 'quickNavigationOnlineDetails'
                 },
@@ -118,7 +143,8 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialOnlinePreviewWiza
                     step: 6,
                     iconCls: 'fa fa-check-square',
                     enableToggle: true,
-                    text: 'PRE-CHECKING',
+                    text: '<span style="font-size: 9px;"><b>PRE-CHECKING</b></span>', 
+                    //text: 'PRE-CHECKING',
                     action: 'quickNav',
                     handler: 'quickNavigationOnlineDetails'
                 }

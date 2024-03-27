@@ -42,7 +42,7 @@ Ext.define('Admin.view.commoninterfaces.grids.VariationRequestsAbstractGrid', {
         name: 'add_variation',
         winTitle: 'Amendment/Variation Request',
         childXtype: 'applicationvariationrequestsfrm',
-        winWidth: '50%',
+        winWidth: '70%',
         stores: '[]'
     }, {
         xtype: 'exportbtn'

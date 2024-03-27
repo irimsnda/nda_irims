@@ -77,15 +77,9 @@
   <div class="col-lg-12">
 
       <form role="form" class="row" enctype="multipart/form-data" role="form" [formGroup]="FilterDetailsFrm">
-
-        <div class="col-lg-3">
-          <dx-select-box  [dataSource]="productappTypeData" valueExpr="id" displayExpr="name"
-          (onSelectionChanged)="onSelectProdutFilters($event)"   [searchEnabled]="true" placeholder="Select Application Type " formControlName="sub_module_id">
-          </dx-select-box>
-      </div>
       <div class="col-lg-3">
           <dx-select-box  [dataSource]="sectionsData" valueExpr="id" displayExpr="name"
-          (onSelectionChanged)="onSelectProdutFilters($event)"   [searchEnabled]="true" placeholder="Select Product Type/Category" formControlName="section_id">
+          (onSelectionChanged)="onSelectProdutFilters($event)"   [searchEnabled]="true" placeholder="Select Product Category" formControlName="disposal_class_id">
           </dx-select-box>
       </div>
       <div class="col-lg-3">
@@ -109,54 +103,47 @@
       [dataSource]="dtDisposalApplicationData" [showBorders]="true"  [wordWrapEnabled]="true" 
       (onToolbarPreparing)="onDisposalsToolbarPreparing($event)"  (onCellPrepared)="onCellPrepared($event)"  keyExpr="id">
       <dxo-filter-row [visible]="false"></dxo-filter-row>
-      <dxo-load-panel [enabled]="true">
-      </dxo-load-panel>
-      <dxo-paging [enabled]="true">
-      </dxo-paging>
-      <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[10, 20]" [showNavigationButtons]="true"
-        [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
-      </dxo-pager>
-      <dxo-search-panel [visible]="true">
-      </dxo-search-panel>
-      <dxo-export [enabled]="true" fileName="ImportExport" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-load-panel [enabled]="true">
+        </dxo-load-panel>
+        <dxo-paging [enabled]="true">
+        </dxo-paging>
+        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[10, 20]" [showNavigationButtons]="true" [showInfo]="true"
+          infoText="Page #{0}. Total: {1} ({2} items)">
+        </dxo-pager>
+        <dxo-search-panel 
+            [visible]="true" 
+          >
+        </dxo-search-panel>
+        <dxo-export [enabled]="true" fileName="PremisesApplications" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-selection mode="single"></dxo-selection>
 
-      <dxo-selection mode="single"></dxo-selection>
-      <dxi-column [width]=200 caption="Actions" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
-         cellTemplate="cellTemplateSingle">
-         <div *dxTemplate="let d of 'cellTemplateSingle'">
-          
-             <dx-button text="{{d.data.action_name}}" (click)="singleApplicationActionColClick(d)"
-        type="success" icon="{{d.data.iconCls}}">
-      </dx-button>
+        <dxi-column [width]=200 caption="Actions" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+            cellTemplate="cellTemplateSingle">
+            <div *dxTemplate="let d of 'cellTemplateSingle'">
+              <dx-button text="{{d.data.action_name}}" (click)="singleApplicationActionColClick(d)"
+              type="success" icon="{{d.data.iconCls}}">
+            </dx-button>
+            </div>
+          </dxi-column>
 
-         </div>
-       </dxi-column>
-      <dxi-column caption="Actions" [width] = 100 name="command-editing" [allowFiltering]="false" [allowSorting]="false"
-        cellTemplate="cellTemplate">
-        <div *dxTemplate="let d of 'cellTemplate'">
-          <dx-menu [items]="d.data.contextMenu" displayExpr="text" (onItemClick)="applicationActionColClick($event,d)">
-          </dx-menu>
-        </div>
-      </dxi-column>
+        <dxi-column [width]=110  caption="Actions" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+          cellTemplate="cellTemplate">
+          <div *dxTemplate="let d of 'cellTemplate'">
+            <dx-menu [items] = "d.data.contextMenu"  displayExpr="text"
+              (onItemClick)="applicationActionColClick($event,d)" >
+            </dx-menu>
+          </div>
+        </dxi-column>
+  
       <dxi-column dataField="tracking_no"></dxi-column>
-
-      <dxi-column dataField="reference_no"></dxi-column>
-      <dxi-column [width] = 90 [groupIndex]="0" dataField="section"></dxi-column>
-      <dxi-column  dataField="application_type"></dxi-column>
-      <dxi-column [width] = 100  dataField="reason_for_disposal"></dxi-column>
-      <dxi-column  [width] = 100  dataField="total_weight"></dxi-column>
-      <dxi-column dataField="market_value"></dxi-column>
+      <dxi-column dataField="product_category" caption="Product Category"></dxi-column>
+      <dxi-column  dataField="total_weight"caption="Estimated weight"></dxi-column>
       <dxi-column dataField="premises_name" caption="Premises Name"></dxi-column>
-
       <dxi-column dataField="date_added" ></dxi-column>
-
-      <dxi-column [width] = 100  [allowFiltering]="false" dataField="date_added"></dxi-column>
       <dxi-column  dataField="status_name"></dxi-column>
-
       <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
     </dx-data-grid>
   </div>
-
 </div>
 
 <dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="450" [showTitle]="true" title="Preview  Application Processing"

@@ -6,7 +6,7 @@ Ext.define('Admin.view.parameters.views.grids.glAccountsGrid', {
     store: 'glaccountsstr',
     tbar: [{
         xtype: "button",
-        text: "Add GL Account",
+        text: "Revenue Description",
         iconCls: 'x-fa fa-plus',
         margin: '0 0 5 0',
         action: 'add',
@@ -30,12 +30,13 @@ Ext.define('Admin.view.parameters.views.grids.glAccountsGrid', {
         }, {
             xtype: 'gridcolumn',
             dataIndex: 'name',
-            text: 'Name',
+            text: 'Revenue Description',
             flex: 1
         },
         {
             xtype: 'gridcolumn',
             dataIndex: 'code',
+            hidden:true,
             text: 'GL code',
             flex: 1
         },{

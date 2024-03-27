@@ -80,7 +80,7 @@ Ext.define('Admin.view.productregistration.views.grids.ProductLTRSelectionGrid',
                 pageSize: 10000,
                 remoteFilter: true,
                 proxy: {
-                    url: 'premiseregistration/getPremisesList',
+                    url: 'premiseregistration/getLtrPremisesList',
 					reader: {
                         type: 'json',
                         totalProperty: 'totalCount',
@@ -111,6 +111,7 @@ Ext.define('Admin.view.productregistration.views.grids.ProductLTRSelectionGrid',
         xtype: 'gridcolumn',
         dataIndex: 'premise_reg_no',
         text: 'Registration No',
+        hidden:true,
         flex: 1,
         filter: {
             xtype: 'textfield'
@@ -127,11 +128,15 @@ Ext.define('Admin.view.productregistration.views.grids.ProductLTRSelectionGrid',
         xtype: 'gridcolumn',
         dataIndex: 'physical_address',
         text: 'Physical Address',
-        flex: 1
+        flex: 1,
+        filter: {
+            xtype: 'textfield'
+        }
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'postal_address',
         text: 'Postal Address',
+        hidden:true,
         flex: 1
     }]
 });

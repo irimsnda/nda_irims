@@ -76,42 +76,7 @@ Ext.define('Admin.view.configurations.views.forms.Licensingfeeconfigfrm', {
             }
         },{
             xtype: 'combo',
-            fieldLabel: 'Sections',
-            margin:5,
-            name: 'section_id',
-            valueField: 'id',
-            displayField: 'name',
-            forceSelection: true,
-            queryMode: 'local',
-            listeners: {
-                beforerender: {
-                    fn: 'setConfigCombosStore',
-                    config: {
-                        pageSize: 1000,
-                        proxy: {
-                            url: 'commonparam/getCommonParamFromTable',
-                            extraParams: {
-                                table_name: 'par_sections'
-                            }
-                        }
-                    },
-                    isLoad: true
-                },
-                change: function(combo, newVal, oldVal, eopts){
-                    var form = combo.up('form'),
-                        store = form.down('combo[name=business_type_id]').getStore(),
-                                         
-                        filters = JSON.stringify({'section_id': newVal});
-                        store.removeAll();
-                        store.load({params: {filters: filters}});
-                        
-                    
-                }
-               
-            }
-        },{
-            xtype: 'combo',
-            fieldLabel: 'Business Type',
+            fieldLabel: 'Premise Type',
             margin:5,
             name: 'business_type_id',
             valueField: 'id',
@@ -130,7 +95,62 @@ Ext.define('Admin.view.configurations.views.forms.Licensingfeeconfigfrm', {
                             }
                         }
                     },
-                    isLoad: false
+                    isLoad: true,
+                }
+               
+            }
+        }, {
+            xtype: 'combo',
+            fieldLabel: 'Product Classification',
+            margin:5,
+            name: 'premise_product_classification_id',
+            valueField: 'id',
+            //hidden: true,
+            allowBlank: true,
+            displayField: 'name',
+            forceSelection: true,
+            queryMode: 'local',
+            listeners: {
+                beforerender: {
+                    fn: 'setConfigCombosStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_premise_class'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+               
+            }
+        },
+         {
+            xtype: 'combo',
+            fieldLabel: 'Location Council defination',
+            margin:5,
+            name: 'locationcouncils_defination_id',
+            valueField: 'id',
+            //hidden: true,
+            allowBlank: false,
+            displayField: 'name',
+            forceSelection: true,
+            queryMode: 'local',
+            listeners: {
+                beforerender: {
+                    fn: 'setConfigCombosStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_locationcouncils_definations'
+                            }
+                        }
+                    },
+                    isLoad: true
                 }
                
             }

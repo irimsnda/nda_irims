@@ -199,7 +199,6 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.common_
             layout:'accordion', region: 'west',
             width: 400,collapsed: false,
             titleCollapse: true,
-            hidden: true,
             title:'Meeting Participants & Agendas',
             layout: {
                 type: 'accordion',
@@ -238,7 +237,6 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.common_
             },{
                 xtype: 'tcmeetingagendasgrid',
                 title:'Agendas',
-                hidden: true,
                 listeners: {
                     afterrender: function () {
                         var store = this.getStore();

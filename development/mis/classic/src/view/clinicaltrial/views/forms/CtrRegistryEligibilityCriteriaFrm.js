@@ -33,10 +33,14 @@ Ext.define('Admin.view.clinicaltrial.views.forms.CtrRegistryEligibilityCriteriaF
             name: 'isReadOnly'
         },{
             xtype: 'textarea',
+            grow: true, 
+            growMax: 200, 
             fieldLabel: 'List Inclusion criteria ',
             name: 'inclusion_criteria',
         },{
             xtype: 'textarea',
+            grow: true, 
+            growMax: 200, 
             fieldLabel: 'List Exclusion criteria ',
             name: 'exclusion_criteria',
         },{

@@ -147,6 +147,62 @@ class DashboardController extends Controller
         return $res;
 
     }
+
+     public function saveTodo(Request $req)
+    {
+        try {
+            $user_id = \Auth::user()->id;
+            $post_data = $req->all();
+            $table_name = $post_data['table_name'];
+            $id = $post_data['id'];
+
+            //unset unnecessary values
+            unset($post_data['_token']);
+            unset($post_data['table_name']);
+            unset($post_data['model']);
+            unset($post_data['id']);
+            $table_data = $post_data;
+            //add extra params
+            $table_data['created_on'] = Carbon::now();
+            $table_data['user_id'] = $user_id;
+            $table_data['created_by'] = $user_id;
+
+            
+
+            $where = array(
+                'id' => $id
+            );
+
+           
+            if (isset($id) && $id != "") {
+                if (recordExists($table_name, $where)) {
+                    unset($table_data['created_on']);
+                    unset($table_data['created_by']);
+                    $table_data['dola'] = Carbon::now();
+                    $table_data['altered_by'] = $user_id;
+                    $previous_data = getPreviousRecords($table_name, $where);
+                    if ($previous_data['success'] == false) {
+                        return $previous_data;
+                    }
+                    $previous_data = $previous_data['results'];
+                    $res = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
+                }
+            } else {
+                $res = insertRecord($table_name, $table_data, $user_id);
+            }
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+    }
     
     public function saveDashCommonData(Request $req)
     {
@@ -196,6 +252,8 @@ class DashboardController extends Controller
         }
         return response()->json($res);
     }
+
+
 
     public function getInTrayItems(Request $request)
     {
@@ -587,7 +645,7 @@ public function getApplicationSummaryOverDueTrayItems(Request $request){
                 ->leftJoin('tra_premises_applications as t11', 't1.application_code', '=', 't11.application_code')
                 ->leftJoin('tra_premises as t12', 't11.premise_id', '=', 't12.id')
                 ->leftJoin('sub_modules as t13', 't1.sub_module_id', '=', 't13.id')
-                ->select(DB::raw("t1.*, t1.current_stage as workflow_stage_id,t13.name as sub_module, t1.zone_id, t1.application_id as active_application_id, t2.name as process_name,t10.name as zone_name,t4.is_receipting_stage,t1.application_status_id,
+                ->select(DB::raw("t1.*, t1.current_stage as workflow_stage_id,t13.name as sub_module, t1.zone_id, t1.application_id as active_application_id, t2.name as process_name,t10.name as zone_name,t4.is_multi_Interface,t4.is_receipting_stage,t1.application_status_id,
                     t3.name as prev_stage, if(t4.is_receipting_stage=1,concat(t4.name,' :',t5.name), t4.name ) as workflow_stage,t4.is_general,t5.name as application_status,t6.name as urgencyName,t6.name as urgency_name,
                     CONCAT_WS(' ',decrypt(t7.first_name),decrypt(t7.last_name)) as from_user,CONCAT_WS(' ',decrypt(t8.first_name),decrypt(t8.last_name)) as to_user,t4.servicedelivery_timeline,  TOTAL_WEEKDAYS(now(), t1.date_received) as time_span,(t4.servicedelivery_timeline -TOTAL_WEEKDAYS(now(), t1.date_received)) as deliverytimeline_reminder,
                     if(t1.module_id= 2, t12.name , t9.name) as applicant_name,t12.name as premises_name, '' as sample_analysis_status"))
@@ -1625,6 +1683,39 @@ public function getApplicationAssaignmentRecords(Request $request){
         }
         return \response()->json($res);
 }
+
+public function getTodoListItems(Request $request){
+        $user_id = $this->user_id;
+        try {
+           $qry = DB::table('tra_todo as t1')
+                ->select('t1.*')
+                ->groupBy('t1.id');
+           
+            $qry->Where('t1.user_id', $user_id);
+
+             $results = $qry->get();
+
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+}
+
+
+
 public function getApplicationAssaignmentCount(Request $request){
         $user_id = $this->user_id;
         $process_id = $request->input('process_id');

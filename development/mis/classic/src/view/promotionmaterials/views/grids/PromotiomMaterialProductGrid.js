@@ -1,7 +1,6 @@
 Ext.define('Admin.view.view.promotionmaterials.views.grids.PromotiomMaterialProductGrid', {
     extend: 'Ext.grid.Panel',
     xtype: 'promotiommaterialproductgrid',
-    
 	tbar: [{
         xtype: 'hiddenfield',
         name: 'isReadOnly'
@@ -20,6 +19,16 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.PromotiomMaterialProd
     }, {
         xtype: 'exportbtn'
     }],
+    features:[
+        {
+            ftype: 'grouping',
+            startCollapsed: true,
+            groupHeaderTpl: '{[values.rows[0].data.promotion_material_name]} [{rows.length} {[values.rows.length > 1 ? "Items" : "Item"]}]',
+            hideGroupedHeader: true,
+            enableGroupingMenu: false
+        }
+    ],
+
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '100%',
@@ -28,13 +37,50 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.PromotiomMaterialProd
         emptyMsg: 'No Records',
         beforeLoad: function () {
             this.up('promotiommaterialproductgrid').fireEvent('refresh', this); 
-        }
-    }],
-    listeners: {
+        },
         afterrender: function () {
             var store = this.store;
             store.removeAll();
             store.load();
+        }
+    }],
+    // listeners: {
+        // afterrender: function () {
+        //     var store = this.store;
+        //     store.removeAll();
+        //     store.load();
+        // }
+    // },
+    listeners: {
+            beforerender: {
+                fn: 'setConfigGridsStore',
+                config: {
+                    pageSize: 1000,
+                    storeId: 'promotiommaterialproductgridstr',
+                    proxy: {
+                        url: 'promotionmaterials/getPromotionMaterialsProductParticular',
+                    }
+                },
+                isLoad: true
+            }
+    },
+
+
+    listeners: {
+        beforerender: {
+            fn: 'setConfigGridsStore',
+            config: {
+                pageSize: 1000,
+                storeId: 'promotiommaterialproductgridstr',
+                proxy: {
+                     url: 'promotionmaterials/getPromotionMaterialsProductParticular',
+                },grouper: {
+                    groupFn: function (item) {
+                        return item.get('promotion_material_name');
+                    }
+                },
+            },
+            isLoad: true
         }
     },
     columns: [{
@@ -45,32 +91,8 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.PromotiomMaterialProd
     },  
 	{
         xtype: 'gridcolumn',
-        text: 'Generic Name',
-        dataIndex: 'common_name',
-        flex: 1
-    }, 
-	
-	{
-        xtype: 'gridcolumn',
-        dataIndex: 'is_registered',
-        text: 'Is Registered',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        text: 'Registration No',
-        dataIndex: 'registration_no',
-        flex: 1
-    }, {
-        xtype: 'gridcolumn',
-        text: 'Registrant',
-        dataIndex: 'registrant_name',
-        flex: 1
-    }, 
-	
-	{
-        xtype: 'gridcolumn',
-        text: 'Other Details',
-        dataIndex: 'other_details',
+        text: 'Promotion Material',
+        dataIndex: 'promotion_material_name',
         flex: 1
     },
 	{

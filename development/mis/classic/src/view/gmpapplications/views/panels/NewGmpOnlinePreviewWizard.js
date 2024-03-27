@@ -147,8 +147,19 @@ Ext.define('Admin.view.gmpapplications.views.panels.NewGmpOnlinePreviewWizard', 
             xtype: 'gmpapponlinedocuploadsgenericgrid'
         },
         {
-            xtype: 'gmponlinescreeninggrid'
+            xtype: 'onlinegmppaymentwintabpnl'
         }
+        //   {
+        //     xtype: 'panel',
+        //     layout: 'fit',
+        //     items:[{
+        //         xtype: 'gmponlinescreeninggrid',
+        //         title: 'Pre Checking'
+        //     },{
+        //         xtype: 'onlineappinvoicepaymentspanel',
+        //         title: 'Invoice & Payment Details '
+        //     }]
+        // }
     ],
 
     initComponent: function () {
@@ -186,7 +197,7 @@ Ext.define('Admin.view.gmpapplications.views.panels.NewGmpOnlinePreviewWizard', 
                     step: 2,
                     iconCls: 'fa fa-suitcase',
                     enableToggle: true,
-                    text: 'PRODUCT LINES DETAILS',
+                    text: 'MANUFACTURING ACTIVITY(S) DETAILS',
                     action: 'quickNav',
                     name: 'line_details',
                     handler: 'quickNavigationOnline'
@@ -211,7 +222,7 @@ Ext.define('Admin.view.gmpapplications.views.panels.NewGmpOnlinePreviewWizard', 
                     step: 5,
                     iconCls: 'fa fa-check-square',
                     enableToggle: true,
-                    text: 'PRE-CHECKING',
+                    text: 'PRE-CHECKING & INVOICING',
                     action: 'quickNav',
                     handler: 'quickNavigationOnline'
                 }
@@ -284,7 +295,7 @@ Ext.define('Admin.view.gmpapplications.views.panels.NewGmpOnlinePreviewWizard', 
                     ui: 'soft-purple',
                     iconCls: 'x-fa fa-sliders',
                     name: 'query_btn',
-                    hidden: true,
+                   //hidden: true,
                     handler: 'queryOnlineApplicationFrmBtn',
                     bind: {
                         disabled: '{!atEnd}'
@@ -314,7 +325,8 @@ Ext.define('Admin.view.gmpapplications.views.panels.NewGmpOnlinePreviewWizard', 
                     text: 'Receive & Invoice Application',
                     ui: 'soft-purple',
                     iconCls: 'fa  fa-print',
-                    winWidth: '50%',hidden: true,
+                    winWidth: '50%',
+                    //hidden: true,
                     disabled: true,
                     storeID: 'onlinegmpapplicationsstr',
                     winWidth: '30%',

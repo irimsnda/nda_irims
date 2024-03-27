@@ -244,15 +244,15 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.A
                 wizard: 'alterationdrugproductreceivingwizard',
                 handler: 'quickNavigationRenewal'
             }, {
-                      step: 3,
-                iconCls: 'fa fa-close',
+                step: 3,
+                iconCls: 'fa fa-clone',
                 enableToggle: true,
                 text: 'VARIATION REQUESTS',iconAlign: 'top',
                 action: 'quickNav', wizard: 'alterationdrugproductreceivingwizard',
                 handler: 'quickNavigationRenewal'
             },{
                 step: 4,
-                iconCls: 'fa fa-money',
+                iconCls: 'fa fa-money-bill-wave',
                 enableToggle: true,
                 text: 'Invoice & Payment Details',
                 action: 'quickNav',iconAlign: 'top',

@@ -27,11 +27,38 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.NewClinicalTria
         {
             xtype: 'clinicaltrialstudysitesgrid'
         },
-        {
-            xtype: 'clinicaltrialotherinvestigatorsgrid'
+         {
+           xtype: 'tabpanel',
+            //title:'Clinical Trial Investigator(s) & Monitor(s)',
+            items:[{
+                xtype: 'clinicaltrialotherinvestigatorsgrid',
+                title:'Clinical Trial Other Investigator(s)'
+            },{
+                xtype: 'clinicaltrialmonitorsgrid',
+                title: 'Clinical Trial Monitor(s)'
+            },{
+                xtype: 'clinicaltrialstaffgrid',
+                title: 'Other Trial Staff(s)'
+            }]
         },
-        {
-            xtype: 'impproductsgrid'
+          {
+            
+            xtype: 'tabpanel',
+           // title:'Clinical Trial Products',
+            layout: 'accordion',
+            items:[{
+                xtype: 'impproductsgrid',
+                title:'Clinical Trial Investigational Products'
+            },{
+                xtype: 'impProductshandlinggrid',
+                title: 'Details of Handling Trial'
+            },{
+                xtype: 'clinicalcomparatorproductsgrid',
+                title:'Clinical Trial Comparator Products'
+            },{
+                xtype: 'clinicaltrialnonclinicaldetailsgrid',
+                title:'Dose Toxicity Details(Mandatory Study Phase IV)'
+            }]
         },
         {
             xtype: 'clinicaltrialdocuploadsgenericgrid'
@@ -62,7 +89,8 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.NewClinicalTria
                     iconCls: 'fa fa-user',
                     enableToggle: true,
                     pressed: true,iconAlign:'top',
-                    text: 'APPLICANT DETAILS',
+                    text: '<span style="font-size: 8px;"><b>APPLICANT DETAILS</b></span>', 
+                    //text: 'APPLICANT DETAILS',
                     wizard_pnl: 'newclinicaltrialreceivingwizard',
                     max_step: 7,
                     action: 'quickNav'
@@ -71,7 +99,8 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.NewClinicalTria
                     step: 1,
                     iconCls: 'fa fa-suitcase',
                     enableToggle: true,iconAlign:'top',
-                    text: 'CLINICAL TRIAL DETAILS',wizard_pnl: 'newclinicaltrialreceivingwizard',
+                    text: '<span style="font-size: 8px;"><b>TRIAL DETAILS</b></span>', 
+                    wizard_pnl: 'newclinicaltrialreceivingwizard',
                     max_step: 7,
                     action: 'quickNav'
                 },
@@ -79,7 +108,9 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.NewClinicalTria
                     step: 2,
                     iconCls: 'fa fa-university',
                     enableToggle: true,iconAlign:'top',
-                    text: 'STUDY SITES',wizard_pnl: 'newclinicaltrialreceivingwizard',
+                   // text: 'STUDY SITES',
+                    text: '<span style="font-size: 8px;"><b>STUDY SITES</b></span>', 
+                    wizard_pnl: 'newclinicaltrialreceivingwizard',
                     max_step: 7,
                     action: 'quickNav'
                 },
@@ -87,7 +118,9 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.NewClinicalTria
                     step: 3,
                     iconCls: 'fa fa-plus-square',
                     enableToggle: true,iconAlign:'top',
-                    text: 'OTHER INVESTIGATORS',wizard_pnl: 'newclinicaltrialreceivingwizard',
+                    text: '<span style="font-size: 8px;"><b>OTHER INVESTIGATORS</b></span>', 
+                   // text: 'OTHER INVESTIGATORS',
+                    wizard_pnl: 'newclinicaltrialreceivingwizard',
                     max_step: 7,
                     action: 'quickNav'
                 },
@@ -95,7 +128,9 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.NewClinicalTria
                     step: 4,
                     iconCls: 'fa fa-th-large',
                     enableToggle: true,iconAlign:'top',
-                    text: 'IMP PRODUCTS',wizard_pnl: 'newclinicaltrialreceivingwizard',
+                    text: '<span style="font-size: 8px;"><b>PRODUCTS & NON CLINICAL DETAILS</b></span>', 
+                    //text: 'PRODUCTS & NON CLINICAL DETAILS',
+                    wizard_pnl: 'newclinicaltrialreceivingwizard',
                     max_step: 7,
                     action: 'quickNav'
                 },
@@ -103,7 +138,9 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.NewClinicalTria
                     step: 5,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,iconAlign:'top',
-                    text: 'DOCUMENT UPLOADS',wizard_pnl: 'newclinicaltrialreceivingwizard',
+                    //text: 'DOCUMENT UPLOADS',
+                    text: '<span style="font-size: 8px;"><b>DOCUMENT UPLOADS</b></span>', 
+                    wizard_pnl: 'newclinicaltrialreceivingwizard',
                     max_step: 7,
                     action: 'quickNav'
                 },
@@ -111,18 +148,22 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.NewClinicalTria
                     step: 6,
                     iconCls: 'fa fa-check-square',
                     enableToggle: true,iconAlign:'top',
-                    text: 'PRE-CHECKING',wizard_pnl: 'newclinicaltrialreceivingwizard',
+                    text: '<span style="font-size: 8px;"><b>PRE-CHECKING</b></span>', 
+                   // text: 'PRE-CHECKING',
+                    wizard_pnl: 'newclinicaltrialreceivingwizard',
                     max_step: 7,
                     action: 'quickNav'
                 },
                 {
-                           step: 7,
-                           iconCls: 'fa fa-money',
-                           enableToggle: true,iconAlign:'top',
-                           text: 'Invoice & Payment Details',wizard_pnl: 'newclinicaltrialreceivingwizard',
-                           max_step: 7,
-                           action: 'quickNav'
-                       }
+                    step: 7,
+                     iconCls: 'fa fa-money-bill-wave',
+                    enableToggle: true,iconAlign:'top',
+                    // text: 'INVOICE DETAILS',
+                    text: '<span style="font-size: 8px;"><b>INVOICE DETAILS</b></span>', 
+                     wizard_pnl: 'newclinicaltrialreceivingwizard',
+                     max_step: 7,
+                     action: 'quickNav'
+                }
             ]
         };
         this.bbar = {

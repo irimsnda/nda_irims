@@ -165,25 +165,24 @@
         <td align="center" valign="top" bgcolor="#ffffff" width="100%">
             <table cellspacing="0" cellpadding="0" width="100%">
                 <tr>
-                    <td style="background:#5BB65B" width="100%">
+                    <td style="background:#67a154" width="100%">
                         <center>
                             <table cellspacing="0" cellpadding="0" width="750" class="w320">
                                 <tr>
                                     <td>
-                                        <img alt="Logo" src="http://127.0.0.1:91/tfda_mis_2018/trunk/mis/development2/resources/images/logo.jpg" width="120px"
+                                        <img alt="Logo" src="https://irims.nda.or.ug/mis/resources/images/logo.jpg" width="120px"
                                              height="65px"/>
                                     </td>
                                     <td valign="top" class="mobile-block mobile-no-padding-bottom mobile-center"
-                                        width="800" style="color:#fff;background:#5BB65B;padding:5px 5px 5px 8px;">
+                                        width="800" style="color:#fff;background:#67a154;padding:5px 5px 5px 8px;">
                                         <h3 style="color:#fff">
-                                            Tanzania Food And Drugs Authority
+                                            National Drug Authority
                                         </h3>
-                                        <p>To be the leading African Regulatory Authority in ensuring safe, quality and
-                                            effective food, medicines, cosmetics and medical devices for all.</p>
+                                        <p>Safe Drugs Save Lives</p>
                                         <span style="color:#fff;"></span>
                                     </td>
                                     <td valign="top" class="mobile-block mobile-center
-                                    " width="80" style="background:#5BB65B;padding:10px 1px 10px 10px">
+                                    " width="80" style="background:#67a154;padding:10px 1px 10px 10px">
                                         {{--  <table border="0" cellpadding="0" cellspacing="0"
                                                  class="mobile-center-block" align="right">
                                               <tr>
@@ -237,21 +236,24 @@
                                         <table cellspacing="0" cellpadding="0" width="100%">
                                             <tr>
                                                 <td>
-                                                    <h5>Mission: To protect and promote public health by ensuring
-                                                        quality, safety and effectiveness of food, medicines, cosmetics
-                                                        and medical devices.</h5>
+                                                    <h5>Mission: To protect and promote Human and Animal health through the effective regulation of drugs and healthcare products.</h5>
                                                     <b>
-                                                        <center>TFDA - Headquarters;
-                                                            Location: Off Mandela Road, Mabibo - External,
-                                                            P.o.Box: 77150, Dar Es Salaam, Tanzania.
-                                                            Telephone Number: +255 22 2450512 / 2450751 / 2452108
+                                                        <center>NDA - Head Office;
+                                                            P. O Box 23096, Kampala, Uganda,
+                                                            Plot 19 Lumumba Avenue (opposite TWED plaza).
+                                                            Tel:
+                                                            Reception : +256 [0]417 788 100,
+                                                            Directorate of Product Safety : +256 [0]417 788 124,
+                                                            Directorate of Inspectorate Services : +256 [0]417 788 129.
+                                                            Email : ndaug@nda.or.ug
+
                                                         </center>
                                                     </b>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td width="350" style="vertical-align:top;">
-                                                    <center>Please <a href="http://info@tfda.go.tz/">contact us</a>
+                                                    <center>Please <a href="http://ndaug@nda.or.ug/">contact us</a>
                                                         with any enquiry,<br></center>
                                                 </td>
                                             </tr>
@@ -270,10 +272,10 @@
                                 <tr>
                                     <td align="right" valign="middle" class="mobile-padding"
                                         style="font-size:12px;padding:20px; background-color:#1f1f1f; color:#ffffff; text-align:left;">
-                                        <a style="color:#ffffff;" href="http://info@tfda.or.tz">Contact Us</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                                        <a style="color:#ffffff;" href="https://ndaug@nda.or.ug">Contact Us</a>&nbsp;&nbsp;|&nbsp;&nbsp;
                                         <!--  <a style=\"color:#ffffff;\" href=\"#\">Facebook</a>&nbsp;&nbsp;|&nbsp;&nbsp;
                                         <a style=\"color:#ffffff;\" href=\"#\">Twitter</a>&nbsp;&nbsp;|&nbsp;&nbsp;-->
-                                        <a style="color:#ffffff;" href="http://mis@tfda.or.tz">Support</a>
+                                        <a style="color:#ffffff;" href="http://ndaug@nda.or.ug">Support</a>
                                     </td>
                                 </tr>
                             </table>

@@ -6,6 +6,7 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ImpProductsPnl', {
     xtype: 'impproductspnl',
     controller: 'clinicaltrialvctr',
     layout: 'border',
+    scrollable:true,
     defaults: {
         split: true
     },

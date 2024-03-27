@@ -37,7 +37,7 @@
   <div class="col-xs-12 col-md-6 col-lg-6 col-xl-2_5 div-nopadding">
     <div class="card-box noradius noborder bg-info">
       <i class="fa fa-question-circle float-right text-white"></i>
-      <h6 class="text-white text-uppercase m-b-20">Queried & Responses </h6>
+      <h6 class="text-white text-uppercase m-b-20">Queried and Responses </h6>
       <h1 class="m-b-20 text-white counter">{{queried_applications}}</h1>
       </div>
     <div class="card-box noradius noborder bg-info">
@@ -134,17 +134,11 @@
           </dx-menu>
         </div>
       </dxi-column>
-      
       <dxi-column dataField="reference_no"  caption="Application Reference"></dxi-column>
-      <dxi-column [width] = 90 [groupIndex]="0"  dataField="section"  caption="Product Type"></dxi-column>
+      <dxi-column [width] = 90 [groupIndex]="0"  dataField="application_type"  caption="Application Type"></dxi-column>
       <dxi-column dataField="application_type"></dxi-column>
-      <dxi-column [width] = 100  dataField="permit_category"></dxi-column>
       <dxi-column  [width] = 100  dataField="proforma_invoice_no" caption="Invoice No"></dxi-column>
-      <dxi-column dataField="proforma_invoice_date" caption="Invoice Date"></dxi-column>
-      <dxi-column dataField="sender_receiver" caption="Sender(Supplier)"></dxi-column>
-      
-      <dxi-column dataField="premises_name" caption="Premises Name"></dxi-column>
-      
+      <dxi-column dataField="proforma_invoice_date" caption="Invoice Date"></dxi-column>      
       <dxi-column [width] = 100  [allowFiltering]="false" dataField="date_added"></dxi-column>
       <dxi-column dataField="status_name"></dxi-column>
 
@@ -320,34 +314,24 @@
 
 
 
-<dx-popup class="popup" [width]="funcpopWidth(45)" [height] = 350 [showTitle]="true" title="Import for Personalised/Customized Goods"
+<dx-popup class="popup" [width]="funcpopWidth(50)" [height] = 350 [showTitle]="true" title="Import Products for Personal Use/Merchandise for Foreign Missions/Personnel"
 [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isPermitInitialisation">
 <div *dxTemplate="let data of 'content'">
   <dx-scroll-view>
     <form enctype="multipart/form-data" style="margin:0.5px" class="row div-whiteback " role="form" [formGroup]="applicationSelectionfrm"
     (ngSubmit)="onApplicationSelection()">
-    <div class="col-lg-12" style="margin-bottom: 30px;">
-      <h6>Import for Personalised/Customized Goods:<br/>	Starting importation of products for personal use after obtaining one-year authorization to import products for personal use</h6>
-    </div>
     <div class="col-lg-12">
-      <label class="control-label">Have you received Approval Request on One Year Authorisation on Products to be imported?</label>
-      <dx-select-box [dataSource]="confirmDataParam" (onSelectionChanged)="onSelectionHasApprovedAuthorisation($event)"  valueExpr="id" displayExpr="name"
-         placeholder="Select" 
-        [searchEnabled]="true" formControlName="has_approvedproduct_authosation">
-      </dx-select-box> 
-    </div>
-    <div class="col-lg-12"  *ngIf="has_approvedauthorisation">
-      <h3 class='apptype-selection'>Select Product Category/Type</h3>
-      <dx-select-box [dataSource]="sectionsData" valueExpr="id" displayExpr="name" [searchEnabled]="true"
-        placeholder="Select Product Types" 
-        formControlName="section_id">
+      <h3 class='apptype-selection'>Select Application Type</h3>
+      <dx-select-box [dataSource]="applicationTypeData" valueExpr="id" displayExpr="name" [searchEnabled]="true"
+        placeholder="Select Application Types" 
+        formControlName="application_type_id">
         <div *dxTemplate="let name of 'item'">
           <div>{{name.name}}</div>
       </div>
     </dx-select-box>
   </div>
     <div class="col-lg-12 ">
-      <dx-button  [elementAttr]="{ class: 'btn btn-primary  pull-left' }"  icon="fa fa-arrow-right"  text="Initiate Import Permit for Personalised Goods" 
+      <dx-button  [elementAttr]="{ class: 'btn btn-primary  pull-left' }"  icon="fa fa-arrow-right"  text="Initiate" 
         type="success" (onClick)="onApplicationSelection()">
       </dx-button>
     </div>

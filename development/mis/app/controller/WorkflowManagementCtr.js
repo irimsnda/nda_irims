@@ -139,6 +139,14 @@ Ext.define('Admin.controller.WorkflowManagementCtr', {
             'newdrugshopinspectionpanel button[name=returnback_submission_btn]': {
                 click: 'showReturnBackApplicationSubmissionWin'
             }, 
+
+            'newsiapremiseinspectionpanel button[name=returnback_submission_btn]': {
+                click: 'showReturnBackApplicationSubmissionWin'
+            }, 
+
+            'prepresiapremiseinspectionpanel button[name=returnback_submission_btn]': {
+                click: 'showReturnBackApplicationSubmissionWin'
+            }, 
             
               'predrugshopinspectionpanel button[name=returnback_submission_btn]': {
                 click: 'showReturnBackApplicationSubmissionWin'
@@ -184,7 +192,8 @@ Ext.define('Admin.controller.WorkflowManagementCtr', {
                 setReportGlobalStore:'setReportGlobalStore'
             }
         }
-    },showPaymentsApplicationSubmissionWin: function (btn) {
+    },
+    showPaymentsApplicationSubmissionWin: function (btn) {
         Ext.getBody().mask('Please wait...');
         var mainTabPanel = this.getMainTabPanel(),
             storeID = btn.storeID,
@@ -192,21 +201,135 @@ Ext.define('Admin.controller.WorkflowManagementCtr', {
             winWidth = btn.winWidth,
             activeTab = mainTabPanel.getActiveTab(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             storeID = getApplicationStore(module_id, section_id),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
         valid = this.validatePremisePaymentSubmission(btn);
-
+        var isPopupSubmission = validateIsPopupSubmission(workflow_stage_id);
         if (valid == true || valid === true) {
-
+         if(!isPopupSubmission){
+                this.directWorkflowSubmission(mainTabPanel,activeTab,table_name,application_code,application_id,workflow_stage_id,process_id,module_id,sub_module_id,section_id);
+            }else{
             showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsfrm', winWidth, storeID,'','','',workflow_stage_id);
-
+           }
         } else {
             Ext.getBody().unmask();
         }
-    }, validatePremisePaymentSubmission: function () {
+    },
+
+
+    directWorkflowSubmission: function (mainTabPanel,activeTab,table_name,application_code,application_id,workflow_stage_id,process_id,module_id,sub_module_id,section_id) {
+         var workflowaction_type_id = 1, 
+            intrayStore = Ext.getStore('intraystr'),
+            outtrayStore = Ext.getStore('outtraystr'),
+            onlineapplicationdashboardgridstr= Ext.getStore('onlineapplicationdashboardgridstr');  
+          Ext.Ajax.request({
+            url: 'workflow/getApplicationNextStageActionDetails',
+            method: 'POST',
+            params: {
+                application_code:application_code,
+                application_id:application_id,
+                workflow_stage_id:workflow_stage_id,
+                workflowaction_type_id:workflowaction_type_id,
+                table_name : table_name,
+                module_id:module_id,
+                sub_module_id:sub_module_id
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+            },
+            success: function (response) {
+               
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message,
+                    success = resp.success;
+                    if (success == true || success === true) {
+                        var results = resp.results,
+                            curr_stage_id = results.stage_id,
+                            action = results.action_id, 
+                            next_stage = results.nextstage_id;
+                          
+                         Ext.getBody().unmask();  
+                        Ext.MessageBox.confirm('Application Submission', 'Do you want to submit selected Application(s)?', function (button) {
+                            if (button === 'yes') {
+                                Ext.getBody().mask('Submitting Application wait...');
+                                Ext.Ajax.request({
+                                    url: 'workflow/handleApplicationSubmission',
+                                    method: 'POST',
+                                    params: {
+                                        application_code:application_code,
+                                        application_id:application_id,
+                                        process_id:process_id,
+                                        workflowaction_type_id:workflowaction_type_id,
+                                        table_name:table_name,
+                                        module_id:module_id,
+                                        sub_module_id:sub_module_id,
+                                        section_id:section_id,
+                                        curr_stage_id:curr_stage_id,
+                                        workflowaction_type_id:workflowaction_type_id,
+                                        next_stage:next_stage,
+                                        action:action
+                                    },
+                                    headers: {
+                                        'Authorization': 'Bearer ' + access_token,
+                                        'X-CSRF-Token': token
+                                    },
+                                    success: function (response) {
+                                       
+                                        var resp = Ext.JSON.decode(response.responseText),
+                                            message = resp.message,
+                                            success = resp.success;
+                                            if (success == true || success === true) {
+                                                toastr.success(message, "Success Response");
+                                                //store.load();
+                                                intrayStore.load();
+                                                outtrayStore.load();
+                                                externaluserintraystr = Ext.getStore('externaluserintraystr');
+                                                externaluserintraystr.load();
+                                                //onlineapplicationdashboardgridstr.load();
+                                                //win.close();
+                                                closeActiveWindow() ;
+                                                mainTabPanel.remove(activeTab);
+                                                
+                                            } Ext.getBody().unmask();
+                                    },
+                                    failure: function (response) {
+                                                
+                                                var resp = Ext.JSON.decode(response.responseText),
+                                                    message = resp.message;
+                                                toastr.error(message, 'Failure Response');
+                                                Ext.getBody().unmask();
+                                    }
+                                });
+                            }
+                        })
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                Ext.getBody().unmask();
+            },
+            failure: function (response) {
+                
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+                Ext.getBody().unmask();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
+                
+            }
+        });
+    },
+
+
+     validatePremisePaymentSubmission: function () {
         var mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
             // paymentDetailsGrid = activeTab.down('applicationpaymentsgrid'),
@@ -532,20 +655,16 @@ Ext.define('Admin.controller.WorkflowManagementCtr', {
             mode = form.getApplicationSelectionMode(),
             win = form.up('window'),
             frm = form.getForm();
-            //sm = grid.getSelectionModel(),
-            //records = sm.getSelection(),
-            if(gridXtype != ''){
+            if(gridXtype){
                 if(activeTab.down(gridXtype)){
                     grid =  activeTab.down(gridXtype)
+                } else{
+                    grid =  activeTab.down('grid');
                 }
-                else{
-                        grid =  activeTab.down('grid');
-                }
-            }
-            else{
+            } else{
                 grid = activeTab.down('grid');
             }
-            
+            console.log(grid);
             selected = this.buildApplicationsToSubmit(grid, mode,activeTab);
        
         if (frm.isValid()) {

@@ -16,7 +16,7 @@ Ext.define('Admin.view.surveillance.views.panels.NonPirSampleDetailsTabPanel', {
 
     items: [{
             xtype:'tabpanel',
-            title:'Sample Details',
+           // title:'Sample Details',
             layout:'fit',
             items:[ {
                 title: 'Sample Details',

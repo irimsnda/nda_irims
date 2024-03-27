@@ -254,6 +254,8 @@ trait EnforcementTrait {
                     'created_on' => Carbon::now(),
                     'created_by' => $user_id
                 );
+
+
                 insertMultipleRecords('tra_submissions',$submission_params,$user_id);
             
                 $submission_params[] = $submission_params;

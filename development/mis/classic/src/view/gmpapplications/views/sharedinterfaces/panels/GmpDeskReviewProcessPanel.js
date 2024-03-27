@@ -24,21 +24,34 @@
                     title: 'Manufacturing Site Product Line Details Recommendations',
                 },
                 {
+                title: 'Inspection Checklists',
+                layout: 'fit',
+                items: [
+                        {
+                            xtype: 'productscreeninggrid'
+                        }
+                    ]
+                },
+                {
                    
                     xtype:'panel',
+                    hidden:true,
                     title: 'Inspection Details & Inspectors',
                     layout: 'border',
                     items:[{
                          xtype: 'inspectiondetailsupdatefrm',
                          itemId:'gmpaddscheduleteamfrmId',
                          region:'center',
+                        hidden:true,
                          title: 'Inspection Details'
                     },{
                         title: 'Inspectors',
                         region: 'east',
                         width: 400,
+                        hidden:true,
                         collapsible: true,
-                        titleCollapse: true,  collapsed: true,
+                        titleCollapse: true, 
+                        collapsed: true,
                         layout: 'fit',
                         items:[
                             {
@@ -136,7 +149,9 @@
                             }
                         ]
                     }]
-                }, {
+                },
+
+                 {
                     xtype: 'inspectionscaparequestsgrid',
                     title: 'Manufacturing Site CAPA Submission and Responses'
                 }
@@ -221,10 +236,10 @@
                     stores: '[]',
                     isWin: 1
                 },{
-                    text: 'Preview & Edit Details',
+                    text: 'Preview Details',
                     iconCls: 'fa fa-bars',
                     name: 'more_app_details',
-                    isReadOnly: 0,
+                    isReadOnly: 1,
                     is_temporal: 0
                 },{
                     xtype: 'button',
@@ -252,7 +267,7 @@
                     text: 'Inspection Schedule',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-bars',
-                  //  hidden: true,
+                  hidden: true,
                     childXtype: 'inspectionscheduleselectiongrid',
                     winTitle: 'Inspection Schedules',
                     winWidth: '65%',
@@ -282,7 +297,7 @@
                 }, {
                     text: 'Overrall Comments and recommendation',
                     ui: 'soft-purple',
-                    hidden: true,
+                    //hidden: true,
                     iconCls: 'fa fa-weixin',
                     childXtype: 'applicationcommentspnl',
                     winTitle: 'Inspection Comments',

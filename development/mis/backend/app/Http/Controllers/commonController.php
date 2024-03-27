@@ -31,28 +31,446 @@ class CommonController extends Controller
     protected $sign_url;
     protected $sign_file;
 
+    // public function __construct(Request $req)
+    // {
+        // $is_mobile = $req->input('is_mobile');
+        // if (is_numeric($is_mobile) && $is_mobile > 0) {
+        //     $this->user_id = $req->input('user_id');
+        // } else {
+        //     $this->middleware(function ($request, $next) {
+        //         if (!\Auth::check()) {
+        //             $res = array(
+        //                 'success' => false,
+        //                 'message' => '<p>NO SESSION, SERVICE NOT ALLOWED!!<br>PLEASE RELOAD THE SYSTEM!!</p>'
+        //             );
+        //             echo json_encode($res);
+        //             exit();
+        //         }
+        //         $this->user_id = \Auth::user()->id;
+        //         return $next($request);
+        //     });
+        // }
+    //     $this->base_url = url('/');
+       
+    // }
+
     public function __construct(Request $req)
     {
-        $is_mobile = $req->input('is_mobile');
-        if (is_numeric($is_mobile) && $is_mobile > 0) {
-            $this->user_id = $req->input('user_id');
-        } else {
-            $this->middleware(function ($request, $next) {
-                if (!\Auth::check()) {
-                    $res = array(
-                        'success' => false,
-                        'message' => '<p>NO SESSION, SERVICE NOT ALLOWED!!<br>PLEASE RELOAD THE SYSTEM!!</p>'
-                    );
-                    echo json_encode($res);
-                    exit();
-                }
-                $this->user_id = \Auth::user()->id;
-                return $next($request);
-            });
-        }
-        $this->base_url = url('/');
-       
+            $mis_app_id = Config('constants.api.mis_app_client_id');
+            $this->mis_app_client = DB::table('oauth_clients')->where('id', $mis_app_id)->first();
+            $external_api_id = Config('constants.api.external_api_client_id');
+            $this->external_api_client = DB::table('oauth_clients')->where('id', $external_api_id)->first();
     }
+
+
+    public function authenticateMisMobileUser(Request $request)
+    {
+        $username = $request->input('email');
+        $password = $request->input('password');
+        $username = aes_encrypt($username);
+        
+        if (is_null($this->mis_app_client)) {
+            $res = array(
+                'success' => false,
+                'message' => 'MIS App user not found!!'
+            );
+            return response()->json($res);
+        }
+        $request->request->add([
+            'grant_type' => 'password',
+            'provider' => 'users',
+            'client_id' => $this->mis_app_client->id,
+            'client_secret' => $this->mis_app_client->secret,
+            'username' => $username,
+            'password' => $password
+        ]);
+        $tokenRequest = $request->create('/oauth/token', 'POST', $request->all());
+        $token = \Route::dispatch($tokenRequest);
+        
+        $token_contents = $token->getContent();
+        
+        //TODO check if successfully
+        $user_id = "";
+        $status = false;
+        $token_contents = json_decode($token_contents, TRUE);
+
+        print_r($token_contents);
+        exit();
+        if (isset($token_contents['token_type'])) {
+            //then, query user_id
+            $qry = DB::table('users as t1')
+                ->where('t1.email', $username);
+            $user_id = $qry->value('id');
+            $status = true;
+        }
+        $token_contents['user_id'] = $user_id;
+        $token_contents['success'] = $status;
+        $token_contents = json_encode($token_contents);
+        return \response($token_contents, 200, ['Content-Type' => 'application/json; charset=UTF-8']);
+    }
+
+    public function saveTCMeetingDetails(Request $request)
+    {
+        $id = $request->input('id');
+        $application_code = $request->input('application_code');
+        $meeting_name = $request->input('meeting_name');
+        $meeting_desc = $request->input('meeting_desc');
+        $date_requested = $request->input('date_requested');
+
+        $workflow_stage_id = $request->input('workflow_stage_id');
+
+        $meeting_time = $request->input('meeting_time');
+
+        $meeting_venue = $request->input('meeting_venue');
+
+        $module_id = $request->input('module_id');
+        $meeting_type_id = $request->input('meeting_type_id');
+
+        $sub_module_id = $request->input('sub_module_id');
+
+        $section_id = $request->input('section_id');
+        $selected = $request->input('selected');
+        $selected_codes = json_decode($selected);
+        $user_id = $this->user_id;
+        if(!validateIsNumeric($workflow_stage_id)){
+            return array('success'=>false, 'message'=>'No workflow information was shared');
+        }
+        $stage_data = getTableData('wf_workflow_stages', array('id'=>$workflow_stage_id));
+        $stage_category_id = $stage_data->stage_category_id;
+        try {
+            DB::beginTransaction();
+            $params = array(
+                'meeting_name' => $meeting_name,
+                'meeting_desc' => $meeting_desc,
+                'meeting_time' => $meeting_time,
+                'meeting_type_id' => $meeting_type_id,
+                'meeting_venue' => $meeting_venue,
+                'module_id' => $module_id,
+                'sub_module_id' => $sub_module_id,
+                'meeting_venue' => $meeting_venue,
+                'date_requested' => $date_requested
+
+            );
+            if (validateIsNumeric($id)) {
+                $params['altered_by'] = $user_id;
+                $previous_data = getPreviousRecords('tc_meeting_details', ['id'=>$id]);
+                if ($previous_data['success'] == false) {
+                    return $previous_data;
+                }
+                $previous_data = $previous_data['results'];
+                updateRecord('tc_meeting_details', $previous_data, ['id'=>$id], $params, $user_id);
+            } else {
+                $params['created_by'] = $user_id;
+                $insert_res = insertRecord('tc_meeting_details', $params, $user_id);
+                if(!isset($insert_res['success']) && $insert_res['success'] == false){
+                    DB::rollback();
+                    return $insert_res;
+                }
+                $id = $insert_res['record_id'];
+                // $app_meeting = array(
+                //     'application_code' => $application_code,
+                //     'meeting_id' => $id,
+                //     'stage_category_id' => $stage_category_id,
+                //     'created_by' => $user_id
+                // );
+                // $meet_res = insertRecord('tc_meeting_applications', $app_meeting, $user_id);
+                // if(!isset($meet_res['success']) && $meet_res['success'] == false){
+                //     DB::rollback();
+                //     return $meet_res;
+                // }
+
+            }
+            $params2 = array();
+            foreach ($selected_codes as $selected_code) {
+                $params2[] = array(
+                    'meeting_id' => $id,
+                    'application_code' => $selected_code,
+                    'stage_category_id' => $stage_category_id,
+                    'created_by' => $this->user_id
+                );
+            }
+            DB::table('tc_meeting_applications')
+                ->where('meeting_id', $id)
+                ->delete();
+            // DB::table('tc_meeting_applications')
+            //     ->insert($params2);
+            insertMultipleRecords('tc_meeting_applications', $params2);
+            //load participants based on assignment for surveillance
+            if($module_id == 5 && $sub_module_id = 38){
+                $this->addPMSMeetingParticipantsBasedOnAssignment($id, $selected_codes);
+            }
+            $res = array(
+                'success' => true,
+                'record_id' => $id,
+                'message' => 'Details saved successfully!!'
+            );
+            DB::commit();
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
+
+ public function getRcRecommendationLogs(Request $req)
+    {
+
+        $application_code = $req->input('application_code');
+        $stage_category_id = $req->input('stage_category_id');
+        $module_id = $req->input('module_id');
+        $meeting_id = $req->input('meeting_id');
+        try {
+            $qry = DB::table('tra_rc_meeting_recommendations as t1')
+                ->leftJoin('par_recommendations as t2', 't1.recommendation_id', 't2.id')
+                ->leftJoin('users as t3', 't1.created_by', 't3.id')
+                ->select('t1.*', 't2.name as recommendation', 't1.created_on as recommendation_date', DB::raw("CONCAT_WS(' ',decrypt(t3.first_name),decrypt(t3.last_name)) as participant_name"));
+
+            if (validateIsNumeric($application_code)) {
+                $qry->where('application_code', $application_code);
+            }
+            if (validateIsNumeric($stage_category_id)) {
+                $qry->where('stage_category_id', $stage_category_id);
+            }
+            if (validateIsNumeric($module_id)) {
+                $qry->where('module_id', $module_id);
+            }
+            if (validateIsNumeric($meeting_id)) {
+                // $qry->where('meeting_id', $meeting_id);
+            }
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
+    public function syncTcMeetingGroupParticipants(Request $request)
+    {
+        $meeting_id = $request->input('meeting_id');
+        $group_id = $request->input('group_id');
+        $params = array();
+      
+        try {
+            $qry = DB::table('par_meeting_groups as t1')
+                                ->leftjoin('par_meeting_groups_participants as t2', 't1.id', 't2.group_id')
+                                ->leftjoin('users as t3', 't2.user_id', 't3.id')
+                                ->select(DB::raw("t2.*,t3.email,CONCAT_WS(' ',decrypt(t3.first_name),decrypt(t3.last_name)) as participant_name,decrypt(t3.phone) as phone"))
+                               ->where('t1.id',$group_id);
+                     $results = $qry->get(); 
+            //dd($results);
+            if($results){
+           foreach ($results as $results) {
+            $params[] = array(
+                'meeting_id' => $meeting_id,
+                'user_id' => $results->user_id,
+                'participant_name' => $results->participant_name,
+                'phone' => $results->phone,
+                'email' => $results->email,
+                'created_by' => $this->user_id
+            );
+          
+           }
+           $res=insertMultipleRecords('tc_meeting_participants', $params);
+        }
+            
+            $res = array(
+                'success' => true,
+                'message' => 'Participants saved successfully!!'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
+
+    public function updateMeetingAttendance(Request $req)
+    {
+        $meeting_id = $req->meeting_id;
+        $selected = $req->selected;
+        $personnel_id = $req->personnel_id;
+        $selected_recs = json_decode($selected);
+        $res = array('success' => true, 'message' => 'No record to update');
+        try {
+            foreach ($selected_recs as $selected) {
+                $attendance = $selected->has_attended;
+                $personnel_id = $selected->personnel_id;
+                if ($attendance == false || $attendance == 0) {
+                    $attendance = 0;
+                }
+                if ($attendance == true || $attendance == 1) {
+                    $attendance = 1;
+                }
+                $update_data = array(
+                    'has_attended' => $attendance,
+                );
+                $where = array(
+                    'meeting_id' => $meeting_id,
+                    'id' => $personnel_id
+                );
+                $res = updateRecordNoPrevious('tc_meeting_participants', $where, $update_data);
+            }
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return response()->json($res);
+    }
+
+
+    public function updateParticipantRole(Request $req)
+    {
+        $meeting_id = $req->meeting_id;
+        $selected = $req->selected;
+        $personnel_id = $req->personnel_id;
+        $selected_recs = json_decode($selected);
+        $res = array('success' => true, 'message' => 'No record to update');
+        try {
+            foreach ($selected_recs as $selected) {
+                $role_id = $selected->role_id;
+                $personnel_id = $selected->personnel_id;
+                $update_data = array(
+                    'role_id' => $role_id,
+                );
+                $where = array(
+                    'meeting_id' => $meeting_id,
+                    'id' => $personnel_id
+                );
+                $res = updateRecordNoPrevious('tc_meeting_participants', $where, $update_data);
+            }
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return response()->json($res);
+    }
+
+     public function getTcMeetingParticipants(Request $request)
+    {
+        $meeting_id = $request->input('meeting_id');
+        try {
+            $qry = DB::table('tc_meeting_participants as t1')
+                ->select('t1.*')
+                ->where('t1.meeting_id', $meeting_id);
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
+
+    public function prepareRegMeetingStage(Request $request)
+    {
+        $application_id = $request->input('application_id');
+        $meeting_id = $request->input('meeting_id');
+        $application_code = $request->input('application_code');
+        $module_id = $request->input('module_id');
+        $table_name = $request->input('table_name');
+        $workflow_stage_id = $request->input('workflow_stage_id');
+        $stage_category_id = '';
+        if(validateIsNumeric($module_id)){
+            $table_name = getSingleRecordColValue('modules', array('id'=>$module_id), 'tablename');
+        }
+        if(validateIsNumeric($workflow_stage_id)){
+            $stage_data = getTableData('wf_workflow_stages', array('id'=>$workflow_stage_id));
+            $stage_category_id = $stage_data->stage_category_id;
+        }
+
+
+        try {
+
+            if(validateIsNumeric($meeting_id)){
+                $qry = DB::table('tc_meeting_details as t3')
+                ->select(DB::raw("t3.*"));
+                $qry->where('t3.id', $meeting_id);
+            }else{
+                $qry = DB::table($table_name . ' as t1')
+                ->join('tc_meeting_applications as t2', function ($join) use ($application_code) {
+                    $join->on('t1.application_code', '=', 't2.application_code');
+                })
+                ->join('tc_meeting_details as t3', 't2.meeting_id', '=', 't3.id')
+                ->select(DB::raw("t3.*"));
+                $qry->where('t1.id', $application_id);
+            }
+            if($stage_category_id == 6 || $stage_category_id == 7){
+                $qry->whereRaw("(stage_category_id = 6 OR stage_category_id = 7)");
+            }
+            if($stage_category_id == 8 || $stage_category_id == 9){
+                $qry->whereRaw("(stage_category_id = 8 OR stage_category_id = 9)");
+            }
+            $results = $qry->first();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
+      public function getApplicationRecommendationLogs(Request $req)
+    {
+
+        $application_code = $req->input('application_code');
+        $module_id = $req->input('module_id');
+
+        try {
+            $qry = DB::table('tra_evaluation_recommendations as t1')
+                ->leftJoin('par_recommendations as t2', 't1.recommendation_id', 't2.id')
+                ->leftJoin('users as t3', 't1.created_by', 't3.id')
+                ->leftJoin('wf_stage_categories as t4', 't1.stage_category_id', 't4.id')
+                ->select('t1.*', 't2.name as recommendation', 't1.created_on as recommendation_date', DB::raw("CONCAT_WS(' ',decrypt(t3.first_name),decrypt(t3.last_name)) as recommended_by"), 't4.name as stage_name');
+
+
+            $qry->where('application_code', $application_code);
+            $qry->where('module_id', $module_id);
+
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
+
     public function getAllInspectionsCaparequests(Request $request)
     {
         try {
@@ -217,27 +635,27 @@ class CommonController extends Controller
         return \response()->json($res);
     }
 
-  public function getTcMeetingParticipants(Request $request)
-    {
-        $meeting_id = $request->input('meeting_id');
-        try {
-            $qry = DB::table('tc_meeting_participants as t1')
-                ->select('t1.*')
-                ->where('t1.meeting_id', $meeting_id);
-            $results = $qry->get();
-            $res = array(
-                'success' => true,
-                'results' => $results,
-                'message' => 'All is well'
-            );
-        } catch (\Exception $exception) {
-            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+  // public function getTcMeetingParticipants(Request $request)
+  //   {
+  //       $meeting_id = $request->input('meeting_id');
+  //       try {
+  //           $qry = DB::table('tc_meeting_participants as t1')
+  //               ->select('t1.*')
+  //               ->where('t1.meeting_id', $meeting_id);
+  //           $results = $qry->get();
+  //           $res = array(
+  //               'success' => true,
+  //               'results' => $results,
+  //               'message' => 'All is well'
+  //           );
+  //       } catch (\Exception $exception) {
+  //           $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
 
-        } catch (\Throwable $throwable) {
-            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
-        }
-        return \response()->json($res);
-    }
+  //       } catch (\Throwable $throwable) {
+  //           $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+  //       }
+  //       return \response()->json($res);
+  //   }
     public function getCaseDecisionsLogs(Request $req)
     {
 
@@ -835,7 +1253,6 @@ class CommonController extends Controller
          $module_id = $app_details->module_id;
         $sub_module_id = $app_details->sub_module_id;
 
-       
         if ($module_id == 1) {//Products
             $res = $this->saveProductApplicationApprovalDetails($request, $sub_module_id);
         } else if ($module_id == 2) {//Premises
@@ -848,22 +1265,21 @@ class CommonController extends Controller
             $res = $this->savePromoAdvertsApplicationRecommendationDetails($request, $sub_module_id, $app_details);
         } else if ($module_id == 6) {//promotion and advertisement
             $res = $this->saveProductNotificationApprovalDetails($request, $sub_module_id, $app_details);
-        } 
-        else if ($module_id == 4 || $module_id == 12) {//promotion and advertisement
+        } else if ($module_id == 4 || $module_id == 12) {//promotion and advertisement
             $res = $this->saveImpExpApplicationRecommendationDetails($request, $sub_module_id, $app_details);
-        }
-        // else if ($module_id == 4 || $module_id == 12) {//promotion and advertisement
-        //     $res = $this->savebatchpermitReleaseRecommendation($request, $sub_module_id, $app_details);
-        // }
-
-         else if ($module_id == 15) {//promotion and advertisement
+        } else if ($module_id == 15) {//promotion and advertisement
             $res = $this->saveDisposalpApplicationRecommendationDetails($request, $sub_module_id, $app_details);
         }
         else if ($module_id == 20) {//promotion and advertisement
             $res = $this->saveImpExpApplicationRecommendationDetails($request, $sub_module_id, $app_details);
         }else if ($module_id == 29) {//Drug Shops
             $res = $this->savePremiseApplicationApprovalDetails($request, $sub_module_id, $app_details);
-        }else if ($module_id ==30) {//enforcement
+        }
+        else if ($module_id == 33) {//SIAPremise
+            $res = $this->savePremiseApplicationApprovalDetails($request, $sub_module_id, $app_details);
+        }
+
+        else if ($module_id ==30) {//enforcement
             $res = $this->saveEnforcementApplicationRecommendationDetails($request, $sub_module_id, $app_details);
         }
         return \response()->json($res);
@@ -1390,7 +1806,6 @@ class CommonController extends Controller
                 
                 
             $results = $qry->first();
-            //dd($results);
             $res = array(
                 'success' => true,
                 'results' => $results,
@@ -1585,17 +2000,44 @@ class CommonController extends Controller
         return \response()->json($res);
     }
 
+
+
+    public function validateIsPopupSubmission(Request $req){
+        try {
+                $workflow_stage_id = $req->workflow_stage_id;
+                $record = DB::table('wf_workflow_stages')->where('id',$workflow_stage_id)->first();
+                if($record->is_pop_submission==1 || $record->is_pop_submission===1){
+                    $res = array('success'=>true, 'message'=>'Is Popop Submission');
+                }
+                else{
+                    $res = array('success'=>false, 'message'=>'Direct Submission');
+                }
+
+
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
     
     function validateRequiredApplicationDetails($table_name, $application_code, $title){
         
         $record = DB::table($table_name)->where('application_code',$application_code)->first();
-        if(!$record){
+        if($record){
              $res = array('success'=>true, 'hasValidatedChecklist'=>true, 'message'=>'');
             
         }
         else{
-           // $res = array('success'=>false,'hasValidatedChecklist'=>false,  'message'=>$title);
-            $res = array('success'=>true, 'hasValidatedChecklist'=>true, 'message'=>'');
+            $res = array('success'=>false,'hasValidatedChecklist'=>false,  'message'=>$title);
         }
         return $res;
     }
@@ -1805,24 +2247,25 @@ class CommonController extends Controller
         return \response()->json($res);
     }
 
-    public function getApplicationPaymentDetails(Request $request)
+     public function getApplicationPaymentDetails(Request $request)
     {
         $application_id = $request->input('application_id');
         $application_code = $request->input('application_code');
         $invoice_no = $request->input('invoice_no');
-        $where = array(
-         //  'application_id' => $application_id,
-            't5.invoice_no' => $invoice_no
-        );
+       
+        
         try {
             $qry = DB::table('tra_payments as t1')
                 ->leftJoin('par_payment_modes as t2', 't1.payment_mode_id', '=', 't2.id')
                 ->leftJoin('par_currencies as t3', 't1.currency_id', '=', 't3.id')
                 ->leftJoin('par_receipt_types as t4', 't1.receipt_type_id', '=', 't4.id')
-                ->leftJoin('tra_application_invoices as t5', 't1.invoice_id', '=', 't5.id')
-                ->select(DB::raw("t1.*,t2.name as payment_mode,t3.name as currency,t4.name as receipt_type"))
-                ->where($where);
-            
+                ->select(DB::raw("t1.*,t2.name as payment_mode,t3.name as currency,t4.name as receipt_type, t1.amount_paid*exchange_rate as equivalent_paid"));
+            if(validateIsNumeric($invoice_no)){
+                $qry->where('t1.invoice_no', $invoice_no);
+            }
+            if(validateIsNumeric($application_code)){
+                $qry->where('t1.application_code', $application_code);
+            }
             $results = $qry->get();
             $res = array(
                 'success' => true,
@@ -1830,15 +2273,9 @@ class CommonController extends Controller
                 'message' => 'All is well'
             );
         } catch (\Exception $exception) {
-            $res = array(
-                'success' => false,
-                'message' => $exception->getMessage()
-            );
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
         } catch (\Throwable $throwable) {
-            $res = array(
-                'success' => false,
-                'message' => $throwable->getMessage()
-            );
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
         }
         return \response()->json($res);
     }
@@ -3366,6 +3803,78 @@ public function saveChecklistApplicationQuery(Request $req)
         return response()->json($res);
     }
 
+
+     public function saveInternalApplicationQuery(Request $req)
+    {
+        try {
+            $user_id = \Auth::user()->id;
+            $post_data = $req->all();
+            $table_name = $post_data['table_name'];
+            $id = $post_data['id'];
+            $application_code = $post_data['application_code'];
+            $checklist_querycategory_id = $post_data['checklist_querycategory_id'];
+            $application_section_id = $post_data['application_section_id'];
+            $query = $post_data['query'];
+            $comment = $post_data['comment'];
+            $query_id = $post_data['query_id'];
+            $reference_id = $post_data['reference_id'];
+            $reference_section = $post_data['reference_section'];
+          
+
+            $table_data = array(
+                'application_code' => $application_code,
+                'checklist_querycategory_id' => $checklist_querycategory_id,
+                'application_section_id' => $application_section_id,
+                'query' => $query,
+                'query_id'=>$query_id,
+                'comment' => $comment,
+                'reference_id' => $reference_id,
+                'reference_section' => $reference_section,
+        
+            );
+            //add extra params
+            $table_data['created_on'] = Carbon::now();
+            $table_data['created_by'] = $user_id;
+            $where = array(
+                'id' => $id
+            );
+            $res = array();
+            if (isset($id) && $id != "") {
+                if (recordExists($table_name, $where)) {
+
+                    $table_data['dola'] = Carbon::now();
+                    $table_data['altered_by'] = $user_id;
+                    $previous_data = getPreviousRecords($table_name, $where);
+                    if ($previous_data['success'] == false) {
+                        return $previous_data;
+                    }
+                    $previous_data = $previous_data['results'];
+                    $res = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
+                }
+            } else {
+                $table_data['created_on'] = Carbon::now();
+                $table_data['created_by'] = $user_id;
+                $res = insertRecord($table_name, $table_data, $user_id);
+            }
+            if ($res['success']) {
+                $res = array(
+                    'success' => true,
+                    'message' => 'Query details Saved Successfully!!'
+                );
+            } else {
+                $res = array(
+                    'success' => false,
+                    'message' => $res['message']
+                );
+            }
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return response()->json($res);
+    }
+
     public function getApplicationunstructuredqueries(Request $request)
     {
         $application_code = $request->input('application_code');
@@ -3415,6 +3924,60 @@ public function saveChecklistApplicationQuery(Request $req)
         }
         return response()->json($res);
     }
+
+
+     public function getApplicationInternalqueries(Request $request)
+    {
+        $application_code = $request->input('application_code');
+        $status = $request->input('status');
+        if ($status != '') {
+            $status = explode(',', $status);
+        }
+        try {
+            $qry = DB::table('tra_internal_queries as t1')
+                ->leftJoin('par_query_statuses as t2', 't1.status', '=', 't2.id')
+                ->leftJoin('internal_queryresponses as t3', 't1.id', '=', 't3.query_id')
+                ->leftJoin('par_application_sections as t4', 't1.application_section_id', '=', 't4.id')
+                ->select(DB::raw("t11.name as reference_details,t1.*,t1.created_on as queried_on, t2.name as query_status, t3.response as last_response,t4.application_section,t6.id as query_type_id, t6.name as query_type,t7.name as query_category,t5.name as queried_item, decrypt(t8.first_name) as queried_by, t10.query_ref as query_reference_no,t6.sub_module_id,t6.module_id,t6.section_id,t1.application_code, t12.response as query_response,t13.name as checklist_querycategory, t1.id as query_id"))
+                ->leftJoin('par_checklist_items as t5', 't1.checklist_item_id', '=', 't5.id')
+                ->leftJoin('par_checklist_types as t6', 't5.checklist_type_id', '=', 't6.id')
+                ->leftJoin('par_checklist_categories as t7', 't6.checklist_category_id', '=', 't7.id')
+                ->leftJoin('par_checklist_querycategories as t13', 't1.checklist_querycategory_id', '=', 't13.id')
+
+                
+                ->leftJoin('users as t8', 't1.created_by', '=', 't8.id')
+                ->leftJoin('tra_queries_referencing as t9', 't1.id', '=', 't9.id')
+                ->leftJoin('tra_application_query_reftracker as t10', 't9.query_ref_id', '=', 't10.id')
+                ->leftJoin('par_query_guidelines_references as t11', 't1.reference_id', '=', 't11.id')
+                ->leftJoin('internal_queryresponses as t12', 't1.id', '=', 't12.query_id')
+                ->where('t1.application_code', $application_code);
+                
+           // $qry->where(array('is_query' => 1));
+            if (is_array($status) && count($status) > 0) {
+                $qry->whereIn('status', $status);
+            }
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+    }
+
+
+
 
     public function checkApplicationUnstructuredQueries(Request $request)
     {
@@ -3533,6 +4096,46 @@ public function saveChecklistApplicationQuery(Request $req)
         return \response()->json($res);
     }
     public function saveApplicationReQueryDetails(Request $request)
+    {
+        $query_id = $request->input('id');
+        $comment = $request->input('comment');
+        $item_resp_id = $request->input('item_resp_id');
+        $user_id = $this->user_id;
+        $table_name = 'checklistitems_queries';
+        $where = array(
+            'id' => $query_id
+        );
+        $table_data = array(
+            'status' => 3,
+            'comment' => $comment
+        );
+        try {
+            $prev_data = getPreviousRecords($table_name, $where);
+            if ($prev_data['success'] == true) {
+                $previous_data = $prev_data['results'];
+                $res = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
+                DB::table('checklistitems_responses')
+                    ->where('id', $item_resp_id)
+                    ->update(array('pass_status' => 2));
+            } else {
+                $res = $prev_data;
+            }
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
+
+    public function saveApplicationInternalReQueryDetails(Request $request)
     {
         $query_id = $request->input('id');
         $comment = $request->input('comment');
@@ -3731,11 +4334,11 @@ public function getUploadedApplicationPaymentDetails(Request $req){
                     $has_invoice_generation = getSingleRecordColValue('sub_modules', array('id'=>$sub_module_id), 'has_invoice_generation');
            
                 }
-                if(!$has_invoice_generation ==1){
+                if($has_invoice_generation ==1){
                     $res = $this->validateRequiredApplicationDetails('tra_application_invoices', $req->application_code, 'Generate Application invoice to proceed.');
-                    if(!$res['success']){
+                    if($res['success']){
                         $record = DB::table('tra_uploadedpayments_details')->where('application_code',$req->application_code)->first();
-                        if(!$record){
+                        if($record){
                              $res = array('success'=>true, 'hasValidatedChecklist'=>true, 'message'=>'');
                             
                         }
@@ -3775,7 +4378,7 @@ public function getUploadedApplicationPaymentDetails(Request $req){
                
         $record = DB::table('tra_application_uploadeddocuments')->where('application_code',$req->application_code)->first();
         $title = "Upload the Required Documents";
-        if(!$record){
+        if($record){
             $res = array('success'=>true, 'hasValidatedChecklist'=>true, 'message'=>'');
            
         }

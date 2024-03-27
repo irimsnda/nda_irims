@@ -57,7 +57,6 @@ Ext.define('Admin.view.dashboard.viewcontrollers.DashboardVctr', {
 
     },
 
-
     funcIntrayBeforerenderDetails:function(grid){
         var fasttrackappgrid = Ext.widget('fasttrackapplicationsgrid'),
             store = grid.getStore();
@@ -283,6 +282,60 @@ Ext.define('Admin.view.dashboard.viewcontrollers.DashboardVctr', {
 
         this.fireEvent('setConfigGridsStore', obj, options);
     },
+
+     doDeleteTodo: function (btn) {
+            var record = btn.getWidgetRecord(),
+            id = record.get('id'),
+            storeID = btn.storeID,
+            table_name = btn.table_name,
+            url = btn.action_url;
+        this.fireEvent('deleteRecord', id, table_name, storeID, url);
+    },
+
+    doCreate: function (btn) {
+        var me = this,
+            url = btn.action_url,
+            table = btn.table_name,
+            container_xtype = btn.up('container'),
+            task = container_xtype.down('textfield[name=task]').getValue(),
+            storeID = btn.storeID,
+            store = Ext.getStore(storeID);
+            if(task){
+            Ext.Ajax.request({
+                params: {
+                    id:'',
+                    _token: token,
+                    task:task,
+                    table_name:table
+                },
+                method: 'POST',
+                url: url, 
+                headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+               }, 
+                success: function (response) {
+                    var response = Ext.JSON.decode(response.responseText),
+                        success = response.success,
+                        message = response.message;
+                    if (success == true || success === true) {
+                        toastr.success(message, "Success Response");
+                        container_xtype.down('textfield[name=task]').setValue('');
+                        store.removeAll();
+                         store.load();
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                 error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        }else{
+            toastr.error('Please ensure you have added the Task you want to Save', 'Warning Response');
+        }
+    },
+
     loadApplicationAssaignmentTab: function(me) {//loadApplicationAssaignmentTab
         //check right
         Ext.Ajax.request({

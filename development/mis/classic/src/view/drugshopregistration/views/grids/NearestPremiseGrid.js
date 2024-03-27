@@ -23,7 +23,7 @@ Ext.define('Admin.view.drugshopregistration.views.grids.NearestPremiseGrid', {
         ui: 'soft-green',
         childXtype: 'drugshopnearestpremiseFrm',
         winWidth: '60%',
-        winTitle:'Nearest DrugShop'
+        winTitle:'Nearest Premise'
     }, {
         xtype: 'hiddenfield',
         name: 'premise_id'

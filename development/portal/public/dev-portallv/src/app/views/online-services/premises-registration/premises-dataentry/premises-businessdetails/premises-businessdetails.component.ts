@@ -36,7 +36,7 @@ export class PremisesBusinessdetailsComponent implements OnInit {
   @Input() premise_id: number;
   @Input() section_id: number;
   @Input() premisesGeneraldetailsfrm: FormGroup;
-  
+    sub_module_id:number;
   premises_resp:any;
   loading:boolean;
   isFoodPremises:boolean;
@@ -46,7 +46,6 @@ export class PremisesBusinessdetailsComponent implements OnInit {
   productCategoryData:any;
   manufacturingRoleData:any;
   constructor(public cdr: ChangeDetectorRef,public dmsService:DocumentManagementService,public fb: FormBuilder,public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: PremisesApplicationsService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public utilityService:Utilities) {
-   
 
   }
 
@@ -59,6 +58,7 @@ export class PremisesBusinessdetailsComponent implements OnInit {
       this.isFoodPremises = false;
       this.premises_typetitle = "Premises Main Activities";
     }
+
     this.onLoadproductCategoryData(this.section_id);
     this.onLoadPremisesOtherDetails();
     this.onLoadmanufacturingRoleData();

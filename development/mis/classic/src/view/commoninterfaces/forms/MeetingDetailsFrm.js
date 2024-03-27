@@ -22,6 +22,8 @@ Ext.define('Admin.view.commoninterfaces.views.forms.MeetingDetailsFrm', {
             xtype: 'textfield',
             fieldLabel: 'Meeting Description/Subject',
             name: 'meeting_name',
+            grow: true, 
+            growMax: 200, 
             bind: {
                 readOnly: '{isReadOnly}'  // negated
             }

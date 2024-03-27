@@ -4,10 +4,13 @@
 Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsTCRecommGrid', {
     extend: 'Admin.view.gmpapplications.views.grids.ProductLineAbstractGrid',
     xtype: 'productlinedetailstcrecommgrid',
-
+    controller: 'gmpapplicationsvctr',
     tbar: [{
         xtype: 'hiddenfield',
         name: 'isReadOnly'
+    },{
+        xtype: 'hiddenfield',
+        name: 'manufacturing_site_id'
     },{
         xtype: 'exportbtn'
     }, {
@@ -41,10 +44,16 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsTCRecommGri
         emptyMsg: 'No Records',
         beforeLoad: function () {
             var store=this.getStore(),
-                grid=this.up('grid'),
-                mainTabPanel = grid.up('#contentPanel'),
+                grid=this.up('grid');
+                if(grid.up('window')){
+                    var win = grid.up('window');
+                    site_id = grid.down('hiddenfield[name=manufacturing_site_id]').getValue();
+                }
+                else{
+                var mainTabPanel = grid.up('#contentPanel'),
                 activeTab = mainTabPanel.getActiveTab(),
                 site_id=activeTab.down('hiddenfield[name=manufacturing_site_id]').getValue();
+                 }
             store.getProxy().extraParams={
                 site_id: site_id
             };
@@ -55,18 +64,23 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsTCRecommGri
             fn: 'setPremiseRegGridsStore',
             config: {
                 pageSize: 1000,
-                storeId: 'productlinedetailsstr',
+                storeId: 'productlinetcdetailsstr',
                 proxy: {
                     url: 'gmpapplications/getGmpInspectionLineDetails'
                 }
             },
-            isLoad: false
+            isLoad: true
         }
     },
     columns: [{
         xtype: 'gridcolumn',
+        dataIndex: 'inspection_recommendation',
+        text: 'Inspection Recommendation',
+        flex: 1,
+    },{
+        xtype: 'gridcolumn',
         dataIndex: 'tc_recommendation',
-        text: 'Peer Review Recommendation',
+        text: 'Review Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
@@ -106,6 +120,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsTCRecommGri
                     hidden: true
                 }, {
                     text: 'Delete',
+                    hidden:true,
                     iconCls: 'x-fa fa-trash',
                     table_name: 'gmp_product_details',
                     storeID: 'productlinedetailsstr',

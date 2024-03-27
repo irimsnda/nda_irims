@@ -107,34 +107,36 @@ class PromotionMaterialsController extends Controller
             
             $promotion_material_data=array(
                  
-                 'applicant_id'=>$applicant_id,
-                 'applicant_as_sponsor'=>$request->input('applicant_as_sponsor'),
-                 'sponsor_id'=>$request->input('sponsor_id'),
-                 'local_agent_id'=>$request->input('local_agent_id'),
-                  'events_responsible_person'=>$request->events_responsible_person,
-                  'advertisement_type_id'=>$request->advertisement_type_id,
-                    'exhibition_start_date'=>formatDate($request->exhibition_start_date),
-                 'exhibition_end_date'=>formatDate($request->exhibition_end_date),
-                    'venue_of_exhibition'=>$request->venue_of_exhibition,
-                 'other_promotion_meetingtype'=>$request->other_promotion_meetingtype,
-                    'physicaladdress_of_exhibition'=>$request->physicaladdress_of_exhibition,
-                     'promotionameeting_other_information'=>$request->promotionameeting_other_information,
-                      'other_promotion_materialtypes'=>$request->other_promotion_materialtypes,
-                      'responsible_persons_contacts'=>$request->responsible_persons_contacts,
-                       'responsible_persons_physicaladdress'=>$request->responsible_persons_physicaladdress,
-                       'target_audience_id'=>$request->target_audience_id,
-
-                       
-                 'description_of_advert'=>$request->input('description_of_advert'),
-                 'section_id'=>$section_id,
-                 'module_id'=>$module_id,
-                 'sub_module_id'=>$sub_module_id,
-                 'process_id'=>$process_id,
-                 'zone_id'=>$zone_id,
-                 'workflow_stage_id'=>$workflow_stage_id
+                'applicant_id'=>$applicant_id,
+                'applicant_as_sponsor'=>$request->input('applicant_as_sponsor'),
+                'sponsor_id'=>$request->input('sponsor_id'),
+                'local_agent_id'=>$request->input('local_agent_id'),
+                'events_responsible_person'=>$request->events_responsible_person,
+                'advertisement_type_id'=>$request->advertisement_type_id,
+                'advertisement_channel_id'=>$request->advertisement_channel_id,
+                'other_advert_channels'=>$request->other_advert_channels,
+                'exhibition_start_date'=>formatDate($request->exhibition_start_date),
+                'exhibition_end_date'=>formatDate($request->exhibition_end_date),
+                'venue_of_exhibition'=>$request->venue_of_exhibition,
+                'other_promotion_meetingtype'=>$request->other_promotion_meetingtype,
+                'advert_language'=>$request->advert_language,
+                'physicaladdress_of_exhibition'=>$request->physicaladdress_of_exhibition,
+                'promotionameeting_other_information'=>$request->promotionameeting_other_information,
+                'other_promotion_materialtypes'=>$request->other_promotion_materialtypes,
+                'responsible_persons_contacts'=>$request->responsible_persons_contacts,
+                'responsible_persons_physicaladdress'=>$request->responsible_persons_physicaladdress,
+                'target_audience_id'=>$request->target_audience_id, 
+                'description_of_advert'=>$request->input('description_of_advert'),
+                'section_id'=>$section_id,
+                'module_id'=>$module_id,
+                'sub_module_id'=>$sub_module_id,
+                'process_id'=>$process_id,
+                'zone_id'=>$zone_id,
+                'workflow_stage_id'=>$workflow_stage_id
                 
                             
             );
+
             
             
         
@@ -421,7 +423,6 @@ class PromotionMaterialsController extends Controller
     $application_id = $req->input('application_id');
     $application_code = $req->input('application_code');
     $table_name = $req->input('table_name');
-    
     try {
         $main_qry = DB::table('tra_promotion_adverts_applications as t1')
               ->leftJoin('par_system_statuses as q', 't1.application_status_id', '=', 'q.id')
@@ -437,30 +438,29 @@ class PromotionMaterialsController extends Controller
                 't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website');
 
         $results = $qry1->first();
-        $local_agent_id = $results->local_agent_id;
         
-         $query = DB::table('wb_trader_account as t1')
-                ->select('t1.*','t1.id as applicant_id',
-                't1.name as applicant_name', 't1.contact_person',
-                't1.tin_no', 't1.country_id as app_country_id', 't1.region_id as app_region_id', 't1.district_id as app_district_id', 't1.physical_address as app_physical_address',
-                't1.postal_address as app_postal_address', 't1.telephone_no as app_telephone', 't1.fax as app_fax', 't1.email as app_email', 't1.website as app_website');
+        //  $query = DB::table('wb_trader_account as t1')
+        //         ->select('t1.*','t1.id as applicant_id',
+        //         't1.name as applicant_name', 't1.contact_person',
+        //         't1.tin_no', 't1.country_id as app_country_id', 't1.region_id as app_region_id', 't1.district_id as app_district_id', 't1.physical_address as app_physical_address',
+        //         't1.postal_address as app_postal_address', 't1.telephone_no as app_telephone', 't1.fax as app_fax', 't1.email as app_email', 't1.website as app_website');
 
-        $local_represults = $query->first();
+        // $local_represults = $query->first();
         //get the meeting types and materials 
-        $meeting_types_id = $this->getPromotionalAppOtherDetails('tra_promotionmeetingtypes_details', $application_id, 'meeting_type_id');
-        $promotions_material_id = $this->getPromotionalAppOtherDetails('tra_promotion_materials_details' ,$application_id, 'material_id');
+        // $meeting_types_id = $this->getPromotionalAppOtherDetails('tra_promotionmeetingtypes_details', $application_id, 'meeting_type_id');
+        // $promotions_material_id = $this->getPromotionalAppOtherDetails('tra_promotion_materials_details' ,$application_id, 'material_id');
         
-        $advertisement_channels_id = $this->getPromotionalAppOtherDetails('tra_promotion_advertisement_channels' ,$application_id, 'advertisement_channel_id');
+        // $advertisement_channels_id = $this->getPromotionalAppOtherDetails('tra_promotion_advertisement_channels' ,$application_id, 'advertisement_channel_id');
         
         
-        $results->meeting_types_id = $meeting_types_id;
-        $results->promotions_material_id = $promotions_material_id;
-        $results->advertisement_channels_id = $advertisement_channels_id;
+        // $results->meeting_types_id = $meeting_types_id;
+        // $results->promotions_material_id = $promotions_material_id;
+        // $results->advertisement_channels_id = $advertisement_channels_id;
         
         $res = array(
             'success' => true,
             'results' => $results,
-            'local_represults' => $local_represults,
+            //'local_represults' => $local_represults,
             'message' => 'All is well'
         );
 
@@ -600,10 +600,12 @@ class PromotionMaterialsController extends Controller
             
             $results=DB::table('tra_promotion_prod_particulars as t1')
             ->leftJoin('par_common_names as t2', 't1.common_name_id', 't2.id')
-             ->select(DB::raw('t1.*,t2.name as common_name'))
-            ->where('application_id',$application_id);
-            
-            
+            ->leftJoin('tra_promotion_materials_details as t3', 't1.promotions_material_id', 't3.id')
+             ->join('par_promotion_material_items  as t4','t3.promotions_material_id','=','t4.id')
+              ->join('par_promotion_material_language  as t5','t3.language_id','=','t5.id')
+             ->select(DB::raw('t1.*,t2.name as common_name,t5.name as promotion_material_language'),DB::raw("IF(t3.promotions_material_id = 10, CONCAT(t4.name, ' (', t3.other_advert_materials, ') - ', t5.name), CONCAT(t4.name, ' - ', t5.name)) as promotion_material_name"))
+            ->where('t1.application_id',$application_id);
+
             $res = array(
                 'success' => true,
                 'results' => $results->get(),
@@ -638,11 +640,20 @@ class PromotionMaterialsController extends Controller
         //print_r($request->all());
         
         try{
-            
+
             $results=DB::table('tra_promotion_materials_details as t1')
-             
-             ->join('par_promotion_material_items  as t2','t1.material_id','=','t2.id')
-             ->select(DB::raw('t1.*,t2.name as promotion_material_name')) 
+             ->join('par_promotion_material_items  as t2','t1.promotions_material_id','=','t2.id')
+              ->join('par_promotion_material_language  as t3','t1.language_id','=','t3.id')
+              ->leftjoin('par_promotion_decision  as t4','t1.assessors_recommendation_id','=','t4.id')
+              ->leftjoin('par_promotion_decision  as t5','t1.auditors_recommendation_id','=','t5.id')
+              ->leftjoin('par_promotion_decision  as t6','t1.manager_recommendation_id','=','t6.id')
+              ->leftjoin('par_promotion_decision  as t7','t1.director_recommendation_id','=','t7.id')
+              ->leftjoin('par_promotion_decision  as t8','t1.approval_recommendation_id','=','t8.id')
+             ->select(
+                DB::raw("IF(t1.promotions_material_id = 10, CONCAT(t2.name, ' (', t1.other_advert_materials, ')'), t2.name) as promotion_material_name"),DB::raw("IF(t1.promotions_material_id = 10, CONCAT(t2.name, ' (', t1.other_advert_materials, ') - ', t3.name), CONCAT(t2.name, ' - ', t3.name)) as name"),
+                't1.*',
+                't3.name as promotion_material_language','t4.name as assessor_recommendation','t5.name as auditors_recommendation','t6.name as manager_recommendation','t7.name as director_recommendation','t8.name as approval_recommendation'
+            ) 
             ->where('t1.application_id',$application_id);
             
             
@@ -791,6 +802,7 @@ class PromotionMaterialsController extends Controller
                 $previous_data = $previous_data['results'];
                 unset($data['id']);
                 $res = updateRecord($table, $previous_data, $where_app, $data, $user_id);
+
             
             }else{
                 
@@ -1113,6 +1125,76 @@ class PromotionMaterialsController extends Controller
     }
 
 
+     public function savePromotionCommentData(Request $req)
+    {
+        try { 
+            
+            $user_id = \Auth::user()->id;
+            $post_data = $req->all();
+            $table_name = $post_data['table_name'];
+            $application_code = $post_data['application_code'];
+            //unset unnecessary values
+            unset($post_data['_token']);
+            unset($post_data['table_name']);
+            unset($post_data['model']);
+            unset($post_data['id']);
+            unset($post_data['unset_data']);
+            $unsetData = $req->input('unset_data');
+            if (isset($unsetData)) {
+                $unsetData = explode(",", $unsetData);
+                $post_data = unsetArrayData($post_data, $unsetData);
+            }
+            
+            $table_data = $post_data;
+            //add extra params
+            $table_data['created_on'] = Carbon::now();
+            $table_data['created_by'] = $user_id;
+            $where = array(
+                'application_code' => $application_code
+            );
+            $res = array();
+            if (isset($application_code) && $application_code != "") {
+
+                $res=recordExists($table_name, $where);
+                if (recordExists($table_name, $where)) {
+                    unset($table_data['created_on']);
+                    unset($table_data['created_by']);
+                    $table_data['dola'] = Carbon::now();
+                    $table_data['altered_by'] = $user_id;
+                    $previous_data = getPreviousRecords($table_name, $where);
+
+
+                    if ($previous_data['success'] == false) {
+                        return $previous_data;
+                    }
+                    $previous_data = $previous_data['results'];
+                    $res = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
+
+                    
+                }else{
+                   $res = insertRecord($table_name, $table_data, $user_id); 
+                }
+            } else {
+                
+                $res = insertRecord($table_name, $table_data, $user_id);
+            
+
+            }
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+    }
+
+
 
   public function prepareForPromotionAndAdvertsEvaluation(Request $request)
   {
@@ -1165,10 +1247,16 @@ class PromotionMaterialsController extends Controller
                  ->leftJoin('users as t8', 't7.usr_from', '=', 't8.id')
                 ->leftJoin('users as t9', 't7.usr_to', '=', 't9.id')
                 ->leftJoin('tra_promotionaladvert_personnel as t12', 't1.sponsor_id', '=', 't12.id')
+                ->leftJoin('mg_recommendations as t14', 't1.application_code', '=', 't14.application_code')
+                ->leftJoin('par_tcmeeting_decisions as t15', 't14.decision_id', '=', 't15.id')
+
+                ->leftJoin('dr_recommendations as t16', 't1.application_code', '=', 't16.application_code')
+                ->leftJoin('par_tcmeeting_decisions as t17', 't16.decision_id', '=', 't17.id')
+
                  ->select('t1.*', 't3.name as applicant_name', 't4.name as application_status',
                 't10.name as advertisement_type',
                  't3.country_id as app_country_id','t3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
-                't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone','t3.fax as app_fax','t3.email as app_email','t3.website as app_website',
+                't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone','t3.fax as app_fax','t3.email as app_email','t3.website as app_website', 't15.name as review_recomm','t14.decision_id as review_recommendation_id','t14.comments as manager_comment', 't17.name as director_recomm','t16.decision_id as director_recommendation_id','t16.comments as director_comment',
                 't6.name as approval_status', 't5.decision_id', 't1.id as active_application_id', DB::raw("CONCAT_WS(' ',decrypt(t8.first_name),decrypt(t8.last_name)) as from_user,CONCAT_WS(' ',decrypt(t9.first_name),decrypt(t9.last_name)) as to_user,t12.name as applicant_sponsor_name"))
                 ->where(array('t7.current_stage'=>$workflow_stage, 't7.isDone'=>0));
             if(validateIsNumeric($section_id)){
@@ -1219,11 +1307,16 @@ class PromotionMaterialsController extends Controller
                  ->leftJoin('users as t11', 't10.usr_from', '=', 't11.id')
                 ->leftJoin('users as t12', 't10.usr_to', '=', 't12.id')
                 ->leftJoin('tra_promotionaladvert_personnel as t13', 't1.sponsor_id', '=', 't12.id')
+                ->leftJoin('mg_recommendations as t14', 't1.application_code', '=', 't14.application_code')
+                ->leftJoin('par_tcmeeting_decisions as t15', 't14.decision_id', '=', 't15.id')
+
+                ->leftJoin('dr_recommendations as t16', 't1.application_code', '=', 't16.application_code')
+                ->leftJoin('par_tcmeeting_decisions as t17', 't16.decision_id', '=', 't17.id')
                 ->select('t1.*', 't1.id as active_application_id','t3.name as applicant_name','t3.contact_person',
                 
                     't3.tin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id','t3.district_id as app_district_id', 't3.physical_address as app_physical_address',
                     't3.postal_address as app_postal_address','t3.telephone_no as app_telephone','t3.fax as app_fax','t3.email as app_email','t3.website as app_website','t9.name as applicant_sponsor_name', 
-                     't4.name as application_status', 't6.name as approval_status',
+                     't4.name as application_status', 't6.name as approval_status','t15.name as review_recomm','t14.decision_id as review_recommendation_id','t14.comments as manager_comment', 't17.name as director_recomm','t16.decision_id as director_recommendation_id','t16.comments as director_comment',
                      't7.name as process_name', 't8.name as workflow_stage', 't8.is_general', 't5.decision_id', 't5.id as recommendation_id', 't6.name as recommendation',  DB::raw("CONCAT_WS(' ',decrypt(t11.first_name),decrypt(t11.last_name)) as from_user,CONCAT_WS(' ',decrypt(t12.first_name),decrypt(t12.last_name)) as to_user,t13.name as applicant_sponsor_name"))
                 ->where(array('t10.current_stage'=> $workflow_stage,'isDone'=>0));
             $results = $qry->get();
@@ -1245,7 +1338,7 @@ class PromotionMaterialsController extends Controller
         }
         return \response()->json($res);
     }
-    
+
     
      function insertUpdatePromoAdvertComments(Request $request)
     {

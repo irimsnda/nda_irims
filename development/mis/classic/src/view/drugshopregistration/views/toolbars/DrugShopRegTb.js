@@ -48,7 +48,7 @@ Ext.define('Admin.view.drugshopregistration.views.toolbars.DrugShopRegTb', {
                         iconCls: 'x-fa fa-check',
                         handler: 'showNewDrugShopRegistration',
                         wrapper_xtype: 'drugshopregdashwrapper',
-                        app_type: 2
+                        app_type: 110
                     },
                     '-',
                     {

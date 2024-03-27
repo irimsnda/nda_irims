@@ -31,6 +31,7 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialAmendmentApplican
                     fieldLabel: 'Zone',
                     labelWidth: 50,
                     width: 400,
+                    hidden:true,
                     name: 'zone_id',
                     valueField: 'id',
                     displayField: 'name',

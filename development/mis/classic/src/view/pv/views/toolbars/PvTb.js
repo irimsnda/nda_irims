@@ -14,14 +14,13 @@ Ext.define('Admin.view.pv.views.toolbars.PvTb', {
     items: [
         {
             text: 'Home',
-            iconCls: 'x-fa fa-home',ui:'soft-green',
+            iconCls: 'x-fa fa-home',
             sec_dashboard:'pvdashPnl',
             name: 'pvHomeBtn'
         },
         {
             text: 'New Report',
             iconCls: 'x-fa fa-plus',
-            ui:'soft-green',
             handler: 'showNewPv',
             app_type: 77
         }

@@ -2582,7 +2582,8 @@ public function saveapplicationreceiceinvoiceDetails(Request $req){
                  }
                  
                  $exchange_ratedata = getTableData('par_exchange_rates', array('currency_id' => $currency_id));
-                 $exchange_rate = $exchange_ratedata->exchange_rate;
+                 //$exchange_rate = $exchange_ratedata->exchange_rate;
+                 $exchange_rate=1;
                  $quantity = 1;
                  if($fasttrack_option_id == 1){
                      $quantity = 2;
@@ -2710,7 +2711,8 @@ public function saveapplicationreceiceinvoiceDetails(Request $req){
                  }
                  
                  $exchange_ratedata = getTableData('par_exchange_rates', array('currency_id' => $currency_id));
-                 $exchange_rate = $exchange_ratedata->exchange_rate;
+                 //$exchange_rate = $exchange_ratedata->exchange_rate;
+                 $exchange_rate=1;
                  $quantity = 1;
                  if($fasttrack_option_id == 1){
                      $quantity = 2;

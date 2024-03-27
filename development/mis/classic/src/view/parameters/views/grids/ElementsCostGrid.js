@@ -45,7 +45,7 @@ Ext.define('Admin.view.parameters.views.grids.ElementsCostGrid', {
                 text: 'Delete',
                 iconCls: 'x-fa fa-trash',
                 tooltip: 'Delete Record',
-                table_name: 'element_costs',
+                table_name: 'tra_element_costs',
                 storeID: 'elementscoststr',
                 action: 'actual_delete',
                 action_url: 'configurations/deleteConfigRecord',

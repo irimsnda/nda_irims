@@ -10,6 +10,7 @@ Ext.define('Admin.view.Enforcement.views.panels.Investigation.EnforcementPeerRev
         animate: true,
         activeOnTop: false
     },
+    
     dockedItems: [{
         xtype: 'toolbar',
         dock: 'top',
@@ -110,7 +111,7 @@ Ext.define('Admin.view.Enforcement.views.panels.Investigation.EnforcementPeerRev
                 name: 'prodclass_category_id'
             }, {
                 xtype: 'hiddenfield',
-                name: 'product_id'
+                name: 'enforcement_id'
             },{
                 name: 'premise_id',
                 xtype: 'hiddenfield'
@@ -132,6 +133,7 @@ Ext.define('Admin.view.Enforcement.views.panels.Investigation.EnforcementPeerRev
                 xtype: 'hiddenfield',
                 name: 'joint_investigation_id'
             }, 
+
         ]
     }
     ],
@@ -147,8 +149,8 @@ Ext.define('Admin.view.Enforcement.views.panels.Investigation.EnforcementPeerRev
     },{
         xtype: 'peerMeetingEnforcementApplicationListGrid',
         itemId: 'application_list',//included to identifly the specific grid globaly
-        is_meeting: 1,//on all tcmeetingparticipantsgrid to differentiate when called from meeting/schedule
         reference: 'application_list',
+        is_meeting: 1,//on all tcmeetingparticipantsgrid to differentiate when called from meeting/schedule
         title: 'Cases Ready For the Meeting',
         header: {
             style: {
@@ -157,7 +159,7 @@ Ext.define('Admin.view.Enforcement.views.panels.Investigation.EnforcementPeerRev
         },
     },{
         xtype: 'tcmeetingparticipantsgrid',
-        is_meeting: 1,//on all tcmeetingparticipantsgrid to differentiate when called from meeting/schedule
+        is_meeting: 0,//on all tcmeetingparticipantsgrid to differentiate when called from meeting/schedule
         title: 'Participants Details',
         header: {
             style: {
@@ -170,26 +172,26 @@ Ext.define('Admin.view.Enforcement.views.panels.Investigation.EnforcementPeerRev
         this.bbar = {
             reference: 'navigation-toolbar',
             ui: 'footer',
-            items: ['->',{
-                        xtype: 'button',
-                        text: 'Meeting Documents',
-                        iconCls: 'x-fa fa-upload',
-                        ui: 'soft-blue',
-                        name: 'save_btn',
-                        reference_table_name: 'tc_meeting_details',
-                        table_name: 'tc_meeting_uploaddocuments',
-                        handler: 'funcUploadTCMeetingtechnicalDocuments',
-                        document_type_id: 4,
-                        childXtype:'unstructureddocumentuploadsgrid',
-                        winTitle: 'Technical Meeting Documents Upload',
-                        winWidth: '80%',
-                        toaster: 0
-                    },
+            items: ['->',
                 {
-                    text: 'Submit Case',
+                    xtype: 'button',
+                    text: 'Upload Meeting Documents',
+                    iconCls: 'x-fa fa-upload',
+                    ui: 'soft-blue',
+                    name: 'save_btn',
+                    reference_table_name: 'tc_meeting_details',
+                    table_name: 'tc_meeting_uploaddocuments',
+                    handler: 'funcUploadTCMeetingtechnicalDocuments',
+                    document_type_id: 4,
+                    childXtype:'unstructureddocumentuploadsgrid',
+                    winTitle: 'Technical Meeting Documents Upload',
+                    winWidth: '80%',
+                    toaster: 0
+                },
+                {
+                    text: 'Submit',
                     ui: 'soft-blue',
                     iconCls: 'fa fa-check',
-                    disabled: true,
                     name: 'process_submission_btn',
                     storeID: 'caseListGridStr',
                     table_name: '',

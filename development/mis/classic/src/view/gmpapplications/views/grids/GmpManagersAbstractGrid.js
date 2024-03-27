@@ -52,12 +52,48 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpManagersAbstractGrid', {
                 dataIndex: 'gmp_type_txt',
                 text: 'GMP Type',
                 flex: 1
-            }, {
+            },{
                 xtype: 'gridcolumn',
-                dataIndex: 'application_status',
-                text: 'Status',
+                dataIndex: 'country_name',
+                text: 'Country',
                 flex: 1
-            }
+            },
+            {
+                xtype: 'gridcolumn',
+                dataIndex: 'region_name',
+                text: 'Region',
+                flex: 1
+            },
+            {
+                xtype: 'gridcolumn',
+                dataIndex: 'blocks_no',
+                text: 'Blocks No',
+                flex: 1
+            },
+            {
+                xtype: 'gridcolumn',
+                dataIndex: 'lines_no',
+                text: 'Lines No',
+                flex: 1
+            }, 
+
+            {
+                header: 'Status',
+                dataIndex: 'application_status_id',
+                flex: 2,
+                renderer: function (value, metaData,record) {
+                    var application_status_id = record.get('application_status_id')
+                    if (application_status_id==28 || application_status_id===28) {
+                        metaData.tdStyle = 'color:white;background-color:green';
+                        return record.get('application_status');
+                    }else if(application_status_id==29 || application_status_id===29){
+                      metaData.tdStyle = 'color:white;background-color:red';
+                      return record.get('application_status');
+                  }else{
+                    return record.get('application_status');
+                   }
+                }
+         }, 
         ];
         this.columns = defaultColumns.concat(this.columns);
         this.callParent(arguments);

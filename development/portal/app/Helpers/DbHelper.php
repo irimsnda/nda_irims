@@ -120,6 +120,10 @@ class DbHelper
         }
     }
 
+
+
+
+
     public static function deleteRecordNoTransaction($table_name, $previous_data, $where_data, $user_id,$con)
     {
         $affectedRows = DB::connection($con)->table($table_name)->where($where_data)->delete();
@@ -135,6 +139,39 @@ class DbHelper
                 'created_by' => $user_id,
                 'created_at' => date('Y-m-d H:i:s')
             );
+            DB::connection('audit_db')->table('tra_portalaudit_trail')->insert($audit_detail);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+public static function deleteRecordNoMisTransaction($table_name, $previous_data, $where_data, $user_id,$con)
+    {
+        $affectedRows = DB::connection('mis_db')->table($table_name)->where($where_data)->delete();
+        if ($affectedRows) {
+            $record_id = $previous_data['results'][0]['id'];
+            if ($table_name === "tra_manufacturing_sites_blocks") {
+                $affectedRowsJoined = DB::connection('mis_db')
+                    ->table('gmp_productline_details')
+                    ->where('manufacturingsite_block_id', $record_id)
+                    ->delete();
+
+                if (!$affectedRowsJoined) {
+                    return false;
+                }
+            }
+            $data_previous = serialize($previous_data);
+            $audit_detail = array(
+                'table_name' => $table_name,
+                'table_action' => 'delete',
+                'record_id' => $record_id,
+                'prev_tabledata' => $data_previous,
+                'ip_address' => self::getIPAddress(),
+                'created_by' => $user_id,
+                'created_at' => date('Y-m-d H:i:s')
+            );
+
             DB::connection('audit_db')->table('tra_portalaudit_trail')->insert($audit_detail);
             return true;
         } else {
@@ -312,6 +349,40 @@ class DbHelper
         }
         return $res;
     }
+
+
+    static function deleteMisRecord($table_name, $previous_data, $where_data, $user_id)
+    {
+        $res = array();
+        try {
+            DB::transaction(function () use ($table_name, $previous_data, $where_data, $user_id, &$res) {
+                if(self::deleteRecordNoMisTransaction($table_name, $previous_data, $where_data, $user_id)) {
+                    $res = array(
+                        'success' => true,
+                        'message' => 'Delete request executed successfully!!'
+                    );
+                } else {
+                    $res = array(
+                        'success' => false,
+                        'message' => 'Zero number of rows affected. No record affected by the delete request!!'
+                    );
+                }
+            }, 5);
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return $res;
+    }
+
+
 
     static function softDeleteRecord($table_name, $previous_data, $where_data, $user_id)
     {
@@ -580,7 +651,7 @@ class DbHelper
 
     static function getSuperUserGroupIds()
     {
-        $super_groups_obj = DB::table('par_groups')
+        $super_groups_obj = DB::connection('mis_db')->table('par_groups')
             ->where('is_super_group', 1)
             ->get();
         $super_groups_ass = self::convertStdClassObjToArray($super_groups_obj);

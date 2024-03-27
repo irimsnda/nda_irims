@@ -136,7 +136,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.DrugsWithdra
     },  {
         xtype: 'gridcolumn',
         dataIndex: 'dg_recommendation',
-        text: 'DG Recommendation',
+        text: 'SA Recommendation',
         width: 150
     },{
         xtype: 'widgetcolumn',

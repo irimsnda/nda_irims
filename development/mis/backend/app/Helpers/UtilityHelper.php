@@ -197,13 +197,13 @@ static function returnTableNamefromModule($table_name,$module_id){
             'module_id' => $module_id,
             'sub_module_id' => $sub_module_id
         );
+        ;
         $results = DB::table('par_application_statuses as t1')
             ->join('par_system_statuses as t2', 't1.status_id', '=', 't2.id')
             ->select('t1.status_id', 't2.name')
             ->where($where)
             ->where('t1.status', 1)
             ->first();
-
         if (!is_null($results)) {
             $statusDetails = $results;
         }
@@ -363,12 +363,13 @@ static function returnTableNamefromModule($table_name,$module_id){
                 
                 'zone_id' => $zone_id
             );
+
+
             //get ref id
             $ref_id = DB::table('tra_submodule_referenceformats')
-                ->where('sub_module_id', $sub_module_id)
+                //->where('sub_module_id', $sub_module_id)
                 ->where('reference_type_id', $reference_type_id)
                 ->value('reference_format_id');
-
             if (!is_numeric($ref_id)) {
                 $res = array(
                     'success' => false,
@@ -424,6 +425,8 @@ static function returnTableNamefromModule($table_name,$module_id){
         }
         return $res;
     }
+
+
 static function convert_number_to_words($number) {
 		   
 			$hyphen      = '-';
@@ -773,7 +776,7 @@ static function getPermitSignatoryDetails()
     static function generateInvoiceNo($user_id)
     {
         $registration_year = date("Y");
-		$prefix = 101;
+		$prefix = 'INV101';
         $qry = DB::table('invoice_serials');
         $qry1 = $qry->where('registration_year', $registration_year);
         $last_serial = $qry->value('last_serial');
@@ -997,12 +1000,12 @@ static function getPermitSignatoryDetails()
 		insertRecord('registration_certificate_logs', $table_data, $user_id);
 	}
 
-    static function generatePremisePermitNo($zone_id, $section_id, $table_name, $user_id, $ref_id,$sub_module_id)
+    static function generatePremisePermitNo($district_id, $section_id, $table_name, $user_id, $ref_id,$sub_module_id)
     {
-		if(!validateIsNumeric($zone_id)){
-			$zone_id = 2;
+		if(!validateIsNumeric($district_id)){
+			//$district_id = 2;
 		}
-        $zone_code = getSingleRecordColValue('par_zones', array('id' => $zone_id), 'zone_code');
+        $district_code = getSingleRecordColValue('par_premise_districts', array('id' => $district_id), 'code');
 		if($sub_module_id == 10 || $sub_module_id == 11){
 			 $section_code = 'CT';
        
@@ -1020,7 +1023,7 @@ static function getPermitSignatoryDetails()
             'section_id' => $section_id,
             'registration_year' => $registration_year,
             'sub_module_id' => $sub_module_id,
-            'zone_id' => $zone_id,
+            'district_id' => $district_id,
             'table_name' => $table_name
         );
         $qry = DB::table('premise_permit_serials');
@@ -1042,7 +1045,7 @@ static function getPermitSignatoryDetails()
                 'table_name' => $table_name,
                 'sub_module_id' => $sub_module_id,
                 'last_serial' => $serial_no,
-                'zone_id' => $zone_id,
+                'district_id' => $district_id,
                 'registration_year' => $registration_year,
                 'created_by' => $user_id
             );
@@ -1050,7 +1053,7 @@ static function getPermitSignatoryDetails()
         }
         $serial_no = str_pad($serial_no, 4, 0, STR_PAD_LEFT);
         $codes_array = array(
-            'zone_code' => $zone_code,
+            'district_code' => $district_code,
             'reg_year' => $reg_year,
             'section_code' => $section_code,
             'serial_no' => $serial_no
@@ -1065,7 +1068,7 @@ static function getPermitSignatoryDetails()
 		}
 		$rec = DB::table('tra_approval_recommendations')->where($where)->count();
 		if($rec >0){
-			return  self::generatePremisePermitNo($zone_id, $section_id, $table_name, $user_id, $ref_id,$sub_module_id);
+			return  self::generatePremisePermitNo($district_id, $section_id, $table_name, $user_id, $ref_id,$sub_module_id);
 		}
 		else{
 			 return $permit_no;
@@ -2419,4 +2422,29 @@ DB::enableQueryLog();
 		//Facade::clearResolvedInstance('tcpdf');
 		
     }
+
+     static function getRegistrationSerial($module_id)
+    {
+        $table_name = getTableName($module_id);
+        $last_id = 01;
+        $max_details = DB::table($table_name)
+            ->select(DB::raw("MAX(id) as last_id"))
+            ->first();
+        if (!is_null($max_details)) {
+            $last_id = $max_details->last_id + 1;
+        }
+        $serial = $module_id.$last_id;
+        return $serial;
+    }
+    static function array_flatten($arr) {
+    $return = [];
+    foreach ($arr as $key => $value) {
+        if (is_array($value)) {
+            $return = array_merge($return, array_flatten($value));
+        } else {
+            $return[] = $value;
+        }
+    }
+    return $return;
+}
 }

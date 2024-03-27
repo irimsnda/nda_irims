@@ -22,7 +22,7 @@ Ext.define('Admin.view.pharmacovigilancereporting.forms.SafetyAlertReportsObserv
             value: token
         },{
           xtype:'hiddenfield',
-          name:'application_code'  
+          name:'application_id'  
             
         },{
             xtype: 'combo',

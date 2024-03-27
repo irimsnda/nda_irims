@@ -120,14 +120,19 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                 autoScroll: true,
                 margin:5,
                 title: 'Preview Product Details'
-             },{
-                
-                title: 'Quality Review Uploads',itemId:'auditing_panel',
+             },{ 
+                title: 'Quality Review',
+                itemId:'auditing_panel',
                 layout:'fit', margin:5,
                 items:[{
-                    xtype: 'productAuditingUploadsGrid',
+                    xtype: 'qualitysummaryfrm',
+                    title: 'Quality Overall Summary Dossier',
+                    }
+                //     ,{
+                //     xtype: 'productAuditingUploadsGrid',
                     
-                }]
+                // }
+                ]
             },{
                 title: 'Requests for Additional Information',
                 xtype: 'applicationqueriesgrid'

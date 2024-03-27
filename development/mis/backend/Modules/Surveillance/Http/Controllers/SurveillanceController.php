@@ -761,7 +761,7 @@ class SurveillanceController extends Controller
         try {
             $qry = DB::table('tra_surveillance_applications as t1')
                 ->join('tra_samplecollection_sites as t2', 't1.sample_site_id', '=', 't2.id')
-                ->join('par_zones as t3', 't1.zone_id', '=', 't3.id')
+                ->leftJoin('par_zones as t3', 't1.zone_id', '=', 't3.id')
                 ->join('wf_tfdaprocesses as t4', 't1.process_id', '=', 't4.id')
                 ->join('wf_workflow_stages as t5', 't1.workflow_stage_id', '=', 't5.id')
                 ->join('par_system_statuses as t6', 't1.application_status_id', '=', 't6.id')
@@ -1316,9 +1316,10 @@ class SurveillanceController extends Controller
                     't15.id as recomm_id', 't15.decision_id as decision_id', 't15.comments as comments','t2.application_code','t2.id as application_id')
                 ->where('t1.application_id', $application_id);
             if (isset($stage_id) && is_numeric($stage_id)) {
-                $qry->where('t1.stage_id', $stage_id);
+                //$qry->where('t1.stage_id', $stage_id);
             }
             
+
             if (isset($recommendation_id) && is_numeric($recommendation_id)) {
                 $qry->where($recomm_table . '.decision_id', $recommendation_id);
             }
@@ -1726,8 +1727,9 @@ class SurveillanceController extends Controller
         }
         try {
             $qry = DB::table('tra_premises as t1')
+                ->Join('tra_premises_applications as t1a', 't1.id', '=', 't1a.premise_id')
                 ->leftJoin('tra_approval_recommendations as t2', 't1.permit_id', '=', 't2.id')
-                ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->leftJoin('wb_trader_account as t3', 't1a.applicant_id', '=', 't3.id')
                 ->leftJoin('par_regions as t4', 't1.region_id', '=', 't4.id')
                 ->leftJoin('par_regions as t5', 't1.district_id', '=', 't5.id')
                 ->select( 't1.id as premise_id','t1.name', 't1.id as manufacturing_site_id', 't1.*', 't2.permit_no', 't3.name as applicant_name',
@@ -1736,7 +1738,7 @@ class SurveillanceController extends Controller
                     't3.physical_address as app_physical_address', 't3.postal_address as app_postal_address','t4.name as region_name', 't5.name as district_name',
                     't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website');
             if (validateIsNumeric($section_id)) {
-                $qry->where('t1.section_id', $section_id);
+                //$qry->where('t1.section_id', $section_id);
             }
             if ($filter_string != '') {
                 $qry->whereRAW($filter_string);

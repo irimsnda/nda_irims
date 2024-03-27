@@ -165,13 +165,28 @@ Ext.define('Admin.view.configurations.views.grids.Licensingfeeconfiggrid', {
     },{
         xtype: 'gridcolumn',
         dataIndex: 'section_name',
+        hidden:true,
         text: 'Section Name',
         tdCls: 'wrap',
         width: 100
     },{
         xtype: 'gridcolumn',
         dataIndex: 'business_type',
-        text: 'Business Type(Activity)',
+        text: 'Premise Type',
+        tdCls: 'wrap',
+        width: 100
+    },
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'premise_product_classification',
+        text: 'Product Classification',
+        tdCls: 'wrap',
+        width: 100
+    },
+     {
+        xtype: 'gridcolumn',
+        dataIndex: 'locationcouncils_defination',
+        text: 'Location Council Defination',
         tdCls: 'wrap',
         width: 100
     },

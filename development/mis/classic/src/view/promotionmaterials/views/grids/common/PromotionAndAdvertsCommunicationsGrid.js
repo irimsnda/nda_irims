@@ -101,100 +101,179 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.grids.PromotionAn
             name: 'certificate',
             tooltip: 'Print  Certificate',
             backend_function: 'generatePromotionalRegCertificate',
-            handler: 'generatePromotionalRegCertificate'
+            handler: 'generatePromotionalRegCertificate',
+            bind: {
+                disabled: '{record.decision_id <= 0 || record.decision_id === null}'
+                //disabled: '{record.decision_id !== 1}'
+            }
         }
     },
 	{
         xtype: 'gridcolumn',
         dataIndex: 'tracking_no',
         text: 'Tracking Number',
-        flex: 1
+        flex: 2,
+        tdCls: 'wrap-text'
     },
 	{
         xtype: 'gridcolumn',
         dataIndex: 'reference_no',
         text: 'Ref Number',
-        flex: 1
+        flex: 2,
+        tdCls: 'wrap-text'
     },  {
         xtype: 'gridcolumn',
         text: 'From',
+        hidden:true,
         dataIndex: 'from_user',
-        flex: 1,
-        tdCls: 'wrap'
+        flex: 2,
+        tdCls: 'wrap-text'
     },
     {
         xtype: 'gridcolumn',
         text: 'To',
+        hidden:true,
         dataIndex: 'to_user',
-        flex: 1,
-        tdCls: 'wrap'
+        flex: 2,
+        tdCls: 'wrap-text'
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'applicant_name',
         text: 'Applicant',
-        flex: 1
+        flex: 2,
+        tdCls: 'wrap-text'
     },{
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'applicant_name',
         text: 'Applicant',
-        flex: 1
+        flex: 2,
+        tdCls: 'wrap-text'
     },
 
 	{
         xtype: 'gridcolumn',
         dataIndex: 'advertisement_type',
         text: 'Advertisement Type',
-        flex: 1
+        flex: 2,
+        tdCls: 'wrap-text'
     },
 	{
         xtype: 'gridcolumn',
         dataIndex: 'description_of_advert',
         text: 'Description of Advertisement',
-        flex: 1
+        flex: 2,
+        tdCls: 'wrap-text'
     }, {
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'venue_of_exhibition',
         text: 'Venue of the Advertisement/Exhibition',
-        flex: 1
+        flex: 2,
+        tdCls: 'wrap-text'
     },{
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'exhibition_start_date',
         text: ' Advertisement/Exhibition Start Date',
-        flex: 1
+        flex: 2,
+        tdCls: 'wrap-text'
     },{
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'exhibition_start_date',
         text: ' Advertisement/Exhibition End Date',
-        flex: 1
+        flex: 2,
+        tdCls: 'wrap-text'
     },  {
         xtype: 'gridcolumn',
         dataIndex: 'sponsor_name',
+        hidden:true,
         text: 'Sponsor Name',
-        flex: 1
+        flex: 2,
+        tdCls: 'wrap-text'
     }, 	
 	{
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'workflow_stage',
         text: 'Workflow Stage',
-        flex: 1
+        flex: 2,
+        tdCls: 'wrap-text'
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
         text: 'Application Status',
-        flex: 1,
-        tdCls: 'wrap'
+        hidden:true,
+        flex: 2,
+        tdCls: 'wrap-text'
     }, {
         xtype: 'gridcolumn',
         text: 'Date Received',
         dataIndex: 'date_received',
-        flex: 1,
+        flex: 2,
+       hidden:true,
         tdCls: 'wrap-text',
         renderer: Ext.util.Format.dateRenderer('d/m/Y H:i:s')
     }, {
+            header: 'Manager Recommendation',
+            dataIndex: 'review_recommendation_id',
+            flex: 2,
+            renderer: function (value, metaData,record) {
+                var review_recommendation_id = record.get('review_recommendation_id')
+                if (review_recommendation_id==1 || review_recommendation_id===1) {
+                    metaData.tdStyle = 'color:white;background-color:green';
+                    return record.get('review_recomm');
+                }else if(review_recommendation_id==2 || review_recommendation_id===2){
+                  metaData.tdStyle = 'color:white;background-color:red';
+                  return record.get('review_recomm');
+              }else if(review_recommendation_id==3 || review_recommendation_id===3){
+                metaData.tdStyle = 'color:white;background-color:blue';
+                return record.get('review_recomm');
+               }else{
+                 return ' ';
+               }
+            }
+          },  
+        {
+            xtype: 'gridcolumn',
+            dataIndex: 'manager_comment',
+            text: 'Manager Comments',
+             flex: 2,
+            tdCls: 'wrap-text'
+        },
+         {
+            header: 'Director Recommendation',
+            dataIndex: 'director_recommendation_id',
+            flex: 2,
+            renderer: function (value, metaData,record) {
+                var director_recommendation_id = record.get('director_recommendation_id')
+                if (director_recommendation_id==1 || director_recommendation_id===1) {
+                    metaData.tdStyle = 'color:white;background-color:green';
+                    return record.get('director_recomm');
+                }else if(director_recommendation_id==2 || director_recommendation_id===2){
+                  metaData.tdStyle = 'color:white;background-color:red';
+                  return record.get('director_recomm');
+              }else if(director_recommendation_id==3 || director_recommendation_id===3){
+                metaData.tdStyle = 'color:white;background-color:blue';
+                return record.get('director_recomm');
+               }else{
+                 return ' ';
+               }
+            }
+          },  
+        {
+            xtype: 'gridcolumn',
+            dataIndex: 'director_comment',
+            text: 'Director Comments',
+             flex: 2,
+            tdCls: 'wrap-text'
+        }, {
         xtype: 'gridcolumn',
         dataIndex: 'approval_status',
-        text: 'DG Recommendation',
-        flex: 1
+        text: 'SA Recommendation',
+        flex: 2,
+        tdCls: 'wrap-text'
     }, {
         text: 'Options',
         xtype: 'widgetcolumn',
@@ -208,6 +287,23 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.grids.PromotionAn
             menu: {
                 xtype: 'menu',
                 items: [
+                 {
+                        text: 'Reports',
+                        iconCls: 'x-fa fa-exchange',
+                        menu: {
+                            xtype: 'menu',
+                            items: [
+                                
+                                {
+                                    text: 'Asssesment Report ',
+                                    iconCls: 'x-fa fa-clipboard',
+                                    action: 'inspection_report',
+                                    handler: 'printManagersReport',
+                                    report_type: 'Asssesment Report'
+                                }
+                            ]
+                        }
+                    },
                     
                     {
                         text: 'Update Signatory',
@@ -223,6 +319,10 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.grids.PromotionAn
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 0,
                         handler: 'showPromotionAndAdvertApplicationMoreDetails'
+                    },{
+                        text: 'View Review Checklists & Recommendation',
+                        iconCls: 'x-fa fa-check-square',
+                        handler: 'showApplicationChecklists'
                     }
                 ]
             }

@@ -64,7 +64,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PoeInspectio
         ptype: 'cellediting',
         clicksToEdit: 1
     }],
-    export_title: 'Import/Export Permits Products',
+    export_title: 'Import/Export Licence Products',
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '70%',
@@ -108,7 +108,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PoeInspectio
       },{
         xtype: 'gridcolumn',
         dataIndex: 'brand_name',
-        text: 'Brand Name/Device Name',
+        text: 'Brand Name',
         flex: 2,
         
     },{
@@ -121,12 +121,19 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PoeInspectio
     },{
         xtype: 'gridcolumn',
         dataIndex: 'product_batch_no',
-        text: 'Batch Number(Comma Seperator)',
+        text: 'Batch Number',
+        flex: 1.5,
+        tdCls:'wrap-text'
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'batch_qty',
+        text: 'Batch Qty',
         flex: 1.5,
         tdCls:'wrap-text'
     },{
         xtype: 'gridcolumn',
         dataIndex: 'product_manufacturing_date',
+        hidden: true,
         text: 'Manufacturing Date',
         flex: 1.5,
         tdCls:'wrap-text'

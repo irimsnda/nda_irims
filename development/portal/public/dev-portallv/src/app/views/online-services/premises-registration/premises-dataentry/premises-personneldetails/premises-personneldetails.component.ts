@@ -48,6 +48,7 @@ export class PremisesPersonneldetailsComponent  implements OnInit {
   district_id:number;
   region_id:number;
   country_id:number;
+  auto:any;
   personnel_QualificationData:any;
   personnel_type_id:number;
   app_resp:any;
@@ -55,6 +56,8 @@ export class PremisesPersonneldetailsComponent  implements OnInit {
   premises_resp:any;
   isperssonelAddPopupVisible:boolean;
   loading:boolean;
+    sub_module_id:number;
+
   constructor(public cdr: ChangeDetectorRef,public dmsService:DocumentManagementService,public fb: FormBuilder,public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: PremisesApplicationsService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public utilityService:Utilities,public httpClient: HttpClient) {
 
   }
@@ -62,6 +65,12 @@ export class PremisesPersonneldetailsComponent  implements OnInit {
     this.onLoadPremisesPersonnelDetails();
     this.onpersonnelIdentificationTypeDataLoad();
     this.onLoadCountries();
+    if(this.sub_module_id == 108){
+        this.is_readonly = true;
+    }else{
+      this.is_readonly = false;
+
+    }
   }
   funcEditPersonnelDetails(data) {
 

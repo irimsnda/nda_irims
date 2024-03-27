@@ -17,7 +17,10 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             },
             isLoad: true,
             autoLoad: true
-        },select: function (sel, record, index, eOpts) {
+        },
+
+
+        select: function (sel, record, index, eOpts) {
             var grid = sel.view.grid,
                 selCount = grid.getSelectionModel().getCount();
             if (selCount > 0) {
@@ -82,6 +85,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         forceSelection: true,
         queryMode: 'local',
         valueField: 'id',
+        hidden: true,
         labelAlign : 'top',
         displayField: 'name',
         name: 'zone_id',
@@ -213,7 +217,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             textAlign: 'left',
             xtype: 'button',
             ui: 'soft-red',
-            text: 'Approve',
+            text: 'Regulatory Decision',
              iconCls: 'x-fa fa-chevron-circle-up',
                     handler: 'getPermitReleaseRecommendationDetails',
                     approval_frm:'permitReleaseRecommFrm',

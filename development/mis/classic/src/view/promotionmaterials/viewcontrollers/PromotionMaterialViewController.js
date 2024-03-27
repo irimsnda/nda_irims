@@ -20,6 +20,85 @@
 		//btn.disable(false);
 		
 	},
+
+     showApplicationQueries: function (item) {
+        this.fireEvent('showApplicationQueries', item);
+    },
+    setUserCombosStore: function (obj, options) {
+        this.fireEvent('setUserCombosStore', obj, options);
+    },
+     showTcRecommendation: function (item) {
+        this.fireEvent('showTcRecommendationUploads', item);
+    },
+    doCreatePromotionRegParamWin: function (btn) {
+        var me = this,
+            url = btn.action_url,
+            table = btn.table_name,
+            ///closefrm = btn.closefrm,
+            form = btn.up('form'),
+            panel = form.up('panel'),
+            win = panel.up('window'),
+            storeID = btn.storeID,
+            is_winclosaable  = btn.is_winclosaable,
+            store = Ext.getStore(storeID),
+            frm = form.getForm();
+        if (frm.isValid()) {
+            frm.submit({
+                url: url,
+                params: { model: table },
+                waitMsg: 'Please wait...',
+                
+                headers: {
+                    'Authorization': 'Bearer ' + access_token,
+                    'X-CSRF-Token': token
+                },
+                success: function (form, action) {
+                    var response = Ext.decode(action.response.responseText),
+                        success = response.success,
+                        message = response.message;
+                    if (success == true || success === true) {
+                        toastr.success(message, "Success Response");
+                        store.removeAll();
+                        store.load();
+                        if(is_winclosaable == 1){
+                                //form.down('hiddenfield[name=id]').setValue(response.record_id);
+                            closeActiveWindow();    
+                        }
+                        else{
+                            win.close();
+
+                        }
+                       
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (form, action) {
+                    var resp = action.result;
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        }
+    },
+
+    saveScreeningSubmissionRemarks:function(btn){
+
+        this.fireEvent('saveSampleSubmissionRemarks', btn);
+        
+
+    },
+
+    showAddConfigParamWinFrm: function (btn) {
+        var me = this,
+        childXtype = btn.childXtype,
+        winTitle=btn.winTitle,
+        winWidth=btn.winWidth,
+        child = Ext.widget(childXtype);
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+           
+    }, 
+
+    
     onSelectionChangeAdvertseimentsTypes:function(cbo, value){
         var form = cbo.up('form');
             if(value == 2){
@@ -65,7 +144,7 @@
         
         child.setHeight(600);
    
-    funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+    funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
    
     child.down('hiddenfield[name=application_code]').setValue(application_code);
     child.down('hiddenfield[name=section_id]').setValue(section_id);
@@ -263,6 +342,11 @@
 	 setParamCombosStore: function (obj, options) {
         this.fireEvent('setParamCombosStore', obj, options);
     },
+
+     setPromParamCombosStore: function (obj, options) {
+        this.fireEvent('setPromParamCombosStore', obj, options);
+    },
+    
 	
 	
 	showPromotionAndAdvertMaterialWorkflow: function (btn) {
@@ -361,7 +445,7 @@
        // store.load({params:{active_application_id:product_id}});
 		
 		
-        funcShowCustomizableWindow('Product Particulars', '75%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Product Particulars', '75%', form, 'customizablewindow');
     },
 	
 	editPromotionMaterialProductForm: function (item) {
@@ -389,15 +473,32 @@
 
 		store.removeAll();
         store.load({params:{active_application_id:record.get('id')}});
-        funcShowCustomizableWindow('Edit Product Particulars', '75%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Edit Product Particulars', '75%', form, 'customizablewindow');
     },
 	
 	editPromotionMaterialDetails: function (item) {
-        var form = Ext.widget('promotionmaterialdetailsform'),
-		    btn = item.up('button'),record = btn.getWidgetRecord();
-		
-		form.loadRecord(record);
-        funcShowCustomizableWindow('Edit Promotion Material Details', '30%', form, 'customizablewindow');
+        var childXtype = item.childXtype,
+            winTitle = item.winTitle,
+            winWidth = item.winWidth,
+		    btn = item.up('button'),
+            record = btn.getWidgetRecord();
+            child = Ext.widget(childXtype);
+		   child.loadRecord(record);
+        funcShowOnlineCustomizableWindow(winTitle, winWidth , child, 'customizablewindow');
+    },
+
+    viewPromotionMaterialDetails: function (btn) {
+        var childXtype = btn.childXtype,
+            winTitle = btn.winTitle,
+            winWidth = btn.winWidth,
+            record = btn.getWidgetRecord();
+            child = Ext.widget(childXtype);
+           child.loadRecord(record);
+           child.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+            });
+           child.down('button[action=save_promotion_materials_other_details]').setVisible(false);
+        funcShowOnlineCustomizableWindow(winTitle, winWidth , child, 'customizablewindow');
     },
 	
 	deleteRecordAdvanced: function (item) {
@@ -509,7 +610,7 @@
             arrayLength = storeArray.length,
             filter = "section_id:" + section_id;
   
-        funcShowCustomizableWindow(title, '30%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, '30%', form, 'customizablewindow');
     },
 	
 	
@@ -524,7 +625,7 @@
             grid.applicantType = 'nonlocal';
         }
 		
-        funcShowCustomizableWindow('Applicant Selection List', '90%', grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Applicant Selection List', '90%', grid, 'customizablewindow');
     },
 	showSponsorSelectionList: function (btn) {
         var grid = Ext.widget('sponsorsgrid');
@@ -536,7 +637,7 @@
         } else {
             grid.applicantType = 'nonlocal';
         }
-        funcShowCustomizableWindow('Sponosr Selection List', '90%', grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Sponosr Selection List', '90%', grid, 'customizablewindow');
     },
 	showRegistererdProductSelectionList: function (btn) {
 	
@@ -574,7 +675,7 @@
             me.fireEvent('refreshStores', storeArray);
         }
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -722,11 +823,6 @@
 	 setCustomPromotionMaterialGridsStore: function (obj, options) {
         this.fireEvent('setCustomPromotionMaterialGridsStore', obj, options);
     },
-	printManagersReport: function (item) {
-        var report_type = item.report_type,
-            action_url = base_url + '/premiseregistration/getManagersReports?report_type=' + report_type;
-        print_report(action_url);
-    },
     showPreviousUploadedDocs: function (item) {
         this.fireEvent('showPreviousUploadedDocs', item);
     },
@@ -762,7 +858,7 @@
                         var model = Ext.create('Ext.data.Model', results);
                         form.loadRecord(model);
                     }
-                    funcShowCustomizableWindow(winTitle, winWidth, childItem, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(winTitle, winWidth, childItem, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -806,20 +902,52 @@
     },
 	printPromotionalRegCertificate: function (item) {
         var btn = item.up('button'),
-            record = btn.getWidgetRecord(),
-            application_code = record.get('application_code');
-        this.fireEvent('generatePromotionalRegCertificate', application_code);
+            // record = btn.getWidgetRecord(),
+            // application_code = record.get('application_code');
+            activeTab =btn.up('panel'),
+            //application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+        this.fireEvent('generatePromotionalTCPDFRegCertificate', application_code);
     }, getBatchApplicationApprovalDetails: function (btn) {
 
         this.fireEvent('getPromotionBatchApplicationApprovalDetails', btn);
     },
 	
-	generatePromotionalRegCertificate: function (item) {
+
+    generatePromotionalRegCertificate: function (item) {
         var record = item.getWidgetRecord(),
-        application_code = record.get('application_code');
-        this.fireEvent('generatePromotionalRegCertificate', application_code);
-        
+            application_code = record.get('application_code');
+            module_id = record.get('module_id');
+            sub_module_id = record.get('sub_module_id');
+            report_type_id = 3;
+            isPreview = 0;
+        this.fireEvent('generatePromotionalRegCertificate', application_code,module_id,sub_module_id,report_type_id,isPreview);
     },
+
+    printManagersReport: function (item) {
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord(),
+            application_code = record.get('application_code');
+            module_id = record.get('module_id');
+            sub_module_id = record.get('sub_module_id');
+            report_type_id = 6;
+            isPreview = 0;
+        this.fireEvent('generatePromotionalRegCertificate', application_code,module_id,sub_module_id,report_type_id,isPreview);
+    },
+
+
+    previewManagersReport: function (item) {
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord(),
+            application_code = record.get('application_code');
+            module_id = record.get('module_id');
+            sub_module_id = record.get('sub_module_id');
+            report_type_id = 6;
+            isPreview = 1;
+        this.fireEvent('generatePromotionalRegCertificate', application_code,module_id,sub_module_id,report_type_id,isPreview);
+    },
+
+
 	onViewApprovalApplicationDetails: function (item) {
         var btn = item.up('button'),
             interfaceXtype = item.interfaceXtype,
@@ -829,20 +957,35 @@
 
 	
 	
-  getApplicationApprovalDetails: function (item) {
+  getApplicationApprovalDetails: function (btn) {
         Ext.getBody().mask('Please wait...');
         var me = this,
-            is_update = item.is_update,
-            isAlt = item.isAlt,
-            btn = item.up('button'),
-            record = btn.getWidgetRecord(),
-            application_id = record.get('active_application_id'),
-            application_code = record.get('application_code'),
-            process_id = record.get('process_id'),
-            workflow_stage_id = record.get('workflow_stage_id'),
-            table_name = item.table_name,
+            is_update = btn.is_update,
+            isAlt = btn.isAlt,
+            activeTab =btn.up('panel'),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            table_name = btn.table_name,
             form = Ext.widget('promoapprovalrecommendationfrm'),
-            storeArray = eval(item.stores),
+
+
+        //      Ext.getBody().mask('Please wait...');
+        // var me = this,
+        //     table_name = btn.table_name,
+        //     form = Ext.widget('gmpapprovalrecommendationfrm'),
+        //     storeArray = eval(btn.stores),
+        //     arrayLength = storeArray.length,
+        //     mainTabPanel = me.getMainTabPanel(),
+        //     activeTab = mainTabPanel.getActiveTab(),
+        //     application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+        //     application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+        //     process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+        //     workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+
+
+            storeArray = eval(btn.stores),
             arrayLength = storeArray.length;
         form.setController('premiseregistrationvctr');
         if ((isAlt) && (isAlt == 1 || isAlt === 1)) {
@@ -889,7 +1032,7 @@
                     form.down('hiddenfield[name=application_code]').setValue(application_code);
                     form.down('hiddenfield[name=process_id]').setValue(process_id);
                     form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
-                    funcShowCustomizableWindow('Approval Recommendation', '40%', form, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('Approval Recommendation', '40%', form, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -947,6 +1090,47 @@
         }
         activeItem.focus();
     },
+
+
+    quickCustomNavigationMoreDetails: function (btn) {
+        var step = btn.step,
+            wizardPnl = btn.up('panel'),
+            progress = wizardPnl.down('#progress_tbar'),
+            progressItems = progress.items.items;
+        if (step == 0) {
+            //wizardPnl.down('button[name=save_btn]').setDisabled(true);
+            wizardPnl.getViewModel().set('atBeginning', true);
+        } else {
+            //wizardPnl.down('button[name=save_btn]').setDisabled(false);
+            wizardPnl.getViewModel().set('atBeginning', false);
+        }
+        if (step == 1) {
+            wizardPnl.getViewModel().set('atEnd', true);
+        } else {
+            wizardPnl.getViewModel().set('atEnd', false);
+        }
+        wizardPnl.getLayout().setActiveItem(step);
+        var layout = wizardPnl.getLayout(),
+            item = null,
+            i = 0,
+            activeItem = layout.getActiveItem();
+        //activeIndex = wizardPnl.items.indexOf(activeItem);
+
+        for (i = 0; i < progressItems.length; i++) {
+            item = progressItems[i];
+
+            if (step === item.step) {
+                item.setPressed(true);
+            } else {
+                item.setPressed(false);
+            }
+
+            if (Ext.isIE8) {
+                item.btnIconEl.syncRepaint();
+            }
+        }
+        activeItem.focus();
+    },
 	 onPrevCardClickMoreDetails: function (btn) {
         var wizardPnl = btn.up('panel');
         wizardPnl.getViewModel().set('atEnd', false);
@@ -958,6 +1142,61 @@
         wizardPnl.getViewModel().set('atBeginning', false);
         this.navigateMoreDetails(btn, wizardPnl, 'next');
     },
+
+
+     onCustomPrevCardClickMoreDetails: function (btn) {
+        var wizardPnl = btn.up('panel');
+        wizardPnl.getViewModel().set('atEnd', false);
+        this.navigateMoreDetails(btn, wizardPnl, 'prev');
+    },
+
+    onCustomNextCardClickMoreDetails: function (btn) {
+        var wizardPnl = btn.up('panel');
+        wizardPnl.getViewModel().set('atBeginning', false);
+        this.navigateCustomMoreDetails(btn, wizardPnl, 'next');
+    },
+
+       navigateCustomMoreDetails: function (button, wizardPanel, direction) {
+        var layout = wizardPanel.getLayout(),
+            progress = this.lookupReference('progress'),
+            model = wizardPanel.getViewModel(),
+            progressItems = progress.items.items,
+            item, i, activeItem, activeIndex;
+        layout[direction]();
+
+        activeItem = layout.getActiveItem();
+        activeIndex = wizardPanel.items.indexOf(activeItem);
+
+        for (i = 0; i < progressItems.length; i++) {
+            item = progressItems[i];
+
+            if (activeIndex === item.step) {
+                item.setPressed(true);
+            } else {
+                item.setPressed(false);
+            }
+            if (Ext.isIE8) {
+                item.btnIconEl.syncRepaint();
+            }
+        }
+        activeItem.focus();
+
+        // beginning disables previous
+        if (activeIndex === 0) {
+            //wizardPanel.down('button[name=save_btn]').setDisabled(true);
+            model.set('atBeginning', true);
+        } else {
+            //wizardPanel.down('button[name=save_btn]').setDisabled(false);
+            model.set('atBeginning', false);
+        }
+        if (activeIndex === 1) {
+            model.set('atEnd', true);
+        } else {
+            model.set('atEnd', false);
+        }
+    },
+
+
 
     navigateMoreDetails: function (button, wizardPanel, direction) {
         var layout = wizardPanel.getLayout(),
@@ -1023,7 +1262,7 @@
             arrayLength = storeArray.length;
 
         
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
 	   
 	 
         if (arrayLength > 0) {
@@ -1100,7 +1339,7 @@
             queriesGrid.down('button[action=submit_app]').setVisible(false);
             queriesGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
         }
-        funcShowCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
     },
 
     onAddOnlineQuery: function (btn) {
@@ -1187,7 +1426,7 @@
         //wizardPnl.down('personnelqualificationsgrid').down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         //wizardPnl.down('premisecontactpersonfrm').down('button[action=link_personnel]').setDisabled(true);
         //wizardPnl.down('premisesuperintendentfrm').down('button[action=link_personnel]').setDisabled(true);
-        funcShowCustomizableWindow(tracking_no, '80%', onlinePanel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no, '80%', onlinePanel, 'customizablewindow');
     },
     showregisteredApplicationDetailsSearch: function (btn) {
         //
@@ -1215,7 +1454,7 @@
                 if(grid.down('hiddenfield[name=status_id]')){
                     grid.down('hiddenfield[name=status_id]').setValue(status_id);
                 }
-             funcShowCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
+             funcShowOnlineCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
             
         }
         else {

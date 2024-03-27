@@ -30,10 +30,10 @@ Ext.define('Admin.view.commoninterfaces.OnlineAppInvoicePaymentsPanel', {
                             name: 'generate_invoice'
                 
                         },{
-                            text: 'Generate Invoice (Fast Track Double Charges)',
+                            text: 'Generate Invoice (Fast Track)',
                             application_feetype_id: 1,
                             fasttrack_option_id: 1,  ui: 'soft-green',
-                            winTitle: 'Generate Invoice (Fast Track Double Charges)',
+                            winTitle: 'Generate Invoice (Fast Track)',
                             winWidth: '60%',
                             
                             viewType: 'onlineapplicationgenerateinvoicesgrid',

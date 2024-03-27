@@ -60,6 +60,16 @@ Ext.define('Admin.view.administration.views.grids.SystemMenusGrid', {
             dataIndex: 'iconCls',
             text: 'Icon',
             flex: 1
+        },  {
+            xtype: 'gridcolumn',
+            dataIndex: 'background',
+            text: 'Background',
+            flex: 1
+        },  {
+            xtype: 'gridcolumn',
+            dataIndex: 'tied_module',
+            text: 'Module',
+            flex: 1
         },
         {
             xtype: 'gridcolumn',

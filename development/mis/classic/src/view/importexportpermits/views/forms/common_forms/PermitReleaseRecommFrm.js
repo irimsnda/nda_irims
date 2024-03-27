@@ -67,7 +67,7 @@
             iconCls: 'x-fa fa-search',
             columnWidth: 0.1,
             margin:5,
-            text: 'Preview Permit/Letter of Rejection',
+            text: 'Preview Letter of Rejection',
             handler: 'generateimportpermitfromfrm',
             winWidth: '90%'
         },{
@@ -120,7 +120,7 @@
             xtype: 'combo',
             store: 'confirmationstr',
             value: 1,
-            fieldLabel: 'DG Signatory?',
+            fieldLabel: 'SA Signatory?',
             queryMode: 'local',
             forceSelection: true,
             valueField: 'id',

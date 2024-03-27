@@ -10,12 +10,12 @@
     <link rel="stylesheet" type="text/css" href="{{asset('resources/css/style.css')}}"/>
     <link href="node_modules/froala-editor/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
 
-    <title>iRIMS System Ver 2.0</title>
+    <title>iRIMS System Ver 3.0</title>
 </head>
 <body>
 <div id="loading-mask">
-        <img class="center-img" alt="Rwanda Drugs and Food Authority"
-         src="<?php echo $base_url; ?>/resources/images/zamra-mis.png"/>
+        <img class="center-img" alt="National Drug Authority"
+         src="<?php echo $base_url; ?>/resources/images/logo.png"/>
          <hr>
        <img class="center-loader" alt="Loading..."
          src="<?php echo $base_url; ?>/resources/images/loader-z.gif"/>

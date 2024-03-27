@@ -65,6 +65,16 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialMonitorsGrid', {
                 }
             },
             isLoad: true
+        },afterrender: function () {
+            var grid = this,
+                isReadOnly = grid.down('hiddenfield[name=isReadOnly]').getValue(),
+                add_btn = grid.down('button[name=add_otherinvestigator]'),
+                widgetCol = grid.columns[grid.columns.length - 1];
+            if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+                add_btn.setVisible(false);
+                widgetCol.setHidden(true);
+                widgetCol.widget.menu.items = [];
+            }
         }
         },
     columns: [

@@ -14,9 +14,17 @@ use Modules\PersonnelManagement\Http\Controllers\PersonnelManagementController;
 Route::group(['prefix' => 'personnelmanagement','middleware' => ['web']], function() {
     Route::post('savePersonnelImage', [PersonnelManagementController::class, 'savePersonnelImage']);
     Route::post('savePersonnelInformation', [PersonnelManagementController::class, 'savePersonnelInformation']);
+
+    Route::post('savePvPersonnelInformation', [PersonnelManagementController::class, 'savePvPersonnelInformation']);
+
     Route::get('getDrugShopInchargesDetails', [PersonnelManagementController::class, 'getDrugShopInchargesDetails']);
+    Route::get('getPremisePharmacistsDetails', [PersonnelManagementController::class, 'getPremisePharmacistsDetails']);
     Route::post('deletePersonelRecord', [PersonnelManagementController::class, 'deletePersonnelRecord']);
     Route::post('activatePersonelRecord', [PersonnelManagementController::class, 'activatePersonelRecord']);
     Route::post('deactivatePersonnel', [PersonnelManagementController::class, 'deactivatePersonnel']);
+
+     Route::post('deactivatePvPersonnel', [PersonnelManagementController::class, 'deactivatePvPersonnel']);
+
+    Route::get('getPvPersonnelDetails', [PersonnelManagementController::class, 'getPvPersonnelDetails']);
 });
 

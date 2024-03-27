@@ -192,7 +192,7 @@ class AuthController extends Controller
                     DB::table('tra_password_reset')->insert($pwdResetParams);
                     if (is_connected()) {
                         //send the mail here
-                        $subject = 'Rwanda FDA Management Information System :Password Recovery';
+                        $subject = 'NDA iRIMS :Password Recovery';
                         $email_content = "Below is the reset Account Password</br>.";
                        
                         $email_content .= " <p>- Account Email Address: ".$email .".<p/>";

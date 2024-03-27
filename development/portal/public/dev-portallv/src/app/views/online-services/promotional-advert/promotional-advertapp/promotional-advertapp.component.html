@@ -16,7 +16,7 @@
       <label style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics; color: green;">
           Tracking No: <i> {{tracking_no}}</i> </label>
     </div>
-    <div class="col-lg-2">
+    <div class="col-lg-4">
       <label style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics;color: green;">Application
           Status:<i> {{status_name}}</i> </label>
     </div>
@@ -108,10 +108,6 @@
         </wizard-step>
         <wizard-step stepTitle="Query Response Submission"  navigationSymbol="Submission"  >
           <div class="col-lg-12">
-            <label>Submission Comments(Optional)</label>
-            <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-          </div>
-          <div class="col-lg-12">
             <dx-check-box text="Agree to the Terms & Conditions" 
               [value]="undefined" (onValueChanged)="newProductTermscheckbox($event)">
             </dx-check-box>  
@@ -129,22 +125,22 @@
     </div>
     <div *ngIf="status_id !== 8 && status_id !== 6   && status_id !== 14">
       <wizard  navBarLayout ="large-filled-symbols" style="background: #fff !important; height: 100% !important;">
-      
         <wizard-step stepTitle="Promotional Materials Application Details"  navigationSymbol="Step 1" 
           class="wizardStep-height">
-          <app-promotional-general-info [promotionalappGeneraldetailsfrm]="promotionalappGeneraldetailsfrm" [section_id] ="section_id"  
-          [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-promotional-general-info>
+          <app-promotional-general-info 
+          [promotionalappGeneraldetailsfrm]="promotionalappGeneraldetailsfrm" 
+          [section_id] ="section_id"  
+          [module_id] ="module_id" 
+          [status_id] ="status_id" 
+          [countries]="countries"
+          [sub_module_id] ="sub_module_id" 
+          [application_code] ="application_code">
+            
+          </app-promotional-general-info>
 
           <div class="col-lg-12 div-footer">
-            <button class="btn btn-primary pull-right" style="margin:5px;" 
-              [disabled]="!promotionalappGeneraldetailsfrm.valid"
-              nextStep type="button"><i class="fa fa-angle-double-right"></i>
-                &nbsp;Next Information
-            </button>
-            
-
             <dx-button
-                  text="Save Application"
+                  text="Save and Next"
                   type="default"
                   icon="fa fa-save"
                   [elementAttr]="{ id: 'elementId', class: 'pull-right' }"
@@ -161,10 +157,35 @@
             
           </div>
         </wizard-step>
-        <wizard-step stepTitle="Product Particulars"  navigationSymbol="Step 2" 
-          class="wizardStep-height navigable" navigationSymbol="Step 2" >
-          <app-promotional-products-particulars [promProductParticularsData]="promProductParticularsData" [promotionalProductparticularsfrm] ="promotionalProductparticularsfrm"   [application_id] ="application_id"  [application_code] ="application_code"  [section_id] ="section_id" 
-          [isRegisteredProductsWinshow] ="isRegisteredProductsWinshow" [registeredProductsData] ="registeredProductsData"></app-promotional-products-particulars>
+        <wizard-step stepTitle="Promotional Materials Details" class="wizardStep-height navigable" navigationSymbol="2">
+          <app-promotional-advertsel 
+          [promProductParticularsData]="promProductParticularsData" 
+          [promotionalMaterialsfrm] ="promotionalMaterialsfrm"   
+          [application_id] ="application_id"  
+          [application_code] ="application_code"  
+          [section_id] ="section_id" 
+          [isRegisteredProductsWinshow] ="isRegisteredProductsWinshow" 
+          [registeredProductsData] ="registeredProductsData">
+            
+          </app-promotional-advertsel>
+          <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
+            <button type="button" class="btn btn-primary" previousStep>&nbsp;<i class="fa fa-angle-double-left"></i>Previous
+            </button>
+            <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_promotion_materials_details',2,'Add Material details to proceed')" class="btn btn-primary">Nexts&nbsp;<i class="fa fa-angle-double-right"></i></button>
+            </div>
+        </wizard-step>
+        <wizard-step stepTitle="Product Particulars"  navigationSymbol="Step 3" 
+          class="wizardStep-height navigable" navigationSymbol="Step 3" >
+          <app-promotional-products-particulars 
+          [promProductParticularsData]="promProductParticularsData" 
+          [promotionalProductparticularsfrm] ="promotionalProductparticularsfrm"   
+          [application_id] ="application_id"  
+          [application_code] ="application_code"  
+          [section_id] ="section_id" 
+          [isRegisteredProductsWinshow] ="isRegisteredProductsWinshow" 
+          [registeredProductsData] ="registeredProductsData">
+            
+          </app-promotional-products-particulars>
 
           <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
             <button type="button" class="btn btn-primary" 
@@ -175,7 +196,7 @@
             </button>
           </div>
         </wizard-step>
-        <wizard-step stepTitle="Supporting Documents" navigationSymbol="Step 3"  class="wizardStep-height">
+        <wizard-step stepTitle="Supporting Documents" navigationSymbol="Step 4"  class="wizardStep-height">
           <div class="row wizard-content">
             <app-application-documents [section_id] ="section_id"  
               [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code">
@@ -198,23 +219,12 @@
           <form [formGroup]="onApplicationSubmissionFrm" 
             class="col-lg-12 row div-nopadding" style="background: #fff;" enctype="multipart/form-data" role="form" (ngSubmit)="onProductApplicationSubmit()">
             <div class="col-lg-12">
-              <b><label>Declaration</label></b>
+              <b><label>Declaration and Disclaimer</label></b>
               <ul>
                 <li *ngFor="let guide of terms_conditions;">
                   <p>{{guide.no}} {{guide.term_conditiondetails}}</p>
                 </li>
               </ul>
-            </div>
-            <label>Payment Currency(The payment will be based in USD/FRW)</label>
-            <dx-select-box [dataSource]="payingCurrencyData"  
-              valueExpr="id" displayExpr="name"
-              placeholder="Select Paying Currency" [searchEnabled]="true" formControlName="paying_currency_id">
-            </dx-select-box>
-            <div class="col-lg-12">
-              <b> <label>Submission Comments(Optional)</label></b>
-              <dx-text-area formControlName="submission_comments" 
-                placeholder="Enter Comments(optional)">
-              </dx-text-area>
             </div>
             <div class="col-lg-12">
               <dx-check-box text="Agree to the Declaration" [value]="undefined" 
@@ -241,7 +251,6 @@
 </div>
 
 
-
 <dx-popup class="popup" [width]="1000" [height]="'auto'" 
   [showTitle]="true" title="Promotional Application: Promotional Materials"
   [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isPromotionalMaterialswinshow">
@@ -250,20 +259,34 @@
       [formGroup]="promotionalMaterialsfrm"
       (ngSubmit)="onSavepromotionalMaterialsDetails()">
       <div class="col-lg-12 row">
-        <div class="col-lg-4">
-          <label class="control-label">Promotional Materials </label>
-          <dx-select-box [dataSource]="promotionalMaterialData" 
-            valueExpr="id" displayExpr="name" [searchEnabled]="true"
-            placeholder=" Promotional Material"
-            formControlName="material_id">
+       <div class="col-lg-6" >
+          <label class="control-label">Type Advertisements Material (Select)
+          </label>
+          <dx-select-box
+              [items]="promotionalMaterialsDta"
+              formControlName="promotions_material_id"
+              placeholder="Type of Advertisements Material"
+              (onSelectionChanged)= "OnSelectAdvertMaterial($event)"
+              valueExpr="id" [readOnly]="is_readonly" 
+              [searchEnabled]="true"
+              displayExpr="name">
           </dx-select-box>
+        </div> 
+        <div class="col-lg-6" *ngIf="is_other_advert_materials">
+          <label class="control-label">Other Type of Material(please specify)
+          </label>
+         <dx-text-box formControlName="other_promotion_materialtypes" 
+            placeholder="Other Type of Material(please specify)" 
+       >
+          </dx-text-box>
         </div>
-        <div class="col-lg-8">
-          <label class="control-label">Other Details</label>
-          <dx-text-area formControlName="remarks" placeholder="Remarks" >
-          </dx-text-area>
-          <input type="hidden" formControlName="application_id" />
-          <input type="hidden"   formControlName="id" />
+        <div class="col-lg-6">
+            <label class="control-label">Language of Publication or Advert</label>
+            <dx-select-box [dataSource]="languageData" valueExpr="id" 
+              displayExpr="name" [searchEnabled]="true" placeholder="Language of Publication or Advert"formControlName="language_id">
+            </dx-select-box>
+            <input type="hidden" formControlName="application_id" />
+            <input type="hidden"   formControlName="id" />
         </div>
         <div class="col-lg-12 btn-margin-5">
             <br/>
@@ -276,6 +299,7 @@
     </form>
   </div>
 </dx-popup>
+
 <dx-popup class="popup" [width]="1050" [height]="450" 
   [showTitle]="true" title="Registered Product Applications" [dragEnabled]="false"
   [closeOnOutsideClick]="false" [(visible)]="isRegisteredProductsWinshow">
@@ -397,20 +421,22 @@
             </div>
           </div>
         </wizard-step>
-        <wizard-step stepTitle="Promotional Materials Application Details"   navigationSymbol="Step 2" 
+        <wizard-step stepTitle="Promotional Application Details"   navigationSymbol="Step 2" 
           class="wizardStep-height">
-          <app-promotional-general-info [promotionalappGeneraldetailsfrm]="promotionalappGeneraldetailsfrm" [section_id] ="section_id"  
-          [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-promotional-general-info>
+          <app-promotional-general-info 
+          [promotionalappGeneraldetailsfrm]="promotionalappGeneraldetailsfrm" 
+          [section_id] ="section_id"  
+          [module_id] ="module_id" 
+          [status_id] ="status_id" 
+          [countries]="countries"
+          [sub_module_id] ="sub_module_id" 
+          [application_code] ="application_code">
+            
+          </app-promotional-general-info>
 
           <div class="col-lg-12 div-footer">
-              <button class="btn btn-primary pull-right" style="margin:5px;" 
-                [disabled]="!promotionalappGeneraldetailsfrm.valid"
-                nextStep type="button"><i class="fa fa-angle-double-right"></i>
-                &nbsp;Next Information
-              </button>
               <button  (onClick)="onSavePromotionalApplication()" awNextStep 
-                class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save product
-                Application
+                class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next
               </button>
               <button (click)="closeQueryResponseWin()" 
                 class="btn btn-primary pull-left" style="margin:5px;" 
@@ -420,19 +446,45 @@
               </button>
             </div>
         </wizard-step>
+         <wizard-step stepTitle="Promotional Materials Details" class="wizardStep-height navigable" navigationSymbol="2">
+          <app-promotional-advertsel 
+          [promProductParticularsData]="promProductParticularsData" 
+          [promotionalMaterialsfrm] ="promotionalMaterialsfrm"   
+          [application_id] ="application_id"  
+          [application_code] ="application_code"  
+          [section_id] ="section_id" 
+          [isRegisteredProductsWinshow] ="isRegisteredProductsWinshow" 
+          [registeredProductsData] ="registeredProductsData">
+            
+          </app-promotional-advertsel>
+          <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
+            <button type="button" class="btn btn-primary" previousStep>&nbsp;<i class="fa fa-angle-double-left"></i>Previous
+            </button>
+            <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_promotion_materials_details',2,'Add Material details to proceed')" class="btn btn-primary">Nexts&nbsp;<i class="fa fa-angle-double-right"></i></button>
+            </div>
+        </wizard-step>
         <wizard-step stepTitle="Product Particulars"  navigationSymbol="Step 3" 
-          class="wizardStep-height navigable" navigationSymbol="Step 2" >
-          <app-promotional-products-particulars [promProductParticularsData]="promProductParticularsData" [promotionalProductparticularsfrm] ="promotionalProductparticularsfrm"   [section_id] ="section_id" [isRegisteredProductsWinshow] ="isRegisteredProductsWinshow" [registeredProductsData] ="registeredProductsData"></app-promotional-products-particulars>
+          class="wizardStep-height navigable" navigationSymbol="Step 3" >
+          <app-promotional-products-particulars 
+          [promProductParticularsData]="promProductParticularsData" 
+          [promotionalProductparticularsfrm] ="promotionalProductparticularsfrm"   
+          [application_id] ="application_id"  
+          [application_code] ="application_code"  
+          [section_id] ="section_id" 
+          [isRegisteredProductsWinshow] ="isRegisteredProductsWinshow" 
+          [registeredProductsData] ="registeredProductsData">
+            
+          </app-promotional-products-particulars>
+
           <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
             <button type="button" class="btn btn-primary" 
               previousStep>&nbsp;<i class="fa fa-angle-double-left"></i>Previous
             </button>
             <button type="button" class="btn btn-primary" 
-              (click)="funcValidateProdPartcularsDetails(2+initWizardPanel)">Next &nbsp;<i class="fa fa-angle-double-right"></i>
+              nextStep>Next &nbsp;<i class="fa fa-angle-double-right"></i>
             </button>
           </div>
         </wizard-step>
-      
         <wizard-step stepTitle="Documents" class="wizardStep-height"  navigationSymbol="Step 4" >
           <div class="row wizard-content">
             <app-application-documents [section_id] ="section_id"  

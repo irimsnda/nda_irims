@@ -65,13 +65,13 @@ Ext.define('Admin.view.Enforcement.views.panels.investigation.NewWorkplanReceivi
            
             items: [
                 {
-                    title: 'Matter Details ',
+                    title: 'Paricular Details ',
                     layout:'fit', 
                     itemId:'work_panel',
                     xtype:'tabpanel', 
                     margin:5,
                     items:[{
-                        title: 'Matter Details',
+                        title: 'Paricular Details',
                         xtype: 'workplanfrm'
                     },     
                 ]
@@ -85,7 +85,7 @@ Ext.define('Admin.view.Enforcement.views.panels.investigation.NewWorkplanReceivi
                     xtype: 'investigationdiarygrid'
                 },
                 {
-                    title: 'Witness Details',
+                    title: 'Complainant/ Witness Details',
                     xtype: 'newWitnessGrid'
                 },
                 {

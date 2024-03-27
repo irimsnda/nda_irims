@@ -24,7 +24,7 @@ Ext.define('Admin.view.configurations.views.grids.FormFieldsDesignerGrid', {
         text: 'Add',
         iconCls: 'x-fa fa-plus',
         action: 'add',
-        ui: 'soft-green',
+        ui: 'soft-blue',
         childXtype: 'formFieldDesignerFrm',
         winTitle: 'Design New',
         winWidth: '40%',
@@ -53,14 +53,14 @@ Ext.define('Admin.view.configurations.views.grids.FormFieldsDesignerGrid', {
     }],
     listeners: {
         beforerender: {
-            fn: 'setConfigGridsStore',
+            fn: 'setGridStore',
             config: {
                 pageSize: 1000,
                 storeId: 'formDesignerStr',
                 proxy: {
-                   url: 'commonparam/getCommonParamFromTable',
+                   
                     extraParams:{
-                    	is_config: 1,
+                        is_config: 1,
                         table_name: 'par_formfield_designs'
                     }
                 }
@@ -93,7 +93,7 @@ Ext.define('Admin.view.configurations.views.grids.FormFieldsDesignerGrid', {
         flex: 1
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'table',
+        dataIndex: 'combo_table',
         text: 'Table',
         flex: 1
     },{
@@ -134,6 +134,7 @@ Ext.define('Admin.view.configurations.views.grids.FormFieldsDesignerGrid', {
                     text: 'Disable',
                     iconCls: 'x-fa fa-repeat',
                     table_name: 'par_formfield_designs',
+                    hidden: true,
                     storeID: 'formDesignerStr',
                     action_url: 'configurations/softDeleteConfigRecord',
                     action: 'soft_delete',bind: {
@@ -153,11 +154,11 @@ Ext.define('Admin.view.configurations.views.grids.FormFieldsDesignerGrid', {
                     handler: 'doDeleteConfigWidgetParam',bind: {
                         disabled: '{hideDeleteButton}'
                     },
-                    hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
                 }, {
                     text: 'Enable',
                     iconCls: 'x-fa fa-undo',
                     tooltip: 'Enable Record',
+                    hidden: true,
                     table_name: 'par_formfield_designs',
                     storeID: 'formDesignerStr',
                     action_url: 'configurations/undoConfigSoftDeletes',

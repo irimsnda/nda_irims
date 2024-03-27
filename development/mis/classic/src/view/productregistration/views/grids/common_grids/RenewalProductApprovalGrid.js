@@ -175,7 +175,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.RenewalProdu
             menu: {
                 xtype: 'menu',
                 items: [{
-                    text: 'DG Recommendation',
+                    text: 'SA Recommendation',
                     iconCls: 'x-fa fa-chevron-circle-up',
                     approval_frm: 'productApprovalRecommFrm',
                     handler: 'getApplicationApprovalDetails',

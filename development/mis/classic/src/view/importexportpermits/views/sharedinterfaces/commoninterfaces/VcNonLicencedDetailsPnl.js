@@ -21,19 +21,18 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.VcNonLicencedD
             autoScroll: true, 
             title: 'Application Details',
             items:[{
-                xtype: 'importexportdetailsfrm',
+                xtype: 'onlineimportexportlicencedetailsfrm',
                 autoScroll: true,
-                title: 'Application Details', 
                 title: 'Import/Export VC Information'
-            }, 
+            },{
+                xtype: 'onlineimportexportlicencedetailsfrm',
+                title: 'Non-Licensed Outlet Details',
+            },
              {
                 xtype: 'senderreceiverdetailsfrm',
                 title: 'Sender/Receiver Details',
-            },
-            {
-                xtype: 'onlineimportexportnonlicencebusinessdetailsfrm',
-                title: 'Non-Licensed Outlet Details',
-            }]
+            }
+            ]
         },{
         xtype: 'hiddenfield',
         name: '_token',

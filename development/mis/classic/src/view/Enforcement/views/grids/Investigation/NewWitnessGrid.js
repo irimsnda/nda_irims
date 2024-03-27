@@ -52,7 +52,7 @@ plugins: [
     tbar: [
     {
         xtype: 'button',
-        text: 'Add Witness',
+        text: 'Add Complainant/ Witness',
         iconCls: 'x-fa fa-plus',
         ui: 'soft-blue',
         name:'add_witness',
@@ -101,21 +101,27 @@ plugins: [
 	        flex: 1,
 	    },
         {
+            xtype: 'gridcolumn',
+            dataIndex: 'witness_type',
+            text: 'Complainant/ Witness',
+            flex: 1,
+        },
+        {
 	        xtype: 'gridcolumn',
 	        dataIndex: 'witness_name',
-	        text: 'Witness Name',
+	        text: 'Complainant/ Witness Name',
 	        flex: 1,
 	    },
         {
 	        xtype: 'gridcolumn',
 	        dataIndex: 'witness_information',
-	        text: 'Witness Information',
+	        text: 'Complainant/Witness Information',
 	        flex: 1,
 	    },
         {
 	        xtype: 'gridcolumn',
 	        dataIndex: 'witness_relevance',
-	        text: 'Witness relevance',
+	        text: 'Complainant/ Witness relevance',
 	        flex: 1,
 	    },
            {

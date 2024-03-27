@@ -2,6 +2,11 @@
 Ext.define('Admin.view.gmpapplications.views.grids.ProductLineAbstractGrid', {
     extend: 'Ext.grid.Panel',
     xtype: 'productlineabstractgrid',
+    features: [
+    {
+        ftype: 'summary',
+        dock: 'bottom'
+    }],
     plugins: [{
             ptype: 'gridexporter'
     }],
@@ -12,8 +17,10 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineAbstractGrid', {
         mode: 'local'
     }],
     initComponent: function () {
-        // These are the default columns that will show for every extended grid
         var defaultColumns = [
+            {
+              xtype: 'rownumberer'
+           },
             {
                 xtype: 'gridcolumn',
                 dataIndex: 'product_line_name',

@@ -34,12 +34,14 @@ Ext.define('Admin.view.commoninterfaces.grids.StudySitesAbstractGrid', {
                 flex: 1
             },{
                 xtype: 'widgetcolumn',
+                name:'view_sites',
                 width: 160,
                 widget:{
                     xtype: 'button',
                     text: 'View all Details',
                     childXtype: 'studysitefrm',
                     winTitle: 'Study Site',
+                    itemId:'view_sites',
                     winWidth: '70%',
                     ui: 'soft-green',
                     iconCls: 'fa fa-eye',
@@ -48,10 +50,12 @@ Ext.define('Admin.view.commoninterfaces.grids.StudySitesAbstractGrid', {
             },{
                 xtype: 'widgetcolumn',
                 width: 120,
+                name:'edit_sites',
                 widget:{
                     xtype: 'button',
                     text: 'Edit',
                     iconCls: 'fa fa-edit',
+                    itemId:'edit_sites',
                     childXtype: 'studysitefrm',
                     winTitle: 'Study Site',
                     winWidth: '70%',

@@ -50,6 +50,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialAbstractFrm', {
         {
             xtype: 'textfield',
             name: 'tin_no',
+            hidden:true,
             allowBlank: false,
             fieldLabel: 'TIN'
         },
@@ -109,6 +110,23 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialAbstractFrm', {
             queryMode: 'local',
             valueField: 'id',
             displayField: 'name'
+        },{
+            xtype: 'textfield',
+            fieldLabel: 'Email',
+            name: 'email'
+        },{
+            xtype: 'textfield',
+            fieldLabel: 'Telephone No',
+            name: 'telephone'
+        },{
+            xtype: 'textfield',
+            fieldLabel: 'Mobile No',
+            name: 'mobile_no'
+        }, {
+            xtype: 'textfield',
+            fieldLabel: 'Fax',
+            hidden:true,
+            name: 'fax'
         },
         {
             xtype: 'textfield',
@@ -120,22 +138,9 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialAbstractFrm', {
             hidden:true,
             fieldLabel: 'Postal Address',
             name: 'postal_address'
-        },
-        {
-            xtype: 'textfield',
-            fieldLabel: 'Telephone No',
-            name: 'telephone'
-        },
-        {
-            xtype: 'textfield',
-            fieldLabel: 'Fax',
-            hidden:true,
-            name: 'fax'
-        },
-        {
-            xtype: 'textfield',
-            fieldLabel: 'Email',
-            name: 'email'
         }
+        
+       
+        
     ]
 });

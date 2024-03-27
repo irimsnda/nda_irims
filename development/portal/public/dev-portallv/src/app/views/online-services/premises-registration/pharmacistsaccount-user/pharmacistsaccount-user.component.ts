@@ -83,6 +83,7 @@ export class PharmacistsaccountUserComponent implements OnInit {
     is_readonly:boolean = false;
    isPreviewApplicationsDetails:boolean = false;
    frmPreviewApplicationssDetails:FormGroup;
+   premisesGeneraldetailsfrm:FormGroup;
     approvalRecomDetailsfrm: FormGroup;
    premises_dashboardtitle:string;
    sub_module_id:number;
@@ -100,7 +101,10 @@ export class PharmacistsaccountUserComponent implements OnInit {
    business_type_id:number;
   constructor(public cdr: ChangeDetectorRef,private utilityService:Utilities,private viewRef: ViewContainerRef,private modalServ: ModalDialogService, private spinner: SpinnerVisibilityService,public toastr: ToastrService, private router: Router, private configService: ConfigurationsService, private appService: PremisesApplicationsService) {
 
-    
+  this.approvalRecomDetailsfrm = new FormGroup ({
+    pharmacist_approvalstatus_id:new FormControl('',Validators.compose([Validators.required])),
+    id:new FormControl('',Validators.compose([]))
+   });
    this.frmPreviewApplicationssDetails = new FormGroup({
       tracking_no: new FormControl('', Validators.compose([Validators.required])),
       premises_name: new FormControl('', Validators.compose([Validators.required])),
@@ -133,6 +137,7 @@ export class PharmacistsaccountUserComponent implements OnInit {
     });
     this.onBusinessTypesLoad();
     this.onLoadApplicationstatuses();
+    this.onLoadPremisesCounterDetails(this.sub_module_id);
     this.reloadPremisesApplicationsPharmacist();
     this.onLoadSections();
     this.onLoadreasonForDismissalData();
@@ -143,7 +148,7 @@ export class PharmacistsaccountUserComponent implements OnInit {
    }
   
   ngOnInit() {
-
+    this.funcApproveDetails();
     this.premisesapp_details = this.appService.getPremisesApplicationDetail();
       if (!this.premisesapp_details) {
       return;
@@ -299,7 +304,6 @@ export class PharmacistsaccountUserComponent implements OnInit {
     this.configService.onLoadConfigurationData(data)
       .subscribe(
         data => {
-          console.log(data);
           this.businessTypeDetailsData = data;
         },
         error => {
@@ -384,7 +388,7 @@ export class PharmacistsaccountUserComponent implements OnInit {
   }
   onLoadPremisesCounterDetails(sub_module_id) {
 
-    this.utilityService.onLoadApplicationCounterDetails('tra_premises_applications',sub_module_id)
+    this.utilityService.onLoadApplicationCounterDetails('wb_premises_applications',sub_module_id)
       .subscribe(
         data => {
           if (data.success) {
@@ -392,7 +396,7 @@ export class PharmacistsaccountUserComponent implements OnInit {
              // this.dtPremisesApplicationData = data.data;
              for(let rec of records){
              
-                  if(rec.status_id == 1){
+                  if(rec.status_id == 79){
                   
                     this.pending_submission = rec.application_counter;
                   }if(rec.status_id == 6 || rec.status_id == 8 || rec.status_id == 17){
@@ -582,19 +586,19 @@ export class PharmacistsaccountUserComponent implements OnInit {
   }
   funcPrintPremisesRegistrationCertificate(app_data){
 
-    let report_url = this.mis_url+'reports/generatePremiseCertificate?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
+    let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
     this.funcGenerateRrp(report_url,"Application Certificate")
     
   }
   funcPrintPremisesBusinessPermit(app_data){
 
-    let report_url = this.mis_url+'reports/generatePremisePermit?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
+    let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
     this.funcGenerateRrp(report_url,"Business Permits")
   }
   
   funcPrintApplicationInvoice(app_data){
 
-    let report_url = this.mis_url+'reports/generateApplicationInvoice?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
+    let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
     this.funcGenerateRrp(report_url,"Application Invoice")
     
   }
@@ -608,14 +612,14 @@ export class PharmacistsaccountUserComponent implements OnInit {
 }
   funcPrintLetterofRejection(app_data){
       //print details
-      let report_url = this.mis_url+'reports/generatePremisesRejectionLetter?application_code='+app_data.application_code;
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code;
       this.funcGenerateRrp(report_url,"Application Details");
 
   }
   funcPrintApplicationDetails(app_data){
     //print details
 
-      let report_url = this.mis_url+'reports/generatePremisesApplicationRpt?application_code='+app_data.application_code;
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code;
       this.funcGenerateRrp(report_url,"Application Details");
      
   }
@@ -745,6 +749,7 @@ export class PharmacistsaccountUserComponent implements OnInit {
           return false
         });
   }
+
     funcApproveDetails() {
 
     this.approvalRecomDetailsfrm.reset();

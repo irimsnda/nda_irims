@@ -28,9 +28,16 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductBlockLineAbstractGrid'
             },{
                 xtype: 'gridcolumn',
                 dataIndex: 'inspection_manufacturing_activity',
+                hidden:true,
                 text: 'Inspection Manufacturing Activities',
                 flex: 2,
                 tdCls: 'wrap-text'
+            },
+            {
+                xtype: 'gridcolumn',
+                dataIndex: 'lines_no',
+                text: 'No of Lines',
+                flex: 1
             }
             ];
             this.columns = defaultColumns.concat(this.columns);

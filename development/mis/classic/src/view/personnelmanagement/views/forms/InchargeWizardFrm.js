@@ -25,7 +25,7 @@ Ext.define('Admin.view.usermanagement.views.forms.InchargeWizardFrm', {
             itemId: 'inchargebasicinfofrm'
         },
         {
-            xtype: 'unstructureddocumentuploadsgrid'
+            xtype: 'personneldocuploadsgenericgrid'
         },
         {
             xtype: 'hiddenfield',

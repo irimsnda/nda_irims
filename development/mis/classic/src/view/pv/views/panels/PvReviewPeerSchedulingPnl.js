@@ -170,7 +170,7 @@ Ext.define('Admin.view.pv.views.panels.PvReviewPeerSchedulingPnl', {
                     xtype: 'button',
                     text: 'Upload Meeting Documents',
                     iconCls: 'x-fa fa-upload',
-                    ui: 'soft-blue',
+                    ui: 'soft-green',
                     name: 'save_btn',
                     reference_table_name: 'tc_meeting_details',
                     table_name: 'tc_meeting_uploaddocuments',
@@ -183,7 +183,7 @@ Ext.define('Admin.view.pv.views.panels.PvReviewPeerSchedulingPnl', {
                 },
                 {
                     text: 'Submit Application',
-                    ui: 'soft-blue',
+                    ui: 'soft-green',
                     iconCls: 'fa fa-check',
                     name: 'process_submission_btn',
                     storeID: 'pvMeetingApplicationListGridStr',

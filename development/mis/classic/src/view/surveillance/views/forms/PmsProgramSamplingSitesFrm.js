@@ -17,6 +17,10 @@ Ext.define('Admin.view.surveillance.views.forms.PmsProgramSamplingSitesFrm', {
             xtype: 'hiddenfield',
             name: 'program_id'
         },{
+            xtype: 'hiddenfield',
+            name: '_token',
+            value: token
+         },{
             xtype: 'combo',
             fieldLabel: 'Select Sampling Level',
             margin: '0 20 20 0',

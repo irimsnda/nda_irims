@@ -87,7 +87,7 @@ Ext.define('Admin.view.pharmacovigilancereporting.views.forms.SafetyAlertReports
                 format: 'd/m/Y',
                 altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
             },{
-                xtype: 'textarea',
+                xtype: 'htmleditor',
                 fieldLabel: 'Reported Safety Issues',
                 name: 'reported_safety_issues',
                 columnWidth: 1
@@ -136,7 +136,7 @@ Ext.define('Admin.view.pharmacovigilancereporting.views.forms.SafetyAlertReports
                     altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
                 }]
             },{
-                xtype: 'textarea',
+                xtype: 'htmleditor',
                 fieldLabel: 'Safety Alert from Origin',
                 name: 'origin_safety_communication',
                 columnWidth: 1
@@ -354,7 +354,7 @@ Ext.define('Admin.view.pharmacovigilancereporting.views.forms.SafetyAlertReports
                         tooltip: 'add manufacturer',
                         childXtype: 'manufacturerConfigFrm',
                         stores: 'manufacturersConfigStr',
-                        winTitle: 'Sample/Product Selection List',
+                        winTitle: 'Manufacturer Selection List',
                         winWidth: '70%',
                         handler: 'showAddConfigParamWinFrm'
                     }

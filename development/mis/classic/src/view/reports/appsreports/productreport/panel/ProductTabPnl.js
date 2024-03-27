@@ -10,8 +10,11 @@ Ext.define('Admin.view.reports.appsreport.productreport.panel.ProductTabPnl', {
     items: [{
     	xtype: 'producttabularrepresentationgrid',
     	title: 'Tabular Representation'
-    },{
+    }
+    ,{
     	xtype: 'productgraphicalrepresentationgraph',
     	title: 'Graphical Representation'
-    }],
+    }
+
+    ],
 });

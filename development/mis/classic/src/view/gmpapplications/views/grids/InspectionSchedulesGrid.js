@@ -93,6 +93,41 @@ Ext.define('Admin.view.gmpapplications.views.grids.InspectionSchedulesGrid', {
         text: 'Inspection Country(ies)',
         flex: 1
     }, {
+            xtype: 'gridcolumn',
+            dataIndex: 'inspection_type_id',
+            text: 'Inspection Type',
+            flex: 1,   
+            tdcls: 'editor-text',
+            width: 110,
+            editor: {
+                    xtype: 'combo',
+                    queryMode: 'local',
+                    valueField: 'id',
+                    displayField: 'name',
+                    listeners: {
+                         beforerender: {
+                            fn: 'setCompStore',
+                            config: {
+                                 pageSize: 1000,
+                                proxy: {
+                                    extraParams: {
+                                         table_name: 'par_inspection_types'
+                                    }
+                            }
+                        },
+                    isLoad: true
+                    }
+                }
+            },
+                            
+        renderer: function (val, meta, record, rowIndex, colIndex, store, view) {
+            var textVal = 'Select Confirmation';
+            if (view.grid.columns[colIndex].getEditor().getStore().getById(val)) {
+            textVal = view.grid.columns[colIndex].getEditor().getStore().getById(val).data.name;
+            }
+            return textVal;
+                            }
+        },{
         xtype: 'gridcolumn',
         dataIndex: 'start_date',
         text: 'Start Date',

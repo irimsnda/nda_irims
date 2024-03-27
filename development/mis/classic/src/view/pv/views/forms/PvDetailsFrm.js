@@ -24,9 +24,45 @@ Ext.define('Admin.view.pv.views.forms.PvDetailsFrm', {
             value: 'tra_pv_applications',
             name: 'table_name'
         },{
+            xtype:'fieldset',
+            columnWidth: 1,
+            title: 'Report Details',
+            collapsible: true,
+            defaults: {
+                labelAlign: 'top',
+                allowBlank: true,
+                labelAlign: 'top',
+                margin: 5,
+                columnWidth: 0.33,
+            },
+            layout: 'column',
+            items:[{
+                xtype: 'combo',
+                queryMode: 'local',
+                forceSelection: true,
+                valueField: 'id',
+                displayField: 'name',
+                fieldLabel: 'Source of the Report',
+                name: 'sourceofpsur_id',
+                listeners: {
+                    beforerender: {
+                        fn: 'setCompStore',
+                        config: {
+                            pageSize: 100,
+                            proxy: {
+                                url: 'commonparam/getCommonParamFromTable',
+                                extraParams: {
+                                    table_name: 'par_sourcesofsafety_alerts'
+                                }
+                            }
+                        },
+                        isLoad: true
+                    }
+                }
+            },{
             xtype: 'combo',
-            fieldLabel: 'ADR Reporting Types',
-            name: 'route_of_administration_id',
+            fieldLabel: 'Report Category(AEFI, ADR, ADSM, Study Reports)',
+            name: 'report_category_id',
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
@@ -38,7 +74,7 @@ Ext.define('Admin.view.pv.views.forms.PvDetailsFrm', {
                         pageSize: 1000,
                         proxy: {
                             extraParams: {
-                                table_name: 'par_adr_types'
+                                table_name: 'par_adr_categories'
                             }
                         }
                     },
@@ -46,13 +82,9 @@ Ext.define('Admin.view.pv.views.forms.PvDetailsFrm', {
                 }
             }
         },{
-          xtype:'textfield',
-          fieldLabel: 'Full Patients Name'  ,
-          name:'patient_name'
-        },{
             xtype: 'combo',
-            fieldLabel: 'Gender/Sex',
-            name: 'gender_id',
+            fieldLabel: 'Report type',
+            name: 'report_type_id',
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
@@ -64,7 +96,7 @@ Ext.define('Admin.view.pv.views.forms.PvDetailsFrm', {
                         pageSize: 1000,
                         proxy: {
                             extraParams: {
-                                table_name: 'par_gender'
+                                table_name: 'par_adr_report_types'
                             }
                         }
                     },
@@ -72,25 +104,23 @@ Ext.define('Admin.view.pv.views.forms.PvDetailsFrm', {
                 }
             }
         },{
-            xtype:'numberfield',
-            fieldLabel: 'Age'  ,
-            name:'age'
-          },{
-            xtype:'numberfield',
-            fieldLabel: 'Weight(Kgs)'  ,
-            name:'weight'
-          },{
-            xtype:'numberfield',
-            fieldLabel: 'Date of onset of REacion'  ,
-            name:'date_of_onsetreaction'
-          },{
-            xtype:'numberfield',
-            fieldLabel: 'Date of onset of REacion'  ,
-            name:'date_of_onsetreaction'
-          },{
+            xtype: 'datefield',
+            fieldLabel: 'Initial received date(NDA)',
+            format: 'Y-m-d',
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+            name: 'initial_receive_date',
+            maxValue: new Date()
+            },{
+            xtype: 'datefield',
+            fieldLabel: 'Date of report',
+            format: 'Y-m-d',
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+            name: 'report_date',
+            maxValue: new Date()
+            },{
             xtype: 'combo',
-            fieldLabel: 'Was Drug Discontinued',
-            name: 'gender_id',
+            fieldLabel: 'Received from',
+            name: 'adr_reporter_category_id',
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
@@ -102,81 +132,14 @@ Ext.define('Admin.view.pv.views.forms.PvDetailsFrm', {
                         pageSize: 1000,
                         proxy: {
                             extraParams: {
-                                table_name: 'par_confirmation'
+                                table_name: 'par_adr_reporters_categories'
                             }
                         }
                     },
                     isLoad: true
                 }
             }
-        },{
-            xtype: 'combo',
-            fieldLabel: 'Events Outcome',
-            name: 'gender_id',
-            forceSelection: true,
-            queryMode: 'local',
-            valueField: 'id',
-            displayField: 'name',
-            listeners: {
-                beforerender: {
-                    fn: 'setCompStore',
-                    config: {
-                        pageSize: 1000,
-                        proxy: {
-                            extraParams: {
-                                table_name: 'par_adr_outcomes'
-                            }
-                        }
-                    },
-                    isLoad: true
-                }
-            }
-        },{
-            xtype: 'combo',
-            fieldLabel: 'Seriousness',
-            name: 'gender_id',
-            forceSelection: true,
-            queryMode: 'local',
-            valueField: 'id',
-            displayField: 'name',
-            listeners: {
-                beforerender: {
-                    fn: 'setCompStore',
-                    config: {
-                        pageSize: 1000,
-                        proxy: {
-                            extraParams: {
-                                table_name: 'par_adr_seriousness'
-                            }
-                        }
-                    },
-                    isLoad: true
-                }
-            }
-        },{
-            xtype:'numberfield',
-            fieldLabel: 'Date Recovered/Died'  ,
-            name:'date_of_onsetreaction'
-          },{
-            xtype:'textarea',
-            columnWidth: 0.99,
-            fieldLabel: 'Rechallenge Outcome'  ,
-            name:'date_of_onsetreaction'
-          },{
-            xtype:'textarea',
-            columnWidth: 0.99,
-            fieldLabel: 'Pre-Exsting Conditions (E.g Allergies, Pregnancy, Smoking others)'  ,
-            name:'date_of_onsetreaction'
-          },{
-            xtype:'textarea',
-            columnWidth: 0.99,
-            fieldLabel: 'Description of Adverse Event(Inclusind the Laboratory Results)'  ,
-            name:'date_of_onsetreaction'
-          },{
-            xtype:'textarea',
-            columnWidth: 0.99,
-            fieldLabel: 'Treatment for Reaction'  ,
-            name:'date_of_onsetreaction'
-          },
+        }]
+       },
     ]
 });

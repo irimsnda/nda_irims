@@ -169,6 +169,13 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialRecommReviewGrid',
                         handler: 'showApplicationChecklists'
                     },
                     {
+                        text: 'View  Online Assessment Tool',
+                        iconCls: 'x-fa fa-bars',
+                        appDetailsReadOnly: 1,
+                        winTitle: 'Online Assessment Tool Details',
+                        handler: 'showAssessmentToolDetails'
+                    },
+                    {
                         text: 'Preview Details',
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 1,

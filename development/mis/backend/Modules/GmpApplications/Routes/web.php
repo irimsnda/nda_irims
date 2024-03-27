@@ -16,6 +16,8 @@ Route::group(['prefix' => 'gmpapplications','middleware' => ['auth:api', 'web']]
     Route::get('getGmpApplicationParamFromModel', [GmpApplicationsController::class, 'getGmpApplicationParamFromModel']);
     Route::post('saveGmpApplicationCommonData', [GmpApplicationsController::class, 'saveGmpApplicationCommonData']);
     Route::post('deleteGmpApplicationRecord', [GmpApplicationsController::class, 'deleteGmpApplicationRecord']);
+     Route::post('saveGMPOnlineAssessmentdetails', [GmpApplicationsController::class, 'saveGMPOnlineAssessmentdetails']);
+     Route::post('saveInspectionDates', [GmpApplicationsController::class, 'saveInspectionDates']);
     Route::get('getGmpApplications', [GmpApplicationsController::class, 'getGmpApplications']);
     Route::get('getManagerApplicationsGeneric', [GmpApplicationsController::class, 'getManagerApplicationsGeneric']);
     Route::get('getManagerInspectionApplications', [GmpApplicationsController::class, 'getManagerInspectionApplications']);
@@ -71,7 +73,7 @@ Route::group(['prefix' => 'gmpapplications','middleware' => ['auth:api', 'web']]
     Route::post('updateGmpApplicationsInspectionType', [GmpApplicationsController::class, 'updateGmpApplicationsInspectionType']);
     Route::get('getNonComplianceObservations', [GmpApplicationsController::class, 'getNonComplianceObservations']);
     Route::post('saveGmpDeskReviewScheduleDetails', [GmpApplicationsController::class, 'saveGmpDeskReviewScheduleDetails']);
-    Route::get('getPreviousProductLineDetails', [GmpApplicationsController::class, 'getGmpWithdrawalApplicationsAtApproval']);
+    Route::get('getPreviousProductLineDetails', [GmpApplicationsController::class, 'getPreviousProductLineDetails']);
     Route::get('getGmpWithdrawalApplicationsAtApproval', [GmpApplicationsController::class, 'getGmpWithdrawalApplicationsAtApproval']);
     Route::get('getGmpCompareDetails', [GmpApplicationsController::class, 'getGmpCompareDetails']);
     Route::get('getDismissedGmpApplications', [GmpApplicationsController::class, 'getDismissedGmpApplications']);

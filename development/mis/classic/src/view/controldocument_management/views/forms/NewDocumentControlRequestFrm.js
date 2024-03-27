@@ -74,18 +74,21 @@ Ext.define('Admin.view.controldocument_management.views.forms.NewDocumentControl
         },{
             xtype: 'textfield',
             readOnly: true,
-            fieldLabel: 'Document Control No',  allowBlank: false,
+            fieldLabel: 'Document Control No',
+            allowBlank: true,
             name: 'document_no'
         },{
             xtype: 'textfield',
-            fieldLabel: 'Revision No',  allowBlank: false,
+            fieldLabel: 'Revision No',  
+            allowBlank: true,
             bind: {
                 readOnly: '{isReadOnly}'  // negated
             },
             name: 'version_no'
         },{
             xtype:'combo',
-            fieldLabel:'Prepared By',  allowBlank: false,
+            fieldLabel:'Prepared By',
+            allowBlank: true,
             valueField: 'id',
             bind: {
                 readOnly: '{isReadOnly}'  // negated
@@ -124,19 +127,22 @@ Ext.define('Admin.view.controldocument_management.views.forms.NewDocumentControl
         // },
         {
             xtype:'datefield',format:'Y-m-d',
-            fieldLabel:' Effective Date',  allowBlank: false,
+            fieldLabel:' Effective Date', 
+            allowBlank: true,
             bind: {
                 readOnly: '{isReadOnly}'  // negated
             },
             name:'effective_date_from',  altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
         },{
             xtype:'datefield',format:'Y-m-d',
-            fieldLabel:' Next Review Date',  allowBlank: false,
+            fieldLabel:' Next Review Date', 
+             allowBlank: true,
       
             name:'next_review_date',altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
         },{
             xtype:'combo',
-            fieldLabel:'Authorized By',  allowBlank: false,
+            fieldLabel:'Authorized By', 
+             allowBlank: true,
             name:'approved_by',
             valueField: 'id',
             displayField: 'name',
@@ -173,7 +179,8 @@ Ext.define('Admin.view.controldocument_management.views.forms.NewDocumentControl
         // },
         {
             xtype:'combo',
-            fieldLabel:'Checked By',  allowBlank: false,
+            fieldLabel:'Checked By',  
+            allowBlank: true,
             name:'checked_by',
             valueField: 'id',
             displayField: 'name',

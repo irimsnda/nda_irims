@@ -71,6 +71,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.BatchProduct
             xtype: 'datefield',
             fieldLabel: 'Approval Date',
             value: new Date(),
+            readOnly:true,
             maxValue: new Date(),
             name: 'approval_date',
             submitFormat: 'Y-m-d',

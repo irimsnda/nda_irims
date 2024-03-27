@@ -38,7 +38,7 @@ export class ProductRegDashboardComponent implements  OnInit {
   productApplicationProcessingData:any;
   isPreviewProductsDetails:boolean= false;
   isPreviewApplicationProcessing:boolean= false;
-
+  regulated_producttype_id:number;
   selectBoxDataSource:any;
   dtProductApplicationData: any = {};
   dtGroupedProductApplicationData:any ={};
@@ -100,14 +100,13 @@ export class ProductRegDashboardComponent implements  OnInit {
 
           });
           this.productAppSelectionfrm = new FormGroup({
-            section_id: new FormControl(this.sectionsData, Validators.compose([Validators.required])),
+            section_id: new FormControl(this.sectionsData, Validators.compose([])),
             sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
-            regulated_producttype_id: new FormControl('', Validators.compose([])),
+            regulated_producttype_id: new FormControl('', Validators.compose([Validators.required])),
             appsubmissions_type_id: new FormControl('', Validators.compose([])),
             prodclass_category_id: new FormControl('', Validators.compose([Validators.required]))
           });
 
-          
           this.frmPreviewProductsDetails = new FormGroup({
             tracking_no: new FormControl('', Validators.compose([Validators.required])),
             brand_name: new FormControl('', Validators.compose([Validators.required])),
@@ -137,7 +136,7 @@ export class ProductRegDashboardComponent implements  OnInit {
   ngOnInit() {
     
   }
-   onLoadprodClassCategoriesData(regulated_producttype_id) {
+onLoadprodClassCategoriesData(regulated_producttype_id) {
     var data = {
       table_name: 'par_prodclass_categories',
       regulated_producttype_id:regulated_producttype_id
@@ -149,7 +148,6 @@ export class ProductRegDashboardComponent implements  OnInit {
         });
 
   }
-  
   onLoadprodProductTypeData() {
     var data = {
       table_name: 'par_regulated_productstypes'
@@ -367,6 +365,8 @@ export class ProductRegDashboardComponent implements  OnInit {
     
     var data = {
       table_name: 'wb_statuses'
+
+
     };
     this.config.onLoadPortalConfigurationData(data)
       .subscribe(
@@ -417,6 +417,25 @@ export class ProductRegDashboardComponent implements  OnInit {
        // this.router.navigate(this.app_route);
        this.isProductApplicationInitialisation = true;
        this.productAppSelectionfrm.get('sub_module_id').setValue(sub_module_id);
+
+    }else if(sub_module_id == 8){
+      this.spinner.show();
+      this.config.getSectionUniformApplicationProces(this.sub_module_id, 1)
+      .subscribe(
+        data => {
+          this.processData = data;
+          this.spinner.hide();
+          if (this.processData.success) {
+            this.title = this.processData[0].name;
+            this.router_link = this.processData[0].router_link;
+            this.productsapp_details = {module_id: this.module_id, process_title: this.title, sub_module_id: this.sub_module_id, status_id: 1,status_name: 'New'};
+            this.appService.setProductApplicationDetail(this.productsapp_details);
+            this.app_route = ['./online-services/' + this.router_link];
+            this.router.navigate(this.app_route);
+          }
+
+        });
+      return false;
 
     }else{
 

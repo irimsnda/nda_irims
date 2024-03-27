@@ -248,12 +248,11 @@ Ext.define('Admin.view.applicationsammendment.viewcontrollers.ApplicationDataMig
                                   });
                               var counter = 1
                               for (var i = main_fields.length - 1; i >= 0; i--) {
-  
                                       var field = Ext.create('Ext.form.TextField',{
                                           name: main_fields[i]['field'],
-                                          fieldLabel: main_fields[i]['field'],
+                                          fieldLabel: main_fields[i]['field'].replace(/_/g, ' ').toUpperCase(),
                                           allowBlank: main_fields[i]['null'],
-                                      }); 
+                                          }); 
                                  
                                  
                                   counter++;
@@ -267,7 +266,7 @@ Ext.define('Admin.view.applicationsammendment.viewcontrollers.ApplicationDataMig
                                   form.loadRecord(record);
                               }
                               Ext.getBody().unmask();
-                              funcShowCustomizableWindow(btn.winTitle, btn.winWidth, form, 'customizablewindow');
+                              funcShowOnlineCustomizableWindow(btn.winTitle, btn.winWidth, form, 'customizablewindow');
                             }
                           },
                          failure: function (response) {
@@ -537,8 +536,8 @@ Ext.define('Admin.view.applicationsammendment.viewcontrollers.ApplicationDataMig
                                                             tooltip: 'Edit Workflow',
                                                             action: 'edit',storeID: storeID,
                                                             form: 'appdatamigrationrequestfrm',
-                                                            winTitle: 'Product Application Migrations Details',
-                                                            winWidth: '35%',
+                                                            winTitle: 'Application Migrations Details',
+                                                            winWidth: '85%',
                                                             handler: 'showappdatamigrationdatafrmEdit',
                                                             stores: '[]'
                                                         }
@@ -550,7 +549,7 @@ Ext.define('Admin.view.applicationsammendment.viewcontrollers.ApplicationDataMig
                                 //add columns
                                 for (var i = result.length - 1; i >= 0; i--) {
                                     var column = Ext.create('Ext.grid.column.Column', {
-                                            text: result[i].toUpperCase()+'',
+                                            text: result[i].replace(/_/g, ' ').toUpperCase(),
                                             dataIndex: result[i]+'',
                                             width: 180,
                                             tbCls: 'wrap',
@@ -623,8 +622,8 @@ Ext.define('Admin.view.applicationsammendment.viewcontrollers.ApplicationDataMig
                                             autoHeight: true,
                                             width: '100%',
                                             viewModel: 'configurationsvm',
-                                controller: 'applicationdatmigrationvctr',
-                                title: 'Migrated Application Datasets',
+                                            controller: 'applicationdatmigrationvctr',
+                                          title: 'Migrated Application Datasets',
                                             //height: Ext.Element.getViewportHeight() - 118,
                                             viewConfig: {
                                                 deferEmptyText: false,
@@ -887,8 +886,8 @@ Ext.define('Admin.view.applicationsammendment.viewcontrollers.ApplicationDataMig
                                                         tooltip: 'Edit Workflow',
                                                         action: 'edit',storeID: table_name+'Str',
                                                         form: 'appdatamigrationrequestfrm',
-                                                        winTitle: 'Product Application Migrations Details',
-                                                        winWidth: '35%',
+                                                        winTitle: 'Application Migrations Details',
+                                                        winWidth: '85%',
                                                         handler: 'showappdatamigrationdatafrmEdit',
                                                         stores: '[]'
                                                     }

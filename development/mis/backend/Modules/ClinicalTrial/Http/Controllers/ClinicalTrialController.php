@@ -145,6 +145,251 @@ class ClinicalTrialController extends Controller
         return response()->json($res);
     }
 
+
+
+    public function getProductHandling(Request $request)
+    {
+    $application_id = $request->input('application_id');
+    try {
+        $results = array();
+
+        if (validateIsNumeric($application_id)) {
+            $qry = DB::table('tra_clinicaltrial_producthandling as t1')
+                ->select('t1.*', 't2.name as container_type', 't3.name as common_name', 't4.name as container', 't5.name as container_material')
+                ->leftJoin('par_containers_types as t2', 't1.container_type_id', '=', 't2.id')
+                ->leftJoin('par_common_names as t3', 't1.common_name_id', '=', 't3.id')
+                ->leftJoin('par_containers as t4', 't1.container_id', '=', 't4.id')
+                ->leftJoin('par_containers_materials as t5', 't1.container_material_id', '=', 't5.id')
+                ->where('t1.application_id', $application_id);
+
+                $results = $qry->get();
+
+                $res = array(
+                    'success' => true,
+                    'results' => $results,
+                    'message' => 'All is well'
+                );
+            } else {
+                $res = array(
+                    'success' => true,
+                    'message' => 'No results found'
+                );
+            }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+
+    return \response()->json($res);
+}
+
+
+
+   //  public function saveClinicalTrialOnlineAssessmentdetails(Request $req)
+   // {
+   //     try{
+   //         DB::beginTransaction();
+   //         $table_name= $req->table_name;
+   //         $active_application_code = $req->active_application_code;
+   //         $record_id = $req->id;
+   //         $user_id = \Auth::user()->id;
+   //         $post_data= $req->all();
+   //         $post_data= $req->all();
+   //        unset($post_data['sub_module_id']);
+   //        unset($post_data['active_application_code']);
+   //        $Sub_cat_data =array();
+   //        $items_data = [];
+   //        $cat_data=[];
+   //        $sanitizedArray=[];
+   //        foreach ($post_data as $key =>$value) {
+   //             $v=explode('-',$key);
+   //            // dd($v);
+   //             if($v[1] == 'workspace' || $v[1] == 'comment'){
+   //                 $Sub_cat_data[] = array(
+   //                      'sub_category_id'=>$v[0],
+   //                      $v[1]=>$value
+   //                 ); 
+   //             }
+   //             else if($v[1] == 'itemcheck'){
+   //              $item_data[] = array(
+   //                  'item_id'=>$v[0],
+   //                  $v[1]=>$value
+   //             );
+   //             }
+              
+   //           }
+
+   //       foreach ($item_data as  $items_data) {
+   //           // dd($items_data);
+   //          $items_data['active_application_code'] = $active_application_code;
+   //          $where = array(
+   //              'active_application_code' => $active_application_code,
+   //              'item_id' => $items_data['item_id']
+
+   //          );
+            // $previous_data = getPreviousRecords('par_ct_assessment_items_details', $where);
+            // if ($previous_data['success'] == false) {
+            //     return $previous_data;
+            // }
+            // $previous_data = $previous_data['results'];
+           // deleteRecord('par_ct_assessment_items_details', $previous_data, $where, $user_id);
+   //         insertRecord('par_ct_assessment_items_details', $items_data, $user_id);
+        
+   //       }
+   //          //restructure sub cat data
+   //      foreach ($Sub_cat_data as $value) {
+   //         $sub_category_id =$value['sub_category_id'];
+   //         $arr = array_filter($Sub_cat_data, function($ar) use($sub_category_id) {
+   //             return ($ar['sub_category_id'] == $sub_category_id);
+   //          });
+   //         //delete that array
+   //         $Sub_cat_data = \array_filter($Sub_cat_data, static function ($ar) use($sub_category_id) {
+   //              return $ar['sub_category_id'] != $sub_category_id;
+   //          });
+   //         //data for insert
+   //         $res = array(
+   //               'success' => true,
+   //               'message' => 'Details saved successfully!!'
+   //           );
+   //         if(isset($arr[0]) && validateIsNumeric($arr[0]['sub_category_id'])){ //incase where there is no category
+   //             if(isset($arr[0]['workspace'])){
+   //               $arr = ['sub_category_id' => $arr[0]['sub_category_id'], 'workspace'=>$arr[0]['workspace'], 'comment'=>$arr[1]['comment'], 'active_application_code'=>$active_application_code];
+   //              }else{
+   //                $arr = ['sub_category_id' => $arr[0]['sub_category_id'], 'workspace'=>$arr[1]['workspace'], 'comment'=>$arr[0]['comment'], 'active_application_code'=>$active_application_code];
+   //              }
+
+                // $previous_data = getPreviousRecords('par_ct_assessment_category_details', ['sub_category_id' => $arr['sub_category_id'], 'active_application_code'=>$active_application_code]);
+                // if ($previous_data['success'] == false) {
+                //     return $previous_data;
+                // }
+                // $previous_data = $previous_data['results'];
+
+
+   //              deleteRecord('par_ct_assessment_category_details',$previous_data, ['sub_category_id' => $arr['sub_category_id'], 'active_application_code'=>$active_application_code],$user_id);
+   //              $res = insertRecord('par_ct_assessment_category_details', $arr,$user_id);
+
+   //          }
+   //      }
+   //      DB::commit();
+   //     } catch (\Exception $exception) {
+   //         $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+   //     } catch (\Throwable $throwable) {
+   //         $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+   //     }
+   //     return \response()->json($res);
+   // }
+
+  public function saveClinicalTrialOnlineAssessmentdetails(Request $req)
+     {
+         try{
+             DB::beginTransaction();
+             $table_name= $req->table_name;
+             $active_application_code = $req->active_application_code;
+             $record_id = $req->id;
+             $user_id = \Auth::user()->id;
+             $post_data= $req->all();
+             $post_data= $req->all();
+            unset($post_data['sub_module_id']);
+            unset($post_data['active_application_code']);
+            $Sub_cat_data =array();
+            $items_data = [];
+            $cat_data=[];
+            $sanitizedArray=[];
+
+            foreach ($post_data as $key =>$value) {
+                 $v=explode('-',$key);
+                // dd($v);
+                 if($v[1] == 'workspace' || $v[1] == 'comment'){
+                     $Sub_cat_data[] = array(
+                          'sub_category_id'=>$v[0],
+                          $v[1]=>$value
+                     ); 
+                 }
+                 else if($v[1] == 'itemcheck' || $v[1] == 'item'){
+                  $item_data[] = array(
+                      'item_id'=>$v[0],
+                      $v[1]=>$value
+                 );
+                 }
+                
+               }
+           foreach ($item_data as  $items_data) {
+               // dd($items_data);
+               $items_data['active_application_code'] = $active_application_code;
+              $previous_data = getPreviousRecords('par_ct_assessment_items_details', ['active_application_code'=>$active_application_code, 'item_id' => $items_data['item_id']]);
+              if ($previous_data['success'] == false) {
+                  return $previous_data;
+              }
+              $previous_data = $previous_data['results'];
+              deleteRecord('par_ct_assessment_items_details',$previous_data, ['active_application_code'=>$active_application_code, 'item_id' => $items_data['item_id']], $user_id);
+              insertRecord('par_ct_assessment_items_details', $items_data,$user_id);
+           }
+              //restructure sub cat data
+          $count = 0;
+          foreach ($Sub_cat_data as $value) {
+             $sub_category_id =$value['sub_category_id'];
+             $arr = array_filter($Sub_cat_data, function($ar) use($sub_category_id) {
+                 return ($ar['sub_category_id'] == $sub_category_id);
+              });
+             
+             //delete that array
+             $Sub_cat_data = \array_filter($Sub_cat_data, static function ($ar) use($sub_category_id) {
+                  return $ar['sub_category_id'] != $sub_category_id;
+              });
+             
+
+             //data for insert
+             $res = array(
+                   'success' => true,
+                   'message' => 'Details saved successfully!!'
+               );
+             
+             if(isset($arr[$count]) && validateIsNumeric($arr[$count]['sub_category_id'])){ //incase where there is no category
+
+                 if(isset($arr[$count]['workspace'])){
+                   $arr = ['sub_category_id' => $arr[$count]['sub_category_id'], 'workspace'=>$arr[$count]['workspace'], 'comment'=>$arr[$count+1]['comment'], 'active_application_code'=>$active_application_code];
+                  }
+                  else if(isset($arr[$count+1]['workspace'])){
+                    $arr = ['sub_category_id' => $arr[$count]['sub_category_id'], 'workspace'=>$arr[$count+1]['workspace'], 'comment'=>$arr[$count]['comment'], 'active_application_code'=>$active_application_code];
+                  }else{
+                      $arr = ['sub_category_id' => $arr[$count]['sub_category_id'], 'workspace'=>$arr[$count]['workspace'], 'comment'=>$arr[$count+1]['comment'], 'active_application_code'=>$active_application_code];
+                  }
+                  $previous_data = getPreviousRecords('par_ct_assessment_category_details', ['sub_category_id' => $arr['sub_category_id'], 'active_application_code'=>$active_application_code]);
+                  if ($previous_data['success'] == false) {
+                      return $previous_data;
+                  }
+                  $previous_data = $previous_data['results'];
+                  deleteRecord('par_ct_assessment_category_details',$previous_data, ['sub_category_id' => $arr['sub_category_id'], 'active_application_code'=>$active_application_code], $user_id);
+                  $res = insertRecord('par_ct_assessment_category_details', $arr, $user_id);
+                  $count++;
+              }else{
+                 $count--; 
+              }
+              $count++;
+          }
+          DB::commit();
+         } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+    }
+
+
     public function deleteClinicalTrialRecord(Request $req)
     {
         try {
@@ -203,6 +448,99 @@ class ClinicalTrialController extends Controller
         return response()->json($res);
     }
 
+
+    public function getClinicalPersonnelDetails(Request $req){
+    
+        try{
+            $trader_id = $req->trader_id;
+            $application_id = $req->application_id;
+
+            $data = array();
+            //get the records 
+            $records = DB::table('clinical_trial_personnel as t1')
+                    ->where(array('t1.application_id' => $application_id))
+                     ->get();
+                     foreach ($records as $rec) {
+                        $qualification_id = $rec->qualification_id;
+                      $position_id = $rec->position_id;
+
+                       $qualification = getParameterItem('par_personnel_qualifications',$rec->qualification_id);
+                       $position = getParameterItem('par_clinicaltrialpersons_roles',$rec->position_id);
+      
+                            $data[] = array('id'=>$rec->id,
+                                        'qualification_id'=>$qualification_id,
+                                        'name'=>$rec->name,
+                                        'qualification'=>$qualification,
+                                        'telephone'=>$rec->telephone,
+                                        'email_address'=>$rec->email_address,
+                                        'id'=>$rec->id,
+                                        'position_id'=>$rec->position_id,
+                                        'position'=>$position,
+                                        'trader_id'=>$rec->trader_id,
+                                        'application_id'=>$rec->application_id,
+                                    );
+                        
+                     }
+                     $res = array('success'=>true, 'data'=>$data);// $data;
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+    }
+
+
+     public function getNonClinicaltrailToxicologyData(Request $req){
+    
+        try{
+            $trader_id = $req->trader_id;
+            $application_id = $req->application_id;
+
+            $data = array();
+            //get the records 
+            $records = DB::table('tra_clinicaltrial_toxicitydosage as t1')
+                    ->where(array('t1.application_id' => $application_id))
+                     ->get();
+                     foreach ($records as $rec) {
+                        $dosage_type_id = $rec->dosage_type_id;
+
+                       $dose_type = getParameterItem('par_clinicaldosage_toxicity',$rec->dosage_type_id);
+    
+                            $data[] = array(
+                                        'id'=>$rec->id,
+                                        'species'=>$rec->species,
+                                        'dose_type'=>$dose_type,
+                                        'dose_route'=>$rec->dose_route,
+                                        'mntd'=>$rec->mntd,
+                                        'major_findings'=>$rec->major_findings,
+                                        'application_id'=>$rec->application_id
+                                    );
+                        
+                     }
+                     $res = array('success'=>true, 'data'=>$data);// $data;
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+}
+
     public function undoClinicalTrialSoftDeletes(Request $req)
     {
         try {
@@ -231,6 +569,38 @@ class ClinicalTrialController extends Controller
         }
         return response()->json($res);
     }
+
+      public function prepareAssesmentDetails(Request $request)
+ {
+     $application_id = $request->input('application_id');
+     $application_code = $request->input('application_code');
+     
+     try {
+         $main_qry = DB::table('par_ct_assessment_category_details as t1')
+             ->select('t1.*')
+             ->where('t1.active_application_code', $application_code);
+             $sub_category_qry = $main_qry->get();
+
+        $item_details_qry = DB::table('par_ct_assessment_items_details as t1')
+             ->select('t1.*')
+             ->where('t1.active_application_code', $application_code);
+             $item_qry=$item_details_qry->get();
+      
+         $res = array(
+             'success' => true,
+             'sub_category_qry' => $sub_category_qry,
+             'item_qry' => $item_qry,
+             'message' => 'All is well'
+         );
+         
+     } catch (\Exception $exception) {
+         $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+     } catch (\Throwable $throwable) {
+         $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+     }
+     return \response()->json($res);
+ }
 
     public function getClinicalTrialApplications(Request $request)
     {
@@ -721,7 +1091,16 @@ class ClinicalTrialController extends Controller
                 'intervention_period' => $request->intervention_period,
                 'intervention_duration' => $request->intervention_duration,
                 'uncst_no' => $request->uncst_no,
-                'rec_no' => $request->rec_no
+                'rec_no' => $request->rec_no,
+                'explorator_objective' => $request->explorator_objective,
+                'tertiary_endpoints' => $request->tertiary_endpoints,
+                'safety_monitoring_plan' => $request->safety_monitoring_plan,
+                'system_used' => $request->system_used,
+                'action_seriousadverse_event' => $request->action_seriousadverse_event,
+                'safety_monitoring_board' => $request->safety_monitoring_board,
+                'interim_report_date' => $request->interim_report_date,
+                'estimated_due_report_date' => $request->estimated_due_report_date,
+                'data_management_process' => $request->data_management_process
 
             );
             if (validateIsNumeric($application_id)) {
@@ -912,7 +1291,7 @@ class ClinicalTrialController extends Controller
                     'alt_count' => $alt_count
                 );
                 $view_id = generateApplicationViewID();
-                //$ref_number = generatePremiseRefNumber(14, $codes_array, date('Y'), $process_id, $zone_id, $user_id);
+                $ref_number = generatePremiseRefNumber(14, $codes_array, date('Y'), $process_id, $zone_id, $user_id);
                 $application_code = generateApplicationCode($sub_module_id, $applications_table);
                 $application_status = getApplicationInitialStatus($module_id, $sub_module_id);
 
@@ -962,7 +1341,7 @@ class ClinicalTrialController extends Controller
                 DB::table('clinical_trial_investigators')->insert($prev_investigators);
                 DB::table('clinical_trial_products')->insert($prev_products);
                 //DMS
-                initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $ref_number, $user_id);
+                //initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $ref_number, $user_id);
                 //add to submissions table
                 
                 $submission_params = array(
@@ -1583,10 +1962,26 @@ class ClinicalTrialController extends Controller
                 ->where('t1.id', $application_id);
             $investigatorDetails = $investigatorQry->first();
 
+            $assessment_Qry = DB::table('tra_clinical_trial_applications as t1')
+            ->leftjoin('par_ct_assessment_category_details as t2', 't1.application_code', '=', 't2.active_application_code')
+            ->select(DB::raw("t2.*"))
+            //CONCAT_WS('-',t2.sub_category_id,t2.comment) as comment,CONCAT_WS('-',t2.sub_category_id,t2.workspace) as workspace"))
+            ->where('t1.application_code', $application_code);
+            $assessment_QryDetails = $assessment_Qry->get()->toArray();
+
+
+            $assessment_Item_Qry = DB::table('tra_clinical_trial_applications as t1')
+            ->leftjoin('par_ct_assessment_items_details as t2', 't1.application_code', '=', 't2.active_application_code')
+            ->select(DB::raw("t2.*"))
+            ->where('t1.application_code', $application_code);
+            $assessment_Item_QryDetails = $assessment_Item_Qry->get()->toArray();
+
             $res = array(
                 'success' => true,
                 'results' => $results,
                 'sponsorDetails' => $sponsorDetails,
+                'assessment_QryDetails' => $assessment_QryDetails,
+                'assessment_Item_QryDetails'=> $assessment_Item_QryDetails,
                 'investigatorDetails' => $investigatorDetails,
                 'message' => 'All is well'
             );
@@ -1678,6 +2073,135 @@ class ClinicalTrialController extends Controller
         return \response()->json($res);
     }
 
+
+
+    public function preparePreClinicalTrialManagerMeetingStage(Request $request)
+    {
+        $application_id = $request->input('application_id');
+        $application_code = $request->input('application_code');
+        $table_name = $request->input('table_name');
+        try {
+            $qry = DB::table($table_name . ' as t1')
+                ->join('tc_meeting_applications as t2', function ($join) use ($application_code) {
+                    $join->on('t1.application_code', '=', 't2.application_code');
+                })
+                ->join('tc_meeting_details as t3', 't2.meeting_id', '=', 't3.id')
+                ->select(DB::raw("t3.*"))
+                ->where('t1.id', $application_id);
+            $results = $qry->first();
+            if(is_null($results)){
+              $qry = DB::table($table_name . ' as t1')
+                 ->leftJoin('tra_clinicaltrrial_assessment_report as t2', 't1.application_code', '=', 't2.application_code')
+                ->select(DB::raw("DISTINCT t2.id as evaluation_record_id,t1.brief_description,t1.study_title,t1.clinicaltrial_description,t1.meeting_date,t1.meeting_time,t1.meeting_type_id,t1.meeting_venue,t1.meeting_invitation_details,if(t2.meeting_date_okay is null, 1, t2.meeting_date_okay) as meeting_date_okay,t2.*"))
+                ->where('t1.id', $application_id);
+            $results = $qry->first();
+           if($results->meeting_date_okay==2 || $results->meeting_date_okay===2){
+            $meeting_name = $results->study_title;
+            $meeting_desc = $results->brief_description;
+            $meeting_type_id = $results->preferred_meeting_type_id;
+            $meeting_venue = $results->preferred_meeting_venue;
+            $meeting_time = $results->preferred_meeting_time;
+            $date_requested = $results->preferred_meeting_date;
+            $meeting_invitation_details = $results->preferred_meeting_invitation_details;
+
+           }else{
+             $meeting_name = $results->study_title;
+             $meeting_desc = $results->brief_description;
+             $meeting_type_id = $results->meeting_type_id;
+             $meeting_venue = $results->meeting_venue;
+             $meeting_time = $results->meeting_time;
+             $date_requested = $results->meeting_date;
+             $meeting_invitation_details = $results->meeting_invitation_details;
+           }
+           
+         
+
+            $this->savePreTCMeetingDetails($application_code,$meeting_name,$meeting_desc,$meeting_type_id,$meeting_venue,$meeting_time,$date_requested,$meeting_invitation_details);
+
+            $qry = DB::table($table_name . ' as t1')
+                ->join('tc_meeting_applications as t2', function ($join) use ($application_code) {
+                    $join->on('t1.application_code', '=', 't2.application_code');
+                })
+                ->join('tc_meeting_details as t3', 't2.meeting_id', '=', 't3.id')
+                ->select(DB::raw("t3.*"))
+                ->where('t1.id', $application_id);
+            $results = $qry->first();
+            
+            }
+
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
+
+    public function savePreTCMeetingDetails($application_code,$meeting_name,$meeting_desc,$meeting_type_id,$meeting_venue,$meeting_time,$date_requested,$meeting_invitation_details)
+    {
+        $id = '';
+        $user_id = $this->user_id;
+        try {
+            $params = array(
+                'meeting_name' => $meeting_name,
+                'meeting_desc' => $meeting_desc,
+                'meeting_venue' => $meeting_venue,
+                'meeting_type_id' => $meeting_type_id,
+                'meeting_time' => $meeting_time,
+                'date_requested' => $date_requested
+            );
+            if (isset($id) && $id != '') {
+                $params['altered_by'] = $user_id;
+                DB::table('tc_meeting_details')
+                    ->where('id', $id)
+                    ->update($params);
+            } else {
+                $params['created_by'] = $user_id;
+                $insert_res = insertRecord('tc_meeting_details', $params, $user_id);
+                $id = $insert_res['record_id'];
+            }
+            $params2 = array();
+             $params2[] = array(
+                    'meeting_id' => $id,
+                    'application_code' => $application_code,
+                    'created_by' => $this->user_id
+                );
+            DB::table('tc_meeting_applications')
+                ->where('meeting_id', $id)
+                ->delete();
+            DB::table('tc_meeting_applications')
+                ->insert($params2);
+            $res = array(
+                'success' => true,
+                'record_id' => $id,
+                'message' => 'Details saved successfully!!'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
     public function addClinicalStudySite(Request $req)
     {
         $application_id = $req->input('application_id');
@@ -1740,9 +2264,14 @@ class ClinicalTrialController extends Controller
                 ->join('par_regions as t4', 't2.region_id', '=', 't4.id')
                 ->select('t2.*', 't1.study_site_id', 't3.name as country_name', 't4.name as region_name')
                 ->where('t1.application_id', $application_id);
-            $results = $qry->get();
-                
+              $results=$qry->get();
+            
                 }
+
+              foreach ($results as $result) {
+                $result->study_sites_id[] = json_decode($result->study_site_id);
+               }
+           
             $res = array(
                 'success' => true,
                 'results' => $results,
@@ -2083,6 +2612,51 @@ class ClinicalTrialController extends Controller
         return \response()->json($res);
     }
 
+
+
+    public function getComparatorProducts(Request $request)
+    {
+        $application_id = $request->input('application_id');
+        try {
+            $results = array();
+            if(validateIsNumeric($application_id)){
+                  $qry = DB::table('tra_clinical_comparatorproducts as t1')
+                        ->leftJoin('par_clinical_product_categories as t2', 't1.product_category_id', '=', 't2.id')
+                        ->leftJoin('par_common_names as t3', 't1.common_name_id', '=', 't3.id')
+                        ->leftJoin('par_dosage_forms as t4', 't1.dosage_form_id', '=', 't4.id')
+                        ->leftJoin('par_route_of_administration as t5', 't1.routes_of_admin_id', '=', 't5.id')
+                        ->leftJoin('par_si_units as t6', 't1.si_unit_id', '=', 't6.id')
+                        ->leftJoin('par_countries as t7', 't1.country_id', '=', 't7.id')
+                        ->leftJoin('imp_sources as t8', 't1.market_location_id', '=', 't8.id')
+                        ->leftJoin('par_classifications as t9', 't1.classification_id', '=', 't9.id')
+                        ->select(DB::raw('t1.*,CONCAT(t1.product_strength,t6.name) as product_strength_txt,t2.category_name as category_name,t3.name as common_name,t4.name as dosage_form,t5.name as admin_route,t8.name as market_location,t9.name as classification_name'))
+                        ->where('t1.application_id', $application_id);
+                    $results = $qry->get();
+                
+            }
+          
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
+
+
+
     public function getOnlineImpProducts(Request $request)
     {
         $application_id = $request->input('application_id');
@@ -2192,6 +2766,7 @@ class ClinicalTrialController extends Controller
         $table_name = $request->input('table_name');
         $workflow_stage = $request->input('workflow_stage_id');
         $meeting_id = $request->input('meeting_id');
+        $application_code = $request->input('application_code');
         $strict_mode = $request->input('strict_mode');
         try {
             $qry = DB::table($table_name . ' as t1')
@@ -2222,6 +2797,10 @@ class ClinicalTrialController extends Controller
                 't6.name as approval_status', 't5.decision_id', 't1.id as active_application_id',
                 't7.name as sponsor', 't8.name as investigator')
                 ->where(array('t10.current_stage'=>$workflow_stage,'isDone'=>0));
+
+            if(validateIsNumeric($application_code)){
+              $qry->where('t1.application_code', $application_code);
+            }
                 
             $results = $qry->get();
             $res = array(
@@ -2405,16 +2984,16 @@ class ClinicalTrialController extends Controller
             $qry = DB::table($table_name . ' as t1')
                 ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
                 ->join('par_system_statuses as t4', 't1.application_status_id', '=', 't4.id')
-                ->leftJoin('clinical_trial_personnel as t7', 't1.sponsor_id', '=', 't7.id')
-                ->leftJoin('clinical_trial_personnel as t8', 't1.investigator_id', '=', 't8.id')
+                ->Join('clinical_trial_personnel as t7', 't1.sponsor_id', '=', 't7.id')
+                ->Join('clinical_trial_personnel as t8', 't1.investigator_id', '=', 't8.id')
                 ->leftJoin('tc_meeting_applications as t9', function ($join) use ($meeting_id) {
                     $join->on('t1.application_code', '=', 't9.application_code')
                         ->where('t9.meeting_id', $meeting_id);
                 })
-                ->join('tra_assessment_recommendations as t10', 't1.application_code', '=', 't10.application_code')
-                ->join('tra_auditing_recommendations as t11', 't1.application_code', '=', 't11.application_code')
-                ->join('wf_workflow_actions as t12', 't10.recommendation_id', '=', 't12.id')
-                ->join('wf_workflow_actions as t13', 't11.recommendation_id', '=', 't13.id')
+                ->leftjoin('tra_assessment_recommendations as t10', 't1.application_code', '=', 't10.application_code')
+                ->leftjoin('tra_auditing_recommendations as t11', 't1.application_code', '=', 't11.application_code')
+                ->leftjoin('wf_workflow_actions as t12', 't10.recommendation_id', '=', 't12.id')
+                ->leftjoin('wf_workflow_actions as t13', 't11.recommendation_id', '=', 't13.id')
                 ->select('t1.*', 't3.name as applicant_name', 't4.name as application_status',
                     't9.meeting_id', 't1.id as active_application_id', 't7.name as sponsor', 't8.name as investigator',
                     't12.name as assessment_recomm', 't13.name as audit_recomm')
@@ -2453,16 +3032,16 @@ class ClinicalTrialController extends Controller
         $meeting_id = $request->input('meeting_id');
         try {
             $qry = DB::table($table_name . ' as t1')
-                ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
-                ->join('par_system_statuses as t4', 't1.application_status_id', '=', 't4.id')
-                ->join('tc_meeting_applications as t9', function ($join) use ($meeting_id) {
+                ->leftjoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->leftjoin('par_system_statuses as t4', 't1.application_status_id', '=', 't4.id')
+                ->leftjoin('tc_meeting_applications as t9', function ($join) use ($meeting_id) {
                     $join->on('t1.application_code', '=', 't9.application_code')
                         ->where('t9.meeting_id', $meeting_id);
                 })
-                ->join('tra_assessment_recommendations as t10', 't1.application_code', '=', 't10.application_code')
-                ->join('tra_auditing_recommendations as t11', 't1.application_code', '=', 't11.application_code')
-                ->join('wf_workflow_actions as t12', 't10.recommendation_id', '=', 't12.id')
-                ->join('wf_workflow_actions as t13', 't11.recommendation_id', '=', 't13.id')
+                ->leftjoin('tra_assessment_recommendations as t10', 't1.application_code', '=', 't10.application_code')
+                ->leftjoin('tra_auditing_recommendations as t11', 't1.application_code', '=', 't11.application_code')
+                ->leftjoin('wf_workflow_actions as t12', 't10.recommendation_id', '=', 't12.id')
+                ->leftjoin('wf_workflow_actions as t13', 't11.recommendation_id', '=', 't13.id')
                 ->leftJoin('tc_recommendations as t14', 't1.application_code', '=', 't14.application_code')
                 ->leftJoin('par_tcmeeting_decisions as t15', 't14.decision_id', '=', 't15.id')
                 ->select('t1.*', 't3.name as applicant_name', 't4.name as application_status',
@@ -2661,7 +3240,8 @@ class ClinicalTrialController extends Controller
         $meeting_id = $request->input('meeting_id');
         try {
             $qry = DB::table('tc_meeting_participants as t1')
-                ->select('t1.*')
+            ->leftjoin('par_meeting_participant_roles as t2','t1.role_id', '=', 't2.id')
+                ->select('t1.*','t2.name as role')
                 ->where('t1.meeting_id', $meeting_id);
             $results = $qry->get();
             $res = array(
@@ -2946,7 +3526,6 @@ class ClinicalTrialController extends Controller
                     $application_code = $request->application_code;
                     $study_sites_id = $request->study_sites_id;
                     $inspection_id = $request->inspection_id;
-                   
                 
                     //confirm the 
                     if(!validateIsNumeric($id)){
@@ -2996,6 +3575,8 @@ class ClinicalTrialController extends Controller
                                 unset($application_params['id']);
                 
                                 $res = insertRecord($applications_table, $application_params, $user_id);
+
+                               
                                 
                                 if ($res['success'] == false) {
                                     DB::rollBack();
@@ -4533,7 +5114,7 @@ public function saveEvaluationDetails(Request $request)
             
             $qry = DB::table('tra_clinical_trial_applications  as t1')
                 ->leftJoin('tra_clinicaltrrial_assessment_report as t2', 't1.application_code', '=', 't2.application_code')
-                ->select(DB::raw("DISTINCT t2.id as evaluation_record_id,t1.study_title,t1.clinicaltrial_description,t1.meeting_date,t1.meeting_time,t1.meeting_type_id,t1.meeting_venue,t1.meeting_invitation_details,if(t2.meeting_date_okay is null, 1, t2.meeting_date_okay) as meeting_date_okay,t2.*"))
+                ->select(DB::raw("DISTINCT t2.id as evaluation_record_id,t1.study_title,t1.brief_description,t1.clinicaltrial_description,t1.meeting_date,t1.meeting_time,t1.meeting_type_id,t1.meeting_venue,t1.meeting_invitation_details,if(t2.meeting_date_okay is null, 1, t2.meeting_date_okay) as meeting_date_okay,t2.*"))
                 ->groupBy('t1.application_code');
 
             $qry->where('t1.application_code', $application_code);

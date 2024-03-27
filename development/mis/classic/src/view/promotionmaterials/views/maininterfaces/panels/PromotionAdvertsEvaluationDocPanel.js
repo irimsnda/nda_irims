@@ -3,6 +3,7 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.panels.PromotionA
 	record:1,
     xtype: 'promotionadvertsevaluationdocpanel',
     controller: 'promotionmaterialviewcontroller',
+    viewModel:'promotionmaterialsviewmodel',
     layout: {
         type: 'border'
     },
@@ -14,23 +15,26 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.panels.PromotionA
             xtype: 'toolbar',
             dock: 'top',
             ui: 'footer',
-            height: 35,
-            defaults: {
-                labelAlign: 'right',
-                labelStyle: "color:#595959"
+            height: 65,
+             defaults: {
+                labelAlign: 'top',
+                margin: '0 5 0 0',
+                labelStyle: "color:#595959;font-size:9px"
             },
-            items: ['->', {
-                xtype: 'displayfield',
-                name: 'process_name',
-                fieldLabel: 'Process',
-                fieldStyle: {
-                    'color': 'green',
-                    'font-weight': 'bold',
-                    'font-size': '12px'
-                }
-            }, {
+
+             items: [{
+                    xtype: 'displayfield',
+                    name: 'process_name',
+                    fieldLabel: 'Process',
+                    fieldStyle: {
+                        'color': 'green',
+                        'font-weight': 'bold',
+                        'font-size': '9px'
+                    }
+                }, {
                     xtype: 'tbspacer',
-                    width: 20
+                    //flex: 1
+                     width: 20
                 }, {
                     xtype: 'displayfield',
                     name: 'workflow_stage',
@@ -38,7 +42,7 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.panels.PromotionA
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
-                        'font-size': '12px'
+                        'font-size': '9px'
                     }
                 }, {
                     xtype: 'tbspacer',
@@ -50,19 +54,23 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.panels.PromotionA
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
-                        'font-size': '12px'
+                        'font-size': '9px'
                     }
-                }, {
-                    xtype: 'tbspacer',
-                    width: 20
-                }, {
+                }
+                , 
+                // {
+                //     xtype: 'tbspacer',
+                //     width: 20
+                // }, 
+                '->',  
+                 {
                     xtype: 'displayfield',
                     name: 'tracking_no',
                     fieldLabel: 'Tracking No',
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
-                        'font-size': '12px'
+                        'font-size': '9px'
                     }
                 },{
                     xtype: 'displayfield',
@@ -71,7 +79,7 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.panels.PromotionA
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
-                        'font-size': '12px'
+                        'font-size': '9px'
                     }
                 }, {
                     xtype: 'hiddenfield',
@@ -113,57 +121,102 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.panels.PromotionA
            xtype:'tabpanel',
            layout:'fit',
            region: 'center',
-           title:'Promotional and Advertisements Evaluation and details', 
-           items:[{
-                title: 'Evaluation/Assessment Review Report Uploads',
+           //title:'Promotional and Advertisements Evaluation and details', 
+
+        //    items:[{
+        //         title: 'Evaluation/Assessment Review Report Uploads',
+        //         itemId:'evaluation_panel',
+        //         layout:'fit', margin:5,  
+        //         xtype: 'productscreeninggrid'
+        //    },{
+        //         title: 'Asssesment Uploads',
+        //         layout: 'fit',
+        //         xtype: 'promotionmaterialsdocuploadsgenericgrid'
+        //     },{
+        //             title:'Preview Promotional and Advertisements Details',
+        //             xtype:'promtionadvertspreviewdetailswizard'
+        //     }]
+        // },
+        items:[ {
+            xtype: 'panel',
+            title: 'Application Details',
+            defaults: {
+                margin: 3
+            }, autoScroll: true,
+            items: [{
+                xtype: 'promotionalapplicantdetailsfrm',
+                collapsible: true,
+                title: 'APPLICANT DETAILS'
+            },{
+                xtype: 'promotionalappdetailsfrm',
+                autoScroll: true,
+                collapsible: true,
+                title: 'Promotional Application Details'
+            }
+            ,
+            {
+                xtype: 'promLocalapplicantdetailsfrm',collapsible: true,
+                hidden:true,
+                title: 'LOCAL TECHNICAL REPRESENTATIVE DETAILS'
+            }
+            ]
+        },{
+                title: 'Promotion Material & Product Details',
+                 xtype: 'promotionsotherinformationpnl'
+           },{
+                title: 'Screening Checklist',
                 itemId:'evaluation_panel',
                 layout:'fit', margin:5,  
                 xtype: 'productscreeninggrid'
            },{
-                title: 'Evaluation Uploads',
+                title: 'Material Recommendation',
                 layout: 'fit',
-                xtype: 'promotionmaterialsdocuploadsgenericgrid'
+                //hidden:true,
+                xtype: 'promotionmaterialdetailAssesorrecommendationgrid'
             },{
-                    title:'Preview Promotional and Advertisements Details',
-                    xtype:'promtionadvertspreviewdetailswizard'
+                title: 'Asssesment Uploads',
+                layout: 'fit',
+                //hidden:true,
+                xtype: 'promotionmaterialsdocuploadsgenericgrid'
             }]
         },
-        {
-            title: 'Other Details',
-            region: 'east',
-            width: 400,
-            collapsed: true,
-            collapsible: true,
-            titleCollapse: true,
-            items: [
-                {
-                    xtype: 'form',
-                    bodyPadding: 5,
-                    defaults: {
-                        margin: 2,
-                        labelAlign: 'top'
-                    },
-                    fieldDefaults: {
-                        fieldStyle: {
-                            'color': 'green',
-                            'font-weight': 'bold'
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'displayfield',
-                            fieldLabel: 'Applicant Details',
-                            name: 'applicant_details'
-                        },
-                        {
-                            xtype: 'displayfield',
-                            fieldLabel: 'Product Details',
-                            name: 'product_details'
-                        }
-                    ]
-                }
-            ]
-        },
+
+        // {
+        //     title: 'Other Details',
+        //     region: 'east',
+        //     width: 400,
+        //     collapsed: true,
+        //     collapsible: true,
+        //     titleCollapse: true,
+        //     items: [
+        //         {
+        //             xtype: 'form',
+        //             bodyPadding: 5,
+        //             defaults: {
+        //                 margin: 2,
+        //                 labelAlign: 'top'
+        //             },
+        //             fieldDefaults: {
+        //                 fieldStyle: {
+        //                     'color': 'green',
+        //                     'font-weight': 'bold'
+        //                 }
+        //             },
+        //             items: [
+        //                 {
+        //                     xtype: 'displayfield',
+        //                     fieldLabel: 'Applicant Details',
+        //                     name: 'applicant_details'
+        //                 },
+        //                 {
+        //                     xtype: 'displayfield',
+        //                     fieldLabel: 'Product Details',
+        //                     name: 'product_details'
+        //                 }
+        //             ]
+        //         }
+        //     ]
+        // },
         {
             xtype: 'toolbar',
             ui: 'footer',
@@ -193,12 +246,12 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.panels.PromotionA
                 ui: 'soft-purple', 
                 iconCls: 'fa fa-weixin',
                 childXtype: 'applicationcommentspnl',
-                winTitle: 'Evaluation Process Comments',
+                winTitle: 'Asssesment Process Comments',
                 winWidth: '60%',
                 name:'prev_comments',
                 comment_type_id: 2,
                 stores: '[]'
-        }, 
+         }, 
             '->', {
                 text: 'Submit Application',
                 ui: 'soft-purple',

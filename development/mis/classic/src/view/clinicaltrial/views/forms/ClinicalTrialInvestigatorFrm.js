@@ -24,6 +24,9 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialInvestigatorFrm', 
                 xtype: 'hiddenfield',
                 name: 'personnel_type',
                 value: 'investigator'
+            },{
+              xtype: 'hiddenfield',
+              name: 'isReadOnly'
             }
         );
     }

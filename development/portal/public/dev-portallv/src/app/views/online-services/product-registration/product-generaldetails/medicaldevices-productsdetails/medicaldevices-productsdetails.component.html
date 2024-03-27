@@ -13,46 +13,33 @@
       <dx-text-box formControlName="brand_name" placeholder="Enter Brand Name"  [readOnly]= "isReadOnly"  (onFocusOut) ="onValidateBrandNameDetails($event)" [showClearButton]="true">
       </dx-text-box>
     </div>
-  <!--   <div class="col-lg-4 ">
-      <label for="ti" class="control-label">Medical devices Type</label>
-
-      <dx-select-box [dataSource]="devicesTypeData" valueExpr="id" displayExpr="name" (onValueChanged)="onclassificationDevTypeDataSelect($event)"  [readOnly]= "isReadOnly"  [searchEnabled]="true"
-        placeholder="Select Device Type" formControlName="device_type_id">
+    <div class="col-lg-4 " >
+      <label for="ti" class="control-label">Common Name(Optional)</label>
+      <dx-select-box [dataSource]="commonNamesData"   [readOnly]= "isReadOnly"  
+          valueExpr="id" displayExpr="name" [searchEnabled]="true"
+          placeholder="Select Common name"   formControlName="common_name_id">
       </dx-select-box>
-    </div> -->
+    </div>
+
     <div class="col-lg-4 ">
-    
       <label for="ti" class="control-label">Classification of the appliance</label>
-      <dx-select-box [dataSource]="classificationData"  (onValueChanged)="onclassificationDevTypeDataSelect($event)"  valueExpr="id" displayExpr="name"  [readOnly]= "isReadOnly" [searchEnabled]="true"
+      <dx-select-box [dataSource]="classificationData" valueExpr="id" displayExpr="name"  [readOnly]= "isReadOnly" [searchEnabled]="true"
         placeholder="Select Classification" formControlName="classification_id">
       </dx-select-box>
     </div>
-    
-      <div class="col-lg-4 input-group" >
-        <div class="col-lg-10">
-         <label for="ti" class="control-label">Common Name(Optional)</label>
 
-         <dx-select-box [dataSource]="commonNamesData"   [readOnly]= "isReadOnly"  valueExpr="id" displayExpr="name" [searchEnabled]="true"
-           placeholder="Select Common name"   formControlName="common_name_id">
-         </dx-select-box>
-        </div>
-
-         <div class="col-lg-2">
-           <dx-button
-               text="Add "
-               type="success"
-               icon="fa fa-plus"
-               [elementAttr]="{  class: 'pull-left' }"
-               (onClick)="onAddNewCommonNameDetails()">
-           </dx-button>
-         </div>
+    <div class="col-lg-4">
+      <label for="ti" class="control-label">Medical devices Type</label>
+      <dx-select-box [dataSource]="devicesTypeData" valueExpr="id" displayExpr="name" (onValueChanged)="onclassificationDevTypeDataSelect($event)"  [readOnly]= "isReadOnly"  [searchEnabled]="true"
+        placeholder="Select Device Type" formControlName="device_type_id">
+      </dx-select-box>
+    </div>  
+        <div class="col-lg-8">
+          <label for="ti" class="control-label">Rules for classifying the device as Class A, B, C or D device:(Select Devices Type)</label>
+          <dx-select-box [readOnly]= "isReadOnly" [dataSource]="reasonForClassificationData" valueExpr="id" displayExpr="name" (onSelectionChanged)="onclassificationDevTypeDataSelect($event)"  placeholder="Rule for Classification" [searchEnabled]="true" formControlName="reason_for_classification_id">
+          </dx-select-box>
        </div>
-       <div class="col-lg-4">
-        <label class="control-label">Product Strength</label>
 
-        <dx-text-box formControlName="product_strength" placeholder="Product Strength"  [readOnly]= "isReadOnly" [showClearButton]="true">
-        </dx-text-box>
-      </div>
       <div class="col-lg-4">
         <label class="control-label">Product Manufacturing Country</label>
 
@@ -73,10 +60,12 @@
       </dx-text-box>
     </div>
     <div class="col-lg-4">
-      <label class="control-label">Method of use</label>
-      <dx-text-box formControlName="intended_use" placeholder="Enter Intended Use"  [readOnly]= "isReadOnly" [showClearButton]="true">
-      </dx-text-box>
-    </div>
+        <label class="control-label">Method of Use</label>
+
+        <dx-select-box [dataSource]="methodOfUseData" valueExpr="id" displayExpr="name" [searchEnabled]="true"   
+          placeholder="Method of Use" formControlName="method_ofuse_id">
+        </dx-select-box>
+      </div>
 <!-- 
     <div class="col-lg-4">
       <label class="control-label">Intended User</label>
@@ -114,14 +103,14 @@
       <dx-number-box formControlName="shelf_life" placeholder="Shelf Life" [readOnly]= "isReadOnly"  [showClearButton]="true">
       </dx-number-box>
     </div>
-    <div class="col-lg-4">
+    <div class="col-lg-12">
       <label class="control-label">Variations in shape, style or size of the appliance, if applicable</label>
 
       <dx-text-area [height]="60" formControlName="physical_description" [readOnly]= "isReadOnly"   placeholder="Commercial Represenation/Pack Size">
       </dx-text-area>
     </div>
 
-    <div class="col-lg-4">
+    <div class="col-lg-12">
       <label class="control-label">Labelling description</label>
 
       <dx-text-area [height]="60" formControlName="physical_description" [readOnly]= "isReadOnly"   placeholder="Commercial Represenation/Pack Size">

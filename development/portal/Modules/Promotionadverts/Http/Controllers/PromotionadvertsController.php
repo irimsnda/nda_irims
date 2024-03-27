@@ -33,35 +33,39 @@ class PromotionadvertsController extends Controller
             $application_id = $req->application_id;
             $data = array();
             //get the records 
+            $mis_db = DB::connection('mis_db')->getDatabaseName();                    
+
             $records = DB::table('wb_promotion_prod_particulars as t1')
-                            ->select(DB::raw("t1.*"))
+                            ->Join('wb_promotion_materials_details as t2','t1.promotions_material_id','=','t2.id')
+                            ->select(DB::raw("t1.brand_name,t1.application_id,t1.id,t1.product_id,t2.promotions_material_id,t2.language_id,t2.other_advert_materials"))
                             ->where(array('t1.application_id' => $application_id))
                             ->get();
 
-                   
-                    $commonNamesData = getParameterItems('par_common_names','','mis_db');
+                    $materialData = getParameterItems('par_promotion_material_items','','mis_db');
+                    $laguageData = getParameterItems('par_promotion_material_language','','mis_db');
                      
                     foreach ($records as $rec) {
-                        if($rec->is_registered == 1){
+                            $advertisement_material = returnParamFromArray($materialData, $rec->promotions_material_id);
 
-                            $product_registered = "Registered";
+                            $combined_materials = $advertisement_material . ' - ' . $rec->other_advert_materials;
+                        if ($rec->promotions_material_id == 10) {
+                                $combined_materials = $advertisement_material . ' - ' . $rec->other_advert_materials;
+                        } else {
+                                $combined_materials = $advertisement_material;
                         }
-                        else{
-                            $product_registered = "Not Registered";
 
-                        }
                             $data[] = array( 
                                 'id'=>$rec->id,
                                 'application_id'=>$rec->application_id,
                                 'brand_name'=>$rec->brand_name,
                                 'product_id'=>$rec->product_id,
-                                'common_name_id'=>$rec->common_name_id,
-                                'is_registered'=>$rec->is_registered,
-                                'product_registered'=>$product_registered,
-                                'registration_no'=>$rec->registration_no,
-                                'other_details'=>$rec->other_details,
-                                
-                                'generic_name'=>returnParamFromArray($commonNamesData,$rec->common_name_id)
+                                'promotions_material_id'=>$rec->promotions_material_id,
+                                'language_id'=>$rec->language_id,
+                                //'product_registered'=>$product_registered,
+                                //'registration_no'=>$rec->registration_no,
+                               // 'other_details'=>$rec->other_details,
+                                'advertisement_material'=>$combined_materials,
+                                'advert_language'=>returnParamFromArray($laguageData,$rec->language_id)
                         );
                     }
                      $res =array('success'=>true,'data'=> $data);
@@ -82,6 +86,58 @@ class PromotionadvertsController extends Controller
     }
     
     public function getApppromMaterialsDetailData(Request $req){
+        try{
+            $application_id = $req->application_id;
+            $data = array();
+            //get the records 
+            $records = DB::table('wb_promotion_materials_details as t1')
+                            ->select(DB::raw("t1.*"))
+                            ->where(array('t1.application_id' => $application_id))
+                            ->get();
+
+                    $promotion_materialData = getParameterItems('par_promotion_material_items','','mis_db');
+                    $promotion_languageData = getParameterItems('par_promotion_material_language','','mis_db');
+
+                    foreach ($records as $rec) {
+                        $advertisement_material = returnParamFromArray($promotion_materialData, $rec->promotions_material_id);
+
+                        if ($rec->promotions_material_id == 10) {
+                                $combined_materials = $advertisement_material . ' - ' . $rec->other_advert_materials;
+                        } else {
+                                $combined_materials = $advertisement_material;
+                        }
+
+                            $data[] = array( 
+                                'id'=>$rec->id,
+                                'application_id'=>$rec->application_id,
+                                'language_id'=>$rec->language_id,
+                                'other_advert_materials'=>$rec->other_advert_materials,
+                                'promotions_material_id'=>$rec->promotions_material_id,
+                                'advertisement_material'=>$combined_materials,
+                                'advert_language'=>returnParamFromArray($promotion_languageData,$rec->language_id),
+
+                                
+                        );
+                    }
+                     $res =array('success'=>true,'data'=> $data);
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+        
+    }
+
+
+    public function getApppromChannelsDetailData(Request $req){
         try{
             $application_id = $req->application_id;
             $data = array();
@@ -120,6 +176,49 @@ class PromotionadvertsController extends Controller
         return response()->json($res);
         
     }
+
+
+    public function getApppromMeetingTypesDetailData(Request $req){
+        try{
+            $application_id = $req->application_id;
+            $data = array();
+            //get the records 
+            $records = DB::table('wb_promotion_materials_details as t1')
+                            ->select(DB::raw("t1.*"))
+                            ->where(array('t1.application_id' => $application_id))
+                            ->get();
+
+                    $promotion_materialData = getParameterItems('par_promotion_material_items','','mis_db');
+                    
+                    foreach ($records as $rec) {
+                       
+                            $data[] = array( 
+                                'id'=>$rec->id,
+                                'application_id'=>$rec->application_id,
+                                'remarks'=>$rec->remarks,
+                                'material_id'=>$rec->material_id,
+                                'promotion_materials'=>returnParamFromArray($promotion_materialData,$rec->material_id),
+                                
+                        );
+                    }
+                     $res =array('success'=>true,'data'=> $data);
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+        
+    }
+
+
     public function onSavepromotionalMaterialsDetails(Request $req){
         try {
             $record_id = $req->id;
@@ -128,8 +227,9 @@ class PromotionadvertsController extends Controller
            $application_id = $req->application_id;
            $table_name = 'wb_promotion_materials_details';
             $products_particulardata = array('application_id'=>$req->application_id,
-                                         'material_id'=>$req->material_id,
-                                         'remarks'=>$req->remarks
+                                         'promotions_material_id'=>$req->promotions_material_id,
+                                         'other_advert_materials'=>$req->other_advert_materials,
+                                         'language_id'=>$req->language_id
                                 );
                         if(validateIsNumeric($record_id)){
                               
@@ -155,7 +255,6 @@ class PromotionadvertsController extends Controller
                                 $products_particulardata['created_by'] = $email_address;
             
                                 $resp = insertRecord($table_name, $products_particulardata, $email_address);
-                                
                                 $res = returnFuncResponses($resp,'Promotional Materials','application_id',$application_id);
                                 
                             }
@@ -191,10 +290,13 @@ class PromotionadvertsController extends Controller
             $products_particulardata = array('application_id'=>$req->application_id,
                                          'brand_name'=>$req->brand_name,
                                          'product_id'=>$req->product_id,
+                                         'language_id'=>$req->language_id,
+                                         'promotions_material_id'=>$req->promotions_material_id,
                                          'common_name_id'=>$req->common_name_id,
                                          'is_registered'=>$req->is_registered,
                                          'registration_no'=>$req->registration_no,
                                          'registrant_name'=>$req->registrant_name,
+                                         'node_ref'=>$req->node_ref,
                                          'other_details'=>$req->other_details
                                 );  
                              
@@ -275,6 +377,7 @@ class PromotionadvertsController extends Controller
                                             'applicant_as_sponsor'=>$applicant_as_sponsor,
                                             'sponsor_id'=>$req->sponsor_id,
                                             'advertisement_type_id'=>$req->advertisement_type_id,
+                                            'advertisement_channel_id'=>$req->advertisement_channel_id,
                                             'description_of_advert'=>$req->description_of_advert,
                                             'events_responsible_person'=>$req->events_responsible_person,
                                             'exhibition_end_date'=>$req->exhibition_end_date,
@@ -283,6 +386,9 @@ class PromotionadvertsController extends Controller
                                             'physicaladdress_of_exhibition'=>$req->physicaladdress_of_exhibition,
                                             'promotionameeting_other_information'=>$req->promotionameeting_other_information,
                                             'other_promotion_materialtypes'=>$req->other_promotion_materialtypes,
+                                            //'promotions_material_id'=>$req->promotions_material_id,
+                                            'target_audience_id'=>$req->target_audience_id,
+                                            'advert_language'=>$req->advert_language,
                                             'responsible_persons_contacts'=>$req->responsible_persons_contacts,
                                             'responsible_persons_physicaladdress'=>$req->responsible_persons_physicaladdress,
                                             'module_id'=>$module_id,
@@ -293,22 +399,23 @@ class PromotionadvertsController extends Controller
                             );
                             
                         /** Already Saved  */
-                        if(validateIsNumeric($application_id)){
-                                //update the record 
-                                //product information
-                                //
-                                $where_app = array('id'=>$application_id);
-                               
-                                if (recordExists('wb_promotion_adverts_applications', $where_app)) {
-                                    
-                                    
-                                    $previous_data = getPreviousRecords('wb_promotion_adverts_applications', $where_app);
-                                    $tracking_no = $previous_data['results'][0]['tracking_no'];
-                                    $application_code = $previous_data['results'][0]['application_code'];
-                                   
-                                    $resp=   updateRecord('wb_promotion_adverts_applications', $previous_data, $where_app, $app_data, $email_address);
-                                    
-                                }
+                       if (validateIsNumeric($application_id)) {
+
+                        $where_app = array('id' => $application_id);
+
+                        if (recordExists('wb_promotion_adverts_applications', $where_app)) {
+                            $previous_data = getPreviousRecords('wb_promotion_adverts_applications', $where_app);
+                            
+                            // Extract the 'tracking_no' and 'application_code' from the previous data
+                            $tracking_no = $previous_data['results'][0]['tracking_no'];
+                            $application_code = $previous_data['results'][0]['application_code'];
+
+                            $app_data['tracking_no'] = $tracking_no;
+                            $app_data['application_code'] = $application_code;
+
+                            // Update the record with the new data, including 'tracking_no'
+                            $resp = updateRecord('wb_promotion_adverts_applications', $previous_data, $where_app, $app_data, $email_address);
+                        }
                              
                                 if($resp){
 									// initializeApplicationDMS($req->section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,100), $trader_id);
@@ -360,9 +467,10 @@ class PromotionadvertsController extends Controller
                                 $app_data['application_code'] = $application_code;
                                 $app_data['application_status_id'] = 1;
                              
-                            //    initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,100), $trader_id);
+                               // initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,100), $trader_id);
                                 saveApplicationSubmissionDetails($application_code,'wb_promotion_adverts_applications');  
                                 $resp = insertRecord('wb_promotion_adverts_applications', $app_data, $email_address);
+
                                 if($resp['success']){
                                     $application_id = $resp['record_id'];
 
@@ -376,48 +484,61 @@ class PromotionadvertsController extends Controller
                                     $res = $resp;
                             
                                 }
-                               
-                         
-   
+                            
                         }
-                        //application codes 
+
                         if(validateIsNumeric($application_id)){
 
                           //    
-                          $meeting_typedata = array();
-                        $meeting_types_id = $req->meeting_types_id;
-                          DB::table('wb_promotionmeetingtypes_details')->where(array('application_id'=>$application_id))->delete();
-                          if(is_array($meeting_types_id)){
-                              foreach($meeting_types_id as $meeting_type_id){
-                                                          
-                                      $meeting_typedata[] = array('meeting_type_id'=>$meeting_type_id, 
-                                                      'application_id'=>$application_id, 
-                                                      'created_by'=>$trader_id, 
-                                                      'created_on'=>Carbon::now());
-      
+                            $meeting_typedata = array();
+                            $meeting_types_id = $req->meeting_types_id;
+                              DB::table('wb_promotionmeetingtypes_details')->where(array('application_id'=>$application_id))->delete();
+                              if(is_array($meeting_types_id)){
+                                  foreach($meeting_types_id as $meeting_type_id){
+                                                              
+                                          $meeting_typedata[] = array('meeting_type_id'=>$meeting_type_id, 
+                                                          'application_id'=>$application_id, 
+                                                          'created_by'=>$trader_id, 
+                                                          'created_on'=>Carbon::now());
+          
+                                  }
+                                  DB::table('wb_promotionmeetingtypes_details')->insert($meeting_typedata);
+          
                               }
-                              DB::table('wb_promotionmeetingtypes_details')->insert($meeting_typedata);
-      
-                          }
-                          $promotions_material_id = $req->promotions_material_id;
-                          DB::table('wb_promotion_materials_details')->where(array('application_id'=>$application_id))->delete();
-                          $material_detailsdata = array();
-                          if(is_array($meeting_types_id)){
-                              foreach($promotions_material_id as $promotion_material_id){
-                                                          
-                                      $material_detailsdata[] = array('material_id'=>$promotion_material_id, 
-                                                      'application_id'=>$application_id, 
-                                                      'created_by'=>$trader_id, 
-                                                      'created_on'=>Carbon::now());
-      
-                              }
-                              DB::table('wb_promotion_materials_details')->insert($material_detailsdata);
-      
-                          }
+                            $advertisement_channel_id = $req->advertisement_channel_id;
+                                     DB::table('wb_promotion_advertisement_channels')->where(array('application_id'=>$application_id))->delete();
+                                        $advertchannel_detailsdata = array();
+                              if(is_array($advertisement_channel_id)){
+                                    foreach($advertisement_channel_id as $advertisements_channel_id){
+                                                              
+                                          $advertchannel_detailsdata[] = array('advertisement_channel_id'=>$advertisements_channel_id, 
+                                                          'application_id'=>$application_id, 
+                                                          'created_by'=>$trader_id, 
+                                                          'created_on'=>Carbon::now());
+                                    }
+                                    DB::table('wb_promotion_advertisement_channels')->insert($advertchannel_detailsdata);
+          
+                                }
+
+                              // $promotions_material_id = $req->promotions_material_id;
+                              // DB::table('wb_promotion_materials_details')->where(array('application_id'=>$application_id))->delete();
+                              // $material_detailsdata = array();
+                              // if(is_array($meeting_types_id)){
+                              //     foreach($promotions_material_id as $promotion_material_id){
+                                                              
+                              //             $material_detailsdata[] = array('material_id'=>$promotion_material_id, 
+                              //                             'application_id'=>$application_id, 
+                              //                             'created_by'=>$trader_id, 
+                              //                             'created_on'=>Carbon::now());
+          
+                              //     }
+                              //     DB::table('wb_promotion_materials_details')->insert($material_detailsdata);
+          
+                              // }
+                        
                           
-                       
-                          
-                        }
+             }
+
                         
         } catch (\Exception $exception) {
             $res = array(
@@ -537,7 +658,7 @@ public function getApplicationsCounter(Request $req){
 
                                     'application_type'=>returnParamFromArray($subModuleData,$rec->sub_module_id) ,
                                     'advertisement_type'=>returnParamFromArray($advertTypeData,$rec->advertisement_type_id) ,
-                                    'status'=>$rec->status_name,
+                                    'status_name'=>$rec->status_name,
                                     'action_name'=>$rec->action_name,
                                     'action'=>$rec->action,
                                     'iconCls'=>$rec->iconCls,
@@ -661,15 +782,18 @@ public function getApplicationsCounter(Request $req){
         $data = array();
         //get the records 
         $records = DB::table('wb_promotion_adverts_applications as t1')
-                ->select(DB::raw("t1.*,t1.id as application_id, t1.application_status_id as status_id, t3.name as status_name, t4.router_link,t1.trader_id as applicant_id, t4.name as process_title"))
+                ->select(DB::raw("t1.*,t6.meeting_type_id,t5.advertisement_channel_id,t7.promotions_material_id,t1.id as application_id,t1.target_audience_id, t1.application_status_id as status_id, t3.name as status_name, t4.router_link,t1.trader_id as applicant_id, t4.name as process_title"))
                 ->leftJoin('wb_statuses as t3', 't1.application_status_id','=','t3.id')
+                ->leftJoin('wb_promotion_advertisement_channels as t5', 't1.id','=','t5.application_id')
+                ->leftJoin('wb_promotionmeetingtypes_details as t6', 't1.id','=','t6.application_id')
+                ->leftJoin('wb_promotion_materials_details as t7', 't1.id','=','t7.application_id')
+
                 ->leftJoin('wb_tfdaprocesses as t4', function ($join) {
                     $join->on('t1.sub_module_id', '=', 't4.sub_module_id');
                     $join->on('t1.application_status_id', '=', 't4.status_id');
                 })
                 ->where(array('t1.id' => $application_id))
                 ->first();
-                
                  $res =array('success'=>true,'data'=> $records);
     }
     catch (\Exception $e) {

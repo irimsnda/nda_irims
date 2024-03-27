@@ -85,6 +85,23 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
         mode:'local'
     }],
     columns: [{
+        xtype: 'widgetcolumn',
+        width: 90,
+        widget: {
+            width: 90,
+            textAlign: 'left',
+            xtype: 'button',
+            itemId: 'prints',
+            ui: 'soft-green',
+            text: 'Print License/Letter',
+            iconCls: 'x-fa fa-certificate',
+            handler: 'generateProductRegCertificate',
+            bind: {
+                disabled: '{record.recommendation_id <= 0 || record.recommendation_id === null}'
+                //disabled: '{record.decision_id !== 1}'
+            }
+        }
+    },{
         xtype: 'gridcolumn',
         dataIndex: 'reference_no',
         text: 'Reference No',
@@ -107,6 +124,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
+        hidden:true,
         text: 'Status',
         flex: 1
     }, {
@@ -133,25 +151,27 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
         xtype: 'gridcolumn',
         dataIndex: 'certificate_no',
         text: 'Certificate No',
-        width: 150
+        width: 110
     },{
         xtype: 'gridcolumn',
         dataIndex: 'expiry_date',
         text: 'Expiry Date',
-        width: 150
+        width: 120
     },{
         xtype: 'widgetcolumn',
-        text: 'Print',
-        widht: 150,
+        width: 120,
         widget: {
+            width: 120,
+            textAlign: 'left',
             xtype: 'button',
-            iconCls: 'x-fa fa-certificate',
-            ui: 'soft-green',
-            name: 'certificate',
-            text: 'Registration Certificate',
-            tooltip: 'Print Registration Certificate',
-            backend_function: 'generateProductRegCertificate',
-            handler: 'newGenerateProductRegCertificate'
+            ui: 'soft-red',
+            vwcontroller: 'productregistrationvctr',
+            text: 'Approval Recommendation',
+            approval_frm: 'productApprovalRecommFrm',
+            iconCls: 'x-fa fa-chevron-circle-up',
+            handler: 'getApplicationApprovalDetails',
+            stores: '[]',
+            table_name: 'tra_product_applications'
         }
     }, {
         text: 'Options',
@@ -173,21 +193,23 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
                         handler: 'getApplicationApprovalDetails',
                         vwcontroller: 'productregistrationvctr',
                         stores: '[]',
+                        hidden:true,
                         table_name: 'tra_product_applications'
                     },{
                         text: 'CNF Review Recommendation',
                         iconCls: 'x-fa fa-retweet',
                         handler: 'showTcRecommendation',
                         childXtype: 'productTcRecommendationFrm',
-                        winTitle: 'TC Recommendation',
+                        winTitle: 'CNF Recommendation',
                         winWidth: '30%',
                         isReadOnly: true,
-                        //hidden: true,
+                        hidden: true,
                         stores: '["tcrecommendationdecisionsstr"]'
                     }, {
                         text: 'Preview Product Regitration Certificate',
                         iconCls: 'x-fa fa-certificate',
                         handler: '',
+                        hidden:true,
                         name: 'certificate',
                         backend_function: 'generateProductRegCertificate',
                         handler: 'generateProductRegCertificate'

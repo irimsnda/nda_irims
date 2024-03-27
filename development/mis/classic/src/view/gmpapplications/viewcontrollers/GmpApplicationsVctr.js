@@ -89,6 +89,132 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         });
 		
 	},
+
+    loadGMPAssessmentFrm: function(frm){
+        this.fireEvent('loadGMPAssessmentFrm', frm, frm.type_id, frm.is_inspection,frm.is_gprc,frm.is_preview);
+    },
+
+    setCompStore: function (obj, options) {
+        this.fireEvent('setCompStore', obj, options);
+    },
+
+    showGMPPharmacistSelectionGrid: function (btn) {
+        var width = btn.winWidth,
+        winTitle=btn.winTitle,
+        handlerFn=btn.handlerFn,
+        childItem = Ext.widget(btn.childXtype);
+        childItem.addListener('itemdblclick', handlerFn, this);
+        funcShowOnlineCustomizableWindow(winTitle, width, childItem, 'customizablewindow');
+    },
+
+    showLTRSelectionList: function (btn) {
+        var grid = Ext.widget('gmpltrselectiongrid');
+        funcShowOnlineCustomizableWindow('LTR Selection List', '90%', grid, 'customizablewindow');
+    },
+
+
+    loadSelectedGMPPharmacist: function (view, record) {
+        var grid = view.grid,
+            win = grid.up('window'),
+            form = Ext.ComponentQuery.query('#mansitedetailsfrm')[0];
+            form.down('textfield[name=psu_no]').setValue(record.get('psu_no'));
+            form.down('datefield[name=supervising_registration_date]').setValue(record.get('supervising_registration_date'));
+            form.down('textfield[name=supervising_name]').setValue(record.get('supervising_name'));
+            form.down('combo[name=supervising_qualification_id]').setValue(record.get('supervising_qualification_id'));
+            form.down('textfield[name=supervising_telephone_no]').setValue(record.get('supervising_telephone_no'));
+            form.down('textfield[name=supervising_telephone_no2]').setValue(record.get('supervising_telephone_no2'));
+            form.down('textfield[name=supervising_telephone_no3]').setValue(record.get('supervising_telephone_no3'));
+            form.down('textfield[name=supervising_email_address]').setValue(record.get('supervising_email_address'));
+            form.down('textfield[name=supervising_email_address2]').setValue(record.get('supervising_email_address2'));
+            form.down('textfield[name=supervising_email_address3]').setValue(record.get('supervising_email_address3'));
+            form.down('combo[name=supervising_country_id]').setValue(record.get('supervising_country_id'));
+            form.down('combo[name=supervising_region_id]').setValue(record.get('supervising_region_id'));
+            form.down('combo[name=supervising_district_id]').setValue(record.get('supervising_district_id'));
+            win.close();
+         
+
+    },
+
+
+    showGMPGPRCAssessmentToolDetails: function(btn) {
+        var button = btn.up('button'),
+           record = button.getWidgetRecord(),
+           application_code = record.get('application_code');
+           manufacturing_site_id = record.get('manufacturing_site_id');
+           panel = Ext.widget('gmpgprcassessmentDetailsPnl');
+           GMPOnlineAssessmentfrm =panel.down('GMPOnlineAssessmentfrm');
+           noncomplianceobservationsgrid = panel.down('noncomplianceobservationsgrid');
+           productlinedetailsinspectiongrid = panel.down('productlinedetailsinspectiongrid');
+           //panel.down('GMPOnlineAssessmentfrm').down('button[name=save_assessement_btn]').setHidden(true);
+           //GMPOnlineAssessmentfrm.down('button[name=save_assessement_btn]').setHidden(true);
+
+            if(noncomplianceobservationsgrid){
+                var add_observation = noncomplianceobservationsgrid.down('button[name=add_observation]'),
+                widgetCol = noncomplianceobservationsgrid.columns[noncomplianceobservationsgrid.columns.length - 1];
+         
+                add_observation.setVisible(false);
+                widgetCol.setHidden(true);
+                widgetCol.widget.menu.items = [];
+             }
+
+             if(productlinedetailsinspectiongrid){
+
+                var update_line = productlinedetailsinspectiongrid.down('button[itemId=update_line]');
+                widgetCol = productlinedetailsinspectiongrid.columns[productlinedetailsinspectiongrid.columns.length - 1];
+         
+                if (update_line) {
+                    update_line.setVisible(false);
+                }
+                widgetCol.setHidden(true);
+                widgetCol.widget.menu.items = [];
+          
+             }
+
+           panel.down('hiddenfield[name=application_code]').setValue(application_code);
+           panel.down('hiddenfield[name=manufacturing_site_id]').setValue(manufacturing_site_id);
+           
+           funcShowOnlineCustomizableWindow(btn.winTitle, '90%', panel, 'customizablewindow');
+    },
+
+    showGMPAssessmentToolDetails: function(btn) {
+        var button = btn.up('button'),
+           record = button.getWidgetRecord(),
+           application_code = record.get('application_code');
+           manufacturing_site_id = record.get('manufacturing_site_id');
+           panel = Ext.widget('gmpassessmentDetailsPnl');
+           GMPOnlineAssessmentfrm =panel.down('GMPOnlineAssessmentfrm');
+           noncomplianceobservationsgrid = panel.down('noncomplianceobservationsgrid');
+           productlinedetailsinspectiongrid = panel.down('productlinedetailsinspectiongrid');
+           //panel.down('GMPOnlineAssessmentfrm').down('button[name=save_assessement_btn]').setHidden(true);
+           //GMPOnlineAssessmentfrm.down('button[name=save_assessement_btn]').setHidden(true);
+
+            if(noncomplianceobservationsgrid){
+                var add_observation = noncomplianceobservationsgrid.down('button[name=add_observation]'),
+                widgetCol = noncomplianceobservationsgrid.columns[noncomplianceobservationsgrid.columns.length - 1];
+         
+                add_observation.setVisible(false);
+                widgetCol.setHidden(true);
+                widgetCol.widget.menu.items = [];
+             }
+
+             if(productlinedetailsinspectiongrid){
+
+                var update_line = productlinedetailsinspectiongrid.down('button[itemId=update_line]');
+                widgetCol = productlinedetailsinspectiongrid.columns[productlinedetailsinspectiongrid.columns.length - 1];
+         
+                if (update_line) {
+                    update_line.setVisible(false);
+                }
+                widgetCol.setHidden(true);
+                widgetCol.widget.menu.items = [];
+          
+             }
+
+           panel.down('hiddenfield[name=application_code]').setValue(application_code);
+           panel.down('hiddenfield[name=manufacturing_site_id]').setValue(manufacturing_site_id);
+           
+           funcShowOnlineCustomizableWindow(btn.winTitle, '90%', panel, 'customizablewindow');
+    },
     categorizeGmpApplications: function (button) {
         var grid = button.up('grid'),
             containerPnl = grid.up('newgmpinspectionschedulingpanel'),
@@ -167,6 +293,105 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             }
         });
     },
+
+addInspectionType: function (button) {
+    var grid = button.up('grid'),
+        record = button.getWidgetRecord(),
+        store1 = grid.getStore(),
+        mask = new Ext.LoadMask({
+            msg: 'Please wait...',
+            target: grid // Specify the target grid for the mask
+        });
+
+    // Create a store for the inspection types grid
+    var inspectionStore = Ext.create('Ext.data.Store', {
+        fields: ['id', 'name'],
+        proxy: {
+            type: 'ajax',
+            url: 'gmpapplications/getInspectionTypes',
+            reader: {
+                type: 'json',
+                rootProperty: 'data'
+            }
+        },
+        autoLoad: true
+    });
+
+    // Create the inspection types grid
+    var inspectionGrid = Ext.create('Ext.grid.Panel', {
+        store: inspectionStore,
+        columns: [
+            { text: 'ID', dataIndex: 'id', flex: 1 },
+            { text: 'Name', dataIndex: 'name', flex: 2 }
+        ],
+        listeners: {
+            itemclick: function (grid, record) {
+                var selectedInspectionId = record.get('id');
+                var application_id = record.get('id');
+
+                mask.show();
+
+                Ext.Ajax.request({
+                    url: 'gmpapplications/updateGmpApplicationsInspectionType',
+                    params: {
+                        application_id: application_id,
+                        inspection_category_id: selectedInspectionId
+                    },
+                    success: function (response) {
+                        mask.hide();
+                        var resp = Ext.JSON.decode(response.responseText),
+                            success = resp.success,
+                            message = resp.message;
+                        if (success == true || success === true) {
+                            grid.destroy(); // Destroy the grid
+                            Ext.MessageBox.hide(); // Hide the MessageBox
+                            grid.store.load();
+                            store1.load();
+                            toastr.success(message, 'Success');
+                        } else {
+                            toastr.error(message, 'Failure');
+                        }
+                    },
+                    failure: function (response) {
+                        mask.hide();
+                        var resp = Ext.JSON.decode(response.responseText),
+                            message = resp.message;
+                        toastr.error(message, 'Failure');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        mask.hide();
+                        toastr.error('Error: ' + errorThrown, 'Error');
+                    }
+                });
+            }
+        }
+    });
+
+    // Create a panel to hold the grid
+    var panel = Ext.create('Ext.panel.Panel', {
+        items: [inspectionGrid],
+        layout: 'fit'
+    });
+
+    Ext.MessageBox.show({
+        title: 'Select Inspection Type',
+        width: 400,
+        height: 300,
+        buttons: Ext.MessageBox.OKCANCEL,
+        multiline: true,
+        scope: this,
+        animateTarget: button,
+        items: [panel], // Add the panel containing the grid
+        fn: function (btn) {
+            if (btn === 'ok') {
+                // Handle OK button click if needed
+            }
+        }
+    });
+}
+,
+
+
     setGmpApplicationGridsStore: function (obj, options) {
         this.fireEvent('setGmpApplicationGridsStore', obj, options);
     },
@@ -221,6 +446,9 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
     setConfigCombosStore: function (obj, options) {
         this.fireEvent('setConfigCombosStore', obj, options);
     },
+    setOrgConfigCombosStore: function (obj, options) {
+        this.fireEvent('setOrgConfigCombosStore', obj, options);
+    },
 
     showGmpApplicationWorkflow: function (btn) {
         var application_type = btn.app_type,
@@ -256,7 +484,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
     },
 
     showAddManufacturerWinFrm: function (btn) {
@@ -273,7 +501,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
     },
 
     showAddGmpBlockWinFrm: function (btn) {
@@ -292,7 +520,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
     },
 
     doCreateGmpApplicationParamWin: function (btn) {
@@ -321,8 +549,23 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
                         message = response.message;
                     if (success == true || success === true) {
                         toastr.success(message, "Success Response");
+                        if(store){
                         store.removeAll();
-                        store.load();
+                        store.load();  
+                        }
+                        if(btn.store2ID){
+                          var store2ID = btn.store2ID,
+                          store2 = Ext.getStore(store2ID);
+                          if(store2){
+                          store2.removeAll();
+                          store2.load();
+                          }
+                        }
+                        var store3= Ext.getStore('productlinetcdetailsstr');
+                         if(store3){
+                            store3.removeAll();
+                            store3.load();
+                        }
                         win.close();
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -345,10 +588,17 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             storeID = btn.storeID,
             store = Ext.getStore(storeID),
             tabPanel=form.up('panel'),
-            productLineDetailsaddgrid=tabPanel.down('productLineDetailsaddgrid'),
+            inspection_category_id=form.down('combo[name=inspection_category_id]').getValue(),
+            special_category_id=form.down('combo[name=special_category_id]').getValue(),
             activeTab = tabPanel.getActiveTab(),
             nextTab = activeTab.nextSibling(),
             frm = form.getForm();
+
+            if(tabPanel.down('mdproductLineDetailsaddgrid')){
+                var productLineDetailsaddgrid=tabPanel.down('mdproductLineDetailsaddgrid'); 
+             }else{
+               var productLineDetailsaddgrid=tabPanel.down('productLineDetailsaddgrid');
+             }
         if (frm.isValid()) {
             frm.submit({
                 url: url,
@@ -365,6 +615,11 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
                     if (success == true || success === true) {
                         toastr.success(message, "Success Response");
                         productLineDetailsaddgrid.down('hiddenfield[name=block_id]').setValue(block_id);
+                        productLineDetailsaddgrid.down('hiddenfield[name=inspection_category_id]').setValue(inspection_category_id);
+
+                        if(inspection_category_id==3 || inspection_category_id===3){
+                         productLineDetailsaddgrid.down('hiddenfield[name=special_category_id]').setValue(special_category_id);
+                        }
                         store = productLineDetailsaddgrid.getStore();
                         store.removeAll();
                         store.load();
@@ -373,10 +628,15 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
                             btn.setHidden(true);
                             store = productLineDetailsaddgrid.getStore();
                             store.removeAll();
-                            store.load();
-                            
-                            
+                            store.load();  
                           }
+                        if(btn.store2ID){
+                          var store2ID = btn.store2ID,
+                          store2 = Ext.getStore(store2ID);
+                          store2.removeAll();
+                          store2.load();
+                        }
+
                         //win.close();
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -408,7 +668,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             me.fireEvent('refreshStores', storeArray);
         }
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -419,7 +679,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
     showEditProductLineDetails: function (item) {
         var me = this,
             btn = item.up('button'),
-            grid=btn.up('grid'),
+            mainGrid=btn.up('grid'),
             record = btn.getWidgetRecord(),
             site_id=record.get('manufacturing_site_id'),
             childXtype = item.childXtype,
@@ -437,9 +697,10 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             }
         
            form.loadRecord(record);
-           
             grid.down('hiddenfield[name=manufacturing_site_id]').setValue(record.get('manufacturing_site_id'));
             grid.down('hiddenfield[name=block_id]').setValue(record.get('id'));
+            grid.down('hiddenfield[name=inspection_category_id]').setValue(record.get('inspection_category_id'));
+            grid.down('hiddenfield[name=special_category_id]').setValue(record.get('special_category_id'));
           
             funcShowOnlineCustomizableWindow(title, winWidth, tabPnl, 'customizablewindow');
     },
@@ -476,7 +737,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             me.fireEvent('refreshStores', storeArray);
         }
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     },
 
     editGmpProductLinkageInfo: function (item) {
@@ -495,7 +756,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         childObject.down('hiddenfield[name=product_id]').setValue(product_id);
         childObject.down('button[name=save_details_one]').setVisible(true);
         childObject.down('button[name=save_details]').setVisible(false);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
         childObject.getStore().load();
         childObject.getStore().on('load', function (store, records, options) {
             var record = store.getById(line_id),
@@ -536,7 +797,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         form.down('hiddenfield[name=module_id]').setValue(module_id);
         form.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
         form.down('hiddenfield[name=section_id]').setValue(section_id);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     },
 
     saveEditGmpProductLinkageDetails: function (btn) {
@@ -568,14 +829,16 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
                 'Authorization': 'Bearer ' + access_token,
                 'X-CSRF-Token': token
             },
+
             success: function (response) {
                 mask.hide();
                 var resp = Ext.JSON.decode(response.responseText),
                     success = resp.success,
                     message = resp.message;
                 if (success == true || success === true) {
-                    win.close();
+                    Ext.getStore('gmpproductslinkagedetailsstr').removeAll();
                     Ext.getStore('gmpproductslinkagedetailsstr').load();
+                    win.close();
                     toastr.success(message, 'Success Response');
                 } else {
                     toastr.error(message, 'Failure Response');
@@ -616,7 +879,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             me.fireEvent('refreshStores', storeArray);
         }
         childObject.loadRecord(record);
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },
     showPreviewGmpLineProductsDetails:function(item){
         var me = this,
@@ -629,7 +892,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             gmp_productline_id = record.get('gmp_productline_id');
             childObject.down('hiddenfield[name=gmp_productline_id]').setValue(gmp_productline_id);
             childObject.setHeight(400);
-            funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },showAddTcMeetingParticipants: function (btn) {
         this.fireEvent('showAddTcMeetingParticipants', btn);
        
@@ -671,10 +934,27 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             } else if (recommendation_type == 2 || recommendation_type === 2) {//TC
                 childObject.down('combo[name=prodline_dgstatus_id]').setVisible(false);
                 childObject.down('combo[name=prodline_dgstatus_id]').setDisabled(true);
+                childObject.down('combo[name=product_line_id]').setReadOnly(true);
+                childObject.down('combo[name=dosage_form_id]').setReadOnly(true);
+                childObject.down('combo[name=category_id]').setReadOnly(true);
+                childObject.down('combo[name=manufacturing_activity_id]').setReadOnly(true);
+                childObject.down('textarea[name=prodline_description]').setReadOnly(true);
+                childObject.down('combo[name=prodline_inspectionstatus_id]').setReadOnly(true);
+
+
             } else if (recommendation_type == 3 || recommendation_type === 3) {//DG
+                childObject.down('combo[name=product_line_id]').setReadOnly(true);
+                childObject.down('combo[name=dosage_form_id]').setReadOnly(true);
+                childObject.down('combo[name=category_id]').setReadOnly(true);
+                childObject.down('combo[name=manufacturing_activity_id]').setReadOnly(true);
+                childObject.down('textarea[name=prodline_description]').setReadOnly(true);
+                childObject.down('combo[name=prodline_inspectionstatus_id]').setReadOnly(true);
+                childObject.down('combo[name=prodline_tcmeetingstatus_id]').setReadOnly(true);
 
             }
-        }
+            }else{
+                childObject.down('combo[name=prodline_inspectionstatus_id]').setVisible(false);  
+            }
         productLineStr.removeAll();
         productLineStr.load({params: {section_id: section_id}});
         productLineCategoryStr.removeAll();
@@ -685,7 +965,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         }
         //console.log(record);
         childObject.loadRecord(record);
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },
     //gmp_productline_id
     funcUploadTCMeetingtechnicalDocuments:function(btn){
@@ -725,7 +1005,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             me.fireEvent('refreshStores', storeArray);
         }
         childObject.loadRecord(record);
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },
     getConditionalApplicationApprovalDetails: function (item) {
         Ext.getBody().mask('Please wait...');
@@ -788,7 +1068,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
                     form.down('hiddenfield[name=application_code]').setValue(application_code);
                     form.down('hiddenfield[name=process_id]').setValue(process_id);
                     form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
-                    funcShowCustomizableWindow('Conditional Approval', '40%', form, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('Conditional Approval', '40%', form, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -868,7 +1148,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
                     form.down('hiddenfield[name=application_code]').setValue(application_code);
                     form.down('hiddenfield[name=process_id]').setValue(process_id);
                     form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
-                    funcShowCustomizableWindow('Recommendation', '40%', form, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('Recommendation', '40%', form, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -1163,8 +1443,8 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             wizardPanel.down('button[name=print_invoice]').setVisible(false);
             model.set('atEnd', true);
             if(status_type_id == 1 || status_type_id == 2){
-                wizardPanel.down('button[name=receive_invoicebtn]').setVisible(false);
-                wizardPanel.down('button[name=print_invoice]').setVisible(false);
+                wizardPanel.down('button[name=receive_invoicebtn]').setVisible(true);
+                wizardPanel.down('button[name=print_invoice]').setVisible(true);
             }
             else{
                 wizardPanel.down('button[name=receive_invoicebtn]').setVisible(false);
@@ -1172,7 +1452,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             }
         } else {
             wizardPanel.down('button[name=save_screening_btn]').setDisabled(true);
-            wizardPanel.down('button[name=receive_invoicebtn]').setVisible(false);
+            wizardPanel.down('button[name=receive_invoicebtn]').setVisible(true);
             wizardPanel.down('button[name=print_invoice]').setVisible(false);
             model.set('atEnd', false);
         }
@@ -1200,16 +1480,16 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             wizardPnl.down('button[name=print_invoice]').setVisible(false);
             motherPnl.getViewModel().set('atEnd', true);
             if(status_type_id == 1 || status_type_id == 2){
-                wizardPnl.down('button[name=receive_invoicebtn]').setVisible(false);
-                wizardPnl.down('button[name=print_invoice]').setVisible(false);
+                wizardPnl.down('button[name=receive_invoicebtn]').setVisible(true);
+                wizardPnl.down('button[name=print_invoice]').setVisible(true);
             }
             else{
-                wizardPnl.down('button[name=receive_invoicebtn]').setVisible(false);
-                wizardPnl.down('button[name=print_invoice]').setVisible(false);
+                wizardPnl.down('button[name=receive_invoicebtn]').setVisible(true);
+                wizardPnl.down('button[name=print_invoice]').setVisible(true);
             }
         } else {
             wizardPnl.down('button[name=save_screening_btn]').setDisabled(true);
-            wizardPnl.down('button[name=receive_invoicebtn]').setVisible(false);
+            wizardPnl.down('button[name=receive_invoicebtn]').setVisible(true);
             wizardPnl.down('button[name=print_invoice]').setVisible(false);
             motherPnl.getViewModel().set('atEnd', false);
         }
@@ -1462,7 +1742,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             portalPanel.down('combo[name=device_type_id]').setVisible(true);
             misPanel.down('combo[name=device_type_id]').setVisible(true);
         }
-        funcShowCustomizableWindow(ref_no + ' Compare Details', '99%', comparePanel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no + ' Compare Details', '99%', comparePanel, 'customizablewindow');
     },
 
     acceptPortalAmendedDetails: function (button) {
@@ -1557,7 +1837,26 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         siteOtherDetailsGrid.setIsOnline(1);
         productLineDetailsStr.removeAll();
         productLineDetailsStr.load({params: {site_id: site_id}});
-        funcShowCustomizableWindow(tracking_no, '80%', onlinePanel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no, '80%', onlinePanel, 'customizablewindow');
+    },
+
+
+    showAddGmpTCRecommendationDetails: function (item) {
+        var me = this,
+            btn = item.up('button'),
+            storeID = item.storeID,
+            store = Ext.getStore(storeID),
+            record = btn.getWidgetRecord(),
+            childXtype = item.childXtype,
+            winTitle = item.winTitle,
+            winWidth = item.winWidth,
+            childObject = Ext.widget(childXtype);
+        if(store){
+            store.removeAll();
+            store.load();  
+        }
+        childObject.down('hiddenfield[name=manufacturing_site_id]').setValue(record.get('manufacturing_site_id'));
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     receiveOnlineApplicationDetails: function (item) {
@@ -1592,7 +1891,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             queriesGrid.down('button[action=submit_app]').setVisible(false);
             queriesGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
         }
-        funcShowCustomizableWindow(ref_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
     },
 
     queryOnlineApplicationFrmBtn: function (btn) {
@@ -1611,7 +1910,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             queriesGrid.down('button[action=submit_app]').setVisible(false);
             queriesGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
         }
-        funcShowCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
     },
 
     submitRejectedOnlineApplication: function (item) {
@@ -1732,15 +2031,21 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             winTitle = btn.winTitle,
             winWidth = btn.winWidth,
             grid = btn.up('grid'),
-            mainTabPnl = btn.up('#contentPanel'),
-            activeTab = mainTabPnl.getActiveTab(),
-            inspection_id = activeTab.down('form').down('hiddenfield[name=id]').getValue();
+            mainTabPnl = btn.up('#contentPanel');
+            if(mainTabPnl){
+                  var activeTab = mainTabPnl.getActiveTab(),
+                   inspection_id = activeTab.down('form').down('hiddenfield[name=id]').getValue();
+                 }else{
+                  var  win = grid.up('window'),
+                  inspection_id = win.down('gmpaddscheduleteamfrm').down('hiddenfield[name=id]').getValue();
+                 }
+
         if (!inspection_id) {
             toastr.warning('Please save inspection team details first!!', 'Warning Response');
             return;
         }
         childObject.down('hiddenfield[name=inspection_id]').setValue(inspection_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddGmpApplicationsForInspections: function (btn) {
@@ -1757,7 +2062,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         }
         childObject.down('hiddenfield[name=inspection_id]').setValue(inspection_id);
         childObject.down('hiddenfield[name=section_id]').setValue(section_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     addGmpApplicationsIntoInspectionSchedule: function (btn) {
@@ -1833,7 +2138,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             winTitle = btn.winTitle,
             winWidth = btn.winWidth;
         childObject.down('hiddenfield[name=section_id]').setValue(section_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showEditGmpInspectionScheduleDetails: function (item) {
@@ -1848,7 +2153,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             winWidth = item.winWidth;
         form.loadRecord(record);
         childObject.down('hiddenfield[name=section_id]').setValue(section_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddGmpProductLineDetailsFromWin: function (btn) {
@@ -1873,7 +2178,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },
 
     showGmpInspectionDetailsUpdateFrm: function (item) {
@@ -1887,7 +2192,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             form = Ext.widget(childXtype);
         form.loadRecord(record);
         form.down('hiddenfield[name=id]').setValue(record.get('assigned_id'));
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     },
 
     printGmpCertificate: function (item) {
@@ -2084,7 +2389,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             }
         }
         child.setHeight(600);
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         child.down('hiddenfield[name=application_code]').setValue(application_code);
         child.down('hiddenfield[name=section_id]').setValue(section_id);
         child.down('hiddenfield[name=module_id]').setValue(module_id);
@@ -2111,7 +2416,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         
         child.setHeight(600);
     
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
     
         child.down('hiddenfield[name=application_code]').setValue(application_code);
         child.down('hiddenfield[name=section_id]').setValue(section_id);
@@ -2142,7 +2447,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
         childObject.down('hiddenfield[name=id]').setValue(record.get('recomm_id'));
         childObject.down('combo[name=decision_id]').setValue(record.get('decision_id'));
         childObject.down('textarea[name=comments]').setValue(record.get('comments'));
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
      showDataCleanUpWindow: function(btn) {
         var container = Ext.ComponentQuery.query("#contentPanel")[0],
@@ -2156,7 +2461,7 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
        var grid = Ext.widget(btn.childXtype),
            winTitle = btn.winTitle,
            winWidth = btn.winWidth;
-       funcShowCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
+       funcShowOnlineCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
     },
     loadGmpApplication: function(view, record) {
         var wrapper = Ext.ComponentQuery.query("#editgmpapplicationwizardId")[0],
@@ -2433,5 +2738,109 @@ Ext.define('Admin.view.gmpapplications.viewcontrollers.GmpApplicationsVctr', {
             var redirect =  'http://197.149.177.186/mis/index.php/reports/uploadedEvaluationReportDrugs?id=' + id + '&section=' + section + '&reference_no=' + reference_no;
            
             print_report(redirect);
+    },
+
+    saveInspectionDates:function(btn){
+        var  grid = btn.up('grid'),
+        gmpinspectionschedulingphysicalgrid = btn.up('grid'),
+        gmpinspectionschedulingphysicalgridstr = gmpinspectionschedulingphysicalgrid.getStore(),
+        store = gmpinspectionschedulingphysicalgrid.getStore(),
+        inspection_sections = []; 
+        if(grid.up('newgmpmanagerinspectionpanel').down('form').down('hiddenfield[name=id]')){
+           inspection_id = grid.up('newgmpmanagerinspectionpanel').down('form').down('hiddenfield[name=id]').getValue();   
+        }else{
+            inspection_id='';
+        }
+        for (var i = 0; i < store.data.items.length; i++) {
+            var record = store.data.items [i],
+                 start_date = record.get('start_date'),
+                 inspection_days = record.get('inspection_days'),
+                 inspection_category_id = record.get('inspection_category_id'),
+                 manufacturing_site_id = record.get('manufacturing_site_id'),
+                 application_code = record.get('application_code'),
+                 assigned_inspection_id = record.get('assigned_inspection_id'),
+                 id = record.get('id');
+                 
+                if (!assigned_inspection_id && !inspection_id) {
+                    btn.setLoading(false);
+                    toastr.warning('Please Add Inpection Schedule First!!', 'Warning Response');
+                    return false;
+                } 
+                 if (!start_date) {
+                    btn.setLoading(false);
+                    toastr.warning('Please Enter Inspection Start Date!!', 'Warning Response');
+                    return false;
+                } 
+
+                if (!inspection_days) {
+                    btn.setLoading(false);
+                    toastr.warning('Please Enter No of Inspection Days!!', 'Warning Response');
+                    return false;
+                }
+
+                // if (!inspection_category_id) {
+                //     btn.setLoading(false);
+                //     toastr.warning('Please Select Inspection Type!!', 'Warning Response');
+                //     return false;
+                // }     
+
+            var obj = {
+                id: id,
+                inspection_days: inspection_days,
+                inspection_category_id: inspection_category_id,
+                start_date: start_date,
+                created_by: user_id,
+                manufacturing_site_id: manufacturing_site_id,
+                application_code: application_code,
+                inspection_id: inspection_id
+            };
+            if (record.dirty) {
+                inspection_sections.push(obj);
+            }
+        }
+        if (inspection_sections.length < 1) {
+            btn.setLoading(false);
+            toastr.warning('No records to save!!', 'Warning Response');
+            return false;
+        }
+        inspection_sections = JSON.stringify(inspection_sections);
+        Ext.MessageBox.confirm('Inspection Scheduling', 'Do you want to Schedule selected Application(s)? Note:Ensure all Holidays are Pre Configured!', function (button) {
+        if (button === 'yes') {
+          Ext.Ajax.request({
+            url: 'gmpapplications/saveInspectionDates',
+            params: {
+                inspection_sections: inspection_sections
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+            },
+            success: function (response) {
+                btn.setLoading(false);
+                var resp = Ext.JSON.decode(response.responseText),
+                    success = resp.success,
+                    message = resp.message;
+                if (success == true || success === true) {
+                    toastr.success(message, 'Success Response');
+                    store.load();
+                    gmpinspectionschedulingphysicalgridstr.load();
+
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (response) {
+                btn.setLoading(false);
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                btn.setLoading(false);
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+        }
+      })
     },
 });

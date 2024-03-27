@@ -118,10 +118,6 @@
                         </ul>
                 </div>
                 <div class="col-lg-12">
-                    <b> <h4>Submission Comments(Optional)</h4></b>
-                    <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-                </div>
-                <div class="col-lg-12">
                     <dx-check-box text="Agree to the Declaration" [value]="undefined" (onValueChanged)="newPremTermscheckbox($event)">
                     </dx-check-box>
                 </div>
@@ -227,10 +223,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="col-lg-12">
-                    <b> <h4>Submission Comments(Optional)</h4></b>
-                    <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-                </div>
+
                 <div class="col-lg-12">
                     <dx-check-box text="Agree to the Declaration" [value]="undefined" (onValueChanged)="newPremTermscheckbox($event)">
                     </dx-check-box>
@@ -305,10 +298,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="col-lg-12">
-                    <b> <h4>Submission Comments(Optional)</h4></b>
-                    <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-                </div>
+
                 <div class="col-lg-12">
                     <dx-check-box text="Agree to the Declaration" [value]="undefined" (onValueChanged)="newPremTermscheckbox($event)">
                     </dx-check-box>
@@ -366,14 +356,14 @@
                     [elementAttr]="{  class: 'pull-left' }"
                     (onClick)="onPremisesDashboard()">
                 </dx-button>
-                <button type="submit" (click)="onSavePremisesApplication()" 
-                    class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Drug Shop Renewal Request & Drug Shop Documents  Next 
+                <button type="submit" (click)="onSaveDrugShopApplication()" 
+                    class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Renewal &  Next 
                 </button>
 
             </div>
         </wizard-step>
         <wizard-step 
-            stepTitle=" Directors or Partner Details and License to Operate    Pharmaceutical Business & Nearest Drug Shops Location"   
+            stepTitle=" Directors or Partner Details"   
             navigationSymbol="Step 2"
              class="wizardStep-height">
             <div class="accordion" id="premisesInfo" >
@@ -444,6 +434,29 @@
                         </div>
                     </div>
                     <div class="card">
+                        <div class="card-headerdefined" id="headingOne">
+                          <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#drugshop_storelocationdetails"
+                             aria-expanded="false" aria-controls="drugshop_storelocationdetails">
+                            Nearest Drug Shop Location Details
+                          </button>
+                        </div>
+                        <div id="drugshop_storelocationdetails" class="collapse show" aria-labelledby="headingOne" data-parent="#premisesInfo">
+                          <div class="card-body no-padding">
+                              <div class="no-padding">
+                                <app-drugshop-nearestlocation
+                                  [premisesStoreslocationFrm] ="premisesStoreslocationFrm"  
+                                  [countries] ="countries"  
+                                  [regions] ="regions"     
+                                  [premise_id] ="premise_id"
+                                  [isLocationPopupVisible]="isLocationPopupVisible"  
+                                  [districts] ="districts"  
+                                  [is_readonly] ="is_readonly">
+                                </app-drugshop-nearestlocation>         
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                    <div class="card">
                         <div class="card-headerdefined" id="headingThree">
                             <button class="btn btn-link " type="button" 
                                 data-toggle="collapse"  data-target="#premises_storelocationdetails"
@@ -455,7 +468,7 @@
                             aria-labelledby="headingThree" data-parent="#premisesInfo">
                         <div class="card-body no-padding">
                             <div class="no-padding">
-                                <app-drugshop-nearestlocation 
+                                <app-drugshop-neareststore
                                 [premisesStoreslocationFrm] ="premisesStoreslocationFrm"  
                                 [countries] ="countries"  
                                 [regions] ="regions"     
@@ -463,7 +476,7 @@
                                 [isLocationPopupVisible]="isLocationPopupVisible"  
                                 [districts] ="districts"  
                                 [is_readonly] ="is_readonly">
-                                </app-drugshop-nearestlocation>
+                                </app-drugshop-neareststore>
                             </div>
                         </div>
                     </div>
@@ -473,16 +486,14 @@
         <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
             <button type="button" class="btn btn-primary" 
                 previousStep>&nbsp;<i class="fa  fa-angle-double-left"></i>Previous
-                Drug Shop Information
              </button>
-                <button type="button" class="btn btn-primary" (click)="funcValidatePremBusinessDetails(2+initWizardPanel)">Next Drug Shop Documents &nbsp;<i class="fa fa-angle-double-right"></i></button>
+                <button type="button" class="btn btn-primary" (click)="funcValidatePremBusinessDetails(2+initWizardPanel)">Next Documents &nbsp;<i class="fa fa-angle-double-right"></i></button>
         </div>
     </wizard-step>
     <wizard-step stepTitle="Documents" class="wizardStep-height"  navigationSymbol="Step 3">
         <div class="wizard-divtop">
             <button type="button" class="btn btn-primary" 
                 previousStep><i class="fa fa-angle-double-left"></i>Previous
-                Drug Shops Documents
             </button>
             <button type="button" class="btn btn-primary" 
                 (click)="funcValidatePremDocumentsUpload(3+initWizardPanel)">Next Application Submission<i class="fa fa-angle-double-right"></i>
@@ -494,7 +505,7 @@
         <div class="wizard-divbottom">
             <button type="button" class="btn btn-primary" 
             previousStep><i class="fa fa-angle-double-left"></i>Previous
-            Drug Shop Documents</button>
+        </button>
             <button type="button" class="btn btn-primary" (click)="funcValidatePremDocumentsUpload(3+initWizardPanel)">Next Application Submission<i class="fa fa-angle-double-right"></i></button>
         </div>
     </wizard-step>
@@ -510,10 +521,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="col-lg-12">
-                        <b> <h4>Submission Comments(Optional)</h4></b>
-                        <dx-text-area formControlName="submission_comments" placeholder="Enter Comments(optional)"></dx-text-area>
-                    </div>
+
                     <div class="col-lg-12">
                         <dx-check-box text="Agree to the Declaration" [value]="undefined" (onValueChanged)="newPremTermscheckbox($event)">
                         </dx-check-box>
@@ -605,291 +613,266 @@
 
 </dx-popup>
 
-
-
-<dx-popup  class="popup"  [width]="funcpopWidth(80)" [height]="850" [showTitle]="true" title="Application Registration Query Response"
-    [dragEnabled]="false"  [closeOnOutsideClick]="false" [(visible)]="isInitalQueryResponseFrmVisible">
+<dx-popup  class="popup"  [width]="funcpopWidth(80)" [height]="600" [showTitle]="true" title="Application Registration Query Response"
+    [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isInitalQueryResponseFrmVisible">
     <div *dxTemplate="let data of 'content'">
-        <dx-scroll-view>
+      <dx-scroll-view>
+      <wizard [navigationMode]='strict' style="background: #fff !important; height: 100% !important;">
+        <wizard-step stepTitle="Product Application Queries" class="wizardStep-height">
+          <div class="col-lg-12 wizard-content">
+            <form role="form" class="row" style="background:#fff;" enctype="multipart/form-data" role="form" 
+              [formGroup]="initqueryresponsefrm"
+              (ngSubmit)="onSaveinitqueryresponse()">
+              <div class="col-lg-12">
+                <label>Query</label>
+                <dx-html-editor [height]="200" readOnly ="true"  formControlName="queries_remarks"  
+                  placeholder="Query">
+                    <dxo-toolbar>
+                      <dxi-item formatName="separator"></dxi-item>
+                      <dxi-item formatName="size" [formatValues]="['8pt', '10pt', '12pt', '14pt', '18pt', '24pt', '36pt']"></dxi-item>
+                      <dxi-item formatName="font" [formatValues]="['Arial', 'Courier New', 'Georgia', 'Impact', 'Lucida Console', 'Tahoma', 'Times New Roman', 'Verdana']"></dxi-item>
+                      <dxi-item formatName="separator"></dxi-item>
+                      <dxi-item formatName="bold"></dxi-item>
+                      <dxi-item formatName="italic"></dxi-item>
+                      <dxi-item formatName="header" [formatValues]="[false, 1, 2, 3, 4, 5]"></dxi-item>
+                      <dxi-item formatName="separator"></dxi-item>
+                      <dxi-item formatName="orderedList"></dxi-item>
+                      <dxi-item formatName="bulletList"></dxi-item>
+                      <dxi-item formatName="separator"></dxi-item>
+                      <dxi-item formatName="color"></dxi-item>
+                      <dxi-item formatName="link"></dxi-item>
+                      <dxi-item formatName="image"></dxi-item>
+                      <dxi-item formatName="separator"></dxi-item>
+                      <dxi-item formatName="clear"></dxi-item>
+                    </dxo-toolbar>
+                    <dxo-media-resizing
+                        [enabled]=true>
+                    </dxo-media-resizing>   
+                </dx-html-editor>
+              </div>
+              <div class="col-lg-12">
+                <label>Query Response</label>
+                <dx-html-editor [height]="200" formControlName="response_txt"  placeholder="Query Response">
+                  <dxo-toolbar>
+                    <dxi-item formatName="separator"></dxi-item>
+                    <dxi-item formatName="size" [formatValues]="['8pt', '10pt', '12pt', '14pt', '18pt', '24pt', '36pt']"></dxi-item>
+                    <dxi-item formatName="font" [formatValues]="['Arial', 'Courier New', 'Georgia', 'Impact', 'Lucida Console', 'Tahoma', 'Times New Roman', 'Verdana']"></dxi-item>
+                    <dxi-item formatName="separator"></dxi-item>
+                    <dxi-item formatName="bold"></dxi-item>
+                    <dxi-item formatName="italic"></dxi-item>
+                    <dxi-item formatName="header" [formatValues]="[false, 1, 2, 3, 4, 5]"></dxi-item>
+                    <dxi-item formatName="separator"></dxi-item>
+                    <dxi-item formatName="orderedList"></dxi-item>
+                    <dxi-item formatName="bulletList"></dxi-item>
+                    <dxi-item formatName="separator"></dxi-item>
+                    <dxi-item formatName="color"></dxi-item>
+                    <dxi-item formatName="link"></dxi-item>
+                    <dxi-item formatName="image"></dxi-item>
+                    <dxi-item formatName="separator"></dxi-item>
+                    <dxi-item formatName="clear"></dxi-item>
+                  </dxo-toolbar>
+                  <dxo-media-resizing
+                    [enabled]=true>
+                  </dxo-media-resizing> 
+                </dx-html-editor>
+              </div>
+                <input type="hidden" formControlName="id"/>
+                <input type="hidden" formControlName="query_id"/>
+            </form>
+          </div>
+          <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
+            <dx-button text="Save Response" [disabled]="!initqueryresponsefrm.valid" (onClick)="onSaveinitqueryresponse()"
+              type="success" icon="save" [elementAttr]="{ class: 'btn btn-primary; pull-right' }">
+            </dx-button>
+            <button type="button"  [disabled]="!initqueryresponsefrm.valid"  class="btn btn-primary  pull-right" nextStep>Next(Query Responses) &nbsp;<i class="fa fa-angle-double-right"></i></button>
+            <dx-button text="Download Query Letter" (onClick)="funcDownloadUploadedDoc()" type="success" icon="download" [elementAttr]="{ class:'btn btn-primary; pull-right'}">
+            </dx-button>
+          </div>
+        </wizard-step>
+        <wizard-step stepTitle="Drug Shops Application Details" 
+            navigationSymbol="Step 1" class="wizardStep-height">
+            <app-drugshop-generaldetails  
+            [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
+            [sectionsData] ="sectionsData"  
+            [premisesTypeData] ="premisesTypeData"  
+            [countries] ="countries"  
+            [regions] ="regions"
+            [classificationData] ="classificationData"
+            [districts] ="districts"  
+            [businessTypesData] ="businessTypesData" 
+            [businessScaleData] ="businessScaleData"  
+            [businessCategoryData] ="businessCategoryData"  
+            [zoneData] ="zoneData"  
+            [confirmDataParam] ="confirmDataParam"
+            [sub_module_id] ="sub_module_id" 
+            [module_id] ="module_id" 
+            [application_code] ="application_code"
+            [tra_premise_id] ="tra_premise_id" 
+            [registered_id] ="registered_id"
+            [isReadOnlyTraderasContact] ="isReadOnlyTraderasContact" 
+            [isConvicted]="isConvicted"
+            [isCancelled]="isCancelled"
+            [isHealth]="isHealth"
+           [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm" 
+            [payingCurrencyData] ="payingCurrencyData" 
+            [fastTrackOptionsData] ="fastTrackOptionsData" 
+            [newPremisesPersonnelDetailsFrm] ="newPremisesPersonnelDetailsFrm"
+            (businessTypeEvent)="business_type_id=$event"
+            [is_readonly] ="is_readonly" >
+            </app-drugshop-generaldetails>
+            <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+                <dx-button
+                    text="Dashboard"
+                    type="success"
+                    icon="fa fa-eraser"
+                    [elementAttr]="{  class: 'pull-left' }"
+                    (onClick)="onPremisesDashboard()">
+                </dx-button>
+                <button type="submit" (click)="onSaveDrugShopApplication()" 
+                    class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Renewal &  Next 
+                </button>
 
-                <wizard navBarLayout ="large-filled-symbols" [navigationMode]='free' style="background: #fff !important; height: 100% !important;">
-                    
-                    <wizard-step stepTitle="Application Queries" navigationSymbol="Step 1"  class="wizardStep-height">
-            
-                        <div class="col-lg-12 wizard-content">
-                                <form role="form" class="row" style="background:#fff;" enctype="multipart/form-data" role="form" [formGroup]="initqueryresponsefrm"
-                                (ngSubmit)="onSaveinitqueryresponse()">
-                                <div class="col-lg-12">
-                                <label>Query</label>
-                                
-                                <dx-html-editor [height]="200" readOnly ="true"  formControlName="queries_remarks"  placeholder="Query">
-                                    <dxo-toolbar>
-                                        <dxi-item formatName="separator"></dxi-item>
-                                        <dxi-item formatName="size" [formatValues]="['8pt', '10pt', '12pt', '14pt', '18pt', '24pt', '36pt']"></dxi-item>
-                                        <dxi-item formatName="font" [formatValues]="['Arial', 'Courier New', 'Georgia', 'Impact', 'Lucida Console', 'Tahoma', 'Times New Roman', 'Verdana']"></dxi-item>
-                                        <dxi-item formatName="separator"></dxi-item>
-                                        <dxi-item formatName="bold"></dxi-item>
-                                        <dxi-item formatName="italic"></dxi-item>
-                                        
-                                        <dxi-item formatName="header" [formatValues]="[false, 1, 2, 3, 4, 5]"></dxi-item>
-                                       
-                                    </dxo-toolbar>
-                                    <dxo-media-resizing
-                                        [enabled]=true>
-                                    </dxo-media-resizing>
-                                    
-                                </dx-html-editor>
-                                </div>
-                               
-                                <input type="hidden" formControlName="id"/>
-                                
-                                <input type="hidden" formControlName="query_id"/>
-                            </form>
-                        
-                        </div>
-                        <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
-                            
-                            <button type="button"  [disabled]="!initqueryresponsefrm.valid"  class="btn btn-primary  pull-right" nextStep>Next(Query Responses) &nbsp;<i class="fa fa-angle-double-right"></i>
-                            
-                           </button> <!--
-                            <dx-button text="Download Query Letter" (onClick)="funcDownloadUploadedDoc()" type="success" icon="download" [elementAttr]="{ class:'btn btn-primary; pull-right'}">
-                            </dx-button>-->
-
-                        </div>
-                    </wizard-step>
-                    <wizard-step stepTitle="Drug Shops Application Details" 
-                         navigationSymbol="Step 1" class="wizardStep-height">
-                        <app-drugshop-generaldetails  
-                        [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
-                        [sectionsData] ="sectionsData"  
-                        [premisesTypeData] ="premisesTypeData"  
-                        [countries] ="countries"  
-                        [regions] ="regions"
-                        [classificationData] ="classificationData"
-                        [districts] ="districts"  
-                        [businessTypesData] ="businessTypesData" 
-                        [businessScaleData] ="businessScaleData"  
-                        [businessCategoryData] ="businessCategoryData"  
-                        [zoneData] ="zoneData"  
-                        [confirmDataParam] ="confirmDataParam"
-                        [sub_module_id] ="sub_module_id" 
-                        [module_id] ="module_id" 
-                        [application_code] ="application_code"
-                        [tra_premise_id] ="tra_premise_id" 
-                        [registered_id] ="registered_id"
-                        [isReadOnlyTraderasContact] ="isReadOnlyTraderasContact" 
-                        [isConvicted]="isConvicted"
-                        [isCancelled]="isCancelled"
-                        [isHealth]="isHealth"
-                        [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm" 
-                        [payingCurrencyData] ="payingCurrencyData" 
-                        [fastTrackOptionsData] ="fastTrackOptionsData" 
-                        [newPremisesPersonnelDetailsFrm] ="newPremisesPersonnelDetailsFrm"
-                        (businessTypeEvent)="business_type_id=$event"
-                        [is_readonly] ="is_readonly" >
-  
-                        </app-drugshop-generaldetails>
-                        <div class=" div-footer" style="border-top: 1px solid #ccc; ">
-                            <dx-button
-                            text="Dashboard"
-                            type="success"
-                            icon="fa fa-eraser"
-                            [elementAttr]="{  class: 'pull-left' }"
-                            (onClick)="onPremisesDashboard()">
-                            </dx-button>
-                            <button type="submit" (click)="onSavePremisesApplication()" 
-                            class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Drug Shop
-                            Application && Drug Shop Documents  Next 
-                            </button>
-
-                        </div>
-                    </wizard-step>
-                    <wizard-step stepTitle=" Directors or Partner Details and License to Operate    Pharmaceutical Business & Nearest Drug Shops Location"   
-                        navigationSymbol="Step 2" class="wizardStep-height">
-        
-                        <div class="accordion" id="premisesInfo" >
-                         <div class="card" >
-                            <div class="card-headerdefined" id="headingTwo">
-                                <button class="btn btn-link " type="button" 
-                                    data-toggle="collapse" data-target="#premises_otherdetails"
-                                 aria-expanded="false" aria-controls="premises_otherdetails">
-                                    Directors or Partner Details applying on Behalf of Company
-                                </button>
-                            </div>
-                            <div id="premises_otherdetails" class="collapse show" 
-                                aria-labelledby="headingTwo" data-parent="#premisesInfo">
-                                <div class="card-body no-padding">
-                                    <div class="no-padding">
-                                        <app-drugshop-personneldetails
-                                        [premisesDirectorsDetailsfrm] ="premisesDirectorsDetailsfrm"  
-                                        [newPremisesDirectorsDetailsFrm] ="newPremisesDirectorsDetailsFrm"  
-                                        [premDirectorsDetailsData] ="premDirectorsDetailsData"  
-                                        [isBusinessPersonnelPopupVisible] ="isBusinessPersonnelPopupVisible"  
-                                        [qualificationsData] ="qualificationsData"  
-                                        [personnelPositionData] ="personnelPositionData"  
-                                        [studyFieldsData] ="studyFieldsData"  
-                                        [personnel_informationData] ="personnel_informationData"  
-                                        [isaddNewPremisesDirectorsDetails] ="isaddNewPremisesDirectorsDetails" 
-                                        [is_readonly] ="is_readonly"  
-                                        [premise_id] ="premise_id"  
-                                        [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
-                                         >
-                                        </app-drugshop-personneldetails>          
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-headerdefined" id="headingTwo">
-                                    <button class="btn btn-link " type="button" 
-                                    data-toggle="collapse" data-target="#premises_staffdetails"
-                                    aria-expanded="false" aria-controls="premises_staffdetails">
-                                    Does The Applicant or Director hold License to Operate Pharmaceutical Business
-                                    </button>
-                                </div>
-                                <div id="premises_staffdetails" class="collapse show" 
-                                    aria-labelledby="headingTwo" data-parent="#premisesInfo">
-                                    <div class="card-body no-padding">
-                                        <div class="no-padding">
-                                            <app-drugshop-licensedetails 
-                                            [premisesDetailsfrm] ="premisesDetailsfrm"  
-                                            [newPremisesDetailsfrm] ="newPremisesDetailsfrm"  
-                                            [premPersonnelDetailsData] ="premPersonnelDetailsData" 
-                                            [countries] ="countries"  
-                                            [confirmDataParam]="confirmDataParam"
-                                            [regions] ="regions"  
-                                            [districts] ="districts"
-                                            [traderAccountsDetailsData] ="traderAccountsDetailsData"
-                                            [isBusinessPersonnelPopupVisible] ="isBusinessPersonnelPopupVisible"  
-                                            [qualificationsData] ="qualificationsData"  
-                                            [personnelPositionData] ="personnelPositionData"  
-                                            [studyFieldsData] ="studyFieldsData"  
-                                            [personnel_informationData] ="personnel_informationData"  
-                                            [isaddNewPremisesPersonnelDetails] ="isaddNewPremisesPersonnelDetails"  
-              
-                                            [is_readonly] ="is_readonly"  
-
-                                            [premise_id] ="premise_id"  
-                                            [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
-                                            >
-                                            </app-drugshop-licensedetails>   
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-headerdefined" id="headingThree">
-                                    <button class="btn btn-link " type="button" 
-                                        data-toggle="collapse"  data-target="#premises_storelocationdetails"
-                                        aria-expanded="false" aria-controls="premises_storelocationdetails">
-                                         Nearest Pharmacy Location Details
-                                    </button>
-                                </div>
-                                <div id="premises_storelocationdetails" class="collapse show" 
-                                    aria-labelledby="headingThree" data-parent="#premisesInfo">
-                                    <div class="card-body no-padding">
-                                        <div class="no-padding">
-                                            <app-drugshop-nearestlocation 
-                                            [premisesStoreslocationFrm] ="premisesStoreslocationFrm"  
-                                            [countries] ="countries"  
-                                            [regions] ="regions"     
-                                            [premise_id] ="premise_id"
-                                            [isLocationPopupVisible]="isLocationPopupVisible"  
-                                            [districts] ="districts"  
-                                            [is_readonly] ="is_readonly">
-                                            </app-drugshop-nearestlocation>
-                                        </div>
-                                    </div>
-                                </div>
-                             </div>
-                        </div>
-                    </div>  
-                    <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
-                        <button type="button" class="btn btn-primary" 
-                        previousStep>&nbsp;<i class="fa  fa-angle-double-left"></i>Previous
-                        Drug Shop Information
+            </div>
+        </wizard-step>
+        <wizard-step 
+            stepTitle=" Directors or Partner Details"   
+            navigationSymbol="Step 2"
+             class="wizardStep-height">
+            <div class="accordion" id="premisesInfo" >
+                <div class="card" >
+                    <div class="card-headerdefined" id="headingTwo">
+                        <button class="btn btn-link " type="button" 
+                            data-toggle="collapse" data-target="#premises_otherdetails"
+                            aria-expanded="false" aria-controls="premises_otherdetails">
+                            Directors or Partner Details applying on Behalf of Company
                         </button>
-                        <button type="button" class="btn btn-primary" (click)="funcValidatePremBusinessDetails(2+initWizardPanel)">Next Drug Shop Documents &nbsp;<i class="fa fa-angle-double-right"></i></button>
                     </div>
-                    </wizard-step>
-                    <wizard-step stepTitle="Documents" class="wizardStep-height" navigationSymbol="Step 3" >
-                        <div class=" wizard-content">
-                            <app-application-documents   [business_type_id]="business_type_id" [section_id]="section_id" [module_id]="module_id" [status_id]="status_id" [sub_module_id]="sub_module_id" [application_code]="application_code"></app-application-documents>
+                    <div id="premises_otherdetails" class="collapse show" 
+                        aria-labelledby="headingTwo" data-parent="#premisesInfo">
+                        <div class="card-body no-padding">
+                            <div class="no-padding">
+                                <app-drugshop-personneldetails
+                                [premisesDirectorsDetailsfrm] ="premisesDirectorsDetailsfrm"  
+                                [newPremisesDirectorsDetailsFrm] ="newPremisesDirectorsDetailsFrm"  
+                                [premDirectorsDetailsData] ="premDirectorsDetailsData"  
+                                [isBusinessPersonnelPopupVisible] ="isBusinessPersonnelPopupVisible"  
+                                [qualificationsData] ="qualificationsData"  
+                                [personnelPositionData] ="personnelPositionData"  
+                                [studyFieldsData] ="studyFieldsData"  
+                                [personnel_informationData] ="personnel_informationData"  
+                                [isaddNewPremisesDirectorsDetails] ="isaddNewPremisesDirectorsDetails" 
+                                [is_readonly] ="is_readonly"  
+                                [premise_id] ="premise_id"  
+                                [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
+                                 >
+                                </app-drugshop-personneldetails>          
+                            </div>
                         </div>
-                        <div class="wizard-divbottom">
-                            <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Previous
-                    Premises Documents</button>
-
-
-                            <button type="button" class="btn btn-primary" nextStep>Close<i class="fa fa-angle-double-right"></i></button>
-
+                    </div>
+                    <div class="card">
+                        <div class="card-headerdefined" id="headingTwo">
+                            <button class="btn btn-link " type="button" 
+                                data-toggle="collapse" data-target="#premises_staffdetails"
+                                aria-expanded="false" aria-controls="premises_staffdetails">
+                                Does The Applicant or Director hold License to Operate Pharmaceutical Business
+                            </button>
                         </div>
-
-                    </wizard-step>
-
-                    <wizard-step stepTitle="Application Queries & Response" navigationSymbol="Query Response"  class="wizardStep-height">
-            
-                        <div class="col-lg-12 wizard-content">
-                                <form role="form" class="row" style="background:#fff;" enctype="multipart/form-data" role="form" [formGroup]="initqueryresponsefrm"
-                                (ngSubmit)="onSaveinitqueryresponse()">
-                                <div class="col-lg-12">
-                                <label>Query</label>
-                                
-                                <dx-html-editor [height]="200" readOnly ="true"  formControlName="queries_remarks"  placeholder="Query">
-                                    <dxo-toolbar>
-                                        <dxi-item formatName="separator"></dxi-item>
-                                        <dxi-item formatName="size" [formatValues]="['8pt', '10pt', '12pt', '14pt', '18pt', '24pt', '36pt']"></dxi-item>
-                                        <dxi-item formatName="font" [formatValues]="['Arial', 'Courier New', 'Georgia', 'Impact', 'Lucida Console', 'Tahoma', 'Times New Roman', 'Verdana']"></dxi-item>
-                                        <dxi-item formatName="separator"></dxi-item>
-                                        <dxi-item formatName="bold"></dxi-item>
-                                        <dxi-item formatName="italic"></dxi-item>
-                                        
-                                        <dxi-item formatName="header" [formatValues]="[false, 1, 2, 3, 4, 5]"></dxi-item>
-                                       
-                                    </dxo-toolbar>
-                                    <dxo-media-resizing
-                                        [enabled]=true>
-                                    </dxo-media-resizing>
-                                    
-                                </dx-html-editor>
+                        <div id="premises_staffdetails" class="collapse show" 
+                            aria-labelledby="headingTwo" data-parent="#premisesInfo">
+                            <div class="card-body no-padding">
+                                <div class="no-padding">
+                                    <app-drugshop-licensedetails 
+                                    [premisesDetailsfrm] ="premisesDetailsfrm"  
+                                    [newPremisesDetailsfrm] ="newPremisesDetailsfrm"  
+                                    [premPersonnelDetailsData] ="premPersonnelDetailsData" 
+                                    [countries] ="countries"  
+                                    [confirmDataParam]="confirmDataParam"
+                                    [regions] ="regions"  
+                                    [districts] ="districts"
+                                    [traderAccountsDetailsData] ="traderAccountsDetailsData"
+                                    [isBusinessPersonnelPopupVisible] ="isBusinessPersonnelPopupVisible"  
+                                    [qualificationsData] ="qualificationsData"  
+                                    [personnelPositionData] ="personnelPositionData"  
+                                    [studyFieldsData] ="studyFieldsData"  
+                                    [personnel_informationData] ="personnel_informationData"  
+                                    [isaddNewPremisesPersonnelDetails] ="isaddNewPremisesPersonnelDetails"  
+                                    [is_readonly] ="is_readonly"  
+                                    [premise_id] ="premise_id"  
+                                    [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
+                                    >
+                                    </app-drugshop-licensedetails>   
                                 </div>
-                                <div class="col-lg-12">
-                                <label>Query Response</label>
-                    
-                                <dx-html-editor [height]="200" formControlName="response_txt"  placeholder="Query Response">
-                                    <dxo-toolbar>
-                                        <dxi-item formatName="separator"></dxi-item>
-                                        <dxi-item formatName="size" [formatValues]="['8pt', '10pt', '12pt', '14pt', '18pt', '24pt', '36pt']"></dxi-item>
-                                        <dxi-item formatName="font" [formatValues]="['Arial', 'Courier New', 'Georgia', 'Impact', 'Lucida Console', 'Tahoma', 'Times New Roman', 'Verdana']"></dxi-item>
-                                        <dxi-item formatName="separator"></dxi-item>
-                                        <dxi-item formatName="bold"></dxi-item>
-                                        <dxi-item formatName="italic"></dxi-item>
-                                        
-                                        <dxi-item formatName="header" [formatValues]="[false, 1, 2, 3, 4, 5]"></dxi-item>
-                                        <dxi-item formatName="separator"></dxi-item>
-                                       
-                                    </dxo-toolbar>
-                                    <dxo-media-resizing
-                                        [enabled]=true>
-                                    </dxo-media-resizing>
-                                    
-                                </dx-html-editor>
-                                </div>
-                                <input type="hidden" formControlName="id"/>
-                                
-                                <input type="hidden" formControlName="query_id"/>
-                            </form>
-                        
+                            </div>
                         </div>
-                        <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
-                            <dx-button text="Save Response" [disabled]="!initqueryresponsefrm.valid" (onClick)="onSaveinitqueryresponse()"
-                                type="success" icon="save" [elementAttr]="{ class: 'btn btn-primary; pull-right' }">
-                            </dx-button>
-                            <button type="button" class="btn btn-primary" (click)="funcCloseQueryWindow()">Close<i class="fa fa-angle-double-right"></i></button>
-                           
+                    </div>
+                    <div class="card">
+                        <div class="card-headerdefined" id="headingOne">
+                          <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#drugshop_storelocationdetails"
+                             aria-expanded="false" aria-controls="drugshop_storelocationdetails">
+                            Nearest Drug Shop Location Details
+                          </button>
                         </div>
-                    </wizard-step>
-            </wizard>
-
-</dx-scroll-view>
-</div>
+                        <div id="drugshop_storelocationdetails" class="collapse show" aria-labelledby="headingOne" data-parent="#premisesInfo">
+                          <div class="card-body no-padding">
+                              <div class="no-padding">
+                                <app-drugshop-nearestlocation
+                                  [premisesStoreslocationFrm] ="premisesStoreslocationFrm"  
+                                  [countries] ="countries"  
+                                  [regions] ="regions"     
+                                  [premise_id] ="premise_id"
+                                  [isLocationPopupVisible]="isLocationPopupVisible"  
+                                  [districts] ="districts"  
+                                  [is_readonly] ="is_readonly">
+                                </app-drugshop-nearestlocation>         
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-headerdefined" id="headingThree">
+                            <button class="btn btn-link " type="button" 
+                                data-toggle="collapse"  data-target="#premises_storelocationdetails"
+                                aria-expanded="false" aria-controls="premises_storelocationdetails">
+                                Nearest Pharmacy Location Details
+                            </button>
+                        </div>
+                        <div id="premises_storelocationdetails" class="collapse show" 
+                            aria-labelledby="headingThree" data-parent="#premisesInfo">
+                        <div class="card-body no-padding">
+                            <div class="no-padding">
+                                <app-drugshop-neareststore 
+                                [premisesStoreslocationFrm] ="premisesStoreslocationFrm"  
+                                [countries] ="countries"  
+                                [regions] ="regions"     
+                                [premise_id] ="premise_id"
+                                [isLocationPopupVisible]="isLocationPopupVisible"  
+                                [districts] ="districts"  
+                                [is_readonly] ="is_readonly">
+                                </app-drugshop-neareststore>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+         <div class="wizard-divbottom">
+            <button type="button" class="btn btn-primary" previousStep>&nbsp;<i class="fa fa-angle-double-left"></i>Previous Details</button>
+            <button type="button" class="btn btn-primary" nextStep>Next Documents<i class="fa fa-angle-double-right"></i></button>
+          </div>
+        </wizard-step>
+         <wizard-step stepTitle="Documents" class="wizardStep-height">
+            <div class=" wizard-content">
+                <app-application-documents [section_id]="section_id" [module_id]="module_id" [status_id]="status_id" [premise_type_id]="premise_type_id"  [sub_module_id]="sub_module_id" [application_code]="application_code">
+                </app-application-documents>
+              </div>
+              <div class="wizard-divbottom">
+                <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Previous Drug Shop Documents
+                </button>
+                <button type="button" class="btn btn-primary" (click)="funcCloseQueryWindow()">Close<i class="fa fa-angle-double-right"></i>
+                </button>
+              </div>
+            </wizard-step>
+      </wizard>
+    </dx-scroll-view>
+  </div>
 </dx-popup>

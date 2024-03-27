@@ -7,6 +7,7 @@ Ext.define('Admin.view.surveillance.views.forms.PmsProgramDetailsFrm', {
     layout: 'column',
     controller:'surveillancevctr',
     bodyPadding: 5,
+    scrollable: true,
     defaults: {
         columnWidth: 1,
         margin: 2,
@@ -24,33 +25,56 @@ Ext.define('Admin.view.surveillance.views.forms.PmsProgramDetailsFrm', {
             name: 'id'
         },
         {
-            xtype: 'textfield',
-            fieldLabel: 'Name/Identity',
-            name: 'name'
-        },
-        {
-            xtype: 'datefield',
-            fieldLabel: 'Start Date',
-            submitFormat: 'Y-m-d',
-            format: 'd/m/Y',
-            name: 'start_date',
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
-        },
-        {
-            xtype: 'datefield',
-            fieldLabel: 'End Date',
-            submitFormat: 'Y-m-d',
-            format: 'd/m/Y',
-            name: 'end_date',
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
-        },
-        {
-            xtype: 'textarea',
-            fieldLabel: 'Description',
+        xtype: 'hiddenfield',
+        name: '_token',
+        value: token
+         },
+
+         {
+            xtype:'fieldset',
             columnWidth: 1,
-            name: 'description',
-            allowBlank: true
-        }
+            title: 'Program Details',
+            collapsible: true,
+            defaults: {
+                    labelAlign: 'top',
+                    margin: 5,
+                    columnWidth: 1
+                },
+            layout: 'column',
+            items:[ 
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'Name/Identity',
+                    allowBlank: false,
+                    name: 'name'
+                },
+                {
+                    xtype: 'datefield',
+                    fieldLabel: 'Start Date',
+                    submitFormat: 'Y-m-d',
+                    format: 'd/m/Y',
+                    allowBlank: false,
+                    name: 'start_date',
+                    altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
+                },
+                {
+                    xtype: 'datefield',
+                    fieldLabel: 'End Date',
+                    submitFormat: 'Y-m-d',
+                    format: 'd/m/Y',
+                    allowBlank: false,
+                    name: 'end_date',
+                    altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
+                },
+                {
+                    xtype: 'textarea',
+                    fieldLabel: 'Description',
+                    columnWidth: 1,
+                    name: 'description',
+                    allowBlank: true
+                }
+                ]
+          }
     ],
     dockedItems: [
         {

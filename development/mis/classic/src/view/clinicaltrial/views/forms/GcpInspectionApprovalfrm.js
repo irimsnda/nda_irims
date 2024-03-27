@@ -21,6 +21,10 @@ Ext.define('Admin.view.premiseregistration.views.forms.GcpInspectionApprovalfrm'
         },{
             xtype: 'hiddenfield',
             name: 'application_id'
+        },{
+            xtype: 'hiddenfield',
+            name: '_token',
+            value: token
         },
         {
             xtype: 'combo',
@@ -48,6 +52,8 @@ Ext.define('Admin.view.premiseregistration.views.forms.GcpInspectionApprovalfrm'
         },
         {
             xtype: 'textarea',
+            grow: true, 
+            growMax: 200, 
             name: 'approval_remarks',
             columnWidth: 1,
             fieldLabel: 'Approval Remarks',

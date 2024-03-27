@@ -44,7 +44,7 @@ Ext.define('Admin.view.pharmacovigilancereporting.views.maininterfaces.Receiving
                     step: 0,
                     iconCls: 'fa fa-suitcase',
                     enableToggle: true,iconAlign:'top',
-                    text: 'SAFETY ALERT REPORTING DETAILS',
+                    text: 'SIGNAL/SAFETY ALERT REPORTING DETAILS',
                     wizard_pnl: 'receivingsafetyalertreportswizard',
                     max_step: 2,
                     action: 'quickNav'
@@ -52,7 +52,7 @@ Ext.define('Admin.view.pharmacovigilancereporting.views.maininterfaces.Receiving
                     step: 1,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,iconAlign:'top',
-                    text: 'SAFETY ALERT REPORTING DOCUMENT UPLOADS',wizard_pnl: 'receivingsafetyalertreportswizard',
+                    text: 'SIGNAL/SAFETY ALERT REPORTING DOCUMENT UPLOADS',wizard_pnl: 'receivingsafetyalertreportswizard',
                     max_step: 2,
                     action: 'quickNav'
                 },{
@@ -86,7 +86,7 @@ Ext.define('Admin.view.pharmacovigilancereporting.views.maininterfaces.Receiving
                 '->',
                 
                 {
-                    text: 'Save Clinical Trial Details',
+                    text: 'Safety Alert Details',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-save',
                     name: 'save_btn',
@@ -106,7 +106,7 @@ Ext.define('Admin.view.pharmacovigilancereporting.views.maininterfaces.Receiving
                     max_step: 2,
                     name: 'next_btn'
                 },{
-                    text: 'Submit Application',
+                    text: 'Submit Report',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-check', hidden: true,
                     name: 'process_submission_btn',

@@ -9,22 +9,31 @@ import { AuthService } from '../auth.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as CryptoJS from 'crypto-js';  
   
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class ConfigurationsService {
   config: any;
   data:any;
   key:string= 'kPJks1MrdXE03n8H';
   trader_id: number;
   mistrader_id: number;
+  clickedMenuItem: any;
+ public apiKey  = 'YAl5bDPBSInOxhvYq_XQVVQfRTn0zfYjIZWs36GSLfuwi0Yio4U5NiH1gPn9oLTuP';
+  private bingMapsBaseUrl = 'https://dev.virtualearth.net/REST/v1/';
+
+ 
+
   constructor(private sanitizer:DomSanitizer , private authService: AuthService,private httpClient: HttpClient, private http: Http) { }
   onLoadNavigation(navigation_type_id: number) {
 
     let user = this.authService.getUserDetails();
+      
+    if(user){
       this.trader_id = user.trader_id;
       this.mistrader_id = user.mistrader_id;
-    if(user){
       this.data = {
         is_local:user.is_local,
         navigation_type_id: navigation_type_id,
@@ -49,7 +58,18 @@ export class ConfigurationsService {
       }));
 
   }
+  getLocations(query: string): Observable<any> {
+    const url = `${this.bingMapsBaseUrl}Locations?q=${query}&key=${this.apiKey}`;
+    return this.http.get(url);
+  }
 
+  onLoadClickedMenuItem(menuItem: any) {
+    this.clickedMenuItem = menuItem;
+  }
+
+  getClickedMenuItem() {
+    return this.clickedMenuItem;
+  }
   onLoadServicesDataset(module_id) {
     
     this.config = {
@@ -62,7 +82,110 @@ export class ConfigurationsService {
         return navigations;
       }));
 
+  }  
+onLoadImportExportAppSubmissionGuidelines(sub_module_id, licence_type_id){
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { sub_module_id: sub_module_id, licence_type_id: licence_type_id},
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'importexportapp/getImportExportAppSubmissionGuidelines', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }  
+  onLoaPortOfEntryDetails(mode_oftransport_id,sub_module_id){
+      var headers = new HttpHeaders({
+        "Accept": "application/json",
+        "Authorization": "Bearer " + this.authService.getAccessToken(),
+      });
+      this.config = {
+        params: {mode_oftransport_id, sub_module_id: sub_module_id},
+        headers: headers
+      };
+      return this.httpClient.get(AppSettings.base_url + 'configurations/getPortOfEntry', this.config)
+        .pipe(map(data => {
+          return <any>data;
+        }));
+    }
+
+  onLoadProductRangeDetails(business_type_id, licence_type_id, product_classification_id){
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: {business_type_id:business_type_id, licence_type_id:licence_type_id, product_classification_id:product_classification_id},
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'configurations/getProductRange', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
   }
+ onLoadVerificationPercentageData(bubu_nonbubu_id, is_registered_id, product_category_id, importation_reason_id, business_type_id, licence_type_id){
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: {bubu_nonbubu_id:bubu_nonbubu_id, is_registered_id:is_registered_id, product_category_id:product_category_id, importation_reason_id:importation_reason_id, business_type_id:business_type_id, licence_type_id:licence_type_id},
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'configurations/getVerificationData', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
+  
+
+    onLoadOnlineServicesDataset(menuId) {
+    
+    this.config = {
+      params:  {menuId:menuId},
+      headers: { 'Accept': 'application/json' }
+    };
+    return this.httpClient.get(AppSettings.base_url + 'configurations/getOrganisationOnlineServices', this.config)
+      .pipe(map(navigations => {
+
+        return navigations;
+      }));
+
+  } 
+  onLoadRegionsData(district_id) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { district_id: district_id },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'configurations/getRegionsDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
+  onLoadCountyData(district_id) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { district_id: district_id },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'configurations/getCountyDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
   getSafeUrl(url) {
       return this.sanitizer.bypassSecurityTrustResourceUrl(url)
   }
@@ -89,13 +212,13 @@ export class ConfigurationsService {
             return <any>data;
       }));
   }
-  onLoadAppSubmissionGuidelines(sub_module_id,section_id){
+  onLoadAppSubmissionGuidelines(sub_module_id){
     var headers = new HttpHeaders({
       "Accept": "application/json",
       "Authorization": "Bearer " + this.authService.getAccessToken(),
     });
     this.config = {
-      params: { sub_module_id: sub_module_id, section_id:section_id},
+      params: { sub_module_id: sub_module_id},
       headers: headers
     };
     return this.httpClient.get(AppSettings.base_url + 'configurations/getAppSubmissionGuidelines', this.config)
@@ -116,6 +239,32 @@ export class ConfigurationsService {
       }));
   }
   
+  getProductsQualitySummaryDetails(data) {
+    data.table_name = btoa(data.table_name);
+    this.config = {
+      params: data,
+      headers: { 'Accept': 'application/json' }
+    };
+    return this.httpClient.get(AppSettings.base_url + 'configurations/getProductsQualitySummaryDetails', this.config)
+      .pipe(map(data => {
+            return <any>data;
+      }));
+  }
+// getProductsQualitySummaryDetails(data) {
+//     data.table_name = btoa(data.table_name);
+//    this.config = {
+//     params: data,
+//     headers: { 'Accept': 'application/json' }
+//   };
+
+//   return this.httpClient.get(AppSettings.base_url + 'configurations/getProductsQualitySummaryDetails', this.config)
+//     .pipe(
+//       map((response: any) => {
+//         // Assuming that your data is present in 'response.data'
+//         return response.data || [];
+//       }));
+// }
+
   onLoadAsynchConfigurationData(data) {
     
     data.table_name = btoa(data.table_name);
@@ -153,6 +302,23 @@ export class ConfigurationsService {
 
     return decrypted.toString(CryptoJS.enc.Utf8);
   }
+
+ onLoadVerificationDataDetails(business_type_id , licence_type_id, importation_reason_id, product_category_id, is_registered, product_origin_id){
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: {business_type_id:business_type_id , licence_type_id:licence_type_id, importation_reason_id:importation_reason_id, product_category_id:product_category_id, is_registered:is_registered, product_origin_id:product_origin_id},
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'configurations/getVerificationData', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
+  
   onLoadPortalConfigurationData(data) {
 
     this.config = {
@@ -273,8 +439,11 @@ export class ConfigurationsService {
         return <any>data;
       }));
   }
-  returnReportIframe(report_url){
-    let iframe = '<iframe class="w-100 h-100" style="height:650px !important" src="'+report_url+'" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>Data</iframe>';
+
+
+
+  returnReportIframe(documentUrl){
+    let iframe = '<iframe class="w-100 h-100" style="height:550px !important" src="'+documentUrl+'" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>Data</iframe>';
     return iframe;
     
   }

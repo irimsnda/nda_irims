@@ -6,6 +6,9 @@ import {  FormGroup } from '@angular/forms';
 import { DxDataGridComponent } from 'devextreme-angular';
 
 import DataSource from 'devextreme/data/data_source';
+import CustomStore from 'devextreme/data/custom_store';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { AppSettings } from 'src/app/app-settings';
 import { ControlleddrugsSharedtaentryComponent } from '../controlleddrugs-sharedtaentry/controlleddrugs-sharedtaentry.component';
 @Component({
   selector: 'app-controlleddrugslicense-prodsdetails',
@@ -52,6 +55,7 @@ export class ControlleddrugslicenseProdsdetailsComponent extends Controlleddrugs
    @Input() sectionsData: any;
    @Input() sub_module_id: number;
    @Input() tracking_no: number;
+   @Input() is_registered:number;
 
    @Input() module_id: number;
    @Input() section_id: number;
@@ -59,7 +63,11 @@ export class ControlleddrugslicenseProdsdetailsComponent extends Controlleddrugs
    
    ismedicinesproductdetails:boolean;
    prodClassCategoriesData:any;
+   UnRegisteredProductsData: any={};
+   manSiteRegisteredProductsData: any={};
    isRegisteredproductsPopupVisible:boolean;
+  isUnRegisteredProductsDetails:boolean = false;
+
    isnewproductAddWinVisible:boolean;
    loading:boolean;
    permitProductMenuItems = [
@@ -233,6 +241,92 @@ export class ControlleddrugslicenseProdsdetailsComponent extends Controlleddrugs
         }
       });
   }
+  onSearchRegisteredProductApplication(){
+
+      // let man_site_id = this.gmpapplicationGeneraldetailsfrm.get('man_site_id').value;
+    //the loading
+    
+      this.isRegisteredproductsPopupVisible = true;
+      let me = this;
+      this.manSiteRegisteredProductsData.store = new CustomStore({
+        load: function (loadOptions: any) {
+          console.log(loadOptions)
+            var params = '?';
+            params += 'skip=' + loadOptions.skip;
+            params += '&take=' + loadOptions.take;//searchValue
+            var headers = new HttpHeaders({
+              "Accept": "application/json",
+              "Authorization": "Bearer " + me.authService.getAccessToken(),
+            });
+          
+            this.configData = {
+              headers: headers,
+              params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter} //,man_site_id:man_site_id ,section_id:me.section_id
+            };
+            return me.httpClient.get(AppSettings.base_url + 'importexportapp/getManufacturingSiteRegisteredProductsData',this.configData)
+                .toPromise()
+                .then((data: any) => {
+                    return {
+                        data: data.data,
+                        totalCount: data.totalCount
+                    }
+                })
+                .catch(error => { throw 'Data Loading Error' });
+        }
+    });
+    
+  }
+  funcSelectProductDetails(data){
+    let productdata = data.data;
+    this.permitProductsFrm.get('product_registration_no').setValue(productdata.product_registration_no);
+    this.permitProductsFrm.get('common_name_id').setValue(productdata.common_name_id);
+    this.permitProductsFrm.get('product_origin_id').setValue(productdata.product_origin_id);
+    this.permitProductsFrm.get('brand_name').setValue(productdata.brand_name);
+    this.permitProductsFrm.get('specification_type_id').setValue(productdata.specification_type_id);
+    this.permitProductsFrm.get('ingredient_id').setValue(productdata.ingredient_id);
+    this.permitProductsFrm.get('dosage_form_id').setValue(productdata.dosage_form_id);
+    this.permitProductsFrm.get('product_strength').setValue(productdata.product_strength);
+    this.permitProductsFrm.get('si_unit_id').setValue(productdata.si_unit_id);
+    this.permitProductsFrm.get('no_of_packs_tertiary').setValue(productdata.no_of_packs_tertiary);
+    this.permitProductsFrm.get('no_of_packs_secondary').setValue(productdata.no_of_packs_secondary);
+    this.permitProductsFrm.get('no_of_packs').setValue(productdata.no_of_packs);
+    this.permitProductsFrm.get('no_of_units').setValue(productdata.no_of_units);
+    this.permitProductsFrm.get('container_type_id').setValue(productdata.container_type_id);
+     
+    // this.permitProductsFrm.patchValue({brand_name:productdata.brand_name, product_registration_no:productdata.product_registration_no,specification_type_id:productdata.specification_type_id,unit_cost_per_unit:productdata.unit_cost_per_unit,
+    //   common_name:productdata.common_name,ingredient_id:productdata.ingredient_id, product_strength:productdata.product_strength, weights_units_id:productdata.weights_units_id, standard:productdata.standard, packaging_unit_id: productdata.packaging_unit_id,
+    //   device_type_id:productdata.device_type_id, currency_name:productdata.currency_name,dosage_form:productdata.dosage_form,
+    //   product_id:data.tra_product_id,product_category_id:productdata.product_category_id,product_subcategory_id:productdata.product_subcategory_id,registration_no:productdata.certificate_no,registrant_name:productdata.applicant_name});
+    this.isRegisteredproductsPopupVisible = false;
+
+  }
+  funcSelectUnRegisteredProductDetails(data){
+    let productdata = data.data;
+    this.permitProductsFrm.get('brand_name').setValue(productdata.proprietary_name);
+    this.permitProductsFrm.get('common_name_id').setValue(productdata.common_name_id);
+    this.permitProductsFrm.get('product_type_id').setValue(productdata.product_type_id);
+    this.permitProductsFrm.get('classification').setValue(productdata.classification);
+    this.permitProductsFrm.get('class_category').setValue(productdata.class_category);
+    this.permitProductsFrm.get('atc_code_id').setValue(productdata.atc_code_id);
+    this.permitProductsFrm.get('product_strength').setValue(productdata.product_strength);
+    this.permitProductsFrm.get('si_unit_id').setValue(productdata.si_unit_id);
+    this.permitProductsFrm.get('atc_desciption').setValue(productdata.atc_desciption);
+    this.permitProductsFrm.get('therapeutic_group').setValue(productdata.therapeutic_group);
+    this.permitProductsFrm.get('distribution_category').setValue(productdata.distribution_category);
+    this.permitProductsFrm.get('route_of_administarion').setValue(productdata.route_of_administarion);
+    this.permitProductsFrm.get('dosage_form_id').setValue(productdata.dosage_form_id);    
+
+     
+    // this.permitProductsFrm.patchValue({brand_name:productdata.brand_name, product_registration_no:productdata.product_registration_no,specification_type_id:productdata.specification_type_id,unit_cost_per_unit:productdata.unit_cost_per_unit,
+    //   common_name:productdata.common_name,ingredient_id:productdata.ingredient_id, product_strength:productdata.product_strength, weights_units_id:productdata.weights_units_id, standard:productdata.standard, packaging_unit_id: productdata.packaging_unit_id,
+    //   device_type_id:productdata.device_type_id, currency_name:productdata.currency_name,dosage_form:productdata.dosage_form,
+    //   product_id:data.tra_product_id,product_category_id:productdata.product_category_id,product_subcategory_id:productdata.product_subcategory_id,registration_no:productdata.certificate_no,registrant_name:productdata.applicant_name});
+
+    this.isUnRegisteredProductsDetails = false;
+
+  }
+
+
   onsavePermitProductdetails() {
     if (this.permitProductsFrm.invalid) {
       return;
@@ -310,7 +404,38 @@ export class ControlleddrugslicenseProdsdetailsComponent extends Controlleddrugs
     this.isPermitproductsPopupVisible = true;
     
   }
-
+  onSearchUnRegisteredRegisteredProductApplication(){
+  this.isUnRegisteredProductsDetails = true;
+  var me = this;
+ 
+this.UnRegisteredProductsData.store = new CustomStore({
+  load: function (loadOptions: any) {
+    console.log(loadOptions)
+      var params = '?';
+      params += 'skip=' + loadOptions.skip;
+      params += '&take=' + loadOptions.take;//searchValue
+      var headers = new HttpHeaders({
+        "Accept": "application/json",
+        "Authorization": "Bearer " + me.authService.getAccessToken(),
+      });
+    
+      this.configData = {
+        headers: headers,
+        params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter }
+      };
+      return me.httpClient.get(AppSettings.base_url + 'importexportapp/getUnRegisteredProductsDetails',this.configData)
+          .toPromise()
+          .then((data: any) => {
+              return {
+                  data: data.data,
+                  totalCount: data.totalCount
+              }
+          })
+          .catch(error => { throw 'Data Loading Error' });
+  }
+});
+    
+  }
   funcChangeisRegisteredDrug($event) {
     if($event.value ==1){
       this.isregistered_product = true;

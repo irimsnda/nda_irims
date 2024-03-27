@@ -410,7 +410,7 @@ export class DrushopApplicationsService {
         return data;
       }));
   }
-  onValidatePremisesOtherdetails(premise_id,table_name,title){
+  onValidatePremisesOtherdetails(premise_id){
    
     var headers = new Headers({
       "Accept": "application/json",
@@ -420,7 +420,7 @@ export class DrushopApplicationsService {
     });
 
     this.config = {
-      params: { 'trader_id': this.trader_id, 'trader_email': this.email_address, premise_id: premise_id, table_name: table_name,title:title },
+      params: { 'trader_id': this.trader_id, 'trader_email': this.email_address, premise_id: premise_id},
       headers: headers
     };
     return this.httpClient.get(AppSettings.base_url + 'utilities/onValidatePremisesOtherdetails', this.config)

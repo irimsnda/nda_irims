@@ -6,7 +6,7 @@ Ext.define('Admin.view.parameters.views.grids.RevenueAccountsGrid', {
     store: 'revenueaccountsstr',
     tbar: [{
         xtype: "button",
-        text: "Add Revenue Code",
+        text: "Revenue Account",
         iconCls: 'x-fa fa-plus',
         margin: '0 0 5 0',
         action: 'add',
@@ -22,14 +22,14 @@ Ext.define('Admin.view.parameters.views.grids.RevenueAccountsGrid', {
             xtype: 'rownumberer'
         }, {
             xtype: 'gridcolumn',
-            dataIndex: 'name',
-            text: 'Name',
+            dataIndex: 'revenue_description',
+            text: 'Revenue Description',
             flex: 1
         },
         {
             xtype: 'gridcolumn',
             dataIndex: 'code',
-            text: 'NDA Revenue code',
+            text: 'Revenue Account',
             flex: 1
         },{
             xtype: 'gridcolumn',
@@ -90,7 +90,7 @@ Ext.define('Admin.view.parameters.views.grids.RevenueAccountsGrid', {
                text: 'Delete',
                 iconCls: 'x-fa fa-trash',
                 tooltip: 'Delete Record',
-                table_name: 'par_gl_accounts',
+                table_name: 'par_revenue_accounts',
                 storeID: 'revenueaccountsstr',
                 action: 'actual_delete',
                 action_url: 'configurations/deleteConfigRecord',

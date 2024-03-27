@@ -12,10 +12,25 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpNewManagerReviewGrid', {
             }
         }
     },
+    features:[
+        {
+            ftype: 'grouping',
+            startCollapsed: true,
+            groupHeaderTpl: '{[values.rows[0].data.inspection_details]} [{rows.length}]',
+            hideGroupedHeader: true,
+            enableGroupingMenu: false
+        },{
+        ftype: 'searching',
+        mode: 'local',
+        minChars: 2
+     }
+    ],
     selModel: {
         selType: 'checkboxmodel'
     },
-    tbar: [{
+    
+
+     tbar: [{
         xtype: 'exportbtn'
     }, {
         xtype: 'tbspacer'
@@ -93,16 +108,12 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpNewManagerReviewGrid', {
             ]
         }
     ],
-    features: [{
-        ftype: 'searching',
-        mode: 'local',
-        minChars: 2
-    }],
     listeners: {
         beforerender: {
             fn: 'setGmpApplicationGridsStore',
             config: {
                 pageSize: 10000,
+                groupField: 'inspection_id',
                 proxy: {
                     url: 'gmpapplications/getManagerApplicationsGeneric'
                 }
@@ -137,6 +148,36 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpNewManagerReviewGrid', {
         }
     },
     columns: [
+    {
+       xtype: 'gridcolumn',
+        dataIndex: 'inspection_type', 
+        tdCls: 'wrap-text',
+        text: 'Inspection Type',
+        flex:1
+      },
+     {
+        xtype: 'gridcolumn',
+        dataIndex: 'start_date', 
+        tdCls: 'wrap-text',
+        text: 'Start Date',
+        renderer: Ext.util.Format.dateRenderer('d/m/Y'),
+        flex:1
+      },
+      {
+        xtype: 'gridcolumn',
+        dataIndex: 'inspection_days', 
+        tdCls: 'wrap-text',
+        text: 'No of Inspection Days',
+        flex:1
+        },
+        {
+            xtype: 'gridcolumn',
+            dataIndex: 'end_date',
+            text: 'End Date',
+            tdCls: 'wrap-text',
+            flex: 1,
+            renderer: Ext.util.Format.dateRenderer('d/m/Y')
+        },
         {
             text: 'Options',
             xtype: 'widgetcolumn',
@@ -156,6 +197,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpNewManagerReviewGrid', {
                             childXtype: 'gmpappprevdocuploadsgenericgrid',
                             winTitle: 'Inspection uploaded Documents',
                             winWidth: '80%',
+                            hidden:true,
                             handler: 'showPreviousUploadedDocs',
                             target_stage: 'evaluation'
                         },
@@ -171,7 +213,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpNewManagerReviewGrid', {
                             action: 'edit',
                             childXtype: '',
                             winTitle: 'Application Documents',
-                            winWidth: '40%',
+                            winWidth: '80%',
                             isReadOnly: 1,
                             document_type_id: '',
                             handler: 'showPreviousUploadedDocs'
@@ -179,7 +221,11 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpNewManagerReviewGrid', {
                         {
                             text: 'Dismiss/Cancel Application',
                             iconCls: 'x-fa fa-thumbs-down',
+                            hidden:true,
                             handler: 'showApplicationDismissalForm'
+                        },
+                        {
+                         xtype: 'transitionsbtn'
                         }
                     ]
                 }

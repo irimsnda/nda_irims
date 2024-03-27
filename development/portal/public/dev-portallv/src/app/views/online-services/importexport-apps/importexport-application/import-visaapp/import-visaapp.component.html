@@ -79,10 +79,7 @@
                 </wizard-step>
                 
                 <wizard-step stepTitle="Permit Query Response Submission" navigationSymbol="Submit"  >
-                    <div class="col-lg-12">
-                      <label>Submission Comments(Optional)</label>
-                      <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-                    </div>
+                  
                     <div class="col-lg-12">
                             <dx-check-box text="Agree to the Terms & Conditions" [value]="undefined" (onValueChanged)="submissionsTermscheckbox($event)">
                                 </dx-check-box>
@@ -101,14 +98,34 @@
 </div>
   <div class="col-lg-12"  *ngIf="status_id !== 8 && status_id !== 6">
     <wizard style="background: #fff !important; height: 100% !important;" navigationMode="strict" navBarLayout ="large-filled-symbols">
-      
+      <!-- [premiseTypeData] = "premiseTypeData" -->
       <wizard-step stepTitle=" Application Details"   navigationSymbol="Step 1" class="wizardStep-height">
-        <app-importexport-gendetails  [applicationGeneraldetailsfrm]="applicationGeneraldetailsfrm"  
-            [sectionsData] ="sectionsData"  
-            [applicationTypeData] ="applicationTypeData"  
+        <app-importexport-gendetails  [applicationGeneraldetailsfrm]="applicationGeneraldetailsfrm" 
+         [newPremisesPersonnelDetailsFrm] = "newPremisesPersonnelDetailsFrm"
+           [sectionsData] ="sectionsData"  
             [sub_module_id] ="sub_module_id"  
             [applicationTypeCategoryData] ="applicationTypeCategoryData"  
             [permitReasonData] ="permitReasonData" 
+            [premiseClassData] = "premiseClassData"
+            [businessTypeData] = "businessTypeData"
+            [is_registered_premise] = "is_registered_premise"
+            [is_clinical] = "is_clinical"
+            [is_grant] = "is_grant"
+            [is_importation] = "is_importation"
+            [licence_type_id] = "licence_type_id" 
+            [business_type_id] = "business_type_id"
+            [importation_reason_id] = "importation_reason_id"
+            [product_category_id] = "product_category_id"
+            [importationReasonData] = "importationReasonData"
+            [productImportationCategoryData] = "productImportationCategoryData"
+            [licenceTypeData] = "licenceTypeData"
+            [applicationTypeData] = "applicationTypeData"
+            [vcApplicationTypeData] ="vcApplicationTypeData"
+            [productClassData] = "productClassData"
+            [registrationLevelData] = "registrationLevelData"
+            [LicencedproductRangeData] = "LicencedproductRangeData"
+            [isProductCategoryId] = 'isProductCategoryId'
+
             [portOfEntryExitData] ="portOfEntryExitData"   
             [payingCurrencyData] ="payingCurrencyData"  
             [currencyData]="currencyData"
@@ -118,10 +135,14 @@
             [zoneData] ="zoneData"  
             [module_id] ="module_id"  
             [application_code] ="application_code"  
-            [ispremisesSearchWinVisible] ="ispremisesSearchWinVisible"  
-            [registered_premisesData] ="registered_premisesData"  
-            [modeOfTransportData] ="modeOfTransportData"  
-          
+            [ispremisesSearchWinVisible] ="ispremisesSearchWinVisible" 
+            [isclinicalTrialSearchWinVisible] = "isclinicalTrialSearchWinVisible" 
+            [registered_premisesData] ="registered_premisesData" 
+            [registered_clinicalTrialData] = "registered_clinicalTrialData" 
+            [modeOfTransportData] ="modeOfTransportData" 
+            [port_id]="port_id"
+
+            
             [issenderreceiverSearchWinVisible] ="issenderreceiverSearchWinVisible"  
             [consignee_sendertitle] ="consignee_sendertitle"  
             [issenderreceiverAddWinVisible] ="issenderreceiverAddWinVisible"  
@@ -132,7 +153,7 @@
             [section_id] ="section_id"  
             
             [deviceTypeData] ="deviceTypeData"
-            [applicationCategoryData] ="applicationCategoryData"  
+            [applicationCategoryData] ="applicationCategoryData"
             >
             </app-importexport-gendetails>
           <div class=" div-footer" style="border-top: 1px solid #ccc; ">
@@ -148,25 +169,33 @@
             <button type="button" (click)="onSaveImportExportApplication()"
                class="btn btn-primary  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save
-              Application & Next</button>
+              Application & Next
+            </button>
 
           </div>
         
       </wizard-step>
-      <wizard-step stepTitle="Permit Product Information " navigationSymbol="Step 2"  (stepEnter)="validateApplicationDetails($event)" class="wizardStep-height">
+      <!-- (stepEnter)="validateApplicationDetails($event)" -->
+      <wizard-step stepTitle="Product Details" navigationSymbol="Step 2"   class="wizardStep-height">
         <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
           <button type="button" class="btn btn-primary" previousStep>&nbsp;<i
               class="fa fa-angle-double-left"></i>Previous
             Application Details</button>
             <!-- [disabled] ="isprodnextdisable"-->
-          <button type="button" class="btn btn-primary"
-            (click)="funcValidatePermitProductDetails('Add Permit Product Details to proceed',2)">Next Documents
+          <!-- <button type="button" class="btn btn-primary"
+            (click)="funcValidateStepDetails('Add Permit Product Details to proceed',2)">Next Documents
             Upload &nbsp;<i class="fa fa-angle-double-right"></i></button>
-        </div>
+        </div> -->
+        <button type="button" class="btn btn-primary  pull-right" style="margin:5px;" nextStep>Go
+                  to next step<i
+                  class="fa fa-angle-double-right"></i></button>
+                  </div>
         <app-permit-productsdetails  [permitProductsData] ="permitProductsData"  
             [isPermitproductsPopupVisible] ="isPermitproductsPopupVisible"  
-            [registeredProductsData] ="registeredProductsData"  
+            [registeredProductsData] ="registeredProductsData" 
+            [permitDrugDetailsData] ="permitDrugDetailsData" 
             [isPermitproductsAddPopupVisible] ="isPermitproductsAddPopupVisible"  
+            [isNarcoticproductsAddPopupVisible] = "isNarcoticproductsAddPopupVisible"
             [confirmDataParam] ="confirmDataParam"  
             [premisesOtherDetailsRows] ="premisesOtherDetailsRows" 
             [is_regulatedproducts] ="is_regulatedproducts"   
@@ -177,18 +206,26 @@
             [weightsUnitData] ="weightsUnitData"  
             [currencyData] ="currencyData" 
             [proforma_currency_id] ="proforma_currency_id" 
+            [verificationData] = "verificationData"
+            [dosageFormData] = "dosageFormData"
             [countries] ="countries"  
             [permitProductsFrm] ="permitProductsFrm"  
+            [narcoticProductsFrm] ="narcoticProductsFrm"
             [productGeneraldetailsfrm] ="productGeneraldetailsfrm"  
             [classificationData] ="classificationData"  
             [commonNamesData] ="commonNamesData"   
-            [application_code] ="application_code"   
+            [application_code] ="application_code" 
+            [product_category_id] = "product_category_id"
+            [common_name_id] = "common_name_id"
+            [importation_reason_id] = "importation_reason_id" 
             [enabled_newproductadd] ="enabled_newproductadd"   
             [sub_module_id] ="sub_module_id"   
             [tracking_no] ="tracking_no"   
             [module_id] ="module_id"   
             [module_id] ="module_id"   
-            [section_id] ="section_id"   
+            [section_id] ="section_id" 
+            [port_id]="port_id"
+  
             
             >
             </app-permit-productsdetails>
@@ -198,61 +235,72 @@
             Application Details</button>
             
             <!-- [disabled] ="isprodnextdisable"-->
-          <button type="button" class="btn btn-primary" 
+         <!--  <button type="button" class="btn btn-primary" 
             (click)="funcValidatePermitProductDetails('Add Permit Product Details to proceed',2)">Next Documents
-            Upload &nbsp;<i class="fa fa-angle-double-right"></i></button>
+            Upload &nbsp;<i class="fa fa-angle-double-right"></i></button> -->
+            <button type="button" class="btn btn-primary  pull-right" style="margin:5px;" nextStep>Go
+                  to next step<i
+                  class="fa fa-angle-double-right"></i></button>
         </div>
       </wizard-step>
-      <wizard-step stepTitle="Documents" navigationSymbol="Step 3"  class="wizardStep-height" (stepEnter)="validateProdApplicationDetails($event)">
+      <!-- (stepEnter)="validateProdApplicationDetails($event)" -->
+      <wizard-step stepTitle="Documents" navigationSymbol="Step 3"  class="wizardStep-height" >
         <div class="wizard-divbottom">
-          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Permit
+          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>
             Products Details</button>
-          <button type="button" class="btn btn-primary"
+          <!-- <button type="button" class="btn btn-primary"
             (click)="funcValidatePermitDocumentsDetails(3)">Next
-            Application Submission<i class="fa fa-angle-double-right"></i></button>
+            Application Submission<i class="fa fa-angle-double-right"></i></button> -->
+            <button type="button" class="btn btn-primary  pull-right" style="margin:5px;" nextStep>Go
+                  to next step<i
+                  class="fa fa-angle-double-right"></i></button>
 
         </div>
         <div class=" wizard-content">
           <app-application-documents [section_id] ="section_id"  [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-application-documents>
         </div>
         <div class="wizard-divbottom">
-          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Permit
+          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>
             Products Details</button>
-          <button type="button" class="btn btn-primary"
+          <!-- <button type="button" class="btn btn-primary"
             (click)="funcValidatePermitDocumentsDetails(3)">Next
-            Application Submission<i class="fa fa-angle-double-right"></i></button>
+            Application Submission<i class="fa fa-angle-double-right"></i></button> -->
+            <button type="button" class="btn btn-primary  pull-right" style="margin:5px;" nextStep>Go
+                  to next step<i
+                  class="fa fa-angle-double-right"></i></button>
 
         </div>
 
       </wizard-step>
-      <wizard-step stepTitle="Completion & Submission"  (stepEnter)="validateSubmissionApplicationDetails($event)" navigationSymbol="Submit" >
+      <!-- (stepEnter)="validateSubmissionApplicationDetails($event)"  -->
+      <wizard-step stepTitle="Completion & Submission"  navigationSymbol="Submit" >
         
         <form [formGroup]="onApplicationSubmissionFrm" class="col-lg-12 row div-nopadding wizard-content" style="background: #fff;" enctype="multipart/form-data" role="form" (ngSubmit)="onProductApplicationSubmit()">
           <div class="col-lg-12">
-              <b><label>Declaration /Terms and condition</label></b>
-              <ul>
-                  <p *ngFor="let guide of terms_conditions;">
-                      {{guide.no}} {{guide.term_conditiondetails}}
-                  </p>
-              </ul>
+              <b><label>Declaration and Disclaimer</label></b>
+                <ul>
+                  <li *ngFor="let guide of terms_conditions;">
+                    <p>{{guide.no}} {{guide.term_conditiondetails}}</p>
+                  </li>
+                </ul>
           </div>
-          
-          <div class="col-lg-12">
-            <b> <label>Submission Comments(Optional)</label></b>
-              <dx-text-area formControlName="submission_comments" placeholder="Enter Comments(optional)"></dx-text-area>
+          <div class="col-lg-4" *ngIf="sub_module_id == 12">
+            <label>Payment Currency(The payment will be based in USD/UGX)</label>
+              <dx-select-box [dataSource]="payingCurrencyData"  valueExpr="id" displayExpr="name"
+                placeholder="Select Paying Currency" [searchEnabled]="true" formControlName="paying_currency_id">
+              </dx-select-box>
           </div>
           <div class="col-lg-12">
             <dx-check-box text="Agree to the Declaration" [value]="undefined"
               (onValueChanged)="submissionsTermscheckbox($event)">
             </dx-check-box>
           </div>
-  
+
           <div class="wizard-divbottom">
             <button class="btn btn-primary" type="button" previousStep>Previous Step</button>
-            
+              <app-invoice-appgeneration   [onApplicationSubmissionFrm] ="onApplicationSubmissionFrm" [sub_module_id] ="sub_module_id" [app_routing] ="app_routing"  *ngIf="has_invoicegeneration"  [module_id] ="module_id" [section_id] ="section_id" [status_id] ="status_id"  [application_code]="application_code" ></app-invoice-appgeneration>
             <button class="btn btn-primary" type="button" [disabled]="!termscheckbox"
-              (click)="onPermitsApplicationSubmit()">Submit Permit
-              Application</button>
+              (click)="onPermitsApplicationSubmit()">Submit Application</button>
           </div>
 </form>
       </wizard-step>
@@ -330,27 +378,49 @@
               Application</button>
 
           </div>
-        <app-importexport-gendetails  [applicationGeneraldetailsfrm]="applicationGeneraldetailsfrm"  
-            [sectionsData] ="sectionsData"  
-            [applicationTypeData] ="applicationTypeData"  
+        <app-importexport-gendetails  [applicationGeneraldetailsfrm]="applicationGeneraldetailsfrm" 
+         [newPremisesPersonnelDetailsFrm] = "newPremisesPersonnelDetailsFrm"
+           [sectionsData] ="sectionsData"  
             [sub_module_id] ="sub_module_id"  
             [applicationTypeCategoryData] ="applicationTypeCategoryData"  
             [permitReasonData] ="permitReasonData" 
+            [premiseClassData] = "premiseClassData"
+            [businessTypeData] = "businessTypeData"
+            [is_registered_premise] = "is_registered_premise"
+            [is_clinical] = "is_clinical"
+            [is_grant] = "is_grant"
+            [is_importation] = "is_importation"
+            [licence_type_id] = "licence_type_id" 
+            [business_type_id] = "business_type_id"
+            [importation_reason_id] = "importation_reason_id"
+            [product_category_id] = "product_category_id"
+            [importationReasonData] = "importationReasonData"
+            [productImportationCategoryData] = "productImportationCategoryData"
+            [licenceTypeData] = "licenceTypeData"
+            [applicationTypeData] = "applicationTypeData"
+            [vcApplicationTypeData] ="vcApplicationTypeData"
+            [productClassData] = "productClassData"
+            [registrationLevelData] = "registrationLevelData"
+            [LicencedproductRangeData] = "LicencedproductRangeData"
+            [isProductCategoryId] = "isProductCategoryId"
+            [port_id]="port_id"
+
             [portOfEntryExitData] ="portOfEntryExitData"   
             [payingCurrencyData] ="payingCurrencyData"  
             [currencyData]="currencyData"
             [consigneeOptionsData] ="consigneeOptionsData"  
-            [permitProductsCategoryData] ="permitProductsCategoryData"  
-            [countries] ="countries"  
-
+            [permitProductsCategoryData] ="permitProductsCategoryData"
             [consignee_options_check] ="consignee_options_check"  
             [zoneData] ="zoneData"  
             [module_id] ="module_id"  
-            [modeOfTransportData] ="modeOfTransportData"  
-
             [application_code] ="application_code"  
             [ispremisesSearchWinVisible] ="ispremisesSearchWinVisible"  
+            [isclinicalTrialSearchWinVisible] = "isclinicalTrialSearchWinVisible"
             [registered_premisesData] ="registered_premisesData"  
+            [registered_clinicalTrialData]="registered_clinicalTrialData"
+            [modeOfTransportData] ="modeOfTransportData" 
+
+            
             [issenderreceiverSearchWinVisible] ="issenderreceiverSearchWinVisible"  
             [consignee_sendertitle] ="consignee_sendertitle"  
             [issenderreceiverAddWinVisible] ="issenderreceiverAddWinVisible"  
@@ -358,7 +428,9 @@
             [countries] ="countries"  
             [regions] ="regions"  
             [districts] ="districts"  
+            [section_id] ="section_id"  
             
+            [deviceTypeData] ="deviceTypeData"
             [applicationCategoryData] ="applicationCategoryData"  
             
             >
@@ -392,8 +464,10 @@
         </div>
         <app-permit-productsdetails  [permitProductsData] ="permitProductsData"  
             [isPermitproductsPopupVisible] ="isPermitproductsPopupVisible"  
-            [registeredProductsData] ="registeredProductsData"  
+            [registeredProductsData] ="registeredProductsData" 
+            [permitDrugDetailsData] ="permitDrugDetailsData" 
             [isPermitproductsAddPopupVisible] ="isPermitproductsAddPopupVisible"  
+            [isNarcoticproductsAddPopupVisible] = "isNarcoticproductsAddPopupVisible"
             [confirmDataParam] ="confirmDataParam"  
             [premisesOtherDetailsRows] ="premisesOtherDetailsRows" 
             [is_regulatedproducts] ="is_regulatedproducts"   
@@ -403,18 +477,26 @@
             [weightsUnitData] ="weightsUnitData"  
             [currencyData] ="currencyData"  
             [permitProductsFrm] ="permitProductsFrm"  
+            [narcoticProductsFrm] ="narcoticProductsFrm"
+            [verificationData] = "verificationData"
+            [dosageFormData] = "dosageFormData"
             [countries] ="countries"  
             [productGeneraldetailsfrm] ="productGeneraldetailsfrm"  
             [classificationData] ="classificationData"  
             [commonNamesData] ="commonNamesData"   
-            [application_code] ="application_code"   
+            [application_code] ="application_code"
+            [product_category_id] = "product_category_id"
+            [common_name_id] = "common_name_id"
+            [port_id] = "port_id"
+            [importation_reason_id] = "importation_reason_id"    
             [enabled_newproductadd] ="enabled_newproductadd"   
             [sub_module_id] ="sub_module_id"   
             [tracking_no] ="tracking_no"   
             [module_id] ="module_id"   
             [module_id] ="module_id"   
             [section_id] ="section_id"   
-            
+            [port_id]="port_id"
+
             
             >
             </app-permit-productsdetails>

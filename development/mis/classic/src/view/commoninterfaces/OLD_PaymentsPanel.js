@@ -149,7 +149,7 @@ Ext.define('Admin.view.commoninterfaces.oLDPaymentsPanel', {
                     iconCls: 'x-fa fa-plus',
                     ui: 'soft-purple',
                     winTitle: 'Account Transactions',
-                    winWidth: '60%',
+                    winWidth: '80%',
                     name: 'receive_payments',
                     childXtype: 'paymentsreceptionfrm',
                     stores: '["receipttypestr","paymentmodesstr","banksstr"]'

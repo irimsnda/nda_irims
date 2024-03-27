@@ -72,6 +72,33 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
             click:'savePromotionMaterialDetails'
             
         },
+        'promotionmaterialassessorrecommendationdetailsform button[action=save_promotion_materials_other_details]':{
+            click:'savePromotionMaterialDetails'
+            
+        },
+
+        'promotionmaterialauditorrecommendationdetailsform button[action=save_promotion_materials_other_details]':{
+            click:'savePromotionMaterialDetails'
+            
+        },
+
+        'promotionmaterialmanagerrecommendationdetailsform button[action=save_promotion_materials_other_details]':{
+            click:'savePromotionMaterialDetails'
+            
+        },
+
+
+
+        'promotionmaterialdirectorrecommendationdetailsform button[action=save_promotion_materials_other_details]':{
+            click:'savePromotionMaterialDetails'
+            
+        },
+
+        'promotionmaterialapprovalrecommendationdetailsform button[action=save_promotion_materials_other_details]':{
+            click:'savePromotionMaterialDetails'
+            
+        },
+
         'newpromotionmaterialwizard button[action=save_applicant_details]':{
             click:'saveApplicantPromotionMaterialsDetails'
             
@@ -112,6 +139,23 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
             click:'saveApplicationComment'
         }, 
         'promotionadvertsevaluationdocpanel button[name=more_app_details]':{
+            click:'showScreeningMoreDetails'
+        },
+        'promotionandadvertsmanagerreviewpanel button[name=more_app_details]':{
+            click:'showScreeningMoreDetails'
+        },
+        'promotionandadvertsdirectorreviewpanel button[name=more_app_details]':{
+            click:'showScreeningMoreDetails'
+        },
+
+        'promotionandadvertscommunicationpanel button[name=more_app_details]':{
+            click:'showScreeningMoreDetails'
+        },
+
+        'promotionadvertsauditingdocpanel button[name=more_app_details]':{
+            click:'showScreeningMoreDetails'
+        },
+         'promotionadvertsscreeningdocpanel button[name=more_app_details]':{
             click:'showEvaluationMoreDetails'
         },
         'productingredientstrengthform button[action=save]':{
@@ -143,8 +187,35 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
         'promtionadvertspreviewdetailswizard': {
             afterrender: 'preparePromotionAndAdvertsDetailsWizard'
         },
-        'newpromotionmaterialwizard': {
+
+        'promotionadvertsscreeningdocpanel': {
             afterrender: 'preparePromotionAndAdvertsDetailsWizard'
+        },
+
+        'promotionadvertsevaluationdocpanel': {
+            afterrender: 'preparePromotionAndAdvertsDetailsWizard'
+        },
+        'promotionandadvertsmanagerreviewpanel': {
+            afterrender: 'preparePromotionAndAdvertsDetailsWizard'
+        },
+        'promotionandadvertsdirectorreviewpanel': {
+            afterrender: 'preparePromotionAndAdvertsDetailsWizard'
+        },
+
+        'promotionandadvertapprovalspanel': {
+            afterrender: 'preparePromotionAndAdvertsDetailsWizard'
+        },
+
+        'promotionandadvertscommunicationpanel': {
+            afterrender: 'preparePromotionAndAdvertsDetailsWizard'
+        },
+
+        'promotionadvertsauditingdocpanel': {
+            afterrender: 'preparePromotionAndAdvertsDetailsWizard'
+        },
+
+        'newpromotionmaterialwizard': {
+            afterrender: 'preparePromotionAndAdvertsDetailsReceiving'
         },
         'renewalpromotionmaterialwizard': {
             afterrender: 'preparePromotionAndAdvertsDetailsWizard'
@@ -155,12 +226,58 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
         'promotionadvertsevaluationdocpanel button[name=process_submission_btn]': {
             click: 'showEvaluationApplicationSubmissionWin'
         },
+
+        'promotionandadvertsmanagerreviewpanel button[name=process_submission_btn]': {
+            click: 'showEvaluationApplicationSubmissionWin'
+        },
+
+        'promotionandadvertsdirectorreviewpanel button[name=process_submission_btn]': {
+            click: 'showEvaluationApplicationSubmissionWin'
+        },
+
+        'promotionandadvertscommunicationpanel button[name=process_submission_btn]': {
+            click: 'showEvaluationApplicationSubmissionWin'
+        },
+
+
+         'promotionandadvertapprovalspanel button[name=process_submission_btn]': {
+            click: 'showApprovalApplicationSubmissionWin'
+        },
+
+        'promotionadvertsauditingdocpanel button[name=process_submission_btn]': {
+            click: 'showEvaluationApplicationSubmissionWin'
+        },
+
+         'promotionadvertsscreeningdocpanel button[name=process_submission_btn]': {
+            click: 'showScreeningApplicationSubmissionWin'
+        },
         'promotiommaterialproductgrid': {
             refresh: 'refreshPromotionalOtherDetailsGrid'
         },
         'promotionmaterialdetailsgrid': {
             refresh: 'refreshPromotionalOtherDetailsGrid'
         },
+        'promotionmaterialdetailAssesorrecommendationgrid': {
+            refresh: 'refreshPromotionalOtherDetailsGrid'
+        },
+        'promotionmaterialdetailauditorrecommendationgrid': {
+            refresh: 'refreshPromotionalOtherDetailsGrid'
+        },
+
+        'promotionmaterialdetailmanagerrecommendationgrid': {
+            refresh: 'refreshPromotionalOtherDetailsGrid'
+        },
+
+         'promotionmaterialdetaildirectorrecommendationgrid': {
+            refresh: 'refreshPromotionalOtherDetailsGrid'
+        },
+         'promotionmaterialdetailapprovalrecommendationgrid': {
+            refresh: 'refreshPromotionalOtherDetailsGrid'
+        },
+         'promotionmaterialdetailviewapprovalrecommendationgrid': {
+            refresh: 'refreshPromotionalOtherDetailsGrid'
+        },
+
         'promotionadvertcosmeticshomegrid': {
             refresh: 'refreshPromotionalApplicationDashgrid'
         },
@@ -197,12 +314,25 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
 				setPromAdvertsRegGridsStore:'setPromAdvertsRegGridsStore',
 				deleteRecordFromIDComplex:'deleteRecordFromIDComplex',
 				deleteRecordSingleParam:'deleteRecordSingleParam',
+                setPromParamCombosStore: 'setPromParamCombosStore',
                 previewOnlinePromotionalApplication:'previewOnlinePromotionalApplication',
                 getPromotionBatchApplicationApprovalDetails:'getPromotionBatchApplicationApprovalDetails'
 				
 			}
 		}
     },
+
+
+    //  setParamCombosStore: function (me, options) {
+    //     var config = options.config,
+    //         isLoad = options.isLoad,
+    //         store = Ext.create('Admin.store.parameters.ParamsComboAbstractStore', config);
+    //     me.setStore(store);
+    //     if (isLoad === true || isLoad == true) {
+    //         store.removeAll();
+    //         store.load({params:{application_id:active_application_id}});
+    //     }
+    // },
     
     refreshPromotionalApplicationDashgrid:function(grid){
         var mainTabPanel = this.getMainTabPanel(),
@@ -250,21 +380,45 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
         form.down('hiddenfield[name=process_id]').setValue(process_id);
         form.down('hiddenfield[name=selected_appcodes]').setValue(selected);
         form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
-        funcShowCustomizableWindow('Recommendation', '40%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Recommendation', '40%', form, 'customizablewindow');
     },
     preparePromotionAndAdvertsDetailsWizard:function(pnl){
             
         Ext.getBody().mask('Please wait...');
         var me = this, mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab();
-            applicantFrm = activeTab.down('promotionalapplicantdetailsfrm'),
+            var applicantFrm = activeTab.down('promotionalapplicantdetailsfrm'),
             promLocalapplicantdetailsfrm = activeTab.down('promLocalapplicantdetailsfrm'),
             products_detailsfrm = activeTab.down('#promotionalappdetailsfrm'),
+            promotionmaterialdetailsGrid = activeTab.down('promotionmaterialdetailsgrid'),
+            promotiommaterialproductGrid = activeTab.down('promotiommaterialproductgrid'),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code= activeTab.down('hiddenfield[name=active_application_code]').getValue(),
-            section_id= activeTab.down('hiddenfield[name=section_id]').getValue(),
-            zone_cbo = activeTab.down('combo[name=zone_id]');
-        filter = {section_id: section_id};
+            section_id= activeTab.down('hiddenfield[name=section_id]').getValue();
+            applicantFrm.down('button[name=link_applicant]').setDisabled(true);
+            //zone_cbo = activeTab.down('combo[name=zone_id]');
+           filter = {section_id: section_id};
+
+           products_detailsfrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+            });
+
+           if(promotionmaterialdetailsGrid){
+                var add_btn = promotionmaterialdetailsGrid.down('button[name=add_details]'),
+                widgetCol = promotionmaterialdetailsGrid.columns[promotionmaterialdetailsGrid.columns.length - 1];
+                add_btn.setVisible(false);
+                widgetCol.widget.menu.items = [];
+            
+             }
+
+             if(promotiommaterialproductGrid){
+                var add_btn = promotiommaterialproductGrid.down('button[name=add_details]'),
+                widgetCol = promotiommaterialproductGrid.columns[promotiommaterialproductGrid.columns.length - 1];
+                add_btn.setVisible(false);
+                widgetCol.widget.menu.items = [];
+            
+             }
+
        
         if (application_id) {
             Ext.Ajax.request({
@@ -283,20 +437,123 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
                         success = resp.success,
                         results = resp.results,
                         local_represults = resp.local_represults,
-                        zone_id = results.zone_id,
+                        //zone_id = results.zone_id,
                         model = Ext.create('Ext.data.Model', results);
 
                     if (success == true || success === true) {
 
                         applicantFrm.loadRecord(model);
                         products_detailsfrm.loadRecord(model);
-                        zone_cbo.setReadOnly(true);
-                        zone_cbo.setValue(zone_id);
+                        //zone_cbo.setReadOnly(true);
+                        //zone_cbo.setValue(zone_id);
                         
                         local_represults = Ext.create('Ext.data.Model', local_represults);
-                        promLocalapplicantdetailsfrm.loadRecord(local_represults);
+                        if(activeTab.down('promLocalapplicantdetailsfrm')){
+                          promLocalapplicantdetailsfrm.loadRecord(local_represults);
+                        }
+                       
+                        var viewModel=pnl.getViewModel();
+                        if(viewModel){
+                             viewModel.set('isReadOnly', true);
+                        }
 
-                        pnl.getViewModel().set('isReadOnly', true);
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+
+    },
+
+     preparePromotionAndAdvertsDetailsReceiving:function(pnl){
+            
+        Ext.getBody().mask('Please wait...');
+        var me = this, mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab();
+            var applicantFrm = activeTab.down('promotionalapplicantdetailsfrm'),
+            promLocalapplicantdetailsfrm = activeTab.down('promLocalapplicantdetailsfrm'),
+            products_detailsfrm = activeTab.down('#promotionalappdetailsfrm'),
+            promotionmaterialdetailsGrid = activeTab.down('promotionmaterialdetailsgrid'),
+            promotiommaterialproductGrid = activeTab.down('promotiommaterialproductgrid'),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code= activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            section_id= activeTab.down('hiddenfield[name=section_id]').getValue();
+            //applicantFrm.down('button[name=link_applicant]').setDisabled(true);
+            //zone_cbo = activeTab.down('combo[name=zone_id]');
+           filter = {section_id: section_id};
+
+           // products_detailsfrm.getForm().getFields().each(function (field) {
+           //      field.setReadOnly(true);
+           //  });
+
+           // if(promotionmaterialdetailsGrid){
+           //      var add_btn = promotionmaterialdetailsGrid.down('button[name=add_details]'),
+           //      widgetCol = promotionmaterialdetailsGrid.columns[promotionmaterialdetailsGrid.columns.length - 1];
+           //      add_btn.setVisible(false);
+           //      widgetCol.widget.menu.items = [];
+            
+           //   }
+
+           //   if(promotiommaterialproductGrid){
+           //      var add_btn = promotiommaterialproductGrid.down('button[name=add_details]'),
+           //      widgetCol = promotiommaterialproductGrid.columns[promotiommaterialproductGrid.columns.length - 1];
+           //      add_btn.setVisible(false);
+           //      widgetCol.widget.menu.items = [];
+            
+           //   }
+
+       
+        if (application_id) {
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'promotionmaterials/preparePromotionalAppDetailsReceiving',
+                params: {
+                    application_id: application_id
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results,
+                        local_represults = resp.local_represults,
+                        //zone_id = results.zone_id,
+                        model = Ext.create('Ext.data.Model', results);
+
+                    if (success == true || success === true) {
+
+                        applicantFrm.loadRecord(model);
+                        products_detailsfrm.loadRecord(model);
+                        //zone_cbo.setReadOnly(true);
+                        //zone_cbo.setValue(zone_id);
+                        
+                        local_represults = Ext.create('Ext.data.Model', local_represults);
+                        if(activeTab.down('promLocalapplicantdetailsfrm')){
+                          promLocalapplicantdetailsfrm.loadRecord(local_represults);
+                        }
+                       
+                        var viewModel=pnl.getViewModel();
+                        if(viewModel){
+                             viewModel.set('isReadOnly', true);
+                        }
 
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -399,6 +656,37 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
             //It's a new application
         }
     },
+
+    
+    setPromParamCombosStore: function (me, options) {
+        var config = options.config,
+            isLoad = options.isLoad,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab();
+            store = Ext.create('Admin.store.parameters.ParamsComboAbstractStore', config);
+        me.setStore(store);
+
+        //check if has been set or use window 
+        if (activeTab.down('hiddenfield[name=active_application_id]')) {
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue();
+
+        } else {
+            var panel = me.up('window'),
+            application_id = panel.down('hiddenfield[name=active_application_id]').getValue();
+
+        }
+
+        if (isLoad === true || isLoad == true) {
+            store.getProxy().extraParams = {
+                application_id: application_id
+            };
+           // console.log(application_id);
+            store.removeAll();
+            store.load();
+        }
+    },
+
+
     refreshPromotionalOtherDetailsGrid: function (me) {
 
         var grid = me.up('grid'),
@@ -453,7 +741,7 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
         docsGrid.down('hiddenfield[name=query_ref_id]').setValue(last_query_ref_id);
        
         onlinePanel.down('hiddenfield[name=status_type_id]').setValue(status_type_id);
-        funcShowCustomizableWindow(tracking_no, '80%', onlinePanel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no, '80%', onlinePanel, 'customizablewindow');
     },
 	
 	
@@ -826,8 +1114,8 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
 		form.down('textfield[name=brand_name]').setValue(record.get('brand_name'));
 		//form.down('textfield[name=common_name]').setValue(record.get('common_name'));
 		//common_name_id
-		form.down('combo[name=common_name_id]').setValue(record.get('common_name_id'));
-		form.down('textfield[name=registrant_name]').setValue(record.get('applicant_name'));  
+		//form.down('combo[name=common_name_id]').setValue(record.get('common_name_id'));
+		//form.down('textfield[name=registrant_name]').setValue(record.get('applicant_name'));  
 		
 		Ext.Function.defer(function () {
             mask.hide();
@@ -1228,7 +1516,6 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
             module_id = containerPnl.down('hiddenfield[name=module_id]').getValue(),
             sub_module_id = containerPnl.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = containerPnl.down('hiddenfield[name=section_id]').getValue(),
-            //zone_id = containerPnl.down('combo[name=zone_id]').getValue(),
             workflow_stage_id = containerPnl.down('hiddenfield[name=workflow_stage_id]').getValue(),
             active_application_id = containerPnl.down('hiddenfield[name=active_application_id]').getValue(),
             checkapplication_id = containerPnl.down('hiddenfield[name=active_application_id]').getValue(),
@@ -1236,19 +1523,18 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
             
             promotionmaterialsdocuploadsgenericgrid = containerPnl.down('promotionmaterialsdocuploadsgenericgrid'),
             promotiommaterialproductgrid= containerPnl.down('promotiommaterialproductgrid'),
-
+            promotionmaterialdetailsgrid= containerPnl.down('promotionmaterialdetailsgrid'),
             promotionapplicantdetailsfrm = containerPnl.down('promotionalapplicantdetailsfrm'),
-            applicant_id = promotionapplicantdetailsfrm.down('hiddenfield[name=applicant_id]').getValue(),
-            promLocalapplicantdetailsfrm = containerPnl.down('promLocalapplicantdetailsfrm'),
-            local_agent_id = promLocalapplicantdetailsfrm.down('hiddenfield[name=applicant_id]').getValue();
+            applicant_id = promotionapplicantdetailsfrm.down('hiddenfield[name=applicant_id]').getValue();
+            promotionmaterialsdocuploadsgenericgridStore= promotionmaterialsdocuploadsgenericgrid.getStore();
+            promotiommaterialproductgridStore= promotiommaterialproductgrid.getStore();
+            promotionmaterialdetailsgridStore= promotionmaterialdetailsgrid.getStore();
             
         if (!applicant_id) {
             toastr.warning('Please select applicant!!', 'Warning Response');
             return false;
-        }if (!local_agent_id) {
-            toastr.warning('Please select Local Technical Representative!!', 'Warning Response');
-            return false;
         }
+        
      
         if (promotionalappdetailsfrm.isValid()) {
             promotionalappdetailsfrm.submit({
@@ -1262,8 +1548,6 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
                     module_id: module_id,
                     sub_module_id: sub_module_id,
                     section_id: section_id,
-                    local_agent_id:local_agent_id,
-                    zone_id: 1,
                     '_token': token
                 },
                 headers: {
@@ -1285,8 +1569,12 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
 							containerPnl.down('hiddenfield[name=active_application_code]').setValue(application_code);
 							containerPnl.down('hiddenfield[name=process_id]').setValue(process_id);
                             containerPnl.down('displayfield[name=tracking_no]').setValue(tracking_no);
-                            promotionmaterialsdocuploadsgenericgrid.load();
-                            promotiommaterialproductgrid.load();
+                            promotionmaterialsdocuploadsgenericgridStore.removeAll();
+                            promotionmaterialsdocuploadsgenericgridStore.load();
+                            promotiommaterialproductgridStore.removeAll();
+                            promotiommaterialproductgridStore.load();
+                            promotionmaterialdetailsgridStore.removeAll();
+                            promotionmaterialdetailsgridStore.load();
                             
                         }
                        
@@ -1361,7 +1649,10 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
                             txt = ' (Cleared)';
                         }
                         invoice_id.setValue(results.invoice_id);
-                        invoice_no.setValue(results.invoice_no);
+                        if(invoice_no){
+                         invoice_no.setValue(results.invoice_no);  
+                        }
+                        
                         applicant_details.setValue(results.applicant_details);
 
                      
@@ -1504,7 +1795,108 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
             Ext.getBody().unmask();
         }
     },
-	
+
+
+    showApprovalApplicationSubmissionWin: function (btn) {
+        Ext.getBody().mask('Please wait...');
+        var mainTabPanel = this.getMainTabPanel(),
+            winWidth = btn.winWidth,
+            activeTab = mainTabPanel.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            valid = true,
+            storeID = getApplicationStore(module_id, section_id),
+            hasReviewRecommendation  = checkApprovalREcommendationDEtails(application_code),
+            table_name = getApplicationTable(module_id);
+
+        if(!hasReviewRecommendation){
+            toastr.error('Please enter the Review recommendation to proceed', 'Warning Response'); 
+            Ext.getBody().unmask();
+            return;
+        }
+        if (valid == true || valid === true) {
+            //workflowsubmissionsfrm
+            showRecommendationWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsstrictrecommfrm', winWidth, storeID, 2);
+        } else {
+            Ext.getBody().unmask();
+        }
+    },
+
+
+    showScreeningApplicationSubmissionWin: function (btn) {
+        Ext.getBody().mask('Please wait...');
+        var mainTabPanel = this.getMainTabPanel(),
+            storeID = btn.storeID,
+            table_name = btn.table_name,
+            winWidth = btn.winWidth,
+            activeTab = mainTabPanel.getActiveTab(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+        application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+        workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue();
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+            storeID = getApplicationStore(module_id, section_id);
+          //   var valid = this.validateproducsampleReceivingSubmission(),
+           var  validate_documentrecom = validateDocumentsSubmissonRecRecommendation(application_code),
+                hasQueries = checkApplicationRaisedQueries(application_code, module_id);
+             // valid = this.validateNewPremiseReceivingSubmission(btn),
+              storeID = getApplicationStore(module_id, section_id);
+              table_name = getApplicationTable(module_id);
+              extraParams = [{
+                  field_type: 'hiddenfield',
+                  field_name: 'has_queries',
+                  value: hasQueries
+              }];
+
+             grid = activeTab.down('productscreeninggrid');
+                store = grid.getStore();
+                 for (var i = 0; i < store.data.items.length; i++) {
+                    var record = store.data.items[i];
+
+                    if (record.dirty) {
+                        toastr.warning('Please save Screening details!!', 'Warning Response');
+                        Ext.getBody().unmask();
+                        return false;
+                    }
+          }
+
+         if(hasQueries){
+            Ext.getBody().unmask();
+             toastr.error('Please Note the application has Open Query. Kindly use query process to submit the application!!', 'Warning Response');
+            return false;
+        }
+
+           checklist_category_id = 1;
+            if(activeTab.down('combo[name=applicable_checklist]') ){
+                checklist_category_id = activeTab.down('combo[name=applicable_checklist]').getValue();
+            }
+           
+            hasEvalUploadChecklist = checkApplicationChecklistUploadDetails(application_code, module_id,sub_module_id,section_id,checklist_category_id,workflow_stage_id);
+            if(!hasEvalUploadChecklist){
+                toastr.warning('Fill in the Evaluation checklist details(for checklist based inspection) to proceed!!', 'Warning Response');
+                Ext.getBody().unmask();
+                return false;
+               
+            }
+
+
+              if(!hasQueries){
+                if(!validate_documentrecom){
+                    Ext.getBody().unmask();
+                    toastr.warning('Please Enter Application Documents Submission recommendation!!', 'Warning Response');
+                    return false;
+                    
+                }
+
+              }
+            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsstrictrecommfrm', winWidth, storeID,extraParams,'','',workflow_stage_id);
+             
+    },
+
+
 	
 	showApplicationMoreDetails: function (btn) {
         var mainTabPanel = this.getMainTabPanel(),
@@ -1530,7 +1922,7 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
             activeTab = Ext.create('Ext.tab.Panel', {layout: 'fit',items:[{xtype: childXtype, title: 'Promotional & Advertisements Application Details '}]}),
           
             wizardPnl = activeTab;
-            wizard_pnl = activeTab.down('promtionadvertsmoredetailswizard'),
+            var wizard_pnl = activeTab.down('promtionadvertsmoredetailswizard'),
             applicantFrm = activeTab.down('promotionalapplicantdetailsfrm'),
             promLocalapplicantdetailsfrm = activeTab.down('promLocalapplicantdetailsfrm'),
             products_detailsfrm = activeTab.down('#promotionalappdetailsfrm'),
@@ -1610,7 +2002,7 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
                         documents_grid.down('hiddenfield[name=sub_module_id]').setValue(record.get('sub_module_id'));
                         documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);
 
-                        funcShowCustomizableWindow(record.get('tracking_no'), '85%', wizardPnl, 'customizablewindow');
+                        funcShowOnlineCustomizableWindow(record.get('tracking_no'), '85%', wizardPnl, 'customizablewindow');
                         
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -1641,7 +2033,7 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
         Ext.getBody().mask('Please wait...');
         var me = this,
             wizardPnl = Ext.widget('promtionadvertsmoredetailswizard'),
-            activeTab = wizardPnl;
+            activeTab = wizardPnl,
             applicantFrm = activeTab.down('promotionalapplicantdetailsfrm'),
             promLocalapplicantdetailsfrm = activeTab.down('promLocalapplicantdetailsfrm'),
             products_detailsfrm = activeTab.down('#promotionalappdetailsfrm'),
@@ -1667,7 +2059,8 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
                     var resp = Ext.JSON.decode(response.responseText),
                         message = resp.message,
                         success = resp.success,
-                        results = resp.results, record = resp.results,
+                        results = resp.results,
+                         record = resp.results,
                         local_represults = resp.local_represults,
                         zone_id = results.zone_id,
                         model = Ext.create('Ext.data.Model', results);
@@ -1685,23 +2078,21 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
                         promotiommaterialproductgrid.down('button[name=add_details]').setDisabled(true);
                        
                        // wizardPnl.down('displayfield[name=application_status]').setValue(record.get('application_status'));
-                        wizardPnl.down('displayfield[name=tracking_no]').setValue(record.get('tracking_no'));
+                        wizardPnl.down('displayfield[name=tracking_no]').setValue(record.tracking_no);
                         
-                        wizardPnl.down('hiddenfield[name=active_application_id]').setValue(record.get('active_application_id'));
-                        wizardPnl.down('hiddenfield[name=process_id]').setValue(record.get('process_id'));
-                        wizardPnl.down('hiddenfield[name=workflow_stage_id]').setValue(record.get('workflow_stage_id'));
-                        wizardPnl.down('hiddenfield[name=application_id]').setValue(record.get('application_id'));
-                        wizardPnl.down('hiddenfield[name=module_id]').setValue(record.get('module_id'));
-                        wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(record.get('sub_module_id'));
-                        wizardPnl.down('hiddenfield[name=application_status_id]').setValue(record.get('application_status_id'));
-                        wizardPnl.down('hiddenfield[name=section_id]').setValue(record.get('section_id'));
+                        wizardPnl.down('hiddenfield[name=active_application_id]').setValue(record.active_application_id);
+                        wizardPnl.down('hiddenfield[name=process_id]').setValue(record.process_id);
+                        wizardPnl.down('hiddenfield[name=workflow_stage_id]').setValue(record.workflow_stage_id);
+                        wizardPnl.down('hiddenfield[name=application_id]').setValue(record.application_id);
+                        wizardPnl.down('hiddenfield[name=module_id]').setValue(record.module_id);
+                        wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(record.sub_module_id);
+                        wizardPnl.down('hiddenfield[name=application_status_id]').setValue(record.application_status_id);
+                        wizardPnl.down('hiddenfield[name=section_id]').setValue(record.section_id);
                         
                         viewModel.set({readOnly:true});
                         viewModel.set({isReadOnly:true});
                         applyReadOnlytoForms(applicantFrm);
-                        
-                        record
-                        funcShowCustomizableWindow(record.get('tracking_no'), '85%', wizardPnl, 'customizablewindow');
+                        funcShowOnlineCustomizableWindow(record.tracking_no, '85%', wizardPnl, 'customizablewindow');
                         
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -1844,6 +2235,15 @@ Ext.define('Admin.controller.PromoAndAdvertMaterialsController', {
 		
 		 this.customShowApplicationMoreDetailsGeneric(btn.up('promotionadvertsevaluationdocpanel').record);
 	},
+
+
+        showScreeningMoreDetails:function(btn)
+    {
+        
+         this.customShowApplicationMoreDetailsGeneric(btn.up('promotionadvertsscreeningdocpanel').record);
+    },
+    
+
     
 	
 	//online app

@@ -2,6 +2,7 @@
  * Created by Kip on 11/1/2018.
  */
 Ext.define('Admin.view.workflowmanagement.views.forms.WorkflowSubmissionManagersGenericFrm', {
+    //extend: 'Admin.view.workflowmanagement.views.forms.WorkflowManagerSubmissionsGenericFrm',
     extend: 'Admin.view.workflowmanagement.views.forms.WorkflowSubmissionsGenericFrm',
     xtype: 'workflowsubmissionmanagersgenericfrm',
     dockedItems: [

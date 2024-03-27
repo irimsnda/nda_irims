@@ -51,15 +51,7 @@
                 displayExpr="name" formControlName="controlleddrugs_type_id" [searchEnabled]="true">
               </dx-select-box>
             </div>
-            <div class="col-lg-6 ">
-              <label>Is a Registered Drug</label>
-              <dx-select-box [dataSource]="confirmDataParam" valueExpr="id" placeholder="Select Is a Registered Drug"   (onValueChanged) ="funcChangeisRegisteredDrug($event)"
-                displayExpr="name" formControlName="is_registered_product" [searchEnabled]="true">
-              </dx-select-box>
-            </div>
-          
-            <div class="input-group col-lg-6" *ngIf="isregistered_product">
-                    
+            <div class="input-group col-lg-6" *ngIf="is_registered == 1">         
                 <label class="col-lg-12">Market Authorisation No</label>
                 <dx-text-box placeholder="Market Authorisation No" readOnly="true" formControlName="product_registration_no">
                 </dx-text-box>
@@ -68,15 +60,24 @@
                     type="success"
                     icon="fa fa-search" 
                     [elementAttr]="{  class: 'pull-left input-group-text' }"
-                    (onClick)="onSearchRegisteredProducts()">
+                    (onClick)="onSearchRegisteredProductApplication()">
                 </dx-button>
-              
             </div>
-            <div class="col-lg-6 ">
-              <label>Drug Name</label>
-              <dx-text-box placeholder="Drug Name" formControlName="brand_name">
-              </dx-text-box>
+
+            <div class="input-group col-lg-6">         
+                <label class="col-lg-12">Brand Name</label>
+                <dx-text-box placeholder="Brand Name" readOnly="true" formControlName="brand_name">
+                </dx-text-box>
+                <dx-button
+                    text="Search UnRegistered Drugs"
+                    type="success"
+                    [disabled]="is_registered == 1"
+                    icon="fa fa-search" 
+                    [elementAttr]="{  class: 'pull-left input-group-text' }"
+                    (onClick)="onSearchUnRegisteredRegisteredProductApplication()">
+                </dx-button>
             </div>
+
             <div class="col-lg-6 ">
               <label>Controlled Drugs Substance</label>
               <dx-select-box [dataSource]="controlDrugsSubstanceData" valueExpr="id" placeholder="Select Controlled Drugs Substance"   (onValueChanged) ="funcChangecontrolDrugsSubstance($event)"
@@ -98,7 +99,7 @@
             <div class="col-lg-6">
               <label>Dosage Form</label>
               <dx-select-box [dataSource]="dosageFormsData" valueExpr="id" placeholder="Select Product Dosage Form"
-                displayExpr="name" formControlName="dosage_form_id" [searchEnabled]="true">
+                displayExpr="name" [readOnly]="is_registered == 1" formControlName="dosage_form_id" [searchEnabled]="true">
               </dx-select-box>
             </div>
             <div class="col-lg-6">
@@ -175,10 +176,45 @@
     </div>
   </dx-popup>
 
-
+<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="600" [showTitle]="true" title="Registered Products Details"
+  [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isRegisteredproductsPopupVisible">
+  <div *dxTemplate="let data of 'content'">
+    <dx-data-grid class="table row-border hover"  [allowColumnResizing]="true"  
+      [columnHidingEnabled]="true" [height]="500"  [remoteOperations]='true' 
+      [remoteOperations]="true"
+      [dataSource]="manSiteRegisteredProductsData" keyExpr="id">
+      <dxo-filter-row [visible]="false"></dxo-filter-row>
+      <dxo-search-panel [visible]="true"></dxo-search-panel>
+      <dxo-paging [enabled]="true"></dxo-paging>
+      <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
+      </dxo-pager>
+      <dxo-export [enabled]="true" fileName="manufacturingFile" [allowExportSelectedData]="true"></dxo-export>
+      <dxo-selection mode="single"></dxo-selection>
+      <dxo-group-panel [visible]="true"></dxo-group-panel>
+      <dxi-column [width]="140" caption="Action" name="command-editing" [allowFiltering]="false"
+       [allowSorting]="false"
+        cellTemplate="cellTemplate">
+        <div *dxTemplate="let data of 'cellTemplate'">
+          <a class="action-btn" (click)="funcSelectProductDetails(data)"><i class="fa fa-edit"></i>Select Product Details</a>&nbsp;
+        </div>
+      <dxo-paging [pageSize]="50"></dxo-paging> 
+      </dxi-column>
+      <dxi-column [width]="140" dataField="product_registration_no" caption="Reference Number"></dxi-column>
+      <dxi-column  dataField="brand_name"></dxi-column>
+      <dxi-column  dataField="product_origin"></dxi-column>
+      <dxi-column   dataField="common_name"></dxi-column>
+      <dxi-column dataField="applicant_name"></dxi-column>
+      <dxi-column dataField="physical_address"></dxi-column>
+      <dxi-column dataField="dosage_form"></dxi-column>
+      <dxi-column dataField="product_type"></dxi-column>
+      <dxi-column dataField="manufacturing_site"></dxi-column> 
+                
+    </dx-data-grid>
+  </div>
+</dx-popup>
   
 <dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="550" [showTitle]="true" title="Permits Products" [dragEnabled]="false"
-[closeOnOutsideClick]="false" [(visible)]="isRegisteredproductsPopupVisible">
+[closeOnOutsideClick]="false" [(visible)]="isManufacturingSiteProductsDetails">
 <div *dxTemplate="let data of 'content'">
   <dx-scroll-view>
   <div class="row no-padding">
@@ -215,4 +251,37 @@
   </div>
 </dx-scroll-view>
 </div>
+</dx-popup>
+
+<dx-popup class="popup" [width]="funcpopWidth(80)" height="600" [showTitle]="true" title="Unregistered Products Details"
+  [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isUnRegisteredProductsDetails">
+  <div *dxTemplate="let data of 'content'">
+        <dx-data-grid class="table row-border hover"  [allowColumnResizing]="true"  [columnHidingEnabled]="true" height="500"  [remoteOperations]='true' 
+        [remoteOperations]="true"
+                  [dataSource]="UnRegisteredProductsData" keyExpr="id">
+                  <dxo-filter-row [visible]="false"></dxo-filter-row>
+                  <dxo-search-panel [visible]="true">
+                  </dxo-search-panel>
+                  <dxo-paging [enabled]="true">
+                  </dxo-paging>
+                  <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
+                  </dxo-pager>
+                  <dxo-export [enabled]="true" fileName="manufacturingFile" [allowExportSelectedData]="true"></dxo-export>
+                  <dxo-selection mode="single"></dxo-selection>
+                  <dxo-group-panel [visible]="true"></dxo-group-panel>
+                  <dxi-column [width]="140" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+                    cellTemplate="cellTemplate">
+                    <div *dxTemplate="let data of 'cellTemplate'">
+                      <a class="action-btn" (click)="funcSelectUnRegisteredProductDetails(data)"><i class="fa fa-edit"></i>Select Product Details</a>&nbsp;
+                    </div>
+                    <dxo-paging [pageSize]="50"></dxo-paging> 
+                  </dxi-column>
+                  <dxi-column  dataField="product_type" caption="Product Type"></dxi-column>
+                  <dxi-column  dataField="dosage_form"></dxi-column>
+                  <dxi-column  dataField="proprietary_name"></dxi-column>
+                  <dxi-column  dataField="product_strength"></dxi-column>
+                  <dxi-column  dataField="siunit"></dxi-column>
+                
+        </dx-data-grid>
+    </div>
 </dx-popup>

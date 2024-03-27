@@ -34,6 +34,22 @@ Ext.define('Admin.view.productregistration.views.forms.medicaldevices.MedicalDev
             name: 'table_name',
 
         },{
+            xtype:'fieldset',
+            columnWidth: 1,
+            title: 'Product particulars',
+            collapsible: true,
+            defaults: {
+                labelAlign: 'top',
+                allowBlank: false,
+                labelAlign: 'top',
+                margin: 5,
+                xtype: 'textfield',
+                allowBlank: false,
+                columnWidth: 0.33,
+            },
+            layout: 'column',
+            items:[
+            {
             xtype: 'combo',
             fieldLabel: 'Product Class Category',
             name: 'prodclass_category_id',
@@ -548,5 +564,7 @@ Ext.define('Admin.view.productregistration.views.forms.medicaldevices.MedicalDev
                 readOnly: '{isReadOnly}'  // negated
             }
         }
+        ]
+      }
     ]
 });

@@ -70,7 +70,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PermitsDecla
         width: 10
     }, {
         xtype: 'combo',
-        fieldLabel: 'Workflow Stage',
+        fieldLabel: 'Application Status',
         valueField: 'id',
         name: 'workflow_stage_id',
         displayField: 'name',
@@ -177,7 +177,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PermitsDecla
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'workflow_stage',
-        text: 'Workflow Stage',
+        text: 'Application Status',
         flex: 1
     },  {
         xtype: 'gridcolumn',

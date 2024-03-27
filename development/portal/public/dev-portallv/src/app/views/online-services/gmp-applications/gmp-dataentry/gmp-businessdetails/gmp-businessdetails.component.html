@@ -29,8 +29,9 @@
             <dxo-export [enabled]="true" fileName="dtpremOtherDetailsData" [allowExportSelectedData]="true"></dxo-export>
             <dxo-group-panel [visible]="true"></dxo-group-panel>
             <dxi-column dataField="contract_manufacturing"></dxi-column> 
-            <dxi-column dataField="site_name"></dxi-column> 
-            <dxi-column dataField="personnel_name"></dxi-column>          
+            <dxi-column dataField="inspected"></dxi-column> 
+            <dxi-column dataField="manufacturer_name"></dxi-column> 
+            <dxi-column dataField="contact_person"></dxi-column>          
             <dxi-column dataField="email_address"></dxi-column>          
             <dxi-column dataField="telephone_no"></dxi-column>          
             <dxi-column [width]="100" caption="Action" name="command-editing" [allowFiltering]="false" 
@@ -127,7 +128,6 @@
   </div>
 </dx-popup>
 
-
 <dx-popup class="popup" [width]="funcpopWidth(70)" [height]="550" [showTitle]="true" title="Contract Manufacturing Details"
 [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isContractManufacturingPopupVisible">
 <div *dxTemplate="let data of 'content'">
@@ -141,17 +141,11 @@
       </dx-select-box>
     </div>
 
-    <div class="col-lg-12"*ngIf="isContractGiverManufacturer">
-      <label>Does the site a contract Manufacturer or Has it Contracted another facility for some activities been Inspected for GMP</label>
-      <dx-select-box  [dataSource]="confirmDataParam" (onValueChanged)="onContractGiverManufacturer($event)" valueExpr="id"
-        displayExpr="name"  placeholder="Select Contract Manufacturing Been Inspected" [searchEnabled]="true" formControlName="inspected_id">
-      </dx-select-box>
-    </div>
-    <div class="col-lg-4 row input-group "*ngIf="isonContractGiverManufacturer">
+    <div class="col-lg-4 row input-group "*ngIf="isContractGiverManufacturer">
       <div class="col-lg-8">
         <label class="control-label">Site Name</label>
           <dx-text-box [readOnly]="manufacturingSiteLocationSet" 
-             formControlName="site_name"
+             formControlName="manufacturer_name"
               placeholder="Manufacturer Name" [showClearButton]="true">
           </dx-text-box>
       </div>
@@ -163,27 +157,27 @@
         </dx-button>
       </div>  
     </div>            
-    <div class="col-xs-12 col-md-4 col-lg-4 col-xl-4"*ngIf="isonContractGiverManufacturer">
+    <div class="col-xs-12 col-md-4 col-lg-4 col-xl-4"*ngIf="isContractGiverManufacturer">
       <label class="control-label">Site Country</label>
         <dx-select-box [readOnly]="manufacturingSiteLocationSet" [dataSource]="countries" valueExpr="id" displayExpr="name" 
           placeholder="Select Country" (onSelectionChanged)="onCoutryCboSelect($event)" [searchEnabled]="true" formControlName="country_id">
         </dx-select-box>
       </div>
-    <div class="col-xs-12 col-md-4 col-lg-4 col-xl-4"*ngIf="isonContractGiverManufacturer">
+    <div class="col-xs-12 col-md-4 col-lg-4 col-xl-4"*ngIf="isContractGiverManufacturer">
         <label for="ti" class="control-label">Site Region</label>
           <dx-select-box [readOnly]="manufacturingSiteLocationSet" [dataSource]="regions" valueExpr="id" displayExpr="name"
             [searchEnabled]="true" formControlName="region_id">
           </dx-select-box>
     </div>
-    <div class="col-xs-12 col-md-4 col-lg-4 col-xl-4"*ngIf="isonContractGiverManufacturer">
+    <div class="col-xs-12 col-md-4 col-lg-4 col-xl-4"*ngIf="isContractGiverManufacturer">
       <label for="ti" class="control-label">Site Postal Address</label>
         <dx-text-box  [readOnly]="manufacturingSiteLocationSet"formControlName="physical_address" placeholder="Postal Address">
         </dx-text-box>
     </div>
-    <div class="col-lg-4 row input-group "*ngIf="isonContractGiverManufacturer">
+    <div class="col-lg-4 row input-group "*ngIf="isContractGiverManufacturer">
      <div class="col-lg-8">
         <label class="control-label">Contact Person</label>
-          <dx-text-box  formControlName="name" readOnly=true [showClearButton]="true">
+          <dx-text-box  formControlName="contact_person" readOnly=true [showClearButton]="true">
           </dx-text-box>
             </div>
       <div class="col-lg-4 no-padding">
@@ -194,15 +188,16 @@
         </dx-button>
       </div>  
     </div>   
-    <div class="col-xs-12 col-md-4 col-lg-4 col-xl-4"*ngIf="isonContractGiverManufacturer">
-      <label for="ti" class="control-label">Contact Person Email Address</label>
-        <dx-text-box formControlName="email_address" placeholder="Email Address">
-        </dx-text-box>
-    </div>
-    <div class="col-xs-12 col-md-4 col-lg-4 col-xl-4"*ngIf="isonContractGiverManufacturer">
+    <div class="col-xs-12 col-md-4 col-lg-4 col-xl-4"*ngIf="isContractGiverManufacturer">
       <label for="ti" class="control-label">Contact Telephone No</label>
-      <dx-text-box formControlName="telephone_no" placeholder="Telephone No">
+      <dx-text-box formControlName="telephone_no" readOnly=true placeholder="Telephone No">
       </dx-text-box>
+    </div>
+    <div class="col-lg-12 ">
+      <label for="ti" class="control-label">Manufacturing Activity Details to be inspected</label>
+          <dx-select-box [dataSource]="manufacturingActivityData" valueExpr="id" displayExpr="name"
+            [searchEnabled]="true" formControlName="inspected_activity_id">
+          </dx-select-box>
     </div>
     <div class="col-lg-12">
       <input type="hidden" formControlName="id" />
@@ -220,7 +215,8 @@
  <dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="600" [showTitle]="true" title="Manufactur Details"
     [dragEnabled]="false" [closeOnOutsideClick]="true" [(visible)]="isManufacturerPopupVisible">
     <div *dxTemplate="let data of 'content'">
-          <dx-data-grid class="table row-border hover" [remoteOperations]='true'  [allowColumnResizing]="true"  [columnHidingEnabled]="true" 
+          <dx-data-grid class="table row-border hover" [remoteOperations]='true'  [allowColumnResizing]="true"  
+            [columnHidingEnabled]="true" 
                     [dataSource]="manufacturersSiteData" (onToolbarPreparing)="onManDetailPreparing($event)" keyExpr="id">
                     <dxo-filter-row [visible]="false"></dxo-filter-row>
                     <dxo-search-panel [visible]="true">
@@ -238,7 +234,7 @@
                         <a (click)="funcSelectManufacturer(data)" class="action-btn"><i class="fa fa-edit"></i>Select Manufacturer Site</a>&nbsp;
                       </div>
                     </dxi-column>
-                    <dxi-column [groupIndex]="1" dataField="site_name"></dxi-column>
+                    <dxi-column [groupIndex]="1" dataField="manufacturing_site_name"></dxi-column>
                     <dxi-column dataField="manufacturing_site_name"></dxi-column>
                     <dxi-column dataField="country"></dxi-column>
                     <dxi-column dataField="region"></dxi-column>
@@ -322,3 +318,24 @@
   </div>
   </div>
   </dx-popup>
+
+  <dx-popup class="popup" [width]="funcpopWidth(60)" [height]="'auto'" [showTitle]="true" title="Conditions for Contract or Acceptor"
+  [dragEnabled]="false" [showCloseButton]="false" [(visible)]="isUncontractAcceptorWin">
+  <div *dxTemplate="let data of 'content'">
+    <p style="color: #FFA500; font-weight: bold; font-size: 20px;">
+      Submission of the information of the Registered/Approved Contract Facility is Mandatory on Contract Giver or Acceptor.
+      Application will not be received until all manufacturing parties have applied for an inspection.
+    </p>
+    <div class="col-lg-12 div-footer">
+            <dx-button
+            text="Back to Application Dashboard"
+            type="success"
+            icon="fa fa-eraser"
+            [elementAttr]="{  class: 'pull-left' }"
+            (onClick)="onGMPDashboard()">
+        </dx-button>
+      </div>
+  </div>
+</dx-popup>
+
+

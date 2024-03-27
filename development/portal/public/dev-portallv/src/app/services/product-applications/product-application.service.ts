@@ -30,6 +30,7 @@ export class ProductApplicationService {
     this.account_role_id = user.account_role_id;
 
   }
+  
   getProductApplicationDetail() {
       return this.productapp_details;
   }
@@ -97,6 +98,106 @@ export class ProductApplicationService {
         return data;
       }));
   }
+
+   onSaveProductQualitySummaryDetails(table_name,productOtherDetails,product_id=null,application_code=null){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'productregistration/onSaveProductQualitySummaryDetails', productOtherDetails, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,table_name:table_name,product_id:product_id,application_code:application_code }, headers: headers })
+      .pipe(map(data => {
+        
+        return data;
+      }));
+  }
+
+  onSaveProductQualitySummary(table_name,productOtherDetails,product_id=null,application_code=null){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'productregistration/onSaveProductQualitySummary', productOtherDetails, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,table_name:table_name,product_id:product_id,application_code:application_code }, headers: headers })
+      .pipe(map(data => {
+        
+        return data;
+      }));
+  }
+
+
+    onSaveProductOtherActiveQiSDetails(table_name,productOtherDetails,product_id=null){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'productregistration/onSaveProductOtherActiveQiSDetails', productOtherDetails, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,table_name:table_name,product_id:product_id }, headers: headers })
+      .pipe(map(data => {
+        
+        return data;
+      }));
+  }
+    onSaveProductGeneralQiSDetails(table_name,productOtherDetails,product_id=null){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'productregistration/onSaveProductGeneralQiSDetails', productOtherDetails, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,table_name:table_name,product_id:product_id }, headers: headers })
+      .pipe(map(data => {
+        
+        return data;
+      }));
+  }
+    onSaveProductManufQiSDetails(table_name,productOtherDetails,product_id=null){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'productregistration/onSaveProductManufQiSDetails', productOtherDetails, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,table_name:table_name,product_id:product_id }, headers: headers })
+      .pipe(map(data => {
+        
+        return data;
+      }));
+  }
+    onSaveProductCharacterQiSDetails(table_name,productOtherDetails,product_id=null){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'productregistration/onSaveProductCharacterQiSDetails', productOtherDetails, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,table_name:table_name,product_id:product_id }, headers: headers })
+      .pipe(map(data => {
+        
+        return data;
+      }));
+  }
+    onSaveProductControlAPIQiSDetails(table_name,productOtherDetails,product_id=null){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'productregistration/onSaveProductControlAPIQiSDetails', productOtherDetails, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,table_name:table_name,product_id:product_id }, headers: headers })
+      .pipe(map(data => {
+        
+        return data;
+      }));
+  }
+    onSaveProductReferQiSDetails(table_name,productOtherDetails,product_id=null){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'productregistration/onSaveProductReferQiSDetails', productOtherDetails, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,table_name:table_name,product_id:product_id }, headers: headers })
+      .pipe(map(data => {
+        
+        return data;
+      }));
+  }
   
   onAddManufacturingSite(table_name,productOtherDetails){
     var headers = new Headers({
@@ -121,6 +222,7 @@ export class ProductApplicationService {
     filter_params.account_role_id = this.account_role_id;
     
     filter_params.module_id = module_id;
+
     
     this.config = {
       params: filter_params,
@@ -132,6 +234,34 @@ export class ProductApplicationService {
       }));
      
   }
+  onProductApplication(filter_params,action_url,module_id,application_code) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+  //  filter_params.push({ trader_id: this.trader_id});
+    filter_params.trader_id = this.trader_id;
+    filter_params.trader_user_id = this.trader_user_id;
+    filter_params.account_role_id = this.account_role_id;
+    
+    filter_params.module_id = module_id;
+    filter_params.application_code = application_code;
+
+    
+    this.config = {
+      params: filter_params,
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'productregistration/'+action_url, this.config)
+      .pipe(map(data => {
+         return <any>data;
+      }));
+     
+  }
+
+
+
+
   onProductNotificationLoading(filter_params) {
     var headers = new HttpHeaders({
       "Accept": "application/json",
@@ -200,6 +330,10 @@ export class ProductApplicationService {
         return <any>data;
       }));
   }
+
+
+
+
   onDeleteProductsDetails(record_id,table_name,product_id,title){
     var headers = new Headers({
       "Accept": "application/json",

@@ -57,6 +57,160 @@ class ProductRegistrationController extends Controller
               
         return $codes_array;
     }
+
+
+    public function getApprovedProductsRegApplications(Request $req){
+         $limit = $req->input('limit');
+        $page = $req->input('page');
+        $start = $req->input('start');
+        $section_id = $req->input('section_id');
+        $man_site_id = $req->input('man_site_id');
+        
+        $filter = $req->input('filter');
+        
+        $search_value = $req->input('search_value');
+       
+        $status_id = $req->input('status_id');
+        $registration_status_id =explode(',',$status_id);
+
+        $search_field = $req->input('search_field');
+
+        $filter = $req->input('filter');
+        $whereClauses = array();
+        $filter_string = '';
+        if (isset($filter)) {
+            $filters = json_decode($filter);
+            if ($filters != NULL) {
+                foreach ($filters as $filter) {
+                    switch ($filter->property) {
+                        case 'brand_name' :
+                            $whereClauses[] = "t7.brand_name like '%" . ($filter->value) . "%'";
+                            break;
+                        case 'common_name' :
+                            $whereClauses[] = "t8.name like '%" . ($filter->value) . "%'";
+                            break;
+                        case 'certificate_no' :
+                            $whereClauses[] = "t11.certificate_no like '%" . ($filter->value) . "%'";
+                            break;
+                             case 'reference_no' :
+                            $whereClauses[] = "t1.reference_no like '%" . ($filter->value) . "%'";
+                            break;
+                        
+                    }
+                }
+                $whereClauses = array_filter($whereClauses);
+            }
+            if (!empty($whereClauses)) {
+                $filter_string = implode(' AND ', $whereClauses);
+            }
+        } 
+        
+        try {
+            $qry_count = DB::table('tra_product_applications as t1')
+                ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->join('tra_product_information as t7', 't1.product_id', '=', 't7.id')
+                ->join('tra_approval_recommendations as t12', 't1.application_code', '=', 't12.application_code')
+                ->select('DISTINCT t7.id');
+                //DB::enableQueryLog();
+            $qry = DB::table('tra_product_applications as t1')
+                ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->join('tra_product_information as t7', 't1.product_id', '=', 't7.id')
+                ->leftJoin('par_common_names as t8', 't7.common_name_id', '=', 't8.id')
+                ->leftJoin('wb_trader_account as t9', 't1.local_agent_id', '=', 't9.id')
+                ->leftJoin('par_classifications as t10', 't7.classification_id', '=', 't10.id')
+                ->leftJoin('tra_approval_recommendations as t11', 't1.application_code', '=', 't11.application_code')
+                ->leftJoin('tra_registered_products as t12', 't12.tra_product_id', '=', 't7.id')
+                ->leftJoin('par_validity_statuses as t4', 't12.validity_status_id', '=', 't4.id')
+                ->leftJoin('par_storage_conditions as t13', 't7.storage_condition_id', '=', 't13.id')
+                ->leftJoin('tra_product_manufacturers as t14', function ($join) {
+                    $join->on('t7.id', '=', 't14.product_id')
+                        ->on('t14.manufacturer_type_id', '=', DB::raw(1));
+                })
+                ->leftJoin('par_dosage_forms as t15', 't7.dosage_form_id', '=', 't15.id')
+                ->select(DB::raw("DISTINCT t7.id,t7.*, t1.*, t1.id as active_application_id, t1.reg_product_id, t3.name as applicant_name, t9.name as local_agent, t4.name as application_status,
+                t13.name as storage_condition, t7.brand_name, t7.id as tra_product_id, t8.name as common_name, t10.name as classification_name, t11.certificate_no, t12.expiry_date,
+                t7.brand_name as sample_name,t7.physical_description as product_description, t14.manufacturer_id, t15.name as dosage_form"));
+            if (validateIsNumeric($section_id)) {
+                $qry->where('t7.section_id', $section_id);
+            }
+            if (validateIsNumeric($man_site_id)) {
+              //  $qry->where('t14.man_site_id', $man_site_id);
+            }
+            if ($search_value != '') {
+                $qry = $qry->where($search_field, 'like', '%' . $search_value . '%');
+            }
+            
+            
+            if(count($registration_status_id) >0){
+               //$qry->whereIn('t12.registration_status_id', $registration_status_id);
+            }
+            else{
+                
+            }
+           // $qry->where('t11.appregistration_status_id', 2);
+               // $qry_count->where('t12.appregistration_status_id', 2);
+            if($filter_string != ''){
+                $qry->whereRAW($filter_string);
+            }
+            
+        $count = $qry_count->count();
+
+
+          //  $results = $qry->orderBy('t11.expiry_date','desc')->groupBy('t7.id')->skip($start)->take($limit)->get();
+           
+            
+          
+            $results = $qry->groupBy('t12.id')->get()->slice($start)->take($limit);
+
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'total' => $count,
+                'message' => 'All is well'
+            );
+
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
+       public function getQualitySummaryDetails(Request $req){
+        try{
+            $product_id = $req->product_id;
+            $table_name = $req->table_name;
+            if($table_name=='tra_active__pharmaceutical' || $table_name==='tra_active__pharmaceutical'){
+               $qry = DB::table($table_name.' as t1')
+               ->leftJoin('par_ingredients_details as t2', 't1.active_ingredient_id', '=', 't2.id')
+               ->select(DB::raw("t1.*, t2.name as ingredient_name"))
+               ->where('t1.product_id', $product_id); 
+            }else{
+              $qry = DB::table($table_name.' as t1')
+               ->where('t1.product_id', $product_id);
+             }
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+           $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        }
+        return \response()->json($res);
+    }
     public function getProductApplications(Request $request)
     {
         $module_id = $request->input('module_id');
@@ -407,7 +561,7 @@ class ProductRegistrationController extends Controller
                     "product_subcategory_id" => $request->input('product_subcategory_id'),
                     "intended_enduser_id" => $request->input('intended_enduser_id'),
                     "intended_use_id" => $request->input('intended_use_id'),
-                    "route_of_administration_id" => $request->input('route_of_administration_id'),
+                    "route_of_administration_id" =>json_encode(json_decode($request->input('route_of_administration_id'))),
                     "method_ofuse_id" => $request->input('method_ofuse_id'),
                     "instructions_of_use" => $request->input('instructions_of_use'),
                     'prodclass_category_id'=>$request->prodclass_category_id,
@@ -464,7 +618,6 @@ class ProductRegistrationController extends Controller
                     'product_usecategory_id'=>$request->product_usecategory_id,
                     'labelling_description'=>$request->labelling_description
                     );
-
                 return $prod_data;
     }
     
@@ -1321,9 +1474,10 @@ if(validateIsNumeric($section_id)){
                     't2.*');
 
             $results = $qry1->first();
+            $results->route_of_administration_id=json_decode($results->route_of_administration_id);
 
 
-
+ 
             $qry2 = clone $main_qry;
             $qry2->join('tra_premises as t3a', 't1.local_agent_id', '=', 't3a.id')
                  ->Join('tra_premises_applications as t3b', 't3b.premise_id', '=', 't3a.id')
@@ -1518,7 +1672,14 @@ if(validateIsNumeric($section_id)){
             $application_id = $req->application_id;
             $application_code = $req->application_code;
             $document_status_id = $req->document_status_id;
+            $module_id = $req->input('module_id');
+            $application_table_name = $req->input('table_name');
             $remarks = $req->remarks;
+            if($application_table_name == ''){
+                $application_table_name = getSingleRecordColValue('modules', array('id' => $module_id), 'table_name');
+                
+            }
+
             if(isset($remarks) && $remarks != null){
             $table_name = 'tra_documentsubmission_recommendations';
 
@@ -1546,7 +1707,7 @@ if(validateIsNumeric($section_id)){
                 $resp = insertRecord($table_name, $data, $user_id);
                 $app_data = array('submission_date'=>Carbon::now(), 'dola'=>Carbon::now());
                 
-                DB::table('tra_product_applications')
+                DB::table($application_table_name)
                         ->where(array('application_code'=>$application_code))
                         ->update($app_data);
 
@@ -1663,6 +1824,90 @@ if(validateIsNumeric($section_id)){
         return response()->json($res);
 
     }
+
+
+     public function onSaveProductSampleDetails(Request $req)
+    {
+        try {
+            $resp = "";
+            $user_id = $this->user_id;
+            $data = $req->all();
+
+            $table_name = $req->table_name;
+            $record_id = $req->id;
+            $product_id = $req->product_id;
+            unset($data['table_name']);
+            unset($data['model']);
+            unset($data['_token']);
+            unset($data['manufacturer_name']);
+            unset($data['manufacturing_site']);
+            unset($data['id']);
+            if (validateIsNumeric($record_id)) {
+                $where = array('id' => $record_id);
+                if (recordExists($table_name, $where)) {
+
+                    $data['dola'] = Carbon::now();
+                    $data['altered_by'] = $user_id;
+
+                    $previous_data = getPreviousRecords($table_name, $where);
+
+                    $resp = updateRecord($table_name, $previous_data['results'], $where, $data, $user_id);
+
+                }
+            } else {
+               
+                $application_details = DB::table('tra_product_information as t1')->leftJoin('tra_product_applications as t2', 't1.id', 't2.product_id')->where('t1.id', $product_id)->first();
+
+
+                $file_no = getSingleRecordColValue('tra_sample_information', array('product_id' => $product_id), 'sample_tracking_no');
+
+                if(!isset($file_no)){
+                    $codes_array = $this->getProductApplicationReferenceCodes($application_details);
+                    $sub_module_id=$application_details->sub_module_id;
+                    $process_id=$application_details->process_id;
+                    $zone_id='';
+                    
+                    $sample_file_details = generateApplicationTrackingNumber($sub_module_id, 5, $codes_array, $process_id, $zone_id, $user_id);
+            
+                    if ($sample_file_details['success'] == false) {
+                            return \response()->json($sample_file_details);
+                    }
+                    $file_no = $sample_file_details['tracking_no'];
+               }
+
+                $data['sample_tracking_no'] = $file_no;
+                $data['created_by'] = $user_id;
+                $data['created_on'] = Carbon::now();
+
+                $resp = insertRecord($table_name, $data, $user_id);
+
+            }
+            if ($resp['success']) {
+                $res = array('success' => true,
+                    'message' => 'Saved Successfully');
+
+            } else {
+                $res = array('success' => false,
+                    'message' => $resp['message']);
+
+            }
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+
+        return response()->json($res);
+
+    }
+
+
 
     public function onSaveProductinformation(Request $req)
     {
@@ -2746,8 +2991,11 @@ if(validateIsNumeric($section_id)){
             foreach ($records as $rec) {
                 $pack_unit = getSingleRecordColValue('packaging_units', array('id' => $rec->pack_unit_id), 'name', 'mysql');
                 $quantity_unit = getSingleRecordColValue('packaging_units', array('id' => $rec->quantity_unit_id), 'name', 'mysql');
+                $si_unit = getSingleRecordColValue('par_si_units', array('id' => $rec->pack_unit_id), 'name', 'mysql');
                 $sample_storage = getSingleRecordColValue('storage_conditions', array('id' => $rec->storage_id), 'name', 'mysql');
                 $sample_status = getSingleRecordColValue('sample_status', array('id' => $rec->sample_status_id), 'name', 'mysql');
+
+
 
                 $data[] = array('id' => $rec->id,
                     'product_id' => $rec->product_id,
@@ -2756,12 +3004,17 @@ if(validateIsNumeric($section_id)){
                     'brand_name' => $rec->brand_name,
                     'manufacturing_date' => $rec->manufacturing_date,
                     'submission_date' => $rec->submission_date,
+                    'expiry_date' => $rec->expiry_date,
                     'shelf_life' => $rec->shelf_life,
                     'shelf_life_afteropening' => $rec->shelf_life_afteropening,
                     'shelflifeduration_desc' => $rec->shelflifeduration_desc,
                     'quantity' => $rec->quantity,
+                    'unit_pack' => $rec->unit_pack,
+                    'sample_tracking_no' => $rec->sample_tracking_no,
+                    'si_unit' => $si_unit,
                     'quantity_unit_id' => $rec->quantity_unit_id,
                     'pack_size' => $rec->pack_size,
+                    'unit_pack' => $rec->unit_pack,
                     'pack_unit_id' => $rec->pack_unit_id,
                     'sample_status_id' => $rec->sample_status_id,
                     'storage_id' => $rec->storage_id,
@@ -3261,8 +3514,8 @@ if(validateIsNumeric($section_id)){
             else{
                 
             }
-            $qry->where('t11.appregistration_status_id', 2);
-                $qry_count->where('t12.appregistration_status_id', 2);
+           // $qry->where('t11.appregistration_status_id', 2);
+               // $qry_count->where('t12.appregistration_status_id', 2);
             if($filter_string != ''){
                 $qry->whereRAW($filter_string);
             }
@@ -4363,46 +4616,37 @@ $response =  array(
 
      public function saveQualityReportdetails(Request $request)
     {
-        $application_code = $request->input('application_code');
+        $product_id = $request->input('product_id');
         $report_sections = $request->input('report_sections');
         $report_sections = json_decode($report_sections);
-        $table_name = 'tra_quality_overrallsummaryreport';
+        $table_name = $request->input('table_name');
         $user_id = $this->user_id;
+        $res=array();
         try {
             $insertreportsections_data = array();
             foreach ($report_sections as $report_section) {
-                $id ='';
                 $report_section_data = array(
-                    'report_section_id' => $report_section->report_section_id,
-                    'application_code' => $report_section->application_code,
-                    'report' => $report_section->report,
                     'recommendation' => $report_section->recommendation,
-                    'has_query' => $report_section->has_query
+                    'has_query' => $report_section->has_query,
+                    'is_recommended' => $report_section->is_recommended,
+                    'query' => $report_section->query
                 );
-                if (validateIsNumeric($id) ) {
+                if (validateIsNumeric($product_id) ) {
                     $where = array(
-                        'id' => $id
+                        'product_id' => $product_id
                     );
                     $report_section_data['dola'] = Carbon::now();
                     $report_section_data['altered_by'] = $user_id;
                     $prev_data = getPreviousRecords($table_name, $where);
-                    updateRecord($table_name, $prev_data['results'], $where, $report_section_data, $user_id);
-                } else {
-                    $insertreportsections_data =  $report_section_data;
-                    $report_section_data['dola'] = Carbon::now();
-                    $report_section_data['altered_by'] = $user_id;
+                    $res=updateRecord($table_name, $prev_data['results'], $where, $report_section_data, $user_id);
+                } else{
+                    $res = array(
+                        'success' => false,
+                        'message' => 'Data Can Not be saved! Missing Product Details'
+                    );
                 }
             }
-            if (count($insertreportsections_data) > 0) {
-                DB::table($table_name)
-                    ->insert($insertreportsections_data);
-
-        
-            }
-            $res = array(
-                'success' => true,
-                'message' => 'Quality Summary report saved successfully!!'
-            );
+           
         } catch (\Exception $exception) {
             $res = array(
                 'success' => false,

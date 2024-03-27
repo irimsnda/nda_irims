@@ -13,7 +13,7 @@ Ext.define('Admin.view.pv.views.panels.NewPvReceivingWizard', {
     flex: 1,
     autoScroll: true,
     cls: 'wizard three shadow',
-    colorScheme: 'soft-blue',
+    colorScheme: 'soft-green',
     dockedItems: [
         {
             xtype: 'toolbar',
@@ -121,18 +121,10 @@ Ext.define('Admin.view.pv.views.panels.NewPvReceivingWizard', {
         }
     ],
     items: [{
-            xtype: 'tabpanel',
-            layout: 'fit',
-            defaults: {
-                margin: 3
-            },
-            items: [{
-                xtype: 'productapplicantdetailsfrm',
-                title: 'Reporter Details'
-            }]
+            xtype: 'pvDetailsPnl',
         },
         {
-            xtype: 'pvDetailsPnl',
+            xtype: 'pvOtherDetailsPnl',
         }, {
             xtype: 'tabpanel',
             items: [{
@@ -145,18 +137,18 @@ Ext.define('Admin.view.pv.views.panels.NewPvReceivingWizard', {
             title: 'Prechecking'
         }
     ],
+
+  
+
     initComponent: function () {
         var me = this;
         this.tbar = {
             reference: 'progress',
             itemId: 'progress_tbar',
-            defaultButtonUI: 'wizard-blue',
+            defaultButtonUI: 'wizard-' + this.colorScheme,
             cls: 'wizardprogressbar',
-            style: {
-                "color": "#90c258"
-            },
             bodyStyle: {
-                "background-color": "#90c258"
+                "background-color": "red"
             },
             layout: {
                 pack: 'center'
@@ -167,7 +159,7 @@ Ext.define('Admin.view.pv.views.panels.NewPvReceivingWizard', {
                     iconCls: 'fa fa-user',
                     enableToggle: true,
                     pressed: true,
-                    text: 'Reporter Details',
+                    text: 'Report information',
                     action: 'quickNav',
                     wizard:'newPvReceivingWizard',
                     handler: 'quickNavigation'
@@ -206,14 +198,14 @@ Ext.define('Admin.view.pv.views.panels.NewPvReceivingWizard', {
             items: [
                 {
                     text: 'Back to List',
-                    ui: 'soft-blue',
+                    ui: 'soft-green',
                     iconCls: 'fa fa-bars',
                     name: 'back_to_list',
                     hidden: true
                 },
                 {
                     text: 'Previous',
-                    ui: 'soft-blue',
+                    ui: 'soft-green',
                     iconCls: 'fa fa-arrow-left',
                     bind: {
                         disabled: '{atBeginning}'
@@ -223,8 +215,8 @@ Ext.define('Admin.view.pv.views.panels.NewPvReceivingWizard', {
                 },
                 '->',
                 {
-                    text: 'Save Patient Details',
-                    ui: 'soft-blue',
+                    text: 'Save Report Details',
+                    ui: 'soft-green',
                     iconCls: 'fa fa-save',
                     name: 'save_btn',
                     bind: {
@@ -236,7 +228,7 @@ Ext.define('Admin.view.pv.views.panels.NewPvReceivingWizard', {
                 },
                 {
                     text: 'Submit Application',
-                    ui: 'soft-blue',
+                    ui: 'soft-green',
                     iconCls: 'fa fa-check',
                     name: 'process_submission_btn',
                     storeID: 'pvStr',
@@ -246,7 +238,7 @@ Ext.define('Admin.view.pv.views.panels.NewPvReceivingWizard', {
                 },
                 {
                     text: 'Next',
-                    ui: 'soft-blue',
+                    ui: 'soft-green',
                     reference: 'nextbutton',
                     iconCls: 'fa fa-arrow-right',
                     iconAlign: 'right',

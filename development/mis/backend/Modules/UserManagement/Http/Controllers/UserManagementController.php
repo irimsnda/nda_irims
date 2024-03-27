@@ -299,8 +299,26 @@ class UserManagementController extends Controller
         return response()->json($res);
     }
 
-    public
-    function getUnblockedSystemUsers()
+
+    function getUpdateInfo(Request $req){
+        $user_id = \Auth::user()->id;
+        $qry=DB::table('users')
+              ->leftjoin('par_user_images as t2','users.id','t2.user_id')
+               ->select(DB::raw("users.*,decrypt(last_name) as last_name,decrypt(first_name) as first_name,decrypt(mobile) as mobile,decrypt(phone) as phone,decrypt(email) as email,t2.saved_name as profile_photo"));
+
+        $qry->where('users.id',$user_id);
+            // if(validateIsNumeric($user_id)){
+            //     $qry->where('users.id',$user_id);
+            // }
+            $results = $qry->first();
+        $res= array(
+                'success'=> true,
+                'results'=> $results,
+                'message'=> 'All is well'
+            );
+            return \response()->json($res);
+    }
+    public function getUnblockedSystemUsers()
     {
         try {
             $qry = DB::table('users as t1')
@@ -458,12 +476,11 @@ class UserManagementController extends Controller
                             $table_data['password'] = $pwd;
                             $table_data['uuid'] = $uuid;
                              
-                            //$email_res = accountRegistrationEmail(18, $email, $password, '', $vars);
+                            $email_res = accountRegistrationEmail(18, $email, $password, '', $vars);
                         }
                         else{
-                           // $email_res = accountRegistrationEmail(19, $email, $password, '', $vars);
+                           $email_res = accountRegistrationEmail(19, $email, $password, '', $vars);
                         }
-                        
                         $success = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
                         //check profile pic
                         if (recordExists('par_user_images', array('user_id' => $id))) {
@@ -474,7 +491,7 @@ class UserManagementController extends Controller
                             }
                         }
                         if ($success['success'] === true) {
-                            if (count($groups) > 0) {
+                            if (isset($groups) && count($groups) > 0) {
                                 foreach ($groups as $group_id) {
                                     $assigned_groups[] = array(
                                         'user_id' => $id,
@@ -527,11 +544,11 @@ class UserManagementController extends Controller
                             '{username}' => $email,
                             '{password}' => $password
                         );
-                        // $email_res = accountRegistrationEmail(6, $email, $password, $link, $vars);
-                        // if ($email_res['success'] == false) {
-                        //     $res = $email_res;
-                        // } 
-                        // else {
+                        $email_res = accountRegistrationEmail(6, $email, $password, $link, $vars);
+                        if ($email_res['success'] == false) {
+                            $res = $email_res;
+                        } 
+                        else {
                             $table_data['created_at'] = Carbon::now();
                             $table_data['created_by'] = $user_id;
                             $results = insertRecord($table_name, $table_data, $user_id);
@@ -561,7 +578,7 @@ class UserManagementController extends Controller
                                     'message' => $results['message']
                                 );
                             }
-                        //}
+                        }
                     } else {
                         $res = array(
                             'success' => false,
@@ -717,7 +734,7 @@ class UserManagementController extends Controller
                 $ben_image = $req->file('profile_photo');
                 $origImageName = $ben_image->getClientOriginalName();
                 $extension = $ben_image->getClientOriginalExtension();
-                $destination = getcwd() . '\resources\images\user-profile';
+                $destination = getcwd() . '/resources/images/user-profile/';
                 $savedName = str_random(5) . time() . '.' . $extension;
                 $ben_image->move($destination, $savedName);
                 $where = array(

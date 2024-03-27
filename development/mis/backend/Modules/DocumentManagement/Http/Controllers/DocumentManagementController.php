@@ -134,7 +134,6 @@ class DocumentManagementController extends Controller
                 ->where('t1.document_type_id', $docType_id)
                 ->whereRaw("(select count(a.id) from tra_documentupload_requirements a where a.docparent_id = t1.id) = 0")
                ->where($where);
-
             if(validateIsNumeric($process_id)){
                 $qry->where('t2.id', $process_id);
             }
@@ -250,7 +249,7 @@ class DocumentManagementController extends Controller
         }
         return response()->json($res);
     }
-    function getApplicationDocumentsUploads($req){
+   function getApplicationDocumentsUploads($req){
         
             $application_code =  $req->input('application_code');//20412100
             $workflow_stage = $req->input('workflow_stage');
@@ -288,7 +287,7 @@ class DocumentManagementController extends Controller
             if($module_id ==4 ||$module_id ==2 ||$module_id ==29 || $module_id ==12){
                 unset($where['section_id']);
             }
-
+         
             //get applicable document types
             $qry1 = DB::table('tra_proc_applicable_doctypes')
                 ->select('*');
@@ -298,23 +297,24 @@ class DocumentManagementController extends Controller
             if (validateIsNumeric($workflow_stage)) {
               //  $qry1->where('stage_id', $workflow_stage);
             }
+
             if (validateIsNumeric($doc_type_id)) {
                 $qry1->where('doctype_id', $doc_type_id);
             }
            // $procesS_id = 67;
                 $qry1->where('process_id', $process_id);
             $docTypes = $qry1->get();
-
+            
             $docTypes = convertStdClassObjToArray($docTypes);
             $docTypes = convertAssArrayToSimpleArray($docTypes, 'doctype_id');
     
             if (validateIsNumeric($doc_type_id)) {
                // $where['t1.document_type_id'] = $doc_type_id;
             }
-          
+                
             if(validateIsNumeric($parent_id)){
                 $qry = DB::table('tra_application_uploadeddocuments as t1')
-                    ->leftJoin('tra_application_documents as t2', 't1.application_document_id', 't2.id')
+                    ->Join('tra_application_documents as t2', 't1.application_document_id', 't2.id')
                     ->leftJoin('tra_documentupload_requirements as t4', 't2.document_requirement_id', 't4.id')
                     ->leftJoin('par_document_types as t3', 't4.document_type_id', 't3.id')
                     ->leftJoin('users as t5', 't2.uploaded_by', '=', 't5.id')
@@ -323,15 +323,18 @@ class DocumentManagementController extends Controller
                     ->where('t4.is_enabled', 1);
                 $results = $qry->get();
             }else{
+
                 $doc_requirments = DB::table('tra_documentupload_requirements as t1')
                                 ->where($where)
                                 ->whereIn('document_type_id', $docTypes)
                                 ->get();
+
+               
                 foreach ($doc_requirments as $doc_req) {
                     $qry = DB::table('tra_application_documents as t1')
                         ->join('tra_documentupload_requirements as t2', 't1.document_requirement_id', 't2.id')
                         ->join('par_document_types as t3', 't2.document_type_id', 't3.id')
-                        ->leftJoin('tra_application_uploadeddocuments as t4', function ($join) use ($application_code,$isvalidate_uploaded_by,$uploaded_by, $documentreg_serialno) {
+                        ->Join('tra_application_uploadeddocuments as t4', function ($join) use ($application_code,$isvalidate_uploaded_by,$uploaded_by, $documentreg_serialno) {
                             if(validateIsNumeric($documentreg_serialno)){
                                 $join->on("t1.id", "=", "t4.application_document_id")
                                  ->where("t4.documentreg_serialno", $documentreg_serialno)
@@ -1203,14 +1206,11 @@ class DocumentManagementController extends Controller
             $table_name = $req->table_name;
             $reference_table_name = $req->reference_table_name;
 
-             
             $file = $req->file('uploaded_doc');
           //tra_nonstructured_docdefination
             $rootnode_ref = getSingleRecordColValue('tra_nonstructured_docdefination', array('document_type_id'=>$document_type_id), 'node_ref');
 
-          
             $app_rootnode = getNonStructuredDocApplicationRootNode($rootnode_ref,$reference_record_id,$reference_table_name,$document_type_id,$user_id);
-
             if ($app_rootnode) {
 
                 if ($req->hasFile('uploaded_doc')) {
@@ -1231,10 +1231,11 @@ class DocumentManagementController extends Controller
                      $document_type = getParameterItem('par_document_types', $document_type_id, 'mysql');
                     $uploadfile_name = $document_type . str_random(5) . '.' . $extension;
                     $destination_node = $app_rootnode->node_ref;
-
+                        
                     if (validateIsNumeric($record_id)) {
 
                         $response = dmsUploadNodeDocument($destination_node, $document_path, $uploadfile_name, $node_ref);
+
 
                         $node_ref = $response['nodeRef'];
 
@@ -1461,6 +1462,113 @@ class DocumentManagementController extends Controller
                     $url = downloadDocumentUrl($node_ref, $document_versionid);
                     
                     
+                    // set_time_limit(0); 
+
+                    // $public_dir=public_path().'/resources/uploads';
+
+                   
+                    // $file = file_get_contents($url);
+                    // $filetopath=$public_dir.'/'.$initial_file_name;
+                    
+                    // file_put_contents($filetopath, $file);
+                    
+                    $res = array(
+                        'success' => true,
+                        'document_url' => $url
+                    );
+                    
+                    // ini_set('memory_limit', '-1');
+                    // if(file_exists($filetopath)){
+                    //    $file = file_get_contents($filetopath);
+                    //     unlink($filetopath); 
+                    //      $res = array(
+                    //         'success' => true,
+                    //         'message' => 'all is well',
+                    //         'filename' => $initial_file_name,
+                    //         'dms_url'=>$url,
+                    //         'document_url' => "data:application/octet-stream;base64,".base64_encode($file)
+                    //     );
+                    //     return json_encode($res);
+                    // }
+
+
+
+    
+                }
+                else{
+                    $res = array(
+                    'success' => false,
+                    'message'=> 'Document Not Uploaded'
+                );
+                    
+                }
+                
+
+            }
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return response()->json($res);
+    }
+
+    public function getUnstructuredDocumentDownloadurl(Request $req)
+    {   
+        try {
+            ini_set('memory_limit', '-1');
+            $user_id = $this->user_id;
+            $application_code = $req->application_code;
+            $reference_record_id = $req->reference_record_id;
+            $table_name = $req->table_name;
+            $node_ref = $req->node_ref;
+            $uploadeddocuments_id = $req->record_id;
+            $user_id = $this->user_id;
+            $node_ref = $req->node_ref;
+            $data= array('user_id'=>$user_id,
+                    'application_code'=>$application_code,
+                    'uploadeddocuments_id'=>$uploadeddocuments_id,
+                    'node_ref'=>$node_ref,
+                    'accessed_on'=>Carbon::now());
+            
+            if($node_ref == ''){
+              
+                $res = array(
+                    'success' => false,
+                    'message'=> 'Document Not Uploaded'
+                );
+            }
+            
+            else{
+                //save the documetn access
+                $data['created_on'] = Carbon::now();
+                $data['created_by'] = $user_id;
+                if(validateIsNumeric($uploadeddocuments_id)){
+                    $record = DB::table($table_name)
+                                ->select('*')
+                                ->where('id',$uploadeddocuments_id)
+                                ->first();
+                }
+                else{
+                    $record = DB::table($table_name)
+                                ->select('*')
+                                ->where('node_ref',$node_ref)
+                                ->first();
+
+                   
+                    
+                }
+                
+                if($record){
+                    $initial_file_name = $record->initial_file_name;
+                    
+                    $res = insertRecord('tra_uploadeddocuments_useraccess', $data, $user_id); 
+    
+                    $document_versionid = $req->document_versionid;
+                    $url = downloadDocumentUrl($node_ref, $document_versionid);
+                    
+                    
                     set_time_limit(0); 
 
                     $public_dir=public_path().'/resources/uploads';
@@ -1468,9 +1576,7 @@ class DocumentManagementController extends Controller
                    
                     $file = file_get_contents($url);
                     $filetopath=$public_dir.'/'.$initial_file_name;
-                    
                     file_put_contents($filetopath, $file);
-                    
                     $res = array(
                         'success' => true,
                         'document_url' => $url
@@ -1516,6 +1622,11 @@ class DocumentManagementController extends Controller
         }
         return response()->json($res);
     }
+    
+
+    
+
+
     public function getApplicationDocumentPreviousVersions(Request $req)
     {
         try {
@@ -1634,8 +1745,9 @@ class DocumentManagementController extends Controller
                 }else{
                     $resp = $this->deleteSingleFile($record_id);
                 }
+                
+
             }
-            
            
             $res = array('success' => true, 'message' => 'Document deleted successfully');
 
@@ -1702,7 +1814,6 @@ class DocumentManagementController extends Controller
             $records = DB::table($table_name)
                 ->where($where_state)
                 ->get();
-
 
 
             if (count($records) > 0) {

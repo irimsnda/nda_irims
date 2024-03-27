@@ -1,7 +1,5 @@
 /**
  * Created by softclans
- * user robinson odhiambo
- * Kip on 9/24/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ReceivingPoeInspectionsWizard', {
     extend: 'Ext.panel.Panel',
@@ -180,7 +178,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Receivi
                             },
                             labelStyle: 'font-weight:bold'
                         },'->',{
-                            fieldLabel:'Permit No/Reference No',
+                            fieldLabel:'Reference No',
                             name:'permit_no',
                             xtype:'textfield',
                             labelWidth: 108,
@@ -188,10 +186,10 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Receivi
                             width: 450
                         },{
                             
-                             text: 'Search Import Permit',
+                             text: 'Approved Declaration',
                              iconCls: 'fa fa-search',
                              ui:'soft-green',
-                             winTitle:' Imports Permit Details',
+                             winTitle:' Imports Details',
                              winWidth: '87%',
                              handler:'funcSearchInspectionImportPermitDetails'
                      }
@@ -227,14 +225,14 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Receivi
                     step: 0,
                     iconCls: 'fa fa-university',
                     enableToggle: true, iconAlign: 'top',
-                    text: 'Permit Details',
+                    text: 'Declaration Details',
                     action: 'quickNav', wizard: 'receivingpoeinspectionswizard',
                     handler: 'quickNavigationPOE'
                 }, {
                     step: 1,
                     iconCls: 'fa fa-edit',
                     enableToggle: true, iconAlign: 'top',
-                    text: 'Inspection Recommendation & Products Details',
+                    text: 'Inspection Recommendation &  Details',
                     action: 'quickNav', 
                     
                     wizard: 'receivingpoeinspectionswizard',
@@ -250,8 +248,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Receivi
                     text: 'Back to List',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-bars',
-                    name: 'back_to_list',
-                    hidden: true
+                    name: 'back_to_list'
                 },
                 '->',
                 {
@@ -264,19 +261,17 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Receivi
                     wizard:'receivingpoeinspectionswizard',
                     handler: 'onPrevCardClickPOE'
                 }, {
-                    text: 'Verify/Reject Permit',
-                    winTitle:'Permit Verification',
+                    text: 'Verify/Reject Licence',
+                    winTitle:'Licence Verification',
                     childXtype: 'poeinspectionverificationfrm',
                     winWidth: '30%',
                     name:'btnverify_permit',
-                    hidden: true,
                     handler: 'funcVerifyImportPermit'
                 },{
                     text: 'Inspection Recommendation and Release',
                     childXtype: 'poeinspectionrecommendationfrm',
                     winTitle:'Inspection Recommendation',
                     winWidth: '30%',
-                    hidden: true,
                     name: 'process_submission_btn',
                     handler: 'showReceivingPoeApplicationSubmissionWin'
                 },

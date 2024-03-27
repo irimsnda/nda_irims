@@ -78,6 +78,9 @@ Ext.define('Admin.controller.DocumentContolManCtr', {
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
             storeID = 'controldocumentmanagementdashstr';
+
+
+            console.log(5555555555555555555);
             
         valid = this.validateNewControlDocumentSubmission(application_code);
         if (valid) {

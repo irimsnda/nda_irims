@@ -27,8 +27,22 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
         }]
     }, {
         xtype: 'drugsProductsOtherInformationFrm',
-        title: 'Product Other Details',
-    },{
+        title: 'Product Composition'
+    },
+    // {
+    //     xtype: 'tabpanel',
+    //     title: 'Quality Summary Report',
+    //     items: [{
+    //             xtype: 'productqualityassessmentDocUploadsGrid',
+    //             title: 'Quality Summary Report Submission'
+    //         },{
+    //             xtype: 'productbioequivalencetrialinformationDocUploadsGrid',
+    //             title: 'Bioequivalence Trial Information'
+    //         }]
+        
+    // },
+
+    {
         xtype: 'hiddenfield',
         name: 'section_id'
     },{

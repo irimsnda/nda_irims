@@ -41,13 +41,14 @@ Ext.define('Admin.view.parameters.views.forms.glAccountsFrm', {
         hidden: true
     }, {
         xtype: 'textfield',
-        fieldLabel: 'Name',
+        fieldLabel: 'Revenue Description',
         allowBlank: false,
         margin: '0 20 20 0',
         name: 'name'
     },{
         xtype: 'textfield',
         fieldLabel: 'GL Code',
+        hidden:true,
         allowBlank: true,
         margin: '0 20 20 0',
         name: 'code'

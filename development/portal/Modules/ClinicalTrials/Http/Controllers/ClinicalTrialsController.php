@@ -25,6 +25,7 @@ class ClinicalTrialsController extends Controller
                         ->select('t2.*')
                         ->where(array('t1.id'=>$reg_clinical_trial_id))
                         ->first();
+        
         if(!$sql){
             return \response()->json(array('success'=>false, 'message'=>'Registered Clinical Trial Not Found, contact system admin!!'));
         }
@@ -230,27 +231,48 @@ public function saveCtrSaeReportingApplication(Request $req){
                 
                 $reg_clinical_trial_id = $req->reg_clinical_trial_id;
                 
-                $reportingapp_data  = array('reporting_start_date'=>$req->reporting_start_date,
-                                            'reporting_end_date'=>$req->reporting_end_date,
-            
-                                            'clinicalreport_type_id'=>$req->clinicalreport_type_id,
-                                            'actualstudy_date'=>$req->actualstudy_date,
-                                            'screen_participants'=>$req->screen_participants,
-                                            'dateof_first_screening'=>$req->dateof_first_screening,
-                                            'target_sample_size'=>$req->target_sample_size,
-                                            'enrolled_participants'=>$req->enrolled_participants,
-                                            'dateof_first_enrollment'=>$req->dateof_first_enrollment,
-                                            'number_of_dropouts'=>$req->number_of_dropouts,
-                                            'number_lost_tofollow_ups'=>$req->number_lost_tofollow_ups,
-                                            'inclusion_criteria'=>$req->inclusion_criteria,
-                                            'exclusion_criteria'=>$req->exclusion_criteria,
-                                            'number_of_saes'=>$req->number_of_saes,
-                                            'events_of_medialimportance'=>$req->events_of_medialimportance,
-                                            'protocol_deviations'=>$req->protocol_deviations,
-                                            'clinicalstudy_status_id'=>$req->clinicalstudy_status_id,
-                                            'study_site_id'=>$req->study_site_id
-                                    );       
-               
+                $reportingapp_data  = array(
+                                            'sourceofpsur_id'=>$req->sourceofpsur_id,
+                                            'report_category_id'=>$req->report_category_id,
+                                            'report_type_id'=>$req->report_type_id,
+                                            'initial_receive_date'=>$req->initial_receive_date,
+                                            'report_date'=>$req->report_date,
+                                            'adr_reporter_category_id'=>$req->adr_reporter_category_id,
+                                            'adr_type_id'=>$req->adr_type_id,
+                                            'species'=>$req->species,
+                                            'breed'=>$req->breed,
+                                            'animal_status_id'=>$req->animal_status_id,
+                                            'humanvet_contact_id'=>$req->humanvet_contact_id,
+                                            'patient_name'=>$req->patient_name,
+                                            'title_id'=>$req->title_id,
+                                            'gender_id'=>$req->gender_id,
+                                            'device_operator_id'=>$req->device_operator_id,
+                                            'local_supplier'=>$req->local_supplier,
+                                            'software_version'=>$req->software_version,
+                                            'catalogue_number'=>$req->catalogue_number,
+                                            'serial_number'=>$req->serial_number,
+                                            'model_number'=>$req->model_number,
+                                            'device_location_id'=>$req->device_location_id,
+                                            'last_menstruation_date'=>$req->last_menstruation_date,
+                                            'is_pregnant'=>$req->is_pregnant,
+                                            'is_lactating'=>$req->is_lactating,
+                                            'date_of_birth'=>$req->date_of_birth,
+
+                                            'study_arm'=>$req->study_arm,
+                                             'medra_term_id'=>$req->medra_term_id,
+                                            'sae_onset_date'=>$req->sae_onset_date,
+                                            'stop_date'=>$req->stop_date,
+                                            'ongoing_id'=>$req->ongoing_id,
+                                            'site_awareness_date'=>$req->site_awareness_date,
+                                            'sae_narative'=>$req->sae_narative,
+
+
+                                            'patient_age'=>$req->patient_age,
+                                            'age_group_id'=>$req->age_group_id,
+                                            'patient_weight'=>$req->patient_weight,
+                                            'patient_height'=>$req->patient_height,
+                                            'bmi'=>$req->bmi
+                                    ); 
                             $sub_module_id = $req->sub_module_id;
                     
                             $table_name = 'wb_clinical_trial_applications';
@@ -300,7 +322,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                                 'applicant_id'=>$trader_id,
                                                 'trader_id'=>$trader_id
                                     );
-                               
+                              
                                      $record = '';
                                 
                                     $app_data['created_on'] = Carbon::now();
@@ -341,7 +363,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                         $app_data['date_added'] =  Carbon::now();
                                                     
                                                 $resp = insertRecord('wb_clinical_trial_applications', $app_data, $trader_email);
-
+                        
                                                 $record_id = $resp['record_id'];
                                                 $application_id = $record_id;
                                                 if($resp['success']){
@@ -350,8 +372,9 @@ public function saveCtrSaeReportingApplication(Request $req){
                                                 }
                                  //save the other details for the clinical trial reporting 
                                  $reportingapp_data['application_id'] = $application_id;
-                                 insertRecord('wb_clinicaltrial_saereports', $reportingapp_data, $trader_email);
-                                                
+
+                             insertRecord('wb_clinicaltrial_saereports', $reportingapp_data, $trader_email);
+       
                             }
                             if($resp['success']){
                                 $res = array('tracking_no'=>$tracking_no,
@@ -369,7 +392,24 @@ public function saveCtrSaeReportingApplication(Request $req){
                                 'success1'=>$resp,
                                 'message'=>'Error Occurred Clinical trial Application not saved, it this persists contact the system Administrator');
                             }
-        
+
+               if(validateIsNumeric($application_id)){
+                            $adverse_reaction = array();
+                            $adverse_reaction_id= $req->adverse_reaction_id;
+                              DB::table('wb_adverse_reaction')->where(array('application_id'=>$application_id))->delete();
+                              if(is_array($adverse_reaction_id)){
+                                  foreach($adverse_reaction_id as $adverse_reactions_id){
+                                                              
+                                          $adverse_reaction[] = array('adverse_reaction_id'=>$adverse_reactions_id, 
+                                                          'application_id'=>$application_id, 
+                                                          'created_by'=>$trader_id, 
+                                                          'created_on'=>Carbon::now());
+          
+                                  }
+                                  DB::table('wb_adverse_reaction')->insert($adverse_reaction);
+          
+                              }
+                }
                                 
                             
             } catch (\Exception $exception) {
@@ -571,6 +611,7 @@ public function saveCtrSaeReportingApplication(Request $req){
 
 
     }
+
     public function  saveClinicalTrialApplication(Request $req){
         try {
             $application_id = $req->application_id;
@@ -597,8 +638,7 @@ public function saveCtrSaeReportingApplication(Request $req){
             $timespan_defination = getSingleRecordColValue('clinical_trial_duration_desc', array('id' => $duration_desc), 'name','mis_db');
                                 
             $study_end_date = date('Y-m-d', strtotime($req->study_start_date. " + $study_duration  $timespan_defination"));
-            $formattedMeetingTime = date("H:i", strtotime($meeting_time));
-            
+              $formattedMeetingTime = date('H:i', strtotime($req->meeting_time));
                         /** Already Saved */ 
                         $app_data = array(
 
@@ -612,7 +652,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                             'other_objective'=>$req->other_objective,
                              'date_of_protocol'=>formatDate($req->date_of_protocol),
                             'study_start_date'=>formatDate($req->study_start_date),
-                            'meeting_time' => $formattedMeetingTime,  
+                            'meeting_time' => $formattedMeetingTime, 
                             'brief_description'=>$req->brief_description, 
                             'uncst_no'=>$req->uncst_no,
                             'first_final_duration'=>$req->first_final_duration,
@@ -646,6 +686,14 @@ public function saveCtrSaeReportingApplication(Request $req){
                             'module_id' => $module_id,
                             'sub_module_id' => $req->sub_module_id,
                             'section_id' => $req->section_id,
+                            'primary_pharmacodynamics'=>$req->primary_pharmacodynamics, 
+                            'secondary_pharmacodynamics'=>$req->secondary_pharmacodynamics,
+                            'safety_pharmacology'=>$req->safety_pharmacology,
+                            'pharmacodynamic_drug_interactions'=>$req->pharmacodynamic_drug_interactions, 
+                            'pharmacokinetics'=>$req->pharmacokinetics,
+                            'toxicology'=>$req->toxicology, 
+                            'First_in_human_trials'=>$req->First_in_human_trials,
+                            'glp_aspects'=>$req->glp_aspects,
                             'participant_no' => $req->participant_no,
                             'enrolled_worldwide_no' => $req->enrolled_worldwide_no,
                             'intended_no' => $req->intended_no,
@@ -683,7 +731,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                    
                                    $where_app = array('application_code'=>$application_code);
                                     if (!recordExists('tra_application_uploadeddocuments', $where_app,'mis_db')) {
-                                        initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
+                                      //  initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
                                     }
                             }
                             
@@ -735,7 +783,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                             if($resp['success']){
                                                     //create all the details
                                                   
-                                                 initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
+                                                // initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
                                                  saveApplicationSubmissionDetails($application_code,$table_name);
                                              }
                                
@@ -807,7 +855,8 @@ public function saveCtrSaeReportingApplication(Request $req){
                                 
             $study_end_date = date('Y-m-d', strtotime($req->study_start_date. " + $study_duration  $timespan_defination"));
                         
-            
+            $formattedMeetingTime = date('H:i', strtotime($req->meeting_time));
+
                         $app_data = array(
 
                             'study_title' => $req->study_title,
@@ -818,9 +867,9 @@ public function saveCtrSaeReportingApplication(Request $req){
                             'other_study'=>$req->other_study,
                             'explorator_objective'=>$req->explorator_objective,
                             'other_objective'=>$req->other_objective,
-                             'date_of_protocol'=>formatDate($req->date_of_protocol),
+                            'date_of_protocol'=>formatDate($req->date_of_protocol),
                             'study_start_date'=>formatDate($req->study_start_date),
-                            'meeting_time'=>formatDate($req->meeting_time), 
+                            'meeting_time' => $formattedMeetingTime, 
                             'brief_description'=>$req->brief_description, 
                             'uncst_no'=>$req->uncst_no,
                             'first_final_duration'=>$req->first_final_duration,
@@ -975,6 +1024,15 @@ public function saveCtrSaeReportingApplication(Request $req){
                                                 ->get();
                                             $prev_sites = convertStdClassObjToArray($prev_sites);
                                             $prev_sites = unsetPrimaryIDsInArray($prev_sites,'id');
+
+                                            //personnel
+                                          $prev_personnel = DB::connection('mis_db')->table('clinical_trial_personnel as t1')
+                                                ->select(DB::raw("t1.*,$application_id as application_id"))
+                                                ->where('t1.application_id', $tra_clinical_trial_id)
+                                                ->get();
+                                            $prev_personnel = convertStdClassObjToArray($prev_personnel);
+                                            $prev_personnel = unsetPrimaryIDsInArray($prev_personnel,'id');
+
                                             //prev other investigators
                                             $prev_investigators = DB::connection('mis_db')->table('clinical_trial_investigators as t1')
                                                 ->select(DB::raw("t1.*,$application_id as application_id"))
@@ -992,6 +1050,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                             $prev_products = unsetPrimaryIDsInArray($prev_products,'id');
 
                                             DB::table('wb_clinical_trial_sites')->insert($prev_sites);
+                                            DB::table('wb_clinical_trial_personnel')->insert($prev_personnel);
                                             DB::table('wb_clinical_trial_investigators')->insert($prev_investigators);
                                             DB::table('wb_clinical_trial_products')->insert($prev_products);
 
@@ -1042,19 +1101,282 @@ public function saveCtrSaeReportingApplication(Request $req){
         
         return response()->json($res);
     } 
+   public function onSaveClincialTrialProgressReportApplication(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'wb_clinical_trial_applications';
+
+           $reportingapp_data  = array(
+                                'reporting_start_date'=>$req->reporting_start_date,
+                                'reporting_end_date'=>$req->reporting_end_date,
+                                'clinicalreport_type_id'=>$req->clinicalreport_type_id,
+                                'actualstudy_date'=>$req->actualstudy_date,
+                                'screen_participants'=>$req->screen_participants,
+                                'dateof_first_screening'=>$req->dateof_first_screening,
+                                'target_sample_size'=>$req->target_sample_size,
+                                'enrolled_participants'=>$req->enrolled_participants,
+                                'dateof_first_enrollment'=>$req->dateof_first_enrollment,
+                                'number_of_dropouts'=>$req->number_of_dropouts,
+                                'number_lost_tofollow_ups'=>$req->number_lost_tofollow_ups,
+                                'number_of_saes'=>$req->number_of_saes,
+                                'events_of_medialimportance'=>$req->events_of_medialimportance,
+                                'protocol_deviations'=>$req->protocol_deviations
+                            );  
+
+        if(validateIsNumeric($application_id)){
+            $where = array('id'=>$application_id);
+            if (recordExists($table_name, $where)) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $reportingapp_data, $trader_email);
+                
+            }
+        }
+        else{
+            //insert 
+         return response()->json($res);
+
+
+        } 
+        if($resp){
+            $res =  array('success'=>true,
+            'application_id'=>$application_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+}
+
+public function onSaveClincialConcomitantDrugs(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'wb_clinicaltrial_saereports';
+
+           $reportingapp_data  = array( 
+                        'concomitant_drugs'=>$req->concomitant_drugs,
+                        'dateof_administration'=>$req->dateof_administration,
+                        'relevant_history'=>$req->relevant_history
+                                    );  
+
+        if(validateIsNumeric($application_id)){
+            $where = array('id'=>$application_id);
+            if (recordExists($table_name, $where)) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                $resp = updateRecord($table_name, $previous_data, $where, $reportingapp_data, $trader_email);
+
+            }
+        }
+        else{
+            //insert 
+         return response()->json($res);
+
+
+        } 
+        if($resp){
+            $res =  array('success'=>true,
+            'application_id'=>$application_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+} 
+public function onsavePatientInformation(Request $req){
+    try{
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $record_id = $req->id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'tra_clinicaltrial_patient_information';
+
+            $data = array(
+                        'name'=>$req->name,
+                        'adr_type_id'=>$req->adr_type_id,
+                        'species'=>$req->species,
+                        'breed'=>$req->breed,
+                        'humanvet_contact_id'=>$req->humanvet_contact_id,
+                        'animal_status_id'=>$req->animal_status_id,
+                        'dateof_birth'=>$req->dateof_birth,
+                        'age'=>$req->age,
+                        'sex_id'=>$req->sex_id,
+                        'trader_id'=>$req->trader_id
+
+                     );
+     
+
+        if(validateIsNumeric($record_id)){
+
+            $where = array('id'=>$record_id);
+            if (recordExists($table_name, $where,'mis_db')) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email,'mis_db');
+                
+            }
+            $res = returnFuncResponses($resp, 'Patient Details', 'data', $data);                             
+
+        }
+        else{
+            if(!recordExists($table_name, $data,'mis_db')){
+                $data['created_on'] = Carbon::now();
+                $data['created_by'] = $trader_email;
+                                    
+                $resp = insertRecord($table_name, $data, $trader_email,'mis_db');  
+                $res = returnFuncResponses($resp, 'Patient Details', 'data', $data);                             
+            }
+            else{
+                $res = array(
+                        'success'=>false,
+                        'message'=>'Patient Details exists or already saved.');
     
+            }
+
+        } 
+     
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
+   public function onSaveClincialTrialSummaryApplication(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'wb_clinical_trial_applications';
+
+           $reportingapp_data  = array( 
+                        'date_of_approved_research'=>$req->date_of_approved_research,
+                        'date_of_approved_uncst'=>$req->date_of_approved_uncst,
+                        'date_of_approval'=>$req->date_of_approval
+                                    );  
+
+        if(validateIsNumeric($application_id)){
+            $where = array('id'=>$application_id);
+            if (recordExists($table_name, $where)) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                $resp = updateRecord($table_name, $previous_data, $where, $reportingapp_data, $trader_email);
+
+            }
+        }
+        else{
+            //insert 
+         return response()->json($res);
+
+
+        } 
+        if($resp){
+            $res =  array('success'=>true,
+            'application_id'=>$application_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+}
     public function getClinicalApplicationsDetails(Request $req){
         try{
             $trader_id = $req->trader_id;
             $application_status_id = $req->application_status_id;
-                $sub_module_id = $req->sub_module_id;
-                 $application_code = $req->application_code;
+            $sub_module_id = $req->sub_module_id;
+            $application_code = $req->application_code;
                 
             $data = array();
             //get the records 
             $records = DB::table('wb_clinical_trial_applications as t1')
-                ->select('t1.*','t1.id as application_id', 't7.name as action_name','t7.iconCls','t7.action', 't1.clinical_prodsection_id','t1.application_status_id as status_id','t3.name as status', 't3.name as status_name','t4.router_link','t4.name as process_title')
-                ->leftJoin('wb_statuses as t3', 't1.application_status_id','=','t3.id')
+                ->select('t1.*','t1.id as application_id','t8.adverse_reaction_id','t7.name as action_name','t7.iconCls','t7.action', 't1.clinical_prodsection_id','t1.application_status_id as status_id','t3.name as status', 't3.name as status_name','t4.router_link','t4.name as process_title')
+                ->leftJoin('wb_adverse_reaction as t8', 't1.id','=','t8.application_id')
+               ->leftJoin('wb_statuses as t3', 't1.application_status_id','=','t3.id')
                 ->leftJoin('wb_tfdaprocesses as t4', function ($join) {
                     $join->on('t1.sub_module_id', '=', 't4.sub_module_id');
                     $join->on('t1.application_status_id', '=', 't4.status_id');
@@ -1079,7 +1401,6 @@ public function saveCtrSaeReportingApplication(Request $req){
                 }
                 $records =  $records->get();
 
-
                 $data = $this->getClincialTrialAppsData($records);
                 $res =array('success'=>true,'data'=> $data);
         }
@@ -1099,23 +1420,22 @@ public function saveCtrSaeReportingApplication(Request $req){
 
     }
     function getClincialTrialAppsData($records){
-        
+
         $actionColumnData = returnContextMenuActions();
         $data = array();
-
         $subModuleData = getParameterItems('sub_modules','','mis_db');
         $sectionsData = getParameterItems('par_sections','','mis_db');
         
         $permitCategoryData = getParameterItems('par_permit_category','','mis_db');
-
         $permitReasonData = getParameterItems('par_permit_category','','mis_db');
         $meetingData = getParameterItems('par_meeting_types','','mis_db');
-        
+        $adverseReaction = getParameterItems('par_adverse_reaction','','mis_db');
         foreach ($records as $rec) {
            $section = returnParamFromArray($sectionsData,$rec->section_id);
-            $meetingType = returnParamFromArray($meetingData,$rec->meeting_type_id);
+       $reaction = returnParamFromArray($adverseReaction,$rec->adverse_reaction_id);
+           $meetingType = returnParamFromArray($meetingData,$rec->meeting_type_id);
            $clinical_trial_sponsor = getSingleRecordColValue('clinical_trial_personnel', array('id' => $rec->sponsor_id), 'name','mis_db');
-           $principal_investigator = getSingleRecordColValue('clinical_trial_personnel', array('id' => $rec->investigator_id), 'name','mis_db');
+           $principal_investigator = getSingleRecordColValue('clinicaltrial_investigator_personnel', array('id' => $rec->investigator_id), 'name','mis_db');
            if($rec->sub_module_id == 23 ||$rec->sub_module_id == 102||$rec->sub_module_id == 103){
                 if($rec->sub_module_id == 23){
                 $report_data = getSingleRecord('wb_clinicaltrial_progressreports', array('application_id' => $rec->application_id));
@@ -1125,7 +1445,6 @@ public function saveCtrSaeReportingApplication(Request $req){
                 $report_data = getSingleRecord('wb_clinicaltrial_otherreports', array('application_id' => $rec->application_id));
                  }
                 if($report_data){
-
                     $data[] = array('application_code'=>$rec->application_code,
                                 'module_id'=>$rec->module_id,
                                 'sub_module_id'=>$rec->sub_module_id,
@@ -1151,7 +1470,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                 'duration_desc'=>$rec->duration_desc,
                                 'paying_currency_id'=>$rec->paying_currency_id,
                                 'section_id'=>$rec->section_id,
-                                
+                                'reaction'=>$reaction,
                                 'router_link'=>$rec->router_link,
                                 'process_title'=>$rec->process_title,
                                 'reg_clinical_trial_id'=>$rec->reg_clinical_trial_id,
@@ -1160,52 +1479,71 @@ public function saveCtrSaeReportingApplication(Request $req){
                                 'id'=>$rec->id,
                                 'application_id'=>$rec->id,
                                 'clinical_prodsection_id'=>$rec->clinical_prodsection_id,
-                                
                                 'phase_id'=>$rec->phase_id,
                                 'status_name'=>$rec->status_name,
                                 'is_fast_track'=>$rec->is_fast_track,
                                 'clinical_trial_sponsor'=>$clinical_trial_sponsor,
                                 'principal_investigator'=>$principal_investigator,
+                                //sae report
+                                'sourceofpsur_id'=>$report_data->sourceofpsur_id,
+                                'report_category_id'=>$report_data->report_category_id,
+                                'report_type_id'=>$report_data->report_type_id,
+                                'initial_receive_date'=>$report_data->initial_receive_date,
+                                'report_date'=>$report_data->report_date,
+                                'adr_reporter_category_id'=>$report_data->adr_reporter_category_id,
+                                'adr_type_id'=>$report_data->adr_type_id,
+                                'species'=>$report_data->species,
+                                'breed'=>$report_data->breed,
+                                'animal_status_id'=>$report_data->animal_status_id,
+                                'humanvet_contact_id'=>$report_data->humanvet_contact_id,
+                                'patient_name'=>$report_data->patient_name,
+                                'title_id'=>$report_data->title_id,
+                                'gender_id'=>$report_data->gender_id,
+                                'device_operator_id'=>$report_data->device_operator_id,
+                                'local_supplier'=>$report_data->local_supplier,
+                                'software_version'=>$report_data->software_version,
+                                'catalogue_number'=>$report_data->catalogue_number,
+                                'serial_number'=>$report_data->serial_number,
+                                'model_number'=>$report_data->model_number,
+                                'device_location_id'=>$report_data->device_location_id,
+                                'last_menstruation_date'=>$report_data->last_menstruation_date,
+                                'is_pregnant'=>$report_data->is_pregnant,
+                                'is_lactating'=>$report_data->is_lactating,
+                                'date_of_birth'=>$report_data->date_of_birth,
+                                'patient_age'=>$report_data->patient_age,
+                                'age_group_id'=>$report_data->age_group_id,
+                                'patient_weight'=>$report_data->patient_weight,
+                                'patient_height'=>$report_data->patient_height,
+                                'bmi'=>$report_data->bmi,
 
-                                'reporting_start_date'=>$report_data->reporting_start_date,
-                                'reporting_end_date'=>$report_data->reporting_end_date,
+                                //additional fields
+                                'study_arm'=>$report_data->study_arm,
+                                'medra_term_id'=>$report_data->medra_term_id,
+                                'sae_onset_date'=>$report_data->sae_onset_date,
+                                'stop_date'=>$report_data->stop_date,
+                                'ongoing_id'=>$report_data->ongoing_id,
+                                'site_awareness_date'=>$report_data->site_awareness_date,
+                                'sae_narative'=>$report_data->sae_narative,
+                                //end of sae
 
-                                'clinicalreport_type_id'=>$report_data->clinicalreport_type_id,
-                                'actualstudy_date'=>$report_data->actualstudy_date,
-                                'screen_participants'=>$report_data->screen_participants,
-                                'dateof_first_screening'=>$report_data->dateof_first_screening,
-                                'target_sample_size'=>$report_data->target_sample_size,
-                                'enrolled_participants'=>$report_data->enrolled_participants,
-                                'dateof_first_enrollment'=>$report_data->dateof_first_enrollment,
-                                'number_of_dropouts'=>$report_data->number_of_dropouts,
-                                'number_lost_tofollow_ups'=>$report_data->number_lost_tofollow_ups,
-                                'inclusion_criteria'=>$report_data->inclusion_criteria,
-                                'exclusion_criteria'=>$report_data->exclusion_criteria,
-                                'number_of_saes'=>$report_data->number_of_saes,
-                                'events_of_medialimportance'=>$report_data->events_of_medialimportance,
-                                'protocol_deviations'=>$report_data->protocol_deviations,
-                                'clinicalstudy_status_id'=>$report_data->clinicalstudy_status_id,
-                                'study_site_id'=>$report_data->study_site_id,
-                                
-                                
                                 'primary_endpoints' => $rec->primary_endpoints,
                                         'secondary_endpoints' => $rec->secondary_endpoints,
 
                                 'study_end_date'=>$rec->study_end_date,
-                                 'clinicaltrial_registry_id' => $rec->clinicaltrial_registry_id,
-                                    'clinicaltrial_identification_no' => $rec->clinicaltrial_identification_no,
-                                    'short_study_title' => $rec->short_study_title,
-                                    'ctrethics_committee_id' => $rec->ctrethics_committee_id,
-                                    'trial_design' => $rec->trial_design,
-                                    'clinicaltrialprimary_objective' => $rec->clinicaltrialprimary_objective,
-                                    'clinicaltrialsecondary_objective' => $rec->clinicaltrialsecondary_objective,
-                                    'exclusion_criteria' => $rec->exclusion_criteria,
-                                    'inclusion_criteria' => $rec->inclusion_criteria,
-                                    'purpose_of_trial' => $rec->purpose_of_trial,
-                                    'clinicaltrial_description' => $rec->clinicaltrial_description,
+                                'clinicaltrial_registry_id' => $rec->clinicaltrial_registry_id,
+                                'clinicaltrial_identification_no' => $rec->clinicaltrial_identification_no,
+                                'short_study_title' => $rec->short_study_title,
+                                'ctrethics_committee_id' => $rec->ctrethics_committee_id,
+                                'trial_design' => $rec->trial_design,
+                                'clinicaltrialprimary_objective' => $rec->clinicaltrialprimary_objective,
+                                'clinicaltrialsecondary_objective' => $rec->clinicaltrialsecondary_objective,
+                                'exclusion_criteria' => $rec->exclusion_criteria,
+                                'inclusion_criteria' => $rec->inclusion_criteria,
+                                'purpose_of_trial' => $rec->purpose_of_trial,
+                                'clinicaltrial_description' => $rec->clinicaltrial_description,
                                     
-                                    'clincialtrialfields_type_id' => $rec->clincialtrialfields_type_id,
-                                    'clincialtrialfunding_source_id' => $rec->clincialtrialfunding_source_id,
+                                'clincialtrialfields_type_id' => $rec->clincialtrialfields_type_id,
+                                'clincialtrialfunding_source_id' => $rec->clincialtrialfunding_source_id,
                                 'phase_id'=>$rec->phase_id,
                                 'status_name'=>$rec->status_name,
                                 'is_fast_track'=>$rec->is_fast_track,
@@ -1223,6 +1561,7 @@ public function saveCtrSaeReportingApplication(Request $req){
 
            }
            else{
+
                 $data[] = array('application_code'=>$rec->application_code,
                         'module_id'=>$rec->module_id,
                         'sub_module_id'=>$rec->sub_module_id,
@@ -1241,7 +1580,11 @@ public function saveCtrSaeReportingApplication(Request $req){
                         'date_added'=>$rec->date_added,
                         'duration_stimate'=>$rec->duration_stimate,
                         'rec_no'=>$rec->rec_no,
+                        'date_of_approved_research'=>$rec->date_of_approved_research,
+                        'date_of_approved_uncst'=>$rec->date_of_approved_uncst,
+                       'date_of_approval'=>$rec->date_of_approval,
                         'trader_id'=>$rec->applicant_id,
+                        'data_management_process'=>$rec->data_management_process,
                         'application_type'=>returnParamFromArray($subModuleData,$rec->sub_module_id).' Clinical Trial Application',
                         'sponsor_id'=>$rec->sponsor_id,
                         'investigator_id'=>$rec->investigator_id,
@@ -1276,31 +1619,69 @@ public function saveCtrSaeReportingApplication(Request $req){
                         'clinical_prodsection_id'=>$rec->clinical_prodsection_id,
                         'is_clinicaltrialin_othercountry'=>$rec->is_clinicaltrialin_othercountry,
                         'primary_endpoints' => $rec->primary_endpoints,
-                                'secondary_endpoints' => $rec->secondary_endpoints,
-                                'is_clinicaltrialin_uganda'=>$rec->is_clinicaltrialin_uganda,
+                        'secondary_endpoints' => $rec->secondary_endpoints,
+                        'tertiary_endpoints'=> $rec->tertiary_endpoints,
+                        'is_clinicaltrialin_uganda'=>$rec->is_clinicaltrialin_uganda,
                         'study_end_date'=>$rec->study_end_date,
-                         'clinicaltrial_registry_id' => $rec->clinicaltrial_registry_id,
-                            'clinicaltrial_identification_no' => $rec->clinicaltrial_identification_no,
-                            'short_study_title' => $rec->short_study_title,
-                            'ctrethics_committee_id' => $rec->ctrethics_committee_id,
-                            'trial_design' => $rec->trial_design,
-                            'clinicaltrialprimary_objective' => $rec->clinicaltrialprimary_objective,
-                            'clinicaltrialsecondary_objective' => $rec->clinicaltrialsecondary_objective,
-                            'exclusion_criteria' => $rec->exclusion_criteria,
-                            'inclusion_criteria' => $rec->inclusion_criteria,
-                            'purpose_of_trial' => $rec->purpose_of_trial,
-                            'clinicaltrial_description' => $rec->clinicaltrial_description,
+                        'clinicaltrial_registry_id' => $rec->clinicaltrial_registry_id,
+                        'clinicaltrial_identification_no' => $rec->clinicaltrial_identification_no,
+                        'short_study_title' => $rec->short_study_title,
+                        'ctrethics_committee_id' => $rec->ctrethics_committee_id,
+                        'trial_design' => $rec->trial_design,
+                        'clinicaltrialprimary_objective' => $rec->clinicaltrialprimary_objective,
+                        'tertiary_objectives' => $rec->tertiary_objectives,
+
+                        'clinicaltrialsecondary_objective' => $rec->clinicaltrialsecondary_objective,
+                        'exclusion_criteria' => $rec->exclusion_criteria,
+                        'inclusion_criteria' => $rec->inclusion_criteria,
+                        'purpose_of_trial' => $rec->purpose_of_trial,
+                        'clinicaltrial_description' => $rec->clinicaltrial_description,
+                        'sample_size'=> $rec->sample_size,
+                        'planned_analyses'=> $rec->planned_analyses,
+                        'analysis_sets'=> $rec->analysis_sets,
+
+                        'primary_pharmacodynamics'=> $rec->primary_pharmacodynamics,
+                        'secondary_pharmacodynamics'=> $rec->secondary_pharmacodynamics,
+                        'safety_pharmacology'=> $rec->safety_pharmacology,
+                        'pharmacodynamic_drug_interactions'=> $rec->pharmacodynamic_drug_interactions,
+                        'pharmacokinetics'=> $rec->pharmacokinetics,
+
+                        'toxicology'=> $rec->toxicology,
+                        'First_in_human_trials'=> $rec->First_in_human_trials,
+                        'glp_aspects'=> $rec->glp_aspects,
+
+                        'reporting_start_date'=>$rec->reporting_start_date,
+                        'reporting_end_date'=>$rec->reporting_end_date,
+                        'clinicalreport_type_id'=>$rec->clinicalreport_type_id,
+                        'actualstudy_date'=>$rec->actualstudy_date,
+                        'screen_participants'=>$rec->screen_participants,
+                        'dateof_first_screening'=>$rec->dateof_first_screening,
+                        'target_sample_size'=>$rec->target_sample_size,
+                        'enrolled_participants'=>$rec->enrolled_participants,
+                        'dateof_first_enrollment'=>$rec->dateof_first_enrollment,
+                        'number_of_dropouts'=>$rec->number_of_dropouts,
+                        'number_lost_tofollow_ups'=>$rec->number_lost_tofollow_ups,
+                        'number_of_saes'=>$rec->number_of_saes,
+                        'events_of_medialimportance'=>$rec->events_of_medialimportance,
+                        'protocol_deviations'=>$rec->protocol_deviations,
+
+                        'clincialtrialfields_type_id' => $rec->clincialtrialfields_type_id,
+                        'clincialtrialfunding_source_id' => $rec->clincialtrialfunding_source_id,
                             
-                            'clincialtrialfields_type_id' => $rec->clincialtrialfields_type_id,
-                            'clincialtrialfunding_source_id' => $rec->clincialtrialfunding_source_id,
+                        'screening_period' => $rec->screening_period,
+                        'screening_duration' => $rec->screening_duration,
+                        'follow_up_period' => $rec->follow_up_period,
+                        'follow_up_duration' => $rec->follow_up_duration,
+                        'intervention_period'=>$rec->intervention_period,
+                        'intervention_duration'=>$rec->intervention_duration,
                             
-                             'screening_period' => $rec->screening_period,
-                            'screening_duration' => $rec->screening_duration,
-                            'follow_up_period' => $rec->follow_up_period,
-                            'follow_up_duration' => $rec->follow_up_duration,
-                            'intervention_period'=>$rec->intervention_period,
-                            'intervention_duration'=>$rec->intervention_duration,
-                            
+                        'safety_monitoring_plan' => $rec->safety_monitoring_plan,
+                        'system_used' => $rec->system_used,
+                        'action_seriousadverse_event' => $rec->action_seriousadverse_event,
+                        'safety_monitoring_board' => $rec->safety_monitoring_board,
+                        'interim_report_date'=>$rec->interim_report_date,
+                        'estimated_due_report_date'=>$rec->estimated_due_report_date,
+                        
                         'phase_id'=>$rec->phase_id,
                         'status_name'=>$rec->status_name,
                         'clinicalin_othercountries_sites' => $rec->clinicalin_othercountries_sites,
@@ -1328,10 +1709,8 @@ public function saveCtrSaeReportingApplication(Request $req){
         $records = DB::table($table_name .' as t1')
                     ->where(array('application_id'=>$application_id))
                     ->get();
+            //dd($application_id);
                     foreach ($records as $rec) {
-
-                        
-                      
                         $product_category = getSingleRecordColValue('par_clinical_product_categories', array('id' => $rec->product_category_id), 'category_name','mis_db');
                         $generic_name = getSingleRecordColValue('par_common_names', array('id' => $rec->common_name_id), 'name','mis_db');
                         $dosage_form = getSingleRecordColValue('par_dosage_forms', array('id' => $rec->dosage_form_id), 'name','mis_db');
@@ -1452,8 +1831,395 @@ public function saveCtrSaeReportingApplication(Request $req){
             return response()->json($res);
         
         
-           }
-           public function getclinicalStudySitesData(Request $req){
+           } 
+
+
+    public function getClinicalSummaryActivityDetails(Request $req){
+    
+        try{
+            $trader_id = $req->trader_id;
+            $application_id = $req->application_id;
+
+            $data = array();
+            //get the records 
+            $records = DB::connection('mis_db')->table('tra_clinicaltrial_summary_activity as t1')
+                    ->where(array('t1.application_id' => $application_id))
+                     ->get();
+                     foreach ($records as $rec) {    
+                            $data[] = array('id'=>$rec->id,
+                                        'type_of_ammendment'=>$rec->type_of_ammendment,
+                                        'summary_of_ammendment'=>$rec->summary_of_ammendment,
+                                        'date_of_approval_by'=>$rec->date_of_approval_by,
+                                        'trader_id'=>$rec->trader_id,
+                                        'application_id'=>$rec->application_id,
+                                    );
+                        
+                     }
+                     $res = array('success'=>true, 'data'=>$data);// $data;
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+}
+
+   public function getClinicalRegulatoryLapseDetails(Request $req){
+    
+        try{
+            $trader_id = $req->trader_id;
+            $application_id = $req->application_id;
+
+            $data = array();
+            //get the records 
+            $records = DB::connection('mis_db')->table('tra_clinicaltrial_regulatorylapse as t1')
+                    ->where(array('t1.application_id' => $application_id))
+                     ->get();
+                     foreach ($records as $rec) {
+                        $lapse_study_id = $rec->lapse_study_id;
+
+                       $regulatory_lapse = getParameterItem('par_clinical_regulatorystudy',$rec->lapse_study_id,'mis_db');
+    
+                            $data[] = array('id'=>$rec->id,
+                                        'regulatory_lapse'=>$regulatory_lapse,
+                                        'date_of_occurrance'=>$rec->date_of_occurrance,
+                                        'reason'=>$rec->reason,                
+                                        'trader_id'=>$rec->trader_id,
+                                        'application_id'=>$rec->application_id
+                                    );
+                        
+                     }
+                     $res = array('success'=>true, 'data'=>$data);// $data;
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+}
+   public function getClinicalDeviationReportDetails(Request $req){
+    
+        try{
+            $trader_id = $req->trader_id;
+            $application_id = $req->application_id;
+
+            $data = array();
+            //get the records 
+            $records = DB::connection('mis_db')->table('tra_clinicaltrial_deviationrprt as t1')
+                    ->where(array('t1.application_id' => $application_id))
+                     ->get();
+                     foreach ($records as $rec) {    
+                            $data[] = array('id'=>$rec->id,
+                                        'deviation'=>$rec->deviation,
+                                        'CAPA'=>$rec->capa,
+                                        'date_of_occurrance'=>$rec->date_of_occurrance,
+                                        'id'=>$rec->id,
+                                        'trader_id'=>$rec->trader_id,
+                                        'application_id'=>$rec->application_id,
+                                    );
+                        
+                     }
+                     $res = array('success'=>true, 'data'=>$data);// $data;
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+}
+
+ public function getClinicalInspectionReportDetails(Request $req){
+    
+        try{
+            $trader_id = $req->trader_id;
+            $application_id = $req->application_id;
+
+            $data = array();
+            //get the records 
+            $records = DB::connection('mis_db')->table('tra_clinicaltrial_inspectionrprt as t1')
+                    ->where(array('t1.application_id' => $application_id))
+                     ->get();
+                     foreach ($records as $rec) {
+
+    
+                            $data[] = array('id'=>$rec->id,
+                                        'regulatory_body'=>$rec->regulatory_body,
+                                        'date_of_inspection'=>$rec->date_of_inspection,
+                                        'outcome'=>$rec->outcome,
+                                        'trader_id'=>$rec->trader_id,
+                                        'application_id'=>$rec->application_id,
+                                    );
+                        
+                     }
+                     $res = array('success'=>true, 'data'=>$data);// $data;
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+}
+  public function getClinicalPatientInformation(Request $req){
+    
+        try{
+            $trader_id = $req->trader_id;
+            $application_id = $req->application_id;
+
+            $data = array();
+            //get the records 
+            $records = DB::connection('mis_db')->table('tra_clinicaltrial_patient_information as t1')
+                    ->where(array('t1.trader_id' => $trader_id))
+                     ->get();
+                     foreach ($records as $rec) {
+                        $adr_type_id = $rec->adr_type_id;
+                        $sex_id = $rec->sex_id;
+                        $animal_status_id = $rec->animal_status_id;
+                        $humanvet_contact_id =$rec->humanvet_contact_id;
+                        $product_type = getParameterItem('par_adr_types',$rec->adr_type_id,'mis_db');
+                        $sex = getParameterItem('par_gender',$rec->sex_id,'mis_db');
+                        $animal_status = getParameterItem('par_animal_status',$rec->animal_status_id,'mis_db');
+                        $country = getParameterItem('par_countries',$rec->country_id,'mis_db');
+
+                        $animal_contact =getParameterItem('par_humanvet_contacts',$rec->humanvet_contact_id,'mis_db');
+                            $data[] = array('id'=>$rec->id,
+                                        'product_type'=>$product_type,
+                                        'name'=>$rec->name,
+                                        'animal_status'=>$animal_status,
+                                        'country'=>$country,
+                                        'animal_contact'=>$animal_contact,
+                                        'sex'=>$sex,
+                                        'sex_id'=>$rec->sex_id,
+                                        'country_id'=>$rec->country_id,
+                                        'animal_status_id'=>$rec->animal_status_id,
+                                        'adr_type_id'=>$rec->adr_type_id,
+                                        'humanvet_contact_id'=>$rec->humanvet_contact_id,
+                                        'age'=>$rec->age,
+                                        'species'=>$rec->species,
+                                        'trader_id'=>$rec->trader_id,
+                                        'breed'=>$rec->breed,
+                                        'dateof_birth'=>$rec->dateof_birth
+                                    );
+                        
+                     }
+                     $res = array('success'=>true, 'data'=>$data);// $data;
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+} 
+  public function getClinicalPersonnelDetails(Request $req){
+    
+        try{
+            $trader_id = $req->trader_id;
+            $application_id = $req->application_id;
+
+            $data = array();
+            //get the records 
+            $records = DB::connection('mis_db')->table('clinical_trial_personnel as t1')
+                    ->where(array('t1.application_id' => $application_id))
+                     ->get();
+                     foreach ($records as $rec) {
+                        $qualification_id = $rec->qualification_id;
+            $position_id = $rec->position_id;
+
+                       $qualification = getParameterItem('par_personnel_qualifications',$rec->                      qualification_id,'mis_db');
+                       $position = getParameterItem('par_clinicaltrialpersons_roles',$rec->                         position_id,'mis_db');
+            
+                            $data[] = array('id'=>$rec->id,
+                                        'qualification_id'=>$qualification_id,
+                                        'name'=>$rec->name,
+                                        'qualification'=>$qualification,
+                                        'telephone'=>$rec->telephone,
+                                        'email_address'=>$rec->email_address,
+                                        'id'=>$rec->id,
+                                        'position_id'=>$rec->position_id,
+                                        'position'=>$position,
+                                        'trader_id'=>$rec->trader_id,
+                                        'application_id'=>$rec->application_id,
+                                    );
+                        
+                     }
+                     $res = array('success'=>true, 'data'=>$data);// $data;
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+}
+
+ public function getClinicaltrailIMPHandlingProdData(Request $req){
+
+    try{
+        $data = array();
+        $table_name = 'tra_clinicaltrial_producthandling';
+        $application_id = $req->application_id;
+        $records = DB::connection('mis_db')->table($table_name .' as t1')
+                    ->where(array('application_id'=>$application_id))
+                    ->get();
+                    foreach ($records as $rec) {
+
+                        
+                      
+                        $container_type = getSingleRecordColValue('par_containers_types', array('id' => $rec->container_type_id), 'name','mis_db');
+                        $generic_name = getSingleRecordColValue('par_common_names', array('id' => $rec->common_name_id), 'name','mis_db');
+                        $primary_container = getSingleRecordColValue('par_containers', array('id' => $rec->container_id), 'name','mis_db');
+                        $container_materials = getSingleRecordColValue('par_containers_materials', array('id' => $rec->container_material_id), 'name','mis_db');
+                        $si_units = getSingleRecordColValue('par_si_units', array('id' => $rec->si_unit_id), 'name','mis_db');
+
+                         $rec_data = DB::connection('mis_db')
+                                ->table('clinical_trial_personnel as t1')
+                                ->select('t1.*','t1.id', 't1.name', 't2.name as country', 't3.name as region','t4.name as district')
+                                ->join('par_countries as t2', 't1.country_id', '=','t2.id')
+                                ->leftJoin('par_regions as t3', 't1.region_id', '=','t3.id')
+                                ->leftJoin('par_districts as t4', 't1.district_id', '=','t4.id')
+                                ->where(array('t1.id'=>$rec->investigator_id))
+                                ->first();
+
+                        $rec_no = DB::table('wb_clinical_trial_products as t1')
+                                ->select('t1.*')
+                                ->where(array('t1.id'=>$rec->common_name_id))
+                                ->first();
+                      if($rec_no && $rec_data){
+                                $data[] = array('id'=>$rec->id,
+                                'application_id'=>$rec->application_id,
+                                'registration_no'=>$rec->registration_no,
+                                'registration_date'=>$rec->registration_date,
+                                'common_name_id'=>$rec_no->common_name_id,
+                                'investigator_name'=>$rec_data->name, 
+                                'shipping_delivery_distribution'=>$rec->shipping_delivery_distribution, 
+                                'storage_requirements_arrangements'=>$rec->storage_requirements_arrangements,
+                                'dispensing_trial_medicines'=>$rec->dispensing_trial_medicines, 
+                                'investigator_id'=>$rec->investigator_id,
+                                'no_of_units'=>$rec->no_of_units,
+                                'no_of_packs'=>$rec->no_of_packs,
+                                'si_unit_id'=>$rec->si_unit_id,
+                'si_units'=>$si_units,
+                                'container_type_id'=>$rec->container_type_id,
+                                'container_type'=>$container_type,
+                                'generic_name'=>$generic_name,
+                                'primary_container'=>$primary_container,
+                                'container_id'=>$rec->container_id,
+                                'container_materials'=>$container_materials,
+                                'container_material_id'=>$rec->container_material_id,
+
+                            );  
+                      }         
+
+
+                    }
+
+            $res = array('success'=>true, 
+                        'data'=>$data
+                        );
+
+            }
+            catch (\Exception $e) {
+                $res = array(
+                    'success' => false,
+                    'message' => $e->getMessage()
+                );
+            } catch (\Throwable $throwable) {
+                $res = array(
+                    'success' => false,
+                    'message' => $throwable->getMessage()
+                );
+            }
+            return response()->json($res);
+        
+
+   }
+ public function getClinicalPersonnelInformation(Request $req){
+    
+        try{
+            $trader_id = $req->trader_id;
+            $application_id = $req->application_id;
+
+            $data = array();
+            //get the records 
+            $records = DB::connection('mis_db')->table('clinical_trial_personnel as t1')
+                    ->where(array('t1.trader_id' => $trader_id))
+                     ->get();
+                     foreach ($records as $rec) {
+                        $qualification_id = $rec->qualification_id;
+
+                       $qualification = getParameterItem('par_personnel_qualifications',$rec->qualification_id,'mis_db');
+    
+                            $data[] = array('id'=>$rec->id,
+                                        'qualification_id'=>$qualification_id,
+                                        'name'=>$rec->name,
+                                        'qualification'=>$qualification,
+                                        'telephone'=>$rec->telephone,
+                                        'email_address'=>$rec->email_address,
+                                        'id'=>$rec->id,
+                                        'position_id'=>$rec->position_id,
+                                        'position'=> getParameterItem('par_personnel_positions',$rec->position_id,'mis_db'),
+                                        'trader_id'=>$rec->trader_id,
+                                        'application_id'=>$rec->application_id,
+                                    );
+                        
+                     }
+                     $res = array('success'=>true, 'data'=>$data);// $data;
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+}
+           
+public function getclinicalStudySitesData(Request $req){
             try{
                 $data = array();
                 $reg_clinical_trial_id = $req->reg_clinical_trial_id;
@@ -1497,10 +2263,10 @@ public function saveCtrSaeReportingApplication(Request $req){
                         $study_site_id = $rec->study_site_id;
 
                         $study_site = getSingleRecordColValue('study_sites', array('id' => $rec->study_site_id), 'name','mis_db');
-                        $investigator_category = getSingleRecordColValue('clinical_investigator_cat', array('id' => $rec->category_id), 'category_name','mis_db');
+                        $investigator_category = getSingleRecordColValue('clinical_investigator_cat', array('id' => $rec->category_id),'category_name','mis_db');
            
                         $rec_data = DB::connection('mis_db')
-                                ->table('clinical_trial_personnel as t1')
+                                ->table('clinicaltrial_investigator_personnel as t1')
                                 ->select('t1.*','t1.id', 't1.name', 't2.name as country', 't3.name as region','t4.name as district')
                                 ->join('par_countries as t2', 't1.country_id', '=','t2.id')
                                 ->leftJoin('par_regions as t3', 't1.region_id', '=','t3.id')
@@ -1602,6 +2368,565 @@ public function saveCtrSaeReportingApplication(Request $req){
 
    }
    
+    public function getNonClinicaltrailToxicologyData(Request $req){
+    
+        try{
+            $trader_id = $req->trader_id;
+            $application_id = $req->application_id;
+
+            $data = array();
+            //get the records 
+            $records = DB::table('wb_clinicaltrial_toxicitydosage as t1')
+                    ->where(array('t1.application_id' => $application_id))
+                     ->get();
+                     foreach ($records as $rec) {
+                        $dosage_type_id = $rec->dosage_type_id;
+
+                       $dose_type = getParameterItem('par_clinicaldosage_toxicity',$rec->dosage_type_id,'mis_db');
+    
+                            $data[] = array(
+                                        'id'=>$rec->id,
+                                        'species'=>$rec->species,
+                                        'dose_type'=>$dose_type,
+                                        'dose_route'=>$rec->dose_route,
+                                        'mntd'=>$rec->mntd,
+                                        'major_findings'=>$rec->major_findings,
+                                        'application_id'=>$rec->application_id
+                                    );
+                        
+                     }
+                     $res = array('success'=>true, 'data'=>$data);// $data;
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+}
+   public function onsaveToxicityDosage(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $traderemail_address = $req->traderemail_address;
+        $application_id = $req->application_id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'wb_clinicaltrial_toxicitydosage';
+
+        $data = array(
+                'dosage_type_id'=>$req->dosage_type_id, 
+                'species'=>$req->species,
+                'dose_route'=>$req->dose_route,
+                'mntd'=>$req->mntd,
+                'major_findings'=>$req->major_findings,
+                'application_id'=>$application_id);
+      
+            //insert 
+            $where = $data;
+            $data['created_by'] = $traderemail_address;
+            $data['created_on'] = Carbon::now();
+            
+            if (!recordExists($table_name, $where)) {
+                $resp = insertRecord($table_name, $data, $traderemail_address);
+               
+                $record_id = $resp['record_id'];           
+            }
+            else{
+                $error_message = "These Details has already been added!!";
+                
+            }
+        
+        if($resp){
+            $res =  array('success'=>true,
+            'record_id'=>$record_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    
+    return response()->json($res);
+   }
+
+  public function onsaveSummaryActivity(Request $req){
+    try{
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $record_id = $req->id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'tra_clinicaltrial_summary_activity';
+
+            $data = array(
+                        'type_of_ammendment'=>$req->type_of_ammendment,
+                        'summary_of_ammendment'=>$req->summary_of_ammendment,
+                        'date_of_approval_by'=>$req->date_of_approval_by,
+                        'application_id'=>$req->application_id,
+                     );  
+
+        if(validateIsNumeric($record_id)){
+
+            $where = array('id'=>$record_id);
+            if (recordExists($table_name, $where,'mis_db')) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email,'mis_db');
+                
+            }
+            $res = returnFuncResponses($resp, 'Summary Ammendment Activities', 'application_id', $trader_id);                             
+
+        }
+        else{
+            if(!recordExists($table_name, $data,'mis_db')){
+                $data['created_on'] = Carbon::now();
+                $data['created_by'] = $trader_email;
+                                    
+                $resp = insertRecord($table_name, $data, $trader_email,'mis_db');  
+                $res = returnFuncResponses($resp, 'Summary Ammendment Activities', 'application_id', $trader_id);                             
+            }
+            else{
+                $res = array(
+                        'success'=>false,
+                        'message'=>'Summary Ammendment Activities exists or already saved.');
+    
+            }
+
+        } 
+     
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+  }
+
+ public function onsaveRegulatorystudyLapse(Request $req){
+    try{
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $record_id = $req->id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'tra_clinicaltrial_regulatorylapse';
+
+            $data = array(
+                        'date_of_occurrance'=>$req->date_of_occurrance,
+                        'lapse_study_id'=>$req->lapse_study_id,
+                        'reason'=>$req->reason,
+                        'application_id'=>$req->application_id,
+                     );  
+
+        if(validateIsNumeric($record_id)){
+
+            $where = array('id'=>$record_id);
+            if (recordExists($table_name, $where,'mis_db')) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email,'mis_db');
+                
+            }
+            $res = returnFuncResponses($resp, 'Regulatory Details', 'application_id', $trader_id);                             
+
+        }
+        else{
+            if(!recordExists($table_name, $data,'mis_db')){
+                $data['created_on'] = Carbon::now();
+                $data['created_by'] = $trader_email;
+                                    
+                $resp = insertRecord($table_name, $data, $trader_email,'mis_db');  
+                $res = returnFuncResponses($resp, 'Regulatory Details', 'application_id', $trader_id);                             
+            }
+            else{
+                $res = array(
+                        'success'=>false,
+                        'message'=>'Regulatory Details exists or already saved.');
+    
+            }
+
+        } 
+     
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
+ public function onsaveDeviationReport(Request $req){
+    try{
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $record_id = $req->id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'tra_clinicaltrial_deviationrprt';
+
+            $data = array(
+                        'deviation'=>$req->deviation,
+                        'capa'=>$req->capa,
+                        'date_of_occurrance'=>$req->date_of_occurrance,
+                        'application_id'=>$req->application_id,
+                     );  
+
+        if(validateIsNumeric($record_id)){
+
+            $where = array('id'=>$record_id);
+            if (recordExists($table_name, $where,'mis_db')) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email,'mis_db');
+                
+            }
+            $res = returnFuncResponses($resp, 'Report', 'application_id', $trader_id);                             
+
+        }
+        else{
+            if(!recordExists($table_name, $data,'mis_db')){
+                $data['created_on'] = Carbon::now();
+                $data['created_by'] = $trader_email;
+                                    
+                $resp = insertRecord($table_name, $data, $trader_email,'mis_db');  
+                $res = returnFuncResponses($resp, 'Report ', 'application_id', $trader_id);                             
+            }
+            else{
+                $res = array(
+                        'success'=>false,
+                        'message'=>'Report exists or already saved.');
+    
+            }
+
+        } 
+     
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
+ public function onsaveInspectionReport(Request $req){
+    try{
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $record_id = $req->id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'tra_clinicaltrial_inspectionrprt';
+
+            $data = array(
+                        'regulatory_body'=>$req->regulatory_body,
+                        'date_of_inspection'=>$req->date_of_inspection,
+                        'outcome'=>$req->outcome,
+                        'application_id'=>$req->application_id,
+                     );  
+
+        if(validateIsNumeric($record_id)){
+
+            $where = array('id'=>$record_id);
+            if (recordExists($table_name, $where,'mis_db')) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email,'mis_db');
+                
+            }
+            $res = returnFuncResponses($resp, 'Inspection Report', 'application_id', $trader_id);                             
+
+        }
+        else{
+            if(!recordExists($table_name, $data,'mis_db')){
+                $data['created_on'] = Carbon::now();
+                $data['created_by'] = $trader_email;
+                                    
+                $resp = insertRecord($table_name, $data, $trader_email,'mis_db');  
+                $res = returnFuncResponses($resp, 'Inspection Report', 'application_id', $trader_id);                             
+            }
+            else{
+                $res = array(
+                        'success'=>false,
+                        'message'=>'Inspection Report exists or already saved.');
+    
+            }
+
+        } 
+     
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
+   public function onSaveNonClincialTrialToxicology(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'wb_clinical_trial_applications';
+
+            $data = array(
+                'primary_pharmacodynamics'=>$req->primary_pharmacodynamics, 
+                'secondary_pharmacodynamics'=>$req->secondary_pharmacodynamics,
+                'safety_pharmacology'=>$req->safety_pharmacology,
+                'pharmacodynamic_drug_interactions'=>$req->pharmacodynamic_drug_interactions, 
+                'pharmacokinetics'=>$req->pharmacokinetics,
+                'toxicology'=>$req->toxicology, 
+                'First_in_human_trials'=>$req->First_in_human_trials,
+                'glp_aspects'=>$req->glp_aspects
+
+        );
+
+        if(validateIsNumeric($application_id)){
+            $where = array('id'=>$application_id);
+            if (recordExists($table_name, $where)) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email);
+                
+            }
+        }
+        else{
+            //insert 
+         return response()->json($res);
+
+
+        } 
+        if($resp){
+            $res =  array('success'=>true,
+            'application_id'=>$application_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
+
+   public function onSaveNonClincialTrialPharmacology(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'wb_clinical_trial_applications';
+
+            $data = array(
+                'primary_pharmacodynamics'=>$req->primary_pharmacodynamics, 
+                'secondary_pharmacodynamics'=>$req->secondary_pharmacodynamics,
+                'safety_pharmacology'=>$req->safety_pharmacology,
+                'pharmacodynamic_drug_interactions'=>$req->pharmacodynamic_drug_interactions, 
+                'pharmacokinetics'=>$req->pharmacokinetics
+
+            );
+
+        if(validateIsNumeric($application_id)){
+            $where = array('id'=>$application_id);
+            if (recordExists($table_name, $where)) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email);
+                
+            }
+        }
+        else{
+            //insert 
+         return response()->json($res);
+
+
+        } 
+        if($resp){
+            $res =  array('success'=>true,
+            'application_id'=>$application_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
+
+   public function onSaveClincialTrialMeasures(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'wb_clinical_trial_applications';
+
+            $data = array(
+                'sample_size'=>$req->sample_size, 
+                'planned_analyses'=>$req->planned_analyses,
+                'analysis_sets'=>$req->analysis_sets
+            );
+
+        if(validateIsNumeric($application_id)){
+            $where = array('id'=>$application_id);
+            if (recordExists($table_name, $where)) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email);
+                
+            }
+        }
+        else{
+            //insert 
+         return response()->json($res);
+
+
+        } 
+        if($resp){
+            $res =  array('success'=>true,
+            'application_id'=>$application_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
+
    public function saveComparatorProductDetailsDetails(Request $req){
        
        $res = $this-> saveClinicalTrialProductDetailsDetails($req,'wb_clinical_comparatorproducts');
@@ -1705,8 +3030,972 @@ public function saveCtrSaeReportingApplication(Request $req){
     } 
     return $res;
    }
+public function saveiMPHandlingProductDetailsDetails(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $traderemail_address = $req->traderemail_address;
+        $study_site_id = $req->study_site_id;
+        $application_id = $req->application_id;
+        $record_id = $req->id;
+    $table_name = 'tra_clinicaltrial_producthandling';
+        $error_message = 'Error occurred, data not saved successfully';
+
+         $data = array(
+                        'common_name_id'=>$req->common_name_id, 
+                        'country_id'=>$req->country_id,  
+                        'registered_product_id'=>$req->registered_product_id, 
+                        'registration_date'=>$req->registration_date, 
+                        'registration_no'=>$req->registration_no, 
+                        'si_unit_id'=>$req->si_unit_id, 
+                        'shipping_delivery_distribution'=>$req->shipping_delivery_distribution, 
+                        'storage_requirements_arrangements'=>$req->storage_requirements_arrangements, 
+                        'dispensing_trial_medicines'=>$req->dispensing_trial_medicines, 
+                        'investigator_id'=>$req->investigator_id,
+                        'container_type_id'=>$req->container_type_id, 
+                        'container_id'=>$req->container_id, 
+                        'container_material_id'=>$req->container_material_id, 
+                        'no_of_units'=>$req->no_of_units,
+                        'no_of_packs'=>$req->no_of_packs, 
+
+                        'application_id'=>$req->application_id
+                    );
+           
+        if(validateIsNumeric($record_id)){
+            $where = array('id'=>$record_id);
+            if (recordExists($table_name, $where,'mis_db')) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $traderemail_address;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $traderemail_address,'mis_db');
+                
+            }
+        }
+        else{
+            //insert 
+            $where = $data;
+            $data['created_by'] = $traderemail_address;
+            $data['created_on'] = Carbon::now();
+            
+            if (!recordExists($table_name, $where,'mis_db')) {
+                $resp = insertRecord($table_name, $data, $traderemail_address,'mis_db');
+                
+                $record_id = $resp['record_id'];           
+            }
+            else{
+                $error_message = "The Clinical Trial IMP Product has already been added!!";
+                
+            }
+        } 
+        if($resp){
+            $res =  array('success'=>true,
+            'record_id'=>$record_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return $res;
+   }
    
+
+public function onsaveConcomittantDrugDetails(Request $req){
+    try{
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $record_id = $req->id;
+        $error_message = 'Error occurred, data not saved successfully';
+       $rec = DB::table('wb_clinical_trial_applications as t1')
+                    ->leftJoin('wb_clinicaltrial_saereports as t2','t2.application_id','=','t1.id')
+                    ->where(array('t2.application_id'=>$application_id))
+                    ->first();
+        $application_code = $rec->application_code;
+        $table_name = 'tra_clinicaltrial_concomittant';
+
+            $data = array(
+                        'brand_name'=>$req->brand_name,
+                        'common_name_id'=>$req->common_name_id,
+                        'dosage_form_id'=>$req->dosage_form_id,
+                        'routes_of_admin_id'=>$req->routes_of_admin_id,
+                        'indication'=>$req->indication,
+                        'application_code'=>$application_code,
+                        'application_id'=>$req->application_id,
+                        'start_date'=>$req->start_date,
+                        'end_date'=>$req->end_date,
+                        'ongoing_id'=>$req->ongoing_id,
+                        'manufacturer_name'=>$req->manufacturer_name,
+                        'registered_product_id'=>$req->registered_product_id,
+                        'manufacturer_id'=>$req->manufacturer_id,
+                        'registration_date'=>$req->registration_date,
+                        'registration_no'=>$req->registration_no,
+                        'trader_id'=>$req->trader_id
+                     );  
+
+        if(validateIsNumeric($record_id)){
+
+            $where = array('id'=>$record_id);
+            if (recordExists($table_name, $where,'mis_db')) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where,'mis_db');
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email,'mis_db');
+
+            }
+            $res = returnFuncResponses($resp, 'Concomittant Drugs', 'application_code', $trader_id);                             
+
+        }
+        else{
+            if(!recordExists($table_name, $data,'mis_db')){
+                $data['created_on'] = Carbon::now();
+                $data['created_by'] = $trader_email;
+                                    
+                $resp = insertRecord($table_name, $data, $trader_email,'mis_db'); 
+                $res = returnFuncResponses($resp, 'Concomittant Drugs', 'application_code', $trader_id);                             
+            }
+            else{
+                $res = array(
+                        'success'=>false,
+                        'message'=>'Concomittant Drugs exists or already saved.');
+    
+            }
+
+        } 
+     
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+    public function onDeleteMisTablePermitdetails(Request $req){
+            try{
+                $record_id = $req->record_id;
+                $application_code = $req->application_code;
+                $application_id = $req->application_id;
+                $table_name = $req->table_name;
+                $title = $req->title;
+                $email_address = $req->email_address;
+                $data = array();
+                //get the records 
+                $resp = false;
+                
+                $where_state = array( 'id'=>$record_id);
+                
+                $records = DB::connection('mis_db')->table($table_name)
+                        ->where($where_state)
+                        ->get();
+                if(count($records) >0){
+                        //delete functionality
+                        $previous_data = getPreviousRecords($table_name, $where_state,'mis_db');
+                        $resp = deleteRecordNoMisTransaction($table_name, $previous_data, $where_state,  $email_address);
+
+                }
+                if($resp){
+                    $res = array('success'=>true, 'message'=>$title.' deleted successfully');
+        
+                }   
+                else{
+                    $res = array('success'=>false, 'message'=>$title.' delete failed, contact the system admin if this persists');
+                }
+            }
+            catch (\Exception $e) {
+                $res = array(
+                    'success' => false,
+                    'message' => $e->getMessage()
+                );
+            } catch (\Throwable $throwable) {
+                $res = array(
+                    'success' => false,
+                    'message' => $throwable->getMessage()
+                );
+            }
+            return response()->json($res);
+        }
+
+public function onsaveRelevantHistoryDetails(Request $req){
+    try{
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_code;
+        $record_id = $req->id;
+        $error_message = 'Error occurred, data not saved successfully';
+       $rec = DB::table('wb_clinical_trial_applications as t1')
+                    ->leftJoin('wb_clinicaltrial_saereports as t2','t2.application_id','=','t1.id')
+                    ->where(array('t2.application_id'=>$application_id))
+                    ->first();
+        $application_code = $rec->application_code;
+        $table_name = 'tra_clinicaltrial_sae_relevanthistory';
+
+            $data = array(
+                        'other_relevant_history'=>$req->other_relevant_history,
+                        'seriousness_id'=>$req->seriousness_id,
+                        'expected_id'=>$req->expected_id,
+                        'application_code'=>$application_code,
+                        'application_id'=>$req->application_id,
+                        'trader_id'=>$req->trader_id
+                     ); 
+
+        if(validateIsNumeric($record_id)){
+
+            $where = array('id'=>$record_id);
+            if (recordExists($table_name, $where,'mis_db')) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where,'mis_db');
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email,'mis_db');
+
+            }
+            $res = returnFuncResponses($resp, 'Relevant History', 'application_id', $trader_id);                             
+
+        }
+        else{
+            if(!recordExists($table_name, $data,'mis_db')){
+                $data['created_on'] = Carbon::now();
+                $data['created_by'] = $trader_email;
+                                    
+                $resp = insertRecord($table_name, $data, $trader_email,'mis_db');
+                $res = returnFuncResponses($resp, 'Relevant History', 'application_id', $trader_id);                             
+            }
+            else{
+                $res = array(
+                        'success'=>false,
+                        'message'=>'Relevant History exists or already saved.');
+    
+            }
+
+        } 
+     
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
+
+public function saveClinicalCasualityAssessmentDetails(Request $req){
+    try{
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $record_id = $req->id;
+        $error_message = 'Error occurred, data not saved successfully';
+        $table_name = 'tra_clinicaltrial_casuality_assessment';
+        $rec = DB::table('wb_clinical_trial_applications as t1')
+                    ->leftJoin('wb_clinicaltrial_saereports as t2','t2.application_id','=','t1.id')
+                    ->where(array('t2.application_id'=>$application_id))
+                    ->first();
+        $application_code = $rec->application_code;
+
+            $data = array(
+                        'tool_id'=>$req->tool_id,
+                        'other_tool'=>$req->other_tool,
+                        'other_cause_event'=>$req->other_cause_event,
+                        'casuality_id'=>$req->casuality_id,
+                        'conclusion_releted_id'=>$req->conclusion_releted_id,
+                        'severity_event_id'=>$req->severity_event_id,
+                        'outcome_event_id'=>$req->outcome_event_id,
+                        'application_code'=>$application_code,
+                        'confirmation_id'=>$req->confirmation_id,
+                        'confirmed_date'=>$req->confirmed_date,
+                        'drug_stop_id'=>$req->drug_stop_id,
+                        'reported_id'=>$req->reported_id,
+                        'application_id' => $req->application_id,
+
+                        'trader_id'=>$req->trader_id
+                     );  
+
+        if(validateIsNumeric($record_id)){
+
+            $where = array('id'=>$record_id);
+            if (recordExists($table_name, $where,'mis_db')) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where,'mis_db');
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email,'mis_db');
+
+            }
+            $res = returnFuncResponses($resp, 'Casuality Assessment', 'application_id', $trader_id);                             
+
+        }
+        else{
+            if(!recordExists($table_name, $data,'mis_db')){
+                $data['created_on'] = Carbon::now();
+                $data['created_by'] = $trader_email;
+                                    
+                $resp = insertRecord($table_name, $data, $trader_email,'mis_db'); 
+                $res = returnFuncResponses($resp, 'Casuality Assessment', 'application_id', $trader_id);                             
+            }
+            else{
+                $res = array(
+                        'success'=>false,
+                        'message'=>'Casuality Assessment exists or already saved.');
+    
+            }
+
+        } 
+     
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
+public function saveClinicalSaeDrugsDetails(Request $req){
+    try{
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $record_id = $req->id;
+        $error_message = 'Error occurred, data not saved successfully';
+        $table_name = 'tra_clinicaltrial_sae_drug';
+        $rec = DB::table('wb_clinical_trial_applications as t1')
+                    ->leftJoin('wb_clinicaltrial_saereports as t2','t2.application_id','=','t1.id')
+                    ->where(array('t2.application_id'=>$application_id))
+                    ->first();
+        $application_code = $rec->application_code;
+
+            $data = array(
+                        'brand_name'=>$req->brand_name,
+                        'common_name_id'=>$req->common_name_id,
+                        'dosage_form_id'=>$req->dosage_form_id,
+                        'routes_of_admin_id'=>$req->routes_of_admin_id,
+                        'indication'=>$req->indication,
+                        'application_code'=>$application_code,
+                        'start_date'=>$req->start_date,
+                        'end_date'=>$req->end_date,
+                        'ongoing_id'=>$req->ongoing_id,
+                        'manufacturer_name'=>$req->manufacturer_name,
+                        'registered_product_id'=>$req->registered_product_id,
+                        'manufacturer_id'=>$req->manufacturer_id,
+                        'registration_date'=>$req->registration_date,
+                        'registration_no'=>$req->registration_no,
+                        'application_id' => $req->application_id,
+
+                        'trader_id'=>$req->trader_id
+                     );  
+
+        if(validateIsNumeric($record_id)){
+
+            $where = array('id'=>$record_id);
+            if (recordExists($table_name, $where,'mis_db')) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where,'mis_db');
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email,'mis_db');
+
+            }
+            $res = returnFuncResponses($resp, 'Suspected Drug', 'application_id', $trader_id);                             
+
+        }
+        else{
+            if(!recordExists($table_name, $data,'mis_db')){
+                $data['created_on'] = Carbon::now();
+                $data['created_by'] = $trader_email;
+                                    
+                $resp = insertRecord($table_name, $data, $trader_email,'mis_db'); 
+                $res = returnFuncResponses($resp, 'Suspected Drug', 'application_id', $trader_id);                             
+            }
+            else{
+                $res = array(
+                        'success'=>false,
+                        'message'=>'Suspected Drug exists or already saved.');
+    
+            }
+
+        } 
+     
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
    
+   public function onsaveSaeInvestigationsDetails(Request $req){
+    try{
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id =$req->application_id;
+        $record_id = $req->id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'tra_clinicaltrial_sae_investigations';
+        $rec = DB::table('wb_clinical_trial_applications as t1')
+                    ->leftJoin('wb_clinicaltrial_saereports as t2','t2.application_id','=','t1.id')
+                    ->where(array('t2.application_id'=>$application_id))
+                    ->first();
+        $application_code = $rec->application_code;
+            $data = array(
+                        'investigations'=>$req->investigations,
+                        'results'=>$req->results,
+                        'trader_id'=>$req->trader_id,
+                        'application_code'=>$application_code,
+                        'application_id'=>$req->application_id
+
+                     );  
+
+        if(validateIsNumeric($record_id)){
+
+            $where = array('id'=>$record_id);
+            if (recordExists($table_name, $where,'mis_db')) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where,'mis_db');
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email,'mis_db');
+
+            }
+            $res = returnFuncResponses($resp, 'Investigations Details', 'application_id', $trader_id);                             
+
+        }
+        else{
+            if(!recordExists($table_name, $data,'mis_db')){
+                $data['created_on'] = Carbon::now();
+                $data['created_by'] = $trader_email;
+                                    
+                $resp = insertRecord($table_name, $data, $trader_email,'mis_db'); 
+                $res = returnFuncResponses($resp, 'Investigations Details', 'application_id', $trader_id);                             
+            }
+            else{
+                $res = array(
+                        'success'=>false,
+                        'message'=>'Investigations Details or already saved.');
+    
+            }
+
+        } 
+     
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
+
+   public function saveClinicalSaeLabTetsDetails(Request $req){
+    try{
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id =$req->application_id;
+        $record_id = $req->id;
+        $error_message = 'Error occurred, data not saved successfully';
+        $rec = DB::table('wb_clinical_trial_applications as t1')
+                    ->leftJoin('wb_clinicaltrial_saereports as t2','t2.application_id','=','t1.id')
+                    ->where(array('t2.application_id'=>$application_id))
+                    ->first();
+        $application_code = $rec->application_code;
+    
+        $table_name = 'tra_clinicaltrial_sae_labtest';
+
+            $data = array(
+                        'laboratory_test'=>$req->laboratory_test,
+                        'results'=>$req->results,
+                        'trader_id'=>$req->trader_id,
+                        'application_id'=>$req->application_id,
+                        'application_code'=>$application_code
+                     ); 
+
+        if(validateIsNumeric($record_id)){
+
+            $where = array('id'=>$record_id);
+            if (recordExists($table_name, $where,'mis_db')) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where,'mis_db');
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email,'mis_db');
+
+            }
+            $res = returnFuncResponses($resp, 'Laboratory Test', 'application_id', $trader_id);                             
+
+        }
+        else{
+            if(!recordExists($table_name, $data,'mis_db')){
+                $data['created_on'] = Carbon::now();
+                $data['created_by'] = $trader_email;
+                                    
+                $resp = insertRecord($table_name, $data, $trader_email,'mis_db'); 
+                $res = returnFuncResponses($resp, 'Laboratory Test', 'application_id', $trader_id);                             
+            }
+            else{
+                $res = array(
+                        'success'=>false,
+                        'message'=>'Laboratory Test exists or already saved.');
+    
+            }
+
+        } 
+     
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
+  public function  getClinicaltrailCasualityAssessmentDetails(Request $req){
+
+    
+    try{
+        $data = array();
+        $table_name = $req->table_name;
+        $application_code = $req->application_code;
+        $application_id = $req->application_id;
+
+
+        $records = DB::connection('mis_db')->table('tra_clinicaltrial_casuality_assessment as t1')
+                            ->select(DB::raw("t1.*"))
+                    ->where(array('application_id'=>$application_id))
+                    ->get();
+            foreach ($records as $rec) {
+                $tool = getSingleRecordColValue('par_adr_tools', array('id' => $rec->tool_id), 'name','mis_db');
+                $casuality = getSingleRecordColValue('par_adr_casuality', array('id' => $rec->casuality_id), 'name','mis_db');
+                $conclusion_relatedness  = getSingleRecordColValue('par_adr_reletedness', array('id' => $rec->conclusion_releted_id), 'name','mis_db');
+                $severity_event = getSingleRecordColValue('par_adr_severity', array('id' => $rec->severity_event_id), 'name','mis_db');
+                $outcome_event = getSingleRecordColValue('par_adr_outcomes', array('id' => $rec->outcome_event_id), 'name','mis_db');
+                $confirmation = getSingleRecordColValue('par_confirmations', array('id' => $rec->confirmation_id), 'name','mis_db');
+                $drug_stopped = getSingleRecordColValue('par_confirmations', array('id' => $rec->drug_stop_id), 'name','mis_db');
+              $adverse_event_reported = getSingleRecordColValue('par_confirmations', array('id' => $rec->reported_id), 'name','mis_db');
+
+
+                        $data[] = array('id'=>$rec->id,
+                                'application_code'=>$rec->application_code,
+                                'conclusion_releted_id'=>$rec->conclusion_releted_id,
+                                'tool_id'=>$rec->tool_id,
+                                'severity_event_id'=>$rec->severity_event_id,
+                                'casuality_id'=>$rec->casuality_id,
+                                'outcome_event_id'=>$rec->outcome_event_id,
+                                'confirmation_id'=>$rec->confirmation_id,
+                                'tool'=>$tool,
+                                'casuality'=>$casuality,
+                                'confirmed_date'=>$rec->confirmed_date,
+                                'other_tool'=>$rec->other_tool,
+                                'other_cause_event'=>$rec->other_cause_event,
+                                'drug_stop_id'=>$rec->drug_stop_id,
+                                'conclusion_relatedness'=>$conclusion_relatedness,
+                                'severity_event'=>$severity_event,
+                                'outcome_event'=>$outcome_event,
+                                'confirmation'=>$confirmation,                                
+                                'drug_stopped'=>$drug_stopped,
+                                'adverse_event_reported'=>$adverse_event_reported,
+                    );
+                    }
+
+    
+            $res = array('success'=>true, 
+                        'data'=>$data
+                        );
+    }
+    catch (\Exception $e) {
+        $res = array(
+            'success' => false,
+            'message' => $e->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($res);
+
+  }
+  public function  getClinicaltrailSeaDrugs(Request $req){
+
+    
+    try{
+        $data = array();
+        $table_name = $req->table_name;
+        $application_code = $req->application_code;
+        $application_id = $req->application_id;
+
+
+        $records = DB::connection('mis_db')->table('tra_clinicaltrial_sae_drug as t1')
+                            ->select(DB::raw("t1.*"))
+                    ->where(array('application_id'=>$application_id))
+                    ->get();
+            foreach ($records as $rec) {
+                $formulation = getSingleRecordColValue('par_common_names', array('id' => $rec->common_name_id), 'name','mis_db');
+                $routes_of_administration = getSingleRecordColValue('par_route_of_administration', array('id' => $rec->routes_of_admin_id), 'name','mis_db');
+
+
+                        $data[] = array('id'=>$rec->id,
+                                'application_code'=>$rec->application_code,
+                                'brand_name'=>$rec->brand_name,
+                                'common_name_id'=>$rec->common_name_id,
+                                'dosage_form_id'=>$rec->dosage_form_id,
+                                'routes_of_admin_id'=>$rec->routes_of_admin_id,
+                                'indication'=>$rec->indication,
+                                'start_date'=>$rec->start_date,
+                                'formulation'=>$formulation,
+                                'routes_of_administration'=>$routes_of_administration,
+                                'end_date'=>$rec->end_date,
+                                'ongoing_id'=>$rec->ongoing_id,
+                                'manufacturer_name'=>$rec->manufacturer_name,
+                    );
+                    }
+
+    
+            $res = array('success'=>true, 
+                        'data'=>$data
+                        );
+    }
+    catch (\Exception $e) {
+        $res = array(
+            'success' => false,
+            'message' => $e->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($res);
+
+  }
+
+public function  getClinicaltrailconcomittantDetails(Request $req){
+
+    try{
+        $data = array();
+        $table_name = $req->table_name;
+        $application_code = $req->application_code;
+        $application_id = $req->application_id;
+
+        $records = DB::connection('mis_db')->table('tra_clinicaltrial_concomittant as t1')
+                    ->select(DB::raw("t1.*"))
+                    ->where(array('application_id'=>$application_id))
+                    ->get();
+            foreach ($records as $rec) {
+                $formulation = getSingleRecordColValue('par_common_names', array('id' => $rec->common_name_id), 'name','mis_db');
+                $routes_of_administration = getSingleRecordColValue('par_route_of_administration', array('id' => $rec->routes_of_admin_id), 'name','mis_db');
+
+
+                        $data[] = array('id'=>$rec->id,
+                                'application_id'=>$rec->application_id,
+                                'drug_name'=>$rec->brand_name,
+                                'common_name_id'=>$rec->common_name_id,
+                                'dosage_form_id'=>$rec->dosage_form_id,
+                                'routes_of_admin_id'=>$rec->routes_of_admin_id,
+                                'indication'=>$rec->indication,
+                                'start_date'=>$rec->start_date,
+                                'formulation'=>$formulation,
+                                'routes_of_administration'=>$routes_of_administration,
+                                'end_date'=>$rec->end_date,
+                                'ongoing_id'=>$rec->ongoing_id,
+                                'manufacturer_name'=>$rec->manufacturer_name,
+                    );
+                    }
+
+    
+            $res = array('success'=>true, 
+                        'data'=>$data
+                        );
+    }
+    catch (\Exception $e) {
+        $res = array(
+            'success' => false,
+            'message' => $e->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($res);
+
+  }
+
+public function  getClinicaltrailRelevantHistoryDetails(Request $req){
+
+    try{
+        $data = array();
+        $table_name = $req->table_name;
+        $application_code = $req->application_code;
+        $application_id = $req->application_id;
+
+        $records = DB::connection('mis_db')->table('tra_clinicaltrial_sae_relevanthistory as t1')
+                    ->select(DB::raw("t1.*"))
+                    ->where(array('application_id'=>$application_id))
+                    ->get();
+            foreach ($records as $rec) {
+                $seriousness = getSingleRecordColValue('par_adr_seriousness', array('id' => $rec->seriousness_id), 'name','mis_db');
+                $expectetation = getSingleRecordColValue('par_clinical_sae_expectation', array('id' => $rec->expected_id), 'name','mis_db');
+
+
+                        $data[] = array('id'=>$rec->id,
+                                'application_id'=>$rec->application_id,
+                                'other_relevant_history'=>$rec->other_relevant_history,
+                                'seriousness_id'=>$rec->seriousness_id,
+                                'expected_id'=>$rec->expected_id,
+                                'seriousness'=>$seriousness,
+                                'expectetation'=>$expectetation
+                    );
+                    }
+
+    
+            $res = array('success'=>true, 
+                        'data'=>$data
+                        );
+    }
+    catch (\Exception $e) {
+        $res = array(
+            'success' => false,
+            'message' => $e->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($res);
+
+  }
+
+
+  public function  getClinicaltrailSeaLabTest(Request $req){
+
+    
+    try{
+        $data = array();
+        $table_name = $req->table_name;
+        $application_id = $req->application_id;
+
+        $records = DB::connection('mis_db')->table('tra_clinicaltrial_sae_labtest as t1')
+                    ->select(DB::raw("t1.*"))
+                    ->where(array('application_id'=>$application_id))
+                    ->get();
+    
+            foreach ($records as $rec) {
+
+                        $data[] = array('id'=>$rec->id,
+                                'application_code'=>$rec->application_code,
+                                'results'=>$rec->results,
+                                'laboratory_test'=>$rec->laboratory_test
+                    );
+                    }
+
+            $res = array('success'=>true, 
+                        'data'=>$data
+                        );
+    }
+    catch (\Exception $e) {
+        $res = array(
+            'success' => false,
+            'message' => $e->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($res);
+
+  }
+
+  public function  getClinicaltrailSeaVariations(Request $req){
+
+    
+    try{
+        $data = array();
+        $table_name = $req->table_name;
+        $application_id = $req->application_id;
+
+        $records = DB::connection('mis_db')->table('tra_clinicaltrial_sae_investigations as t1')
+                    ->select(DB::raw("t1.*"))
+                    ->where(array('application_id'=>$application_id))
+                    ->get();
+                foreach ($records as $rec) {
+
+                        $data[] = array('id'=>$rec->id,
+                                'application_code'=>$rec->application_code,
+                                'results'=>$rec->results,
+                                'investigations'=>$rec->investigations
+                    );
+                    }
+            $res = array('success'=>true, 
+                        'data'=>$data
+                        );
+    }
+    catch (\Exception $e) {
+        $res = array(
+            'success' => false,
+            'message' => $e->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($res);
+
+  }
+   public function onSaveClinicalPersonnel(Request $req){
+    try{
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $record_id = $req->id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'clinical_trial_personnel';
+
+            $data = array(
+                        'name'=>$req->name,
+                        'telephone'=>$req->telephone,
+                        'email_address'=>$req->email_address,
+                        'trader_id'=>$req->trader_id,
+                        'position_id'=>$req->position_id,
+                        'application_id'=>$req->application_id,
+                        'qualification_id'=>$req->qualification_id,
+                     );  
+
+        if(validateIsNumeric($record_id)){
+
+            $where = array('id'=>$record_id);
+            if (recordExists($table_name, $where,'mis_db')) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where,'mis_db');
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email,'mis_db');
+
+            }
+            $res = returnFuncResponses($resp, 'Other Staff', 'application_id', $trader_id);                             
+
+        }
+        else{
+            if(!recordExists($table_name, $data,'mis_db')){
+                $data['created_on'] = Carbon::now();
+                $data['created_by'] = $trader_email;
+                                    
+                $resp = insertRecord($table_name, $data, $trader_email,'mis_db'); 
+                $res = returnFuncResponses($resp, 'Other Staff', 'application_id', $trader_id);                             
+            }
+            else{
+                $res = array(
+                        'success'=>false,
+                        'message'=>'Premises Personnel exists or already saved.');
+    
+            }
+
+        } 
+     
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
+
    public function onsaveclinicaltrailVariationRequests(Request $req){
     try{
         $resp ="";
@@ -1782,6 +4071,389 @@ public function saveCtrSaeReportingApplication(Request $req){
 
 
    }
+
+   public function onSaveClincialTrialDescriptionApplication(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'wb_clinical_trial_applications';
+
+            $data = array(
+                'clinicaltrial_description'=>$req->clinicaltrial_description, 
+                'explorator_objective'=>$req->explorator_objective,
+                'other_objective'=>$req->other_objective,
+                'purpose_of_trial'=>$req->purpose_of_trial,
+                'trial_design'=>$req->trial_design,
+                'clinicaltrialprimary_objective'=>$req->clinicaltrialprimary_objective,
+                'tertiary_objectives'=>$req->tertiary_objectives,
+                'clinicaltrialsecondary_objective'=>$req->clinicaltrialsecondary_objective);
+        if(validateIsNumeric($application_id)){
+            $where = array('id'=>$application_id);
+            if (recordExists($table_name, $where)) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email);
+                
+            }
+        }
+        else{
+            //insert 
+         return response()->json($res);
+
+
+        } 
+        if($resp){
+            $res =  array('success'=>true,
+            'application_id'=>$application_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+   public function onSaveClincialTrialOthersApplication(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'wb_clinical_trial_applications';
+
+            $data = array(
+                'primary_endpoints'=>$req->primary_endpoints, 
+                'secondary_endpoints'=>$req->secondary_endpoints,
+                'inclusion_criteria'=>$req->inclusion_criteria,
+                'exclusion_criteria'=>$req->exclusion_criteria,
+                'tertiary_endpoints'=>$req->tertiary_endpoints,
+                'sample_size'=>$req->sample_size,
+                'planned_analyses'=>$req->planned_analyses,
+                'analysis_sets'=>$req->analysis_sets
+                );
+        if(validateIsNumeric($application_id)){
+            $where = array('id'=>$application_id);
+            if (recordExists($table_name, $where)) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email);
+                
+            }
+        }
+        else{
+            //insert 
+         return response()->json($res);
+
+
+        } 
+        if($resp){
+            $res =  array('success'=>true,
+            'application_id'=>$application_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+   public function onSaveClincialTrialEthicsApplication(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'wb_clinical_trial_applications';
+
+            $data = array(
+                'clearance_no'=>$req->clearance_no, 
+                'ctrethics_committee_id'=>$req->ctrethics_committee_id,
+                'uncst_no'=>$req->uncst_no);
+
+        if(validateIsNumeric($application_id)){
+            $where = array('id'=>$application_id);
+            if (recordExists($table_name, $where)) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email);
+                
+            }
+        }
+        else{
+            //insert 
+         return response()->json($res);
+
+
+        } 
+        if($resp){
+            $res =  array('success'=>true,
+            'application_id'=>$application_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+      public function onSaveMonitoringApplication(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'wb_clinical_trial_applications';
+
+            $data = array(
+                'safety_monitoring_plan'=>$req->safety_monitoring_plan, 
+                'system_used'=>$req->system_used,
+                'action_seriousadverse_event'=>$req->action_seriousadverse_event,
+                'safety_monitoring_board'=>$req->safety_monitoring_board,
+        'data_management_process'=>$req->data_management_process,
+                'estimated_due_report_date'=>$req->estimated_due_report_date, 
+                'interim_report_date'=>$req->interim_report_date
+                );
+
+        if(validateIsNumeric($application_id)){
+            $where = array('id'=>$application_id);
+            if (recordExists($table_name, $where)) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email);
+                
+            }
+        }
+        else{
+            //insert 
+         return response()->json($res);
+
+
+        } 
+        if($resp){
+            $res =  array('success'=>true,
+            'application_id'=>$application_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+   public function onSaveClincialTrialParticipantsApplication(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'wb_clinical_trial_applications';
+
+            $data = array(
+                'participant_no'=>$req->participant_no, 
+                'enrolled_worldwide_no'=>$req->enrolled_worldwide_no,
+                'enrolled_uganda_no'=>$req->enrolled_uganda_no, 
+                'sites_no'=>$req->sites_no,
+                'intended_no'=>$req->intended_no, 
+                'study_start_date'=>$req->study_start_date,
+                'first_final_duration'=>$req->first_final_duration, 
+                'screening_period'=>$req->screening_period,
+                'follow_up_period'=>$req->follow_up_period, 
+                'follow_up_duration'=>$req->follow_up_duration,
+                'intervention_period'=>$req->intervention_period, 
+                'intervention_duration'=>$req->intervention_duration,
+                'study_duration'=>$req->study_duration,
+                'duration_desc'=>$req->duration_desc
+            );
+        if(validateIsNumeric($application_id)){
+            $where = array('id'=>$application_id);
+            if (recordExists($table_name, $where)) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email);
+                
+            }
+        }
+        else{
+            //insert 
+         return response()->json($res);
+
+
+        } 
+        if($resp){
+            $res =  array('success'=>true,
+            'application_id'=>$application_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+public function onSaveClincialTrialHistoryApplication(Request $req){
+    try{
+        $resp ="";
+        $trader_id = $req->trader_id;
+        $trader_email = $req->trader_email;
+        $application_id = $req->application_id;
+        $error_message = 'Error occurred, data not saved successfully';
+
+        $table_name = 'wb_clinical_trial_applications';
+
+            $data = array(
+                'is_clinicaltrialin_uganda'=>$req->is_clinicaltrialin_uganda, 
+                'clinicalin_otheruganda_sites'=>$req->clinicalin_otheruganda_sites,
+                'is_clinicaltrialin_othercountry'=>$req->is_clinicaltrialin_othercountry, 
+                'clinicalin_othercountries_sites'=>$req->clinicalin_othercountries_sites
+            );
+            
+        if(validateIsNumeric($application_id)){
+            $where = array('id'=>$application_id);
+            if (recordExists($table_name, $where)) {
+                            
+                $data['dola'] = Carbon::now();
+                $data['altered_by'] = $trader_email;
+
+                $previous_data = getPreviousRecords($table_name, $where);
+                
+                $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email);
+                
+            }
+        }
+        else{
+            //insert 
+         return response()->json($res);
+
+
+        } 
+        if($resp){
+            $res =  array('success'=>true,
+            'application_id'=>$application_id,
+            'message'=>'Saved Successfully');
+
+        }
+        else{
+            $res =  array('success'=>false,
+            'message'=>$error_message);
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    } 
+    return response()->json($res);
+
+
+   }
+
    public function onSaveClinicalStudySite(Request $req){
     try{
         $resp ="";
@@ -1839,7 +4511,6 @@ public function saveCtrSaeReportingApplication(Request $req){
     
     return response()->json($res);
    }
-   
    
    public function onsaveclinicaltMonitorDetails (Request $req){
                 $resp ="";
@@ -1905,7 +4576,6 @@ public function saveCtrSaeReportingApplication(Request $req){
             
             if (!recordExists($table_name, $where)) {
                 $resp = insertRecord($table_name, $data, $traderemail_address);
-
                 $record_id = $resp['record_id'];           
             }
             else{
@@ -2019,11 +4689,11 @@ public function saveCtrSaeReportingApplication(Request $req){
        
        try {
            $qry = DB::connection('mis_db')->table('tra_clinical_trial_applications as t2')
-               ->leftJoin('registered_clinical_trials as t1', 't1.tra_clinical_trial_id', '=', 't2.id')
-               ->leftJoin('wb_trader_account as t3', 't2.applicant_id', '=', 't3.id')
+               ->Join('registered_clinical_trials as t1', 't1.tra_clinical_trial_id', '=', 't2.id')
+               ->Join('wb_trader_account as t3', 't2.applicant_id', '=', 't3.id')
                ->leftJoin('clinical_trial_personnel as t4', 't2.sponsor_id', '=', 't4.id')
                ->leftJoin('clinical_trial_personnel as t5', 't2.investigator_id', '=', 't5.id')
-               ->leftJoin('tra_approval_recommendations as t6', 't2.application_code', '=', 't6.application_code')
+               ->Join('tra_approval_recommendations as t6', 't2.application_code', '=', 't6.application_code')
                ->leftJoin('tra_payments as t7', 't2.application_code', '=', 't7.application_code')
                ->select(DB::raw("DISTINCT t1.id as registered_id,t2.*,t2.id as previous_id,t6.certificate_no as permit_no,t6.approval_date as date_registered,t3.name as applicant_name,t4.name as             clinical_trial_sponsor,t5.name as principal_investigator,t1.id as reg_clinical_trial_id,
                    t3.id as applicant_id, t3.name as applicant_name, t3.contact_person, t3.tin_no,
@@ -2099,6 +4769,7 @@ public function saveCtrSaeReportingApplication(Request $req){
     return response()->json($res);
 
   }
+
   public function  saveClinicalTrialRegistryApplication(Request $req){
     try {
         $resp= array();

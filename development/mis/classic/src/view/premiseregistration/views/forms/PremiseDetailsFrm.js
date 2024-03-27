@@ -20,8 +20,9 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
         afterrender: function () {
             var form = this,
                 isReadOnly = form.down('hiddenfield[name=isReadOnly]').getValue();
-
                 isPreInspection = form.down('hiddenfield[name=isPreInspection]').getValue();
+
+                isRelocation = form.down('hiddenfield[name=isRelocation]').getValue();
 
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 form.getForm().getFields().each(function (field) {
@@ -31,9 +32,36 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
 
             if ((isPreInspection) && (isPreInspection == 1 || isPreInspection === 1)) {
                 form.down('#director_fieldset').setVisible(false);
+                form.down('#Phamacist_fieldset').setVisible(false); 
+            }
+
+            if ((isRelocation) && (isRelocation == 1 || isRelocation === 1)) {
+                form.down('#relocation_fieldset').setVisible(false);
+                form.down('combo[name=proposed_country_id]').allowBlank = false;
+                form.down('combo[name=proposed_country_id]').validte();
+                form.down('combo[name=proposed_district_id]').allowBlank = false;
+                form.down('combo[name=proposed_district_id]').validate();
+                form.down('combo[name=proposed_region_id]').allowBlank = false;
+                form.down('combo[name=proposed_region_id]').validate();
+                form.down('combo[name=proposed_county_id]').allowBlank = true;
+                //form.down('combo[name=proposed_county_id]').validate();
+                form.down('combo[name=proposed_sub_county_id]').allowBlank = true;
+                //form.down('combo[name=proposed_sub_county_id]').validate();
+                form.down('textfield[name=proposed_village]').allowBlank = false;
+                form.down('textfield[name=proposed_village]').validate();
+                form.down('textfield[name=proposed_street]').allowBlank = false;
+                form.down('textfield[name=proposed_street]').validate();
+                form.down('textarea[name=proposed_physical_address]').allowBlank = false;
+                form.down('textarea[name=proposed_physical_address]').validate();
+                form.down('textfield[name=proposed_latitude]').allowBlank = false;
+                form.down('textfield[name=proposed_latitude]').validate();
+                form.down('textfield[name=proposed_longitude]').allowBlank = false;
+                form.down('textfield[name=proposed_longitude]').validate();
             }
         }
     },
+
+
     items: [ {
         xtype: 'hiddenfield',
         name: 'isReadOnly'
@@ -41,6 +69,10 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
      {
         xtype: 'hiddenfield',
         name: 'isPreInspection'
+    },
+     {
+        xtype: 'hiddenfield',
+        name: 'isRelocation'
     },
     {
         xtype: 'hiddenfield',
@@ -137,11 +169,37 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                         }
                     },
                     isLoad: true
-                }
-            }
-           },
+                  }
+                 }
+               },
 
-            {
+               {
+                    xtype: 'fieldcontainer',
+                    layout: 'column',
+                    defaults: {
+                        labelAlign: 'top'
+                    },
+                    items: [
+                        {
+                            xtype: 'textfield',
+                            name: 'company_registration_no',   
+                            columnWidth: 0.9,
+                            allowBlank: true,
+                            fieldLabel: 'Business/Company Registration No'
+                        },
+                        {
+                            xtype: 'button',
+                            iconCls: 'x-fa fa-search',
+                            disabled: true,
+                            columnWidth: 0.1,
+                            handler: 'doSearchBussiness',
+                            tooltip: 'Search',
+                            margin: '30 0 0 0'
+                        }
+                    ]
+                },
+
+                {
                 xtype: 'fieldcontainer',
                 layout: 'column',
                 defaults: {
@@ -153,7 +211,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                         name: 'name',
                         columnWidth: 0.9,
                         allowBlank: false,
-                        fieldLabel: 'Name of the Premise'
+                        fieldLabel: 'Premise Name'
                     },
                     {
                         xtype: 'button',
@@ -167,54 +225,50 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                         winWidth: '90%',
                         margin: '30 0 0 0'
                     }
-                ]
-            },
-            {
-                xtype: 'fieldcontainer',
-                layout: 'column',
-                defaults: {
-                    labelAlign: 'top'
-                },
-                items: [
-                    {
-                        xtype: 'textfield',
-                        name: 'tpin_no',
-                        columnWidth: 0.9,
-                        allowBlank: false,
-                        fieldLabel: 'Tin No'
+                   ]
+                }, 
+                {
+                xtype: 'datefield',
+                name: 'registration_date',
+                fieldLabel: 'Business Registration Date',
+                submitFormat: 'Y-m-d',
+                format: 'd/m/Y',
+                readOnly:true,
+                //format: 'Y-m-d H:i:s', // Use the correct format here
+                allowBlank: true,
+                altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+                maxValue: new Date() 
+               },
+
+               {
+                    xtype: 'fieldcontainer',
+                    layout: 'column',
+                    defaults: {
+                        labelAlign: 'top'
                     },
-                    {
-                        xtype: 'button',
-                        iconCls: 'x-fa fa-search',
-                        disabled: true,
-                        columnWidth: 0.1,
-                        tooltip: 'Search',
-                        disabled:true,
-                        action: 'search_tinno',
-                        childXtype: 'tinnoeselectiongrid',
-                        winTitle: 'Tin No Selection List',
-                        winWidth: '90%',
-                        margin: '30 0 0 0'
-                    }
-                ]
-            }, 
-            {
-                xtype: 'textfield',
-                name: 'company_registration_no',
-                fieldLabel: 'Company Registration',
-                allowBlank: true
-            }, 
-            {
-            xtype: 'datefield',
-            name: 'registration_date',
-            fieldLabel: 'Business Registration Date',
-            submitFormat: 'Y-m-d',
-            format: 'd/m/Y',
-            hidden:true,
-            allowBlank: true,
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
-           },
-           
+                    items: [
+                        {
+                            xtype: 'textfield',
+                            name: 'tpin_no',
+                            columnWidth: 0.9,
+                            allowBlank: true,
+                            fieldLabel: 'Tin No'
+                        },
+                        {
+                            xtype: 'button',
+                            iconCls: 'x-fa fa-search',
+                            disabled: true,
+                            columnWidth: 0.1,
+                            tooltip: 'Search',
+                            disabled:true,
+                            action: 'search_tinno',
+                            childXtype: 'tinnoeselectiongrid',
+                            winTitle: 'Tin No Selection List',
+                            winWidth: '90%',
+                            margin: '30 0 0 0'
+                        }
+                    ]
+                },
             
                {
                 xtype: 'combo',
@@ -259,29 +313,72 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                     allowBlank:true,
                     hidden: true
                 },
+
                 {
+                    xtype: 'textfield',
+                    name: 'incharge_telephone_no2',
+                    allowBlank:true,
+                    hidden:true,
+                    fieldLabel: 'Telephone No 2',
+                    readOnly: true,
+                    listeners: {
+                      afterrender: function (textfield) {
+                            // Check if the textfield has a value
+                            var value = textfield.getValue();
+
+                            // If the value is not empty or null, set hidden to false
+                            if (value) {
+                                textfield.setHidden(false);
+                             }
+                        }
+                    }
+
+              },
+
+               {
                     xtype: 'textarea',
                     name: 'premise_reg_no',
                     columnWidth: 1,
                     fieldLabel: 'Permit Reg No',
                     allowBlank:true,
-                    hidden: true
+                    hidden: true,
+                    listeners: {
+                       afterrender: function (textfield) {
+                        // Check if the textfield has a value
+                            var value = textfield.getValue();
+
+                            // If the value is not empty or null, set hidden to false
+                            if (value) {
+                                textfield.setHidden(false);
+                             }
+                    }
+                }
+
                 },
                 {
                     xtype: 'textarea',
                     name: 'permit_no',
                     columnWidth: 1,
-                    fieldLabel: 'Permit No',
+                    fieldLabel: 'Premise No/ Pre Inspection Approval NO',
                     allowBlank:true,
-                    hidden: true
+                    hidden: true,
+                    listeners: {
+                       afterrender: function (textfield) {
+                            var value = textfield.getValue();
+                            if (value) {
+                                textfield.setHidden(false);
+                             }
+                    }
                 }
-           
 
+              }
+           
             ]
           },
         {
                 xtype:'fieldset',
                 columnWidth: 1,
+                itemId: 'Phamacist_fieldset',
                 title: "Supervising Phamacist",
                 collapsible: true,
                 defaults: {
@@ -294,43 +391,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                     columnWidth: 0.33,
                 },
                 layout: 'column',
-                  items:[
-
-            //    {
-            //     xtype: 'combo',
-            //     fieldLabel: 'NIN',
-            //     name: 'incharge_nin_no',
-            //     triggerAction:'all',
-            //     typeAhead:true,
-            //     mode:'remote',
-            //     minChars:4,
-            //     forceSelection:true,
-            //     hideTrigger:true,
-            //     listeners: {
-            //         beforerender: {
-            //             fn: 'setParamCombosStore',
-            //             config: {
-            //                 pageSize: 100,
-            //                 proxy: {
-            //                     url: 'premiseregistration/getPremiseIncharge'
-            //                 }
-            //             },
-            //             isLoad: true
-            //         },
-            //         select: function(combo, record) {
-            //             console.log(record);
-            //           const form = combo.up('form'); // Assuming the TextField is part of a form
-            //           form.getForm().setValues({
-            //             'incharge_nin_no': record.get('incharge_nin_no'),
-            //             'incharge_name': record.get('incharge_name')
-            //             // Add more fields as needed based on your database record structure
-            //           });
-            //         }
-            //     }
-            // }, 
-
-
-            {
+                  items:[ {
                 xtype: 'fieldcontainer',
                 layout: 'column',
                 defaults: {
@@ -349,6 +410,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                         iconCls: 'x-fa fa-search',
                         // disabled: true,
                         columnWidth: 0.1,
+                       // action:'search_premise',
                         tooltip: 'Search',
                         childXtype: 'premisepharmacistselectiongrid',
                         winTitle: 'Premise Pharmacist',
@@ -711,7 +773,8 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                 hidden: true,
                 allowBlank: true
             }]
-        },{
+        },
+        {
             xtype:'fieldset',
             columnWidth: 1,
             itemId: 'Location_fieldset',
@@ -757,12 +820,387 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                     }
                 }
             },
+               {
+                xtype: 'combo',
+                fieldLabel: 'district',
+                name: 'district_id',
+                //store: 'regionsstr',
+                readOnly:false,
+                allowBlank:false,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_premise_districts'
+                                }
+                               }
+                            },
+                                isLoad: false
+                    },
+                    change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        regionStore = form.down('combo[name=region_id]').getStore(),
+                        countyStore = form.down('combo[name=county_id]').getStore(),
+                        filterObj = {district_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        regionStore.removeAll();
+                        regionStore.load({params: {filters: filterStr}});
+                        countyStore.removeAll();
+                        countyStore.load({params: {filters: filterStr}});
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+            },
+
+             {
+                xtype: 'combo',
+                fieldLabel: 'Region',
+                name: 'region_id',
+                //store: 'regionsstr',
+                readOnly:false,
+                allowBlank:false,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_premise_regions'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+            },
+
+             {
+                xtype: 'combo',
+                fieldLabel: 'County/Division',
+                name: 'county_id',
+                readOnly:false,
+                allowBlank:false,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_county'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    },
+                    change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        subCountyStore = form.down('combo[name=sub_county_id]').getStore(),
+                        filterObj = {county_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        subCountyStore.removeAll();
+                        subCountyStore.load({params: {filters: filterStr}});
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+            },
+
+            {
+                xtype: 'combo',
+                fieldLabel: 'Sub County',
+                name: 'sub_county_id',
+                readOnly:false,
+                allowBlank:true,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_sub_county'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    },
+                    change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        parishStore = form.down('combo[name=parish_id]').getStore(),
+                        filterObj = {sub_county_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        parishStore.removeAll();
+                        parishStore.load({params: {filters: filterStr}});
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+            },
+            {
+                xtype: 'combo',
+                fieldLabel: 'Parish',
+                name: 'parish_id',
+                readOnly:false,
+                allowBlank:true,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_parishes'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    },
+                    change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        villageStore = form.down('combo[name=village_id]').getStore(),
+                        filterObj = {parish_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        villageStore.removeAll();
+                        villageStore.load({params: {filters: filterStr}});
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+            },
+
+
+             {
+                xtype: 'combo',
+                fieldLabel: 'Village',
+                name: 'village_id',
+                readOnly:false,
+                allowBlank:true,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_villages'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+            },
+
+           // {
+           //      xtype: 'textfield',
+           //      fieldLabel: 'village',
+           //      allowBlank:true,
+           //      readOnly:true,
+           //      name: 'village'
+           //  },
+           {
+                xtype: 'textarea',
+                name: 'street',
+                columnWidth: 1,
+                allowBlank:false,
+                fieldLabel: 'Street/Road'
+            },
+
+            {
+                xtype: 'textarea',
+                fieldLabel: 'Physical Address',
+                allowBlank:false,
+                readOnly:true,
+                columnWidth: 1,
+                name: 'physical_address'
+            },
+             {
+                xtype: 'fieldcontainer',
+                columnWidth: 1,
+                layout: {
+                    type: 'column',
+                },
+                defaults: {
+                    columnWidth: 0.49,
+                    labelAlign: 'top'
+                },
+                items: [
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: 'Latitude',
+                        name: 'latitude',
+                        allowBlank: false
+                    },
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: 'Longitude',
+                        name: 'longitude',
+                        allowBlank: false
+                    },
+                    {
+                        xtype: 'button',
+                        columnWidth: 0.3,
+                        name:'capture_location',
+                        margin:'10 0 0 0',
+                        iconCls: 'fa fa-location-arrow',
+                        iconAlign: 'right', 
+                        text: 'Capture Location',
+                        handler: function () {
+                        
+                            if ("geolocation" in navigator) {
+                                navigator.geolocation.getCurrentPosition(
+                                    function (position) {
+                                        var latitude = position.coords.latitude;
+                                        var longitude = position.coords.longitude;
+                                        // Populate the textfields
+                                        Ext.ComponentQuery.query('textfield[name=latitude]')[0].setValue(latitude);
+                                        Ext.ComponentQuery.query('textfield[name=longitude]')[0].setValue(longitude);
+                                    },
+                                    function (error) {
+                                        Ext.Msg.alert("Geolocation Error", error);
+                                    }
+                                );
+                            } else {
+                                 Ext.Msg.alert("Geolocation Error", "Geolocation not available");
+                                
+                            }
+                        }
+                    }
+                ]
+            }
+          ]
+
+         },
+            {
+            xtype:'fieldset',
+            columnWidth: 1,
+            itemId: 'relocation_fieldset',
+            title: 'Proposed New Location of Premises',
+            hidden:true,
+            collapsible: true,
+            defaults: {
+                labelAlign: 'top',
+                allowBlank: true,
+                labelAlign: 'top',
+                margin: 5,
+                xtype: 'textfield',
+                allowBlank: false,
+                columnWidth: 0.33,
+            },
+            layout: 'column',
+            items:[{
+                xtype: 'combo',
+                fieldLabel: 'Country',
+                name: 'proposed_country_id',
+                allowBlank: true,
+                //store: 'countriesstr',
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                    beforerender: {
+                        fn: 'setParamCombosStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'parameters/country'
+                            }
+                        },
+                        isLoad: false
+                    },
+                    change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        districtStore = form.down('combo[name=district_id]').getStore(),
+                        filterObj = {country_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        districtStore.removeAll();
+                        districtStore.load({params: {filters: filterStr}});
+                    }
+                }
+            },
               {
                 xtype: 'combo',
                 fieldLabel: 'DISTRICT',
-                name: 'district_id',
+                name: 'proposed_district_id',
                 //store: 'regionsstr',
-                allowBlank:true,
+                allowBlank: true,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
@@ -803,9 +1241,9 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
              {
                 xtype: 'combo',
                 fieldLabel: 'REGION',
-                name: 'region_id',
+                name: 'proposed_region_id',
                 //store: 'regionsstr',
-                allowBlank:true,
+                allowBlank: true,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
@@ -838,7 +1276,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
             {
                 xtype: 'combo',
                 fieldLabel: 'County/Division',
-                name: 'county_id',
+                name: 'proposed_county_id',
                 allowBlank: true,
                 forceSelection: true,
                 queryMode: 'local',
@@ -868,7 +1306,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
             {
                 xtype: 'combo',
                 fieldLabel: 'Sub County',
-                name: 'sub_county_id',
+                name: 'proposed_sub_county_id',
                 allowBlank: true,
                 forceSelection: true,
                 queryMode: 'local',
@@ -892,23 +1330,25 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                 xtype: 'textfield',
                 fieldLabel: 'village',
                 allowBlank:true,
-                name: 'village'
+                name: 'proposed_village'
             },{
-                xtype: 'textfield',
-                name: 'street',
-                allowBlank:false,
+                xtype: 'textarea',
+                name: 'proposed_street',
+                columnWidth: 1,
+                allowBlank: true,
                 fieldLabel: 'Street/Road'
             },
 
             {
                 xtype: 'textarea',
                 fieldLabel: 'Physical Address',
-                allowBlank:false,
+                allowBlank: true,
                 columnWidth: 1,
-                name: 'physical_address'
+                name: 'proposed_physical_address'
             },
             {
                 xtype:'fieldcontainer',
+                columnWidth: 1,
                 layout: {
                     type: 'column'
                 },
@@ -920,13 +1360,13 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                     {
                         xtype: 'textfield',
                         fieldLabel: 'Latitude',
-                        name: 'latitude',
-                         allowBlank:false
+                        name: 'proposed_latitude',
+                         allowBlank: true
                     },{
                         xtype: 'textfield',
                         fieldLabel: 'Longitude',
-                        name: 'longitude',
-                         allowBlank:false
+                        name: 'proposed_longitude',
+                         allowBlank: true
                     }
                 ]
             } 

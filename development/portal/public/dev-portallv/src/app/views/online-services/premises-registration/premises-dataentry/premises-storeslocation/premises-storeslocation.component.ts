@@ -11,9 +11,10 @@ import { ConfigurationsService } from 'src/app/services/shared/configurations.se
 })
 export class PremisesStoreslocationComponent implements OnInit {
 
- @Input() countries: any;
+  @Input() countries: any;
   @Input() regions: any;
   @Input() districts: any;
+  @Input()  premisesStoreLocationDetailsData:any;
   @Input() is_readonly: boolean;
   @Input() isLocationPopupVisible: boolean;
   @Input() premisesStoreslocationFrm: FormGroup;
@@ -25,16 +26,19 @@ export class PremisesStoreslocationComponent implements OnInit {
   region_id:number;
   district_id:number;
   county_id:number;
-  
+  auto:any;
+
   @Input() premise_id: number;
-  premisesStoreLocationDetailsData:any;
   isStoreLocationPopupVisible:boolean=false;
   premises_resp:any;
   loading:any;
-  constructor(public config: ConfigurationsService,public modalServ: ModalDialogService,public viewRef: ViewContainerRef,public appService: PremisesApplicationsService,public toastr: ToastrService) { }
+  constructor(public config: ConfigurationsService,public modalServ: ModalDialogService,public viewRef: ViewContainerRef,public appService: PremisesApplicationsService,public toastr: ToastrService) {
+  }
 
   ngOnInit() {
     this.onLoadPremisesStoreLocationDetails();
+
+
 
   }
   onLoadPremisesStoreLocationDetails(){
@@ -60,30 +64,28 @@ onCoutryCboSelect($event) {
 
     this.country_id = $event.selectedItem.id;
 
-    this.onLoadRegions(this.country_id);
+    this.onLoadDistricts(this.country_id);
 
   }
-  onLoadRegions(country_id) {
-
-    var data = {
-      table_name: 'par_regions',
-      country_id: country_id
-    };
-    this.config.onLoadConfigurationData(data)
-      //.pipe(first())
-      .subscribe(
-        data => {
-          this.regions = data;
-        },
-        error => {
-          return false
-        });
-  }
+ onLoadRegions(district_id) {
+  this.config.onLoadRegionsData(district_id)
+    .subscribe(
+      data => {
+        if (data.success) {
+          this.regions = data.data;
+        } else {
+        }
+      },
+      error => {
+        console.error('HTTP request failed:', error);
+        return false;
+      });
+}
   
-  onLoadDistricts(region_id) {
+  onLoadDistricts(country_id) {
     var data = {
-      table_name: 'par_districts',
-      region_id: region_id
+      table_name: 'par_premise_districts',
+      country_id: country_id
     };
     this.config.onLoadConfigurationData(data)
       //.pipe(first())
@@ -95,10 +97,10 @@ onCoutryCboSelect($event) {
           return false;
         });
   }
-  onLoadCounty(district_id) {
+  onLoadCounty(region_id) {
     var data = {
       table_name: 'par_county',
-      district_id: district_id
+      region_id: region_id
     };
     this.config.onLoadConfigurationData(data)
       //.pipe(first())
@@ -134,16 +136,16 @@ onCoutryCboSelect($event) {
   onRegionsCboSelect($event) {
     this.region_id = $event.selectedItem.id;
 
-    this.onLoadDistricts(this.region_id);
+    this.onLoadCounty(this.region_id);
 
   }
-  
-  oDistrictsCboSelect($event) {
+ oDistrictsCboSelect($event) {
     this.district_id = $event.selectedItem.id;
 
-    this.onLoadCounty(this.district_id);
+    this.onLoadRegions(this.district_id);
 
   }
+
    oCountyCboSelect($event) {
     this.county_id = $event.selectedItem.id;
 

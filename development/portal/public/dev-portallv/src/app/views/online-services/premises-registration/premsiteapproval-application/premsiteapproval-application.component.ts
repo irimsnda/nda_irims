@@ -1,9 +1,18 @@
-
 import { Component, OnInit, ViewChild, ViewContainerRef, Inject, ChangeDetectorRef } from '@angular/core';
-
+import { AuthService } from '../../../../services/auth.service';
+import { ConfigurationsService } from '../../../../services/shared/configurations.service';
+import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { NgxSmartModalService } from 'ngx-smart-modal';
+import { ToastrService } from 'ngx-toastr';
+import { PremisesApplicationsService } from '../../../../services/premises-applications/premises-applications.service';
+
+import { SpinnerVisibilityService } from 'ng-http-loader';
+import { ModalDialogService } from 'ngx-modal-dialog';
 
 import { SharedPremisesregistrationclassComponent } from '../shared-premisesregistrationclass/shared-premisesregistrationclass.component';
+import { DocumentManagementService } from 'src/app/services/document-management/document-management.service';
+import { Utilities } from 'src/app/services/common/utilities.service';
 
 @Component({
   selector: 'app-premsiteapproval-application',
@@ -14,7 +23,7 @@ export class PremsiteapprovalApplicationComponent extends SharedPremisesregistra
 
   premisesrenGeneraldetailsfrm: FormGroup;
   app_routing:any;
-  
+  nextStep:any;
 
   ngOnInit() {
     this.premisesapp_details = this.appService.getPremisesApplicationDetail();
@@ -45,7 +54,9 @@ export class PremsiteapprovalApplicationComponent extends SharedPremisesregistra
     }
     
   }
-  onProductDashboard() {
+
+
+    onProductDashboard() {
     //check for unsaved changes 
     this.router.navigate(['./../online-services/preinspection-dashboard']);
    

@@ -1,9 +1,10 @@
-import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, Input,ViewChild, OnInit, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ModalDialogService } from 'ngx-modal-dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PremisesApplicationsService } from 'src/app/services/premises-applications/premises-applications.service';
 import { ConfigurationsService } from 'src/app/services/shared/configurations.service';
+import { DxDataGridComponent } from 'devextreme-angular';
 
 @Component({
   selector: 'app-drugshop-neareststore',
@@ -11,6 +12,9 @@ import { ConfigurationsService } from 'src/app/services/shared/configurations.se
   styleUrls: ['./drugshop-neareststore.component.css']
 })
 export class DrugshopNeareststoreComponent implements OnInit {
+  @ViewChild(DxDataGridComponent)
+  dataGrid: DxDataGridComponent;
+
   @Input() countries: any;
   @Input() regions: any;
   @Input() districts: any;
@@ -19,6 +23,7 @@ export class DrugshopNeareststoreComponent implements OnInit {
   @Input() premisesStoreslocationFrm: FormGroup;
   country_id:number;
   subCountyData:any;
+  auto:any;
   countyData:any;
   registeredPremisesData:any;
   filesToUpload: Array<File> = []; 
@@ -56,34 +61,32 @@ export class DrugshopNeareststoreComponent implements OnInit {
       this.premisesStoreslocationFrm.get('file').setValue(file);
     }
   }
-onCoutryCboSelect($event) {
+  onCoutryCboSelect($event) {
 
     this.country_id = $event.selectedItem.id;
 
-    this.onLoadRegions(this.country_id);
+    this.onLoadDistricts(this.country_id);
 
   }
-  onLoadRegions(country_id) {
-
-    var data = {
-      table_name: 'par_regions',
-      country_id: country_id
-    };
-    this.config.onLoadConfigurationData(data)
-      //.pipe(first())
-      .subscribe(
-        data => {
-          this.regions = data;
-        },
-        error => {
-          return false
-        });
-  }
+onLoadRegions(district_id) {
+  this.config.onLoadRegionsData(district_id)
+    .subscribe(
+      data => {
+        if (data.success) {
+          this.regions = data.data;
+        } else {
+        }
+      },
+      error => {
+        console.error('HTTP request failed:', error);
+        return false;
+      });
+}
   
-  onLoadDistricts(region_id) {
+  onLoadDistricts(country_id) {
     var data = {
-      table_name: 'par_districts',
-      region_id: region_id
+      table_name: 'par_premise_districts',
+      country_id: country_id
     };
     this.config.onLoadConfigurationData(data)
       //.pipe(first())
@@ -95,10 +98,10 @@ onCoutryCboSelect($event) {
           return false;
         });
   }
-  onLoadCounty(district_id) {
+  onLoadCounty(region_id) {
     var data = {
       table_name: 'par_county',
-      district_id: district_id
+      region_id: region_id
     };
     this.config.onLoadConfigurationData(data)
       //.pipe(first())
@@ -131,19 +134,20 @@ onCoutryCboSelect($event) {
 }
 
   
-  onRegionsCboSelect($event) {
+ onRegionsCboSelect($event) {
     this.region_id = $event.selectedItem.id;
 
-    this.onLoadDistricts(this.region_id);
+    this.onLoadCounty(this.region_id);
 
   }
   
   oDistrictsCboSelect($event) {
     this.district_id = $event.selectedItem.id;
 
-    this.onLoadCounty(this.district_id);
+    this.onLoadRegions(this.district_id);
 
   }
+
    oCountyCboSelect($event) {
     this.county_id = $event.selectedItem.id;
 
@@ -243,10 +247,15 @@ onCoutryCboSelect($event) {
         widget: 'dxButton',
         options: {
           icon: 'refresh',
-         // onClick: this.refreshDataGrid.bind(this)
+          onClick: this.refreshDataGrid.bind(this)
         }
       });
   } 
+
+    refreshDataGrid() {
+      this.dataGrid.instance.refresh();
+    }
+
     private prepareSaveSketchtDoc(): any {
 
       let input = { ...this.premisesStoreslocationFrm.value }; // Create a copy of the object
@@ -292,7 +301,7 @@ onCoutryCboSelect($event) {
   } 
 
     onSearchNearestDrugShopLocationDetails() {  
-    this.appService.onLoadNearestDrugShops(this.premise_id)
+    this.appService.onLoadNearestPremises(this.premise_id)
         .subscribe(
           data_response => {
             this.isLocationPopupVisible = true;
@@ -305,6 +314,8 @@ onCoutryCboSelect($event) {
 
        });
   } 
+
+  
   funcSelectLocationDetails(data){ 
 
     this.premisesStoreslocationFrm.patchValue(data.data);

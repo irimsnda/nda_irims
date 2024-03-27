@@ -263,6 +263,13 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialApprovalsGrid', {
                         appDetailsReadOnly: 1,
                         handler: 'showClinicalTrialApplicationMoreDetails'
                     }, 
+                    {
+                        text: 'View  Online Assessment Tool',
+                        iconCls: 'x-fa fa-bars',
+                        appDetailsReadOnly: 1,
+                        winTitle: 'Online Assessment Tool Details',
+                        handler: 'showAssessmentToolDetails'
+                    },
                     // {
                     //     text: 'Clinical Trial Certificate',
                     //     iconCls: 'x-fa fa-certificate',

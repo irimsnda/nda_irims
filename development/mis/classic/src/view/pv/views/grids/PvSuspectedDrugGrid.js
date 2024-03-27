@@ -148,9 +148,9 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugGrid', {
                     storeID: 'pvSuspectedDrugStr',
                     action_url: 'configurations/deleteConfigRecord',  
                     action: 'actual_delete',
-                    bind: {
-                        disabled: '{hideDeleteButton}'
-                    },
+                    // bind: {
+                    //     disabled: '{hideDeleteButton}'
+                    // },
                     handler: 'doDeleteConfigWidgetParam'
                 }
                 ]

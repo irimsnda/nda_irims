@@ -37,7 +37,8 @@ Ext.define('Admin.view.surveillance.views.panels.structured.StructuredManagerScr
                     valueField: 'id',
                     displayField: 'name',
                     queryMode: 'local',
-                    allowBlank: false,
+                    hidden:true,
+                    allowBlank: true,
                     forceSelection: true,
                     listeners: {
                         beforerender: {

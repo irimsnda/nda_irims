@@ -24,6 +24,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialStudySitesGrid', {
             text: 'Add Clinical Study Site',
             iconCls: 'x-fa fa-plus',
             ui: 'soft-green',
+            hidden:true,
             name: 'add_clinical_site',
             childXtype: 'clinicalstudysitesfrm',
             winTitle: 'Clinical Trial Study Sites ',
@@ -71,11 +72,28 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialStudySitesGrid', {
                 }
             },
             isLoad: true
+        }, 
+
+        afterrender: function () {
+            var grid = this,
+                isReadOnly = grid.down('hiddenfield[name=isReadOnly]').getValue(),
+                add_btn = grid.down('button[name=add_clinical_site]'),
+                view_btn =grid.down('widgetcolumn[name=view_sites]'),
+                edit_btn =grid.down('widgetcolumn[name=edit_sites]'),
+                widgetCol = grid.columns[grid.columns.length - 1];
+            if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+                add_btn.setVisible(false);
+                //view_btn.setVisible(false);
+                edit_btn.setVisible(false);
+                widgetCol.setHidden(true);
+                widgetCol.widget.menu.items = [];
+            }
         },
         itemdblclick: 'loadViewSiteDetails'
     },
     columns: [
-        {
+          
+            {
             text: 'Options',
             xtype: 'widgetcolumn',
             width: 90,
@@ -93,6 +111,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialStudySitesGrid', {
                         handler: 'editClinicalStudySiteDetails',
                         winTitle: 'Clinical Study Site',
                         winWidth: '40%',
+                         hidden:true,
                         childXtype: 'clinicalstudysitesfrm'
                     }, {
                             text: 'Delete',
@@ -102,6 +121,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialStudySitesGrid', {
                             storeID: 'clinicaltrialstudysitesstr',
                             action_url: 'clinicaltrial/deleteClinicalTrialRecord',
                             action: 'actual_delete',
+                             hidden:true,
                             handler: 'doDeleteClinicalTrialWidgetParam',
                             hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
                         }

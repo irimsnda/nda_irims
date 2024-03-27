@@ -3,7 +3,7 @@
 <dx-button  text="Proforma Invoice (Generation) & Payment Details" (click)="funcApplicationInvoice()"
 type="success" icon="edit" [elementAttr]="{ class: 'btn btn-primary' }">
 </dx-button>
-<dx-popup  class="popup" [width]="funcpopWidth(90)"  [height]="700" [showTitle]="true" title="Invoice Generation"
+<dx-popup  class="popup" [width]="funcpopWidth(90)"  [height]="auto" [showTitle]="true" title="Invoice Generation"
 [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isInvoiceGenerationWin">
     <div *dxTemplate="let data of 'content'">
       <dx-scroll-view>
@@ -28,7 +28,7 @@ type="success" icon="edit" [elementAttr]="{ class: 'btn btn-primary' }">
             </div>
           </dxi-column>
           
-<!--          <dxi-column [width]=300 caption="Payment" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+         <!-- <dxi-column [width]=300 caption="Payment" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
          cellTemplate="cellTemplateSingleOnlinePay">
          <div *dxTemplate="let d of 'cellTemplateSingleOnlinePay'">
            <dx-button text="Online Payment(iREMBO Payment Platform)"  *ngIf="d.data.iremboInvoiceNumber >0" (click)="funcApplicationInvOnlinePayment(d.data)"  
@@ -68,7 +68,6 @@ type="success" icon="edit" [elementAttr]="{ class: 'btn btn-primary' }">
              <dx-button text="Upload Payments Details(Payment Remittance Bank Slip)" *ngIf="has_generated_invoice"  (click)="funcUploadApplicationPayment()"
               type="danger" icon="money" [elementAttr]="{ class: 'btn btn-primary' }">  </dx-button>
             </div>
-
 
             <!--<button class="btn btn-primary pull-right" type="button"
             (click)="onPermitsApplicationSubmit()">Submit Application for Processing</button> -->
@@ -111,9 +110,10 @@ type="success" icon="edit" [elementAttr]="{ class: 'btn btn-primary' }">
   </div>
 </dx-popup>
 
-<dx-popup class="popup"  [width]="funcpopWidth(30)" [height]="650" [showTitle]="true" title="Upload Payment Remittances "
+<dx-popup class="popup"  [width]="funcpopWidth(45)" [height]="auto" [showTitle]="true" title="Upload Payment Remittances "
   [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="is_uploadpaymentdetailsfrm">
   <div *dxTemplate="let data of 'content'">
+  <dx-scroll-view >
     <form role="form" class="row" enctype="multipart/form-data" role="form" [formGroup]="uploadpaymentdetailsfrm"
     (ngSubmit)="onuploadpaymentdetailsSubmit()">
     <div class="col-lg-12">
@@ -157,6 +157,7 @@ type="success" icon="edit" [elementAttr]="{ class: 'btn btn-primary' }">
     </div>
     
   </form>
+  </dx-scroll-view >
   </div>
 </dx-popup>
 

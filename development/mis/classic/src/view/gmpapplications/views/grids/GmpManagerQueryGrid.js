@@ -141,6 +141,13 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpManagerQueryGrid', {
                         childXtype: 'applicationunstructuredqueriesgrid'
                     },
                     {
+                        text: 'View  Online Assessment Tool',
+                        iconCls: 'x-fa fa-bars',
+                        appDetailsReadOnly: 1,
+                        winTitle: 'Online Assessment Tool Details',
+                        handler: 'showGMPAssessmentToolDetails'
+                    }, 
+                    {
                         text: 'Inspection Report',
                         iconCls: 'x-fa fa-exchange',
                         handler: 'printManagersReport',

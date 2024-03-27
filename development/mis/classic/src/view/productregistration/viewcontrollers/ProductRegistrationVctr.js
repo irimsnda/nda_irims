@@ -10,6 +10,11 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
     setParamCombosStore: function (obj, options) {
         this.fireEvent('setParamCombosStore', obj, options);
     },
+
+    setGridStore: function (obj, options) {
+        this.fireEvent('setGridStore', obj, options);
+    },
+    
     saveGmpproductStatusesdetails: function (btn) {
         var me = this,
             url = btn.action_url,
@@ -45,6 +50,13 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             });
         }
     },
+
+     saveSampleSubmissionRemarks:function(btn){
+
+        this.fireEvent('saveSampleSubmissionRemarks', btn);
+        
+    },
+
 	showAddProductGmpInspectionStatusWin: function (btn) {
         var me = this,
         childXtype = btn.childXtype,
@@ -87,7 +99,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
 
                            
                             child.setHeight(400);
-                            funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+                            funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
                             child.down('hiddenfield[name=application_code]').setValue(application_code);
                            
 
@@ -260,7 +272,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
 
@@ -745,7 +757,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             childXtype = btn.childXtype,
             childObject = Ext.widget(childXtype);
         childObject.down('hiddenfield[name=application_code]').setValue(application_code);
-        funcShowCustomizableWindow(tracking_no + ' Rejections', winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no + ' Rejections', winWidth, childObject, 'customizablewindow');
     },
    
 
@@ -915,7 +927,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
 
     showLTRSelectionList: function (btn) {
         var grid = Ext.widget('productltrselectiongrid');
-        funcShowCustomizableWindow('LTR Selection List1', '90%', grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('LTR Selection List', '90%', grid, 'customizablewindow');
     },
 
     showApplicantSelectionList: function (btn) {
@@ -925,7 +937,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
         } else {
             grid.applicantType = 'nonlocal';
         }
-        funcShowCustomizableWindow('Applicant Selection List', '90%', grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Applicant Selection List', '90%', grid, 'customizablewindow');
     },
 
 
@@ -1029,10 +1041,9 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
                             
                             containerPnl.down('hiddenfield[name=product_id]').setValue(product_id);
                         }
-                        if(sub_module_id == 9){
-                            
-                            containerPnl.down('productsvariationrequestsgrid').down('hiddenfield[name=application_code]').setValue(active_application_code);
-                            containerPnl.down('productsvariationrequestsgrid').down('hiddenfield[name=application_id]').setValue(active_application_id);
+                        if(sub_module_id == 9){ 
+                            //containerPnl.down('productsvariationrequestsgrid').down('hiddenfield[name=application_code]').setValue(active_application_code);
+                            //containerPnl.down('productsvariationrequestsgrid').down('hiddenfield[name=application_id]').setValue(active_application_id);
                         }
                         else if(sub_module_id == 17){
                             containerPnl.down('productswithdrawalreasonsgrid').down('hiddenfield[name=application_code]').setValue(active_application_code);
@@ -1192,7 +1203,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
         busTypesStr.load({ params: { filter: filter } });
 
 
-        funcShowCustomizableWindow(title, '35%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, '35%', form, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -1212,7 +1223,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             arrayLength = storeArray.length;
 
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -1240,7 +1251,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             checklist_item = record.get('name'),
             item_resp_id = record.get('item_resp_id');
         grid.down('hiddenfield[name=item_resp_id]').setValue(item_resp_id);
-        funcShowCustomizableWindow(checklist_item + ' - Queries', '75%', grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(checklist_item + ' - Queries', '75%', grid, 'customizablewindow');
     },
 
     showAddApplicationQueryForm: function (btn) {
@@ -1312,7 +1323,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             child = Ext.widget(childXtype),
             storeArray = eval(btn.stores),
             arrayLength = storeArray.length;
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -1334,7 +1345,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             child.querystatus_id ='2,4';
             child.isReadOnly ='2,4';
             child.height= 550;
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -1354,7 +1365,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
         child.setHeight(450);
         child.down('button[name=add_upload]').isWin = isWin;
 
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -1381,7 +1392,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             arrayLength = storeArray.length;
             child.setHeight(600);
        
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -1418,7 +1429,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
         
         child.setHeight(600);
    
-    funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+    funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
    
     child.down('hiddenfield[name=application_code]').setValue(application_code);
     child.down('hiddenfield[name=section_id]').setValue(section_id);
@@ -1434,7 +1445,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
     showAddMeetingAttendeeFrm: function (btn) {
         var me = this,
             win = Ext.widget('meetingattendeefrm');
-        funcShowCustomizableWindow("Add Member", 400, win, 'customizablewindow');
+        funcShowOnlineCustomizableWindow("Add Member", 400, win, 'customizablewindow');
     },
     addMember: function (btn) {
         var me = this,
@@ -1708,7 +1719,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
 
             form.down('hiddenfield[name=manufacturer_id]').setValue(manufacturer_id);
             
-            funcShowCustomizableWindow(title, '80%', form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(title, '80%', form, 'customizablewindow');
             if (arrayLength > 0) {
                 me.fireEvent('refreshStores', storeArray);
             }
@@ -1728,7 +1739,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             arrayLength = storeArray.length;
 
             form.down('hiddenfield[name=product_id]').setValue(product_id);
-        funcShowCustomizableWindow(title, '80%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, '80%', form, 'customizablewindow');
        
 
     },
@@ -1742,7 +1753,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             arrayLength = storeArray.length;
 
 
-        funcShowCustomizableWindow(title, '80%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, '80%', form, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -1757,7 +1768,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             arrayLength = storeArray.length;
 
 
-        funcShowCustomizableWindow(title, '60%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, '60%', form, 'customizablewindow');
         win.close();
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
@@ -1774,7 +1785,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             arrayLength = storeArray.length;
 
             form.down('hiddenfield[name=manufacturer_id]').setValue(manufacturer_id),
-        funcShowCustomizableWindow(title, '60%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, '60%', form, 'customizablewindow');
         win.close();
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
@@ -2122,7 +2133,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             queriesGrid.down('button[action=submit_app]').setVisible(false);
             queriesGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
         }
-        funcShowCustomizableWindow(ref_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
     }, receiveOnlineApplicationDetails: function (item) {
         Ext.getBody().mask('Please wait...');
         var storeID = item.storeID,
@@ -2180,7 +2191,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             if(common_name_id != ''){
                 childXtype.down('hiddenfield[name=common_name_id]').setValue(common_name_id);
 
-                funcShowCustomizableWindow('Parameter', '55%', childXtype, 'customizablewindow');
+                funcShowOnlineCustomizableWindow('Parameter', '55%', childXtype, 'customizablewindow');
             }
             else{
                 toastr.error('Alert: ', 'Select the common name details first!!');
@@ -2199,7 +2210,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             if(product_category_id != ''){
                 childXtype.down('hiddenfield[name=product_category_id]').setValue(product_category_id);
 
-                funcShowCustomizableWindow('Parameter', '55%', childXtype, 'customizablewindow');
+                funcShowOnlineCustomizableWindow('Parameter', '55%', childXtype, 'customizablewindow');
             }
             else{
                 toastr.error('Alert: ', 'Select the Product Category details first!!');
@@ -2215,7 +2226,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
                 childXtype.down('hiddenfield[name=section_id]').setValue(section_id);
             }
 
-            funcShowCustomizableWindow('Parameter', '55%', childXtype, 'customizablewindow');
+            funcShowOnlineCustomizableWindow('Parameter', '55%', childXtype, 'customizablewindow');
             
     },
     funcSearchProductApplications: function (btn) {
@@ -2236,12 +2247,17 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             store.removeAll();
         store.load();
 
-    },generateProductRegCertificate: function (item) {
-        var btn = item.up('button'),
-            record = btn.getWidgetRecord(),
+    },
+     generateProductRegCertificate: function (item) {
+        var record = item.getWidgetRecord(),
             application_code = record.get('application_code');
-        this.fireEvent('generateProductRegCertificate', application_code);
-    },newGenerateProductRegCertificate: function (item) {
+            module_id = record.get('module_id');
+            sub_module_id = record.get('sub_module_id');
+            report_type_id = 3;
+            isPreview = 0;
+        this.fireEvent('generateProductRegCertificate', application_code,module_id,sub_module_id,report_type_id,isPreview);
+    },
+    newGenerateProductRegCertificate: function (item) {
         var record = item.getWidgetRecord(),
         application_code = record.get('application_code');
         this.fireEvent('generateProductRegCertificate', application_code);
@@ -2251,11 +2267,10 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             application_code = record.get('application_code');
         this.fireEvent('generateProductRejectionLetter', application_code);
     },
-    saveSampleSubmissionRemarks:function(btn){
+    savesamplesubmissionremarks:function(btn){
 
         this.fireEvent('saveSampleSubmissionRemarks', btn);
         
-
     },
     funcCheckDrugsProductsPanel:function(panel){
             var form = panel.down('form'),
@@ -2335,7 +2350,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
     },
     editregisteredProductsSearch: function(btn) {
         var grid = Ext.widget(btn.childXtype);
-        funcShowCustomizableWindow("All Product Applications", "70%", grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow("All Product Applications", "70%", grid, 'customizablewindow');
 
     },
     
@@ -2369,7 +2384,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
                     grid.down('hiddenfield[name=section_id]').setValue(section_id);
                 }
 
-            funcShowCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
             
         }
         else {
@@ -2949,7 +2964,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             grid.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
             grid.setHeight(450);
            
-           funcShowCustomizableWindow('Query', "70%", grid, 'customizablewindow');
+           funcShowOnlineCustomizableWindow('Query', "70%", grid, 'customizablewindow');
     },
 
     saveQualityReport: function (btn) {
@@ -3105,41 +3120,37 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
         grid.hide();
         panel.add(quality_Frm);
 
-        //funcShowCustomizableWindow(title, '90%', quality_Frm, 'customizablewindow');
+        //funcShowOnlineCustomizableWindow(title, '90%', quality_Frm, 'customizablewindow');
         
     },
 
 
-     saveQualitySummaryReport:function(btn){
+    saveQualitySummaryReport:function(btn){
         var  grid = btn.up('grid'),
-            application_code = grid.down('hiddenfield[name=application_code]').getValue(),
-               
-            qualitySummaryGrid = btn.up('grid'),
-            productlinedetailsstr = Ext.getStore('qualityevaluationgridstr'),
-
+        activeTab = Ext.ComponentQuery.query("#main_processpanel")[0],
+        product_id = activeTab.down('hiddenfield[name=product_id]').getValue(),
+        table_name=grid.down('hiddenfield[name=table_name]').getValue();
+        qualitySummaryGrid = btn.up('grid'),
+        qualitysummarysstr = qualitySummaryGrid.getStore(),
         store = qualitySummaryGrid.getStore(),
         report_sections = []; 
         for (var i = 0; i < store.data.items.length; i++) {
             var record = store.data.items [i],
-                section = record.get('Sections'),
-                 report = record.get('report'),
+                 query = record.get('query'),
                  recommendation = record.get('recommendation'),
                  has_query = record.get('has_query'),
                  query = record.get('query'),
-                 
-                 report_section_id = record.get('report_section_id');
+                 is_recommended = record.get('is_recommended'),
                  id = record.get('id');
 
             var obj = {
                 id: id,
-                report_section_id:report_section_id,
-                report_section: section,
-                application_code: application_code,
-                report: report,
+                product_id: product_id,
                 recommendation: recommendation,
+                query: query,
                 created_by: user_id,
                 has_query: has_query,
-                has_query: has_query
+                is_recommended: is_recommended
             };
             if (record.dirty) {
                 report_sections.push(obj);
@@ -3154,7 +3165,8 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
         Ext.Ajax.request({
             url: 'productregistration/saveQualityReportdetails',
             params: {
-                application_code: application_code,
+                product_id:product_id,
+                table_name:table_name,
                 report_sections: report_sections
             },
             headers: {
@@ -3169,7 +3181,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
                 if (success == true || success === true) {
                     toastr.success(message, 'Success Response');
                     store.load();
-                    productlinedetailsstr.load();
+                    qualitysummarysstr.load();
 
                 } else {
                     toastr.error(message, 'Failure Response');

@@ -1,6 +1,4 @@
-/**
- * Created by Kip on 1/6/2019.
- */
+
 Ext.define('Admin.view.gmpapplications.views.toolbars.MedDevicesGmpTb', {
     extend: 'Ext.toolbar.Toolbar',
     xtype: 'meddevicesgmptb',
@@ -29,7 +27,7 @@ Ext.define('Admin.view.gmpapplications.views.toolbars.MedDevicesGmpTb', {
                 xtype: 'menu',
                 items:[
                     {
-                        text: 'New Medical Devices GMP',
+                        text: 'New Surgical Instrument & Appliances GMP',
                         iconCls: 'x-fa fa-check',
                         handler:'showNewGmpApplication',
                         wrapper_xtype: 'meddevicesgmpdashwrapper',
@@ -58,7 +56,7 @@ Ext.define('Admin.view.gmpapplications.views.toolbars.MedDevicesGmpTb', {
                     },
                     '-',
                     {
-                        text: 'Medical Devices GMP Renewal',
+                        text: 'Surgical Instrument & Appliances GMP Renewal',
                         iconCls: 'x-fa fa-check',
                         handler:'showNewGmpApplication',
                         wrapper_xtype: 'meddevicesgmpdashwrapper',
@@ -66,7 +64,7 @@ Ext.define('Admin.view.gmpapplications.views.toolbars.MedDevicesGmpTb', {
                     },
                     '-',
                     {
-                        text: 'Medical Devices GMP Widthrawal',
+                        text: 'Surgical Instrument & Appliances GMP Widthrawal',
                         iconCls: 'x-fa fa-check',
                         handler:'showNewGmpApplication',
                         wrapper_xtype: 'meddevicesgmpdashwrapper',
@@ -74,7 +72,7 @@ Ext.define('Admin.view.gmpapplications.views.toolbars.MedDevicesGmpTb', {
                     },
                     '-',
                     {
-                        text: 'Medical Devices GMP Alteration',
+                        text: 'Surgical Instrument & Appliances GMP Variation',
                         iconCls: 'x-fa fa-check',
                         handler:'showNewGmpApplication',
                         wrapper_xtype: 'meddevicesgmpdashwrapper',
@@ -95,28 +93,28 @@ Ext.define('Admin.view.gmpapplications.views.toolbars.MedDevicesGmpTb', {
                 xtype: 'menu',
                 items:[
                     {
-                        text: 'New Medical Devices GMP',
+                        text: 'New Surgical Instrument & Appliances GMP',
                         iconCls: 'x-fa fa-check',
                         handler:'showGmpApplicationWorkflow',
                         wrapper_xtype: 'meddevicesgmpdashwrapper',
                         app_type: 5
                     },
                     {
-                        text: 'Medical Devices GMP Renewal',
+                        text: 'Surgical Instrument & Appliances GMP Renewal',
                         iconCls: 'x-fa fa-check',
                         handler:'showGmpApplicationWorkflow',
                         wrapper_xtype: 'meddevicesgmpdashwrapper',
                         app_type: 6
                     },
                     {
-                        text: 'Medical Devices GMP Widthrawal',
+                        text: 'Surgical Instrument & Appliances GMP Widthrawal',
                         iconCls: 'x-fa fa-check',
                         handler:'showGmpApplicationWorkflow',
                         wrapper_xtype: 'meddevicesgmpdashwrapper',
                         app_type: 39
                     },
                     {
-                        text: 'Medical Devices GMP Alteration',
+                        text: 'Surgical Instrument & Appliances GMP Alteration',
                         iconCls: 'x-fa fa-check',
                         handler:'showGmpApplicationWorkflow',
                         wrapper_xtype: 'meddevicesgmpdashwrapper',

@@ -26,9 +26,17 @@ Route::group(['middleware' => 'web', 'prefix' => 'premiseregistration'], functio
     Route::get('getManagersReports', 'ReportsController@getManagersReports');
 
     Route::get('getDrugShopApplicationsAtApproval', 'PremiseRegistrationController@getDrugShopApplicationsAtApproval');
+
+     Route::get('getSIAPremiseRenewalList', 'PremiseRegistrationController@getSIAPremiseRenewalList');
+
+    Route::get('getSIAPremiseApplicationsAtApproval', 'PremiseRegistrationController@getSIAPremiseApplicationsAtApproval');
+    
     Route::get('getPremisesApprovedAppList', 'PremiseRegistrationController@getPremisesApprovedAppList');
 
     Route::get('getDrugShopPreInspectionList', 'PremiseRegistrationController@getDrugShopPreInspectionList');
+
+    Route::get('getSIAPremisePreInspectionList', 'PremiseRegistrationController@getSIAPremisePreInspectionList');
+    
     
      Route::get('getPremisePreInspectionList', 'PremiseRegistrationController@getPremisePreInspectionList');
 
@@ -37,9 +45,16 @@ Route::group(['middleware' => 'web', 'prefix' => 'premiseregistration'], functio
 
     Route::post('saveApplicationProcessingZone', 'PremiseRegistrationController@saveApplicationProcessingZone');
 
+    Route::post('savePremiseBatchInspectionRecommendation', 'PremiseRegistrationController@savePremiseBatchInspectionRecommendation');
+
+    Route::post('onSavePremisesInspectoreStoreLocationDetails', 'PremiseRegistrationController@onSavePremisesInspectoreStoreLocationDetails');
+
+   Route::post('onSaveDrugShopInspectoreStoreLocationDetails', 'PremiseRegistrationController@onSaveDrugShopInspectoreStoreLocationDetails');
 
 
+ Route::get('getPremisesInspectionStoreLocationDetails', 'PremiseRegistrationController@getPremisesInspectionStoreLocationDetails');
 
+    Route::get('getDrugShopInspectionStoreLocationDetails', 'PremiseRegistrationController@getDrugShopInspectionStoreLocationDetails');
     Route::get('getPremiseInspectionReport', 'PremiseRegistrationController@getPremiseInspectionReport');
     
 });
@@ -57,11 +72,10 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premiseregistration'], fu
     
      Route::get('getPremiseRoomSizes', 'PremiseRegistrationController@getPremiseRoomSizes');
 
-
-
     Route::get('getPremiseRegParamFromModel', 'PremiseRegistrationController@getPremiseRegParamFromModel');
     Route::get('getApplicantsList', 'PremiseRegistrationController@getApplicantsList');
     Route::get('getPremisesList', 'PremiseRegistrationController@getPremisesList');
+    Route::get('getLtrPremisesList', 'PremiseRegistrationController@getLtrPremisesList');
     Route::get('getAllPremisesList', 'PremiseRegistrationController@getAllPremisesList');
     
    Route::get('getPremiseProprietorsDetails', 'PremiseRegistrationController@getPremiseProprietorsDetails');
@@ -90,6 +104,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premiseregistration'], fu
     Route::post('saveApplicationPaymentDetails', 'PremiseRegistrationController@saveApplicationPaymentDetails');
     Route::post('removeApplicationPaymentDetails', 'PremiseRegistrationController@removeApplicationPaymentDetails');
     Route::get('getManagerApplicationsGeneric', 'PremiseRegistrationController@getManagerApplicationsGeneric');
+    Route::get('getManagerBatchApplicationsGeneric', 'PremiseRegistrationController@getManagerBatchApplicationsGeneric');
     Route::get('getPremApplicationMoreDetails', 'PremiseRegistrationController@getPremApplicationMoreDetails');
     Route::get('getApplicationComments', 'PremiseRegistrationController@getApplicationComments');
     Route::get('getApplicationEvaluationTemplate', 'PremiseRegistrationController@getApplicationEvaluationTemplate');
@@ -205,7 +220,12 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premiseregistration'], fu
 
      //DrugShop Routes
      Route::get('getDrugShopApplications', 'PremiseRegistrationController@getDrugShopApplications');
-
+     
+     Route::get('getSIAApplications', 'PremiseRegistrationController@getSIAApplications');
+     
      Route::get('getPremiseIncharge', 'PremiseRegistrationController@getPremiseIncharge');
+
+
+      Route::get('getDrugShopRenewalList', 'PremiseRegistrationController@getDrugShopRenewalList');
     
 });

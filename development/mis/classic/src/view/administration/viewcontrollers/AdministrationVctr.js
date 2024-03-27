@@ -283,20 +283,24 @@ Ext.define('Admin.view.administration.viewcontrollers.AdministrationVctr', {
             form = combo.up('form'),
             childField = form.down('combo[name=child_id]'),
             parentField = form.down('combo[name=parent_id]');
+            isModuleField = form.down('combo[name=has_module]');
         if (selectedVal == 1) {
             //show parent only
             parentField.setFieldLabel('Parent');
             childField.setVisible(false);
             parentField.setVisible(true);
+            isModuleField.setVisible(false);
         } else if (selectedVal == 2) {
             //show parent and child
             parentField.setFieldLabel('GrandParent');
             childField.setVisible(true);
             parentField.setVisible(true);
+            isModuleField.setVisible(false);
         } else {
             //hide both parent and child
             childField.setVisible(false);
             parentField.setVisible(false);
+            isModuleField.setVisible(true);
         }
     },
 

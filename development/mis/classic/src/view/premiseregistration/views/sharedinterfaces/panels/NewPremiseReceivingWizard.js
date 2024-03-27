@@ -89,7 +89,7 @@ Ext.define('Admin.view.premiseregistration.views.sharedinterfaces.panels.NewPrem
                 },
                 {
                            step: 3,
-                           iconCls: 'fa fa-money',
+                           iconCls: 'fa fa-money-bill-wave',
                            enableToggle: true,
                            iconAlign:'top',
                            text: 'Invoice & Payment Details',

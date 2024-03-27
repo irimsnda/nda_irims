@@ -13,11 +13,18 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
     setConfigGridsStore: function (obj, options) {
         this.fireEvent('setConfigGridsStore', obj, options);
     },
+
+    setGridStore: function (obj, options) {
+        this.fireEvent('setGridStore', obj, options);
+    },
     setParamCombosStore: function (obj, options) {
         this.fireEvent('setParamCombosStore', obj, options);
     },
     setConfigCombosStore: function (obj, options) {
         this.fireEvent('setConfigCombosStore', obj, options);
+    },
+     setCompStore: function (obj, options) {
+        this.fireEvent('setCompStore', obj, options);
     },
 
     setOrgConfigCombosStore: function (obj, options) {
@@ -132,7 +139,7 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
         }
         child.down('combo[name=checklist_type_id]').setValue(checklist_type_id);
         child.down('combo[name=checklist_category_id]').setValue(checklist_category_id);
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -150,7 +157,7 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -170,11 +177,108 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
             me.fireEvent('refreshStores', storeArray);
         }
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
          }*/
+    },
+
+     removeTableJoinsDefination: function(btn) {
+      var fieldset = btn.up('fieldset'),
+          no = fieldset.down('numberfield[name=no_joins]').getValue(),
+          form = fieldset.up('form');
+      
+             form.down('fieldset[name=joins_fieldsets]').removeAll();
+       
+      
+      form.down('numberfield[name=no_joins]').setReadOnly(false);
+      form.down('button[name=add_tables]').setDisabled(false);
+  },
+    onformcategoryDblClick:function(view, record, item, index, e, eOpts){
+            form_category_id = record.get('id');
+            var child = Ext.widget('formFieldRelationGrid');
+            child.getViewModel().set('form_category_id', form_category_id);
+            child.down('hiddenfield[name=form_category_id]').setValue(form_category_id);
+            funcShowOnlineCustomizableWindow("Field Relations Mapping", '60%', child, 'customizablewindow');
+
+        },
+    syncFormFieldRelations:function(btn){
+            var grid = btn.up('grid'),
+                store = grid.getStore(),
+                form_category_id = grid.down('hiddenfield[name=form_category_id]').getValue(),
+                params = [];
+            for (var i = 0; i < store.data.items.length; i++) {
+                var record = store.data.items [i],
+                    form_fielddesign_id = record.get('field_id'),
+                    parent_field_id = record.get('parent_field_id'),
+                    bind_column = record.get('bind_column'),
+                    has_logic = record.get('has_logic'),
+                    other_logic = record.get('other_logic'),
+                    has_relation = 1;
+                var obj = {
+                    form_fielddesign_id: form_fielddesign_id,
+                    parent_field_id: parent_field_id,
+                    bind_column: bind_column,
+                    has_logic: has_logic,
+                    other_logic: other_logic,
+                    has_relation: has_relation
+                };
+                if (record.dirty) {
+                    params.push(obj);
+                }
+            }
+            if (params.length < 1) {
+                btn.setLoading(false);
+                toastr.warning('No records to save!!', 'Warning Response');
+                return false;
+            }
+            params = JSON.stringify(params);
+            Ext.Ajax.request({
+                url: 'configurations/saveFormFieldRelations',
+                params: {
+                    form_category_id: form_category_id,
+                    relation_details: params
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token,
+                    'X-CSRF-Token': token
+                },
+                success: function (response) {
+                    btn.setLoading(false);
+                    var resp = Ext.JSON.decode(response.responseText),
+                        success = resp.success,
+                        message = resp.message;
+                    if (success == true || success === true) {
+                        toastr.success(message, 'Success Response');
+                        store.load();
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    btn.setLoading(false);
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    btn.setLoading(false);
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        },
+    AddFormTypeFields: function (item) {
+        var me = this,
+            btn = item.up('button'),
+            record = btn.getWidgetRecord(),
+            childXtype = item.childXtype,
+            winTitle=item.winTitle,
+            winWidth=item.winWidth,
+            form = Ext.widget(childXtype),
+            form_category_id = record.get('id');
+        form.down('hiddenfield[name=form_category_id]').setValue(form_category_id);
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     },
 
     showEditConfigParamGridFrm: function (item) {//for tree panels
@@ -621,7 +725,7 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                                 //add columns
                                 for (var i = result.length - 1; i >= 0; i--) {
                                     var column = Ext.create('Ext.grid.column.Column', {
-                                            text: result[i].toUpperCase()+'',
+                                            text: result[i].replace(/_/g, ' ').toUpperCase(),
                                             dataIndex: result[i]+'',
                                             width: 150,
                                             tbCls: 'wrap'
@@ -658,10 +762,230 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
       
       
   },
+  // renderParameterForm:function(btn) {
+  //     var grid = btn.up('grid'),
+  //         def_id = grid.down('hiddenfield[name=def_id]').getValue();
+  //     Ext.getBody().mask('loading...');
+  //     Ext.Ajax.request({
+  //                       url: 'configurations/getParameterFormColumnsConfig',
+  //                       method: 'GET',
+  //                       params: {
+  //                           def_id: def_id
+  //                       },
+  //                       headers: {
+  //                           'Authorization': 'Bearer ' + access_token,
+  //                           'X-CSRF-Token': token
+  //                       },
+  //                       success: function (response) {
+
+  //                           var resp = Ext.JSON.decode(response.responseText),
+  //                               success = resp.success,
+  //                               message = resp.message,
+  //                               join_fields = resp.join_fields,
+  //                               table_name = resp.table_name,
+  //                               main_fields = resp.main_fields;
+  //                              // console.log(main_fields);
+  //                               //console.log(main_fields[0]['field']);
+  //                           if (success == true || success === true) {
+  //                               var form = Ext.create('Ext.form.Panel',{
+  //                                   controller: 'configurationsvctr',
+  //                                   autoScroll: true,
+  //                                   layout: 'form',
+  //                                   frame: true,
+  //                                   maxHeight: Ext.Element.getViewportHeight() - 118,
+  //                                   bodyPadding: 8,
+  //                                   defaults: {
+  //                                       labelAlign: 'top',
+  //                                       allowBlank: false
+  //                                   },
+  //                                     items: [{
+  //                                           xtype: 'hiddenfield',
+  //                                           margin: '0 20 20 0',
+  //                                           name: 'table_name',
+  //                                           value: table_name+'',
+  //                                           allowBlank: true
+  //                                       }, {
+  //                                           xtype: 'hiddenfield',
+  //                                           margin: '0 20 20 0',
+  //                                           name: '_token',
+  //                                           value: token,
+  //                                           allowBlank: true
+  //                                       }, {
+  //                                           xtype: 'hiddenfield',
+  //                                           fieldLabel: 'id',
+  //                                           margin: '0 20 20 0',
+  //                                           name: 'id',
+  //                                           allowBlank: true
+  //                                       },{
+  //                                           xtype: 'checkbox',
+  //                                           inputValue: 1,
+  //                                           uncheckedValue: 0,
+  //                                           fieldLabel: 'Is Enabled',
+  //                                           margin: '0 20 20 0',
+  //                                           name: 'is_enabled',
+  //                                           allowBlank: true
+  //                                       }],
+  //                                       dockedItems:[
+  //                                       {
+  //                                           xtype: 'toolbar',
+  //                                           ui: 'footer',
+  //                                           dock: 'bottom',
+  //                                           items:[
+  //                                               '->',{
+  //                                                   text: 'Save Details',
+  //                                                   iconCls: 'x-fa fa-save',
+  //                                                   action: 'save',
+  //                                                   table_name: table_name,
+  //                                                   storeID: table_name+'Str',
+  //                                                   formBind: true,
+  //                                                   ui: 'soft-purple',
+  //                                                   action_url: 'configurations/saveConfigCommonData',
+  //                                                   handler: 'doCreateConfigParamWin'
+  //                                               }
+  //                                           ]
+  //                                       }
+  //                                   ]
+  //                               });
+  //                           var counter = 1
+  //                           for (var i = main_fields.length - 1; i >= 0; i--) {
+
+  //                               if(main_fields[i]['field'] == 'table_name'){
+  //                                   var field = Ext.create('Ext.form.ComboBox',{
+  //                                       name: 'table_name',
+  //                                       fieldLabel: 'Table Name',
+  //                                       allowBlank:  main_fields[i]['null'],
+  //                                       valueField: 'table_name',
+  //                                       displayField: 'table_name',
+  //                                       forceSelection: main_fields[i]['null'],
+  //                                       queryMode: 'local',
+  //                                       listeners: {
+  //                                           beforerender: {
+  //                                               fn: 'setConfigCombosStore',
+  //                                               config: {
+  //                                                   pageSize: 1000,
+  //                                                   proxy: {
+  //                                                           url: 'audittrail/getTableslist',
+  //                                                           extraParams:{
+  //                                                               in_db:'mis'
+  //                                                           }
+  //                                                       }
+  //                                               },
+  //                                               isLoad: true
+  //                                           }
+                                           
+  //                                       }
+  //                                   });
+  //                               }else{
+  //                                   var field = Ext.create('Ext.form.TextField',{
+  //                                       name: main_fields[i]['field'],
+  //                                       fieldLabel: main_fields[i]['field'].replace(/_/g, ' ').toUpperCase(),
+  //                                       allowBlank: main_fields[i]['null'],
+  //                                   }); 
+  //                               }
+                               
+  //                               counter++;
+  //                               form.insert(1,field);
+
+  //                           }
+  //                           for (var i = join_fields.length - 1; i >= 0; i--) {
+  //                               if(join_fields[i].is_child != 1){
+  //                               var combo = Ext.create('Ext.form.ComboBox',{
+  //                                   name: join_fields[i].param_column_name,
+  //                                   fieldLabel: join_fields[i].label,
+  //                                   allowBlank: join_fields[i].null,
+  //                                   valueField: 'id',
+  //                                   displayField: join_fields[i].join_disp_column_name,
+  //                                   forceSelection: true,
+  //                                   queryMode: 'local',
+  //                                   listeners: {
+                                        // beforerender: {
+                                        //     fn: 'setConfigCombosStore',
+                                        //     config: {
+                                        //         pageSize: 1000,
+                                        //         proxy: {
+                                        //             url: 'commonparam/getCommonParamFromTable',
+                                        //             extraParams: {
+                                        //                 table_name: join_fields[i].table
+                                        //             }
+                                        //         }
+                                        //     },
+  //                                           isLoad: true
+  //                                       }
+                                       
+  //                                   }
+  //                               });
+  //                           }else{
+  //                              var combo = Ext.create('Ext.form.ComboBox',{
+  //                                   name: join_fields[i].param_column_name,
+  //                                   fieldLabel: join_fields[i].label,
+  //                                   allowBlank: join_fields[i].null,
+  //                                   valueField: 'id',
+  //                                   displayField: join_fields[i].join_disp_column_name,
+  //                                   forceSelection: true,
+  //                                   queryMode: 'local',
+  //                                   listeners: {
+  //                                       beforerender: {
+  //                                           fn: 'setConfigCombosStore',
+  //                                           config: {
+  //                                               pageSize: 1000,
+  //                                               proxy: {
+                                                    // url: 'commonparam/getCommonParamFromTable',
+                                                    // extraParams: {
+                                                    //     table_name: join_fields[i].table
+                                                    // }
+  //                                               }
+  //                                           },
+  //                                           isLoad: false
+  //                                       }
+                                       
+  //                                   }
+  //                               }); 
+
+  //                            var parent_combo = form.down('combo[name='+join_fields[i].parent_combo_name+']'),
+  //                                param_column_name = join_fields[i].param_column_name,
+  //                                link_column_name = join_fields[i].link_column_name;
+  //                            parent_combo.addListener('change',function(combo, newVal, oldvalue, eopts) {
+  //                                var obj = {};
+  //                                   obj[link_column_name] = newVal;
+  //                                   console.log(obj);
+  //                                var frm = combo.up('form'),
+  //                                    comboStr = frm.down('combo[name='+param_column_name+']').getStore(),
+  //                                    filters = JSON.stringify(obj);
+  //                               comboStr.removeAll();
+  //                               comboStr.load({params:{filters:filters}});
+                                 
+  //                            }); 
+  //                           }
+  //                           form.insert(counter, combo);
+  //                           }
+  //                           if(btn.action == 'edit'){
+  //                              var item = btn.up('button'),
+  //                                  record = item.getWidgetRecord();
+  //                               form.loadRecord(record);
+  //                           }
+  //                           Ext.getBody().unmask();
+  //                           funcShowOnlineCustomizableWindow(btn.winTitle, btn.winWidth, form, 'customizablewindow');
+  //                         }
+  //                       },
+  //                      failure: function (response) {
+  //                           Ext.getBody().unmask();
+  //                           var resp = Ext.JSON.decode(response.responseText),
+  //                               message = resp.message;
+  //                           toastr.error(message, 'Failure Response');
+  //                       },
+  //                       error: function (jqXHR, textStatus, errorThrown) {
+  //                           Ext.getBody().unmask();
+  //                           toastr.error('Error: ' + errorThrown, 'Error Response');
+  //                       }
+  //           });
+  // },
+
+//new Code by Mulinge 2024/02/25
   renderParameterForm:function(btn) {
       var grid = btn.up('grid'),
-          def_id = grid.down('hiddenfield[name=def_id]').getValue();
+      def_id = grid.down('hiddenfield[name=def_id]').getValue();
       Ext.getBody().mask('loading...');
+      grid.mask('Please Wait');
       Ext.Ajax.request({
                         url: 'configurations/getParameterFormColumnsConfig',
                         method: 'GET',
@@ -686,13 +1010,14 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                                 var form = Ext.create('Ext.form.Panel',{
                                     controller: 'configurationsvctr',
                                     autoScroll: true,
-                                    layout: 'form',
+                                    layout: 'column',
                                     frame: true,
                                     maxHeight: Ext.Element.getViewportHeight() - 118,
                                     bodyPadding: 8,
                                     defaults: {
                                         labelAlign: 'top',
-                                        allowBlank: false
+                                        allowBlank: false,
+                                        columnWidth: 1
                                     },
                                       items: [{
                                             xtype: 'hiddenfield',
@@ -700,7 +1025,9 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                                             name: 'table_name',
                                             value: table_name+'',
                                             allowBlank: true
-                                        }, {
+                                        }, 
+                                    
+                                        {
                                             xtype: 'hiddenfield',
                                             margin: '0 20 20 0',
                                             name: '_token',
@@ -734,7 +1061,7 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                                                     table_name: table_name,
                                                     storeID: table_name+'Str',
                                                     formBind: true,
-                                                    ui: 'soft-purple',
+                                                    ui: 'soft-blue',
                                                     action_url: 'configurations/saveConfigCommonData',
                                                     handler: 'doCreateConfigParamWin'
                                                 }
@@ -745,9 +1072,9 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                             var counter = 1
                             for (var i = main_fields.length - 1; i >= 0; i--) {
 
-                                if(main_fields[i]['field'] == 'table_name'){
+                                if(main_fields[i]['field'] == 'tablename'){
                                     var field = Ext.create('Ext.form.ComboBox',{
-                                        name: 'table_name',
+                                        name: 'tablename',
                                         fieldLabel: 'Table Name',
                                         allowBlank:  main_fields[i]['null'],
                                         valueField: 'table_name',
@@ -756,14 +1083,12 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                                         queryMode: 'local',
                                         listeners: {
                                             beforerender: {
-                                                fn: 'setConfigCombosStore',
+                                                fn: 'setCompStore',
                                                 config: {
                                                     pageSize: 1000,
                                                     proxy: {
-                                                            url: 'audittrail/getTableslist',
-                                                            extraParams:{
-                                                                in_db:'mis'
-                                                            }
+                                                            url: 'configurations/getTableslist'
+                                                           
                                                         }
                                                 },
                                                 isLoad: true
@@ -771,10 +1096,29 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                                            
                                         }
                                     });
-                                }else{
+                                }else if(main_fields[i]['field'] == 'description'){
+                                    var field = Ext.create('Ext.form.field.HtmlEditor',{
+                                        name: main_fields[i]['field'],
+                                        fieldLabel: main_fields[i]['label'].replace(/_/g, ' ').toUpperCase(),
+                                        allowBlank: main_fields[i]['null'],
+                                        columnWidth: 1
+                                    }); 
+                                }
+                                else if (main_fields[i]['field'].includes('_to') || main_fields[i]['field'].includes('_from')) {
+                                       var field = Ext.create('Ext.form.DateField',{
+                                        name: main_fields[i]['field'],
+                                        format:'Y-m-d',
+                                        altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+                                        fieldLabel: main_fields[i]['label'].replace(/_/g, ' ').toUpperCase(),
+                                        allowBlank: main_fields[i]['null'],
+                                        columnWidth: 1
+                                    }); 
+                                }
+
+                                else{
                                     var field = Ext.create('Ext.form.TextField',{
                                         name: main_fields[i]['field'],
-                                        fieldLabel: main_fields[i]['field'],
+                                        fieldLabel: main_fields[i]['label'].replace(/_/g, ' ').toUpperCase(),
                                         allowBlank: main_fields[i]['null'],
                                     }); 
                                 }
@@ -784,95 +1128,99 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
 
                             }
                             for (var i = join_fields.length - 1; i >= 0; i--) {
-                                if(join_fields[i].is_child != 1){
-                                var combo = Ext.create('Ext.form.ComboBox',{
-                                    name: join_fields[i].param_column_name,
-                                    fieldLabel: join_fields[i].label,
-                                    allowBlank: join_fields[i].null,
-                                    valueField: 'id',
-                                    displayField: join_fields[i].join_disp_column_name,
-                                    forceSelection: true,
-                                    queryMode: 'local',
-                                    listeners: {
-                                        beforerender: {
-                                            fn: 'setConfigCombosStore',
-                                            config: {
-                                                pageSize: 1000,
-                                                proxy: {
-                                                    url: 'commonparam/getCommonParamFromTable',
-                                                    extraParams: {
-                                                        table_name: join_fields[i].table
+                                if(join_fields[i].is_child == 1){
+                                    is_load = false;
+                                }else{
+                                    is_load = true;
+                                }
+                                if(join_fields[i].is_parent != 1){
+                                    var combo = Ext.create('Ext.form.ComboBox',{
+                                        name: join_fields[i].param_column_name,
+                                        fieldLabel: join_fields[i].label,
+                                        allowBlank: join_fields[i].null,
+                                        valueField: 'id',
+                                        displayField: join_fields[i].join_disp_column_name,
+                                        forceSelection: true,
+                                        queryMode: 'local',
+                                        listeners: {
+                                            beforerender: {
+                                                fn: 'setCompStore',
+                                                config: {
+                                                    pageSize: 1000,
+                                                    proxy: {
+                                                        url: 'configurations/getConfigParamFromTable',
+                                                        extraParams: {
+                                                            table_name: join_fields[i].table
+                                                         
+                                                        }
                                                     }
-                                                }
-                                            },
-                                            isLoad: true
+                                                },
+                                                isLoad: is_load
+                                            }
+                                           
                                         }
-                                       
-                                    }
-                                });
-                            }else{
-                               var combo = Ext.create('Ext.form.ComboBox',{
-                                    name: join_fields[i].param_column_name,
-                                    fieldLabel: join_fields[i].label,
-                                    allowBlank: join_fields[i].null,
-                                    valueField: 'id',
-                                    displayField: join_fields[i].join_disp_column_name,
-                                    forceSelection: true,
-                                    queryMode: 'local',
-                                    listeners: {
-                                        beforerender: {
-                                            fn: 'setConfigCombosStore',
-                                            config: {
-                                                pageSize: 1000,
-                                                proxy: {
-                                                    url: 'commonparam/getCommonParamFromTable',
-                                                    extraParams: {
-                                                        table_name: join_fields[i].table
+                                    });
+                                }
+                                else{
+                                   var combo = Ext.create('Ext.form.ComboBox',{
+                                        name: join_fields[i].param_column_name,
+                                        fieldLabel: join_fields[i].label,
+                                        allowBlank: join_fields[i].null,
+                                        logic: join_fields[i].logic,
+                                        valueField: 'id',
+                                        displayField: join_fields[i].join_disp_column_name,
+                                        forceSelection: true,
+                                        queryMode: 'local',
+                                        listeners: {
+                                            beforerender: {
+                                                fn: 'setCompStore',
+                                                config: {
+                                                    pageSize: 1000,
+                                                    proxy: {
+                                                        url: 'configurations/getConfigParamFromTable'
+                                                        ,
+                                                        extraParams: {
+                                                            table_name: join_fields[i].table
+                                                          
+                                                        }
                                                     }
-                                                }
+                                                },
+                                                isLoad: is_load
                                             },
-                                            isLoad: false
+                                            afterrender: function(me){
+                                                if(me.logic){
+                                                        eval(me.logic);
+                                                   }
+                                                // me.fireEvent('addListenerToConfig', me);
+                                            }
+                                           
                                         }
-                                       
-                                    }
-                                }); 
+          
+                                    }); 
 
-                             var parent_combo = form.down('combo[name='+join_fields[i].parent_combo_name+']'),
-                                 param_column_name = join_fields[i].param_column_name,
-                                 link_column_name = join_fields[i].link_column_name;
-                             parent_combo.addListener('change',function(combo, newVal, oldvalue, eopts) {
-                                 var obj = {};
-                                    obj[link_column_name] = newVal;
-                                    console.log(obj);
-                                 var frm = combo.up('form'),
-                                     comboStr = frm.down('combo[name='+param_column_name+']').getStore(),
-                                     filters = JSON.stringify(obj);
-                                comboStr.removeAll();
-                                comboStr.load({params:{filters:filters}});
-                                 
-                             }); 
+                                }
+                                form.insert(counter, combo);
                             }
-                            form.insert(counter, combo);
-                            }
-                            if(btn.action == 'edit'){
-                               var item = btn.up('button'),
-                                   record = item.getWidgetRecord();
-                                form.loadRecord(record);
-                            }
-                            Ext.getBody().unmask();
-                            funcShowCustomizableWindow(btn.winTitle, btn.winWidth, form, 'customizablewindow');
-                          }
-                        },
-                       failure: function (response) {
-                            Ext.getBody().unmask();
-                            var resp = Ext.JSON.decode(response.responseText),
-                                message = resp.message;
-                            toastr.error(message, 'Failure Response');
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            Ext.getBody().unmask();
-                            toastr.error('Error: ' + errorThrown, 'Error Response');
-                        }
+                    if(btn.action == 'edit'){
+                       var item = btn.up('button'),
+                           record = item.getWidgetRecord();
+                        form.loadRecord(record);
+                    }
+                    Ext.getBody().unmask();
+                    grid.unmask();
+                    funcShowOnlineCustomizableWindow(btn.winTitle, btn.winWidth, form, 'customizablewindow', btn);
+                  }
+                },
+               failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
             });
   },
 
@@ -981,7 +1329,7 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                               
                                model = Ext.create('Ext.data.Model', results);
                                form.loadRecord(model);
-                               funcShowCustomizableWindow("Config Parameter", '80%', form, 'customizablewindow');
+                               funcShowOnlineCustomizableWindow("Config Parameter", '80%', form, 'customizablewindow');
 
                            }
                         } else {
@@ -1002,12 +1350,244 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                 });
         }else{
             var form = Ext.widget('parameterformfieldsfrm');
-            funcShowCustomizableWindow("Config Parameter", '80%', form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow("Config Parameter", '80%', form, 'customizablewindow');
         }
        
        
    },
-   addTableJoinsDefination: function(btn) {
+
+   // addTableJoinsDefination: function(btn) {
+   //     var form = btn.up('form'),
+   //         fieldset = form.down('fieldset[name=joins_fs]'),
+   //         no_field = form.down('numberfield[name=no_joins]'),
+   //         no = no_field.getValue(),
+   //         save_btn = form.down('button[action=save]'),
+   //         joins_fieldsets = form.down('fieldset[name=joins_fieldsets]'),
+   //         frm = form.getForm();
+      
+   //    if(frm.isValid()){
+          
+   //          no_field.setReadOnly(true);
+   //         btn.setDisabled(true);
+       
+   //      for (var i = no-1; i >= 0; i--) {
+   //          var join_type_id = 'join_type_id'+i,
+   //              join_table_name = 'join_table_name'+i,
+   //              join_column_name = 'join_column_name'+i,
+   //              join_disp_column_name = 'join_disp_column_name'+i,
+   //              link_column_name = 'link_column_name'+i,
+   //              param_column_name = 'param_column_name'+i;
+
+   //          var fieldset = Ext.create('Ext.form.FieldSet' , {
+   //              layout: 'column',
+   //              title: 'Join table',
+   //              name: 'joins_definations',
+   //              defaults: {
+   //                  labelAlign: 'top',
+   //                  margin: '0 20 0 0',
+   //                  allowBlank: false
+   //              },
+   //              items :[{
+   //                      xtype: 'combobox',
+   //                      queryMode: 'local',
+   //                      fieldLabel: 'Join Type',
+   //                      displayField: 'name',
+   //                      valueField: 'id',
+   //                      name: join_type_id+'',
+   //                      columnWidth: 0.2,
+   //                      listeners:
+   //                       {
+   //                           beforerender: {
+   //                              fn: 'setAdminCombosStore',
+   //                              config: {
+   //                                  pageSize: 10000,
+   //                                  proxy: {
+   //                                      url: 'commonparam/getCommonParamFromTable',
+   //                                  extraParams:{
+   //                                          table_name: 'par_join_types'
+   //                                      }
+   //                                  }
+   //                              },
+   //                              isLoad: true
+   //                          }
+                             
+   //                       }
+                
+   //                    },{
+   //                      xtype: 'combobox',
+   //                      queryMode: 'local',
+   //                      fieldLabel: 'Join Table',
+   //                      displayField: 'table_name',
+   //                      valueField: 'table_name',
+   //                      name: join_table_name+'',
+   //                      columnWidth: 0.25,
+   //                      listeners:
+   //                       {
+   //                           beforerender: {
+   //                              fn: 'setAdminCombosStore',
+   //                              config: {
+   //                                  pageSize: 10000,
+   //                                  proxy: {
+   //                                      url: 'audittrail/getTableslist'
+   //                                  }
+   //                              },
+   //                              isLoad: true
+   //                          },
+   //                          change: function(combo, newVal, oldVal, eOpts) {
+                               
+   //                              var form = combo.up('fieldset'),
+   //                                  join_column_nameStr = form.down("combo[action=column_name]").getStore();
+   //                                  join_column_dispStr = form.down("combo[action=disp_column_name]").getStore();
+   //                                 // link_column_dispStr = form.down("combo[action=param_column_name]").getStore();
+
+   //                              join_column_nameStr.removeAll();
+   //                              join_column_nameStr.load({params:{'table_name':newVal}});
+   //                              join_column_dispStr.removeAll();
+   //                              join_column_dispStr.load({params:{'table_name':newVal}});
+   //                              //link_column_dispStr.removeAll();
+   //                              //link_column_dispStr.load({params:{'table_name':newVal}});
+   //                              //main table
+   //                              var main_form = combo.up('form'),
+   //                                  param_table = main_form.down('combo[name=table_name]').getValue(),
+   //                                  param_column_Str = form.down('combo[action=param_column_name]').getStore();
+                                    
+   //                               param_column_Str.removeAll();
+   //                               param_column_Str.load({params:{'table_name':param_table}});
+
+
+   //                          },
+                             
+   //                       }
+                
+   //                    },{
+   //                      xtype: 'combobox',
+   //                      queryMode: 'local',
+   //                      fieldLabel: 'Join Column',
+   //                      displayField: 'column_name',
+   //                      valueField: 'column_name',
+   //                      action: 'column_name',
+   //                      name: join_column_name+'',
+   //                      columnWidth: 0.2,
+   //                      listeners:
+   //                       {
+   //                           beforerender: {
+   //                              fn: 'setAdminCombosStore',
+   //                              config: {
+   //                                  pageSize: 10000,
+   //                                  proxy: {
+   //                                      url: 'administration/getTablescolumns'
+   //                                  }
+   //                              },
+   //                              isLoad: false
+   //                          }   
+                             
+   //                       }
+                
+   //                    },{
+   //                      xtype: 'combobox',
+   //                      queryMode: 'local',
+   //                      fieldLabel: 'Display Column',
+   //                      displayField: 'column_name',
+   //                      valueField: 'column_name',
+   //                      action: 'disp_column_name',
+   //                      name: join_disp_column_name+'',
+   //                      columnWidth: 0.2,
+   //                      listeners:
+   //                       {
+   //                           beforerender: {
+   //                              fn: 'setAdminCombosStore',
+   //                              config: {
+   //                                  pageSize: 10000,
+   //                                  proxy: {
+   //                                      url: 'administration/getTablescolumns'
+   //                                  }
+   //                              },
+   //                              isLoad: false
+   //                          }   
+                             
+   //                       }
+                
+   //                    },{
+   //                      xtype: 'combobox',
+   //                      queryMode: 'local',
+   //                      fieldLabel: 'Param Column',
+   //                      displayField: 'column_name',
+   //                      valueField: 'column_name',
+   //                      action: 'param_column_name',
+   //                      name: param_column_name+'',
+   //                      columnWidth: 0.2,
+   //                      listeners:
+   //                       {
+   //                           beforerender: {
+   //                              fn: 'setAdminCombosStore',
+   //                              config: {
+   //                                  pageSize: 10000,
+   //                                  proxy: {
+   //                                      url: 'administration/getTablescolumns'
+   //                                  }
+   //                              },
+   //                              isLoad: false
+   //                          },
+   //                          afterRender: function(me,eopts) {
+   //                              var form = me.up('form'),
+   //                                  param_table = form.down('combo[name=table_name]').getValue()
+   //                                  store = me.getStore();
+   //                              store.removeAll();
+   //                              store.load({params:{table_name:param_table}});
+   //                          }, 
+                             
+   //                       }
+                
+   //                    },{
+   //                        xtype: 'textfield',
+   //                        name: 'table_label'+i,
+   //                        fieldLabel: 'Label',
+   //                        columnWidth: 0.15
+   //                    },{
+   //                      xtype: 'checkbox',
+   //                      inputValue: 1,
+   //                      uncheckedValue: 2,
+   //                      fieldLabel: 'Is Linked to below',
+   //                      margin: '0 20 20 0',
+   //                      name: 'is_parent'+i,
+   //                      allowBlank: true,
+   //                      listeners: {
+   //                          change: function(checkbox, newValue, oldValue, eOpts) {
+   //                              var fieldset = checkbox.up('fieldset'),
+   //                                  chk = fieldset.down('textfield[action=link_column_name]');
+   //                              if (newValue == 1) {
+   //                                  chk.show();
+   //                              } else {
+   //                                  chk.hide();
+   //                              }
+   //                          }
+   //                      }
+   //                  },{
+   //                      xtype: 'textfield',
+   //                      allowBlank: true,
+   //                      fieldLabel: 'Link Column',
+   //                      name: link_column_name+'',
+   //                      hidden: true,
+   //                      action: 'link_column_name',
+   //                      columnWidth: 0.3,
+   //                    },{
+   //                        xtype: 'numberfield',
+   //                        name: 'level',
+   //                        hidden: true,
+   //                        value: i
+   //                    }]
+   //          });
+   //      joins_fieldsets.add(fieldset);
+   //      }
+   //     }else{
+   //        toastr.warning("Please Fill all the Initial Parameter Details", 'Failure Response!!'); 
+   //     }
+                              
+
+   // },
+
+   //New Code by Mulinge
+    addTableJoinsDefination: function(btn) {
        var form = btn.up('form'),
            fieldset = form.down('fieldset[name=joins_fs]'),
            no_field = form.down('numberfield[name=no_joins]'),
@@ -1022,11 +1602,13 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
            btn.setDisabled(true);
        
         for (var i = no-1; i >= 0; i--) {
+         //Modified by Mulinge
+        //for (var i = 0; i < no; i++) {
             var join_type_id = 'join_type_id'+i,
                 join_table_name = 'join_table_name'+i,
                 join_column_name = 'join_column_name'+i,
                 join_disp_column_name = 'join_disp_column_name'+i,
-                link_column_name = 'link_column_name'+i,
+                link_column_name = 'logic'+i,
                 param_column_name = 'param_column_name'+i;
 
             var fieldset = Ext.create('Ext.form.FieldSet' , {
@@ -1049,11 +1631,11 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                         listeners:
                          {
                              beforerender: {
-                                fn: 'setAdminCombosStore',
+                                fn: 'setCompStore',
                                 config: {
                                     pageSize: 10000,
                                     proxy: {
-                                        url: 'commonparam/getCommonParamFromTable',
+                                        url: 'configurations/getConfigParamFromTable',
                                     extraParams:{
                                             table_name: 'par_join_types'
                                         }
@@ -1075,11 +1657,14 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                         listeners:
                          {
                              beforerender: {
-                                fn: 'setAdminCombosStore',
+                                fn: 'setCompStore',
                                 config: {
                                     pageSize: 10000,
                                     proxy: {
-                                        url: 'audittrail/getTableslist'
+                                        url: 'audittrail/getTableslist',
+                                         extraParams:{
+                                            in_db: btn.db_con
+                                        }
                                     }
                                 },
                                 isLoad: true
@@ -1103,14 +1688,15 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                                     param_column_Str = form.down('combo[action=param_column_name]').getStore();
                                     
                                  param_column_Str.removeAll();
-                                 param_column_Str.load({params:{'table_name':param_table}});
+                                 param_column_Str.load({params:{'table_name':param_table, db_con: btn.db_con}});
 
 
                             },
                              
                          }
                 
-                      },{
+                      },
+                      {
                         xtype: 'combobox',
                         queryMode: 'local',
                         fieldLabel: 'Join Column',
@@ -1122,11 +1708,14 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                         listeners:
                          {
                              beforerender: {
-                                fn: 'setAdminCombosStore',
+                                fn: 'setCompStore',
                                 config: {
                                     pageSize: 10000,
                                     proxy: {
-                                        url: 'administration/getTablescolumns'
+                                        url: 'administration/getTablescolumns',
+                                        extraParams:{
+                                            db_con: btn.db_con
+                                        }
                                     }
                                 },
                                 isLoad: false
@@ -1134,7 +1723,8 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                              
                          }
                 
-                      },{
+                      },
+                      {
                         xtype: 'combobox',
                         queryMode: 'local',
                         fieldLabel: 'Display Column',
@@ -1146,11 +1736,14 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                         listeners:
                          {
                              beforerender: {
-                                fn: 'setAdminCombosStore',
+                                fn: 'setCompStore',
                                 config: {
                                     pageSize: 10000,
                                     proxy: {
-                                        url: 'administration/getTablescolumns'
+                                        url: 'administration/getTablescolumns',
+                                        extraParams:{
+                                            db_con: btn.db_con
+                                        }
                                     }
                                 },
                                 isLoad: false
@@ -1170,7 +1763,7 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                         listeners:
                          {
                              beforerender: {
-                                fn: 'setAdminCombosStore',
+                                fn: 'setCompStore',
                                 config: {
                                     pageSize: 10000,
                                     proxy: {
@@ -1184,7 +1777,7 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                                     param_table = form.down('combo[name=table_name]').getValue()
                                     store = me.getStore();
                                 store.removeAll();
-                                store.load({params:{table_name:param_table}});
+                                store.load({params:{table_name:param_table, db_con: btn.db_con}});
                             }, 
                              
                          }
@@ -1198,7 +1791,7 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                         xtype: 'checkbox',
                         inputValue: 1,
                         uncheckedValue: 2,
-                        fieldLabel: 'Is Linked to below',
+                        fieldLabel: 'Has Logic',
                         margin: '0 20 20 0',
                         name: 'is_parent'+i,
                         allowBlank: true,
@@ -1214,13 +1807,13 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                             }
                         }
                     },{
-                        xtype: 'textfield',
+                        xtype: 'textarea',
                         allowBlank: true,
-                        fieldLabel: 'Link Column',
+                        fieldLabel: 'Add Logic',
                         name: link_column_name+'',
                         hidden: true,
                         action: 'link_column_name',
-                        columnWidth: 0.3,
+                        columnWidth:1,
                       },{
                           xtype: 'numberfield',
                           name: 'level',
@@ -1261,7 +1854,7 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
                                if(menu_id != 0){
                                    form.down('hiddenfield[name=menu_id]').setValue(menu_id);
 
-                                   funcShowCustomizableWindow("Config Parameter", '80%', form, 'customizablewindow');  
+                                   funcShowOnlineCustomizableWindow("Config Parameter", '80%', form, 'customizablewindow');  
                                    }
                                 else{
                                     toastr.error("Failed to get Menu", 'Failure Response');
@@ -1437,7 +2030,7 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
             me.fireEvent('refreshStores', storeArray);
         }
         child.down('hiddenfield[name=docdirective_id]').setValue(grid.down('hiddenfield[name=docdirective_id]').getValue());
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
        
     }
 });

@@ -22,6 +22,8 @@ Route::get('getApplicationApprovalDetails', [commonController::class, 'getApplic
 	Route::get('getApplicationChecklistQueries', [commonController::class, 'getApplicationChecklistQueries']);
 	Route::post('saveChecklistApplicationQuery', [commonController::class, 'saveChecklistApplicationQuery']);
 
+    Route::post('authenticateMisMobileUser', [commonController::class, 'authenticateMisMobileUser']);
+    
 	Route::post('closeApplicationQuery', [commonController::class, 'closeApplicationQuery']);
 	Route::post('saveUnstructuredApplicationQuery', [commonController::class, 'saveUnstructuredApplicationQuery']);
 	Route::get('getTcMeetingParticipants', [commonController::class, 'getTcMeetingParticipants']);
@@ -29,7 +31,11 @@ Route::get('getApplicationApprovalDetails', [commonController::class, 'getApplic
 	Route::get('getApplicationComments', [commonController::class, 'getApplicationComments']);
 	Route::get('getApplicationunstructuredqueries', [commonController::class, 'getApplicationunstructuredqueries']);
 
+	Route::get('getApplicationInternalqueries', [commonController::class, 'getApplicationInternalqueries']);
+	Route::post('saveInternalApplicationQuery', [commonController::class, 'saveInternalApplicationQuery']);
+
 	
+
 	Route::post('submitQueriedOnlineApplication', [commonController::class, 'submitQueriedOnlineApplication']);
     Route::post('saveApplicationInvoicingDetails', [commonController::class, 'saveApplicationInvoicingDetails']);
 	Route::get('getCommonParamFromModel', [commonController::class, 'getCommonParamFromModel']);
@@ -39,7 +45,6 @@ Route::get('getApplicationApprovalDetails', [commonController::class, 'getApplic
 	Route::post('saveRecommendationDetails', [commonController::class, 'saveRecommendationDetails']);
 	Route::get('getmeetingSchedulesLogs', [commonController::class, 'getmeetingSchedulesLogs']);
 	Route::post('updateMeetingAttendance', [commonController::class, 'updateMeetingAttendance']);
-	Route::get('getRcRecommendationLogs', [commonController::class, 'getRcRecommendationLogs']);
 	Route::get('getApplicationRecommendationLogs', [commonController::class, 'getApplicationRecommendationLogs']);
 	Route::get('getApplicationApprovalDetails', [commonController::class, 'getApplicationApprovalDetails']);
 	Route::post('saveApplicationApprovalDetails', [commonController::class, 'saveApplicationApprovalDetails']);
@@ -81,7 +86,13 @@ Route::group(['middleware' => 'web', 'prefix' => 'common'], function () {
 Route::get('getCaseDecisionsLogs', [commonController::class, 'getCaseDecisionsLogs']);
 Route::get('getApplicationApprovalDetails', [commonController::class, 'getApplicationApprovalDetails']);
 Route::post('saveRecommendationDetails', [commonController::class, 'saveRecommendationDetails']);
+Route::post('syncTcMeetingGroupParticipants', [commonController::class, 'syncTcMeetingGroupParticipants']);
 Route::get('getTcMeetingParticipants', [commonController::class, 'getTcMeetingParticipants']);
-
-
+Route::get('getApplicationRecommendationLogs', [commonController::class, 'getApplicationRecommendationLogs']);
+Route::get('prepareRegMeetingStage', [commonController::class, 'prepareRegMeetingStage']);
+Route::post('saveTCMeetingDetails', [commonController::class, 'saveTCMeetingDetails']);
+Route::post('updateMeetingAttendance', [commonController::class, 'updateMeetingAttendance']);
+Route::post('updateParticipantRole', [commonController::class, 'updateParticipantRole']);
+Route::get('getTcMeetingParticipants', [commonController::class, 'getTcMeetingParticipants']);
+Route::get('getRcRecommendationLogs', [commonController::class, 'getRcRecommendationLogs']);
 });

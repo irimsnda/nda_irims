@@ -9,7 +9,7 @@ export class AnnexstoreDashboardComponent extends PremisesRegDashboardComponent 
  
   ngOnInit() {
     this.premises_dashboardtitle = "External Store Application Dashboard"
-    this.sub_module_id = 109;
+    this.sub_module_id = 108;
     this.onLoadPremisesAppType(this.sub_module_id);
     this.reloadPremisesApplications({sub_module_id:this.sub_module_id});
 

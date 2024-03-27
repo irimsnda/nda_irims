@@ -87,7 +87,8 @@ Ext.define('Admin.view.promotionmaterials.views.forms.PromoApprovalRecommendatio
         {
             xtype: 'datefield',
             fieldLabel: 'Approval Date',
-            //value: new Date(),
+            value: new Date(),
+            readOnly:true,
             maxValue: new Date(),
             name: 'approval_date',
             submitFormat: 'Y-m-d',
@@ -124,13 +125,15 @@ Ext.define('Admin.view.promotionmaterials.views.forms.PromoApprovalRecommendatio
             xtype: 'textarea',
             fieldLabel: 'Comment',
             name: 'comment',
+            grow: true, 
+            growMax: 200, 
             allowBlank: true
         },
         {
             xtype: 'combo',
             store: 'confirmationstr',
             value: 1,
-            fieldLabel: 'DG Signatory?',
+            fieldLabel: 'CA Signatory?',
             queryMode: 'local',
             forceSelection: true,
             valueField: 'id',

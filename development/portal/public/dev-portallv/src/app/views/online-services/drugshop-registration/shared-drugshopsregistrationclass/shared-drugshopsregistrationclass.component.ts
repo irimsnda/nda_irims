@@ -27,6 +27,7 @@ import { AppSettings } from 'src/app/app-settings';
 
 export class SharedDrugshopsregistrationclassComponent {
  is_readonly:boolean = false;
+ is_renewal:boolean = false;
   appuploaded_document_id:number;
   mis_url:string = AppSettings.mis_url;
   zoneparams:any;
@@ -149,6 +150,7 @@ export class SharedDrugshopsregistrationclassComponent {
 
   businessTypesData: any;
   businessTypeDetailsData: any;
+  premisesStoreLocationDetailsData:any;
   zoneData: any;
   isInitalCapaResponseFrmVisible:boolean;
  public business_type_id: 7;
@@ -172,7 +174,7 @@ export class SharedDrugshopsregistrationclassComponent {
   ispremisesSearchWinVisible = false;
   applicationRejectionData:any;
   applicationInitialQueriesData:any;
-
+  drugshopStoreLocationDetailsData:any;
   isInitalQueryWinVisible:boolean = false;
   personnel_type_id:number;
   isApplicationSubmitwin:boolean = false;
@@ -240,15 +242,15 @@ export class SharedDrugshopsregistrationclassComponent {
       is_fast_track: new FormControl('', Validators.compose([])),
       submission_comments:new FormControl('', Validators.compose([]))
     });
-    if(this.sub_module_id == 1){
-        this.is_readonly = false;
-    }
-    else{
-      this.is_readonly = false;
-      
-    }
+
     if (this.status_id < 1) {
       this.status_name = "New"
+    }
+    if(this.status_id == 2 || this.status_id == 3 || this.status_id == 5){
+        this.is_readonly = true;
+    }else{
+      this.is_readonly = false;
+
     }
     if(this.status_id == 6 || this.status_id == 17 || this.status_id == 7){
       this.initWizardPanel = 1;
@@ -269,6 +271,9 @@ export class SharedDrugshopsregistrationclassComponent {
     
      this.onLoadfastTrackOptionsData();
     this.onLoadpayingCurrencyData();
+
+    this.onLoadPremisesStoreLocationDetails();
+    this.onLoadDrugShopStoreLocationDetails();
 
     this.newPremisesPersonnelDetailsFrm = new FormGroup({
       name: new FormControl('', Validators.compose([Validators.required])),
@@ -302,13 +307,11 @@ export class SharedDrugshopsregistrationclassComponent {
   }else{
     this.premisesStoreslocationFrm = new FormGroup({
         name: new FormControl('', Validators.compose([Validators.required])),
-        distance: new FormControl('', Validators.compose([Validators.required])),
+        distance: new FormControl('', Validators.compose([])),
         street: new FormControl('', Validators.compose([])),
         country_id: new FormControl('', Validators.compose([Validators.required])),
         region_id: new FormControl('', Validators.compose([Validators.required])),
         district_id: new FormControl('', Validators.compose([Validators.required])),
-        county_id: new FormControl('', Validators.compose([])),//Validators.required
-        sub_county_id: new FormControl('', Validators.compose([])),//Validators.required
         document_upload_id: new FormControl('', Validators.compose([])),
         id: new FormControl('', Validators.compose([])),
 
@@ -321,28 +324,30 @@ export class SharedDrugshopsregistrationclassComponent {
       premises_name: new FormControl('', Validators.compose([Validators.required])),
       businesstype_category_id: new FormControl('', Validators.compose([])),
       director_name:new FormControl('', Validators.compose([])),
+      has_incharge:new FormControl('', Validators.compose([Validators.required])),
       section_id: new FormControl(this.section_id, Validators.compose([])),
       other_classification:new FormControl('', Validators.compose([])),
       product_classification_id: new FormControl('', Validators.compose([Validators.required])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
       region_id: new FormControl('', Validators.compose([Validators.required])),
       district_id: new FormControl('', Validators.compose([Validators.required])),
-      fullname: new FormControl('', Validators.compose([Validators.required])),
+      fullname: new FormControl('', Validators.compose([])),
       middle_name: new FormControl('', Validators.compose([])),
-      tpin_no: new FormControl('', Validators.compose([Validators.required])),
+      tpin_no: new FormControl('', Validators.compose([])),
       last_name:new FormControl('', Validators.compose([])),
-      incharge_email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
+      incharge_email: new FormControl('', Validators.compose([])),
       postal_address: new FormControl('', Validators.compose([])),
-      incharge_telephone: new FormControl('', Validators.compose([Validators.required])),
+      incharge_telephone: new FormControl('', Validators.compose([])),
       applicant_incharge_telephone: new FormControl('', Validators.compose([])),
       incharge_physical_address:new FormControl('', Validators.compose([])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
-      incharge_country_id: new FormControl('', Validators.compose([Validators.required])),
-      incharge_region_id: new FormControl('', Validators.compose([Validators.required])),
-      incharge_district_id: new FormControl('', Validators.compose([Validators.required])),
+      incharge_country_id: new FormControl('', Validators.compose([])),
+      incharge_id:new FormControl('', Validators.compose([])),
+      incharge_region_id: new FormControl('', Validators.compose([])),
+      incharge_district_id: new FormControl('', Validators.compose([])),
       mobile_no: new FormControl('', Validators.compose([])),
-      longitude: new FormControl('', Validators.compose([])),
-      latitude: new FormControl('', Validators.compose([])),
+      longitude: new FormControl('', Validators.compose([Validators.required])),
+      latitude: new FormControl('', Validators.compose([Validators.required])),
       managing_director_email: new FormControl('', Validators.compose([])),
       managing_director: new FormControl('', Validators.compose([])),
       managing_director_telepone: new FormControl('', Validators.compose([])),
@@ -366,32 +371,34 @@ export class SharedDrugshopsregistrationclassComponent {
       contact_person_startdate: new FormControl('', Validators.compose([])),//Validators.required
       premise_type_id: new FormControl('', Validators.compose([])),//Validators.required
      // vehicle_reg_no: new FormControl('', Validators.compose([])),//Validators.required
-      tra_premise_id: new FormControl('', Validators.compose([])),//Validators.required
+      tra_premise_id: new FormControl(this.tra_premise_id, Validators.compose([])),//Validators.required
       registered_id: new FormControl('', Validators.compose([])),//Validators.required
       investment_capital_currency_id: new FormControl('', Validators.compose([])),//Validators.required
-     county_id: new FormControl('', Validators.compose([])),//Validators.required
-     sub_county_id: new FormControl('', Validators.compose([])),
-      street:new FormControl('', Validators.compose([])),
-      village: new FormControl('', Validators.compose([])),//Validators.required
+      county_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
+      sub_county_id: new FormControl('', Validators.compose([])),
+      street:new FormControl('', Validators.compose([Validators.required])),
+      village: new FormControl('', Validators.compose([])),
+      parish_id: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_email: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_telephone: new FormControl('', Validators.compose([])),//Validators.required
-      nin_no: new FormControl('', Validators.compose([Validators.required])),//Validators.required
+      nin_no: new FormControl('', Validators.compose([])),//Validators.required
       registration_institution_id: new FormControl('', Validators.compose([])),//Validators.required
       otherregistration_institution: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_position: new FormControl('', Validators.compose([])),//Validators.required
       classification_id:new FormControl('', Validators.compose([])),
       is_registered_business:new FormControl('', Validators.compose([])),
-      registration_date:new FormControl('', Validators.compose([Validators.required])),
+      registration_date:new FormControl('', Validators.compose([])),
       other_premproduct_classification:new FormControl('', Validators.compose([])),
       applicant_type_id:new FormControl('', Validators.compose([Validators.required])),
       premproduct_classification_id: new FormControl('', Validators.compose([])),
-      incharge_qualification:new FormControl('', Validators.compose([]))
+      incharge_qualification:new FormControl('', Validators.compose([])),
+      company_registration_no:new FormControl('', Validators.compose([]))
     });
   }else{    
     this.premisesGeneraldetailsfrm = new FormGroup({
       premises_name: new FormControl('', Validators.compose([Validators.required])),
       businesstype_category_id: new FormControl('', Validators.compose([])),
-      nin_no: new FormControl('', Validators.compose([Validators.required])),//Validators.required
+      nin_no: new FormControl('', Validators.compose([])),//Validators.required
       managing_director_email: new FormControl('', Validators.compose([])),
       managing_director: new FormControl('', Validators.compose([])),
       managing_director_telepone: new FormControl('', Validators.compose([])),
@@ -401,27 +408,28 @@ export class SharedDrugshopsregistrationclassComponent {
       country_id: new FormControl('', Validators.compose([Validators.required])),
       region_id: new FormControl('', Validators.compose([Validators.required])),
       district_id: new FormControl('', Validators.compose([Validators.required])),
+      has_incharge:new FormControl('', Validators.compose([Validators.required])),
       investment_capital: new FormControl('', Validators.compose([])),
-      tpin_no 
-      : new FormControl('', Validators.compose([Validators.required])),
-      applicant_type_id:new FormControl('', Validators.compose([Validators.required])),
-      fullname: new FormControl('', Validators.compose([Validators.required])),
-      incharge_country_id: new FormControl('', Validators.compose([Validators.required])),
-      incharge_region_id: new FormControl('', Validators.compose([Validators.required])),
-      incharge_district_id: new FormControl('', Validators.compose([Validators.required])),
+      tpin_no : new FormControl('', Validators.compose([])),
+      applicant_type_id:new FormControl('', Validators.compose([])),
+      fullname: new FormControl('', Validators.compose([])),
+      incharge_country_id: new FormControl('', Validators.compose([])),
+      incharge_region_id: new FormControl('', Validators.compose([])),
+      incharge_district_id: new FormControl('', Validators.compose([])),
+      incharge_id:new FormControl('', Validators.compose([])),
       middle_name: new FormControl('', Validators.compose([])),
       last_name: new FormControl('', Validators.compose([])),
       other_classification:new FormControl('', Validators.compose([])),
-      incharge_email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
+      incharge_email: new FormControl('', Validators.compose([])),
       applicant_incharge_telephone: new FormControl('', Validators.compose([])),
       postal_address: new FormControl('', Validators.compose([])),
-      incharge_telephone: new FormControl('', Validators.compose([Validators.required])),
+      incharge_telephone: new FormControl('', Validators.compose([])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
       mobile_no: new FormControl('', Validators.compose([])),
-      longitude: new FormControl('', Validators.compose([])),
-      latitude: new FormControl('', Validators.compose([])),
+      longitude: new FormControl('', Validators.compose([Validators.required])),
+      latitude: new FormControl('', Validators.compose([Validators.required])),
       had_offence: new FormControl('', Validators.compose([])),
-      offence: new FormControl('', Validators.compose([])),
+      offence: new FormControl('', Validators.compose([])), 
       had_cancelled_application: new FormControl('', Validators.compose([])),
       cancelling_reason: new FormControl('', Validators.compose([])),
       is_workinotherinstitutions: new FormControl('', Validators.compose([])),
@@ -440,10 +448,11 @@ export class SharedDrugshopsregistrationclassComponent {
       contact_person_startdate: new FormControl('', Validators.compose([])),//Validators.required
       premise_type_id: new FormControl('', Validators.compose([])),//Validators.required
       vehicle_reg_no: new FormControl('', Validators.compose([])),//Validators.required
-      tra_premise_id: new FormControl('', Validators.compose([])),//Validators.required
+      tra_premise_id: new FormControl(this.tra_premise_id, Validators.compose([])),//Validators.required
       registered_id: new FormControl('', Validators.compose([])),//Validators.required
       investment_capital_currency_id: new FormControl('', Validators.compose([])),//Validators.required
       village: new FormControl('', Validators.compose([])),//Validators.required
+      parish_id: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_email: new FormControl('', Validators.compose([])),//Validators.required
       contact_person_telephone: new FormControl('', Validators.compose([])),//Validators.required
       registration_institution_id: new FormControl('', Validators.compose([])),//Validators.required
@@ -451,14 +460,14 @@ export class SharedDrugshopsregistrationclassComponent {
       contact_person_position: new FormControl('', Validators.compose([])),//Validators.required
       classification_id:new FormControl('', Validators.compose([])),
       is_registered_business:new FormControl('', Validators.compose([])),
-      street:new FormControl('', Validators.compose([])),
+      street:new FormControl('', Validators.compose([Validators.required])),
       other_premproduct_classification:new FormControl('', Validators.compose([])),
-      county_id: new FormControl('', Validators.compose([])),//Validators.required
+      county_id: new FormControl('', Validators.compose([Validators.required])),//Validators.required
       sub_county_id: new FormControl('', Validators.compose([])),//Validators.required
       premproduct_classification_id: new FormControl('', Validators.compose([])),
      incharge_qualification:new FormControl('', Validators.compose([])),
-           registration_date:new FormControl('', Validators.compose([Validators.required])),
-
+     registration_date:new FormControl('', Validators.compose([])),
+    company_registration_no:new FormControl('', Validators.compose([]))
     });
 
   }
@@ -507,16 +516,15 @@ export class SharedDrugshopsregistrationclassComponent {
 
 
    this.premisesDirectorsDetailsfrm = new FormGroup({
-      directorfull_names: new FormControl('', Validators.compose([Validators.required])),
+      name: new FormControl('', Validators.compose([Validators.required])),
       id: new FormControl('', Validators.compose([])),
-      director_postal_address: new FormControl('', Validators.compose([])),
-      director_telephone_no: new FormControl('', Validators.compose([Validators.required])),
-      director_email_address: new FormControl('', Validators.compose([Validators.required])),
+      telephone_no: new FormControl('', Validators.compose([Validators.required])),
+      email_address: new FormControl('', Validators.compose([Validators.required])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
       region_id: new FormControl('', Validators.compose([])),
       district_id: new FormControl('', Validators.compose([])),
       shares:new FormControl('',Validators.compose([])),
-      director_postal_code: new FormControl('', Validators.compose([])),
+      physical_address: new FormControl('', Validators.compose([])),
       qualification_id: new FormControl('', Validators.compose([Validators.required])),
 
 
@@ -550,7 +558,7 @@ export class SharedDrugshopsregistrationclassComponent {
     });
 
    // this.onBusinessTypesLoad(this.section_id);
-    this.onLoadGuidelines(this.sub_module_id, this.section_id);
+    this.onLoadGuidelines(this.sub_module_id);
     if (this.premisesapp_details) {
 
           this.premisesGeneraldetailsfrm.patchValue(this.premisesapp_details);
@@ -612,7 +620,7 @@ export class SharedDrugshopsregistrationclassComponent {
   funcPrintcapaRequestsLetter(data){
     this.appuploaded_document_id = data.data.query_id;
     
-      let report_url = this.mis_url+'reports/printRequestForCAPAResponses?application_code='+this.application_code+"&module_id="+this.module_id+"&sub_module_id="+this.sub_module_id+"&query_id="+this.appuploaded_document_id;
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+this.application_code+"&module_id="+this.module_id+"&sub_module_id="+this.sub_module_id+"&query_id="+this.appuploaded_document_id;
 
       this.funcGenerateRrp(report_url,"Print Request for RE-Inspection");
     
@@ -620,12 +628,13 @@ export class SharedDrugshopsregistrationclassComponent {
   funcPrintReinspectionRequestsLetter(data){
     this.appuploaded_document_id = data.data.query_id;
     
-      let report_url = this.mis_url+'reports/printREinspectionueryLetter?application_code='+this.application_code+"&module_id="+this.module_id+"&sub_module_id="+this.sub_module_id+"&query_id="+this.appuploaded_document_id;
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+this.application_code+"&module_id="+this.module_id+"&sub_module_id="+this.sub_module_id+"&query_id="+this.appuploaded_document_id;
 
       this.funcGenerateRrp(report_url,"Print Request for RE-Inspection");
     
-  } printAppREquestforAdditionalInformation(){
-    let report_url = this.mis_url+'reports/printRequestForAdditionalInformation?application_code='+this.application_code+"&module_id="+this.module_id+"&sub_module_id="+this.sub_module_id+"&query_id="+this.query_ref_id;
+  }
+   printAppREquestforAdditionalInformation(){
+    let report_url = this.mis_url+'reports/getReportUrl?application_code='+this.application_code+"&module_id="+this.module_id+"&sub_module_id="+this.sub_module_id+"&query_id="+this.query_ref_id;
     this.funcGenerateRrp(report_url,"Print Request for Additional Information");
   }  
   funcGenerateRrp(report_url,title){
@@ -656,6 +665,27 @@ export class SharedDrugshopsregistrationclassComponent {
           this.payingCurrencyData = data;
         });
 
+  }
+  onLoadPremisesStoreLocationDetails(){
+    this.appService.onLoadPremisesStoreLocationDetails(this.premise_id)
+      //.pipe(first())
+      .subscribe(
+        data => {//dtpremPersonnelDetailsData
+          this.premisesStoreLocationDetailsData = data;
+        },
+        error => {
+          return false
+        });
+  } 
+  onLoadDrugShopStoreLocationDetails(){
+    this.appService.onLoadDrugShopStoreLocationDetails(this.premise_id)
+      .subscribe(
+        data => {
+          this.drugshopStoreLocationDetailsData = data;
+        },
+        error => {
+          return false
+        });
   }
   onLoadfastTrackOptionsData() {
     var data = {
@@ -835,6 +865,8 @@ export class SharedDrugshopsregistrationclassComponent {
           this.personnelPositionData = data;
         });
   }
+
+
   onLoadbusinessCategories() {
     var data = {
       table_name: 'par_business_categories',
@@ -889,7 +921,48 @@ export class SharedDrugshopsregistrationclassComponent {
           return false
         });
   }
-  
+    onSaveDrugShopApplication() {
+
+    const invalid = [];
+    const controls = this.premisesGeneraldetailsfrm.controls;
+    for (const name in controls) {
+        if (controls[name].invalid) {
+          this.toastr.error('Fill In All Mandatory fields with (*), missing value on '+ name.replace('_id',''), 'Alert');
+            return;
+        }
+    }
+    if (this.premisesGeneraldetailsfrm.invalid) {
+      return;
+    }
+
+
+    if (this.premisesGeneraldetailsfrm.invalid) {
+    //  return;
+    }
+    this.spinner.show();
+    this.appService.onSaveDrugShopApplication(this.premise_id, this.premisesGeneraldetailsfrm.value, this.tracking_no)
+      .subscribe(
+        response => {
+          this.premises_resp = response.json();
+          //the details 
+          this.spinner.hide();
+          this.tracking_no = this.premises_resp.tracking_no;
+          this.premise_id = this.premises_resp.premise_id;
+          this.application_code = this.premises_resp.application_code;
+
+          if (this.premises_resp.success) {
+            this.toastr.success(this.premises_resp.message, 'Response');
+            this.onLoadDrugShopStoreLocationDetails();
+            this.onLoadPremisesStoreLocationDetails();
+            this.wizard.model.navigationMode.goToStep(1);
+          } else {
+            this.toastr.error(this.premises_resp.message, 'Alert');
+          }
+        },
+        error => {
+          this.loading = false;
+        });
+  }
   onSavePremisesApplication() {
 
     const invalid = [];
@@ -921,6 +994,8 @@ export class SharedDrugshopsregistrationclassComponent {
 
           if (this.premises_resp.success) {
             this.toastr.success(this.premises_resp.message, 'Response');
+            this.onLoadDrugShopStoreLocationDetails();
+            this.onLoadPremisesStoreLocationDetails();
             this.wizard.model.navigationMode.goToStep(1);
           } else {
             this.toastr.error(this.premises_resp.message, 'Alert');
@@ -964,8 +1039,8 @@ export class SharedDrugshopsregistrationclassComponent {
  
   appDocumentsUploadRequirement
   //load premises personnel dms_repository_structure
-  onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+  onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {
@@ -1147,30 +1222,34 @@ export class SharedDrugshopsregistrationclassComponent {
     this.checkPremisesSubmission = e.value;
 
   }
+  // funcValidatePremBusinessDetails(nextStep) {
+
+  //   this.funcValidateStepDetails('Add Store Location', 'wb_drugshop_storelocation', nextStep);
+
+  // }
+  //   funcValidatePremStoreDetails(nextStep) {
+
+  //   this.funcValidateStepDetails('Add Premises Staff', 'wb_premises_staff', nextStep);
+
+  // }
+  // funcValidatePremPersonnelDetails(nextStep) {
+
+  //   this.funcValidateStepDetails('Add Premises Personnel', 'wb_premises_personnel', nextStep);
+
+  // }
+  //  funcValidatePremStaffDetails(nextStep) {
+
+  //   this.funcValidateStepDetails('Add Staff Details', 'wb_premises_staff', nextStep);
+
+  // }
+
+
+
+
   funcValidatePremBusinessDetails(nextStep) {
-
-    this.funcValidateStepDetails('Add Premises Directors', 'wb_premises_personnel', nextStep);
-
-  }
-    funcValidatePremStoreDetails(nextStep) {
-
-    this.funcValidateStepDetails('Add Premises Staff', 'wb_premises_staff', nextStep);
-
-  }
-  funcValidatePremPersonnelDetails(nextStep) {
-
-    this.funcValidateStepDetails('Add Premises Personnel', 'wb_premises_personnel', nextStep);
-
-  }
-   funcValidatePremStaffDetails(nextStep) {
-
-    this.funcValidateStepDetails('Add Staff Details', 'wb_premises_staff', nextStep);
-
-  }
-  funcValidateStepDetails(title_validate, table_name, nextStep) {
     //validate details 
     this.spinner.show();
-    this.appService.onValidatePremisesOtherdetails(this.premise_id, table_name,title_validate)
+    this.appService.onValidatePremisesOtherdetails(this.premise_id,this.sub_module_id)
       .subscribe(
         response => {
           if (response.success) {
@@ -1463,7 +1542,7 @@ export class SharedDrugshopsregistrationclassComponent {
   }
   funcDownloadUploadedDoc(){
 
-      let report_url = this.mis_url+'reports/printRequestForCAPAResponses?application_code='+this.application_code+"&module_id="+this.module_id+"&sub_module_id="+this.sub_module_id+"&premise_id="+this.premise_id+"&table_name=tra_premises_applications";
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+this.application_code+"&module_id="+this.module_id+"&sub_module_id="+this.sub_module_id+"&premise_id="+this.premise_id+"&table_name=tra_premises_applications";
       this.funcGenerateRrp(report_url,"print Query Letter");
     
     /*if(this.appuploaded_document_id >0){

@@ -34,15 +34,14 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
   @Input() product_id: number;
 
   @Input() drugsingredientsData: any;
+  @Input() drugscommonNamesData:any;
    @Input() drugsPackagingData: any;
    @Input() productManufacturersData: any;
    @Input() apiManufacturersData: any;
    @Input() productgmpInspectionData: any;
    @Input() tradergmpInspectionData: any;
    @Input() manufacturersSiteData: any;
-  
-   
-    
+   @Input () commonNamesData:any;
    @Input() productIngredientsdetailsfrm: FormGroup;
    @Input() productNutrientsdetailsfrm: FormGroup;
   
@@ -50,7 +49,6 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
   
    @Input() productmanufacturingSiteFrm: FormGroup;
    @Input() product_type_id: number;
-
   
    @Input()  manufacturingSiteFrm: FormGroup;
    @Input() prodgmpAddinspectionFrm: FormGroup;
@@ -64,6 +62,15 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
 
    @Input() product_origin_id: number;
 
+  otherStatesGmpInspections:boolean=false;
+  otherStatesGmpInspectionsFrm:FormGroup;
+
+  otherProdStatesRegistrationsFrm:FormGroup;
+  otherProdStatesRegistrations:boolean=false;
+recognisedassessmentsCountriesData:any;
+
+
+prodStatesRegistrationsData:any;
 
    addproductIngredientsModal:boolean = false;
    addIngredientsdetailsfrm:FormGroup;
@@ -104,7 +111,7 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
   ingredientTypeData:any;
   containerTypeData:any;
   tbisReadOnly:boolean;manufacturerFrm:FormGroup;
-  
+  otherStatesGmpInspectionsData:any;
   manufacturersData:any = {};
   manufacturer_type_id: number;
   manufacturer_id:number;
@@ -119,7 +126,33 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
       tablename: new FormControl('', Validators.compose([Validators.required]))
 
     });
-    
+      this.otherStatesGmpInspectionsFrm = new FormGroup({
+      application_code: new FormControl(this.application_code, Validators.compose([])),
+      recognisedassessments_ctrregion_id: new FormControl(1, Validators.compose([])),
+      country_id: new FormControl('', Validators.compose([Validators.required])),
+      gmpapplication_reference: new FormControl('', Validators.compose([Validators.required])),
+      inspection_date: new FormControl('', Validators.compose([Validators.required])),
+      approval_date: new FormControl('', Validators.compose([Validators.required])),
+      approving_authority: new FormControl('', Validators.compose([Validators.required])),
+      active_common_name_id: new FormControl('', Validators.compose([])),
+      approved_productlines: new FormControl('', Validators.compose([Validators.required])),
+      id: new FormControl('', Validators.compose([])),
+
+    });
+
+    this.otherProdStatesRegistrationsFrm = new FormGroup({
+      application_code: new FormControl(this.application_code, Validators.compose([])),
+      recognisedassessments_ctrregion_id: new FormControl(1, Validators.compose([])),
+      country_id: new FormControl('', Validators.compose([Validators.required])),
+      registration_ref: new FormControl('', Validators.compose([Validators.required])),
+      date_of_registration: new FormControl('', Validators.compose([Validators.required])),
+      current_registrationstatus: new FormControl('', Validators.compose([Validators.required])),
+      active_common_name_id: new FormControl('', Validators.compose([])),
+      approving_authority: new FormControl('', Validators.compose([Validators.required])),
+      id: new FormControl('', Validators.compose([])),
+
+    });
+
     this.onLoadSampleSubmissionData();
     this.onLoadActivePharmaceuticalData();
     this.onLoadpackagingUnitsData(this.section_id);
@@ -130,18 +163,18 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
       region_id: new FormControl('', Validators.compose([Validators.required])),
 
       district_id: new FormControl('', Validators.compose([])),
-
+      active_common_name_id: new FormControl('', Validators.compose([])),
       email_address: new FormControl('', Validators.compose([Validators.required])),
       postal_address: new FormControl('', Validators.compose([Validators.required])),
       telephone_no: new FormControl('', Validators.compose([Validators.required])),
       mobile_no: new FormControl('', Validators.compose([])),
-      physical_address: new FormControl('', Validators.compose([]))
+      physical_address: new FormControl('', Validators.compose([Validators.required]))
     });
     this.productapimanufacturingSiteFrm = new FormGroup({
       name: new FormControl('', Validators.compose([Validators.required])),
       physical_address: new FormControl('', Validators.compose([])),
       manufacturer_id: new FormControl('', Validators.compose([Validators.required])),
-
+      active_common_name_id: new FormControl('', Validators.compose([])),
       active_ingredient_id: new FormControl('', Validators.compose([Validators.required])),
 
     });
@@ -153,7 +186,7 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
       man_site_id: new FormControl('', Validators.compose([])),
       manufacturer_role_id: new FormControl('', Validators.compose([])),
       manufacturing_activities: new FormControl('', Validators.compose([])),
-      
+      active_common_name_id: new FormControl('', Validators.compose([])),
       has_beeninspected: new FormControl('', Validators.compose([Validators.required])),
       inspected_site_name: new FormControl('', Validators.compose([])),
       gmp_productline_id: new FormControl('', Validators.compose([])),
@@ -166,7 +199,7 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
       manufacturer_name: new FormControl('', Validators.compose([Validators.required])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
       gmp_productline_id: new FormControl('', Validators.compose([Validators.required])),
-      reg_site_id: new FormControl('', Validators.compose([Validators.required])),
+      reg_site_id: new FormControl('', Validators.compose([])),
       manufacturing_site_id: new FormControl('', Validators.compose([Validators.required]))
 
     }); this.addRegionDetailsFrm = new FormGroup({
@@ -197,15 +230,19 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
       manufacturer_id: new FormControl('', Validators.compose([])),
 
     });
+    this.onLoadpar_recognisedassessments_countriesData();
     this.autoLoadProductsOtherDetails(this.product_id);
     this.autoLoadedParameters(this.section_id);
     this.onLoadCountries();
   } autoLoadProductsOtherDetails(product_id) {
     this.OnLoadProductsIngredients(product_id);
+    this.OnLoadProductsCommonName(product_id);
     this.OnLoadProductsPackagingMaterials(product_id);
     this.OnLoadproductManufacturersData(product_id);
     this.OnLoadapiManufacturersData(product_id)
     this.OnLoadProductsGMPInspectionDetails(product_id)
+    this.OnLoadotherStatesGmpInspectionsData(this.product_id);
+    this.OnLoadprodStatesRegistrationsData(this.product_id);
 
   }onIngredientsSelectionChange($event) {
     if($event.selectedItem){
@@ -244,7 +281,21 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
           this.packagingUnitsData = data;
         });
   }
+  onLoadpar_recognisedassessments_countriesData() {
+    let data = {
+      table_name: 'par_countries'
+    };
+    this.config.onLoadConfigurationData(data)
 
+      .subscribe(
+        data => {
+          this.recognisedassessmentsCountriesData = data;
+        },
+        error => {
+          return false;
+        });
+  }
+  
   funcpopWidth(percentage_width) {
     return window.innerWidth * percentage_width/100;
   }
@@ -310,16 +361,25 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
       });
 
   }  
-  
+    OnLoadotherStatesGmpInspectionsData(product_id) {
+
+    this.appService.getProductsOtherDetails({ product_id: product_id }, 'getotherStatesGmpInspectionsData')
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.otherStatesGmpInspectionsData = data.data;
+        },
+        error => {
+          return false
+        });
+  }
   onLoadingredientsData(section_id) {
     var data = {
       table_name: 'par_ingredients_details',
-      section_id: section_id
     };
    
     var data = {
       table_name: 'par_ingredients_details',
-      section_id: section_id
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
@@ -420,7 +480,7 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
         data => {
           this.containerTypeData = data;
         });
-  }
+  } 
   autoLoadedParameters(section_id) {
    
     this.onLoadSiUnits(section_id);
@@ -519,14 +579,14 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
         });
   }
   onProdIngredientsPreparing(e) {
-    this.tbisReadOnly = this.isReadOnly;
+    //this.tbisReadOnly = this.isReadOnly;
     this.functDataGridToolbar(e, this.funcAddProductIngredients, 'Product Ingredients');
   }
   funcAddProductIngredients() {
     
     this.productIngredientsModal = true;
     this.productIngredientsdetailsfrm.reset();
-   // this.modalService.getModal('productIngredientsModal').open();
+    this.OnLoadProductsCommonName(this.product_id);
 
   }
   functDataGridToolbar(e, funcBtn, btn_title) {
@@ -551,6 +611,7 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
       });
       
   }
+
   refreshDataGrid() {
     this.dataGrid.instance.refresh();
   }
@@ -571,7 +632,7 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
     this.manufacturerFrm.reset();
     
   } onProdManufacturingPreparing(e) {
-    this.tbisReadOnly = false;
+    //this.tbisReadOnly = false;
     this.functDataGridToolbar(e, this.funcAddProductManufacturerDetails, 'Product Manufacturers');
 
   } funcAddProductManufacturerDetails(){
@@ -579,9 +640,39 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
     this.isproductmanSiteDetailsModalShow = true;
     this.onGetProductManufacturerDetails();
     this.productmanufacturingSiteFrm.reset();
+    this.OnLoadProductsCommonName(this.product_id);
+
+}
+  
+  funcEditOtherStatesRegistrations(data) {
+    this.otherProdStatesRegistrationsFrm.patchValue(data.data);
+    this.otherProdStatesRegistrations = true;
+  }
+  onOtherStatesGmpInspectionsPreparing(e) {
+    //this.isReadOnly = this.isReadOnly;
+    this.functDataGridToolbar(e, this.funcAddOtherStatesGmpInspections, 'Add Details(GMP Inspections');
+    this.OnLoadProductsCommonName(this.product_id);
+
+  }
+  funcAddOtherStatesGmpInspections() {
+    
+    this.otherStatesGmpInspections = true;
+    this.otherStatesGmpInspectionsFrm.reset();
+  }
+
+  onProdStatesRegistrationsPreparing(e) {
+    this.isReadOnly = this.isReadOnly;
+    this.functDataGridToolbar(e, this.funcAddProdStatesRegistrations, 'Product Registrations');
+  }
 
 
-}onGetProductManufacturerDetails() {
+  funcAddProdStatesRegistrations() {
+    
+    this.otherProdStatesRegistrations = true;
+    this.otherProdStatesRegistrationsFrm.reset();
+    this.OnLoadProductsCommonName(this.product_id);
+  }
+onGetProductManufacturerDetails() {
 
   let me = this;
   this.manufacturer_type_id = 1;
@@ -617,6 +708,7 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
 }funcAddAPIManufacturerDetails(){
   this.isapimanSiteDetailsModalShow = true;
   this.productapimanufacturingSiteFrm.reset();
+    this.OnLoadProductsCommonName(this.product_id);
 
 } onProdInspectionDetailsPreparing(e) {
   this.tbisReadOnly = false;
@@ -625,7 +717,8 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
    
   this.isgmpinspectionModalShow = true;
   this.loadAddProdGmpInspectionDetails();
-}loadAddProdGmpInspectionDetails() {
+}
+loadAddProdGmpInspectionDetails() {
   let me = this;
   this.tradergmpInspectionData.store = new CustomStore({
     load: function (loadOptions: any) {
@@ -639,7 +732,7 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
       
         this.configData = {
           headers: headers,
-          params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter,product_id:me.product_id, application_code:me.application_code}
+          params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter,product_id:me.product_id,manufacturer_id:me.manufacturer_id, application_code:me.application_code}
         };
         return me.httpClient.get(AppSettings.base_url + 'productregistration/getGmpInspectionsdetails',this.configData)
             .toPromise()
@@ -666,8 +759,9 @@ onSaveProductPackaging() {
         if (this.product_resp.success) {
           this.OnLoadProductsPackagingMaterials(this.product_id);
           this.modalService.getModal('productPackagingModal').close();
-
           this.toastr.success(this.product_resp.message, 'Response');
+          this.wizard.model.navigationMode.goToStep(1);
+
         } else {
           this.toastr.error(this.product_resp.message, 'Alert');
         }
@@ -678,7 +772,18 @@ onSaveProductPackaging() {
  
       });
 }
+  OnLoadprodStatesRegistrationsData(product_id) {
 
+    this.appService.getProductsOtherDetails({ product_id: product_id }, 'getprodStatesRegistrationsData')
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.prodStatesRegistrationsData = data.data;
+        },
+        error => {
+          return false
+        });
+  }
 
 
 
@@ -787,7 +892,9 @@ funcDeleteDetailhelper(record_id, appproduct_id, table_name, reload_type, title)
                     this.onLoadSampleSubmissionData(appproduct_id);
                   }else if (reload_type == 'product_active_substances') {
                     this.onLoadActivePharmaceuticalData(appproduct_id);
-                  }
+                  }else if (reload_type == 'otherstates_gmpinspection') {
+                      this.OnLoadotherStatesGmpInspectionsData(this.product_id);
+                    }
                   
                   this.spinner.hide();
                   this.toastr.success(resp.message, 'Response');
@@ -813,7 +920,8 @@ funcDeleteDetailhelper(record_id, appproduct_id, table_name, reload_type, title)
       }
     ]
   });
-} OnLoadProductsIngredients(product_id) {
+} 
+OnLoadProductsIngredients(product_id) {
 
   this.appService.getProductsOtherDetails({ product_id: product_id }, 'getProductsIngredients')
     //.pipe(first())
@@ -830,6 +938,31 @@ funcDeleteDetailhelper(record_id, appproduct_id, table_name, reload_type, title)
       error => {
         return false
       });
+}
+
+OnLoadProductsCommonName(product_id) {
+
+  this.appService.getProductsOtherDetails({ product_id: product_id }, 'getProductsCommonName')
+    //.pipe(first())
+    .subscribe(
+      data => {
+        if (data.success) {
+          this.drugscommonNamesData = data.data;
+        }
+        else {
+          this.toastr.success(data.message, 'Alert');
+        }
+
+      },
+      error => {
+        return false
+      });
+}
+onGenericNameSelected(event){
+  const selectedGenericNameId = event.value;
+  if (selectedGenericNameId) {
+    this.productGeneraldetailsfrm.get('active_common_name_id').setValue(selectedGenericNameId);
+  }
 }
 
 
@@ -858,7 +991,13 @@ OnLoadapiManufacturersData(product_id) {
       error => {
         return false
       });
-}OnLoadProductsGMPInspectionDetails(product_id) {
+}
+
+
+
+
+
+OnLoadProductsGMPInspectionDetails(product_id) {
 
   this.appService.getProductsOtherDetails({ product_id: product_id }, 'getProductsGMPInspectionDetails')
     //.pipe(first())
@@ -919,7 +1058,7 @@ onSearchProductManufacturerSite() {
     this.manufacturer_type_id = 1
     this.isproductManufactureringSiteModalShow = true;
     
-    this.funcAddManufactureringDetails();
+    this.onGetProductManufacturerDetails();
   }
   else{
     this.toastr.error('Select manufacturer details 1st before the Manufacturing Site', 'Alert');
@@ -989,6 +1128,7 @@ funcSelectManufacturer(data) {
   }
   else {
     this.productapimanufacturingSiteFrm.patchValue(data.data);
+    this.manufacturer_id = data.data.manufacturer_id;
     this.isapimanSiteDetailsModalShow = true;
 
   }
@@ -1017,7 +1157,27 @@ onLoadgmpProductLineData(manufacturing_site_id) {
       error => {
         return false
       });
-}
+}  
+onSaveotherProdStatesRegistrations() {
+    this.spinner.show();
+    this.appService.onSaveProductOtherDetails('wb_otherstates_productregistrations', this.otherProdStatesRegistrationsFrm.value, this.product_id)
+      .subscribe(
+        response => {
+          this.product_resp = response.json();
+          //the details 
+          if (this.product_resp.success) {
+            this.OnLoadprodStatesRegistrationsData(this.product_id);
+            this.otherProdStatesRegistrations = false;
+            this.toastr.success(this.product_resp.message, 'Response');
+          } else {
+            this.toastr.error(this.product_resp.message, 'Alert');
+          }
+          this.spinner.hide();
+        },
+        error => {
+          this.toastr.error('Error Occurred', 'Alert');
+        });
+  }
 onsaveProdManufacturingSite() {
   this.spinner.show();
   const invalid = [];
@@ -1104,7 +1264,26 @@ funcAddManufactureringSite() {
   }
 
 }
-
+  onSaveotherStatesGmpInspections() {
+    this.spinner.show();
+    this.appService.onSaveProductOtherDetails('wb_otherstates_productgmpinspections', this.otherStatesGmpInspectionsFrm.value, this.product_id)
+      .subscribe(
+        response => {
+          this.product_resp = response.json();
+          //the details 
+          if (this.product_resp.success) {
+            this.OnLoadotherStatesGmpInspectionsData(this.product_id);
+            this.otherStatesGmpInspections = false;
+            this.toastr.success(this.product_resp.message, 'Response');
+          } else {
+            this.toastr.error(this.product_resp.message, 'Alert');
+          }
+          this.spinner.hide();
+        },
+        error => {
+          this.toastr.error('Error Occurred', 'Alert');
+        });
+  }
 OnAddNewManufactureDistrictDetails(){
   let region_id = this.manufacturerFrm.get('region_id').value;
   
@@ -1236,6 +1415,7 @@ onSaveaddDistrictDetails(){
 onAddManufacturerDetails() {
   this.spinner.show();
   let manufacturer_name = this.manufacturerFrm.get('name').value;
+  let physical_address = this.manufacturingSiteFrm.get('physical_address').value;
   this.appService.onAddManufacturingSite('tra_manufacturers_information',  this.manufacturerFrm.value)
     .subscribe(
       response => {
@@ -1251,7 +1431,8 @@ onAddManufacturerDetails() {
             this.isproductmanSiteDetailsModalShow = true;
             this.productmanufacturingSiteFrm.get('manufacturer_id').setValue(manufacturer_id)
             this.productmanufacturingSiteFrm.get('manufacturer_name').setValue(manufacturer_name)
-           
+            this.productmanufacturingSiteFrm.get('physical_address').setValue(physical_address)
+
 
           }
           else {
@@ -1280,7 +1461,8 @@ onSearchInspectedManufacturingSites(){
   this.isgmpinspectionModalShow = true;
   this.loadAddProdGmpInspectionDetails();
 
-}funcSelectGmpInspection(data) {
+}
+funcSelectGmpInspection(data) {
   //gmp_site_id
   let gmp_data = data.data;
 

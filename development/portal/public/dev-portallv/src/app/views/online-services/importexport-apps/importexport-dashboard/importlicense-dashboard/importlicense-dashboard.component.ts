@@ -19,17 +19,13 @@ export class ImportlicenseDashboardComponent extends ImportexportDashboardCompon
   }
   onImportappsToolbarPreparing(e) {
     e.toolbarOptions.items.unshift({
-      location: 'before',
-      widget: 'dxButton',
-      options: {
-        text: 'Help & Guidelines',
-        type: 'normal', stylingMode: 'outlined',
-        icon: 'fa fa-question-circle',
-        width:150,
-        onClick: this.onClickSubModulehelpGuidelines.bind(this)
-
-      }
-    }, {
+        location: 'after',
+        widget: 'dxButton',
+        options: {
+          icon: 'refresh',
+          onClick: this.refreshDataGrid.bind(this)
+    }
+  },{
       location: 'before',
       widget: 'dxButton',
       options: {
@@ -52,6 +48,16 @@ export class ImportlicenseDashboardComponent extends ImportexportDashboardCompon
    // this.app_route = ['./online-services/importexportapp-sel'];
     //this.router.navigate(this.app_route);
   }
+
+  refreshDataGrid() {
+      this.reloadPermitApplicationsApplications({sub_module_id:this.sub_module_id});   
+  }
+
+
+
+
+
+
   /*
   funcRequestforLicenseApplication() {
     this.modalServ.openDialog(this.viewRef, {

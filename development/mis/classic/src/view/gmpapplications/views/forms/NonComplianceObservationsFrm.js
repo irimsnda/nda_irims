@@ -85,7 +85,7 @@ Ext.define('Admin.view.gmpapplications.views.forms.NonComplianceObservationsFrm'
         },
         {
             xtype: 'combo',
-            fieldLabel: 'EAC GMP Guidelines reference',
+            fieldLabel: 'GMP Guidelines reference',
             name: 'reference_id',
             forceSelection: true,
             queryMode: 'local',
@@ -109,7 +109,7 @@ Ext.define('Admin.view.gmpapplications.views.forms.NonComplianceObservationsFrm'
         },
         {
             xtype: 'combo',
-            fieldLabel: 'Application Section',
+            fieldLabel: 'Section',
             name: 'application_section_id',
             forceSelection: true,
             queryMode: 'local',
@@ -124,7 +124,8 @@ Ext.define('Admin.view.gmpapplications.views.forms.NonComplianceObservationsFrm'
                         proxy: {
                             url: 'commonparam/getCommonParamFromTable',
                             extraParams: {
-                                table_name: 'par_application_sections'
+                                //table_name: 'par_application_sections'
+                                table_name: 'par_gmp_assessment_categories'
                             }
                         }
                     },

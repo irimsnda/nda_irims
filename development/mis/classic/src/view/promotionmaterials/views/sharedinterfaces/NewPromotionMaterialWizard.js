@@ -145,28 +145,37 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.NewPromotionMat
                 xtype: 'promotionalappdetailsfrm',
                 autoScroll: true,collapsible: true,
                 title: 'Promotional Application Details'
-            },{
-                xtype: 'promLocalapplicantdetailsfrm',collapsible: true,
-                title: 'LOCAL TECHNICAL REPRESENTATIVE DETAILS'
-            }]
+            }
+            // ,
+            // {
+            //     xtype: 'promLocalapplicantdetailsfrm',collapsible: true,
+            //     title: 'LOCAL TECHNICAL REPRESENTATIVE DETAILS'
+            // }
+            ]
         },
         {
-            xtype: 'promotiommaterialproductgrid',
-            title: 'Product Particulars',
-            listeners: {
-                beforerender: {
-                    fn: 'setCustomPromotionMaterialGridsStore',
-                    config: {
-                       
-                        storeId:'promotionmaterialproductparticularstr',
-                        proxy: {
-                            url: 'promotionmaterials/getPromotionMaterialsProductParticular'
-                        }
-                    },
-                    isLoad: true
-                },
-            },
+            xtype: 'promotionsotherinformationpnl',
+            //title: 'Product Particulars',
         },
+        // {
+        //     xtype: 'promotiommaterialproductgrid',
+        //     title: 'Product Particulars',
+        //     listeners: {
+        //         beforerender: {
+        //             fn: 'setCustomPromotionMaterialGridsStore',
+        //             config: {
+                       
+        //                 storeId:'promotionmaterialproductparticularstr',
+        //                 proxy: {
+        //                     url: 'promotionmaterials/getPromotionMaterialsProductParticular'
+        //                 }
+        //             },
+        //             isLoad: true
+        //         },
+        //     },
+        // },
+
+
 		
 		
 		{
@@ -208,7 +217,7 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.NewPromotionMat
                     enableToggle: true,
                     iconAlign: 'top',
                     pressed: true, max_step: 4,
-                    text: 'Application Details(Applicant, Local technical Rep)',
+                    text: 'Application Details',
                     action: 'quickNav',wizard:'newpromotionmaterialwizard',
                     handler: 'quickNavigation'
                 },
@@ -241,7 +250,7 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.NewPromotionMat
                 }, 
 				{
                     step: 4,
-                    iconCls: 'fa fa-money',
+                    iconCls: 'fa fa-money-bill-wave',
                     enableToggle: true, max_step: 4,
                     text: 'Invoice & Payment Details',
                     action: 'quickNav',iconAlign: 'top',

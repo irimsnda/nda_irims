@@ -17,23 +17,58 @@ Ext.define('Admin.view.surveillance.views.forms.PmsProgramProductsFrm', {
             xtype: 'hiddenfield',
             name: 'program_id'
         },
-        
         {
+            xtype: 'hiddenfield',
+            name: '_token',
+            value: token
+         },
+
+           {
             xtype: 'tagfield',
-            fieldLabel: 'Select Product(Generic Name)',
-            margin: '0 20 20 0',
-            store: 'commonnamesstr',
+             fieldLabel: 'Select Product(Generic Name)',
             name: 'product_ids',
-            allowBlank: false,
+            allowBlank: true,
             forceSelection: true,
             filterPickList: true,
             encodeSubmitValue: true,
             growMax: 100,
+            multiSelect: true,
             queryMode: 'local',
             valueField: 'id',
             displayField: 'name',
+            listeners: {
+                afterrender: {
+                    fn: 'setParamCombosStore',
+                    config: {
+                        pageSize: 10000,
+                        proxy: {
+                            url: 'configurations/getConfigParamFromTable',
+                            extraParams: {
+                                table_name: 'par_common_names'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+            }
+        },
+        
+        // {
+        //     xtype: 'tagfield',1
+        //     fieldLabel: 'Select Product(Generic Name)',
+        //     margin: '0 20 20 0',
+        //     store: 'commonnamesstr',
+        //     name: 'product_ids',
+        //     allowBlank: false,
+        //     forceSelection: true,
+        //     filterPickList: true,
+        //     encodeSubmitValue: true,
+        //     growMax: 100,
+        //     queryMode: 'local',
+        //     valueField: 'id',
+        //     displayField: 'name',
             
-        }
+        // }
     ],
     buttons: [
         {

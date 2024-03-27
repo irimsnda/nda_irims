@@ -32,12 +32,230 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             xtype: 'hiddenfield',
             value: 'tra_product_information',
             name: 'table_name'
-        },{
+        },
+        // {
+        //     xtype:'fieldset',
+        //     columnWidth: 1,
+        //     title: 'Variation Request Initialization',
+        //     collapsible: true,
+        //     defaults: {
+        //         labelAlign: 'top',
+        //         allowBlank: true,
+        //         labelAlign: 'top',
+        //         margin: 5,
+        //         columnWidth: 0.33,
+        // },
+        // layout: 'column',
+        // items:[{
+        //     xtype: 'combo',
+        //     fieldLabel: 'Variation Categories',
+        //     columnWidth: 1,
+        //     name: 'variation_category_id',
+        //     valueField: 'id',
+        //     labelAlign: 'top',
+        //     displayField: 'name',
+        //     forceSelection: true,
+        //     allowBlank: true,
+        //     queryMode: 'local',
+        //     listeners: {
+        //         beforerender: {
+        //             fn: 'setConfigCombosStore',
+        //             config: {
+        //                 pageSize: 1000,
+        //                 storeId:'variationcategoriesdetailsstr', 
+        //                 proxy: {
+        //                     url: 'commonparam/getCommonParamFromTable',
+        //                     extraParams:{
+        //                         table_name: 'par_variation_categories'
+        //                     }
+        //                 }
+        //             },
+        //             isLoad: true
+        //         },  change: function (cmbo, newVal) {
+        //             var form = cmbo.up('form'),
+        //             variation_subcategorystr = form.down('combo[name=variation_subcategory_id]').getStore();
+        //             variation_subcategorystr.removeAll();
+        //             filters=JSON.stringify({variation_category_id: newVal});
+    
+        //             variation_subcategorystr.removeAll();
+        //             variation_subcategorystr.load({ params: { filters: filters} });
+                    
+        //         }
+        //     }
+        //     },{
+        //         xtype: 'combo',
+        //         columnWidth: 1,
+        //         fieldLabel: 'Variation Sub-Categories',
+        //         name: 'variation_subcategory_id',
+        //         valueField: 'id',
+        //         displayField: 'name',
+        //         forceSelection: true,
+        //         allowBlank: true,
+        //         labelAlign: 'top',
+        //         queryMode: 'local',
+        //         listeners: {
+        //             beforerender: {
+        //                 fn: 'setConfigCombosStore',
+        //                 config: {
+        //                     pageSize: 1000,
+                            
+        //                     storeId:'variationsubcategoriesstr', 
+        //                     proxy: {
+        //                         url: 'commonparam/getCommonParamFromTable',
+        //                         extraParams:{
+        //                             table_name: 'par_variation_subcategories'
+        //                         }
+        //                     }
+        //                 },
+        //                 isLoad: false
+        //             }, change: function (cmbo, newVal) {
+        //                 var form = cmbo.up('form'),
+        //                 variation_descriptionstr = form.down('combo[name=variation_description_id]').getStore();
+        //                 variation_descriptionstr.removeAll();
+        
+        //                 filters=JSON.stringify({variation_subcategory_id: newVal});
+        
+        //                 variation_descriptionstr.load({ params: { filters: filters} });
+        
+        //             }
+        //         }
+        //     }, {
+        //         xtype: 'combo',
+        //         columnWidth: 1,
+        //         fieldLabel: 'Variation Description',
+        //         name: 'variation_description_id',
+        //         valueField: 'id',
+        //         displayField: 'name',
+        //         forceSelection: true,
+        //         allowBlank: true,
+        //         labelAlign: 'top',
+        //         queryMode: 'local',
+        //         listeners: {
+        //             beforerender: {
+        //                 fn: 'setConfigCombosStore',
+        //                 config: {
+        //                     pageSize: 1000,
+        //                     storeId:'variationdescriptiondetailsstr', 
+        //                     proxy: {
+        //                         url: 'commonparam/getCommonParamFromTable',
+        //                         extraParams:{
+        //                             table_name: 'par_variation_description'
+        //                         }
+        //                     }
+        //                 },
+        //                 isLoad: false
+        //             }, change: function (cmbo, newVal) {
+        //                 var form = cmbo.up('form'),
+        //                 variation_subdescriptionstr = form.down('combo[name=variation_subdescription_id]').getStore();
+        //                 variation_subdescriptionstr.removeAll();
+        
+        //                 filters=JSON.stringify({variation_description_id: newVal});
+        //                 variation_subdescriptionstr.load({ params: { filters: filters} });
+
+        //                 var variation_description_id=form.down('combo[name=variation_description_id]').getValue(),
+        //                 variation_subcategory_id=form.down('combo[name=variation_subcategory_id]').getValue(),
+        //                 variation_category_id=form.down('combo[name=variation_category_id]').getValue(),
+        //                 variation_reportingtypestr = form.down('combo[name=variation_reportingtype_id]').getStore();
+        //                 variation_reportingtypestr.removeAll();
+        
+        //                 filters=JSON.stringify({variation_subcategory_id: variation_subcategory_id,
+        //                     variation_category_id: variation_category_id,variation_description_id: newVal});
+        
+        //                 variation_reportingtypestr.load({ params: { filters: filters} });
+
+        //             }
+        //         }
+        //     },
+
+        //     {
+        //         xtype: 'combo',
+        //         columnWidth: 1,
+        //         fieldLabel: 'Variation Sub-Description',
+        //         name: 'variation_subdescription_id',
+        //         valueField: 'id',
+        //         displayField: 'name',
+        //         forceSelection: true,
+        //         allowBlank: true,
+        //         labelAlign: 'top',
+        //         queryMode: 'local',
+        //         listeners: {
+        //             beforerender: {
+        //                 fn: 'setConfigCombosStore',
+        //                 config: {
+        //                     pageSize: 1000,
+        //                     storeId:'variationsubdescriptiondetailsstr', 
+        //                     proxy: {
+        //                         url: 'commonparam/getCommonParamFromTable',
+        //                         extraParams:{
+        //                             table_name: 'par_variation_subdescription'
+        //                         }
+        //                     }
+        //                 },
+        //                 isLoad: false
+        //             }, change: function (cmbo, newVal) {
+        //                 var form = cmbo.up('form'),
+        //                 variation_description_id=form.down('combo[name=variation_description_id]').getValue(),
+        //                 variation_subcategory_id=form.down('combo[name=variation_subcategory_id]').getValue(),
+        //                 variation_category_id=form.down('combo[name=variation_category_id]').getValue(),
+        //                 variation_reportingtypestr = form.down('combo[name=variation_reportingtype_id]').getStore();
+        //                 variation_reportingtypestr.removeAll();
+        
+        //                 filters=JSON.stringify({variation_subdescription_id: newVal,variation_subcategory_id: variation_subcategory_id,
+        //                     variation_category_id: variation_category_id,variation_description_id: variation_description_id});
+        
+        //                 variation_reportingtypestr.load({ params: { filters: filters} });
+        //              }
+        //         }
+        //     },{
+        //     xtype: 'combo',
+        //     columnWidth: 1,
+        //     fieldLabel: 'Variation Category/Type',
+        //     name: 'variation_reportingtype_id',
+        //     valueField: 'id',
+        //     displayField: 'name',
+        //     forceSelection: true,
+        //     allowBlank: true,
+        //     queryMode: 'local',
+        //     listeners: {
+        //         beforerender: {
+        //             fn: 'setConfigCombosStore',
+        //             config: {
+        //                 pageSize: 1000,
+        //                 proxy: {
+        //                     url: 'commonparam/getCommonParamFromTable',
+        //                     extraParams:{
+        //                         table_name: 'par_variation_reportingtypes'
+        //                     }
+        //                 }
+        //             },
+        //             isLoad: false
+        //         }
+        //     }
+        //    }]
+        //  },
+         {
+            xtype:'fieldset',
+            columnWidth: 1,
+            title: 'Product particulars',
+            collapsible: true,
+            defaults: {
+                labelAlign: 'top',
+                allowBlank: false,
+                labelAlign: 'top',
+                margin: 5,
+                xtype: 'textfield',
+                allowBlank: false,
+                columnWidth: 0.33,
+            },
+            layout: 'column',
+            items:[
+            {
             xtype: 'combo',
             fieldLabel: 'Assessment Procedure',
             name: 'assessment_procedure_id',
             forceSelection: true,
             queryMode: 'local',
+            allowBlank:true,
             valueField: 'id',labelWidth: 110,
             displayField: 'name',
             listeners: {
@@ -164,6 +382,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
         }, {
             xtype: 'textfield',
             name: 'therapeutic_group',
+            allowBlank:true,
             fieldLabel: 'Pharmacotherapeutic group', bind: {
                 readOnly: '{isReadOnly}'  // negated
             }
@@ -181,6 +400,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             xtype: 'combo',
             fieldLabel: '<br> ATC Code',
             name: 'atc_code_id',
+            allowBlank:true,
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
@@ -210,6 +430,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             fieldLabel:'If no ATC code has been assigned, please indicate if an application for ATC code has been made',
             name:'has_atc_application',
             valueField:'id',
+            hidden:true,
             displayField: 'name',
             listeners: {
                 afterrender: {
@@ -245,6 +466,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             fieldLabel: 'Classification',
             name: 'classification_id',
             forceSelection: true,
+            allowBlank:true,
             queryMode: 'local',
             valueField: 'id',
             displayField: 'name',
@@ -375,6 +597,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             encodeSubmitValue: true,
             emptyText: 'Select Administration',
             growMax: 100,
+            multiSelect: true,
             queryMode: 'local',
             valueField: 'id',
             displayField: 'name',
@@ -395,7 +618,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             }, bind: {
                 readOnly: '{isReadOnly}'  // negated
             }
-        }, {
+        },{
             xtype: 'tagfield',
             fieldLabel: 'Target Species(Vet)',
             name: 'target_species_id',
@@ -486,5 +709,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
                 readOnly: '{isReadOnly}'  // negated
             }
         }
+        ]
+      }
     ]
 });

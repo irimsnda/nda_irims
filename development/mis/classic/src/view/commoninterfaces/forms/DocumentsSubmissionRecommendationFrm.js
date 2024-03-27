@@ -68,8 +68,9 @@ Ext.define('Admin.view.commoninterfaces.views.forms.common_forms.DocumentsSubmis
             ui: 'soft-purple',
             iconCls: 'x-fa fa-save',
             formBind: true,
-            name:'btn_remarks',
-            handler: 'savesamplesubmissionremarks'
+            name:'btn_remarks'
+           // ,
+            //handler: 'savesamplesubmissionremarks'
         },
         {
             xtype: 'button',

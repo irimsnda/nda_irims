@@ -134,8 +134,14 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.N
             xtype: 'drugsProductsDetailsPnl'
 
         },{
-            xtype: 'drugqualityreportpnl'
-           
+            xtype: 'tabpanel',
+            items: [{
+                xtype: 'productqualityassessmentDocUploadsGrid',
+                title: 'Quality Summary Report Submission'
+            },{
+                xtype: 'productbioequivalencetrialinformationDocUploadsGrid',
+                title: 'Bioequivalence Trial Information'
+            }]
         }, {
             xtype: 'tabpanel',
             items: [{

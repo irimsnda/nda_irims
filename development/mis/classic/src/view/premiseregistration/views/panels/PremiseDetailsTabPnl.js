@@ -21,17 +21,18 @@ Ext.define('Admin.view.premiseregistration.views.panels.PremiseDetailsTabPnl', {
         },
         {
             title: 'Directors Details',
+            itemId:'premisedirectorsdetailsgrid',
             xtype: 'premisedirectorsdetailsgrid'
         },
         {
             title: 'Staff Details',
+            itemId:'premisepersonneldetailsgrid',
             xtype: 'premisepersonneldetailsgrid'//'premisepersonneldetailsgrid'
         },
          {
             title: 'Particulars of Nearest Pharmancy',
             xtype: 'premisenearestpremisegrid'
         },
-
         {
             title: 'Premises Main Activities/Product Information',
             hidden: true,

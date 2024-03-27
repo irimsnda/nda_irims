@@ -25,7 +25,11 @@ Ext.define('Admin.view.surveillance.views.forms.PmsProgramImplementationFrm', {
         }, {
             xtype: 'hiddenfield',
             name: 'program_id'
-        },
+        },{
+            xtype: 'hiddenfield',
+            name: '_token',
+            value: token
+         },
         {
             xtype: 'textfield',
             fieldLabel: 'Name of Program Plan Implementation',

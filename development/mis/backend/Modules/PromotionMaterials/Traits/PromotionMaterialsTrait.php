@@ -58,9 +58,11 @@ trait PromotionMaterialsTrait
                 $comment = $request->input('comment');
                 $approved_by = $request->input('approved_by');
                 $approval_date = $request->input('approval_date');
-                $expiry_date = $request->input('expiry_date');
                 $dg_signatory = $request->input('dg_signatory');
                 $signatory = $request->input('permit_signatory');
+                $sub_module_id = $app_details->sub_module_id;
+                $module_id = $app_details->module_id;
+                $section_id = $app_details->section_id;
 				
                 $user_id = $this->user_id;
                 if ($dg_signatory == 1) {
@@ -68,8 +70,12 @@ trait PromotionMaterialsTrait
                 } else {
                     $permit_signatory = $signatory;
                 }
+
+                 $expiry_date = getApplicationExpiryDate($approval_date,$sub_module_id,$module_id,$section_id);
+
                 $params = array(
                     'application_id' => $application_id,
+                    'module_id' => $module_id,
                     'application_code' => $application_code,
                     'workflow_stage_id' => $workflow_stage_id,
                     'decision_id' => $decision_id,
@@ -80,6 +86,7 @@ trait PromotionMaterialsTrait
                     'dg_signatory' => $dg_signatory,
                     'permit_signatory' => $permit_signatory
                 );
+
                 $UpdateParams['permit_issue_date'] = $approval_date;
                 if (isset($id) && $id != '') {
                     //update
@@ -106,9 +113,12 @@ trait PromotionMaterialsTrait
                         $validity_status_id = 2;
                         $registration_status_id = 2;
                         $qry->update(array('application_status_id' => 6));
-                        //permit
+                       
+
+                        $ref_id = getSingleRecordColValue('tra_submodule_referenceformats', array('sub_module_id' => $sub_module_id, 'module_id' => $module_id, 'reference_type_id' =>2), 'reference_format_id');
+
                         if ($prev_decision_id != 1) {
-                            $permit_no = generatePremisePermitNo($app_details->zone_id, $app_details->section_id, $table_name, $user_id, 5);
+                            $permit_no = generatePremisePermitNo('', $app_details->section_id, $table_name, $user_id, $ref_id,$sub_module_id );
                             $params['permit_no'] = $permit_no;
                         }
                     } else {

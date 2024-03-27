@@ -8,7 +8,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalComparatorProductsGrid'
     autoScroll: true,
     autoHeight: true,
     width: '100%',
-    table_name: 'clinical_comparatorproducts',
+    table_name: 'tra_clinical_comparatorproducts',
     viewConfig: {
         deferEmptyText: false,
         emptyText: 'Nothing to display',
@@ -25,11 +25,12 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalComparatorProductsGrid'
             text: 'Add Product',
             iconCls: 'x-fa fa-plus',
             ui: 'soft-green',
+            hidden:true,
             name: 'add_impproduct',
-            table_name: 'clinical_comparatorproducts',
-            winTitle: 'IMP Product',
+            table_name: 'tra_clinical_comparatorproducts',
+            winTitle: 'Comparator Products',
             winWidth: '90%',
-            childXtype: 'clinicalcomparatorproductsfrm'
+            childXtype: 'comparatorproductspnl'
         },
         {
             xtype: 'hiddenfield',
@@ -64,7 +65,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalComparatorProductsGrid'
                 pageSize: 10000,
                 storeId: 'comparatorproductsstr',
                 proxy: {
-                    url: 'clinicaltrial/getImpProducts'
+                    url: 'clinicaltrial/getComparatorProducts'
                 }
             },
             isLoad: true
@@ -88,16 +89,18 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalComparatorProductsGrid'
                     handler: 'showImpProductDetails',
                     winTitle: 'Comparator Product',
                     winWidth: '90%',
-                    table_name: 'clinical_comparatorproducts',
+                     hidden:true,
+                    table_name: 'tra_clinical_comparatorproducts',
                     childXtype: 'clinicalcomparatorproductsfrm'
                 }, {
                     text: 'Delete',
                     iconCls: 'x-fa fa-trash',
                     tooltip: 'Delete Record',
-                    table_name: 'clinical_comparatorproducts',
+                    table_name: 'tra_clinical_comparatorproducts',
                     storeID: 'comparatorproductsstr',
                     action_url: 'clinicaltrial/deleteClinicalTrialRecord',
                     action: 'actual_delete',
+                     hidden:true,
                     handler: 'doDeleteClinicalTrialWidgetParam',
                     hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
                 }

@@ -219,7 +219,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpApprovalsGrid', {
                         action: 'edit',
                         childXtype: '',
                         winTitle: 'Application Documents',
-                        winWidth: '40%',
+                        winWidth: '80%',
                         isReadOnly: 1,
                         document_type_id: '',
                         handler: 'showPreviousUploadedDocs'
@@ -235,6 +235,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpApprovalsGrid', {
                         iconCls: 'x-fa fa-check',
                         ui: 'soft-green',
                         storeID: 'gmpapprovalsstr',
+                        hidden:true,
                         table_name: 'tra_gmp_applications',
                         action: 'process_returnsubmission_btn',
                         winWidth: '50%',

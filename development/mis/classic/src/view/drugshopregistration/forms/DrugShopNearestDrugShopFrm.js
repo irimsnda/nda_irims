@@ -4,6 +4,7 @@
 Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopNearestDrugShopFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'drugshopnearestdrugshopFrm',
+    itemId: 'drugshopnearestdrugshopfrm',
     scrollable:'true',
     controller: 'premiseregistrationvctr',
     layout: {
@@ -38,6 +39,9 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopNearestDrugShopF
             xtype: 'hiddenfield',
             name: 'premise_id'
         },{
+            xtype: 'hiddenfield',
+            name: 'main_premise_id'
+        },{
         xtype: 'hiddenfield',
         name: 'is_local',
         value: 1
@@ -56,11 +60,41 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopNearestDrugShopF
             name: 'table_name',
             value: 'tra_drugshop_storelocation'
         },
-         {
-            xtype: 'textfield',
-            name: 'name', 
-             fieldLabel: 'DrugShop Name',
-        },
+        //  {
+        //     xtype: 'textfield',
+        //     name: 'name', 
+        //      fieldLabel: 'DrugShop Name',
+        // },
+
+          {
+            xtype: 'fieldcontainer',
+            layout: 'column',
+            defaults: {
+                    labelAlign: 'top'
+            },
+            items: [
+                {
+                    xtype: 'textfield',
+                    name: 'name',
+                    columnWidth: 0.9,
+                    readOnly:true,
+                    allowBlank: false,
+                    fieldLabel: 'DrugShop Name'
+            },
+             {
+                    xtype: 'button',
+                    iconCls: 'x-fa fa-search',
+                    disabled: false,
+                    columnWidth: 0.1,
+                    tooltip: 'Search',
+                    action: 'search_premise',
+                    childXtype: 'newdrugshopselectiongrid',
+                    winTitle: 'Premises Selection List',
+                    winWidth: '90%',
+                    margin: '30 0 0 0'
+                 }
+            ]
+         },
         
         {
             xtype: 'textfield',
@@ -96,37 +130,6 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopNearestDrugShopF
                     },
                     change: function (cmbo, newVal) {
                         var form = cmbo.up('form'),
-                            regionStore = form.down('combo[name=region_id]').getStore(),
-                            filterObj = {country_id: newVal},
-                            filterStr = JSON.stringify(filterObj);
-                        regionStore.removeAll();
-                        regionStore.load({params: {filter: filterStr}});
-                    }
-                }
-            },
-            {
-                xtype: 'combo',
-                fieldLabel: 'Region',
-                name: 'region_id',
-                //store: 'regionsstr',
-                allowBlank:true,
-                forceSelection: true,
-                queryMode: 'local',
-                valueField: 'id',
-                displayField: 'name',
-                listeners: {
-                    beforerender: {
-                        fn: 'setParamCombosStore',
-                        config: {
-                            pageSize: 10000,
-                            proxy: {
-                                url: 'parameters/region'
-                            }
-                        },
-                        isLoad: false
-                    },
-                    change: function (cmbo, newVal) {
-                        var form = cmbo.up('form'),
                             districtStore = form.down('combo[name=district_id]').getStore(),
                             filterObj = {region_id: newVal},
                             filterStr = JSON.stringify(filterObj);
@@ -135,90 +138,250 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopNearestDrugShopF
                     }
                 }
             },
-            {
+           {
                 xtype: 'combo',
-                fieldLabel: 'District',
+                fieldLabel: 'district',
                 name: 'district_id',
-                //store: 'districtsstr',
+                //store: 'regionsstr',
+                readOnly:false,
+                allowBlank:false,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
                 displayField: 'name',
                 listeners: {
-                    beforerender: {
-                        fn: 'setParamCombosStore',
-                        config: {
-                            pageSize: 10000,
-                            proxy: {
-                                url: 'parameters/district'
-                            }
-                        },
-                        isLoad: false
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_premise_districts'
+                                }
+                               }
+                            },
+                                isLoad: false
                     },
                     change: function (cmbo, newVal) {
                         var form = cmbo.up('form'),
-                            districtStore = form.down('combo[name=county_id]').getStore(),
-                            filterObj = {region_id: newVal},
-                            filterStr = JSON.stringify(filterObj);
-                        districtStore.removeAll();
-                        districtStore.load({params: {filter: filterStr}});
+                        regionStore = form.down('combo[name=region_id]').getStore(),
+                        countyStore = form.down('combo[name=county_id]').getStore(),
+                        filterObj = {district_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        regionStore.removeAll();
+                        regionStore.load({params: {filters: filterStr}});
+                        countyStore.removeAll();
+                        countyStore.load({params: {filters: filterStr}});
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
                     }
                 }
-            }, 
+            },
 
-            {
+             {
+                xtype: 'combo',
+                fieldLabel: 'Region',
+                name: 'region_id',
+                //store: 'regionsstr',
+                readOnly:false,
+                allowBlank:false,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_premise_regions'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+            },
+
+             {
                 xtype: 'combo',
                 fieldLabel: 'County/Division',
                 name: 'county_id',
-                allowBlank: true,
-                hidden:true,
+                readOnly:false,
+                allowBlank:false,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
                 displayField: 'name',
                 listeners: {
-                    beforerender: {
-                        fn: 'setParamCombosStore',
-                        config: {
-                            pageSize: 10000,
-                            proxy: {
-                                url: 'parameters/county'
-                            }
-                        },
-                        isLoad: false
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_county'
+                                }
+                               }
+                            },
+                         isLoad: false
                     },
                     change: function (cmbo, newVal) {
                         var form = cmbo.up('form'),
-                            districtStore = form.down('combo[name=sub_county_id]').getStore(),
-                            filterObj = {region_id: newVal},
-                            filterStr = JSON.stringify(filterObj);
-                        districtStore.removeAll();
-                        districtStore.load({params: {filter: filterStr}});
+                        subCountyStore = form.down('combo[name=sub_county_id]').getStore(),
+                        filterObj = {county_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        subCountyStore.removeAll();
+                        subCountyStore.load({params: {filters: filterStr}});
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+            },
+
+            {
+                xtype: 'combo',
+                fieldLabel: 'Sub County',
+                name: 'sub_county_id',
+                readOnly:false,
+                allowBlank:true,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_sub_county'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    },
+                    change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        parishStore = form.down('combo[name=parish_id]').getStore(),
+                        filterObj = {sub_county_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        parishStore.removeAll();
+                        parishStore.load({params: {filters: filterStr}});
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
                     }
                 }
             },
             {
                 xtype: 'combo',
-                fieldLabel: 'Sub County',
-                name: 'sub_county_id',
-                allowBlank: true,
-                 hidden:true,
+                fieldLabel: 'Parish',
+                name: 'parish_id',
+                readOnly:false,
+                allowBlank:true,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
                 displayField: 'name',
                 listeners: {
-                    beforerender: {
-                        fn: 'setParamCombosStore',
-                        config: {
-                            pageSize: 10000,
-                            proxy: {
-                                url: 'parameters/subcounty'
-                            }
-                        },
-                        isLoad: true
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_parishes'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    },
+                     change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        villageStore = form.down('combo[name=village_id]').getStore(),
+                        filterObj = {parish_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        villageStore.removeAll();
+                        villageStore.load({params: {filters: filterStr}});
                     }
-                  
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+            },
+
+
+             {
+                xtype: 'combo',
+                fieldLabel: 'Village',
+                name: 'village_id',
+                readOnly:false,
+                allowBlank:true,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_villages'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
                 }
             },
     

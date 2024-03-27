@@ -17,12 +17,16 @@
         "laravel/passport": "^11.8",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
+        "maatwebsite/excel": "^3.1",
         "mpdf/mpdf": "^8.1",
         "noprotocol/php-mysql-aes-crypt": "^2.0",
         "nwidart/laravel-modules": "^10.0",
         "phpoffice/phpspreadsheet": "^1.24",
         "pion/laravel-chunk-upload": "^1.5",
         "setasign/fpdi": "^2.3",
+        "symfony/http-client": "^6.3",
+        "symfony/mailgun-mailer": "^6.3",
+        "symfony/postmark-mailer": "^6.3",
         "zanysoft/laravel-zip": "^1.0"
     },
     "require-dev": {

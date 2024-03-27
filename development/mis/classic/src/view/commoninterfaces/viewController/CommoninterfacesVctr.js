@@ -34,7 +34,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
 
       AddCaseDecision: function (argument) {
         var form = Ext.widget('casedecisionFrm');
-        funcShowCustomizableWindow('Investigation Decisions', '50%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Investigation Decisions', '50%', form, 'customizablewindow');
     },
     showAddApplicationCapaForm: function (btn) {
         var childXtype = btn.childXtype,
@@ -59,7 +59,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
         form.setHeight(height);
        
 
-        funcShowCustomizableWindow(win_title, "90%", form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(win_title, "90%", form, 'customizablewindow');
     },
     showPaymentReceiptsWin: function(item){
         var btn = item.up('button'),
@@ -174,7 +174,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
             form.down('hiddenfield[name=application_code]').setValue(application_code);
             form.setHeight(height);
 
-        funcShowCustomizableWindow('GCP Inspection Non-Conformance Observation(s)', winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('GCP Inspection Non-Conformance Observation(s)', winWidth, form, 'customizablewindow');
     },
 
     showAddApplicationUnstrcuturedQueryForm: function (btn) {
@@ -194,7 +194,28 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
             form.setHeight(height);
            // grid.hide();
            // win.add(form);
-           funcShowCustomizableWindow('Query', "60%", form, 'customizablewindow');
+           funcShowOnlineCustomizableWindow('Query', "60%", form, 'customizablewindow');
+    },
+
+
+    showAddApplicationInternalQueryForm: function (btn) {
+        var form = Ext.widget('applicationinternalqueriesfrm'),
+            grid = btn.up('grid'),
+            height = grid.getHeight(),
+            module_id = grid.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = grid.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = grid.down('hiddenfield[name=section_id]').getValue(),
+            application_code = grid.down('hiddenfield[name=application_code]').getValue(),
+            win = grid.up('window');
+            form.down('hiddenfield[name=module_id]').setValue(module_id);
+            form.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+            form.down('hiddenfield[name=section_id]').setValue(section_id);
+
+            form.down('hiddenfield[name=application_code]').setValue(application_code);
+            form.setHeight(height);
+           // grid.hide();
+           // win.add(form);
+           funcShowOnlineCustomizableWindow('Query', "90%", form, 'customizablewindow');
     },
 
     funcAddquerychecklistitems: function (btn) {
@@ -212,7 +233,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
         form.down('hiddenfield[name=module_id]').setValue(module_id);
         form.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
         form.down('hiddenfield[name=section_id]').setValue(section_id);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
 
     },
 
@@ -283,6 +304,63 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
         }
 
     },
+
+
+     saveInternalApplicationQuery: function (btn) {
+        var me = this,
+            form = btn.up('form'),
+            is_structured = form.down('hiddenfield[name=is_structured]').getValue(),
+            application_code = form.down('hiddenfield[name=application_code]').getValue(),
+            query_id = form.down('hiddenfield[name=query_id]').getValue();
+            reload_base = btn.reload_base,
+            action_url = btn.action_url;
+            win = form.up('window');
+            frm = form.getForm();
+
+        if (frm.isValid()) {
+            frm.submit({
+                url: action_url,
+                waitMsg: 'Please wait...',
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (fm, action) {
+                    var response = Ext.decode(action.response.responseText),
+                        success = response.success,
+                        message = response.message;
+                    if (success == true || success === true) {
+                        toastr.success(message, "Success Response");
+                        
+                        if(Ext.getStore('checklistitemsqueriesstr')){
+                            store = Ext.getStore('checklistitemsqueriesstr');
+                            win.close();
+                            store.removeAll();
+                            store.load({params: {application_code: application_code,query_id:query_id,is_structured:is_structured}});
+
+                        }
+                        if(Ext.getStore('applicationinternalqueriesstr')){
+                            store = Ext.getStore('applicationinternalqueriesstr');
+                            win.close();
+                            store.removeAll();
+                            store.load({params: {application_code: application_code,query_id:query_id,is_structured:is_structured}});
+
+                        }
+                        //check the other store 
+
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (fm, action) {
+                    var resp = action.result;
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        }
+
+    },
+
+
     backToApplicationQueriesGrid: function (btn) {
         var form = btn.up('form'),
             win = form.up('window'),
@@ -449,7 +527,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
     },
      AddInvestigationComment: function (argument) {
         var form = Ext.widget('investigationcommentsFrm');
-        funcShowCustomizableWindow('Investigation comments', '50%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Investigation comments', '50%', form, 'customizablewindow');
     },
     doSavePrecheckingecommendationDetails: function (btn) {
         var me = this,
@@ -538,7 +616,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
             me.fireEvent('refreshStores', storeArray);
         }
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     },
 
     doDeleteCommonParamWidgetParam: function (item) {
@@ -561,8 +639,16 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
         this.fireEvent('showDocUploadWin', btn, process_id, workflow_stage, application_code);
     },
 
-    updateApplicationDocUploadWin: function (item) {
+    showApplicationDocUploadWin: function (btn) {
+        var mainTabPnl = btn.up('#contentPanel'),
+            container = mainTabPnl.getActiveTab(),
+            process_id = container.down('hiddenfield[name=process_id]').getValue(),
+            workflow_stage = container.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            application_code = container.down('hiddenfield[name=active_application_code]').getValue();
+        this.fireEvent('showDocUploadWin', btn, process_id, workflow_stage, application_code);
+    },
 
+    updateApplicationDocUploadWin: function (item) {
         var me = this,
             btn = item.up('button'),
             mainTabPnl = item.up('#contentPanel'),
@@ -571,7 +657,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
             childXtype = item.childXtype,
             winTitle = item.winTitle,
             winWidth = item.winWidth,
-            grid = btn.up('treepanel'),
+            grid = btn.up('grid'),
             table_name = grid.table_name,
             upload_tab = grid.upload_tab,
             application_code = record.get('application_code'),
@@ -580,10 +666,6 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             form = Ext.widget(childXtype);
-            if(application_code <1){
-                toastr.error('Missing document to update, Click on the Upload Button and Proceed', 'Failure Response');
-                return;
-            }
         form.loadRecord(record);
         funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
         var store = Ext.getStore('document_requirementsStr');
@@ -596,7 +678,6 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
                 workflow_stage: workflow_stage_id
             }
         });
-       
         var document_requirement_id = form.down('combo[name=document_requirement_id]');
         doctype_id.setValue(document_type_id);
         document_requirement_id.setValue(document_requirement);
@@ -604,7 +685,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
         document_requirement_id.setReadOnly(true)
     },
 
-     previewPreviousUploadedDocument: function (item) {
+    previewPreviousUploadedDocument: function (item) {
         var me = this,
             btn = item.up('button'),
             storeId = item.storeId,
@@ -622,9 +703,9 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
         store.load({params: {document_upload_id: record_id, table_name: table_name}});
     },
 
+    
 
-
-     onDeleteApplicationDocument: function (item) {
+    onDeleteApplicationDocument: function (item) {
         var btn = item.up('button'),
             download = item.download,
 
@@ -690,13 +771,17 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
             record = btn.getWidgetRecord(),
             grid = btn.up('grid'),
             store = grid.store,
-            table_name = grid.down('hiddenfield[name=table_name]').getValue(),
-            document_type_id = grid.down('hiddenfield[name=document_type_id]').getValue(),
-            reference_record_id = grid.down('hiddenfield[name=reference_record_id]').getValue(),
+            table_name = grid.table_name,
+            document_type_id = grid.document_type_id,
             node_ref = record.get('node_ref'),
+            reference_record_id= record.get('reference_record_id'),
             record_id = record.get('id'),
             application_code = record.get('application_code');
-        //get the document path
+
+           if(!table_name){
+              table_name=grid.down('hiddenfield[name=table_name]').getValue();
+           }
+        //get the document path 
         Ext.getBody().mask('Deleting Uploaded Document..');
 
         Ext.Ajax.request({
@@ -705,9 +790,8 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
             params: {
                 node_ref: node_ref,
                 record_id: record_id,
-                table_name: table_name,
                 reference_record_id:reference_record_id,
-                _token:token
+                table_name: table_name
             },
             headers: {
                 'Authorization': 'Bearer ' + access_token,
@@ -1061,7 +1145,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
         var child = Ext.widget(childXtype);
         child.setHeight(450)
         child.down('hiddenfield[name=labreference_no]').setValue(laboratoryreference_no);
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
 
 
     }, printSampleTestRequestReview: function (item) {
@@ -1166,7 +1250,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
             child = Ext.widget(childXtype),
             winTitle = btn.winTitle,
             winWidth = btn.winWidth;
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
     },
     //
     navigateSampleTestRequest: function (button, wizardPanel, direction) {
@@ -1266,7 +1350,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
             saveBtn = childObject.down('button[name=save_details]');
         childObject.down('hiddenfield[name=manufacturing_site_id]').setValue(manufacturing_site_id);
         childObject.down('hiddenfield[name=reg_site_id]').setValue(reg_site_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
         childObject.getStore().load();
         saveBtn.handler = function () {
             me.saveGmpProductDetails(saveBtn, win);
@@ -1314,9 +1398,10 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
                     success = resp.success,
                     message = resp.message;
                 if (success == true || success === true) {
+                    Ext.getStore('gmpproductslinkagedetailsstr').removeAll();
+                    Ext.getStore('gmpproductslinkagedetailsstr').load();
                     win.close();
                     parent_win.close();
-                    Ext.getStore('gmpproductslinkagedetailsstr').load();
                     toastr.success(message, 'Success Response');
                 } else {
                     toastr.error(message, 'Failure Response');
@@ -1359,7 +1444,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
             form.setHeight(height);
             //grid.hide();
             //win.add(form);
-            funcShowCustomizableWindow(win_title, "80%", form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(win_title, "80%", form, 'customizablewindow');
     },
 
     showQueryPrevResponses: function (item) {
@@ -1377,7 +1462,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
             grid = Ext.widget('prevqueryresponsesgrid');
         grid.down('hiddenfield[name=query_id]').setValue(query_id);
         grid.down('displayfield[name=query_desc]').setValue(query);
-        funcShowCustomizableWindow('Query Responses', width, grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Query Responses', width, grid, 'customizablewindow');
     },checkSavedQuery: function(me){
         var pnl = me.up('panel'),
             query_id = pnl.down('hiddenfield[name=query_id]').getValue();
@@ -1613,7 +1698,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
         payment_pnl.down('hiddenfield[name=query_id]').setValue(query_id);
 
 
-        funcShowCustomizableWindow('Invoice Quotation', '70%', payment_pnl, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Invoice Quotation', '70%', payment_pnl, 'customizablewindow');
     },
     ViewQueryInvoice: function(btn){
         var form = btn.up('form'),
@@ -1769,7 +1854,7 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
         
         form.loadRecord(record);
         panel.setHeight(400);
-        funcShowCustomizableWindow('Edit Query', '70%', panel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Edit Query', '70%', panel, 'customizablewindow');
     },
     showEditApplicationQueryResponseForm: function (item) {
         var btn = item.up('button'),
@@ -1803,7 +1888,44 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
         grid.down('hiddenfield[name=application_code]').setValue(application_code);
 
         grid.down('combo[name=applicable_documents]').setValue(document_type_id);
-        funcShowCustomizableWindow('Query Responses', winWidth, panel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Query Responses', winWidth, panel, 'customizablewindow');
+
+    },
+
+
+    showEditApplicationInternalQueryResponseForm: function (item) {
+        var btn = item.up('button'),
+            grid = btn.up('grid'),
+            height = grid.getHeight(),
+            record = btn.getWidgetRecord(),
+            item_resp_id = record.get('item_resp_id'),
+            childXtype = item.childXtype,
+            winWidth = item.winWidth,
+            document_type_id =item.document_type_id,
+            //form = Ext.widget(childXtype),//'applicationqueryfrm'
+            win = grid.up('window'),
+            module_id = grid.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = grid.down('hiddenfield[name=sub_module_id]').getValue(),
+            application_code = grid.down('hiddenfield[name=application_code]').getValue(),
+           // process_id = grid.down('hiddenfield[name=process_id]').getValue(),
+            section_id = grid.down('hiddenfield[name=section_id]').getValue();
+
+
+        panel = Ext.widget(childXtype);
+        form = panel.down('form');
+       // grid = panel.down('previewproductDocUploadsGrid');
+        form.down('hiddenfield[name=module_id]').setValue(module_id);
+        form.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+        form.down('hiddenfield[name=section_id]').setValue(section_id);
+        form.loadRecord(record);
+        form.setHeight(500);
+        //grid.setHeight(500);
+
+        //  grid.down('hiddenfield[name=module_id]').setValue(module_id);
+        // grid.down('hiddenfield[name=application_code]').setValue(application_code);
+
+        // grid.down('combo[name=applicable_documents]').setValue(document_type_id);
+        funcShowOnlineCustomizableWindow('Query Responses', winWidth, panel, 'customizablewindow');
 
     },
 
@@ -2091,7 +2213,7 @@ func_setDocumentGridStore: function(me){
         grid.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
         grid.setHeight(450);
        
-       funcShowCustomizableWindow('Query', "70%", grid, 'customizablewindow');
+       funcShowOnlineCustomizableWindow('Query', "70%", grid, 'customizablewindow');
 
 },
 previewUploadedDocument: function (item) {
@@ -2113,6 +2235,36 @@ previewUploadedDocument: function (item) {
         
 
 },
+
+
+previewUploadedUnstructuredDocument: function (item) {
+    var btn = item.up('button'),
+        download = item.download,
+        grid = item.up('grid'),
+        record = btn.getWidgetRecord(),
+        node_ref = record.get('node_ref'),
+        table_name = grid.table_name,
+        document_type_id = grid.document_type_id,
+        node_ref = record.get('node_ref'),
+        reference_record_id= record.get('reference_record_id'),
+        record_id = record.get('id'),
+        application_code = record.get('application_code');
+
+        if(!table_name){
+              table_name=grid.down('hiddenfield[name=table_name]').getValue();
+        }
+        
+        if(node_ref != ''){
+
+            this.functDownloadUnstructuredDocument(node_ref,download,record_id,reference_record_id,table_name, grid);
+        }
+        else{
+            toastr.error('Document Not Uploaded', 'Failure Response');
+        }
+        
+
+},
+
 previewMultiUploadedDocument: function (item) {
     var btn = item.up('button'),
         grid = item.up('grid'),
@@ -2185,23 +2337,25 @@ funcCancelGeneratedInvoice: function(item){
         
 
 },
-functDownloadAppDocument:function(node_ref,download,application_code,uploadeddocuments_id=null, grid){
-        //get the document path 
-        if(grid != ''){
-            //grid.mask('Document Preview..');
-           // Ext.getBody().mask('Document Preview..............');
+// functDownloadAppDocument:function(node_ref,download,application_code,uploadeddocuments_id=null, grid){
+//         //get the document path 
+//         if(grid != ''){
+//             //grid.mask('Document Preview..');
+//            // Ext.getBody().mask('Document Preview..............');
 
-        }
-        var action_url = "documentmanagement/getApplicationDocumentDownloadurl?node_ref="+node_ref+"&application_code="+application_code+"&uploadeddocuments_id="+uploadeddocuments_id;
-        if(node_ref != '' && node_ref != 'undefined'){
-            download_report(action_url);
-        }
-        else{
+//         }
+//         var action_url = "documentmanagement/getApplicationDocumentDownloadurl?node_ref="+node_ref+"&application_code="+application_code+"&uploadeddocuments_id="+uploadeddocuments_id;
+//         if(node_ref != '' && node_ref != 'undefined'){
+//             download_report(action_url);
+//         }
+//         else{
 
-            toastr.error('Document not found, upload to download', 'Failure Response');
-        }
-        return;
-},onEditApplicationsQuery: function (item) {
+//             toastr.error('Document not found, upload to download', 'Failure Response');
+//         }
+//         return;
+// },
+
+onEditApplicationsQuery: function (item) {
     var btn = item.up('button'),
         grid = btn.up('grid'),
         record = btn.getWidgetRecord(),
@@ -2228,7 +2382,7 @@ functDownloadAppDocument:function(node_ref,download,application_code,uploadeddoc
         var doc_grid = 
         form.setHeight(400);
         form.loadRecord(record);
-        funcShowCustomizableWindow("Add CAPA/Query Findings", "80%", form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow("Add CAPA/Query Findings", "80%", form, 'customizablewindow');
 
 
 },onDeleteApplicationQueries: function (item) {
@@ -2310,7 +2464,7 @@ functDownloadAppDocument:function(node_ref,download,application_code,uploadeddoc
         form.setHeight(height);
         //grid.hide();
         //win.add(form);
-        funcShowCustomizableWindow("Add Query", "80%", form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow("Add Query", "80%", form, 'customizablewindow');
 
 
 },
@@ -2335,6 +2489,20 @@ functDownloadAppDocument:function(node_ref,download,application_code=null,upload
             },
             success: function (response) {
                 Ext.getBody().unmask();
+               /* var resp = Ext.JSON.decode(response.responseText),
+                        success = resp.success;
+                    document_url = resp.document_url;
+                    if (success == true || success === true) {
+                        if (download == 1 || download === 1) {
+                        // download_report(document_url);
+                            print_downloaddmsreport(document_url);
+                        } else {
+                            print_downloaddmsreport(document_url);
+                        }
+                    } else {
+                        toastr.error(resp.message, 'Failure Response');
+                    }
+                
                
                 var resp = Ext.JSON.decode(response.responseText),
                 success = resp.success;
@@ -2343,12 +2511,202 @@ functDownloadAppDocument:function(node_ref,download,application_code=null,upload
                 if (success == true || success === true) {
                     var a = document.createElement("a");
                     a.href = document_url; 
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
+
+                    if(document_url != ''){
+                        downloadReportswithNonSSL(document_url);
+                       
+                    }else{
+
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                    }
+                    
                     grid.unmask();
                 } else {
+                    grid.unmask();
+                    toastr.error(resp.message, 'Failure Response');
+                }
+
+                var resp = Ext.JSON.decode(response.responseText),
+                success = resp.success;
+                document_url = resp.document_url;
+                dms_url = resp.dms_url;
+                filename = resp.filename;
+                if (success == true || success === true) {
+
+                    if (canViewInWindow(filename)) {
+                        grid.unmask();
+                        print_report(dms_url);
+                    }
+                    // else if (canViewInGoogleViewer(filename)) {
+                    //      grid.unmask();
+                    //      console.log('in doc');
+                    //     print_doc_report(dms_url);
+                    // } 
+                    else {
+                        var a = document.createElement("a");
+                        a.href = document_url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        grid.unmask();
+                    }
+                 } else {
+                    grid.unmask();
+                    toastr.error(resp.message, 'Failure Response');
+                }
+                   
+                    
+            },
+
+*/
+
+                var resp = Ext.JSON.decode(response.responseText),
+                success = resp.success;
+                document_url = resp.document_url;
+                dms_url = resp.dms_url;
+                filename = resp.filename;
+                if (success == true || success === true) {
+                     grid.unmask();
+                    // window.open(document_url,'_blank', 'resizable=yes,scrollbars=yes,directories=no, titlebar=no, toolbar=no,menubar=no,location=no,directories=no, status=no');
+
+                    var newWindow = window.open(document_url, '_blank', 'resizable=yes,scrollbars=yes,directories=no,titlebar=no,toolbar=no,menubar=no,location=no,status=no');
+
+                    // Check if the new window was successfully opened
+                    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                          Ext.MessageBox.confirm('Preview Confirmation', 'Do you want to open  this document?', function (button) {
+                            if (button === 'yes') {
+                                window.open(document_url, '_blank', 'resizable=yes,scrollbars=yes,directories=no,titlebar=no,toolbar=no,menubar=no,location=no,status=no');
+                            }
+                        })
+                    }
+                    // if (canViewInWindow(filename)) {
+                    //     grid.unmask();
+                    //     print_report(dms_url);
+                    // }
+                    // else {
+                    //     var a = document.createElement("a");
+                    //     a.href = document_url;
+                    //     a.download = filename;
+                    //     document.body.appendChild(a);
+                    //     a.click();
+                    //     a.remove();
+                    //     grid.unmask();
+                    // }
+                 } else {
+                    grid.unmask();
+                    toastr.error(resp.message, 'Failure Response');
+                }     
+                    
+            },
+            failure: function (response) {
+                grid.unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error downloading data: ' + errorThrown, 'Error Response');
+            }
+        });
+
+
+},
+
+functDownloadUnstructuredDocument:function(node_ref,download,record_id=null,reference_record_id,table_name, grid=''){
+        //get the document path 
+        if(grid != ''){
+
+            grid.mask('Document Preview..');
+        }
+      
+        Ext.Ajax.request({
+            url: 'documentmanagement/getUnstructuredDocumentDownloadurl',
+            method: 'GET',
+            params: {
+                node_ref: node_ref,
+                record_id:record_id,
+                reference_record_id:reference_record_id,
+                table_name:table_name
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+            },
+            success: function (response) {
+                Ext.getBody().unmask();
+               /* var resp = Ext.JSON.decode(response.responseText),
+                        success = resp.success;
+                    document_url = resp.document_url;
+                    if (success == true || success === true) {
+                        if (download == 1 || download === 1) {
+                        // download_report(document_url);
+                            print_downloaddmsreport(document_url);
+                        } else {
+                            print_downloaddmsreport(document_url);
+                        }
+                    } else {
+                        toastr.error(resp.message, 'Failure Response');
+                    }
+                
+               
+                var resp = Ext.JSON.decode(response.responseText),
+                success = resp.success;
+                document_url = resp.document_url;
+                filename = resp.filename;
+                if (success == true || success === true) {
+                    var a = document.createElement("a");
+                    a.href = document_url; 
+
+                    if(document_url != ''){
+                        downloadReportswithNonSSL(document_url);
+                       
+                    }else{
+
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                    }
+                    
+                    grid.unmask();
+                } else {
+                    grid.unmask();
+                    toastr.error(resp.message, 'Failure Response');
+                }
+
+*/
+
+                var resp = Ext.JSON.decode(response.responseText),
+                success = resp.success;
+                document_url = resp.document_url;
+                dms_url = resp.dms_url;
+                filename = resp.filename;
+                if (success == true || success === true) {
+
+                    if (canViewInWindow(filename)) {
+                        grid.unmask();
+                        print_report(dms_url);
+                    }
+                    // else if (canViewInGoogleViewer(filename)) {
+                    //      grid.unmask();
+                    //      console.log('in doc');
+                    //     print_doc_report(dms_url);
+                    // } 
+                    else {
+                        var a = document.createElement("a");
+                        a.href = document_url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        grid.unmask();
+                    }
+                 } else {
                     grid.unmask();
                     toastr.error(resp.message, 'Failure Response');
                 }
@@ -2369,6 +2727,8 @@ functDownloadAppDocument:function(node_ref,download,application_code=null,upload
 
 
 },
+
+
  downloadAllSelectedDocuments: function(btn) {
     var grid = btn.up('grid'),
         sm = grid.getSelectionModel(),
@@ -2484,7 +2844,7 @@ functDownloadAppDocument:function(node_ref,download,application_code=null,upload
             form = Ext.widget(childXtype);
 
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
 
     },
     showPreviewQueryLetter: function (item) {
@@ -2841,7 +3201,7 @@ functDownloadAppDocument:function(node_ref,download,application_code=null,upload
 
             form.setHeight(height);
             form.loadRecord(record);
-            funcShowCustomizableWindow("Add CAPA/Query Findings", "80%", form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow("Add CAPA/Query Findings", "80%", form, 'customizablewindow');
 
 
     }, onAddRasonforREjections:function(btn){
@@ -2851,7 +3211,7 @@ functDownloadAppDocument:function(node_ref,download,application_code=null,upload
                 application_code = grid.down('hiddenfield[name=application_code]').getValue();
             form.down('hiddenfield[name=application_code]').setValue(application_code);
             form.setHeight(350);
-            funcShowCustomizableWindow("Add Reasons for Rejection", "45%", form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow("Add Reasons for Rejection", "45%", form, 'customizablewindow');
     }, onEditRasonforREjections:function (item) {
         var btn = item.up('button'),
             grid = btn.up('grid'),
@@ -2864,7 +3224,7 @@ functDownloadAppDocument:function(node_ref,download,application_code=null,upload
             form.setHeight(350);
             form.loadRecord(record);
 
-            funcShowCustomizableWindow("Add Reason for Rejection", "80%", form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow("Add Reason for Rejection", "80%", form, 'customizablewindow');
 
     },  onEditApplicationsCAPAFindings: function (item) {
         var btn = item.up('button'),
@@ -2891,7 +3251,7 @@ functDownloadAppDocument:function(node_ref,download,application_code=null,upload
         
             form.setHeight(height);
             form.loadRecord(record);
-            funcShowCustomizableWindow("Add CAPA/Query Findings", "80%", form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow("Add CAPA/Query Findings", "80%", form, 'customizablewindow');
 
 
     },
@@ -2918,7 +3278,7 @@ functDownloadAppDocument:function(node_ref,download,application_code=null,upload
            
             form.setHeight(height);
 
-            funcShowCustomizableWindow("Add Findings", "80%", form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow("Add Findings", "80%", form, 'customizablewindow');
 
 
     },
@@ -3056,7 +3416,7 @@ functDownloadAppDocument:function(node_ref,download,application_code=null,upload
         form = panel.down('#applicationRaiseQueryFrmId');
         form.loadRecord(record);
         panel.setHeight(550);
-        funcShowCustomizableWindow(win_title, '90%', panel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(win_title, '90%', panel, 'customizablewindow');
     },showEditREinspectionRequstestForm: function (item) {
         var btn = item.up('button'),
             grid = btn.up('grid'),
@@ -3087,7 +3447,7 @@ functDownloadAppDocument:function(node_ref,download,application_code=null,upload
         form = panel.down('#applicationRaiseQueryFrmId');
         form.loadRecord(record);
         panel.setHeight(550);
-        funcShowCustomizableWindow(win_title, '90%', panel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(win_title, '90%', panel, 'customizablewindow');
     },closeApplicationCAPAREquest: function (item) {
         var btn = item.up('button'),
             record = btn.getWidgetRecord(),
@@ -3183,7 +3543,7 @@ functDownloadAppDocument:function(node_ref,download,application_code=null,upload
 
             form.setHeight(height);
 
-            funcShowCustomizableWindow("Add Observations/Queries/Finding", "80%", form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow("Add Observations/Queries/Finding", "80%", form, 'customizablewindow');
 
 
     },saveReinspectionchecklistitems: function (btn) {

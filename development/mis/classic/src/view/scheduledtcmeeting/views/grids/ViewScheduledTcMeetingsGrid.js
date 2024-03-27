@@ -133,7 +133,7 @@ Ext.define('Admin.view.scheduledtcmeeting.views.grids.ViewScheduledTcMeetingsGri
                     iconCls: 'x-fa fa-print',
                     childXtype:'viewscheduledtcMeetingpnl',
                     winTitle: 'Meeting Details',
-                    winWidth: '80%',
+                    winWidth: '90%',
                     handler: 'funcViewMeetingDetails'
                 }]
             }

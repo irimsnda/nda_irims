@@ -37,6 +37,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.TcMeetingAgendasFrm', {
         {
             xtype: 'textarea',
             name: 'description',
+            grow: true, 
+            growMax: 200, 
             fieldLabel: 'Description',
             allowBlank: true
         }

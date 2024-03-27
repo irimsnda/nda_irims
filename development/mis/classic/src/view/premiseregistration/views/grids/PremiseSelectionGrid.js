@@ -47,6 +47,18 @@ Ext.define('Admin.view.premiseregistration.views.grids.PremiseSelectionGrid', {
         },{
             xtype: 'hiddenfield',
             name: 'district_id'
+        },{
+            xtype: 'hiddenfield',
+            name: 'premise_id'
+        },{
+            xtype: 'hiddenfield',
+            name: 'is_nearest_premise'
+        },{
+            xtype: 'hiddenfield',
+            name: 'is_inspection_nearest_premise'
+        },{
+            xtype: 'hiddenfield',
+            name: 'application_code'
         }
     ],
     bbar: [{
@@ -60,11 +72,40 @@ Ext.define('Admin.view.premiseregistration.views.grids.PremiseSelectionGrid', {
                 grid = this.up('grid'),
                 section_id = grid.down('hiddenfield[name=section_id]').getValue();
                 region_id = grid.down('hiddenfield[name=region_id]').getValue();
+                is_nearest_premise = grid.down('hiddenfield[name=is_nearest_premise]').getValue();
+                is_inspection_nearest_premise = grid.down('hiddenfield[name=is_inspection_nearest_premise]').getValue();
+                premise_id = grid.down('hiddenfield[name=premise_id]').getValue();
+                application_code = grid.down('hiddenfield[name=application_code]').getValue();
+                premise_id = grid.down('hiddenfield[name=premise_id]').getValue();
                 district_id = grid.down('hiddenfield[name=district_id]').getValue();
-            store.getProxy().extraParams = {
+
+            if(is_nearest_premise==1 || is_nearest_premise===1){
+                store.getProxy().extraParams = {
                 section_id: section_id,
+                is_nearest_premise: is_nearest_premise,
+                premise_id: premise_id,
+                application_code: application_code,
                 region_id: region_id,
             };
+
+            }else if(is_inspection_nearest_premise==1 || is_inspection_nearest_premise===1){
+                store.getProxy().extraParams = {
+                section_id: section_id,
+                is_inspection_nearest_premise: is_inspection_nearest_premise,
+                premise_id: premise_id,
+                application_code: application_code,
+                region_id: region_id,
+            };
+
+            }
+            else{
+                store.getProxy().extraParams = {
+                section_id: section_id,
+                region_id: region_id,
+             };
+
+            }
+            
         }
     }],
     /* features: [{
@@ -113,6 +154,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.PremiseSelectionGrid', {
         xtype: 'gridcolumn',
         dataIndex: 'premise_reg_no',
         text: 'Registration No',
+        hidden:true,
         flex: 1,
         filter: {
             xtype: 'textfield'
@@ -127,12 +169,28 @@ Ext.define('Admin.view.premiseregistration.views.grids.PremiseSelectionGrid', {
         }
     }, {
         xtype: 'gridcolumn',
+        dataIndex: 'region_name',
+        text: 'Region',
+        flex: 1
+    },
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'district_name',
+        text: 'District',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
         dataIndex: 'physical_address',
         text: 'Physical Address',
-        flex: 1
-    }, {
+        flex: 1,
+        filter: {
+            xtype: 'textfield'
+        }
+    }, 
+    {
         xtype: 'gridcolumn',
         dataIndex: 'postal_address',
+        hidden:true,
         text: 'Postal Address',
         flex: 1
     }]

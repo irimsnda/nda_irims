@@ -9,30 +9,133 @@
     },
     defaults: {
         split: true
-    },
+    },  
     items: [{
-            title: 'Manufacturing Site Inspection Process',
+           // title: 'Manufacturing Site Inspection Process',
             region: 'center',
             xtype:'tabpanel',
             layout: 'fit',
             items: [
                 {
                     xtype: 'gmpappdocuploadsgenericgrid',
-                    title: 'Inspection Report'
-                }, {
-                    xtype: 'productlinedetailsinspectiongrid',
-                    title: 'Manufacturing Site Product Line Details Recommendations',
+                    title: 'Inspection Documents'
                 },
+                 {
+                    title: 'GMP Inspection Report',
+                    region: 'center',
+                    name: 'inspectionreportTabPanel',
+                    itemId:'inspectionreportTabPanel',
+                    xtype: 'tabpanel',
+                    items:[{
+                        xtype: 'GMPOnlineAssessmentfrm',
+                        title:'General Information',
+                        type_id: 1,
+                        is_inspection: 1,
+                        is_gprc: 0,
+                        is_preview: 0,
+                    },
+                    // {
+                    //     xtype: 'productlinedetailsinspectiongrid',
+                    //     title:'Brief Report of the Inspection activities',
+                    //     type_id: 2,
+
+                    // },
+                    {
+                        title: 'Brief Report of the Inspection activities',
+                        region: 'center',
+                        xtype: 'tabpanel',
+                        items:[{
+                            xtype: 'GMPOnlineAssessmentfrm',
+                             title:'Brief Report of the Inspection activities(a)',
+                            type_id: 2,
+                            is_inspection: 1,
+                            is_gprc: 0,
+                            is_preview: 0,
+
+                        },{
+                            xtype: 'productlinedetailsinspectiongrid',
+                            title:'Brief Report of the Inspection activities(b)',
+                            type_id: 2,
+                            is_inspection: 1,
+                            is_gprc: 0,
+                            is_preview: 0,
+
+                        }
+                    ]
+                    },
+                    //  {
+                    //     title: 'Summary of non-conformances',
+                    //     region: 'center',
+                    //     xtype: 'tabpanel',
+                    //     items:[{
+                    //         xtype: 'noncomplianceobservationsgrid',
+                    //         title:'Summary of non-conformances',
+                    //         type_id: 3,
+
+                    //     }
+                    // ]
+                    // },
+
+                    {
+                       xtype: 'noncomplianceobservationsgrid',
+                       title:'Summary of non-conformances'
+                    },
+
+                    // {
+                    //     xtype: 'noncomplianceobservationsgrid',
+                    //     title:'Summary of non-conformances',
+                    //     type_id: 3,
+                    // },
+                     {
+                        xtype: 'GMPOnlineAssessmentfrm',
+                        title:'Recommendations',
+                        type_id: 4,
+                        is_inspection: 1,
+                        is_gprc: 0,
+                        is_preview: 0,
+                    }]
+                },
+                {
+                    xtype: 'localgmpinspectionfrm',
+                    hidden:true,
+                    itemId: 'localgmpinspectionfrm',
+                    title:'GMP Online Assessment'
+               }, {
+                    xtype: 'productscreeninggrid',
+                    title: 'Inspection Checklist'
+                },
+               {
+                   xtype:'tabpanel',
+                   hidden:true,
+                   title: 'Product Line Details Recommendations',
+                   layout: 'fit',
+                   items: [
+                          {
+                            xtype: 'productlinedetailsinspectiongrid',
+                            title: 'Manufacturing Site Product Line Details Recommendations',
+                        },
+                        {
+                            xtype: 'noncomplianceobservationsgrid',
+                            title: 'Non-Compliance Observations'
+                        },
+                         {
+                            xtype: 'productscreeninggrid',
+                            title: 'Inspection Checklist'
+                        }
+                    ]
+                },
+
                 {
                    
                     xtype:'panel',
-                    title: 'Inspection Details & Inspectors',
+                    title: 'Inspection Details',
                     layout: 'border',
                     items:[{
                          xtype: 'inspectiondetailsupdatefrm',
                          itemId:'gmpaddscheduleteamfrmId',
                          region:'center',
-                         title: 'Inspection Details'
+                         scrollable:true,
+                         //title: 'Inspection Details'
                     },{
                         title: 'Inspectors',
                         region: 'east',
@@ -82,7 +185,7 @@
                                                 url: 'gmpapplications/getGmpScheduleInspectors'
                                             }
                                         },
-                                        isLoad: false
+                                        isLoad: true
                                     }
                                 },
                                 columns: [
@@ -139,19 +242,24 @@
                     }]
                 }, {
                     xtype: 'inspectionscaparequestsgrid',
-                    title: 'Manufacturing Site CAPA Submission and Responses'
+                    hidden:true,
+                    title: 'CAPA Submission and Responses'
                 }
             ]
-        },{
+        },
+
+
+        {
             title: 'Other Details',
             region: 'south',
             width: 200,
-            collapsed: false,
+            collapsed: true,
             collapsible: true,
             titleCollapse: true,
             items: [
                 {
                     xtype: 'form',
+                    itemId:'wizzardFrm',
                     bodyPadding: 5,
                     layout: 'column',
                     defaults: {
@@ -201,13 +309,28 @@
                     iconCls: 'x-fa fa-download',
                     childXtype: 'gmpappprevdocuploadsgenericgrid',
                     winTitle: 'Application Documents',
-                    winWidth: '80%',isReadOnly: 1,
+                    winWidth: '80%',
+                    isReadOnly: 1,
                     document_type_id: '',
                     handler: 'showPreviousNonGridPanelUploadedDocs',
                     ui: 'soft-purple',
                     stores: '[]',
                     target_stage: 'deskreviewrequireduploads'
                 },
+
+                {
+                    text: 'Non-Compliance Observations',
+                    ui: 'soft-purple',
+                    hidden:true,
+                    iconCls: 'fa fa-thumbs-down',
+                    name: 'non_compliance',
+                    childXtype: 'noncomplianceobservationsgrid',
+                    winTitle: 'DETAILS OF NON-COMPLIANCE OBSERVATIONS',
+                    winWidth: '70%',
+                    stores: '[]'
+                },
+
+
                
                 {
                     text: 'Documents/Reports',
@@ -221,16 +344,17 @@
                     stores: '[]',
                     isWin: 1
                 },{
-                    text: 'Preview & Edit Details',
+                    text: 'Preview Details',
                     iconCls: 'fa fa-bars',
                     name: 'more_app_details',
-                    isReadOnly: 0,
+                    isReadOnly: 1,
                     is_temporal: 0
                 },{
                     xtype: 'button',
                     text: "Raise/View Query(Request for Information)",
                     tooltip: 'Raise Query/View Query(Request for Information) and query Responses',
                     ui: 'soft-red',
+                    hidden: true,
                     name: 'raise_checklist_query',
                     handler:'showGeneralAppAppQueries'
                 },

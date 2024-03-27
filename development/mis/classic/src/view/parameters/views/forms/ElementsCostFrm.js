@@ -44,7 +44,7 @@ Ext.define('Admin.view.parameters.views.forms.ElementsCostFrm', {
         xtype: 'combobox',
         fieldLabel: 'Section',
         forceSelection: true,
-        allowBlank: false,
+        allowBlank: true,
         margin: '0 20 20 0',
         name: 'section_id',
         queryMode: 'local',
@@ -306,9 +306,9 @@ Ext.define('Admin.view.parameters.views.forms.ElementsCostFrm', {
             name: 'formula',
             displayField: 'name',
             allowBlank: false,
-            fieldLabel: 'Formula',
+            fieldLabel: 'Is Formula',
             margin: '0 20 0 0',
-            valueField: 'flag',
+            valueField: 'id',
             queryMode: 'local',
             listeners:{
                 afterrender: {
@@ -323,8 +323,25 @@ Ext.define('Admin.view.parameters.views.forms.ElementsCostFrm', {
                         }
                     },
                     isLoad: true
+                },
+                change:function(cbo,newvalue, oldValue, eopts){
+                    var frm = cbo.up('form'),
+                    formula_rate  = frm.down('numberfield[name=formula_rate]');
+                        if(newvalue == 1){
+                            formula_rate.setHidden(false);
+                        }else{
+                            formula_rate.setHidden(true);
+                        }
                 }
+
             }
+        }, {
+            xtype: 'numberfield',
+            fieldLabel: 'ForMula Rate(% or counter)',
+            allowBlank: true,
+            value: 0,margin: '0 20 20 0',
+            hidden: true,
+            name: 'formula_rate'
         },
         {
             xtype: 'combobox',
@@ -332,7 +349,7 @@ Ext.define('Admin.view.parameters.views.forms.ElementsCostFrm', {
             name: 'gl_code_id',
             displayField: 'name',
             allowBlank: true,
-            fieldLabel: 'GL Code',
+            fieldLabel: 'Revenue Description',
             margin: '0 20 0 0',
             valueField: 'id',
             queryMode: 'local',
@@ -350,16 +367,25 @@ Ext.define('Admin.view.parameters.views.forms.ElementsCostFrm', {
                         }
                     },
                     isLoad: true
+                },
+                change: function(combo, newValue, oldValue, eOpts){
+                    var form=combo.up('form'),
+                     filters = { gl_code_id:newValue },
+                     filters = JSON.stringify(filters),
+                    revenue_codestore=form.down('combo[name=revenue_code_id]').getStore();
+                    revenue_codestore.removeAll();
+                    revenue_codestore.load({params:{filters:filters}});
                 }
-            }
-        },
+               }
+            },
+          
         {
             xtype: 'combobox',
             forceSelection: true,
             name: 'revenue_code_id',
-            displayField: 'name',
+            displayField: 'code',
             allowBlank: true,
-            fieldLabel: 'Revenue Code',
+            fieldLabel: 'Revenue Account',
             margin: '0 20 0 0',
             valueField: 'id',
             queryMode: 'local',
@@ -376,7 +402,7 @@ Ext.define('Admin.view.parameters.views.forms.ElementsCostFrm', {
                             }
                         }
                     },
-                    isLoad: true
+                    isLoad: false
                 }
             }
         },

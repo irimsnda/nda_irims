@@ -86,14 +86,16 @@ Ext.define('Admin.view.commoninterfaces.grids.InvoicePaymentVerificationDetailsG
     },{
         xtype: 'gridcolumn',
         dataIndex: 'invoice_no',
+        width: 200,
         text: 'Invoice No',
-        flex: 1,
+       // flex: 1,
     },{
         xtype: 'datecolumn',
         dataIndex: 'date_of_invoicing',
         text: 'Invoice Date',
         format: 'Y-m-d',
-        flex: 1,
+        width: 200,
+        //flex: 1,
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'total_element_amount',
@@ -127,7 +129,7 @@ Ext.define('Admin.view.commoninterfaces.grids.InvoicePaymentVerificationDetailsG
     },{
         xtype: 'gridcolumn',
         dataIndex: 'invoice_type',
-        text: 'Invoice Type',
+        text: 'Invoice Urgency',
         flex: 1
     },{
         xtype: 'gridcolumn',
@@ -184,7 +186,7 @@ Ext.define('Admin.view.commoninterfaces.grids.InvoicePaymentVerificationDetailsG
                     action: 'receive_payments',
                     handler: 'receiveInvoicePayment',
                     winTitle: 'Account Transactions',
-                    winWidth: '60%',
+                    winWidth: '80%',
                     name: 'receive_payments',
                     childXtype: 'paymentsreceptionfrm',
                     bind: {

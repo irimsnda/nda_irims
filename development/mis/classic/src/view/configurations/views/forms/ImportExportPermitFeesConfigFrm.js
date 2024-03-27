@@ -103,7 +103,36 @@ Ext.define('Admin.view.configurations.views.forms.ImportExportPermitFeesConfigFr
                 }
                
             }
-        },{
+        },
+         {
+            xtype: 'combo',
+            fieldLabel: 'License Type',
+            margin:5,
+            name: 'licence_type_id',
+            valueField: 'id',
+            displayField: 'name',
+            allowBlank: true,
+            forceSelection: true,
+            queryMode: 'local',
+            listeners: {
+                beforerender: {
+                    fn: 'setConfigCombosStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_licence_type'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+               
+            }
+        },
+
+        {
             xtype: 'combo',
             fieldLabel: 'Fee Type',
             margin:5,

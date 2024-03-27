@@ -46,7 +46,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                 }, {
                     xtype: 'displayfield',
                     name: 'workflow_stage',
-                    fieldLabel: 'Workflow Stage',
+                    fieldLabel: 'Application Status',
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
@@ -135,6 +135,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                                 hidden: true,
                                 width: 400,
                                 name: 'zone_id',
+                                hidden: true,
                                 valueField: 'id',
                                 displayField: 'name',
                                 queryMode: 'local',

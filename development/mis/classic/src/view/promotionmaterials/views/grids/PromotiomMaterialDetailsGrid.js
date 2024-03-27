@@ -14,7 +14,7 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.PromotioMaterialDetai
         handler: 'showPromotionMaterialDetailsForm',
         winTitle: 'Promotion Material Details',
         childXtype: 'promotionmaterialdetailsform',
-        winWidth: '35%',
+        winWidth: '50%',
         stores: '[]'
     }, {
         xtype: 'exportbtn'
@@ -29,7 +29,21 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.PromotioMaterialDetai
                     this.up('promotionmaterialdetailsgrid').fireEvent('refresh', this);
         }
 			
-		}],
+	}],
+
+    listeners: {
+            beforerender: {
+                fn: 'setConfigGridsStore',
+                config: {
+                    pageSize: 1000,
+                    storeId: 'promotionmaterialdetailsgridstr',
+                    proxy: {
+                        url: 'promotionmaterials/getPromotionMaterialsDetails',
+                    }
+                },
+                isLoad: true
+            }
+    },
     
     columns: [ 
 	{
@@ -37,7 +51,13 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.PromotioMaterialDetai
         text: 'Promotion Material',
         dataIndex: 'promotion_material_name',
         flex: 1
-    }, 
+    },
+    {
+        xtype: 'gridcolumn',
+        text: 'Language',
+        dataIndex: 'promotion_material_language',
+        flex: 1
+    },    
 	{
         xtype: 'gridcolumn',
         text: 'Remarks',
@@ -61,6 +81,9 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.PromotioMaterialDetai
                     iconCls: 'x-fa fa-edit',
                     tooltip: 'View Task',
                     action: 'edit',
+                    winTitle: 'Promotion Material Edit Window',
+                    childXtype: 'promotionmaterialdetailsform',
+                    winWidth: '50%',
                     handler: 'editPromotionMaterialDetails',
                     stores: '[]'
 					

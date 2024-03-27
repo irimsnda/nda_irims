@@ -12,12 +12,12 @@
 </div>
 <div style="background: #fff; font-weight: bold;padding:5px;margin-bottom: 5px !important; height: 55px !important;">
   <div class="row">
-    <div class="col-lg-3">
+    <div class="col-lg-4">
       <label
         style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics; color: green;">
         Tracking No: <i> {{tracking_no}}</i> </label>
     </div>
-    <div class="col-lg-2">
+    <div class="col-lg-4">
       <label
         style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics;color: green;">Application
         Status:<i> {{status_name}}</i> </label>
@@ -83,10 +83,6 @@
             
             <wizard-step stepTitle="Query Response Submission">
                 <div class="col-lg-12">
-                  <label>Submission Comments(Optional)</label>
-                  <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-                </div>
-                <div class="col-lg-12">
                         <dx-check-box text="Agree to the Terms & Conditions" [value]="undefined" (onValueChanged)="submissionsTermscheckbox($event)">
                             </dx-check-box>
                 </div>
@@ -111,7 +107,8 @@
          [dispapplicationGeneraldetailsfrm]="dispapplicationGeneraldetailsfrm" 
          [section_id] ="section_id"  
           [module_id] ="module_id" 
-          [status_id] ="status_id" 
+          [status_id] ="status_id"
+          [trader_id] ="trader_id"
           [sub_module_id] ="sub_module_id" 
           [isOtherDisposalClass]="isOtherDisposalClass"
           [isOtherDisposalReason]="isOtherDisposalReason"
@@ -125,10 +122,6 @@
             [elementAttr]="{  class: 'pull-left' }"
             (onClick)="onApplicationDashboard()">
         </dx-button>
-            <button class="btn btn-primary pull-right" style="margin:5px;" [disabled]="!application_id" nextStep
-              type="button">
-              Next Documents Upload(s) &nbsp;<i class="fa fa-angle-double-right"></i></button>
-
             <button type="button" (click)="onSaveDisposalApplication()"
               class="btn btn-primary  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save
@@ -207,10 +200,6 @@
                 </p>
             </ul>
         </div>
-              <div class="col-lg-12">
-                <b> <label>Submission Comments(Optional)</label></b>
-                  <dx-text-area formControlName="submission_comments" placeholder="Enter Comments(optional)"></dx-text-area>
-              </div>
                 
           <div class="col-lg-12">
             <dx-check-box text="Agree to the Declaration" [value]="undefined"
@@ -322,7 +311,7 @@
 
         <wizard-step stepTitle="Application Details" class="wizardStep-height">
           <app-disposal-generaldetails [dispapplicationGeneraldetailsfrm]="dispapplicationGeneraldetailsfrm" [section_id] ="section_id"  
-        [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-disposal-generaldetails>
+        [module_id] ="module_id" [status_id] ="status_id"[trader_id]="trader_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-disposal-generaldetails>
             <div class=" div-footer" style="border-top: 1px solid #ccc; ">
               
               <button class="btn btn-primary pull-right" style="margin:5px;" [disabled]="!application_id" nextStep
@@ -429,7 +418,7 @@
   </div>
 </dx-popup>
 
-<dx-popup class="popup"  [width]="funcpopWidth(80)" height="auto" [showTitle]="true" title="Permit Products Details"
+<dx-popup class="popup"  [width]="funcpopWidth(80)" height="600" [showTitle]="true" title="Permit Products Details"
   [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isPermitproductsAddPopupVisible">
   <div *dxTemplate="let data of 'content'">
       <div class="row ">
@@ -442,40 +431,48 @@
               </dx-text-box>
             </div>
             <div class="col-lg-6 no-padding">
-              <label>Generic Name</label>
-              <dx-text-box placeholder="Generic Name"  formControlName="generic_name">
-              </dx-text-box>
+              <label for="ti" class="control-label">Generic Name</label>
+              <dx-select-box [dataSource]="commonNamesData"   [readOnly]= "isReadOnly"  valueExpr="id" displayExpr="name" [searchEnabled]="true"
+               placeholder="Select Generic Name"   (onSelectionChanged)="onCommonNameCboSelect($event)" formControlName="common_name_id">
+            </dx-select-box>
             </div>
+
             <div class="col-lg-6 no-padding">
               <label>Product strength</label>
               <dx-text-box placeholder="Product strength"  formControlName="product_strength">
               </dx-text-box>
             </div>
             <div class="col-lg-6 no-padding">
-              <label>Dosage Form</label>
-              <dx-text-box placeholder="Dosage Form"  formControlName="dosage_form">
-              </dx-text-box>
+              <label class="control-label">SI Unit</label>
+                <dx-select-box [dataSource]="siUnitsData" valueExpr="id" displayExpr="name" 
+                  [searchEnabled]="true"
+                  placeholder="SI Unit" formControlName="si_unit_id">
+                </dx-select-box>
             </div>
             <div class="col-lg-6 no-padding">
-              <label>Product Pack</label>
-              <dx-text-box placeholder="Product Pack"  formControlName="product_pack">
-              </dx-text-box>
+              <label class="control-label">Dosage Form</label>
+              <dx-select-box [dataSource]="dosageFormsData" 
+                  valueExpr="id" displayExpr="name" [searchEnabled]="true"
+                  placeholder="Select Dosage Form" formControlName="dosage_form_id">
+                </dx-select-box>
             </div>
-            <div class="col-lg-6 no-padding">
-              <label>Pack Type</label>
-              <dx-select-box [dataSource]="packTypeData" valueExpr="name" placeholder="Pack Type" displayExpr="name"
-                [searchEnabled]="true" formControlName="packaging_type_id">
-              </dx-select-box>
-            </div>
+
             <div class="col-lg-12 no-padding">
               <label>Batch Number (Enter multiple Batch Nos Separated by Commas)</label>
               <dx-text-area placeholder="Batch Nos"  formControlName="batch_no">
               </dx-text-area>
             </div>
+
             <div class="col-lg-6 no-padding">
-              <label>Reason for Disposal</label>
-              <dx-text-box placeholder="Reason for Disposal"  formControlName="reason_for_disposal">
-              </dx-text-box>
+              <label>Reasons For Disposal</label>
+              <dx-select-box  (onSelectionChanged)="onOtherDisposalReasonsChange($event)" [dataSource]="reasonsOfDisposalData" valueExpr="id" displayExpr="name"
+                placeholder="Reason For Disposal" [searchEnabled]="true" formControlName="reason_for_disposal_id">
+              </dx-select-box>
+            </div>
+            <div class="col-lg-6 no-padding" *ngIf="isOtherDisposalReason">
+              <label>Specify....</label>
+              <dx-text-area [height]="60" formControlName="other_disposal_reasons" placeholder="Specify....">
+              </dx-text-area>
             </div>
             
             <div class="col-lg-6 no-padding">

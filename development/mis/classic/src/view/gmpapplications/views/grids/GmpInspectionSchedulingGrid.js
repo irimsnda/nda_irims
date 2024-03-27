@@ -69,7 +69,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpInspectionSchedulingGrid',
         displayField: 'name',
         queryMode: 'local',
         forceSelection: true,
-        width: 300,
+        width: 220,
         labelWidth: 70,
         fieldStyle: {
             'color': 'green',
@@ -86,6 +86,91 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpInspectionSchedulingGrid',
                         }
                     }
                 },
+                isLoad: true
+            },
+            change: 'reloadParentGridOnChange'
+        },
+        triggers: {
+            clear: {
+                type: 'clear',
+                hideWhenEmpty: true,
+                hideWhenMouseOut: false,
+                clearOnEscape: true
+            }
+        }
+    }, {
+        xtype: 'combo',
+        fieldLabel: 'Country',
+        valueField: 'id',
+        name: 'country_id',
+        displayField: 'name',
+        queryMode: 'local',
+        forceSelection: true,
+        width: 200,
+        labelWidth: 70,
+        fieldStyle: {
+            'color': 'green',
+            'font-weight': 'bold'
+        },
+        listeners: {
+                beforerender: {
+                fn: 'setConfigCombosStore',
+                config: {
+                    pageSize: 100,
+                    proxy: {
+                         url: 'commonparam/getCommonParamFromTable',
+                        extraParams: {
+                          table_name: 'par_countries'
+                            }
+                        }
+                    },
+                isLoad: true
+            },
+    
+         change: function (cmbo, newVal) {
+                var grid = cmbo.up('grid'),
+                regionStore = grid.down('combo[name=region_id]').getStore(),
+                filterObj = {district_id: newVal},
+                filterStr = JSON.stringify(filterObj);
+                regionStore.removeAll();
+                regionStore.load({params: {filters: filterStr}});
+                grid.getStore().load();
+           }
+        },
+        triggers: {
+            clear: {
+                type: 'clear',
+                hideWhenEmpty: true,
+                hideWhenMouseOut: false,
+                clearOnEscape: true
+            }
+        }
+    }, {
+        xtype: 'combo',
+        fieldLabel: 'Region',
+        valueField: 'id',
+        name: 'region_id',
+        displayField: 'name',
+        queryMode: 'local',
+        forceSelection: true,
+        width: 200,
+        labelWidth: 70,
+        fieldStyle: {
+            'color': 'green',
+            'font-weight': 'bold'
+        },
+        listeners: {
+                beforerender: {
+                fn: 'setConfigCombosStore',
+                config: {
+                    pageSize: 100,
+                    proxy: {
+                         url: 'commonparam/getCommonParamFromTable',
+                        extraParams: {
+                          table_name: 'par_regions'
+                            }
+                        }
+                    },
                 isLoad: true
             },
             change: 'reloadParentGridOnChange'

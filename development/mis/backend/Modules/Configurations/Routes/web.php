@@ -22,6 +22,8 @@ use Modules\Configurations\Http\Controllers\ConfigurationsController;
     Route::get('getTableslist', [ConfigurationsController::class, 'getTableslist']);
     Route::get('getTablescolumns', [ConfigurationsController::class, 'getTablescolumns']);
     Route::get('getParameterConfig', [ConfigurationsController::class, 'getParameterConfig']);
+    Route::get('getClinicalAssessmentForm', [ConfigurationsController::class, 'getClinicalAssessmentForm']);
+     Route::get('getGMPInspectionForm', [ConfigurationsController::class, 'getGMPInspectionForm']);
     Route::get('checkParamMenuDefination', [ConfigurationsController::class, 'checkParamMenuDefination']);
     Route::post('deleteConfigRecord', [ConfigurationsController::class, 'deleteConfigRecord']);
     Route::post('softDeleteConfigRecord', [ConfigurationsController::class, 'softDeleteConfigRecord']);
@@ -29,7 +31,15 @@ use Modules\Configurations\Http\Controllers\ConfigurationsController;
     Route::get('getChecklistTypes', [ConfigurationsController::class, 'getChecklistTypes']);
     Route::post('deleteWorkflowRecord', [ConfigurationsController::class, 'deleteWorkflowRecord']);
 
-    
+   Route::post('onSaveMeetingGroups', [ConfigurationsController::class, 'onSaveMeetingGroups']);
+
+   Route::get('getFormFieldRelations', [ConfigurationsController::class, 'getFormFieldRelations']); 
+
+   Route::post('saveFormFieldRelations', [ConfigurationsController::class, 'saveFormFieldRelations']); 
+
+
+    Route::get('prepareInterfaceBasedonConfig', [ConfigurationsController::class, 'prepareInterfaceBasedonConfig']);
+
     Route::get('getChecklistItems', [ConfigurationsController::class, 'getChecklistItems']);
     Route::get('getAllApplicationStatuses', [ConfigurationsController::class, 'getAllApplicationStatuses']);
     Route::get('getAlterationParameters', [ConfigurationsController::class, 'getAlterationParameters']);

@@ -102,6 +102,10 @@ Ext.define('Admin.view.surveillance.views.sharedinterfaces.main.PmsReceiving', {
             }, {
                 xtype: 'hiddenfield',
                 name: 'section_id'
+            },
+            {
+                xtype: 'hiddenfield',
+                name: 'program_id'
             }
             ]
         }

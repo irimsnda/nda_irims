@@ -103,6 +103,88 @@ Ext.define('Admin.view.configurations.views.forms.PromotionalAppFeeConfigFrm', {
             }
         },{
             xtype: 'combo',
+            fieldLabel: 'Section/Product Classification',
+            margin:5,
+            name: 'section_id',
+            valueField: 'id',
+            displayField: 'name',
+            forceSelection: true,
+            queryMode: 'local',
+            listeners: {
+                beforerender: {
+                    fn: 'setConfigCombosStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_sections'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+               
+            }
+        },
+
+         {
+            xtype: 'combo',
+            fieldLabel: 'Type of Advertisements Material',
+            margin:5,
+             allowBlank:true,
+            name: 'promotions_material_id',
+            valueField: 'id',
+            displayField: 'name',
+            forceSelection: true,
+            queryMode: 'local',
+            listeners: {
+                beforerender: {
+                    fn: 'setConfigCombosStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_promotion_material_items'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+               
+            }
+        },
+         {
+            xtype: 'combo',
+            fieldLabel: 'Language of Publication or Advert',
+            margin:5,
+            allowBlank:true,
+            name: 'language_id',
+            valueField: 'id',
+            displayField: 'name',
+            forceSelection: true,
+            queryMode: 'local',
+            listeners: {
+                beforerender: {
+                    fn: 'setConfigCombosStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_promotion_material_language'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+               
+            }
+        },
+
+        {
+            xtype: 'combo',
             fieldLabel: 'Fee Type',
             margin:5,
             name: 'application_feetype_id',

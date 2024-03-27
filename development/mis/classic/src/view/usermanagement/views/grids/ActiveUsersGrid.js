@@ -109,12 +109,22 @@ Ext.define('Admin.view.usermanagement.views.grids.ActiveUsersGrid', {
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'department_name',
+        text: 'Directorate',
+        flex: 1
+    }, 
+
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'division_name',
         text: 'Division',
         flex: 1
-    }, {
+    },
+
+    {
         xtype: 'gridcolumn',
         dataIndex: 'zone_name',
         text: 'Zone',
+        hidden:true,
         flex: 1
     }, {
         xtype: 'gridcolumn',

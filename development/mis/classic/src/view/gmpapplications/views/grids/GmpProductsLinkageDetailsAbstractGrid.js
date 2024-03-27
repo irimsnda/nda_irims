@@ -68,7 +68,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpProductsLinkageDetailsAbst
             }, {
                 text: 'Options(Products Dossier Documents, Assessment Reports & Preview Details)',
                 xtype: 'widgetcolumn',
-                width: 90,
+                width: 250,
                 widget: {
                     width: 75,
                     textAlign: 'left',
@@ -100,7 +100,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpProductsLinkageDetailsAbst
                                 action: 'edit',
                                 childXtype: '',
                                 winTitle: 'Application Documents',
-                                winWidth: '40%',
+                                winWidth: '80%',
                                 isReadOnly: 1,
                                 document_type_id: '',
                                 handler: 'showPreviousUploadedDocs'

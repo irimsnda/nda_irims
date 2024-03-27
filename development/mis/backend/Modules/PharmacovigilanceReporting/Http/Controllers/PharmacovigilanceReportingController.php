@@ -53,7 +53,6 @@ class PharmacovigilanceReportingController extends Controller
             );
             $application_params = array(
                 'applicant_id' => $applicant_id,
-               
                 'module_id' => $module_id,
                 'sub_module_id' => $sub_module_id,
                 'section_id' => $section_id,
@@ -75,7 +74,10 @@ class PharmacovigilanceReportingController extends Controller
                 'generic_name' => $req->generic_name,
                 'dosage_form_id' => $req->dosage_form_id,
                 'product_strength' => $req->product_strength,
-                'marketing_authorisation_holder' => $req->marketing_authorisation_holder,  'marketing_authorisation_address' => $req->marketing_authorisation_address,  'local_technical_representative' => $req->local_technical_representative,  'manufacturer_id' => $req->manufacturer_id
+                'marketing_authorisation_holder' => $req->marketing_authorisation_holder,
+                'marketing_authorisation_address' => $req->marketing_authorisation_address, 
+                'local_technical_representative' => $req->local_technical_representative,
+                'manufacturer_id' => $req->manufacturer_id
                 
             );
             if (isset($application_id) && $application_id != "") {//Edit
@@ -188,6 +190,39 @@ class PharmacovigilanceReportingController extends Controller
         }
         return \response()->json($res);
     }
+
+        public function getSafetyalertreportsobservationsDetails(Request $request)
+    {
+        
+        try {
+            $application_id = $request->input('application_id');
+            $sharedQry = DB::table('tra_safetyalerts_observations as t1')
+                ->leftJoin('par_safetyalert_categories as t2', 't1.safetyalert_category_id', 't2.id')
+                ->leftJoin('par_safetyalert_recommendations as t3', 't1.safetyalert_recommendation_id', 't3.id')
+                ->select('t1.*', 't2.name as safetyalert_category', 't3.name as safetyalert_recommendation')
+                ->where('t1.application_id', $application_id);
+            
+            $appDetails = $sharedQry->first();
+            
+            $res = array(
+                'success' => true,
+                'results' => $appDetails,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+    
 
     public function getPharmacoVigilanceApps(Request $request)
     {
@@ -347,6 +382,52 @@ class PharmacovigilanceReportingController extends Controller
                 'message' => $throwable->getMessage()
             );
         }
+        return \response()->json($res);
+    }
+
+    public function saveSafetyAlertReportsObservations(request $req){
+         $id = $req->input('id');
+             try {
+
+        $user_id = $this->user_id;
+            $params = array(
+                'safety_alert' => $req->safety_alert,
+                'application_id' => $req->application_id,
+                'safetyalert_category_id' => $req->safetyalert_category_id,
+                'safety_alert_observation' => $req->safety_alert_observation,
+                'safetyalert_recommendation_id' => $req->safetyalert_recommendation_id
+            );
+            if(validateIsNumeric($id)){
+                $params['altered_by'] = $user_id;
+                $params['dola'] = Carbon::now();
+                $where_app = array('id'=>$id);
+                $app_details = getPreviousRecords('tra_safetyalerts_observations', $where_app);
+                    if ($app_details['success'] == false) {
+                        return $app_details;
+                    }
+                    $app_details = $app_details['results'];
+                    $res = updateRecord('tra_safetyalerts_observations', $app_details, $where_app, $params, $user_id);
+
+            }
+            else{
+                $params['created_by'] = $user_id;
+                $params['created_on'] = Carbon::now();
+                
+                $res = insertRecord('tra_safetyalerts_observations', $params, $user_id);
+            }
+            
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        
         return \response()->json($res);
     }
     public function prepareSafetyalertreportsassessment(Request $request)

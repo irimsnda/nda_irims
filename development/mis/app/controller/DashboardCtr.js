@@ -82,39 +82,39 @@ Ext.define('Admin.controller.DashboardCtr', {
     //                 });
     //                 Ext.each(jsonData, function (dataItem) {
                     
-    //                         var salesPanel = {
-    //                             xtype: 'panel',
-    //                             userCls: 'big-20 small-50',
-    //                             title: '<span style="font-size: 10px;">' + dataItem.name + '</span>', // Apply font size inline
-    //                             ui: 'light',
-    //                             menu_id: dataItem.menu_id,
-    //                             iconCls: dataItem.iconCls,
-    //                             headerPosition: 'bottom',
-    //                             cls: 'quick-graph-panel shadow',
-    //                             height: 130,
-    //                             layout: 'fit',
-    //                             items: [
-    //                                  {
-    //                                     xtype: 'container', 
-    //                                     animation: !Ext.isIE9m && Ext.os.is.Desktop,
-    //                                     height: 75,
-    //                                     style: {
-    //                                         backgroundColor: dataItem.background
-    //                                     },
-    //                                     bind: '{quarterlyGrowth}',
-    //                                     layout: 'fit', 
-    //                                 }
-    //                             ],
-    //                         listeners: {
-    //                             itemdblclick: function () {
-                                    // console.log('yyyyy');
-                                    // window.location.href = 'main-app';
-    //                             }
-    //                         }
-    //                         };
+                            // var salesPanel = {
+                            //     xtype: 'panel',
+                            //     userCls: 'big-20 small-50',
+                            //     title: '<span style="font-size: 10px;">' + dataItem.name + '</span>', // Apply font size inline
+                            //     ui: 'light',
+                            //     menu_id: dataItem.menu_id,
+                            //     iconCls: dataItem.iconCls,
+                            //     headerPosition: 'bottom',
+                            //     cls: 'quick-graph-panel shadow',
+                            //     height: 130,
+                            //     layout: 'fit',
+                            //     items: [
+                            //          {
+                            //             xtype: 'container', 
+                            //             animation: !Ext.isIE9m && Ext.os.is.Desktop,
+                            //             height: 75,
+                            //             style: {
+                            //                 backgroundColor: dataItem.background
+                            //             },
+                            //             bind: '{quarterlyGrowth}',
+                            //             layout: 'fit', 
+                            //         }
+                            //     ],
+                    //         listeners: {
+                    //             itemdblclick: function () {
+                    //                 console.log('yyyyy');
+                    //                 window.location.href = 'main-app';
+                    //             }
+                    //         }
+                    //         };
 
-    //                         cardContainer.add(salesPanel);
-    //                 });
+                    //         cardContainer.add(salesPanel);
+                    // });
 
     //                 mainTabPanel.add(cardContainer);
     //                 mainTabPanel.updateLayout();

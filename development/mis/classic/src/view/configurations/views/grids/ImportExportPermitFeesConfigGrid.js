@@ -170,6 +170,12 @@ Ext.define('Admin.view.configurations.views.grids.ImportExportPermitFeesConfigGr
          flex:1
     },{
         xtype: 'gridcolumn',
+        dataIndex: 'license_type',
+        text: 'License Type',
+        tdCls: 'wrap',
+         flex:1
+    },{
+        xtype: 'gridcolumn',
         dataIndex: 'applicationfeetype',
         text: 'Application Fee Type',
         tdCls: 'wrap',

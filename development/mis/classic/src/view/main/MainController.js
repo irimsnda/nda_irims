@@ -45,6 +45,15 @@ Ext.define('Admin.view.main.MainController', {
      setWorkflowCombosStore: function (obj, options) {
         this.fireEvent('setWorkflowCombosStore', obj, options);
     },
+    onEditProfileClick: function (btn) {
+        // this.setCurrentView('usereditinfofrm');
+        var me = this,
+        // user_id = record.get('id'),
+        form = Ext.widget('usereditinfofrm');
+      
+        funcShowCustomizableWindow('Edit Personal Details', '40%', form, 'customizablewindow',btn);
+        
+    },
 
     setCurrentPage: function (store, me, hashTag, navigationList, mainCard, mainLayout) {
         var view = (node && node.get('viewType')) || 'page404',
@@ -107,15 +116,12 @@ Ext.define('Admin.view.main.MainController', {
              this.fireEvent('renderParameterMenu', node.get('parameter_id'));
              return false;  
         }
-        var to = node && (node.get('routeId') || node.get('viewType')),
-            routeId = node.get('routeId'),
-            viewType = node.get('viewType');
-        //add model for control access 
-
+        var to = node && (node.get('routeId') || node.get('viewType'));
         if (to) {
             this.redirectTo(to);
         }
     },
+    
 
     onMainViewRender: function () {
         if (!window.location.hash) {

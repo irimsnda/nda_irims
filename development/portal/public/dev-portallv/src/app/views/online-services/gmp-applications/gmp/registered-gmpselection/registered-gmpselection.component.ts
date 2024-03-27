@@ -15,6 +15,7 @@ export class RegisteredGmpselectionComponent implements OnInit {
 
   section_id:number;
   sub_module_id:number;
+  gmp_type_id:number;
   processData:any;
   title:string;
   router_link:string;
@@ -36,12 +37,12 @@ export class RegisteredGmpselectionComponent implements OnInit {
   this.gmpapp_details = this.appService.getGmpApplicationDetail();
 
   if (!this.gmpapp_details) {
-    this.router.navigate(['./online-services/gmpapplications-dashboard']);
+    this.router.navigate(['./online-services/local-gmpapplications-dashboard']);
     return;
   }
   else {
     this.sub_module_id = this.gmpapp_details.sub_module_id;
-    
+    this.gmp_type_id = this.gmpapp_details.gmp_type_id;
     this.module_id = this.gmpapp_details.module_id;
     this.process_title = this.gmpapp_details.process_title;
    
@@ -62,7 +63,7 @@ funSelectRegisteredGMPsApp(data){
 
   delete gmpdata.status_id;
    this.section_id = gmpdata.section_id;
-        this.sub_module_id =  this.sub_module_id;
+   this.sub_module_id =  this.sub_module_id;
 
         this.config.getSectionUniformApplicationProces(this.sub_module_id, 1)
           .subscribe(
@@ -95,7 +96,7 @@ funSelectRegisteredGMPsApp(data){
  }
  onRegisteredGMPSearch() {
     //load the Premises Details 
-    this.appService.getGMPDataDetails({ mistrader_id:this.mistrader_id}, 'gmpinspection/getTradersRegisteredGMPApplications')
+    this.appService.getGMPDataDetails({ mistrader_id:this.mistrader_id,gmp_type_id:this.gmp_type_id}, 'gmpinspection/getTradersRegisteredGMPApplications')
     .subscribe(
       data => {
         if (data.success) {

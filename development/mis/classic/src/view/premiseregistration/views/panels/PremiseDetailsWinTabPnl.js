@@ -4,7 +4,7 @@
 Ext.define('Admin.view.premiseregistration.views.panels.PremiseDetailsWinTabPnl', {
     extend: 'Admin.view.premiseregistration.views.panels.PremiseDetailsTabPnl',
     xtype: 'premisedetailswintabpnl',
-    itemId: 'premisedetailstabpnl',
+    itemId: 'premisedetailswintabpnl',
     layout:'fit',
     items: [
         {
@@ -12,16 +12,22 @@ Ext.define('Admin.view.premiseregistration.views.panels.PremiseDetailsWinTabPnl'
             xtype: 'premisedetailsfrm'
         },{
             title: 'Directors Details',
+            xtype: 'premisedirectorsdetailsgrid',
             xtype: 'premisedirectorsdetailsgrid'
         },
         {
             title: 'Staff Details',
+            itemId:'premisepersonneldetailsgrid',
             xtype: 'premisepersonneldetailsgrid'
         },
          {
             title: 'Particulars of Nearest Pharmancy',
             xtype: 'premisenearestpremisegrid'
         },
+        //  {
+        //     title: 'External/Annex Store(s)Details',
+        //     xtype: 'premisenearestpremisegrid'
+        // },
         {
             title: 'Premises Main Activities/Product Types',
             hidden: true,

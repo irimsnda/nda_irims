@@ -30,8 +30,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsDGRecommGri
         winTitle: 'Previous GMP Product Line Details',
         childXtype: 'prevproductlinedetailsgrid',
         winWidth: '80%',
-        stores: '[]',
-        hidden: true
+        stores: '[]'
     }],
     bbar: [{
         xtype: 'pagingtoolbar',
@@ -68,13 +67,13 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsDGRecommGri
         dataIndex: 'inspection_recommendation',
         text: 'Inspection Recommendation',
         flex: 1,
-        hidden: true
+        //hidden: true
     },{
         xtype: 'gridcolumn',
         dataIndex: 'tc_recommendation',
-        text: 'TC Recommendation',
+        text: 'Review Recommendation',
         flex: 1,
-        hidden: true
+        //hidden: true
     },{
         xtype: 'gridcolumn',
         dataIndex: 'dg_recommendation',
@@ -119,6 +118,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsDGRecommGri
                     hidden: true
                 }, {
                     text: 'Delete',
+                    hidden:true,
                     iconCls: 'x-fa fa-trash',
                     table_name: 'gmp_product_details',
                     storeID: 'productlinedetailsstr',

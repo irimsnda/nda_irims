@@ -23,9 +23,9 @@ Ext.define('Admin.view.commoninterfaces.grids.ApplicantSelectionCmnGrid', {
         }
     },
     tbar:[{
-            text: 'New Trader Information',
+            text: 'New Applicant Information',
             ui: 'soft-green',
-            winTitle: 'Trader Information',
+            winTitle: 'Applicant Information',
             winWidth: '70%', 
             iconCls: 'x-fa fa-plus',
             ui: 'soft-green',
@@ -33,7 +33,7 @@ Ext.define('Admin.view.commoninterfaces.grids.ApplicantSelectionCmnGrid', {
                 var winWidth = btn.winWidth,
                     winTitle = btn.winTitle,
                     applicant_form = Ext.widget('newtraderaccountsmanagementFrm');
-                     funcShowCustomizableWindow(winTitle, winWidth, applicant_form, 'customizablewindow');
+                     funcShowOnlineCustomizableWindow(winTitle, winWidth, applicant_form, 'customizablewindow');
 
             }
         },
@@ -84,6 +84,7 @@ Ext.define('Admin.view.commoninterfaces.grids.ApplicantSelectionCmnGrid', {
             }
         }
     }],
+
     listeners: {
         reconfigure: function (cmp, eOpts) { 
                     cmp.columns[0].setHeight('');
@@ -98,7 +99,7 @@ Ext.define('Admin.view.commoninterfaces.grids.ApplicantSelectionCmnGrid', {
     },
     storeConfig:{
         config: {
-            pageSize: 200, 
+            pageSize: 10000, 
             remoteFilter: true,
             totalProperty:'totals',
             storeId: 'applicantselectioncmngridstr',

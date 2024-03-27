@@ -82,7 +82,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         width: 10
     }, {
         xtype: 'combo',
-        fieldLabel: 'Workflow Stage',
+        fieldLabel: 'Application Status',
         valueField: 'id',
         name: 'workflow_stage_id',
         displayField: 'name',

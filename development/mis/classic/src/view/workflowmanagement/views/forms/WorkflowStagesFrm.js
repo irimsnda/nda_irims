@@ -197,7 +197,22 @@ Ext.define('Admin.view.workflowmanagement.views.forms.WorkflowStagesFrm', {
         fieldLabel: 'Application Dismissal Allowed?',
         store: 'confirmationstr',
         value: 2
-    },{
+    },
+    
+     {
+        xtype: 'combo',
+        name: 'is_pop_submission',
+        valueField: 'id',
+        displayField: 'name',
+        columnWidth: 0.3,
+        forceSelection: true,
+        allowBlank: true,
+        queryMode: 'local',
+        fieldLabel: 'Is Popup Submission?',
+        store: 'confirmationstr',
+        value: 1
+    },
+    {
         xtype: 'combo',
         name: 'interface_id',
         valueField: 'id',
@@ -231,7 +246,60 @@ Ext.define('Admin.view.workflowmanagement.views.forms.WorkflowStagesFrm', {
                 store.load({params: {filter: filterStr}});
             }
         }
-    },{
+    },
+
+
+    {
+        xtype: 'combo',
+        name: 'is_multi_Interface',
+        valueField: 'id',
+        displayField: 'name',
+        columnWidth: 0.3,
+        forceSelection: true,
+        allowBlank: true,
+        queryMode: 'local',
+        fieldLabel: 'Is Multi Interface?',
+        store: 'confirmationstr',
+        value: 2
+    },
+
+
+    {
+        xtype: 'combo',
+        name: 'alternative_interface_id',
+        valueField: 'id',
+        displayField: 'name',
+        forceSelection: true,
+        allowBlank: true,
+        columnWidth: 0.4,
+        queryMode: 'local',
+        fieldLabel: 'Alternative Interface(Batch)',
+        anyMatch: true,
+        listeners: {
+            beforerender: {
+                fn: 'setWorkflowCombosStore',
+                config: {
+                    pageSize: 100,
+                    proxy: {
+                        extraParams: {
+                            model_name: 'WorkflowInterface'
+                        }
+                    }
+                },
+                isLoad: false
+            },
+            afterrender: function () {
+                var store = this.getStore(),
+                    form = this.up('form'),
+                    module_id = form.down('hiddenfield[name=module_id]').getValue(),
+                    filterObj = {module_id: module_id},
+                    filterStr = JSON.stringify(filterObj);
+                store.removeAll();
+                store.load({params: {filter: filterStr}});
+            }
+        }
+    },
+    {
         xtype: 'combo',
         name: 'is_receipting_stage',
         valueField: 'id',
@@ -242,7 +310,8 @@ Ext.define('Admin.view.workflowmanagement.views.forms.WorkflowStagesFrm', {
         fieldLabel: 'Is Receipting/Payment Stage',
         store: 'confirmationstr',
         value: 2
-    }, {
+    },
+    {
         xtype: 'combo',
         name: 'assessment_stage_id',
         valueField: 'id',

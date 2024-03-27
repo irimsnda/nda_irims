@@ -116,6 +116,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialApprovalRecommFrm'
         },
         {
             xtype: 'textarea',
+            grow: true, 
+            growMax: 200, 
             fieldLabel: 'Comment',
             name: 'comment',
             allowBlank: true

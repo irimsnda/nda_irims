@@ -36,14 +36,14 @@ Ext.define('Admin.view.commoninterfaces.grids.InspectionSchedulesAbstractGrid', 
                 flex: 1
             }, {
                 xtype: 'gridcolumn',
-                dataIndex: 'start_date',
-                text: 'Scheduled Start Date',
+                dataIndex: 'travel_date',
+                text: 'Travel Date',
                 flex: 1,
                 renderer: Ext.util.Format.dateRenderer('d/m/Y')
             }, {
                 xtype: 'gridcolumn',
-                dataIndex: 'end_date',
-                text: 'Scheduled End Date',
+                dataIndex: 'return_date',
+                text: 'Return Date',
                 flex: 1,
                 renderer: Ext.util.Format.dateRenderer('d/m/Y')
             }

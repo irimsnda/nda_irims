@@ -194,7 +194,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   get f() { return this.signInFrm.controls; }
   funcOnlineServices(){
     
-    this.router.navigate(['/online-services']);
+    this.router.navigate(['/online-dashboard']);
     
   }
   funcLogOut(){
@@ -242,7 +242,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                 localStorage.setItem('user',JSON.stringify(auth_response));
                 this.toastr.info(this.message, 'Success!');
                 this.isLoggedIn = auth_response.isLoggedIn;
-                this.router.navigate(['/online-services']);
+                this.router.navigate(['/online-dashboard']);
                 // location.reload();
                  this.spinner.hide();
             }else{
@@ -257,7 +257,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           }
           this.spinner.hide();
         });
-    //this.router.navigate(['/online-services']);
+    //this.router.navigate(['/online-dashboard']);
   }
   funcPublicNavigation(router_link){
     

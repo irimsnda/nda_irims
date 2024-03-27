@@ -19,7 +19,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.InspectionScheduleSelectionGr
             handler: 'showGmpInspectionScheduleDetails',
             iconCls: 'x-fa fa-plus',
             winTitle: 'GMP Inspection Schedule',
-            winWidth: '65%',
+            winWidth: '85%',
             ui: 'soft-green',
             childXtype: 'inspectionschedulingfrmpanel'
         },
@@ -79,6 +79,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.InspectionScheduleSelectionGr
                     iconCls: 'x-fa fa-check',
                     ui: 'soft-purple',
                     name: 'sync_btn',
+                    storeID: 'gmpinspectionschedulingphysicalgridstr',
                     hidden: true,
                     disabled: true,
                     winWidth: '50%'
@@ -128,15 +129,15 @@ Ext.define('Admin.view.gmpapplications.views.grids.InspectionScheduleSelectionGr
     columns: [
         {
             xtype: 'gridcolumn',
-            dataIndex: 'actual_start_date',
-            text: 'Actual Start Date',
+            dataIndex: 'travel_date',
+            text: 'Travel Date',
             flex: 1,
             renderer: Ext.util.Format.dateRenderer('d/m/Y'),
             hidden: true
         }, {
             xtype: 'gridcolumn',
-            dataIndex: 'actual_end_date',
-            text: 'Actual End Date',
+            dataIndex: 'return_date',
+            text: 'Return Date',
             flex: 1,
             renderer: Ext.util.Format.dateRenderer('d/m/Y'),
             hidden: true

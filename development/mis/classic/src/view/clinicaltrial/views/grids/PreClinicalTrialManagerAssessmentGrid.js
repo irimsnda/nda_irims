@@ -71,13 +71,11 @@ Ext.define('Admin.view.clinicaltrial.views.grids.PreClinicalTrialManagerAssessme
             ui: 'gray',
             menu: {
                 xtype: 'menu',
-                items: [
-                    // {
-                    //     text: 'Print Confidential Agreement',
-                    //     iconCls: 'x-fa fa-cubes',
-                    //     hidden: true,
-                    //     handler: 'showApplicationQueries'
-                    // },
+                items: [{
+                        text: 'Request for Additional Information',
+                        iconCls: 'x-fa fa-file-pdf-o',
+                        handler: 'showApplicationQueries'
+                    },
                     {
                         text: 'Application Documents',
                         iconCls: 'x-fa fa-file',
@@ -85,7 +83,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.PreClinicalTrialManagerAssessme
                         action: 'edit',
                         childXtype: '',
                         winTitle: 'Application Documents',
-                        winWidth: '40%',
+                        winWidth: '70%',
                         isReadOnly: 1,
                         document_type_id: '',
                         handler: 'showPreviousUploadedDocs'
@@ -97,6 +95,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.PreClinicalTrialManagerAssessme
                     },{
                         text: 'View Screening Checklists & Recommendation',
                         iconCls: 'x-fa fa-check-square',
+                        hidden:true,
                         handler: 'showApplicationChecklists'
                     }
                 ]

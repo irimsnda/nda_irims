@@ -18,9 +18,17 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                     url: 'importexportpermits/getImportExportManagerReviewApplications'
                 }
             },
-            isLoad: false
+            isLoad: true
         },
-        
+        select: function (sel, record, index, eOpts) {
+            
+            var grid = sel.view.grid,
+                selCount = grid.getSelectionModel().getCount();
+            if (selCount > 0) {
+                grid.down('button[name=submit_selected]').setDisabled(false);
+            }
+            
+        },
         deselect: function (sel, record, index, eOpts) {
             
             var grid = sel.view.grid,
@@ -42,6 +50,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         xtype: 'combo',
         fieldLabel: 'Zones',
         forceSelection: true,
+        hidden: true,
         queryMode: 'local',
         valueField: 'id',
         labelAlign : 'top',
@@ -99,6 +108,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
     },{
         xtype: 'gridcolumn',
         dataIndex: 'reference_no',
+        hidden: true,
         text: 'Permit Number',
         flex: 1
     },{
@@ -163,17 +173,18 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         text: 'Status',
         flex: 1
     },
-    // {
-    //     xtype: 'gridcolumn',
-    //     dataIndex: 'premises_validation_recommendation',
-    //     text: 'Premises Validation Recommendation',
-    //     flex: 1
-    // },{
-    //     xtype: 'gridcolumn',
-    //     dataIndex: 'products_validation_recommendation',
-    //     text: 'Products Validation Recommendation',
-    //     flex: 1
-    // },
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'premises_validation_recommendation',
+        hidden: true,
+        text: 'Premises Validation Recommendation',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'products_validation_recommendation',
+        text: 'Products Validation Recommendation',
+        flex: 1
+    },
     {
         text: 'Options',
         xtype: 'widgetcolumn',

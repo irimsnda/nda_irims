@@ -55,6 +55,7 @@ export class DrugshopLicensedetailsComponent implements OnInit {
   registeredPremisesData:any;
   personnel_type_id:number;
   app_resp:any;
+  auto:any;
   isPersonnelPopupVisible:boolean;
   is_local_agent:boolean;
   isRegistrantDetailsWinshow:boolean= false;

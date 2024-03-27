@@ -179,7 +179,7 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.panels.PromotionM
                     iconCls: 'fa fa-check',
                     name: 'process_submission_btn',
                     storeID: 'foodpremiseregistrationstr',
-                    table_name: 'tra_premises_applications',
+                    table_name: 'tra_promotion_adverts_applications',
                     winWidth: '50%'
                 }
             ]

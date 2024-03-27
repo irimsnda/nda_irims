@@ -34,7 +34,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
             }, {
                 xtype: 'displayfield',
                 name: 'workflow_stage',
-                fieldLabel: 'Workflow Stage',
+                fieldLabel: 'Application Status',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
@@ -137,6 +137,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
                 ui: 'soft-purple',
                 name: 'submit_selected',
                 table_name: 'tra_importexport_applications',
+                disabled: true,
                 action: 'process_submission_btn',
                 winWidth: '50%',
                 toaster: 0

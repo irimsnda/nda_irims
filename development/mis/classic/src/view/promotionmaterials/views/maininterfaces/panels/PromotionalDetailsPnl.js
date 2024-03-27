@@ -5,7 +5,7 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.panels.Promotiona
     extend: 'Ext.tab.Panel',
     xtype: 'promotionaldetailspnl',
     layout: {//
-        type: 'fit'
+        //type: 'fit'
     },autoScroll: true,
     defaults:{
         margin: 3
@@ -17,10 +17,30 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.panels.Promotiona
         xtype: 'promotionalappdetailsfrm',
         autoScroll: true,
         title: 'Promotion Material Applications'
-    }, {
+    }, 
+    {
         xtype: 'promotionsotherinformationpnl',
-        title: 'Promotional Other Details',
-    }, {
+        title: 'Product Particulars',
+    },
+    // {
+    //     xtype: 'promotiommaterialproductgrid',
+    //     title: 'Product Particulars',
+    //     listeners: {
+    //         beforerender: {
+    //             fn: 'setConfigGridsStore',
+    //             config: {
+    //                 pageSize: 1000,
+    //                 storeId: 'promotiommaterialproductgridstr',
+    //                 proxy: {
+    //                     url: 'promotionmaterials/getPromotionMaterialsProductParticular',
+    //                 }
+    //             },
+    //             isLoad: true
+    //         }
+    //     },
+    // },
+
+     {
         xtype: 'hiddenfield',
         name: '_token',
         value: token

@@ -77,7 +77,6 @@ Ext.define('Admin.view.premiseregistration.views.sharedinterfaces.panels.NewPrem
             items: [
                 {
                     xtype: 'transitionsbtn',
-                    hidden:true,
                 },
                 {
                     text: 'Return Back',
@@ -119,34 +118,6 @@ Ext.define('Admin.view.premiseregistration.views.sharedinterfaces.panels.NewPrem
                         ]
                     }
                 },
-
-
-                // {
-                    // text: 'View IOD Report',
-                    // ui: 'soft-green',
-                    // iconCls: 'fa fa-eye',
-                    // childXtype: 'premiseinspectiondetailstabpnl',
-                    // winTitle: 'IOD Report',
-                    // winWidth: '60%',
-                    // name: 'preview_report_btn',
-                    // stores: '[]',
-                    // report_type_id:1,
-                    // handler: 'showInspectionReportDetails',
-                //     hidden: true
-                // },
-                // {
-                //     text: 'View RID Recommendation',
-                //     ui: 'soft-red',
-                //     iconCls: 'fa fa-eye',
-                //     childXtype: 'premiseinspectiondetailstabpnl',
-                //     winTitle: 'RID Recommendation',
-                //     winWidth: '60%',
-                //     name: 'regional_inspector_report_btn',
-                //     stores: '[]',
-                //     report_type_id:2,
-                //     handler: 'showInspectionReportDetails',
-                //     hidden: true
-                // },
 
                  {
                     text: 'Inspection History',

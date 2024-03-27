@@ -142,6 +142,8 @@ Ext.define('Admin.view.promotionmaterials.views.forms.ProductIngredientStrengthF
 		{
 			xtype:'textarea',
 			name:'remarks',
+            grow: true, 
+            growMax: 200, 
 			colSpan:3,
 			fieldLabel:'Remarks'
 		}

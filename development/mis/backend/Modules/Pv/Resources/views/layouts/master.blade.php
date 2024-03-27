@@ -6,14 +6,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Module Pv</title>
 
-       {{-- Laravel Vite - CSS File --}}
-       {{-- {{ module_vite('build-pv', 'Resources/assets/sass/app.scss') }} --}}
+       {{-- Laravel Mix - CSS File --}}
+       {{-- <link rel="stylesheet" href="{{ mix('css/pv.css') }}"> --}}
 
     </head>
     <body>
         @yield('content')
 
-        {{-- Laravel Vite - JS File --}}
-        {{-- {{ module_vite('build-pv', 'Resources/assets/js/app.js') }} --}}
+        {{-- Laravel Mix - JS File --}}
+        {{-- <script src="{{ mix('js/pv.js') }}"></script> --}}
     </body>
 </html>

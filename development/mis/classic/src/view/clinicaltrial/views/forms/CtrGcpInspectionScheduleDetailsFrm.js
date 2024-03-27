@@ -86,6 +86,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.CtrGcpInspectionScheduleDetails
         {
             xtype: 'textarea',
             name: 'description',
+            grow: true, 
+            growMax: 200, 
             fieldLabel: 'Description',
             columnWidth: 0.99,
             allowBlank: true

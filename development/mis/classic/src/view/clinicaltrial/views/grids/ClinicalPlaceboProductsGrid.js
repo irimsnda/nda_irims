@@ -25,6 +25,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalPlaceboProductsGrid', {
             text: 'Add Product',
             iconCls: 'x-fa fa-plus',
             ui: 'soft-green',
+             hidden:true,
             table_name: 'clinical_placebaproducts',
             name: 'add_impproduct',
             winTitle: 'IMP Product',
@@ -88,6 +89,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalPlaceboProductsGrid', {
                     handler: 'showImpProductDetails',
                     winTitle: 'Placebo Product',
                     winWidth: '90%',
+                     hidden:true,
                     table_name: 'clinical_placebaproducts',
                     childXtype: 'impproductspnl'
                 }, {
@@ -98,6 +100,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalPlaceboProductsGrid', {
                     storeID: 'placeboproductsstr',
                     action_url: 'clinicaltrial/deleteClinicalTrialRecord',
                     action: 'actual_delete',
+                     hidden:true,
                     handler: 'doDeleteClinicalTrialWidgetParam',
                     hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
                 }

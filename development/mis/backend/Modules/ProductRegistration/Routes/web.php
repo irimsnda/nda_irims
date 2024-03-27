@@ -19,9 +19,12 @@ Route::post('/saveQualityReport', [ProductRegistrationController::class,'saveQua
     Route::post('/saveNewProductReceivingBaseDetails', [ProductRegistrationController::class,'saveNewProductReceivingBaseDetails']);
     Route::post('/saveRenAltProductReceivingBaseDetails', [ProductRegistrationController::class,'saveRenAltProductReceivingBaseDetails']);
     Route::post('/onSaveProductinformation', [ProductRegistrationController::class,'onSaveProductinformation']);
+
+    Route::post('/onSaveProductSampleDetails', [ProductRegistrationController::class,'onSaveProductSampleDetails']);
     
     Route::post('/saveQualityReportdetails', [ProductRegistrationController::class,'saveQualityReportdetails']);
     
+    Route::get('/getQualitySummaryDetails', [ProductRegistrationController::class,'getQualitySummaryDetails']);
     
     Route::post('saveApplicationInvoicingDetails', [ProductRegistrationController::class,'saveApplicationInvoicingDetails']);
     
@@ -48,6 +51,8 @@ Route::post('/saveQualityReport', [ProductRegistrationController::class,'saveQua
     Route::get('/prepareProductsInvoicingStage', [ProductRegistrationController::class,'prepareProductsInvoicingStage']);
     Route::get('/prepareNewProductPaymentStage', [ProductRegistrationController::class,'prepareNewProductPaymentStage']);
     Route::get('/prepareProductsRegMeetingStage', [ProductRegistrationController::class,'prepareProductsRegMeetingStage']);
+
+     Route::get('/getApprovedProductsRegApplications', [ProductRegistrationController::class,'getApprovedProductsRegApplications']);
 
     
     Route::post('/saveTCMeetingDetails', [ProductRegistrationController::class,'saveTCMeetingDetails']);

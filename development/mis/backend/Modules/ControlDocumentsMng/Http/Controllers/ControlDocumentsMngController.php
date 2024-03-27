@@ -205,6 +205,8 @@ class ControlDocumentsMngController extends Controller
                                 'created_by' => $user_id
                             );
 
+                           
+
                             insertRecord('tra_submissions', $submission_params, $user_id);
                             $res['active_application_id'] = $active_application_id;
                             $res['application_code'] = $application_code;
@@ -478,8 +480,8 @@ class ControlDocumentsMngController extends Controller
                 ->leftJoin('wf_tfdaprocesses as t4', 't7.process_id', '=', 't4.id')
                 ->leftJoin('wf_workflow_stages as t5', 't7.current_stage', '=', 't5.id')
                 ->leftJoin('par_system_statuses as t6', 't1.application_status_id', '=', 't6.id')
-                ->join('users as t8', 't1.requested_by', '=', 't8.id')
-                ->join('users as t9', 't1.approved_by', '=', 't9.id')
+                ->leftJoin('users as t8', 't1.requested_by', '=', 't8.id')
+                ->leftJoin('users as t9', 't1.approved_by', '=', 't9.id')
                 ->join('par_directorates as t10', 't2.directorate_id', '=', 't10.id')
                 ->join('par_directorate_units as t11', 't2.directorate_unit_id', '=', 't11.id')
                 ->leftJoin('tra_application_uploadeddocuments as t12','t1.application_code','=','t12.application_code')
@@ -546,7 +548,9 @@ class ControlDocumentsMngController extends Controller
     }
     public function validateDocumentUploadExists(Request $req){
         $applications_table = $req->application_code;
-        $doc_record = DB::table('tra_application_uploadeddocuments')
+
+        //tra_application_uploadeddocuments
+        $doc_record = DB::table('tra_doccontrolreview_management')
                         ->where(array('application_code'=>$applications_table))
                         ->count();
         if($doc_record >0){
@@ -774,7 +778,7 @@ class ControlDocumentsMngController extends Controller
     public function saveDocumentDistributionUserList(Request $req)
     {
         $application_id = $req->application_id;
-        $user_ids = json_decode($req->user_id);
+        $user_ids = json_decode($req->group_id);
         $user_id = $this->user_id;
         $res = array('success'=>true, 'message'=>'Distribution list details saved successfully');
         

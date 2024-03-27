@@ -105,7 +105,7 @@ Ext.define('Admin.view.surveillance.views.forms.SampleDetailsFrm', {
                         proxy: {
                             url: 'sampleanalysis/getSampleAnalyisParameter',
                             extraParams: {
-                                table_name: 'dosageform',
+                                table_name: 'par_dosage_forms',
                                 has_filter: 1
                             }
                         }

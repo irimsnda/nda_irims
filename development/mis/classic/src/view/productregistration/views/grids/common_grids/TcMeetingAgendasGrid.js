@@ -77,6 +77,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.TcMeetingAge
             dataIndex: 'agenda',
             flex: 1
         },
+        
         {
             text: 'Options',
             xtype: 'widgetcolumn',

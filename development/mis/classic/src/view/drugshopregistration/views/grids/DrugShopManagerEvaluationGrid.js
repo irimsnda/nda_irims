@@ -279,11 +279,12 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopManagerEvaluatio
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'premise_name',
-        text: 'Premise Name',
+        text: 'Drug Shop Name',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'region_name',
+        hidden:true,
         text: 'Region/Province Name',
         flex: 1
     }, {
@@ -324,7 +325,21 @@ Ext.define('Admin.view.drugshopregistration.views.grids.DrugShopManagerEvaluatio
             ui: 'gray',
             menu: {
                 xtype: 'menu',
-                items: [
+                items: [ {
+                        text: 'Request for Additional Information',
+                        iconCls: 'x-fa fa-file-pdf-o',
+                        handler: 'showApplicationQueries'
+                    },{
+                        xtype: 'button',
+                        text: 'Return Back Application(s)',
+                        iconCls: 'x-fa fa-check',
+                        ui: 'soft-green',
+                        storeID: 'productManagerMeetingStr',
+                        table_name: 'tra_premises_applications',
+                        action: 'process_returnsubmission_btn',
+                        winWidth: '50%',
+                        toaster: 0
+                    },
                     {
                         text: 'Preview Details',
                         iconCls: 'x-fa fa-bars',

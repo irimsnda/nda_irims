@@ -35,6 +35,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.TcRecommendationFrm', {
         },
         {
             xtype: 'textarea',
+            grow: true, 
+            growMax: 200, 
             fieldLabel: 'Summary of the Final Recommendation',
             name: 'comments',
             allowBlank: true

@@ -13,7 +13,7 @@ Ext.define('Admin.view.promotionmaterials.views.containers.MedicalDevicesPromoAd
         {
             xtype: 'hiddenfield',
             name: 'section_id',
-            value: 4
+            value: 5
         },
         {
             xtype: 'promotionadvertmedicaldeviceswrapper',

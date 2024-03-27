@@ -41,7 +41,7 @@ Ext.define('Admin.view.workflowmanagement.viewcontrollers.WorkflowManagementVctr
             winWidth = btn.winWidth,
             form = Ext.widget(childXtype);
 
-        funcShowCustomizableWindow(winTitle, '50%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, '50%', form, 'customizablewindow');
 
     },
 
@@ -77,7 +77,7 @@ Ext.define('Admin.view.workflowmanagement.viewcontrollers.WorkflowManagementVctr
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(title, width, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, width, form, 'customizablewindow');
         /*} else {
             toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
             return false;
@@ -284,7 +284,7 @@ Ext.define('Admin.view.workflowmanagement.viewcontrollers.WorkflowManagementVctr
             me.fireEvent('refreshStores', storeArray);
         }
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, width, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, width, form, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -559,7 +559,7 @@ Ext.define('Admin.view.workflowmanagement.viewcontrollers.WorkflowManagementVctr
         form.down('hiddenfield[name=workflow_id]').setValue(workflow_id);
         form.down('numberfield[name=order_no]').setValue(record_count + 1);
         form.down('hiddenfield[name=module_id]').setValue(module_id);
-        funcShowCustomizableWindow('WorkFlow Stage', '60%', tabPnl, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('WorkFlow Stage', '60%', tabPnl, 'customizablewindow');
     },
 
     showEditWorkFlowStageForm: function (item) {
@@ -574,7 +574,7 @@ Ext.define('Admin.view.workflowmanagement.viewcontrollers.WorkflowManagementVctr
         form.loadRecord(record);
         form.down('hiddenfield[name=module_id]').setValue(module_id);
         form.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
-        funcShowCustomizableWindow('WorkFlow Stage', '60%', tabPnl, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('WorkFlow Stage', '60%', tabPnl, 'customizablewindow');
     },
 
     showAddWorkflowActionForm: function (btn) {
@@ -595,7 +595,7 @@ Ext.define('Admin.view.workflowmanagement.viewcontrollers.WorkflowManagementVctr
             wizardFrm = grid.up('workflowwizardfrm'),
             workflow_id = wizardFrm.down('hiddenfield[name=active_workflow_id]').getValue();
         form.down('hiddenfield[name=workflow_id]').setValue(workflow_id);
-        funcShowCustomizableWindow('WorkFlow Transition', '45%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('WorkFlow Transition', '45%', form, 'customizablewindow');
     },
 
     showEditWorkflowActionForm: function (item) {
@@ -1229,7 +1229,7 @@ Ext.define('Admin.view.workflowmanagement.viewcontrollers.WorkflowManagementVctr
             grid = Ext.widget('workflowassociatedmenusgrid');
         grid.down('hiddenfield[name=workflow_id]').setValue(workflow_id);
         grid.down('displayfield[name=workflow_display]').setValue(workflow_name);
-        funcShowCustomizableWindow('Workflow Associated Menus', '50%', grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Workflow Associated Menus', '50%', grid, 'customizablewindow');
     }
 
 });

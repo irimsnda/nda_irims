@@ -38,7 +38,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
             }, {
                 xtype: 'displayfield',
                 name: 'workflow_stage',
-                fieldLabel: 'Workflow Stage',
+                fieldLabel: 'Application Status',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
@@ -139,7 +139,8 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                         text: 'Submit Application(s)',
                         iconCls: 'x-fa fa-check',
                         ui: 'soft-purple',
-                        name: 'submit_selected',disabled: true,
+                        name: 'submit_selected',
+                        disabled: true,
                         table_name: 'tra_importexport_applications',
                         action: 'process_submission_btn',
                         winWidth: '50%',

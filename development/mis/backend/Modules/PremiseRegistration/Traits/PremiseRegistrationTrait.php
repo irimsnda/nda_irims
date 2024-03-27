@@ -1009,27 +1009,129 @@ trait PremiseRegistrationTrait
         return $return_val;
     }
 
-    public function savePremiseApplicationApprovalDetails(Request $request, $sub_module_id, $app_details)
+    // public function savePremiseApplicationApprovalDetails(Request $request, $sub_module_id, $app_details)
+    // {
+    //     $document_types = array(
+    //         'certificate',
+    //         'permit'
+    //     );
+    //     $decision_id = $request->input('decision_id');
+    //     if ($sub_module_id == 3 || $sub_module_id == 4) {//Alteration, Cancellation
+    //         $res = $this->savePremiseApplicationAlterationRecommendationDetails($request,$document_types);
+    //     }else if($sub_module_id == 50){
+    //         $res = $this->savePremiseInspectionRecommendationDetails($request,$document_types);
+    //     } else {
+    //         $res = $this->savePremiseApplicationRecommendationDetails($request,$document_types);
+    //     }
+        
+    //     return $res;
+    // }
+
+     public function savePremiseApplicationApprovalDetails(Request $request, $sub_module_id)
     {
+        
+        $table_name = $request->input('table_name');
+        $application_id = $request->input('application_id');
+        $application_code = $request->input('application_code');
+        $selected_appcodes = $request->input('selected_appcodes');
+        $selected_appIds = $request->input('selected_appIds');
         $document_types = array(
             'certificate',
             'permit'
         );
-        $decision_id = $request->input('decision_id');
-        if ($sub_module_id == 3 || $sub_module_id == 4) {//Alteration, Cancellation
-            $res = $this->savePremiseApplicationAlterationRecommendationDetails($request,$document_types);
-        }else if($sub_module_id == 50){
-            $res = $this->savePremiseInspectionRecommendationDetails($request,$document_types);
-        } else {
-            $res = $this->savePremiseApplicationRecommendationDetails($request,$document_types);
-        }
+      
+        $res = array();
         
+        try {
+            if ($sub_module_id == 3 || $sub_module_id == 4) {//Alteration, Cancellation
+             
+            if($selected_appcodes != ''){
+                
+                $selected_appcodes = json_decode($selected_appcodes);
+                $selected_appIds = json_decode($selected_appIds);
+               
+                if (count($selected_appcodes) == count($selected_appIds)) {
+                        $count = count($selected_appcodes);
+
+                        for ($i = 0; $i < $count; $i++) {
+                            $application_code = $selected_appcodes[$i];
+                            $application_id = $selected_appIds[$i];
+
+                            $res = $this->savePremiseApplicationAlterationRecommendationDetails($application_id, $application_code, $table_name, $request, $res, $document_types);
+                        }
+                    }
+                }
+            else{
+                     $res = $this->savePremiseApplicationAlterationRecommendationDetails($application_id, $application_code, $table_name, $request, $res,$document_types);
+
+            }
+            }else if($sub_module_id == 50){
+                 
+            if($selected_appcodes != ''){
+                
+                $selected_appcodes = json_decode($selected_appcodes);
+                $selected_appIds = json_decode($selected_appIds);
+               
+                 if (count($selected_appcodes) == count($selected_appIds)) {
+                        $count = count($selected_appcodes);
+
+                        for ($i = 0; $i < $count; $i++) {
+                            $application_code = $selected_appcodes[$i];
+                            $application_id = $selected_appIds[$i];
+
+                            $res = $this->savePremiseInspectionRecommendationDetails($application_id, $application_code, $table_name, $request, $res, $document_types);
+                        }
+                    }
+                }
+            else{
+                     $res = $this->savePremiseInspectionRecommendationDetails($application_id, $application_code, $table_name, $request, $res,$document_types);
+
+            }
+            } else {
+                 
+            if($selected_appcodes != ''){
+                
+                $selected_appcodes = json_decode($selected_appcodes);
+                $selected_appIds = json_decode($selected_appIds);
+               
+                if (count($selected_appcodes) == count($selected_appIds)) {
+                        $count = count($selected_appcodes);
+
+                        for ($i = 0; $i < $count; $i++) {
+                            $application_code = $selected_appcodes[$i];
+                            $application_id = $selected_appIds[$i];
+
+                            $res = $this->savePremiseApplicationRecommendationDetails($application_id, $application_code, $table_name, $request, $res, $document_types);
+                        }
+                    }
+                }
+             else{
+                     $res = $this->savePremiseApplicationRecommendationDetails($application_id, $application_code, $table_name, $request, $res,$document_types);
+
+            }
+            }
+         
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
         return $res;
     }
-    public function savePremiseInspectionRecommendationDetails(Request $request,$document_types){
-        $table_name = $request->input('table_name');
-        $application_id = $request->input('application_id');
-        $application_code = $request->input('application_code');
+
+
+
+
+    public function savePremiseInspectionRecommendationDetails($application_id, $application_code, $table_name, $request, $res,$document_types){
+        // $table_name = $request->input('table_name');
+        // $application_id = $request->input('application_id');
+        // $application_code = $request->input('application_code');
         $qry = DB::table($table_name)
             ->where('id', $application_id);
         $app_details = $qry->first();
@@ -1103,11 +1205,11 @@ trait PremiseRegistrationTrait
 
 
     }
-    public function savePremiseApplicationRecommendationDetails(Request $request,$document_types)
+    public function savePremiseApplicationRecommendationDetails($application_id, $application_code, $table_name, $request, $res,$document_types)
     {  
-        $table_name = $request->input('table_name');
-        $application_id = $request->input('application_id');
-        $application_code = $request->input('application_code');
+        // $table_name = $request->input('table_name');
+        // $application_id = $request->input('application_id');
+        // $application_code = $request->input('application_code');
         $qry = DB::table($table_name)
             ->where(array('application_code'=> $application_code));
         $app_details = $qry->first();
@@ -1142,11 +1244,18 @@ trait PremiseRegistrationTrait
                 }
 				$sub_module_id = $app_details->sub_module_id;
 				$module_id = $app_details->module_id;
+                $district_id = getSingleRecordColValue('tra_premises', array('id' => $app_details->premise_id), 'district_id');
 				$section_id = $app_details->section_id;
 				if($sub_module_id == 1){
 					$ref_id = 43;
-				}
-				else{$ref_id = 5;
+				}else if($sub_module_id == 33){
+                    $ref_id = 43;
+                }
+                else if($sub_module_id ==96){
+                    $ref_id = 106;
+                }
+				else{
+                    $ref_id = 5;
 					
 				}
 				if($decision_id == 1){
@@ -1201,7 +1310,7 @@ trait PremiseRegistrationTrait
                         $qry->update(array('application_status_id' => 6));
                         //permit
                         if ($prev_decision_id != 1) {
-                            $permit_no = generatePremisePermitNo($app_details->zone_id, $app_details->section_id, $table_name, $user_id, $ref_id ,$sub_module_id);
+                            $permit_no = generatePremisePermitNo($district_id, $app_details->section_id, $table_name, $user_id, $ref_id ,$sub_module_id);
                             $params['permit_no'] = $permit_no;
                         }
                     } else {
@@ -1221,7 +1330,7 @@ trait PremiseRegistrationTrait
                     $params['created_by'] = $user_id;
 				$premise_reg_no = '';
                     if ($decision_id == 1) {
-						if ($app_details->sub_module_id == 2 || $app_details->sub_module_id == 108) {
+						if ($app_details->sub_module_id == 2 || $app_details->sub_module_id == 110 || $app_details->sub_module_id == 121) {
 							$premise_reg_no = getSingleRecordColValue('registered_premises', array('id'=>$app_details->reg_premise_id), 'registration_no');
 						}
 						else{
@@ -1232,7 +1341,7 @@ trait PremiseRegistrationTrait
                         $validity_status_id = 2;
                         $registration_status_id = 2;
                         //permits
-                        $permit_no = generatePremisePermitNo($app_details->zone_id, $app_details->section_id, $table_name, $user_id, $ref_id ,$sub_module_id);
+                        $permit_no = generatePremisePermitNo($district_id, $app_details->section_id, $table_name, $user_id, $ref_id ,$sub_module_id);
                         $params['permit_no'] = $permit_no;
                         $qry->update(array('application_status_id' => 6));
                     } else {
@@ -1256,7 +1365,7 @@ trait PremiseRegistrationTrait
                 }
                 updatePortalApplicationStatusWithCode($application_code, 'wb_premises_applications',$portal_status_id);
 
-                if ($app_details->sub_module_id == 1 || $app_details->sub_module_id == 2 || $app_details->sub_module_id == 96 || $app_details->sub_module_id == 97) {//we only update premise validity status on new applications
+                if ($app_details->sub_module_id == 1 || $app_details->sub_module_id == 2 || $app_details->sub_module_id == 96 || $app_details->sub_module_id == 97  || $app_details->sub_module_id == 119 || $app_details->sub_module_id == 120) {//we only update premise validity status on new applications
                     $updates = array(
                         'validity_status_id' => $validity_status_id,
                         'registration_status_id' => $registration_status_id,
@@ -1296,11 +1405,11 @@ trait PremiseRegistrationTrait
         return $res;
     }
 
-    public function savePremiseApplicationAlterationRecommendationDetails(Request $request)
+    public function savePremiseApplicationAlterationRecommendationDetails($application_id, $application_code, $table_name, $request, $res,$document_types)
     {
-        $table_name = $request->input('table_name');
-        $application_id = $request->input('application_id');
-        $application_code = $request->input('application_code');
+        // $table_name = $request->input('table_name');
+        // $application_id = $request->input('application_id');
+        // $application_code = $request->input('application_code');
         $qry = DB::table($table_name)
             ->where('id', $application_id);
         $app_details = $qry->first();

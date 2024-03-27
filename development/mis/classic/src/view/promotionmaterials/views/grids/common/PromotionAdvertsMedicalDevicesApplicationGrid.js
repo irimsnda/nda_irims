@@ -159,6 +159,7 @@ Ext.define('Admin.view.promotionmaterials.views.grids.common.PromotionAdvertsMed
     },  {
         xtype: 'gridcolumn',
         text: 'From',
+         hidden:true,
         dataIndex: 'from_user',
         flex: 1,
         tdCls: 'wrap'
@@ -166,6 +167,7 @@ Ext.define('Admin.view.promotionmaterials.views.grids.common.PromotionAdvertsMed
     {
         xtype: 'gridcolumn',
         text: 'To',
+        hidden:true,
         dataIndex: 'to_user',
         flex: 1,
         tdCls: 'wrap'
@@ -187,6 +189,7 @@ Ext.define('Admin.view.promotionmaterials.views.grids.common.PromotionAdvertsMed
         flex: 1
     },  {
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'sponsor_name',
         text: 'Sponsor Name',
         flex: 1

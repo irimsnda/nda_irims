@@ -216,7 +216,7 @@ Ext.define('Admin.view.gmpapplications.views.panels.ManSiteAppMoreDetailsAltWiza
                     step: 2,
                     iconCls: 'fa fa-suitcase',
                     enableToggle: true,
-                    text: 'PRODUCT LINES DETAILS',
+                    text: 'MANUFACTURING ACTIVITY(S) DETAILS',
                     name: 'line_details',
                     action: 'quickNav',
                     handler: 'quickNavigationMoreDetailsAlt'

@@ -182,6 +182,7 @@ Ext.define('Admin.view.clinicaltrial.views.panels.GcpApprovalInspectionProcesSWi
                 {
                     text: 'Update Application Details',
                     ui: 'soft-purple',
+                    hidden:true,
                     iconCls: 'fa fa-save',
                     name: 'save_btn',
                     toaster: 1

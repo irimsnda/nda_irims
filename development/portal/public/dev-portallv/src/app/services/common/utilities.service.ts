@@ -27,6 +27,7 @@ export class Utilities {
 
   trader_id: number;
   mistrader_id: number;
+  traderaccount_type_id:number;
   email_address: string;
   config: any;
   application_details: any;
@@ -38,11 +39,13 @@ export class Utilities {
     if( this.authService.getUserDetails()){
       let user = this.authService.getUserDetails();
       this.trader_id = user.trader_id;
+      this.traderaccount_type_id = user.traderaccount_type_id;
       this.mistrader_id = user.mistrader_id;
       this.email_address = user.email_address;
     }
     else{
       this.trader_id;
+      this.traderaccount_type_id;
       this.mistrader_id;
       this.email_address;
     }
@@ -100,7 +103,7 @@ export class Utilities {
       "Authorization": "Bearer " + this.authService.getAccessToken(),
     });
     let user = this.authService.getUserDetails();
-    return this.http.post(AppSettings.base_url + 'utilities/onPermitApplicationSubmit', submission_data, { params: { 'trader_id': this.trader_id, 'traderemail_address': this.email_address, 'application_code': application_code, 'tracking_no': tracking_no, 'table_name': table_name}, headers: headers })
+    return this.http.post(AppSettings.base_url + 'utilities/onPermitApplicationSubmit', submission_data, { params: { 'trader_id': this.trader_id, 'traderemail_address': this.email_address, 'application_code': application_code, 'tracking_no': tracking_no, 'table_name': table_name,'traderaccount_type_id':this.traderaccount_type_id}, headers: headers })
       .pipe(map(data => {
         return data;
       }));
@@ -183,6 +186,26 @@ export class Utilities {
         return <any>data;
       }));
   }
+ onLoadApplicationSystemReportsType(table_name){
+    let user = this.authService.getUserDetails();
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { trader_id: user.trader_id, table_name:table_name},
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'utilities/getApplicationReportTypes', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
+
+
+
+
   onMisPermitsApplicationSubmit(viewRef, application_code, tracking_no, table_name, app_route,submission_data={}) {
     this.modalServ.openDialog(viewRef, {
       title: 'Do you want to submit the application with tracking no ' + tracking_no + ' for processing?',
@@ -307,6 +330,38 @@ export class Utilities {
     });
 
   }
+
+
+  getApplicationInspectionDetails(application_code, table_name, status_column) {
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { application_code: application_code, table_name: table_name, status_column },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'utilities/getApplicationInspectionDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
+  onSaveInspectionDetails(application_code) {
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { application_code: application_code },
+      headers: headers
+    };
+    return this.http.post(AppSettings.base_url + 'gmpinspection/onSaveInspectionDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+  
   
   getApplicationPreRejectionDetails(application_code, table_name, status_column) {
     var headers = new Headers({
@@ -434,6 +489,42 @@ export class Utilities {
         return <any>data;
       }));
   }
+
+  validateClinicalTrialSaeOtherDetails(application_id,  table_name) {
+
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { 'trader_id': this.trader_id, 'trader_email': this.email_address, application_id: application_id, table_name: table_name },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'utilities/validateClinicalTrialSaeOtherDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
+
+validateClinicalTrialDetails(application_id,  table_name) {
+
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { 'trader_id': this.trader_id, 'trader_email': this.email_address, application_id: application_id, table_name: table_name },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'utilities/validateClinicalTrialDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
+
+
   validateApplicationDocumentsQuerySubmission(application_code, status_id, table_name,prodclass_category_id=0) {
 
     var headers = new Headers({
@@ -602,6 +693,8 @@ export class Utilities {
       }));
 
   }
+
+
   getApplicationUniformDetails(data,path){
 
     var headers = new HttpHeaders({

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewContainerRef, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, ViewChild,ElementRef, Input,ViewContainerRef, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Utilities } from 'src/app/services/common/utilities.service';
 import { PremisesApplicationsService } from 'src/app/services/premises-applications/premises-applications.service';
@@ -7,6 +7,8 @@ import { ModalDialogService } from 'ngx-modal-dialog';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { ConfigurationsService } from 'src/app/services/shared/configurations.service';
 import { ImportexportService } from 'src/app/services/importexp-applications/importexport.service';
+import { SharedClinicaltrialComponent } from '../../shared-clinicaltrial/shared-clinicaltrial.component';
+import { DxTextAreaComponent } from 'devextreme-angular';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { NgxSmartModalService } from 'ngx-smart-modal';
@@ -59,11 +61,15 @@ export class ClinicalpresubmissionGeneraldetailsComponent implements OnInit {
   is_clinicalin_othercountry:any;
   is_clinicalin_uganda:any;
   minDate: Date = new Date();
-  meetingTime:Date = new Date();
+  minMeetingTime: Date = new Date();
+  maxMeetingTime: Date = new Date();
 
-  //par_clinical_phases
+  selectedMeetingTime: Date | null = null;
+  isInvalidMeetingTime: boolean = false;
+
   @Output() docClinicalSectionsEvent = new EventEmitter();
-  constructor(public utilityService: Utilities, public premappService: PremisesApplicationsService, public dmsService: DocumentManagementService, public fb: FormBuilder, public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: ImportexportService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public httpClient: HttpClient) {
+
+  constructor(private elRef: ElementRef,public utilityService: Utilities, public premappService: PremisesApplicationsService, public dmsService: DocumentManagementService, public fb: FormBuilder, public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: ImportexportService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public httpClient: HttpClient) {
     this.sponsorInvestigatorFrm = new FormGroup({
       name: new FormControl('', Validators.compose([Validators.required])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
@@ -76,6 +82,8 @@ export class ClinicalpresubmissionGeneraldetailsComponent implements OnInit {
       physical_address: new FormControl('', Validators.compose([Validators.required])),
       contact_person: new FormControl('', Validators.compose([Validators.required]))
     });
+    this.minMeetingTime.setHours(8, 0, 0); 
+    this.maxMeetingTime.setHours(17, 0, 0); 
 
     this.onLoadSections();
     this.onLoadMeetingType();
@@ -84,6 +92,31 @@ export class ClinicalpresubmissionGeneraldetailsComponent implements OnInit {
     this.onLoadconfirmationDataData();
     
   }
+validateMeetingTime(event) {
+    const selectedTime = event.value;
+
+    const minTime = new Date();
+    minTime.setHours(9, 0, 0, 0); // Set to 8:00 AM
+
+    const maxTime = new Date();
+    maxTime.setHours(17, 0, 0, 0); // Set to 5:00 PM
+
+    if (selectedTime < minTime || selectedTime > maxTime) {
+      this.isInvalidMeetingTime = true;
+      const validTime = new Date(Math.max(minTime.getTime(), Math.min(selectedTime.getTime(), maxTime.getTime())));
+      this.selectedMeetingTime = validTime;
+    } else {
+      this.isInvalidMeetingTime = false;
+    }
+  }
+
+
+adjustTextAreaHeight(event: any): void {
+  const textarea = event.target;
+  textarea.style.overflow = 'hidden'; // Hide any overflow content
+  textarea.style.height = 'auto'; // Reset height to auto
+  textarea.style.height = textarea.scrollHeight + 'px'; // Set height to match content
+}
 
   onClinicalTriaProductSectionChange($event){
     this.docClinicalSectionsEvent.emit($event.value+','+this.section_id);
@@ -105,8 +138,10 @@ export class ClinicalpresubmissionGeneraldetailsComponent implements OnInit {
 }
   ngOnInit() {
     if(!this.application_code){
-        this.preSubmissionGeneraldetailsfrm.get('zone_id').setValue(2);
     }
+
+    //this.selectedMeetingTime = new Date();
+
 
   } onLoadSections() {
     var data = {
@@ -342,7 +377,7 @@ export class ClinicalpresubmissionGeneraldetailsComponent implements OnInit {
 
     var data = {
       table_name: 'par_countries',
-      // id: 36
+       //id: 37
     };
     this.config.onLoadConfigurationData(data)
 

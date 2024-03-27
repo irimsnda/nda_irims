@@ -27,7 +27,8 @@ Route::group(['middleware' => ['web'], 'prefix' => 'dashboard'], function(){
     Route::get('getOnlineAppsSubmissionCounter', [DashboardController::class, 'getOnlineAppsSubmissionCounter']);
     Route::get('getDashApplicationGraphSummaryDetails', [DashboardController::class, 'getDashApplicationGraphSummaryDetails']);
     Route::get('getApplicationAssaignmentCount', [DashboardController::class, 'getApplicationAssaignmentCount']);
-
+    Route::get('getTodoListItems', [DashboardController::class, 'getTodoListItems']);
+    Route::post('saveTodo', [DashboardController::class, 'saveTodo']);
 
     Route::get('getDashApplicationSummaryDetails', [DashboardController::class, 'getDashApplicationSummaryDetails']);
     Route::get('getDashRevenueGraphSummaryDetails', [DashboardController::class, 'getDashRevenueGraphSummaryDetails']);

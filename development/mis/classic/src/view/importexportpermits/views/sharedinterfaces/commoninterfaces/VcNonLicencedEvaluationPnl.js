@@ -46,7 +46,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.VcNonLi
             }, {
                 xtype: 'displayfield',
                 name: 'workflow_stage',
-                fieldLabel: 'Workflow Stage',
+                fieldLabel: 'Application Status',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
@@ -140,7 +140,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.VcNonLi
                     xtype: 'senderreceiverdetailsfrm',collapsible: true,
                     title: 'Sender/Receiver Details',
                 },{
-                    xtype: 'onlineimportexportnonlicencebusinessdetailsfrm',collapsible: true,
+                    xtype: 'vcimportexportnonlicencebusinessdetailsfrm',collapsible: true,
                     title: 'Business Details',
                 }],
                 bbar:[{
@@ -180,7 +180,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.VcNonLi
             }],
             
             tbar:[{
-                text:'Recommend Selected Permits Products',
+                text:'Recommend Selected Application Products',
                // name:'btn_recommendallproducts',
                viewXtype: 'permitsproductsrecommendationfrm',
                winTitle: 'Permits Products Recommendation',
@@ -189,7 +189,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.VcNonLi
                 iconCls: 'x-fa fa-plus',
                 ui: 'soft-red',
             },'->',{
-                text:'Update Permits Products Recommendation',
+                text:'Recommend Selected Application Products',
                 name:'btn_updatesprodrecommendtion',
                 iconCls: 'x-fa fa-plus',
                 ui: 'soft-green',
@@ -198,69 +198,100 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.VcNonLi
             columns: [{
                 xtype:'rownumberer'  
               },{
-                  xtype: 'gridcolumn',
-                  dataIndex: 'brand_name',
-                  tdCls: 'wrap-text',
-                  text: 'Brand Name/Device Name',
-                  flex: 1
-              }, {
-                  xtype: 'gridcolumn',
-                  dataIndex: 'certificate_no',
-                  tdCls: 'wrap-text',
-                  text: 'Certificate No',
-                  flex: 1,
-              },{
-                  xtype: 'gridcolumn',
-                  dataIndex: 'common_name',
-                  tdCls: 'wrap-text',
-                  text: 'Common Name',
-                  flex: 1,
-              },{
-                  xtype: 'gridcolumn',
-                  dataIndex: 'product_category',
-                  hidden: true,
-                  tdCls: 'wrap-text',
-                  text: 'Product Category',
-                  flex: 1,
-              }, {
-                  xtype: 'gridcolumn',
-                  dataIndex: 'quantity',
-                  tdCls: 'wrap-text',
-                  text: 'Quantity',
-                  flex: 1,
-              }, {
-                  xtype: 'gridcolumn',
-                  dataIndex: 'packaging_units',
-                  tdCls: 'wrap-text',
-                  text: 'Packaging Units',
-                  flex: 1,
-              }, {
-                  xtype: 'gridcolumn',
-                  dataIndex: 'pack_size',hidden: true,
-                  text: 'Unit Pack size',
+          xtype: 'gridcolumn',
+          dataIndex: 'brand_name',
+          tdCls: 'wrap-text',
+          text: 'Brand Name/Device Name',
+          flex: 1
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'certificate_no',
+          hidden: true,
+          tdCls: 'wrap-text',
+          text: 'Certificate No',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'common_name',
+          tdCls: 'wrap-text',
+          text: 'Common Name',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'product_category',
+          hidden: true,
+          tdCls: 'wrap-text',
+          text: 'Product Category',
+          flex: 1,
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'quantity',
+          tdCls: 'wrap-text',
+          text: 'Quantity',hidden: true,
+          flex: 1,
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'si_unit',
+          tdCls: 'wrap-text',
+          text: 'Packaging Units',
+          flex: 1,
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'pack_size',hidden: true,
+          text: 'Unit Pack size',
+  
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'pack_unit',hidden: true,
+          text: 'Unit Pack',
+  
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'no_of_packs_tertiary',
+          tdCls: 'wrap-text',
+          text: 'Tertiary',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'no_of_packs_secondary',
+          tdCls: 'wrap-text',
+          text: 'Secondary',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'no_of_packs',
+          tdCls: 'wrap-text',
+          text: 'Primary',
+          flex: 1,
+      },
+      {
+          xtype: 'gridcolumn',
+          dataIndex: 'verification_fee_percent',
+          tdCls: 'wrap-text',
+          text: 'Verification Percentage',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'total_units',
+          text: 'Total Units',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'currency_name',
+          tdCls: 'wrap-text',
+          text: 'Currency Name',
+          flex: 1,
+      },{
           
-                  flex: 1,
-              },{
-                  xtype: 'gridcolumn',
-                  dataIndex: 'pack_unit',hidden: true,
-                  text: 'Unit Pack',
-          
-                  flex: 1,
-              },{
-                  xtype: 'gridcolumn',
-                  dataIndex: 'currency_name',
-                  tdCls: 'wrap-text',
-                  text: 'Currency Name',
-                  flex: 1
-              },{
-                  
-                  xtype: 'gridcolumn',
-                  dataIndex: 'unit_price',
-                  tdCls: 'wrap-text',
-                  text: 'Unit Price',
-                  flex: 1,
-                
-              },{
+          xtype: 'gridcolumn',
+          dataIndex: 'unit_price',
+          tdCls: 'wrap-text',
+          text: 'Unit Price',
+          flex: 1,
+        
+      },{
                   xtype: 'gridcolumn',
                   dataIndex: 'total_value',
                   tdCls: 'wrap-text',
@@ -396,7 +427,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.VcNonLi
             }]
         },{
             xtype: 'productscreeninggrid',
-            title: 'Application Screening & Recommendation',
+            title: 'Application Checklist Details',
             listeners:{
                 beforerender:function(grid){
                     btn = grid.down('button[name=raise_checklist_query]');
@@ -484,7 +515,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.VcNonLi
                     step: 2,
                     iconCls: 'fa fa-university',
                     enableToggle: true,iconAlign: 'top',
-                    text: 'Application Screening & Recommendation',
+                    text: 'Application Checklist',
                     max_step:2,
                     action: 'quickNav', wizard: 'vcnonlicencedevaluationpnl',
                     handler: 'quickScreeningNavigation'

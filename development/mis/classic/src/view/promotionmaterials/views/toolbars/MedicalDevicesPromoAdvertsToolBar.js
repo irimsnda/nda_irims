@@ -29,7 +29,7 @@ Ext.define('Admin.view.view.promotionmaterials.views.toolbars.MedicalDevicesProm
                         text: 'New Application for Approval of Promotion Material',
                         iconCls: 'x-fa fa-check',
                         handler:'onNewPromotionMaterials',
-                        section_id:4,
+                        section_id:5,
                         xtypeWrapper:'#promotionadvertmedicaldeviceswrapper',
                         app_type: 33
                     },
@@ -37,7 +37,7 @@ Ext.define('Admin.view.view.promotionmaterials.views.toolbars.MedicalDevicesProm
                         text: 'Renewal Application for Promotion & Advertisements Permits',
                         iconCls: 'x-fa fa-check',
                         handler:'onNewPromotionMaterials',
-                        section_id:4,
+                        section_id:5,
                         xtypeWrapper:'#promotionadvertmedicaldeviceswrapper',
                         app_type: 34
                     },
@@ -45,7 +45,7 @@ Ext.define('Admin.view.view.promotionmaterials.views.toolbars.MedicalDevicesProm
                         text: 'Variation Promotion & Advertisements Permits',
                         iconCls: 'x-fa fa-check',
                         handler:'onNewPromotionMaterials',
-                        section_id:4,
+                        section_id:5,
                         xtypeWrapper:'#promotionadvertmedicaldeviceswrapper',
                         app_type: 35
                     },
@@ -53,7 +53,7 @@ Ext.define('Admin.view.view.promotionmaterials.views.toolbars.MedicalDevicesProm
                         text: 'Withdrawal Promotion & Advertisements Permits',
                         iconCls: 'x-fa fa-check',
                         handler:'onNewPromotionMaterials',
-                        section_id:4,
+                        section_id:5,
                         xtypeWrapper:'#promotionadvertmedicaldeviceswrapper',
                         app_type: 36
                     }

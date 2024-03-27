@@ -38,6 +38,8 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                     width: 400,
                     name: 'gmp_type_id',
                     valueField: 'id',
+                    value:1,
+                    readOnly:true,
                     displayField: 'name',
                     queryMode: 'local',
                     allowBlank: false,
@@ -60,12 +62,58 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                         change: function (cmbo, newVal) {
                             var pnl = cmbo.up('newgmpreceivingwizard'),
                                 ltr_selection = pnl.down('combo[name=applicant_as_ltr]');
-                            if (newVal == 2 || newVal === 2) {
-                                ltr_selection.setValue(1);
+                                phamacist_fieldset = pnl.down('fieldset[name=phamacist_fieldset]');
+                                psu_no = pnl.down('textfield[name=psu_no]');
+                                licence_no = pnl.down('textfield[name=licence_no]');
+                                inspection_activities = pnl.down('combo[name=inspection_activities_id]');
+                                county_id = pnl.down('combo[name=county_id]');
+                                sub_county_id = pnl.down('combo[name=sub_county_id]');
+                                sub_county_id = pnl.down('combo[name=sub_county_id]');
+                                parish_id = pnl.down('combo[name=parish_id]');
+                                village_id = pnl.down('combo[name=village_id]');
+                                region_id = pnl.down('combo[name=region_id]');
+                                country_id = pnl.down('combo[name=country_id]');
+                                var countryStore = country_id.getStore(),
+                                filterObj = {is_local: 1},
+                                filterStr = JSON.stringify(filterObj);
+                            if (newVal == 2 || newVal === 2) {//local
+                                ltr_selection.setValue(2);
                                 ltr_selection.setReadOnly(true);
+                                phamacist_fieldset.setVisible(true);
+                                inspection_activities.setVisible(false);
+                                inspection_activities.allowBlank = true;
+                                licence_no.allowBlank = true;
+                                psu_no.allowBlank = false;
+                                psu_no.validate();
+                                county_id.setVisible(true);
+                                licence_no.setVisible(false);
+                                county_id.allowBlank = false;
+                                county_id.validate();
+                                sub_county_id.setVisible(true);
+                                parish_id.setVisible(true);
+                                village_id.setVisible(true);
+                                region_id.allowBlank = false;
+                                region_id.validate();
+                                countryStore.removeAll();
+                                countryStore.load({params: {filter: filterStr}});
+
                             }else{
                                 ltr_selection.setValue(2);
-                                ltr_selection.setReadOnly(false);
+                                ltr_selection.setReadOnly(true);
+                                phamacist_fieldset.setVisible(false);
+                                inspection_activities.setVisible(true);
+                                inspection_activities.allowBlank = false;
+                                inspection_activities.validate();
+                                psu_no.allowBlank = true;
+                                licence_no.setVisible(true);
+                                county_id.setVisible(false);
+                                county_id.allowBlank = true;
+                                sub_county_id.setVisible(false);
+                                parish_id.setVisible(false);
+                                village_id.setVisible(false);
+                                region_id.allowBlank = true;
+                                countryStore.removeAll();
+                                countryStore.load();
                             }
                         }
                     }
@@ -186,7 +234,7 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                     iconCls: 'fa fa-suitcase',
                     enableToggle: true,iconAlign: 'top',
                     name: 'line_details', max_step: 6,
-                    text: 'Block & Product Line Details',
+                    text: 'Manufacturing Activity(s) Details',
                     wizard_pnl : 'newgmpreceivingwizard',
                     action: 'quickNav'
                 },

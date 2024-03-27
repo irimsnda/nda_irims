@@ -32,6 +32,15 @@ cls: 'dashboard-todo-list',
         xtype:'hiddenfield',
         name: 'block_id'
 
+    },
+    {
+        xtype:'hiddenfield',
+        name: 'inspection_category_id'
+    },
+    {
+        xtype:'hiddenfield',
+        name: 'special_category_id'
+
     },{
         xtype: 'button',
         text: 'Add Product Line',
@@ -74,6 +83,7 @@ cls: 'dashboard-todo-list',
         minChars: 2,
         mode: 'local'
     }],
+
     listeners: {
         beforerender: {
             fn: 'setGmpApplicationGridsStore',

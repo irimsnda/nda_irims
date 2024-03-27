@@ -66,6 +66,10 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
                 click: 'onNextCardClick'
             },
 
+             'ClinicalTrialOnlineAssessmentfrm button[name=save_btn]': {
+                click: 'saveClinicalTrialOnlineAssessmentdetails'
+            },
+
             'receivingsafetyalertreportswizard button[name=prev_btn]': {
                 click: 'onPrevCardClick'
             },
@@ -95,15 +99,17 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
                 click: 'showAddImpProduct'
             },
 
-            'impproductsgrid': {
-                refresh: 'refreshimpproductsgrid'
-            },
-            'clinicalplaceboproductsgrid': {
-                refresh: 'refreshimpproductsgrid'
-            },
-            'clinicalcomparatorproductsgrid': {
-                refresh: 'refreshimpproductsgrid'
-            },
+            // 'impproductsgrid': {
+            //     refresh: 'refreshimpproductsgrid'
+            // },
+
+            
+            // 'clinicalplaceboproductsgrid': {
+            //     refresh: 'refreshimpproductsgrid'
+            // },
+            // 'clinicalcomparatorproductsgrid': {
+            //     refresh: 'refreshimpproductsgrid'
+            // },
 
             'clinicalplaceboproductsgrid button[name=add_impproduct]': {
                 click: 'showAddImpProduct'
@@ -154,6 +160,18 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
             'clinicaltrialmanagermeetinggrid button[name=save_btn]': {
                 click: 'saveTCMeetingDetails'
             },
+
+
+             'preclinicaltrialmanagermeetinggrid': {
+                beforedeselect: 'beforeManagerMeetingAppsGridDeselect'
+            },
+            'preclinicaltrialmanagermeetinggrid button[name=save_btn]': {
+                click: 'saveTCMeetingDetails'
+            },
+
+
+
+            
             //prepare main interfaces
             //COMMON
             'clinicaltrialinvoicing': {
@@ -181,6 +199,9 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
             'clinicaltrialscreening': {
                 afterrender: 'prepareNewClinicalTrialAssessment'
             },
+            'assessmentDetailsPnl': {
+                beforerender: 'prepareAssesmentDetails'
+            },
             
             'progressreportassessment': {
                 afterrender: 'prepareCtrProgressReportAssessment'
@@ -197,6 +218,13 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
             'clinicaltrialmanagermeeting': {
                 afterrender: 'prepareNewClinicalTrialManagerMeeting'
             },
+
+            'preclinicaltrialmanagermeeting': {
+                afterrender: 'preparePreClinicalTrialManagerMeeting'
+            },
+
+
+            
             'clinicaltrialrecommreview': {
                 afterrender: 'prepareNewClinicalTrialRecommReview'
             },
@@ -255,6 +283,10 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
             },
             //SAVE
             'receivingsafetyalertreportswizard button[name=save_btn]': {//new
+                click: 'saveReceivingSafetyAlertReportsDetails'
+            },
+
+            'receivingsafetyinformationcommunicationwizard button[name=save_btn]': {//new
                 click: 'saveReceivingSafetyAlertReportsDetails'
             },
             'safetyalertreportsassessmentappmoredetailswizard button[name=save_btn]': {//new
@@ -318,6 +350,12 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
             'clinicaltrialassessmentpanel button[name=process_submission_btn]': {
                 click: 'showNewAssessmentApplicationSubmissionWin'
             },
+
+            'safetyalertreportsassessmentpanel button[name=process_submission_btn]': {
+                click: 'showNewAssessmentApplicationSubmissionWin'
+            },
+
+
             'clinicaltrialassessmentpanel button[name=process_submission_btn]': {
                 click: 'showNewAssessmentApplicationSubmissionWin'
             },
@@ -535,12 +573,215 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
                 showClinicalTrialRegistryMoreDetails:'showClinicalTrialRegistryMoreDetails',
                 showGCPInspectionDetailsWizard:'showGCPInspectionDetailsWizard',
                 loadClinicalTrialRegistryEditApp:'loadClinicalTrialRegistryEditApp',
+                loadAssessmentFrm:'loadAssessmentFrm',
                 showClinicalTrialTcRecommendationUploads:'showClinicalTrialTcRecommendationUploads'
             }
         }
     }, 
 
 
+prepareAssesmentDetails: function (me) {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab();
+            console.log(activeTab);
+            panel = Ext.widget('assessmentDetailsPnl');
+            application_code = panel.down('hiddenfield[name=application_code]').getValue();
+            ClinicalTrialOnlineAssessmentfrm =panel.down('ClinicalTrialOnlineAssessmentfrm');
+            console.log(ClinicalTrialOnlineAssessmentfrm);
+        if (application_code) {
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'clinicaltrial/prepareAssesmentDetails',
+                params: {
+                    application_code: application_code,
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        sub_category_qry = resp.sub_category_qry,
+                        item_qry = resp.item_qry,
+                        model1 = Ext.create('Ext.data.Model', sub_category_qry);
+                        model2 = Ext.create('Ext.data.Model', item_qry);
+                    if (success == true || success === true) {
+                        ClinicalTrialOnlineAssessmentfrm.loadRecord(model1);
+                        ClinicalTrialOnlineAssessmentfrm.loadRecord(model2);
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+    },
+
+ loadAssessmentFrm: function(frm, type_id){
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+
+        Ext.getBody().mask('Please wait...');
+          Ext.Ajax.request({
+                url: 'configurations/getClinicalAssessmentForm',
+                method: 'GET',
+                params: {
+                    type_id: type_id, // 1 for clinical 2 for non ct 3 for stat 4 for qualty
+                    application_code: application_code
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token,
+                    'X-CSRF-Token': token
+                },
+                success: function (response) {
+                    var resp = Ext.JSON.decode(response.responseText),
+                        success = resp.success,
+                        message = resp.message,
+                        assessment_categories = resp.assessment_categories;
+
+                    if (success == true || success === true) {
+                        var counter = 0;
+                        for (var i = assessment_categories.length - 1; i >= 0; i--) {
+                           
+                            //default field display
+                            var mainCont = field = Ext.create('Ext.form.FieldContainer',{
+                                            layout: 'column',
+                                            collapsible: true,
+                                            columnWidth: 1,
+                                            frame: true,
+                                            bodyPadding: 1,
+                                            items: [{
+                                                xtype: 'displayfield',
+                                                value: assessment_categories[i]['name'],
+                                                columnWidth:1,
+                                                fieldLabel:'Category',
+                                                width: '40%',
+                                                fieldStyle: {
+                                                        'color':'green',
+                                                        'font-weight': 'bold'
+                                                    }
+                                            }]
+                                        });
+                            
+                            frm.insert(0, mainCont);
+                            //sub items per fieldset
+                            for (var j = assessment_categories[i]['sub_categories'].length - 1; j >= 0; j--) {
+                                var held = assessment_categories[i]['sub_categories'];
+                               
+                                var FieldSet = Ext.create('Ext.form.FieldSet',{
+                                    name: held[j]['id'],
+                                    title:  held[j]['name'],
+                                    collapsible: true,
+                                    columnWidth: 1,
+                                    items: [{
+                                        xtype: 'htmleditor',
+                                        name: held[j]['id']+'-workspace',
+                                        value: held[j]['workspace_value'],
+                                        fieldLabel: '<span style="font-size: 11px;">Workspace <span style="font-size: 8px; color: blue;">NOTE: If this field is disabled, click the edit option on the right side of this field to enable it</span></span>',
+                                        columnWidth: 1,
+                                        height:180,
+                                        labelAlign: 'top'
+                                    },{
+                                        xtype: 'htmleditor',
+                                        name: held[j]['id']+'-comment',
+                                        value: held[j]['comment_value'],
+                                        fieldLabel: '<span style="font-size: 11px;">Comment <span style="font-size: 8px; color: blue;">NOTE: If this field is disabled, click the edit option on the right side of this field to enable it</span></span>',
+                                        columnWidth: 1,
+                                        height:180,
+                                        labelAlign: 'top'
+                                    }]
+                                });
+
+                                //get Items if Available
+                                for (var k = held[j]['items'].length - 1; k >= 0; k--) {
+                                    var holder = held[j]['items'];
+                                    if(holder[k]['is_checklist'] == 1){
+                                        var field = Ext.create('Ext.form.FieldContainer',{
+                                            layout: 'column',
+                                            columnWidth: 1,
+                                            items: [{
+                                                xtype: 'displayfield',
+                                                name: holder[k]['id']+'-displayitem',
+                                                value: holder[k]['name'],
+                                                columnWidth: 0.33
+                                            },{
+                                                xtype: 'combo',
+                                                anyMatch: true,
+                                                fieldLabel: 'Check',
+                                                labelAlign: 'left',
+                                                name: holder[k]['id']+'-itemcheck',
+                                                value: holder[k]['item_value'],
+                                                valueField: 'id',
+                                                displayField: 'name',
+                                                forceSelection: true,
+                                                allowBlank: true,
+                                                columnWidth: 0.3,
+                                                queryMode: 'local',
+                                                store: 'confirmationstr'
+                                            }]
+                                        });
+                                    }else{
+
+                                        var field = Ext.create('Ext.form.FieldContainer',{
+                                            layout: 'column',
+                                            items: [{
+                                                xtype: 'displayfield',
+                                                name: holder[k]['id']+'-displayitem',
+                                                value: holder[k]['name'],
+                                                columnWidth: 1
+                                            },{
+                                                xtype: 'htmleditor',
+                                                anyMatch: true,
+                                                value: holder[k]['item_value'],
+                                                labelAlign: 'top',
+                                                name: holder[k]['id']+'-item',
+                                                allowBlank: true,
+                                                columnWidth: 1
+                                            }]
+                                        });
+                                    }
+                                    //add to form
+                                    FieldSet.insert(0, field);
+                                }
+                                mainCont.insert(1,FieldSet);
+                            }
+
+                        }
+                    }
+
+                Ext.getBody().unmask();
+            },
+           failure: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+    },
 
  showClinicalTrialTcRecommendationUploads: function (btn) {
 
@@ -578,7 +819,7 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
         application_upload.down('hiddenfield[name=application_code]').setValue(record.get('application_code'));
         application_upload.down('hiddenfield[name=prodclass_category_id]').setValue(record.get('prodclass_category_id'));
         childObject.setHeight(400);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
 
@@ -930,7 +1171,7 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
             storeID = getApplicationStore(module_id, section_id,sub_module_id),
             table_name = getApplicationTable(module_id),
             inspection_id = activeTab.down('form').down('hiddenfield[name=id]').getValue(),
-            leadInspectorDetails = inspectorsStore.findRecord('role_id', 2);
+            leadInspectorDetails = inspectorsStore.findRecord('role_id', 1);
 
         if (!leadInspectorDetails) {
             Ext.getBody().unmask();
@@ -1569,7 +1810,7 @@ Ext.getBody().unmask();
             childObject = Ext.widget(btn.childXtype);
         Ext.apply(childObject, {frame: 'true'});
         childObject.setUI(childObject.ui + '-framed');
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     showAddClinicalTrialRegistrySponsor: function (btn) {
         var winTitle = btn.winTitle,
@@ -1578,7 +1819,7 @@ Ext.getBody().unmask();
         Ext.apply(childObject, {frame: 'true'});
         childObject.setUI(childObject.ui + '-framed');
         childObject.down('hiddenfield[name=personnel_type]').setValue('ctrregistrysponsor');
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     
     showAddClinicalSite: function (btn) {
@@ -1593,7 +1834,7 @@ Ext.getBody().unmask();
             return false;
         }
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddImpProduct: function (btn) {
@@ -1621,7 +1862,7 @@ Ext.getBody().unmask();
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
         childObject.down('hiddenfield[name=table_name]').setValue(table_name);
         
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddImpProductIngredient: function (btn) {
@@ -1648,7 +1889,7 @@ Ext.getBody().unmask();
         inclusionStr.removeAll();
         inclusionStr.load({params: {section_id: section_id}});
         childObject.down('hiddenfield[name=product_id]').setValue(id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showEditImpProductIngredient: function (item, record) {
@@ -1669,7 +1910,7 @@ Ext.getBody().unmask();
         inclusionStr.removeAll();
         inclusionStr.load({params: {section_id: section_id}});
         childObject.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddClinicalTrialPersonnel: function (btn) {
@@ -1683,7 +1924,7 @@ Ext.getBody().unmask();
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue();
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
         childObject.down('hiddenfield[name=personnel_type]').setValue(personnel_type);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddClinicalTrialOtherInvestigator: function (btn) {
@@ -1903,6 +2144,51 @@ Ext.getBody().unmask();
     },
 
 
+     saveClinicalTrialOnlineAssessmentdetails:function(btn){
+        var form = btn.up('form'),
+        win = form.up('window'),
+        frm = form.getForm(),
+        storeID = btn.storeID,
+        store = Ext.getStore(storeID);
+        var me = this,
+        mainTabPanel = me.getMainTabPanel(),
+        activeTab = mainTabPanel.getActiveTab(),
+        sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+        active_application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+        if (frm.isValid()) {
+            frm.submit({
+                url: 'clinicaltrial/saveClinicalTrialOnlineAssessmentdetails',
+                waitMsg: 'Please wait...',
+                params:{
+                    sub_module_id :sub_module_id,
+                   active_application_code:active_application_code
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token,
+                    'X-CSRF-Token': token
+                },
+                success: function (form, action) {
+                    var response = Ext.decode(action.response.responseText),
+                        success = response.success,
+                        message = response.message;
+                    if (success == true || success === true) {
+                        toastr.success(message, "Success Response");
+                        store.load();
+                        win.close();
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (form, action) {
+                    var resp = action.result;
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        }
+
+    },
+
+
 
     updateClinicalTrialNewReceivingBaseDetails: function (btn) {
         var me = this,
@@ -1996,8 +2282,8 @@ Ext.getBody().unmask();
             investigatorsGrid = activeTab.down('clinicaltrialotherinvestigatorsgrid'),
             impProductsGrid = activeTab.down('impproductsgrid');
         if (!zone_id) {
-            toastr.warning('Please select zone!!', 'Warning Response');
-            return false;
+            // toastr.warning('Please select zone!!', 'Warning Response');
+            // return false;
         }
         if (!applicant_id) {
             toastr.warning('Please select applicant!!', 'Warning Response');
@@ -3059,6 +3345,9 @@ Ext.getBody().unmask();
             zone_fld.setReadOnly(true);
             if (sub_module_id == 11 || sub_module_id === 11) {
                 activeTab.down('button[action=search_application]').setDisabled(true);
+                detailsFrm.getForm().getFields().each(function (field) {
+                    field.setReadOnly(true);
+                });
             }
             Ext.Ajax.request({
                 method: 'GET',
@@ -3531,8 +3820,12 @@ Ext.getBody().unmask();
             detailsFrm = activeTab.down('clinicaltrialdetailsfrm'),
             sponsorFrm = activeTab.down('clinicaltrialsponsorfrm'),
             investigatorFrm = activeTab.down('clinicaltrialinvestigatorfrm'),
+            //otherDetailsFrm = activeTab.down('clinicaltrialotherdetailsfrm'),
+            studySitesGrid = activeTab.down('clinicaltrialstudysitesgrid'),
+            impProductsGrid = activeTab.down('impproductsgrid'),
+            investigatorsWinGrid = activeTab.down('clinicaltrialotherinvestigatorsgrid'),
+            clinicaltrialmonitorsgrid = activeTab.down('clinicaltrialmonitorsgrid'),
             clinicaltrialappmoredetailswizard = activeTab.down('clinicaltrialappmoredetailswizard'),
-            
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             app_doc_types_store = activeTab.down('combo[name=applicable_documents]').getStore(),
@@ -3541,6 +3834,65 @@ Ext.getBody().unmask();
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+            detailsFrm.down('hiddenfield[name=isReadOnly]').setValue(1);
+            applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+            studySitesGrid.down('hiddenfield[name=isReadOnly]').setValue(true);
+            impProductsGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
+            clinicaltrialmonitorsgrid.down('hiddenfield[name=isReadOnly]').setValue(true);
+            investigatorsWinGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
+            activeTab.down('button[name=save_clinicaltrial_details_btn]').setVisible(false);
+
+
+
+            if(studySitesGrid){
+                    var add_btn = studySitesGrid.down('button[name=add_clinical_site]'),
+                    view_btn =studySitesGrid.down('widgetcolumn[name=view_sites]'),
+                    edit_btn =studySitesGrid.down('widgetcolumn[name=edit_sites]'),
+                    widgetCol = studySitesGrid.columns[studySitesGrid.columns.length - 1];
+                    add_btn.setVisible(false);
+                    //view_btn.setVisible(false);
+                    edit_btn.setVisible(false);
+                    widgetCol.setHidden(true);
+                    widgetCol.widget.menu.items = [];
+            }
+
+
+             if(investigatorsWinGrid){
+                var add_btn = investigatorsWinGrid.down('button[name=add_otherinvestigator]'),
+                widgetCol = investigatorsWinGrid.columns[investigatorsWinGrid.columns.length - 1];
+                add_btn.setVisible(false);
+                widgetCol.widget.menu.items = [];
+            
+             }
+
+
+             if(clinicaltrialmonitorsgrid){
+                var add_btn = clinicaltrialmonitorsgrid.down('button[name=add_otherinvestigator]'),
+                widgetCol = clinicaltrialmonitorsgrid.columns[clinicaltrialmonitorsgrid.columns.length - 1];
+         
+                add_btn.setVisible(false);
+                widgetCol.setHidden(true);
+                widgetCol.widget.menu.items = [];
+          
+             }
+
+
+            detailsFrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+            });
+
+            sponsorFrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+            });
+            sponsorFrm.down('button[action=search_btn]').setDisabled(true);
+  
+
+            investigatorFrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+            });
+            investigatorFrm.down('button[action=search_btn]').setDisabled(true);
+
+
        // premise_details.setFieldLabel('Clinical Trial Details');
         app_doc_types_store.removeAll();
         app_doc_types_store.load({
@@ -3569,6 +3921,8 @@ Ext.getBody().unmask();
                         sponsorDetails = resp.sponsorDetails,
                         investigatorDetails = resp.investigatorDetails;
                         results = resp.results;
+                        assessment_QryDetails= resp.assessment_QryDetails;
+                        assessment_Item_QryDetails= resp.assessment_Item_QryDetails;
                     if (success == true || success === true) {
                         if (results) {
                             activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
@@ -3584,6 +3938,7 @@ Ext.getBody().unmask();
                                     var model3 = Ext.create('Ext.data.Model', investigatorDetails);
                                     investigatorFrm.loadRecord(model3);
                                 }
+                              
                                 applicantFrm.down('button[action=link_applicant]').setDisabled(true);
                                
                                 
@@ -3643,6 +3998,11 @@ Ext.getBody().unmask();
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+
+            activeTab.down('button[name=save_clinicaltrial_details_btn]').setVisible(false);
+            detailsFrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+            });
        // premise_details.setFieldLabel('Clinical Trial Details');
         app_doc_types_store.removeAll();
         app_doc_types_store.load({
@@ -4098,6 +4458,19 @@ Ext.getBody().unmask();
         this.prepareClinicalTrialMeetingDetailsGeneric(activeTab, applicationsGrid, 0);
     },
 
+
+      preparePreClinicalTrialManagerMeeting: function () {
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            applicationsGrid = activeTab.down('preclinicaltrialmanagermeetinggrid');
+        this.preparePreClinicalTrialMeetingDetailsGeneric(activeTab, applicationsGrid, 1);
+    },
+
+
+
+    
+
     prepareNewClinicalTrialRecommReview: function () {
         var me = this,
             mainTabPanel = me.getMainTabPanel(),
@@ -4193,6 +4566,83 @@ Ext.getBody().unmask();
             //It's a new application
         }
     },
+
+     preparePreClinicalTrialMeetingDetailsGeneric: function (activeTab, applicationsGrid, isReadOnly) {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            meetingDetailsFrm = activeTab.down('form'),
+            applicationsGrid = activeTab.down('preclinicaltrialmanagermeetinggrid'),
+            meeting_id = meetingDetailsFrm.down('hiddenfield[name=id]').getValue(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            applicationsStore = applicationsGrid.getStore(),
+            participantsGrid = activeTab.down('tcmeetingparticipantsgrid'),
+            participantsStore = participantsGrid.getStore(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            sm = applicationsGrid.getSelectionModel();
+            meetingDetailsFrm.down('textfield[name=meeting_name]').setFieldLabel('Study Title');
+            meetingDetailsFrm.down('datefield[name=date_requested]').setFieldLabel('Meeting Date');
+        participantsGrid.down('hiddenfield[name=isReadOnly]').setValue(0);
+        if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+            meetingDetailsFrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+            });
+        }
+        this.redoTcMeetingParticipantsGrid(participantsGrid);
+        if (application_id) {
+            if (!meeting_id) {
+                applicationsStore.on('load', function (store, records, options) {
+                    var record = store.getById(application_id),
+                        rowIndex = store.indexOf(record);
+                    sm.select(rowIndex, true);
+                });
+            }
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'clinicaltrial/preparePreClinicalTrialManagerMeetingStage',
+                params: {
+                    application_id: application_id,
+                    application_code: application_code,
+                    table_name: 'tra_clinical_trial_applications'
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results;
+                    if (success == true || success === true) {
+                        if (results) {
+                            var model = Ext.create('Ext.data.Model', results);
+                            meetingDetailsFrm.loadRecord(model);
+                        }
+                        applicationsStore.load();
+                        participantsStore.load();
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+    },
+
+
     //COMPARE
     prepareClinicalTrialComparePreview: function (pnl) {
         var me = this,
@@ -4351,6 +4801,7 @@ Ext.getBody().unmask();
                 params:{
                     sub_module_id :sub_module_id,
                     process_id:process_id,
+                    _token:token,
                     workflow_stage_id:workflow_stage_id
                 },
                 headers: {
@@ -4485,7 +4936,7 @@ Ext.getBody().unmask();
             childObject = Ext.widget('clinicaltrialotherinvestigatorfrm');
         childObject.down('hiddenfield[name=personnel_id]').setValue(personnel_id);
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
-        funcShowCustomizableWindow('New Investigator', '30%', childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('New Investigator', '30%', childObject, 'customizablewindow');
 
     },
     showNewSaftyAlertReceivingAppSubmissionWin: function (btn) {
@@ -5052,7 +5503,7 @@ Ext.getBody().unmask();
             process_id = record.get('process_id'),
             module_id = record.get('module_id'),
             sub_module_id = record.get('sub_module_id'),
-            section_id = record.get('section_id');
+            section_id = record.get('section_id'),
             ref_no = record.get('reference_no'),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
@@ -5152,7 +5603,8 @@ Ext.getBody().unmask();
             applicationdetails_panel = activeTab.down('#main_processpanel').applicationdetails_panel;
             wizardPnl = Ext.widget(applicationdetails_panel);
             
-          var  detailsFrm = wizardPnl.down('safetyalertreportsdetailspnl'),previewproductDocUploadsGrid = wizardPnl.down('clinicaltrialdocuploadsgenericgrid');
+          var  detailsFrm = wizardPnl.down('safetyalertreportsdetailspnl'),
+          previewproductDocUploadsGrid = wizardPnl.down('clinicaltrialdocuploadsgenericgrid');
             
             if(wizardPnl.down('clinicaltrialdocuploadsgenericgrid')){
                 previewproductDocUploadsGrid.setController('productregistrationvctr');
@@ -5198,7 +5650,10 @@ Ext.getBody().unmask();
                     
                     if (appDetails) {
                         var model2 = Ext.create('Ext.data.Model', appDetails);
-                        detailsFrm.loadRecord(model2);
+                        if(detailsFrm){
+                           detailsFrm.loadRecord(model2); 
+                        }
+                        
                     }
                    
                     funcShowOnlineCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
@@ -5244,6 +5699,7 @@ Ext.getBody().unmask();
             studySitesGrid = wizardPnl.down('clinicaltrialstudysitesgrid'),
             impProductsGrid = wizardPnl.down('impproductsgrid'),
             investigatorsWinGrid = wizardPnl.down('clinicaltrialotherinvestigatorsgrid'),
+            clinicaltrialmonitorsgrid = wizardPnl.down('clinicaltrialmonitorsgrid'),
             previewproductDocUploadsGrid = wizardPnl.down('clinicaltrialdocuploadsgenericgrid');
             
             if(wizardPnl.down('clinicaltrialdocuploadsgenericgrid')){
@@ -5267,11 +5723,64 @@ Ext.getBody().unmask();
         wizardPnl.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
         wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
         detailsFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
-        sponsorFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
-        investigatorFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+       // sponsorFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        //investigatorFrm.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         studySitesGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         impProductsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        clinicaltrialmonitorsgrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         investigatorsWinGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+
+        sponsorFrm.getForm().getFields().each(function (field) {
+            field.setReadOnly(true);
+        });
+        sponsorFrm.down('button[action=search_btn]').setDisabled(true);
+
+
+        investigatorFrm.getForm().getFields().each(function (field) {
+            field.setReadOnly(true);
+        });
+        investigatorFrm.down('button[action=search_btn]').setDisabled(true);
+
+
+        if(studySitesGrid){
+                    var add_btn = studySitesGrid.down('button[name=add_clinical_site]'),
+                    view_btn =studySitesGrid.down('widgetcolumn[name=view_sites]'),
+                    edit_btn =studySitesGrid.down('widgetcolumn[name=edit_sites]'),
+                    widgetCol = studySitesGrid.columns[studySitesGrid.columns.length - 1];
+                    add_btn.setVisible(false);
+                    //view_btn.setVisible(false);
+                    edit_btn.setVisible(false);
+                    widgetCol.setHidden(true);
+                    widgetCol.widget.menu.items = [];
+            }
+
+
+        if(investigatorsWinGrid){
+           var add_btn = investigatorsWinGrid.down('button[name=add_otherinvestigator]'),
+           widgetCol = investigatorsWinGrid.columns[investigatorsWinGrid.columns.length - 1];
+           add_btn.setVisible(false);
+                widgetCol.widget.menu.items = [];
+            
+        }
+
+
+        if(clinicaltrialmonitorsgrid){
+            var add_btn = clinicaltrialmonitorsgrid.down('button[name=add_otherinvestigator]'),
+             widgetCol = clinicaltrialmonitorsgrid.columns[clinicaltrialmonitorsgrid.columns.length - 1];
+         
+            add_btn.setVisible(false);
+            widgetCol.setHidden(true);
+            widgetCol.widget.menu.items = [];
+          
+         }
+
+
+        detailsFrm.getForm().getFields().each(function (field) {
+            field.setReadOnly(true);
+        });
+
+
+
         if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
             wizardPnl.down('combo[name=zone_id]').setReadOnly(true);
             //wizardPnl.down('button[name=save_btn]').setVisible(false);
@@ -5607,6 +6116,21 @@ Ext.getBody().unmask();
         var detailsFrm = activeTab.down('clinicaltrialdetailsfrm'),
             sponsorFrm = activeTab.down('clinicaltrialsponsorfrm'),
             investigatorFrm = activeTab.down('clinicaltrialinvestigatorfrm');
+            detailsFrm.getForm().getFields().each(function (field) {
+                    field.setReadOnly(true);
+                });
+
+            sponsorFrm.getForm().getFields().each(function (field) {
+                    field.setReadOnly(true);
+                });
+            sponsorFrm.down('button[action=search_btn]').setDisabled(true);
+
+            investigatorFrm.getForm().getFields().each(function (field) {
+                    field.setReadOnly(true);
+                });
+            
+            investigatorFrm.down('button[action=search_btn]').setDisabled(true);
+
         Ext.Ajax.request({
             method: 'GET',
             url: 'clinicaltrial/getClinicalTrialApplicationMoreDetails',
@@ -5672,7 +6196,7 @@ Ext.getBody().unmask();
             winWidth = btn.winWidth,
             mainTabPanel = me.getMainTabPanel();
         var childObject = Ext.widget(childXtype);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     showGcpInspectionClincialDetails: function (btn) {
         var me = this,
@@ -5689,6 +6213,6 @@ Ext.getBody().unmask();
         }
         var childObject = Ext.widget(childXtype);
         childObject.down('hiddenfield[name=inspection_id]').setValue(inspection_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 });

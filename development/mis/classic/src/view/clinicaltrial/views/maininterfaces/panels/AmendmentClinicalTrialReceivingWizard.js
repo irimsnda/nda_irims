@@ -26,11 +26,11 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.AmendmentClinic
         },
         
         {
+            xtype: 'productvariationrequestsgrid'
+        },{
             xtype: 'clinicaltrialdocuploadsgenericgrid'
         },
         {
-            xtype: 'productvariationrequestsgrid'
-        },{
             xtype: 'appinvoicepaymentspanel'
         }
     ],
@@ -63,7 +63,7 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.AmendmentClinic
                     iconCls: 'fa fa-suitcase',
                     enableToggle: true,iconAlign:'top', wizard_pnl: 'amendmentclinicaltrialreceivingwizard',
                     max_step: 4,
-                    text: 'CLINICAL TRIAL DETAILS',
+                    text: 'TRIAL DETAILS',
                     action: 'quickNav'
                 },
                 
@@ -71,7 +71,7 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.AmendmentClinic
                     step: 2,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,iconAlign:'top',
-                    text: 'DOCUMENT UPLOADS', wizard_pnl: 'amendmentclinicaltrialreceivingwizard',
+                    text: 'VARIATION REQUEST', wizard_pnl: 'amendmentclinicaltrialreceivingwizard',
                     max_step: 4,
                     action: 'quickNav'
                 },
@@ -80,17 +80,17 @@ Ext.define('Admin.view.clinicaltrial.views.maininterfaces.panels.AmendmentClinic
                     step: 3,
                     iconCls: 'fa fa-check-square',
                     enableToggle: true,
-                    text: 'Variation Request',iconAlign:'top',
+                    text: 'DOCUMENT UPLOADS',iconAlign:'top',
                     wizard_pnl: 'amendmentclinicaltrialreceivingwizard',
                     max_step: 4,
                     action: 'quickNav'
                 },
                 {
                            step: 4,
-                           iconCls: 'fa fa-money',
+                           iconCls: 'fa fa-money-bill-wave',
                            enableToggle: true,iconAlign:'top', wizard_pnl: 'amendmentclinicaltrialreceivingwizard',
                            max_step: 4,
-                           text: 'Invoice & Payment Details',
+                           text: 'INVOICE DETAILS',
                            action: 'quickNav'
                     }
             ]

@@ -81,6 +81,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.VcNonLicence
         xtype: 'combo',
         fieldLabel: 'Zones',
         forceSelection: true,
+        hidden: true,
         queryMode: 'local',
         valueField: 'id',
         labelAlign : 'top',
@@ -136,7 +137,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.VcNonLicence
             ui: 'soft-green',
             text: 'Print License/Letter',
             iconCls: 'x-fa fa-certificate',
-            handler: 'generateImportExportPermit',
+            handler: 'generateImportExportVCPermit',
             bind: {
                 disabled: '{record.release_recommendation_id <= 0 || record.release_recommendation_id === null}'
                 //disabled: '{record.decision_id !== 1}'
@@ -162,29 +163,71 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.VcNonLicence
     {
         xtype: 'gridcolumn',
         dataIndex: 'tracking_no',
-        text: 'Tracking No',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'reference_no',
-        text: 'Reference No',
-        hidden: true,
+        text: 'Tracking Number',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'applicant_name',
-        text: 'Applicant Name',
+        text: 'Applicant',
+        flex: 1
+    }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'name',
+        text: 'Business Name',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'business_type',
+        text: 'Business Type',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'reason',
+        text: 'Import/Export Reason',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'product_category',
+        text: 'Product Category',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        text: 'Has Licensed Premises', 
+        dataIndex: 'has_registered_premises',
+        renderer: function (value, metaData) {
+            if (value == 1) {
+                metaData.tdStyle = 'color:white;background-color:green';
+                return "NDA Licensed";
+            }
+
+            metaData.tdStyle = 'color:white;background-color:red';
+            return "NDA Non-Licensed";
+        }
+
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'country',
+        text: 'Country Of Supply',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'proforma_invoice_no',
         text: 'Proforma Invoice No',
         flex: 1
-    }, 
-     {
+    }, {
         xtype: 'gridcolumn',
-        dataIndex: 'name',
-        text: 'Business Name',
+        dataIndex: 'proforma_invoice_date',
+        text: 'Proforma Invoice Date',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'date_added',
+        text: 'Date Received',
+        flex: 1
+    }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'submitted_on',
+        text: 'Date Submitted',
         flex: 1
     },
      {
@@ -216,7 +259,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.VcNonLicence
             textAlign: 'left',
             xtype: 'button',
             ui: 'soft-red',
-            text: 'Approve',
+            text: 'Regulatory Decision',
              iconCls: 'x-fa fa-chevron-circle-up',
                     handler: 'getPermitReleaseRecommendationDetails',
                     approval_frm:'permitReleaseRecommFrm',
@@ -258,7 +301,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.VcNonLicence
                         text: 'Preview Import/Export Details',
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 0,
-                        handler: 'editimpexpvcnonlicencedmanagerevaluationinformation'
+                        handler: 'editpreviewvcnonlicencedinformation'
                     }
                 ]
             }

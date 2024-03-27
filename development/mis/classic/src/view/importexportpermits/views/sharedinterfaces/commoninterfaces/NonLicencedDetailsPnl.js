@@ -21,7 +21,7 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.NonLicencedDet
             autoScroll: true, 
             title: 'Application Details',
             items:[{
-                xtype: 'onlineimportexportlicencedetailsfrm',
+                xtype: 'onlineimportexportnonlicencebusinessdetailsfrm',
                 autoScroll: true,
                 title: 'Application Details', 
             }, 

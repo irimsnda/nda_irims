@@ -64,6 +64,9 @@ Route::post('saveDocumentRepositoryStructure', [DmsConfigurationsController::cla
     Route::get('onLoadProductImagesUploads', [DocumentManagementController::class, 'onLoadProductImagesUploads']);
     Route::get('onLoadApplicationDocumentsRequirements', [DocumentManagementController::class, 'onLoadApplicationDocumentsRequirements']);
     Route::get('getApplicationDocumentDownloadurl', [DocumentManagementController::class, 'getApplicationDocumentDownloadurl']);
+
+    Route::get('getUnstructuredDocumentDownloadurl', [DocumentManagementController::class, 'getUnstructuredDocumentDownloadurl']);
+    
     Route::get('getApplicationDocumentPreviousVersions', [DocumentManagementController::class, 'getApplicationDocumentPreviousVersions']);
     Route::get('getProcessApplicableDocTypes', [DocumentManagementController::class, 'getProcessApplicableDocTypes']);
     Route::get('getProcessApplicableDocRequirements', [DocumentManagementController::class, 'getProcessApplicableDocRequirements']);

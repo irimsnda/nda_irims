@@ -20,7 +20,7 @@ Ext.define('Admin.view.pharmacovigilancereporting.views.sharedinterfaces.panels.
                      title: 'Preview Safety Alerts Details'
                  },{
                     xtype: 'safetyalertreportsobservationsgrid',
-                   title: 'Preview Safety Alerts Observations Details'
+                   title: 'Preview Safety/Signal Alerts Observations Details'
                },{
                     xtype: 'clinicaltrialdocuploadsgenericgrid',
                     title:'Assessment Report(s) Upload'

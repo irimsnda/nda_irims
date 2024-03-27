@@ -194,7 +194,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpTcMeetingRecommendationGri
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'tc_recomm',
-        text: 'Peer Review Recommendation',
+        text: 'GPRC Review Recommendation',
         flex: 1
     },{
         text: 'Options',
@@ -209,19 +209,33 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpTcMeetingRecommendationGri
             menu: {
                 xtype: 'menu',
                 items: [{
-                    text: 'Peer Review Recommendation',
+                    text: 'GPRC Review Recommendation',
+                    iconCls: 'x-fa fa-retweet',
+                    handler: 'showAddGmpTCRecommendationDetails',
+                    childXtype: 'productlinedetailstcrecommgrid',
+                    winTitle: 'GPRC Review Recommendation',
+                    winWidth: '80%',
+                    storeID: 'productlinetcdetailsstr',
+                },{
+                    text: 'Overall GPRC Review Recommendation',
                     iconCls: 'x-fa fa-retweet',
                     handler: 'showTcRecommendation',
                     childXtype: 'gmptcrecommendationFrm',
-                    winTitle: 'Peer Review Recommendation',
+                    winTitle: 'GPRC Review Recommendation',
                     winWidth: '40%',
                     stores: '["tcrecommendationdecisionsstr"]'
-                },
+                  },
                     {
                         text: 'Preview Details',
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 1,
                         handler: 'showGmpApplicationMoreDetails'
+                    },{
+                        text: 'View  Online Assessment Tool',
+                        iconCls: 'x-fa fa-bars',
+                        appDetailsReadOnly: 1,
+                        winTitle: 'Online Assessment Tool Details',
+                        handler: 'showGMPGPRCAssessmentToolDetails'
                     },{
                         text: 'Application Documents',
                         iconCls: 'x-fa fa-file',
@@ -229,7 +243,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpTcMeetingRecommendationGri
                         action: 'edit',
                         childXtype: '',
                         winTitle: 'Application Documents',
-                        winWidth: '40%',
+                        winWidth: '80%',
                         isReadOnly: 1,
                         document_type_id: '',
                         handler: 'showPreviousUploadedDocs'
@@ -238,6 +252,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpTcMeetingRecommendationGri
                         text: 'Return Back Application(s)',
                         iconCls: 'x-fa fa-check',
                         ui: 'soft-green',
+                        hidden:true,
                         storeID: 'gmpmeetingreviewrecomgridstr',
                         table_name: 'tra_gmp_applications',
                         action: 'process_returnsubmission_btn',

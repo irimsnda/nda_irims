@@ -52,19 +52,21 @@ class TraderManagementController extends Controller
                      ->where($where_app)
                      ->count();
 
-
                  if($count){
+
                     $previous_data = getPreviousRecords('wb_trader_account', $where_app,'mis_db');
 
                     $trader_no = $previous_data['results'][0]['identification_no']; 
                     $email_address = $previous_data['results'][0]['email']; 
                     $resp=   updateRecord('wb_trader_account', $previous_data, $where_app, $data, '','mis_db');
+
                     if(!$resp['success']){
                          return \response()->json(array('success'=>false,'message'=>$resp['message'])); 
                     }
 
                     $previous_data = getPreviousRecords('wb_trader_account', $where_app);
                     $resp=   updateRecord('wb_trader_account', $previous_data, $where_app, $data, '');
+
                     if(!$resp['success']){
                          return \response()->json(array('success'=>false,'message'=>$resp['message'])); 
                     }

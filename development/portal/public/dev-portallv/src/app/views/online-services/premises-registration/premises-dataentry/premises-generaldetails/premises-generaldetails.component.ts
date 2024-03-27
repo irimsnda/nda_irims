@@ -39,6 +39,8 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
   @Input() isCancelled:boolean;
   @Input() confirmDataParam: any;
   @Input() sub_module_id: number;
+  @Input() status_id:number;
+
   @Input() module_id: number;
   @Input() application_code: number;
   @Input() tra_premise_id: number;
@@ -47,7 +49,7 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
   @Input() supervisingDetailsData: any = {};
 
   @Input() isReadOnlyTraderasContact: boolean;
-  @Input() is_readonly: boolean;
+   @Input() is_readonly: boolean;
   @Input() payingCurrencyData: boolean;
   @Input() fastTrackOptionsData: boolean;
   @Input() isSupervisorPopupVisible: boolean;
@@ -69,6 +71,8 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
   business_type_id:number;
   premise_type_id:number;
   isaddNewPremisesPersonnelDetails:boolean=false;
+  is_made_readOnly:boolean=false;
+  is_made_relocation:boolean=false;
   isDisabledVehicleReg:boolean;
   @Output() businessTypeEvent = new EventEmitter();
   
@@ -83,8 +87,13 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
   businessDetailsData:any;
   premisesTypesData:any;
   cellsData:any;
+  perishData:any;
+  villageData:any;
   psuNo:any;
+  company_registration_no:any;
   sector_id:number;
+  sub_county_id:number;
+  parish_id:number;
   private destroy$ = new Subject<void>();
   private isFetchingData = false;
   registeringOrganisationData:any;
@@ -105,13 +114,20 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
     this.onLoadBusinessDetails();
     this.onLoadPremiseTypesLoad();
 
-    this.is_readonly = false;
-    if(this.sub_module_id != 1){
-      this.is_readonly = true;
-    }
-   
+  if(this.sub_module_id == 1 || this.sub_module_id == 2 || this.sub_module_id == 3 ){
+      this.is_made_readOnly = true;
+  }else if(this.sub_module_id == 108 || this.sub_module_id == 109){
+    this.is_made_readOnly = true;
+    this.is_made_relocation = true;
+
+  }else{
+    this.is_made_readOnly = false;
+    this.is_made_relocation = false;
+
+  }
+
     if(!this.application_code){
-      if(this.sub_module_id == 109){
+      if(this.sub_module_id == 108){
           this.premisesGeneraldetailsfrm.get('country_id').setValue(37);
           this.premisesGeneraldetailsfrm.get('business_type_id').setValue(3);
 
@@ -120,9 +136,10 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
 
     }        
     this.setupSearchByPsuNoHandler();
-
+    this.setupSearchByCompanyRegNoHandler();
     
-  }    
+  }  
+
   private setupSearchByPsuNoHandler(): void {
     this.premisesGeneraldetailsfrm
       .get('psu_no')
@@ -133,23 +150,47 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
           this.searchByPsuNo(psuNo);
         }
       });
-  }   
-  captureLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
+  } 
+  private setupSearchByCompanyRegNoHandler(): void {
+    this.premisesGeneraldetailsfrm
+      .get('company_registration_no')
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((company_registration_no) => {
+        if (!this.isFetchingData) {
+          this.isFetchingData = true;
+          this.searchByCompanyRegNo(company_registration_no);
+        }
+      });
+  } 
+
+
+
+
+
+captureLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+   if(this.sub_module_id === 109) {
+          const proposed_latitude = position.coords.latitude;
+          const proposed_longitude = position.coords.longitude;
+          this.premisesGeneraldetailsfrm.patchValue({ proposed_latitude, proposed_longitude });
+        }else{
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           this.premisesGeneraldetailsfrm.patchValue({ latitude, longitude });
-        },
-        (error) => {
-          console.error('Error getting user location:', error);
+
         }
-      );
-    } else {
-      console.error('Geolocation is not supported by this browser.');
-    }
-  } 
+      },
+      (error) => {
+        console.error('Error getting user location:', error);
+      }
+    );
+  } else {
+    console.error('Geolocation is not supported by this browser.');
+  }
+}
+
    searchByPsuNo(psuNo){
     this.appService.onLoadApplicantPharmacist(psuNo).subscribe(
       (response: any) => {
@@ -163,11 +204,12 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
           this.premisesGeneraldetailsfrm.get('pharmacist_country_id').setValue(dataItem.country_id);
           this.premisesGeneraldetailsfrm.get('pharmacist_region_id').setValue(dataItem.region_id);
           this.premisesGeneraldetailsfrm.get('pharmacist_district_id').setValue(dataItem.district_id);
+          this.premisesGeneraldetailsfrm.get('pharmacist_id').setValue(dataItem.id);
 
 
         } else {
           
-          this.toastr.error('No data found');
+          this.toastr.error('No data found for the given PSU No');
         }
 
         this.isFetchingData = false;
@@ -176,7 +218,30 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
         this.isFetchingData = false;
       }
     );
-  }  
+  } 
+searchByCompanyRegNo(company_registration_no) {
+  this.appService.onLoadCompanyDetails(company_registration_no).subscribe(
+    (response: any) => {
+      if (response.success && response.results.length > 0) {
+        const dataItem = response.results[0];
+        this.premisesGeneraldetailsfrm.get('premises_name').setValue(dataItem.name);
+        this.premisesGeneraldetailsfrm.get('reg_date').setValue(dataItem.registration_date);
+        this.premisesGeneraldetailsfrm.get('company_reg_id').setValue(dataItem.id);
+      } else {
+        this.toastr.error('No data found for the given Business Registration No.');
+      }
+
+      this.isFetchingData = false;
+    },
+    (error) => {
+      console.error('Error fetching company details:', error);
+      this.toastr.error('An error occurred while fetching company details. Please try again.');
+      this.isFetchingData = false;
+    }
+  );
+}
+
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -185,9 +250,10 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
 
     this.country_id = $event.selectedItem.id;
 
-    this.onLoadRegions(this.country_id);
+    this.onLoadDistricts(this.country_id);
 
-  }   
+  }
+  
 
   onLoadQualificationDetails() {
     var data = {
@@ -211,23 +277,35 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
           this.premiseClassData = data;
         });
   }
-  onLoadRegions(country_id) {
-
-    var data = {
-      table_name: 'par_regions',
-      country_id: country_id
-    };
-    this.config.onLoadConfigurationData(data)
-      .subscribe(
-        data => {
-          console.log(data);
-          this.regions = data;
-        },
-        error => {
-          return false
-        });
-  }  
-  onLoadCounty(district_id) {
+onLoadRegions(district_id) {
+  this.config.onLoadRegionsData(district_id)
+    .subscribe(
+      data => {
+        if (data.success) {
+          this.regions = data.data;
+        } else {
+        }
+      },
+      error => {
+        console.error('HTTP request failed:', error);
+        return false;
+      });
+}
+// onLoadCounty(district_id) {
+//   this.config.onLoadCountyData(district_id)
+//     .subscribe(
+//       data => {
+//         if (data.success) {
+//           this.countyData = data.data;
+//         } else {
+//         }
+//       },
+//       error => {
+//         console.error('HTTP request failed:', error);
+//         return false;
+//       });
+// }
+onLoadCounty(district_id) {
     var data = {
       table_name: 'par_county',
       district_id: district_id
@@ -241,7 +319,8 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
         error => {
           return false;
         });
-  }
+}
+
 
   oCountyCboSelect($event) {
    if ($event.selectedItem) {
@@ -326,10 +405,10 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
         });
   }
   
-  onLoadDistricts(region_id) {
+  onLoadDistricts(country_id) {
     var data = {
-      table_name: 'par_districts',
-      region_id: region_id
+      table_name: 'par_premise_districts',
+      country_id: country_id
     };
     this.config.onLoadConfigurationData(data)
       //.pipe(first())
@@ -372,12 +451,13 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
         });
   }
   
-  onRegionsCboSelect($event) {
-    this.region_id = $event.selectedItem.id;
 
-    this.onLoadDistricts(this.region_id);
+  // onRegionsCboSelect($event) {
+  //   this.region_id = $event.selectedItem.id;
 
-  }
+  //   //this.onLoadCounty(this.region_id);
+
+  // }
  
   onLoadclassificationData() {
     var data = {
@@ -392,12 +472,55 @@ export class PremisesGeneraldetailsComponent  implements OnInit, OnDestroy {
   }
   
   oDistrictsCboSelect($event) {
-   if ($event.selectedItem) {
     this.district_id = $event.selectedItem.id;
+
     this.onLoadCounty(this.district_id);
-    }
+    this.onLoadRegions(this.district_id);
+
+  }
+  onLoadParishes(sub_county_id) {
+    var data = {
+      table_name: 'par_parishes',
+      sub_county_id: sub_county_id
+    };
+    this.config.onLoadConfigurationData(data)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.perishData = data
+        },
+        error => {
+          return false;
+        });
   }
 
+    onSubCountyCboSelect($event) {
+    this.sub_county_id = $event.selectedItem.id;
+
+    this.onLoadParishes(this.sub_county_id);
+
+  }
+
+  onLoadVillages(parish_id) {
+    var data = {
+      table_name: 'par_villages',
+      parish_id: parish_id
+    };
+    this.config.onLoadConfigurationData(data)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.villageData = data
+        },
+        error => {
+          return false;
+        });
+  }
+    onParishesCboSelect($event) {
+    this.parish_id = $event.selectedItem.id;
+
+    this.onLoadVillages(this.parish_id);
+}
   
   onTraderasContactpersnChange($event) {
     

@@ -32,29 +32,39 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialAppMoreDetailsWiz
         },
         {
            xtype: 'tabpanel',
-            title:'Clinical Trial Investigator(s) & Monitor(s)',
+            //title:'Clinical Trial Investigator(s) & Monitor(s)',
             items:[{
                 xtype: 'clinicaltrialotherinvestigatorsgrid',
                 title:'Clinical Trial Other Investigator(s)'
             },{
                 xtype: 'clinicaltrialmonitorsgrid',
                 title: 'Clinical Trial Monitor(s)'
+            },{
+                xtype: 'clinicaltrialstaffgrid',
+                title: 'Other Trial Staff(s)'
             }]
         },
         
-        {
+         {
             
             xtype: 'tabpanel',
-            title:'Clinical Trial Products',
+            //title:'Clinical Trial Products',
             layout: 'accordion',
             items:[{
                 xtype: 'impproductsgrid',
                 title:'Clinical Trial Investigational Products'
             },{
+                xtype: 'impProductshandlinggrid',
+                title: 'Details of Handling Trial'
+            },{
                 xtype: 'clinicalcomparatorproductsgrid',
                 title:'Clinical Trial Comparator Products'
+            },{
+                xtype: 'clinicaltrialnonclinicaldetailsgrid',
+                title:'Dose Toxicity Details(Mandatory Study Phase IV)'
             }]
-        },{
+        },
+        {
             xtype: 'clinicaltrialdocuploadsgenericgrid'
         },{
             xtype: 'hiddenfield',
@@ -105,7 +115,8 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialAppMoreDetailsWiz
                     iconCls: 'fa fa-user',
                     enableToggle: true,
                     pressed: true,
-                    text: 'APPLICANT DETAILS',
+                    //text: 'APPLICANT DETAILS',
+                    text: '<span style="font-size: 9px;"><b>APPLICANT DETAILS</b></span>', 
                     action: 'quickNav',
                     wizard:'clinicaltrialappmoredetailswizard',max_step:5,
                     handler: 'quickNavigationMoreDetails'
@@ -114,7 +125,8 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialAppMoreDetailsWiz
                     step: 1,
                     iconCls: 'fa fa-suitcase',
                     enableToggle: true,
-                    text: 'CLINICAL TRIAL DETAILS',
+                    text: '<span style="font-size: 9px;"><b>CLINICAL TRIAL DETAILS</b></span>', 
+                    //text: 'CLINICAL TRIAL DETAILS',
                     action: 'quickNav',
                     wizard:'clinicaltrialappmoredetailswizard',max_step:5,
                     handler: 'quickNavigationMoreDetails'
@@ -123,7 +135,8 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialAppMoreDetailsWiz
                     step: 2,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
-                    text: 'STUDY SITES',
+                    text: '<span style="font-size: 9px;"><b>STUDY SITES</b></span>', 
+                    //text: 'STUDY SITES',
                     action: 'quickNav',wizard:'clinicaltrialappmoredetailswizard',max_step:5,
                     handler: 'quickNavigationMoreDetails'
                 },
@@ -131,7 +144,8 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialAppMoreDetailsWiz
                     step: 3,
                     iconCls: 'fa fa-plus-square',
                     enableToggle: true,
-                    text: 'OTHER INVESTIGATORS',
+                    text: '<span style="font-size: 9px;"><b>OTHER INVESTIGATORS</b></span>', 
+                    //text: 'OTHER INVESTIGATORS',
                     action: 'quickNav',wizard:'clinicaltrialappmoredetailswizard',max_step:5,
                     handler: 'quickNavigationMoreDetails'
                 },
@@ -139,7 +153,8 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialAppMoreDetailsWiz
                     step: 4,
                     iconCls: 'fa fa-th-large',
                     enableToggle: true,
-                    text: 'IMP PRODUCTS',
+                    text: '<span style="font-size: 9px;"><b>PRODUCTS & NON CLINICAL DETAILS</b></span>', 
+                   // text: 'PRODUCTS & NON CLINICAL DETAILS',
                     action: 'quickNav',wizard:'clinicaltrialappmoredetailswizard',max_step:5,
                     handler: 'quickNavigationMoreDetails'
                 },
@@ -147,7 +162,8 @@ Ext.define('Admin.view.clinicaltrial.views.panels.ClinicalTrialAppMoreDetailsWiz
                     step: 5,
                     iconCls: 'fa fa-th-large',
                     enableToggle: true,
-                    text: 'DOCUMENTS',
+                    text: '<span style="font-size: 9px;"><b>DOCUMENTS</b></span>', 
+                    //text: 'DOCUMENTS',
                     action: 'quickNav',wizard:'clinicaltrialappmoredetailswizard',max_step:5,
                     handler: 'quickNavigationMoreDetails'
                 } 

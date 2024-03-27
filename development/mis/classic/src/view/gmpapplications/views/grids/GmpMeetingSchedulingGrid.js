@@ -198,14 +198,20 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpMeetingSchedulingGrid', {
                             appDetailsReadOnly: 1,
                             handler: 'showGmpApplicationMoreDetails'
                         },{
+                            text: 'View  Online Assessment Tool',
+                            iconCls: 'x-fa fa-bars',
+                            appDetailsReadOnly: 1,
+                            winTitle: 'Online Assessment Tool Details',
+                            handler: 'showGMPAssessmentToolDetails'
+                         },{
                             text: 'Application Documents',
                             iconCls: 'x-fa fa-file',
                             tooltip: 'Application Documents',
                             action: 'edit',
                             childXtype: '',
                             winTitle: 'Application Documents',
-                            winWidth: '40%',
-                            isReadOnly: 1,
+                            winWidth: '80%',
+                            isReadOnly: 0,
                             document_type_id: '',
                             handler: 'showPreviousUploadedDocs'
                         },{
@@ -213,6 +219,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpMeetingSchedulingGrid', {
                             text: 'Return Back Application(s)',
                             iconCls: 'x-fa fa-check',
                             ui: 'soft-green',
+                            hidden:true,
                             storeID: 'gmpmeetingschedulinggridstr',
                             table_name: 'tra_gmp_applications',
                             action: 'process_returnsubmission_btn',

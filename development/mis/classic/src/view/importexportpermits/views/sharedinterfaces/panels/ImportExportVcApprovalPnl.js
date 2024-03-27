@@ -1,9 +1,9 @@
 /**
- * Created by Kip on 10/17/2018.
+ * Created by Softclans.
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportExportVcApprovalPnl', {
     extend: 'Ext.panel.Panel',
-    title: 'Import/Export Permit Permit Approval',
+    title: 'Import/Export VC Approval',
     xtype: 'importexportvcapprovalpnl',
     layout: 'fit',
     permitsdetails_panel: 'previewimportexportpermitdetails',
@@ -38,7 +38,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
             }, {
                 xtype: 'displayfield',
                 name: 'workflow_stage',
-                fieldLabel: 'Workflow Stage',
+                fieldLabel: 'Application Status',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',

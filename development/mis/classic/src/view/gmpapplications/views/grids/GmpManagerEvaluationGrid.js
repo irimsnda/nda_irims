@@ -18,6 +18,19 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpManagerEvaluationGrid', {
     selModel: {
         selType: 'checkboxmodel'
     },
+     features:[
+        {
+            ftype: 'grouping',
+            startCollapsed: true,
+            groupHeaderTpl: '{[values.rows[0].data.inspection_details]} [{rows.length}]',
+            hideGroupedHeader: true,
+            enableGroupingMenu: false
+        },{
+        ftype: 'searching',
+        mode: 'local',
+        minChars: 2
+     }
+    ],
     tbar: [{
         xtype: 'exportbtn'
     }, {
@@ -88,6 +101,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpManagerEvaluationGrid', {
                     text: 'Save Details',
                     iconCls: 'x-fa fa-save',
                     ui: 'soft-purple',
+                    hidden:true,
                     name: 'save_btn',
                     table_name: 'tra_gmp_applications',
                     toaster: 1
@@ -105,16 +119,12 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpManagerEvaluationGrid', {
             ]
         }
     ],
-    features: [{
-        ftype: 'searching',
-        mode: 'local',
-        minChars: 2
-    }],
     listeners: {
         beforerender: {
             fn: 'setGmpApplicationGridsStore',
             config: {
                 pageSize: 10000,
+                groupField: 'inspection_id',
                 proxy: {
                     url: 'gmpapplications/getManagerApplicationsGeneric'
                 }
@@ -149,6 +159,36 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpManagerEvaluationGrid', {
         }
     },
     columns: [
+      {
+       xtype: 'gridcolumn',
+        dataIndex: 'inspection_type', 
+        tdCls: 'wrap-text',
+        text: 'Inspection Type',
+        flex:1
+      },
+     {
+        xtype: 'gridcolumn',
+        dataIndex: 'start_date', 
+        tdCls: 'wrap-text',
+        text: 'Start Date',
+        renderer: Ext.util.Format.dateRenderer('d/m/Y'),
+        flex:1
+      },
+      {
+        xtype: 'gridcolumn',
+        dataIndex: 'inspection_days', 
+        tdCls: 'wrap-text',
+        text: 'No of Inspection Days',
+        flex:1
+        },
+        {
+            xtype: 'gridcolumn',
+            dataIndex: 'end_date',
+            text: 'End Date',
+            tdCls: 'wrap-text',
+            flex: 1,
+            renderer: Ext.util.Format.dateRenderer('d/m/Y')
+        },
         {
             text: 'Options',
             xtype: 'widgetcolumn',
@@ -168,13 +208,19 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpManagerEvaluationGrid', {
                             appDetailsReadOnly: 1,
                             handler: 'showGmpApplicationMoreDetails'
                         },{
+                            text: 'View  Online Assessment Tool',
+                            iconCls: 'x-fa fa-bars',
+                            appDetailsReadOnly: 1,
+                            winTitle: 'Online Assessment Tool Details',
+                            handler: 'showGMPAssessmentToolDetails'
+                        }, {
                             text: 'Application Documents',
                             iconCls: 'x-fa fa-file',
                             tooltip: 'Application Documents',
                             action: 'edit',
                             childXtype: '',
                             winTitle: 'Application Documents',
-                            winWidth: '40%',
+                            winWidth: '80%',
                             isReadOnly: 1,
                             document_type_id: '',
                             handler: 'showPreviousUploadedDocs'
@@ -182,6 +228,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpManagerEvaluationGrid', {
                         {
                             text: 'Dismiss/Cancel Application',
                             iconCls: 'x-fa fa-thumbs-down',
+                            hidden:true,
                             handler: 'showApplicationDismissalForm'
                         }
                     ]

@@ -79,39 +79,43 @@ export class RenewalBusinessPermitComponent extends SharedPremisesregistrationcl
 
   }
   
-  onSavePremisesApplication() {
-    if (this.premisesGeneraldetailsfrm.invalid) {
-     // return;
-    }
-    //check the zone id 
-    if(this.premisesGeneraldetailsfrm.get('zone_id').value < 1){
-      this.toastr.error('Select Premises Certificate/Permit Issue Place', 'Alert');
-      return;
-    }
-    this.spinner.show();
-    this.appService.onSaveRenPremisesApplication(this.premise_id, this.premisesGeneraldetailsfrm.value, this.tracking_no)
-      .subscribe(
-        response => {
-          this.premises_resp = response.json();
-          //the details 
-          this.spinner.hide();
-          this.tracking_no = this.premises_resp.tracking_no;
-          this.premise_id = this.premises_resp.premise_id;
-          this.application_code = this.application_code;
-          if (this.premises_resp.success) {
-            this.toastr.success(this.premises_resp.message, 'Response');
-            this.onLoadPremisesOtherDetails();
-            this.onLoadPremisesPersonnelDetails();
-            this.wizard.model.navigationMode.goToStep(1);
-          } else {
-            this.toastr.error(this.premises_resp.message, 'Alert');
-          }
-        },
-        error => {
-          this.loading = false;
-        });
+  // onSavePremisesApplication() {
+  //   const invalid = [];
+  //   const controls = this.premisesGeneraldetailsfrm.controls;
+  //   for (const name in controls) {
+  //       if (controls[name].invalid) {
+  //         this.toastr.error('Fill In All Mandatory fields with (*), missing value on '+ name.replace('_id',''), 'Alert');
+  //           return;
+  //       }
+  //   }
+  //   if (this.premisesGeneraldetailsfrm.invalid) {
+  //     return;
+  //   }
+  //   console.log(this.premisesGeneraldetailsfrm.value);
+  //   this.spinner.show();
+  //   this.appService.onSaveRenPremisesApplication(this.premise_id, this.premisesGeneraldetailsfrm.value, this.tracking_no)
+  //     .subscribe(
+  //       response => {
+  //         this.premises_resp = response.json();
+  //         //the details 
+  //         this.spinner.hide();
+  //         this.tracking_no = this.premises_resp.tracking_no;
+  //         this.premise_id = this.premises_resp.premise_id;
+  //         this.application_code = this.application_code;
+  //         if (this.premises_resp.success) {
+  //           this.toastr.success(this.premises_resp.message, 'Response');
+  //           this.onLoadPremisesOtherDetails();
+  //           this.onLoadPremisesPersonnelDetails();
+  //           this.wizard.model.navigationMode.goToStep(1);
+  //         } else {
+  //           this.toastr.error(this.premises_resp.message, 'Alert');
+  //         }
+  //       },
+  //       error => {
+  //         this.loading = false;
+  //       });
         
-  }
+  // }
   onCloseQueryMode(){
 
     this.isInitalQueryResponseFrmVisible = false;

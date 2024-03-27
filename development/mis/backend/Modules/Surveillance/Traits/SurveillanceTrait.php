@@ -393,8 +393,8 @@ trait SurveillanceTrait
                     'success' => false,
                     'message' => 'No samples to submit!!'
                 );
-                echo json_encode($res);
-                exit();
+                // echo json_encode($res);
+                // exit();
             } else {
                 $update_qry = clone $samples_qry;
                 $update_qry->update($samples_update);

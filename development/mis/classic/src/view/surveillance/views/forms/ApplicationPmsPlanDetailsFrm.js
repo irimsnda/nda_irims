@@ -92,11 +92,16 @@ Ext.define('Admin.view.surveillance.views.forms.ApplicationPmsPlanDetailsFrm', {
                     altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
                 },{
                     xtype: 'combo',
-                    fieldLabel: 'Type/Categryory of Sampling Site',
-                    forceSelection: true,readOnly: false,
+                    fieldLabel: 'Type/Category of Sampling Site',
+                    forceSelection: true,
+                    readOnly: false,
                     queryMode: 'local',
                     valueField: 'id',
-                    allowBlank: false,
+                    allowBlank: true,
+                    /* 
+                        Could not load the sample Categories correctly hence the
+                        allowBlank true for now
+                    */
                     displayField: 'sampling_site',
                     name: 'sampling_site_id',
                     anyMatch: true,
@@ -106,58 +111,104 @@ Ext.define('Admin.view.surveillance.views.forms.ApplicationPmsPlanDetailsFrm', {
                             config: {
                                 pageSize: 1000,
                                 proxy: {
-                                    url: 'surveillance/getPmsProgramSamplingSites'
+                                    url: 'surveillance/getPmsProgramSamplingSites',
+                                    extraParams: {
+                                        table_name: 'pms_program_samplingsites'
+                                    }
                                 }
                             },
                             isLoad: false
                         },
                         
                     }
-                    }, {
-                        xtype: 'combo',
-                        fieldLabel: 'Region',
-                        forceSelection: true,
-                        queryMode: 'local',readOnly: false,
-                        name: 'region_id',
-                        valueField: 'region_id',
-                        displayField: 'region_name',
-                       
-                        anyMatch: true,
-                        listeners: {
-                            beforerender: {
-                                fn: 'setSurveillanceCombosStore',
-                                config: {
-                                    pageSize: 1000,
-                                    proxy: {
-                                        url: 'surveillance/getPmsProgramRegions'
-                                    }
-                                },
-                                isLoad: false
-                            }
-                           
-                        }
                     },
-                    {
+                     {
                         xtype: 'combo',
                         fieldLabel: 'District',
                         name: 'district_id',
-                        readOnly: false,
+                        //store: 'regionsstr',
+                        readOnly:false,
+                         allowBlank:true,
                         forceSelection: true,
                         queryMode: 'local',
                         valueField: 'id',
                         displayField: 'name',
                         listeners: {
-                            beforerender: {
-                                fn: 'setParamCombosStore',
-                                config: {
-                                    pageSize: 10000,
-                                    proxy: {
-                                        url: 'parameters/district'
-                                    }
-                                },
-                                isLoad: false
+                                    beforerender: {
+                                        fn: 'setSurveillanceCombosStore',
+                                        config: {
+                                            pageSize: 10000,
+                                            proxy: {
+                                                 url: 'commonparam/getCommonParamFromTable',
+                                                 extraParams: {
+                                                 table_name: 'par_premise_districts'
+                                        }
+                                       }
+                                    },
+                                        isLoad: false
+                            },
+                            afterrender: function (cmbo) {
+                                 var grid = cmbo.up('grid'),
+                                 store = cmbo.getStore(),
+                                 filterObj = {country_id: 37},
+                                 filterStr = JSON.stringify(filterObj);
+                                 store.removeAll();
+                                 store.load({params: {filters: filterStr}});
+                              },
+                            change: function (cmbo, newVal) {
+                                var form = cmbo.up('form'),
+                                regionStore = form.down('combo[name=region_id]').getStore(),
+                                filterObj = {district_id: newVal},
+                                filterStr = JSON.stringify(filterObj);
+                                regionStore.removeAll();
+                                regionStore.load({params: {filters: filterStr}});
+                               
+                            }
+                        },
+                        triggers: {
+                            clear: {
+                                type: 'clear',
+                                hideWhenEmpty: true,
+                                hideWhenMouseOut: false,
+                                clearOnEscape: true
                             }
                         }
+                    },
+
+                     {
+                        xtype: 'combo',
+                        fieldLabel: 'Region',
+                        name: 'region_id',
+                        //store: 'regionsstr',
+                        readOnly:false,
+                        allowBlank:true,
+                        forceSelection: true,
+                        queryMode: 'local',
+                        valueField: 'id',
+                        displayField: 'name',
+                        listeners: {
+                                    beforerender: {
+                                        fn: 'setSurveillanceCombosStore',
+                                        config: {
+                                            pageSize: 10000,
+                                            proxy: {
+                                                 url: 'commonparam/getCommonParamFromTable',
+                                                 extraParams: {
+                                                 table_name: 'par_premise_regions'
+                                        }
+                                       }
+                                    },
+                                 isLoad: false
+                            }
+                        },
+                        triggers: {
+                            clear: {
+                                type: 'clear',
+                                hideWhenEmpty: true,
+                                hideWhenMouseOut: false,
+                                clearOnEscape: true
+                        }
+                    }
                     
                 }
             ]

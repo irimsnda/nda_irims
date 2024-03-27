@@ -16,24 +16,55 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { AppLayoutComponent } from '../../views/online-services/app-layout/app-layout.component';
 import { OnlineserviceRouteModule } from './../../routes/online-servises/onlineservice-route.module';
 import { NotfoundComponent } from '../../views/online-services/notfound/notfound.component';
 import { AppheaderComponent } from '../../views/online-services/appheader/appheader.component';
+
 import { AppsettingsComponent } from '../../views/online-services/appsettings/appsettings.component';
 import { AppfooterComponent } from '../../views/online-services/appfooter/appfooter.component';
 import { AppmenuComponent } from '../../views/online-services/appmenu/appmenu.component';
 import { AppdashboardComponent } from '../../views/online-services/appdashboard/appdashboard.component';
+
 import { ProductRegDashboardComponent } from '../../views/online-services/product-registration/product-reg-dashboard/product-reg-dashboard.component';
 import { HttpClientModule } from '@angular/common/http';
 //premsies NewDrugshopsRegistrationComponentdrugshop-reg-dashboard
 import { DrugshopRegDashboardComponent } from '../../views/online-services/drugshop-registration/drugshop-reg-dashboard/drugshop-reg-dashboard.component';
+import { SurgicalRegDashboardComponent } from '../../views/online-services/surgicalinstruments-registration/surgical-reg-dashboard/surgical-reg-dashboard.component';
+import { PreinspectionsurgicalDashboardComponent } from '../../views/online-services/surgicalinstruments-registration/surgical-reg-dashboard/preinspectionsurgical-dashboard/preinspectionsurgical-dashboard.component';
+import { NewsurgicalinstrumntDashboardComponent } from '../../views/online-services/surgicalinstruments-registration/surgical-reg-dashboard/newsurgicalinstrumnt-dashboard/newsurgicalinstrumnt-dashboard.component';
+import { RenewalsurgicalDashboardComponent } from '../../views/online-services/surgicalinstruments-registration/surgical-reg-dashboard/renewalsurgical-dashboard/renewalsurgical-dashboard.component';
+import { SurgicalrelocationDashboardComponent } from '../../views/online-services/surgicalinstruments-registration/surgical-reg-dashboard/surgicalrelocation-dashboard/surgicalrelocation-dashboard.component';
+import { SurgicalAnnexstoreDashboardComponent } from '../../views/online-services/surgicalinstruments-registration/surgical-reg-dashboard/surgical-annexstore-dashboard/surgical-annexstore-dashboard.component';
+
+import { PsurProdnotificationRequestComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-request/psur-prodnotification-request.component';
+import { PsurProdnotificationDashboardComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-dashboard/psur-prodnotification-dashboard.component';
+import { PsurProductnotificationDashboardComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-dashboard/psur-productnotification-dashboard/psur-productnotification-dashboard.component';
+import { PsurProdnotificationGeneraldetailsComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-dataentry/psur-prodnotification-generaldetails/psur-prodnotification-generaldetails.component';
+import { ProductDetailsComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-dataentry/product-details/product-details.component';
+import { AdverseReactionGeneralDetailsComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-dataentry/adverse-reaction-general-details/adverse-reaction-general-details.component';
+import { AdverseReactionOtherdetailsComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-dataentry/adverse-reaction-otherdetails/adverse-reaction-otherdetails.component';
+import { AdverseReactionReporterDetailsComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-dataentry/adverse-reaction-reporter-details/adverse-reaction-reporter-details.component';
+import { AdverseDrugReactionRequestComponent } from 'src/app/views/online-services/psur-product-notification/adverse-drug-reaction-request/adverse-drug-reaction-request.component';
+import { AdverseDrugReactionDashboardComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-dashboard/adverse-drug-reaction-dashboard/adverse-drug-reaction-dashboard.component';
+import { AdverseReactionDashboardComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-dashboard/adverse-reaction-dashboard/adverse-reaction-dashboard.component';
+
+
 import { PremisesRegDashboardComponent } from '../../views/online-services/premises-registration/premises-reg-dashboard/premises-reg-dashboard.component';
 import { AnnexstoreRegistrationComponent } from '../../views/online-services/premises-registration/annexstore-registration/annexstore-registration.component';
 import { PremiserelocationRegistrationComponent } from '../../views/online-services/premises-registration/premiserelocation-registration/premiserelocation-registration.component';
 import { NewPremisesRegistrationComponent } from '../../views/online-services/premises-registration/new-premises-registration/new-premises-registration.component';
 import { NewDrugshopsRegistrationComponent } from '../../views/online-services/drugshop-registration/new-drugshops-registration/new-drugshops-registration.component';
+import { NewSurgicalRegistrationComponent } from '../../views/online-services/surgicalinstruments-registration/new-surgical-registration/new-surgical-registration.component';
+import { PreinspectionsurgicalRegistrationComponent } from '../../views/online-services/surgicalinstruments-registration/preinspectionsurgical-registration/preinspectionsurgical-registration.component';
+import { SurgicalinstrumentsGeneraldetailsComponent } from '../../views/online-services/surgicalinstruments-registration/surgical-dataentry/surgicalinstruments-generaldetails/surgicalinstruments-generaldetails.component';
+import { RelocationSurgicalInstumentsRegistrationComponent } from '../../views/online-services/surgicalinstruments-registration/relocation-surgical-instuments-registration/relocation-surgical-instuments-registration.component';
+import { RenewalSurgicalIntrumentsRegistrationComponent } from '../../views/online-services/surgicalinstruments-registration/renewal-surgical-intruments-registration/renewal-surgical-intruments-registration.component';
+import { SurgicalInstrumentsAnnexstoreRegistrationComponent } from '../../views/online-services/surgicalinstruments-registration/surgical-instruments-annexstore-registration/surgical-instruments-annexstore-registration.component';
+
+
+import { PreviewPremisesInformationComponent } from '../../views/online-services/premises-registration/preview-premises-information/preview-premises-information.component';
+import { PreviewDrugshopInformationComponent } from '../../views/online-services/drugshop-registration/preview-drugshop-information/preview-drugshop-information.component';
 
 import { from } from 'rxjs';
 import { ApplicationSelectionComponent } from '../../views/online-services/product-registration/application-selection/application-selection.component';
@@ -41,12 +72,11 @@ import { PremapplSelectionComponent } from '../../views/online-services/premises
 import { PrepremsapplSelectionComponent } from '../../views/online-services/premises-registration/prepremsappl-selection/prepremsappl-selection.component';
 import { PredrugshopAppselectionComponent } from '../../views/online-services/drugshop-registration/predrugshop-appselection/predrugshop-appselection.component';
 import { DrugshopNeareststoreComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-dataentry/drugshop-neareststore/drugshop-neareststore.component';
-
 import { DrugshopNearestlocationComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-dataentry/drugshop-nearestlocation/drugshop-nearestlocation.component';
 import { DrugshopPersonneldetailsComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-dataentry/drugshop-personneldetails/drugshop-personneldetails.component';
 import { DrugshopLicensedetailsComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-dataentry/drugshop-licensedetails/drugshop-licensedetails.component';
-
-import { DxActionSheetModule, DxFileUploaderModule, DxDataGridModule, DxPopupModule, DxButtonModule, DxDateBoxModule, DxTextBoxModule, DxSelectBoxModule, DxTextAreaModule, DxContextMenuModule, DxMenuModule, DxCheckBoxModule, DxNumberBoxModule, DxRadioGroupModule, DxScrollViewModule, DxDropDownBoxModule, DxHtmlEditorModule, DxTagBoxModule, DxTabsModule, DxTabPanelModule } from 'devextreme-angular';
+import { AnnexStoreComponent } from 'src/app/views/online-services/premises-registration/premises-dataentry/annex-store/annex-store.component';
+import { DxActionSheetModule, DxChartModule, DxMapModule, DxFileUploaderModule, DxDataGridModule, DxPopupModule, DxButtonModule, DxDateBoxModule, DxTextBoxModule, DxSelectBoxModule, DxTextAreaModule, DxContextMenuModule, DxMenuModule, DxCheckBoxModule, DxNumberBoxModule, DxRadioGroupModule, DxScrollViewModule, DxDropDownBoxModule, DxHtmlEditorModule, DxTagBoxModule, DxTabsModule, DxTabPanelModule } from 'devextreme-angular';
 import { ModalDialogModule } from 'ngx-modal-dialog';
 import { RenewalDrugshopPermitComponent } from '../../views/online-services/drugshop-registration/renewal-drugshop-permit/renewal-drugshop-permit.component';
 
@@ -57,12 +87,20 @@ import { ArchivedPremisesComponent } from 'src/app/views/online-services/premise
 import { ArchivedProductsappsComponent } from 'src/app/views/online-services/product-registration/archived-productsapps/archived-productsapps.component';
 import { InitiateNewproductApplicationComponent } from 'src/app/views/online-services/product-registration/new-product-registration/initiate-newproduct-application/initiate-newproduct-application.component';
 import { PremisesAlterationComponent } from 'src/app/views/online-services/premises-registration/premises-alteration/premises-alteration.component';
+import { DrugshopVariationComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-variation/drugshop-variation.component';
+import { ImportexportApprovedappVCComponent } from 'src/app/views/online-services/importexport-apps/importexport-approvedappvc/importexport-approvedappvc.component';
+import { SharedSurgicalregistrationclassComponent } from 'src/app/views/online-services/surgicalinstruments-registration/shared-surgicalregistrationclass/shared-surgicalregistrationclass.component';
+import { SharedPsurProdnotificationComponent } from 'src/app/views/online-services/psur-product-notification/shared-psur-prodnotification/shared-psur-prodnotification.component';
+
+
+
 
 import { SharedProductregistrationclassComponent } from 'src/app/views/online-services/product-registration/shared-productregistrationclass/shared-productregistrationclass.component';
 
 import { SharedDrugshopsregistrationclassComponent } from 'src/app/views/online-services/drugshop-registration/shared-drugshopsregistrationclass/shared-drugshopsregistrationclass.component';
 import { SharedPremisesregistrationclassComponent } from 'src/app/views/online-services/premises-registration/shared-premisesregistrationclass/shared-premisesregistrationclass.component';
 import { SharedGmpapplicationclassComponent } from 'src/app/views/online-services/gmp-applications/shared-gmpapplicationclass/shared-gmpapplicationclass.component';
+import { DrugshopRegPreviewComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-preview/drugshop-reg-preview.component';
 import { PremisesRegPreviewComponent } from 'src/app/views/online-services/premises-registration/premises-reg-preview/premises-reg-preview.component';
 import { MedicaldevicesNotificationsComponent } from 'src/app/views/online-services/product-notification/medicaldevices-notifications/medicaldevices-notifications.component';
 import { ProductnotificationDashboardComponent } from 'src/app/views/online-services/product-notification/productnotification-dashboard/productnotification-dashboard.component';
@@ -96,8 +134,29 @@ import { InitiateProductWithdrawalComponent } from 'src/app/views/online-service
 import { ApplicationWithdrawalDetailsComponent } from 'src/app/views/online-services/application-withdrawal-details/application-withdrawal-details.component';
 import { SampledocumentsSubmissionsComponent } from 'src/app/views/online-services/product-registration/sampledocuments-submissions/sampledocuments-submissions.component';
 import { ProductformDetailsComponent } from 'src/app/views/online-services/product-registration/products-dataentry/productform-details/productform-details.component';
+import { ProductVariationComponent } from 'src/app/views/online-services/product-registration/products-dataentry/product-variation/product-variation.component';
+import { CoPackedproductDetailsComponent } from 'src/app/views/online-services/product-registration/products-dataentry/co-packedproduct-details/co-packedproduct-details.component';
 
-import { QualityoverallSummaryComponent } from 'src/app/views/online-services/product-registration/products-dataentry/qualityoverall-summary/qualityoverall-summary.component';
+import { ActivePharmaceuticalComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/active-pharmaceutical/active-pharmaceutical.component';
+import { GeneralInformationComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/general-information/general-information.component';
+
+import { ProductSummaryComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/product-summary/product-summary.component';
+import { CharacterisationComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/characterisation/characterisation.component';
+import { ClosureSystemComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/closure-system/closure-system.component';
+import { ContainerClosureComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/container-closure/container-closure.component';
+import { ContainerClosureSystemComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/container-closure-system/container-closure-system.component';
+import { ControlApiComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/control-api/control-api.component';
+import { ControlExcipientComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/control-excipient/control-excipient.component';
+import { ControlFppComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/control-fpp/control-fpp.component';
+import { FinishedPharmaceuticalComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/finished-pharmaceutical/finished-pharmaceutical.component';
+import { ManufacturerComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/manufacturer/manufacturer.component';
+import { ManufacturersP3Component } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/manufacturers-p3/manufacturers-p3.component';
+import { PackagingSelectionComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/packaging-selection/packaging-selection.component';
+import { ReferenceMaterialsComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/reference-materials/reference-materials.component';
+import { ReferenceStandardComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/reference-standard/reference-standard.component';
+import { RegionalInformationComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/regional-information/regional-information.component';
+import { StabilityComponent } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/stability/stability.component';
+import { StabilityP8Component } from 'src/app/views/online-services/product-registration/products-dataentry/quality-summary/stability-p8/stability-p8.component';
 
 
 import { ProductRegistrationselectionComponent } from 'src/app/views/online-services/product-registration/product-registrationselection/product-registrationselection.component';
@@ -110,14 +169,20 @@ import { PremisesWithdrawalComponent } from 'src/app/views/online-services/premi
 import { RegisteredGmpselectionComponent } from 'src/app/views/online-services/gmp-applications/gmp/registered-gmpselection/registered-gmpselection.component';
 import { RegisteredGmpapplicationsComponent } from 'src/app/views/online-services/gmp-applications/gmp/registered-gmpapplications/registered-gmpapplications.component';
 import { NewGmpApplicationComponent } from 'src/app/views/online-services/gmp-applications/gmp/new-gmp-application/new-gmp-application.component';
+import { LocalGmpApplicationComponent } from 'src/app/views/online-services/gmp-applications/gmp/local-gmp-application/local-gmp-application.component';
 import { NewVetgmpApplicationComponent } from 'src/app/views/online-services/gmp-applications/vet-gmp/new-vetgmp-application/new-vetgmp-application.component';
+import { PreinspectionGmpApplicationComponent } from 'src/app/views/online-services/gmp-applications/gmp/preinspection-gmp-application/preinspection-gmp-application.component';
 
 
-
+import { GmpRenewalRegDashboardComponent } from 'src/app/views/online-services/gmp-applications/gmp/gmp-renewal-reg-dashboard/gmp-renewal-reg-dashboard.component';
 import { RenewalGmpApplicationComponent } from 'src/app/views/online-services/gmp-applications/gmp/renewal-gmp-application/renewal-gmp-application.component';
+import { PreinspectionRegDashboardComponent } from 'src/app/views/online-services/gmp-applications/gmp/preinspection-reg-dashboard/preinspection-reg-dashboard.component';
+import { LocalgmpRegDashboardComponent } from 'src/app/views/online-services/gmp-applications/gmp/localgmp-reg-dashboard/localgmp-reg-dashboard.component';
 import { GmpRegDashboardComponent } from 'src/app/views/online-services/gmp-applications/gmp/gmp-reg-dashboard/gmp-reg-dashboard.component';
 import { VetDashboardComponent } from 'src/app/views/online-services/gmp-applications/vet-gmp/vet-dashboard/vet-dashboard.component';
 import { GmpApplicationsSelectionComponent } from 'src/app/views/online-services/gmp-applications/gmp/gmp-applications-selection/gmp-applications-selection.component';
+import { GmpPreinspectionSelectionComponent } from 'src/app/views/online-services/gmp-applications/gmp/gmp-preinspection-selection/gmp-preinspection-selection.component';
+
 import { VetAppSelectionComponent } from 'src/app/views/online-services/gmp-applications/vet-gmp/vet-app-selection/vet-app-selection.component';
 import { GmpAppPreviewComponent } from 'src/app/views/online-services/gmp-applications/gmp/gmp-app-preview/gmp-app-preview.component';
 import { GmpWithdrawalappsrequestComponent } from 'src/app/views/online-services/gmp-applications/gmp/gmp-withdrawalappsrequest/gmp-withdrawalappsrequest.component';
@@ -136,11 +201,12 @@ import { TraderaccountUsersComponent } from 'src/app/views/online-services/trade
 import { PharmacistsaccountUserComponent } from 'src/app/views/online-services/premises-registration/pharmacistsaccount-user/pharmacistsaccount-user.component';
 
 //import { SafePipe } from 'src/app/safe.pipe';
-//import { DrugsProductsdetailsComponent } from 'src/app/views/online-services/product-registration/product-generaldetails/drugs-productsdetails/drugs-productsdetails.component';
 import { FoodProductsdetailsComponent } from 'src/app/views/online-services/product-registration/product-generaldetails/food-productsdetails/food-productsdetails.component';
 import { CosmeticsProductsdetailsComponent } from 'src/app/views/online-services/product-registration/product-generaldetails/cosmetics-productsdetails/cosmetics-productsdetails.component';
 import { DrugshopGeneraldetailsComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-dataentry/drugshop-generaldetails/drugshop-generaldetails.component';
 import { PremisesGeneraldetailsComponent } from 'src/app/views/online-services/premises-registration/premises-dataentry/premises-generaldetails/premises-generaldetails.component';
+import { PremiseChangePharmacistsComponent } from 'src/app/views/online-services/premises-registration/premises-dataentry/premise-change-pharmacists/premise-change-pharmacists.component';
+
 import { PremisesStaffdetailsComponent } from 'src/app/views/online-services/premises-registration/premises-dataentry/premises-staffdetails/premises-staffdetails.component';
 import { DirectorsDetailsComponent } from 'src/app/views/online-services/premises-registration/premises-dataentry/directors-details/directors-details.component';
 
@@ -148,12 +214,40 @@ import { PremisesBusinessdetailsComponent } from 'src/app/views/online-services/
 import { PremisesPersonneldetailsComponent } from 'src/app/views/online-services/premises-registration/premises-dataentry/premises-personneldetails/premises-personneldetails.component';
 import { GmpPersonneldetailsComponent } from 'src/app/views/online-services/gmp-applications/gmp-dataentry/gmp-personneldetails/gmp-personneldetails.component';
 import { GmpGeneraldetailsComponent } from 'src/app/views/online-services/gmp-applications/gmp-dataentry/gmp-generaldetails/gmp-generaldetails.component';
+import { GmpPreinspectionGeneraldetailsComponent } from 'src/app/views/online-services/gmp-applications/gmp-dataentry/gmp-preinspection-generaldetails/gmp-preinspection-generaldetails.component';
+
+import { GmpInspectionHistoryComponent } from 'src/app/views/online-services/gmp-applications/gmp-dataentry/gmp-inspection-history/gmp-inspection-history.component';
 import { GmpBusinessdetailsComponent } from 'src/app/views/online-services/gmp-applications/gmp-dataentry/gmp-businessdetails/gmp-businessdetails.component';
 import { GmpManufatcuringdetailsComponent } from 'src/app/views/online-services/gmp-applications/gmp-dataentry/gmp-manufatcuringdetails/gmp-manufatcuringdetails.component';
+import { IntendedManufacturingActivityComponent } from 'src/app/views/online-services/gmp-applications/gmp-dataentry/intended-manufacturing-activity/intended-manufacturing-activity.component';
+import { IntendedSurgicalmanufacturingComponent } from 'src/app/views/online-services/gmp-applications/gmp-dataentry/intended-surgicalmanufacturing/intended-surgicalmanufacturing.component';
+
 import { ImportexportGendetailsComponent } from 'src/app/views/online-services/importexport-apps/importexport-dataentry/importexport-gendetails/importexport-gendetails.component';
 import { PermitProductsdetailsComponent } from 'src/app/views/online-services/importexport-apps/importexport-dataentry/permit-productsdetails/permit-productsdetails.component';
 import { SharedImportexportclassComponent } from 'src/app/views/online-services/importexport-apps/shared-importexportclass/shared-importexportclass.component';
 import { ClinicalGeneraldetailsComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinical-generaldetails/clinical-generaldetails.component';
+import { ClinicalObjectivedetailsComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinical-objectivedetails/clinical-objectivedetails.component';
+import { ClinicalInclusionothersitesComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinical-inclusionothersites/clinical-inclusionothersites.component';
+
+import { VariationDetailsComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/variation-details/variation-details.component';
+import { OthertrialStaffComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/othertrial-staff/othertrial-staff.component';
+import { ClinicalConcomitantDrugComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinical-concomitant-drug/clinical-concomitant-drug.component';
+import { ClinicaltrialSaeReportComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinicaltrial-sae-report/clinicaltrial-sae-report.component';
+import { ClinicaltrialCasualityAssessmentComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinicaltrial-casuality-assessment/clinicaltrial-casuality-assessment.component';
+
+
+import { SaeDrugDetailsComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/sae-drug-details/sae-drug-details.component';
+
+import { NonClinicalfindingsToxicologyComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/non-clinicalfindings-toxicology/non-clinicalfindings-toxicology.component';
+import { NonClinicalfindingsPharmacologyComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/renewal-summary-ammendment/non-clinicalfindings-pharmacology.component';
+import { NonClinicalfindingsPharmacokinetiscComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/non-clinicalfindings-pharmacokinetisc/non-clinicalfindings-pharmacokinetisc.component';
+import { NonClinicalfindingsAdditionalconsiderationComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/renewal-summary-report/non-clinicalfindings-additionalconsideration.component';
+
+
+import { TrialDescriptionComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/trial-description/trial-description.component';
+import { TrialMonitoringReportComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/trial-monitoring-report/trial-monitoring-report.component';
+import { ClinicalEndpointsdetailsComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinical-endpointsdetails/clinical-endpointsdetails.component';
+import { ClinicalStudydesignendpointsdetailsComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinical-studydesignendpointsdetails/clinical-studydesignendpointsdetails.component';
 import { ClinicalpresubmissionGeneraldetailsComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinicalpresubmission-generaldetails/clinicalpresubmission-generaldetails.component';
 import { ClinicalStudysitesComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinical-studysites/clinical-studysites.component';
 import { ClinicalInvestigatorsComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinical-investigators/clinical-investigators.component';
@@ -186,11 +280,13 @@ import { ClinicaltrialOtherreportingComponent } from 'src/app/views/online-servi
 import { ClinicalprogressrptGeneralComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinicalprogressrpt-general/clinicalprogressrpt-general.component';
 import { ClinicalsotherrptGeneralComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinicalsotherrpt-general/clinicalsotherrpt-general.component';
 import { ClinicalsaerptGeneralComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinicalsaerpt-general/clinicalsaerpt-general.component';
+import { ProductNotificationGeneralDetailsComponent } from 'src/app/views/online-services/product-registration/product-notification-general-details/product-notification-general-details.component';
+
 
 import { AppsubmissionDashboardComponent } from 'src/app/views/online-services/appsubmission-dashboard/appsubmission-dashboard.component';
-
+//import { HerbalProductsdetailsComponent } from 'src/app/views/online-services/product-registration/product-generaldetails/herbal-productsdetails/herbal-productsdetails.component';
 import { ApplicationPaymentsComponent } from 'src/app/views/online-services/application-payments/application-payments.component';
-import { DrugsProductsdetailsComponent } from 'src/app/views/online-services/product-registration/product-generaldetails/drugs-productsdetails/drugs-productsdetails.component';
+//import { DrugsProductsdetailsComponent } from 'src/app/views/online-services/product-registration/product-generaldetails/drugs-productsdetails/drugs-productsdetails.component';
 import { SharedModulesModule } from '../shared-modules/shared-modules.module';
 import { AppsynchronisationRequestComponent } from 'src/app/views/online-services/appsynchronisation-request/appsynchronisation-request.component';
 import { ControlleddrugspermitsDashboardComponent } from 'src/app/views/online-services/controlleddrugspermits-apps/controlleddrugspermits-dashboard/controlleddrugspermits-dashboard.component';
@@ -214,6 +310,7 @@ import { OrderSuppydangerousApplicationComponent } from 'src/app/views/online-se
 import { OrderSuppydangerousGendetailsComponent } from 'src/app/views/online-services/controlleddrugspermits-apps/order-suppydangerous-drugs/order-suppydangerous-dataentry/order-suppydangerous-gendetails/order-suppydangerous-gendetails.component';
 import { OrderSuppydangerousDashComponent } from 'src/app/views/online-services/controlleddrugspermits-apps/order-suppydangerous-drugs/order-suppydangerous-dash/order-suppydangerous-dash.component';
 import { ApplicationDocumentsComponent } from 'src/app/views/online-services/application-documents/application-documents.component';
+import { ApplicationQualitySummaryDocumentsComponent } from 'src/app/views/online-services/application-quality-summary-documents/application-quality-summary-documents.component';
 import { OrderSuppydangerousProductdetailsComponent } from 'src/app/views/online-services/controlleddrugspermits-apps/order-suppydangerous-drugs/order-suppydangerous-dataentry/order-suppydangerous-product/order-suppydangerous-productdetails.component';
 import { ProdretentionDashboardComponent } from 'src/app/views/online-services/productretention/product-retentionrequest/prodretention-dashboard/prodretention-dashboard.component';
 import { ProdretentionRequestsappComponent } from 'src/app/views/online-services/productretention/product-retentionrequest/prodretention-requestsapp/prodretention-requestsapp.component';
@@ -232,11 +329,15 @@ import { ImportvisaDashboardComponent } from 'src/app/views/online-services/impo
 import { ImportgeneralicenseDashboardComponent } from 'src/app/views/online-services/importexport-apps/importexport-dashboard/importgeneralicense-dashboard/importgeneralicense-dashboard.component';
 import { AnnexstoreDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/annexstore-dashboard/annexstore-dashboard.component';
 import { PremiserelocationDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/premiserelocation-dashboard/premiserelocation-dashboard.component';
+import { ImportlicenseApplicationDashboardComponent } from 'src/app/views/online-services/importexport-apps/importexport-dashboard/importlicenseapplication-dashboard/importlicenseapplication-dashboard.component';
+import { ImportLicenseappselComponent } from 'src/app/views/online-services/importexport-apps/importlicense-appsel/importlicense-appsel.component';
+import { ImportLicenseapplictionComponent } from 'src/app/views/online-services/importexport-apps/importexport-application/import-licenseapplication/import-licenseapplication.component';
 
 import { ExportlicenseDashboardComponent } from 'src/app/views/online-services/importexport-apps/importexport-dashboard/exportlicense-dashboard/exportlicense-dashboard.component';
 import { NewpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/newpremises-dashboard/newpremises-dashboard.component';
 import { PreinspectionDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/preinspection-dashboard/preinspection-dashboard.component';
 import { RenewaldrugshopDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/renewaldrugshop-dashboard/renewaldrugshop-dashboard.component';
+import { VariationdrugshopDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/variationdrugshop-dashboard/variationdrugshop-dashboard.component';
 import { NewdrugshopDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/newdrugshop-dashboard/newdrugshop-dashboard.component';
 import { RenewalpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/renewalpremises-dashboard/renewalpremises-dashboard.component';
 import { VariationpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/variationpremises-dashboard/variationpremises-dashboard.component';
@@ -246,6 +347,8 @@ import { InspectionBookingComponent } from 'src/app/views/online-services/import
 import { InspProdbookingDetailsComponent } from 'src/app/views/online-services/importexport-apps/importexport-dataentry/insp-prodbooking-details/insp-prodbooking-details.component';
 import { InspBookingdetailsComponent } from 'src/app/views/online-services/importexport-apps/importexport-dataentry/insp-bookingdetails/insp-bookingdetails.component';
 import { NewprodRegDashboardComponent } from 'src/app/views/online-services/product-registration/product-reg-dashboard/newprod-reg-dashboard/newprod-reg-dashboard.component';
+import { NewvetprodRegDashboardComponent } from 'src/app/views/online-services/product-registration/product-reg-dashboard/newvetprod-reg-dashboard/newvetprod-reg-dashboard.component';
+import { NewsurgicalRegDashboardComponent } from 'src/app/views/online-services/product-registration/product-reg-dashboard/newsurgical-reg-dashboard/newsurgical-reg-dashboard.component';
 import { RenewalprodRegDashboardComponent } from 'src/app/views/online-services/product-registration/product-reg-dashboard/renewalprod-reg-dashboard/renewalprod-reg-dashboard.component';
 import { VariationprodRegDashboardComponent } from 'src/app/views/online-services/product-registration/product-reg-dashboard/variationprod-reg-dashboard/variationprod-reg-dashboard.component';
 import { WithdrawalprodRegDashboardComponent } from 'src/app/views/online-services/product-registration/product-reg-dashboard/withdrawalprod-reg-dashboard/withdrawalprod-reg-dashboard.component';
@@ -296,6 +399,8 @@ import { PreinspectionApplicationComponent } from 'src/app/views/online-services
 import { ClinicalComparatorproductsComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinical-impproducts/clinical-comparatorproducts/clinical-comparatorproducts.component';
 import { ClinicalPlacabolproductsComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinical-impproducts/clinical-placabolproducts/clinical-placabolproducts.component';
 import { ClinicalInvestigationalproductsComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinical-impproducts/clinical-investigationalproducts/clinical-investigationalproducts.component';
+import { ClinicalHandlingComponent } from 'src/app/views/online-services/clinical-trials/clinicaltrial_dataentry/clinical-impproducts/clinical-handling/clinical-handling.component';
+
 import { InitiateNewbatchApplicationComponent } from 'src/app/views/online-services/product-registration/new-product-registration/initiate-newbatch-application/initiate-newbatch-application.component';
 import { InvoiceGroupedappgenerationComponent } from 'src/app/views/online-services/invoice-appgeneration/invoice-groupedappgeneration/invoice-groupedappgeneration.component';
 import { InitiateNewproductListingComponent } from 'src/app/views/online-services/product-registration/new-product-registration/initiate-newproduct-listing/initiate-newproduct-listing.component';
@@ -321,8 +426,10 @@ import { AddproductApplicationdetailsComponent } from 'src/app/views/online-serv
     NotfoundComponent,
     LargedocumentsUploadComponent,
     SharedProductdashboardComponent,
-  //  DrugsProductsdetailsComponent,
+   // DrugsProductsdetailsComponent,
+    ProductNotificationGeneralDetailsComponent,
     FoodProductsdetailsComponent,
+    //HerbalProductsdetailsComponent,
     CosmeticsProductsdetailsComponent,
     AddproductApplicationdetailsComponent,
     InitiateNewproductApplicationComponent,
@@ -331,13 +438,17 @@ import { AddproductApplicationdetailsComponent } from 'src/app/views/online-serv
     NewdrugshopDashboardComponent,
 
     ProdListingDashboardComponent,
-   
     GmpPersonneldetailsComponent,
     GmpGeneraldetailsComponent,
-    GmpBusinessdetailsComponent,   
+    GmpPreinspectionGeneraldetailsComponent,
+    GmpBusinessdetailsComponent,
+    GmpInspectionHistoryComponent,   
     GmpManufatcuringdetailsComponent,
+    IntendedManufacturingActivityComponent,
+    IntendedSurgicalmanufacturingComponent,
     //premises sections
     PremisesGeneraldetailsComponent,
+    PremiseChangePharmacistsComponent,
     DrugshopGeneraldetailsComponent,
     PremisesStaffdetailsComponent,
     DirectorsDetailsComponent,
@@ -359,9 +470,16 @@ import { AddproductApplicationdetailsComponent } from 'src/app/views/online-serv
     ProductRegDashboardComponent,
     PremisesRegDashboardComponent,
     DrugshopRegDashboardComponent,
+    SurgicalRegDashboardComponent,
+    PreinspectionsurgicalDashboardComponent,
+    NewsurgicalinstrumntDashboardComponent,
+    SurgicalrelocationDashboardComponent,
+    SurgicalAnnexstoreDashboardComponent,
+    RenewalsurgicalDashboardComponent,
     DrugshopNearestlocationComponent,
     DrugshopNeareststoreComponent,
     DrugshopPersonneldetailsComponent,
+    AnnexStoreComponent,
     DrugshopLicensedetailsComponent,
     NewpremisesDashboardComponent,
     AnnexstoreDashboardComponent,
@@ -369,18 +487,42 @@ import { AddproductApplicationdetailsComponent } from 'src/app/views/online-serv
     PreinspectionDashboardComponent,
     RenewalpremisesDashboardComponent,
     RenewaldrugshopDashboardComponent,
+    VariationdrugshopDashboardComponent,
     VariationpremisesDashboardComponent,
     WithdrawalpremisesDashboardComponent,
     NewPremisesRegistrationComponent,
+    PreviewPremisesInformationComponent,
+    PreviewDrugshopInformationComponent,
     PremiserelocationRegistrationComponent,
     AnnexstoreRegistrationComponent,
     NewDrugshopsRegistrationComponent,
+    NewSurgicalRegistrationComponent,
+    PsurProdnotificationRequestComponent,
+    PsurProdnotificationGeneraldetailsComponent,
+    AdverseReactionGeneralDetailsComponent,
+    AdverseReactionOtherdetailsComponent,
+    AdverseDrugReactionRequestComponent,
+    AdverseDrugReactionDashboardComponent,
+    AdverseReactionDashboardComponent,
+    AdverseReactionReporterDetailsComponent,
+    ProductDetailsComponent,
+    PsurProductnotificationDashboardComponent,
+    PsurProdnotificationDashboardComponent,
+    SurgicalInstrumentsAnnexstoreRegistrationComponent,
+    RenewalSurgicalIntrumentsRegistrationComponent,
+    RelocationSurgicalInstumentsRegistrationComponent,
+    PreinspectionsurgicalRegistrationComponent,
+    SurgicalinstrumentsGeneraldetailsComponent,
     RenewalBusinessPermitComponent,
     RenewalDrugshopPermitComponent,
     PremisesAlterationComponent,
+    DrugshopVariationComponent,
     SharedPremisesregistrationclassComponent,
     SharedDrugshopsregistrationclassComponent,
+    SharedSurgicalregistrationclassComponent,
+    SharedPsurProdnotificationComponent,
     PremisesRegPreviewComponent,
+    DrugshopRegPreviewComponent,
     ApplicationSelectionComponent,//product applicaiton selection
     PremapplSelectionComponent,
     
@@ -391,13 +533,20 @@ import { AddproductApplicationdetailsComponent } from 'src/app/views/online-serv
     ArchivedProductsappsComponent,
     SharedProductregistrationclassComponent,
     ProductlocalRepresentationComponent,
-    ProductApplicationPreviewComponent,ProductappQuerysubmissionComponent,
+    ProductApplicationPreviewComponent,
+    ProductappQuerysubmissionComponent,
     NewGmpApplicationComponent,
+    LocalGmpApplicationComponent,
+    PreinspectionGmpApplicationComponent,
     NewVetgmpApplicationComponent,
     RenewalGmpApplicationComponent,
     GmpRegDashboardComponent,
+    GmpRenewalRegDashboardComponent,
+    LocalgmpRegDashboardComponent,
+    PreinspectionRegDashboardComponent,
     VetDashboardComponent,
     GmpApplicationsSelectionComponent,
+    GmpPreinspectionSelectionComponent,
     VetAppSelectionComponent,
     SharedGmpapplicationclassComponent,
     GmpAppPreviewComponent,
@@ -413,14 +562,33 @@ import { AddproductApplicationdetailsComponent } from 'src/app/views/online-serv
     ClinicalsaerptGeneralComponent,
     ClinicalsotherrptGeneralComponent,
     ClinicalGeneraldetailsComponent,
+    VariationDetailsComponent,
+    ClinicalObjectivedetailsComponent,
+    ClinicalConcomitantDrugComponent,
+    SaeDrugDetailsComponent,
+    ClinicaltrialSaeReportComponent,
+    ClinicaltrialCasualityAssessmentComponent,
+    ClinicalInclusionothersitesComponent,
+    ClinicalEndpointsdetailsComponent,
+    ClinicalStudydesignendpointsdetailsComponent,
+    TrialMonitoringReportComponent,
+    OthertrialStaffComponent,
+    TrialDescriptionComponent,
+
+	NonClinicalfindingsPharmacologyComponent,
+    NonClinicalfindingsAdditionalconsiderationComponent,
+    NonClinicalfindingsPharmacokinetiscComponent,
+    NonClinicalfindingsToxicologyComponent,
+    
     ClinicalpresubmissionGeneraldetailsComponent,
     ClinicalStudysitesComponent,
     ClinicalInvestigatorsComponent,
     ClinicalImpproductsComponent,
-    
+    ImportexportApprovedappVCComponent,
     ClinicalComparatorproductsComponent,
     ClinicalPlacabolproductsComponent,
     ClinicalInvestigationalproductsComponent,
+    ClinicalHandlingComponent,
     ClinicalTrialdashComponent,
     PreclinicaltrialDashboardComponent,
     ClinicaltrialDocumentsubmissionComponent,
@@ -434,7 +602,7 @@ import { AddproductApplicationdetailsComponent } from 'src/app/views/online-serv
     ClinicalTrialammendmentComponent,
     ImportexportDashboardComponent,
     ImportexportSelComponent,
-    
+    ImportlicenseApplicationDashboardComponent,
     ImportvisaDashboardComponent,
     ImportgeneralicenseDashboardComponent,
     ImportlicenseDashboardComponent,
@@ -443,11 +611,11 @@ import { AddproductApplicationdetailsComponent } from 'src/app/views/online-serv
     OfficialcertificateDashboardComponent,
     ControldrugsImplicensedashComponent,
     ControldrugsInspectionbkdashComponent,
-
+	ImportLicenseapplictionComponent,
     ImportLicensesappselectionComponent,
     ExportLicenseappselComponent,
     ImportexportApplicationComponent,
-
+	ImportLicenseappselComponent,
     SharedClinicaltrialComponent,
    
     PromotionalAdvertselComponent,
@@ -478,9 +646,30 @@ import { AddproductApplicationdetailsComponent } from 'src/app/views/online-serv
     
     ApplicationWithdrawalDetailsComponent ,
     SampledocumentsSubmissionsComponent,
-    
+
+    ActivePharmaceuticalComponent,
+    GeneralInformationComponent,
+    CoPackedproductDetailsComponent,
+    ProductSummaryComponent,
+    CharacterisationComponent,
+    ClosureSystemComponent,
+    ContainerClosureComponent,
+    PackagingSelectionComponent,
+    ContainerClosureSystemComponent,
+	ControlApiComponent,
+	ControlExcipientComponent,
+	ControlFppComponent,
+	FinishedPharmaceuticalComponent,
+	ManufacturerComponent,
+	ManufacturersP3Component,
+    ReferenceMaterialsComponent,
+    ReferenceStandardComponent,
+	RegionalInformationComponent,
+	StabilityComponent,
+	StabilityP8Component,
+
     ProductformDetailsComponent,
-    QualityoverallSummaryComponent,
+    ProductVariationComponent,
     ProductRegistrationselectionComponent,
     RegisteredProductappsComponent,
     RegisteredPremisesappsComponent,
@@ -558,6 +747,8 @@ import { AddproductApplicationdetailsComponent } from 'src/app/views/online-serv
     ProdretentionDashboardComponent,
     ProdretentionRequestsappComponent,
     NewprodRegDashboardComponent,
+    NewvetprodRegDashboardComponent,
+	NewsurgicalRegDashboardComponent,
     RenewalprodRegDashboardComponent,
     VariationprodRegDashboardComponent,
     WithdrawalprodRegDashboardComponent,
@@ -623,7 +814,7 @@ import { AddproductApplicationdetailsComponent } from 'src/app/views/online-serv
     DxFileUploaderModule,
     DxActionSheetModule,
     ModalDialogModule.forRoot(),
-    DxFileUploaderModule, DxNumberBoxModule, DxCheckBoxModule, DxSelectBoxModule, DxTextAreaModule, DxContextMenuModule, DxMenuModule,DxScrollViewModule,DxTabPanelModule,
+    DxFileUploaderModule,DxMapModule, DxNumberBoxModule,DxChartModule, DxCheckBoxModule, DxSelectBoxModule, DxTextAreaModule, DxContextMenuModule, DxMenuModule,DxScrollViewModule,DxTabPanelModule,
     DxHtmlEditorModule,
     DxDropDownBoxModule,DxTagBoxModule,
     DxRadioGroupModule,

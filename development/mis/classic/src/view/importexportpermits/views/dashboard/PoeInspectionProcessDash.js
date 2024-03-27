@@ -1,7 +1,5 @@
 /**
  * Created by Softclans
- * User Robinson Odhiambo
- * on 9/22/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.dashboard.PoeInspectionProcessDash', {
     extend: 'Ext.Container',

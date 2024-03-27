@@ -104,90 +104,93 @@ Ext.define('Admin.view.surveillance.views.forms.SampleCollectionSiteFrm', {
             disabled: true
         },
         {
-            xtype: 'combo',
-            fieldLabel: 'Country',
-            name: 'country_id',
-            store: 'countriesstr',
-            forceSelection: true,
-            queryMode: 'local',
-            valueField: 'id',
-            displayField: 'name',
-            readOnly:true,
-            listeners: {
-                beforerender: function (cbo) {
-                    var store = this.store;
-                    store.removeAll();
-                    store.load();
-                    cbo.setValue(126)
-                },
-                change: function (cmbo, newVal) {
-                    var form = cmbo.up('form'),
-                        regionStore = form.down('combo[name=region_id]').getStore(),
-                        filterObj = {country_id: newVal},
-                        filterStr = JSON.stringify(filterObj);
-                    regionStore.removeAll();
-                    regionStore.load({params: {filter: filterStr}});
-                }
-            }
-        },
-        {
-            xtype: 'combo',
-            fieldLabel: 'Region',
-            name: 'region_id',
-           // store: 'regionsstr',
-            forceSelection: true,
-            queryMode: 'local',
-            valueField: 'id',
-            displayField: 'name',
-            listeners: {
-                 beforerender: {
-                        fn: 'setSurveillanceCombosStore',
-                        config: {
-                            pageSize: 10000,
-                            proxy: {
-                                url: 'commonparam/getCommonParamFromTable',
-                                extraParams: {
-                                    table_name: 'par_regions'
+                xtype: 'combo',
+                fieldLabel: 'District',
+                name: 'district_id',
+                //store: 'regionsstr',
+                readOnly:false,
+                allowBlank:true,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setSurveillanceCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_premise_districts'
                                 }
-                            }
-                        },
-                        isLoad: false
+                               }
+                            },
+                                isLoad: false
                     },
-                change: function (cmbo, newVal) {
-                    var form = cmbo.up('form'),
-                        districtStore = form.down('combo[name=district_id]').getStore(),
-                        filterObj = {region_id: newVal},
+                    afterrender: function (cmbo) {
+                         var grid = cmbo.up('grid'),
+                         store = cmbo.getStore(),
+                         filterObj = {country_id: 37},
+                         filterStr = JSON.stringify(filterObj);
+                         store.removeAll();
+                         store.load({params: {filters: filterStr}});
+                      },
+                    change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        regionStore = form.down('combo[name=region_id]').getStore(),
+                        filterObj = {district_id: newVal},
                         filterStr = JSON.stringify(filterObj);
-                    districtStore.removeAll();
-                    districtStore.load({params: {filter: filterStr}});
-                }
-            }
-        },
-        {
-            xtype: 'combo',
-            fieldLabel: 'District',
-            name: 'district_id',
-            //store: 'districtsstr',
-            forceSelection: true,
-            queryMode: 'local',
-            valueField: 'id',
-            displayField: 'name',
-            listeners: {
-                    beforerender: {
-                        fn: 'setSurveillanceCombosStore',
-                        config: {
-                            pageSize: 10000,
-                            proxy: {
-                                url: 'commonparam/getCommonParamFromTable',
-                                extraParams: {
-                                    table_name: 'par_districts'
-                                }
-                            }
-                        },
-                        isLoad: false
+                        regionStore.removeAll();
+                        regionStore.load({params: {filters: filterStr}});
+                        
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
                     }
                 }
-        },
+            },
+
+             {
+                xtype: 'combo',
+                fieldLabel: 'Region',
+                name: 'region_id',
+                //store: 'regionsstr',
+                readOnly:false,
+                allowBlank:true,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setSurveillanceCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_premise_regions'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+         },
         {
             xtype: 'textfield',
             fieldLabel: 'Street',
@@ -215,7 +218,8 @@ Ext.define('Admin.view.surveillance.views.forms.SampleCollectionSiteFrm', {
         {
             xtype: 'textfield',
             fieldLabel: 'Website',
-            name: 'website',  hidden: true,
+            name: 'website',
+              hidden: true,
             allowBlank: true
         },
         {
@@ -226,26 +230,55 @@ Ext.define('Admin.view.surveillance.views.forms.SampleCollectionSiteFrm', {
         {
             xtype: 'textfield',
             fieldLabel: 'Postal Address',
+            hidden:true,
+            allowBlank: true,
             name: 'postal_address'
         },
+
         {
-            xtype: 'combo',
-            fieldLabel: 'Business Scale',
-            name: 'business_scale_id',
-            store: 'businessscalesstr',
-            valueField: 'id',
-            displayField: 'name',
-            allowBlank: true,
-            queryMode: 'local',
-            forceSelection: true,
-            listeners:{
-                afterrender: function(){
-                    var store=this.getStore();
-                    store.removeAll();
-                    store.load();
+                xtype: 'combo',
+                name: 'business_type_id',
+                fieldLabel: 'Premise Type',
+                forceSelection: true,
+                queryMode: 'local',
+                allowBlank: true,
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                 beforerender: {
+                    fn: 'setSurveillanceCombosStore',
+                    config: {
+                        pageSize: 10000,
+                        proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_business_types'
+                            }
+                        }
+                    },
+                    isLoad: true
                 }
             }
-        },
+           },
+        // {
+        //     xtype: 'combo',
+        //     fieldLabel: 'Business Scale',
+        //     name: 'business_scale_id',
+        //     store: 'businessscalesstr',
+        //     valueField: 'id',
+        //     hidden: true,
+        //     displayField: 'name',
+        //     allowBlank: true,
+        //     queryMode: 'local',
+        //     forceSelection: true,
+        //     listeners:{
+        //         afterrender: function(){
+        //             var store=this.getStore();
+        //             store.removeAll();
+        //             store.load();
+        //         }
+        //     }
+        // },
         {
             xtype: 'textfield',
             fieldLabel: 'Longitude',
@@ -260,6 +293,11 @@ Ext.define('Admin.view.surveillance.views.forms.SampleCollectionSiteFrm', {
         },{
             xtype:'hiddenfield',
             name:'sample_site_id'
-        }
+        },
+        {
+            xtype: 'hiddenfield',
+            name: '_token',
+            value: token
+        },
     ]
 });

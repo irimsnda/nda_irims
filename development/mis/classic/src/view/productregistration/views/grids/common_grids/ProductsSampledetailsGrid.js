@@ -68,11 +68,16 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductsSamp
         text: 'Batch No',
         flex: 1,
     }, {
-        xtype: 'gridcolumn',
+        xtype: 'datecolumn',
         dataIndex: 'submission_date',
         text: 'Submission Date',
         flex: 1,
-    }, {
+    },  {
+        xtype: 'datecolumn',
+        dataIndex: 'expiry_date',
+        text: 'Expiry Date',
+        flex: 1,
+    },{
         xtype: 'gridcolumn',
         dataIndex: 'quantity',
         text: 'Quantity',
@@ -82,7 +87,19 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductsSamp
         dataIndex: 'quantity_unit',
         text: 'Quantity Unit',
         flex: 1,
-    }, {
+    },
+    // {
+    //     xtype: 'gridcolumn',
+    //     dataIndex: 'unit_pack',
+    //     text: 'Pack Size',
+    //     flex: 1,
+    // }, {
+    //     xtype: 'gridcolumn',
+    //     dataIndex: 'si_unit',
+    //     text: 'Pack Size Unit',
+    //     flex: 1,
+    // },
+     {
         xtype: 'gridcolumn',
         dataIndex: 'sample_status',
         hidden:true,
@@ -91,9 +108,9 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductsSamp
     }, 
      {
         xtype: 'gridcolumn',
-        dataIndex: 'fle_no',
+        dataIndex: 'sample_tracking_no',
         text: 'File Number',
-        flex: 1,
+        flex: 3,
     }, {
         text: 'Options',
         xtype: 'widgetcolumn',

@@ -7,10 +7,11 @@
           <a routerLink="app-dashboard"><i class="fa fa-fw fa-bars"></i><span> Dashboard </span> </a>
         </li>
         <li *ngFor="let nav of navOnlineNav;" class="submenu">
-          <a *ngIf="nav.children.length == 0" routerLink="{{nav.router_link}}" [routerLinkActive]="'is-active'">
+          <a *ngIf="!nav.children || nav.children.length === 0" routerLink="{{nav.router_link}}" 
+            [routerLinkActive]="'is-active'">
             <i class="{{nav.iconCls}}"></i> <span>{{ nav.name}}</span>
           </a>
-          <a *ngIf="nav.children">
+          <a *ngIf="nav.children && nav.children.length > 0">
             <i class="{{nav.iconCls}}"></i>
             <span>{{nav.name}}</span>
             <span class="menu-arrow"></span>

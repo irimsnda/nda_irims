@@ -76,18 +76,20 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PoeInspectio
         dataIndex: 'tracking_no',
         text: 'Tracking No',
         flex: 1
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'permit_no',
-        text: 'Permit No',
-        flex: 1
-    },   {
-        xtype: 'gridcolumn',
-        text: 'Permit section ',
-        dataIndex: 'permit_section',
-        flex: 1,
-        tdCls: 'wrap'
-    },{
+    }, 
+    // {
+    //     xtype: 'gridcolumn',
+    //     dataIndex: 'permit_no',
+    //     text: 'Permit No',
+    //     flex: 1
+    // },   {
+    //     xtype: 'gridcolumn',
+    //     text: 'Permit section ',
+    //     dataIndex: 'permit_section',
+    //     flex: 1,
+    //     tdCls: 'wrap'
+    // },
+    {
         xtype: 'gridcolumn',
         text: 'Inspection By',
         dataIndex: 'inspection_by',
@@ -110,12 +112,14 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PoeInspectio
         dataIndex: 'proforma_invoice_no',
         text: 'Proforma Invoice No',
         flex: 1
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'tra_reg_number',
-        text: 'TRA Reg NUmber',
-        flex: 1
-    }, {
+    }, 
+    // {
+    //     xtype: 'gridcolumn',
+    //     dataIndex: 'tra_reg_number',
+    //     text: 'TRA Reg NUmber',
+    //     flex: 1
+    // },
+     {
         xtype: 'gridcolumn',
         dataIndex: 'inspection_status',
         text: 'Inspection Status',

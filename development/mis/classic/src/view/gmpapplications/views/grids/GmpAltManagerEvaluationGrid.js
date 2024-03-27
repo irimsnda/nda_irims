@@ -17,7 +17,20 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpAltManagerEvaluationGrid',
     },
     selModel: {
         selType: 'checkboxmodel'
-    },
+    }, 
+     features:[
+        {
+            ftype: 'grouping',
+            startCollapsed: true,
+            groupHeaderTpl: '{[values.rows[0].data.inspection_details]} [{rows.length}]',
+            hideGroupedHeader: true,
+            enableGroupingMenu: false
+        },{
+        ftype: 'searching',
+        mode: 'local',
+        minChars: 2
+     }
+    ],
     tbar: [{
         xtype: 'exportbtn'
     }, {
@@ -88,6 +101,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpAltManagerEvaluationGrid',
                     text: 'Save Details',
                     iconCls: 'x-fa fa-save',
                     ui: 'soft-purple',
+                    hidden:true,
                     name: 'save_btn',
                     table_name: 'tra_gmp_applications',
                     toaster: 1
@@ -105,16 +119,12 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpAltManagerEvaluationGrid',
             ]
         }
     ],
-    features: [{
-        ftype: 'searching',
-        mode: 'local',
-        minChars: 2
-    }],
     listeners: {
         beforerender: {
             fn: 'setGmpApplicationGridsStore',
             config: {
                 pageSize: 10000,
+                groupField: 'inspection_id',
                 proxy: {
                     url: 'gmpapplications/getManagerApplicationsGeneric'
                 }

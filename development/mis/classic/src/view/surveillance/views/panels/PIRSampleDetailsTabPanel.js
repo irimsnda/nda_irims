@@ -49,7 +49,7 @@ Ext.define('Admin.view.surveillance.views.panels.PIRSampleDetailsTabPanel', {
                            
                             {
                                 xtype: 'combo',
-                                readOnly: true,
+                                readOnly: false,
                                 forceSelection: true,
                                 queryMode: 'local', 
                                 valueField: 'product_id',

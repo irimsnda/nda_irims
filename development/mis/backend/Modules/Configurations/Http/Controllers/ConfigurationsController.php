@@ -111,6 +111,325 @@ class ConfigurationsController extends Controller
         return response()->json($res);
     }
 
+
+     public function prepareInterfaceBasedonConfig(Request $req)
+        {
+            try{
+                $module_id = $req->module_id;
+                $sub_module_id = $req->sub_module_id;
+                $section_id = $req->section_id;
+                $premise_type_id = $req->premise_type_id;
+                $prodclass_category_id = $req->prodclass_category_id;
+                $importexport_permittype_id = $req->importexport_permittype_id;
+            
+                $where = array(
+                    'module_id'=>$module_id,
+                    'sub_module_id'=>$sub_module_id
+                );
+                if(validateIsNumeric($section_id) && $module_id != 4){
+                    $where['section_id'] = $section_id;
+                }
+                if($module_id == 1 && validateIsnumeric($prodclass_category_id)){
+                    $where['prodclass_category_id'] = $prodclass_category_id;
+                }
+                if($module_id == 2 && validateIsnumeric($premise_type_id)){
+                    $where['premise_type_id'] = $premise_type_id;
+                }
+                if($module_id == 4 && validateIsnumeric($importexport_permittype_id)){
+                    $where['importexport_permittype_id'] = $importexport_permittype_id;
+                }
+                if($module_id == 12 && validateIsnumeric($importexport_permittype_id)){
+                    $where['importexport_permittype_id'] = $importexport_permittype_id;
+                }
+
+                
+                $form_category_id = getSingleRecordColValue('par_form_categories', $where, 'id');
+
+                if(validateIsnumeric($form_category_id)){
+                    $qry = DB::table('par_formtype_fields as t22')
+                        ->Join('par_formfield_designs as t33', 't22.field_id', 't33.id')
+                    // ->leftJoin('par_formfield_relations as t2', 't33.id', 't2.parent_field_id')
+                        ->leftJoin('par_formfield_relations as t2', function ($join) use ($form_category_id) {
+                                $join->on("t33.id", "=", "t2.parent_field_id")
+                                    ->where("t2.form_category_id", "=", $form_category_id);
+                            })
+                        ->leftJoin('par_formfield_designs as t3', 't2.form_fielddesign_id', 't3.id')
+                        ->leftJoin('par_formfield_designs as t4', 't2.parent_field_id', 't4.id')
+                        ->leftJoin('par_form_field_types as t5', 't33.form_field_type_id', 't5.id')
+                        ->leftJoin('par_formfield_relations as t6', function ($join) use ($form_category_id) {
+                                $join->on("t33.id", "=", "t6.form_fielddesign_id")
+                                    ->where("t6.form_category_id", "=", $form_category_id);
+                            })
+                        ->where('t22.form_category_id', $form_category_id)
+                        ->select('t22.column_width','t33.id','t33.displayfield','t33.valuefield','t33.combo_table','t33.form_field_type_id','t33.field_name','t33.def_id','t33.formfield','t33.tpl_block', 't22.is_hidden','t33.label','t22.is_enabled','t22.is_mandatory','t22.is_readOnly','t2.has_relation','t2.bind_column', 't3.field_name as child_combo', 't4.field_name as parent_combo','t5.name as xtype','t2.id as is_parent','t6.other_logic', 't6.has_logic');
+                    $qry->orderBy('t22.order_no', 'ASC');
+                    //$qry->unique('t33.id');
+
+                    $results = $qry->get();
+                    foreach ($results as $field) {
+                        if($field->is_parent){
+                            $no_children = DB::table('par_formfield_relations as t1')
+                                            ->leftJoin('par_formfield_designs as t3', 't1.form_fielddesign_id', 't3.id')
+                                            ->select('t1.*','t3.field_name as child_combo')
+                                            ->where(['parent_field_id' => $field->id, 't1.form_category_id'=>$form_category_id])->get();
+
+                            if($no_children->count() > 1){
+                                $i = 0;
+                                $field->is_multiparent = 1;
+                                foreach ($no_children as $child) {
+                                    $bind_column = 'bind_column'.$i;
+                                    $child_combo = 'child_combo'.$i;
+                                    $field->$bind_column = $child->bind_column;
+                                    $field->$child_combo = $child->child_combo;
+                                    $i++;
+                                }
+                                $field->total_children = $i;
+
+                            }
+
+                        }
+                    }
+                    $res = array('success' => true, 'results'=>$results, 'message'=>'All is well');
+                }else{
+                    $res = array('success' => false, 'message'=>'No form setup for the category');
+                }
+
+            }catch (\Exception $exception) {
+                $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+            }
+            catch (\Throwable $throwable) {
+                $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+            }
+            return response()->json($res);
+        }
+
+    
+    public function getGMPInspectionForm(Request $req){
+        try{
+            $type_id = $req->type_id;
+            $application_code = $req->application_code;
+            $master = [];
+            //loop 
+            $categories = DB::table('par_gmp_assessment_categories as t1')->where('type_id', $type_id)->get();
+            $i = 0;
+            $j = 0;
+            $k = 0;
+            //get subcategories
+            foreach ($categories as $cat) {
+                $sub_cats = DB::table('par_gmp_assessment_sub_categories as t1')
+                                ->where('gmp_assessment_category_id', $cat->id)
+                                ->get();
+                //add to array
+               $master[$i]['name'] = $cat->name;
+               
+               if($sub_cats->isEmpty()){
+                    $master[$i]['sub_categories'] = [];
+               }
+               
+               $j= 0;
+
+               foreach ($sub_cats as $sub_cat) {
+                    $items = DB::table('par_gmp_assessment_items as t1')
+                                ->where('gmp_assessment_sub_category_id', $sub_cat->id)
+                                ->get();
+                    //add to array
+                    $master[$i]['sub_categories'][$j]['id'] = $sub_cat->id; 
+                    $master[$i]['sub_categories'][$j]['name'] = $sub_cat->name; 
+
+                    //add data for sub
+                    $master[$i]['sub_categories'][$j]['workspace_value'] = getSingleRecordColValue('par_gmp_assessment_category_details', ['sub_category_id' =>  $sub_cat->id, 'active_application_code'=>$application_code], 'workspace');
+                    $master[$i]['sub_categories'][$j]['comment_value'] = getSingleRecordColValue('par_gmp_assessment_category_details', ['sub_category_id' =>  $sub_cat->id, 'active_application_code'=>$application_code], 'comment');
+
+                    if($items->isEmpty()){
+                            $master[$i]['sub_categories'][$j]['items'] = [];
+                       }
+
+                    $k = 0;
+                    //loop for items
+                    foreach ($items as $item) {
+                        if($item->is_checklist == 1){
+                            $master[$i]['sub_categories'][$j]['items'][$k]['is_checklist'] = 1;
+                            $master[$i]['sub_categories'][$j]['items'][$k]['item_value'] = getSingleRecordColValue('par_gmp_assessment_items_details', ['item_id' =>  $item->id, 'active_application_code'=>$application_code], 'itemcheck');
+                        }else{
+                            $master[$i]['sub_categories'][$j]['items'][$k]['is_checklist'] = 0;
+                            $master[$i]['sub_categories'][$j]['items'][$k]['item_value'] = getSingleRecordColValue('par_gmp_assessment_items_details', ['item_id' =>  $item->id, 'active_application_code'=>$application_code], 'item');
+                        }
+                        $master[$i]['sub_categories'][$j]['items'][$k]['name'] = $item->name; 
+                        $master[$i]['sub_categories'][$j]['items'][$k]['id'] = $item->id; 
+                        $k++;
+                       
+                    }
+                    $j++;
+               }
+               $i++;
+            }
+
+           //dd($master);
+            $res = array(
+                'success' => true,
+                'message' => 'All is well',
+                'assessment_categories' => $master
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
+
+    public function getClinicalAssessmentForm(Request $req){
+        try{
+            $type_id = $req->type_id;
+            $application_code = $req->application_code;
+            $master = [];
+            //loop 
+            $categories = DB::table('par_ct_assessment_categories as t1')->where('type_id', $type_id)->get();
+            $i = 0;
+            $j = 0;
+            $k = 0;
+            //get subcategories
+            foreach ($categories as $cat) {
+                $sub_cats = DB::table('par_ct_assessment_sub_categories as t1')
+                                ->where('ct_assessment_category_id', $cat->id)
+                                ->get();
+                //add to array
+               $master[$i]['name'] = $cat->name;
+               
+               if($sub_cats->isEmpty()){
+                    $master[$i]['sub_categories'] = [];
+               }
+               
+               $j= 0;
+
+               foreach ($sub_cats as $sub_cat) {
+                    $items = DB::table('par_ct_assessment_items as t1')
+                                ->where('ct_assessment_sub_category_id', $sub_cat->id)
+                                ->get();
+                    //add to array
+                    $master[$i]['sub_categories'][$j]['id'] = $sub_cat->id; 
+                    $master[$i]['sub_categories'][$j]['name'] = $sub_cat->name; 
+
+                    //add data for sub
+                    $master[$i]['sub_categories'][$j]['workspace_value'] = getSingleRecordColValue('par_ct_assessment_category_details', ['sub_category_id' =>  $sub_cat->id, 'active_application_code'=>$application_code], 'workspace');
+                    $master[$i]['sub_categories'][$j]['comment_value'] = getSingleRecordColValue('par_ct_assessment_category_details', ['sub_category_id' =>  $sub_cat->id, 'active_application_code'=>$application_code], 'comment');
+
+                    if($items->isEmpty()){
+                            $master[$i]['sub_categories'][$j]['items'] = [];
+                       }
+
+                    $k = 0;
+                    //loop for items
+                    foreach ($items as $item) {
+                        if($item->is_checklist == 1){
+                            $master[$i]['sub_categories'][$j]['items'][$k]['is_checklist'] = 1;
+                            $master[$i]['sub_categories'][$j]['items'][$k]['item_value'] = getSingleRecordColValue('par_ct_assessment_items_details', ['item_id' =>  $item->id, 'active_application_code'=>$application_code], 'itemcheck');
+                        }else{
+                            $master[$i]['sub_categories'][$j]['items'][$k]['is_checklist'] = 0;
+                            $master[$i]['sub_categories'][$j]['items'][$k]['item_value'] = getSingleRecordColValue('par_ct_assessment_items_details', ['item_id' =>  $item->id, 'active_application_code'=>$application_code], 'item');
+                        }
+                        $master[$i]['sub_categories'][$j]['items'][$k]['name'] = $item->name; 
+                        $master[$i]['sub_categories'][$j]['items'][$k]['id'] = $item->id; 
+                        $k++;
+                       
+                    }
+                    $j++;
+               }
+               $i++;
+            }
+
+           //dd($master);
+            $res = array(
+                'success' => true,
+                'message' => 'All is well',
+                'assessment_categories' => $master
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
+
+     public function getFormFieldRelations(Request $req)
+        {
+        try{
+            $form_category_id = $req->form_category_id;
+            $qry = DB::table('par_form_categories as t1')
+                    ->leftJoin('par_formtype_fields as t2', 't1.id', 't2.form_category_id')
+                    ->leftJoin('par_formfield_designs as t3', 't2.field_id', 't3.id')
+                    //->leftJoin('par_formfield_relations as t4', 't3.id', 't4.form_fielddesign_id')
+                    ->leftJoin('par_formfield_relations as t4', function ($join) use ($form_category_id) {
+                        $join->on("t3.id", "=", "t4.form_fielddesign_id")
+                            ->where("t4.form_category_id", "=", $form_category_id);
+                    })
+                    ->select('t3.*', 't4.*', 't2.field_id')
+                    ->whereIn('t3.form_field_type_id', [ 6, 7, 9])
+                    ->Where('t1.id', $form_category_id);
+
+                $results = $qry->get();
+                $res = array(
+                    'success'=>true,
+                    'message'=>'All is well',
+                    'results'=>$results
+                );
+            }
+            catch (\Exception $exception) {
+                $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+            }
+            catch (\Throwable $throwable) {
+                $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+            }
+            return response()->json($res);
+
+        }
+
+
+
+        public function saveFormFieldRelations(Request $req)
+        {
+            try{
+                $relation_details = $req->relation_details;
+                $relation_array = json_decode($relation_details);
+                $table_name = 'par_formfield_relations';
+                $form_category_id = $req->form_category_id;
+                $user_id = \Auth::user()->id;
+                $res = array('success'=>true, 'message'=>'No record to update');
+                foreach ($relation_array as $item) {
+                    $table_data = convertStdClassObjToArray($item);
+                    $where = array('form_fielddesign_id'=>$item->form_fielddesign_id, 'form_category_id' => $form_category_id);
+                    //delete previous entries
+                     $previous_data = getPreviousRecords($table_name, $where);
+                    if ($previous_data['success'] == false) {
+                        return $previous_data;
+                    }
+                    $previous_data = $previous_data['results'];
+                    $res = deleteRecord($table_name, $previous_data, $where, $user_id);
+                    if($item->bind_column != '' || $item->parent_field_id > 0 || $item->has_logic != ''){
+                        $table_data['form_category_id'] = $form_category_id;
+                        $res = insertRecord($table_name, $table_data, $user_id);
+                    }else{
+                        $res = array('success'=>true, 'message'=>'updated successfully');
+                    }
+                }
+                //delete any orphaned entry
+                    DB::table('par_formfield_relations')->whereRaw('parent_field_id is Null AND has_logic != 1')->delete();
+
+            }
+            catch (\Exception $exception) {
+                $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+            }
+            catch (\Throwable $throwable) {
+                $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+            }
+            return response()->json($res);
+
+        }
+
+
      public function getCountryRegions(Request $request)
         {
             $application_code = $request->input('application_code');
@@ -167,179 +486,94 @@ public function deleteWorkflowRecord(Request $req)
         }
         return response()->json($res);
     }
-    // public function saveDocDefinationrequirement(Request $req){
-    //     try {
-    //         $user_id = \Auth::user()->id;
-    //         $post_data = $req->post();
-    //         $table_name = $post_data['table_name'];
-    //         $file = $req->file('document_template');
+    public function saveDocDefinationrequirement(Request $req){
+        try {
+            $user_id = \Auth::user()->id;
+            $post_data = $req->post();
+            $table_name = $post_data['table_name'];
+            $file = $req->file('document_template');
             
-    //     $document_extension_ids = $req->input('document_extension_ids');
-    //     $document_extension_ids = json_decode($document_extension_ids);
-    //         $id = $post_data['id'];
-    //         $unsetData = $req->input('unset_data');
-    //         //unset unnecessary values
-    //         unset($post_data['_token']);
-    //         unset($post_data['document_template']);
-    //         unset($post_data['table_name']);
-    //         unset($post_data['model']);
-    //         unset($post_data['id']); unset($post_data['document_extension_ids']);
-    //         unset($post_data['unset_data']);
-    //         if (isset($unsetData)) {
-    //             $unsetData = explode(",", $unsetData);
-    //             $post_data = unsetArrayData($post_data, $unsetData);
-    //         }
-    //         $table_data = $post_data;
-    //         //add extra params
-    //         $table_data['created_on'] = Carbon::now();
-    //         $table_data['created_by'] = $user_id;
-    //         $where = array(
-    //             'id' => $id
-    //         );
-    //         $table_data = $this->uploadDocumentRequirementTemplate($req,$table_data);
+        $document_extension_ids = $req->input('document_extension_ids');
+        $document_extension_ids = json_decode($document_extension_ids);
+            $id = $post_data['id'];
+            $unsetData = $req->input('unset_data');
+            //unset unnecessary values
+            unset($post_data['_token']);
+            unset($post_data['document_template']);
+            unset($post_data['table_name']);
+            unset($post_data['model']);
+            unset($post_data['id']); unset($post_data['document_extension_ids']);
+            unset($post_data['unset_data']);
+            if (isset($unsetData)) {
+                $unsetData = explode(",", $unsetData);
+                $post_data = unsetArrayData($post_data, $unsetData);
+            }
+            $table_data = $post_data;
+            //add extra params
+            $table_data['created_on'] = Carbon::now();
+            $table_data['created_by'] = $user_id;
+            $where = array(
+                'id' => $id
+            );
+            $table_data = $this->uploadDocumentRequirementTemplate($req,$table_data);
 
-    //         if (isset($id) && $id != "") {
-    //             if (recordExists($table_name, $where)) {
+            if (isset($id) && $id != "") {
+                if (recordExists($table_name, $where)) {
 
-    //                 unset($table_data['created_on']);
-    //                 unset($table_data['created_by']);
-    //                 $table_data['dola'] = Carbon::now();
-    //                 $table_data['altered_by'] = $user_id;
-    //                 $previous_data = getPreviousRecords($table_name, $where);
-    //                 if ($previous_data['success'] == false) {
-    //                     return $previous_data;
-    //                 }
-    //                 $previous_data = $previous_data['results'];
-    //                 $res = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
-    //             }
-    //         } else {
+                    unset($table_data['created_on']);
+                    unset($table_data['created_by']);
+                    $table_data['dola'] = Carbon::now();
+                    $table_data['altered_by'] = $user_id;
+                    $previous_data = getPreviousRecords($table_name, $where);
+                    if ($previous_data['success'] == false) {
+                        return $previous_data;
+                    }
+                    $previous_data = $previous_data['results'];
+                    $res = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
+                }
+            } else {
 
-    //             $res = insertRecord($table_name, $table_data, $user_id);
+                $res = insertRecord($table_name, $table_data, $user_id);
                
-    //             $id = $res['record_id'];
+                $id = $res['record_id'];
 
-    //         }
-    //         //save the documetn extension types 
-    //         DB::table('tra_docupload_reqextensions')
-    //                 ->where('documentupload_requirement_id', $id)
-    //                 ->delete();
-    //             if (count($document_extension_ids) > 0) {
-    //                 foreach ($document_extension_ids as $document_extension_id) {
-    //                     $params[] = array(
-    //                         'documentupload_requirement_id' => $id,
-    //                         'document_extensionstype_id' => $document_extension_id,
-    //                         'created_on' => Carbon::now(),
-    //                         'created_by' => \Auth::user()->id
-    //                     );
-    //                 }
-    //                 DB::table('tra_docupload_reqextensions')
-    //                     ->insert($params);
-    //             }
+            }
+            //save the documetn extension types 
+            DB::table('tra_docupload_reqextensions')
+                    ->where('documentupload_requirement_id', $id)
+                    ->delete();
+                if (count($document_extension_ids) > 0) {
+                    foreach ($document_extension_ids as $document_extension_id) {
+                        $params[] = array(
+                            'documentupload_requirement_id' => $id,
+                            'document_extensionstype_id' => $document_extension_id,
+                            'created_on' => Carbon::now(),
+                            'created_by' => \Auth::user()->id
+                        );
+                    }
+                    DB::table('tra_docupload_reqextensions')
+                        ->insert($params);
+                }
 
-    //     } catch (\Exception $exception) {
-    //         $res = array(
-    //             'success' => false,
-    //             'message' => $exception->getMessage()
-    //         );
-    //     } catch (\Throwable $throwable) {
-    //         $res = array(
-    //             'success' => false,
-    //             'message' => $throwable->getMessage()
-    //         );
-    //     }
-    //     return response()->json($res);       
-    //     //
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);       
+        //
         
 
 
-    //     //
+        //
 
-    // }
-
-public function saveDocDefinationrequirement(Request $req)
-{
-    try {
-        $user_id = \Auth::user()->id;
-        $post_data = $req->post();
-        $table_name = $post_data['table_name'];
-        $file = $req->file('document_template');
-
-        $document_extension_ids = $req->input('document_extension_ids');
-        $document_extension_ids = json_decode($document_extension_ids);
-        $id = $post_data['id'];
-        $unsetData = $req->input('unset_data');
-        //unset unnecessary values
-        unset($post_data['_token']);
-        unset($post_data['document_template']);
-        unset($post_data['table_name']);
-        unset($post_data['model']);
-        unset($post_data['id']);
-        unset($post_data['document_extension_ids']);
-        unset($post_data['unset_data']);
-        if (isset($unsetData)) {
-            $unsetData = explode(",", $unsetData);
-            $post_data = unsetArrayData($post_data, $unsetData);
-        }
-        $table_data = $post_data;
-        //add extra params
-        $table_data['created_on'] = Carbon::now();
-        $table_data['created_by'] = $user_id;
-        $where = array(
-            'id' => $id
-        );
-        $table_data = $this->uploadDocumentRequirementTemplate($req, $table_data);
-
-        if (isset($id) && $id != "") {
-            if (recordExists($table_name, $where)) {
-
-                unset($table_data['created_on']);
-                unset($table_data['created_by']);
-                $table_data['dola'] = Carbon::now();
-                $table_data['altered_by'] = $user_id;
-                $previous_data = getPreviousRecords($table_name, $where);
-                if ($previous_data['success'] == false) {
-                    return $previous_data;
-                }
-                $previous_data = $previous_data['results'];
-                $res = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
-            }
-        } else {
-
-            $res = insertRecord($table_name, $table_data, $user_id);
-
-            $id = $res['record_id'];
-        }
-
-        //save the document extension types
-        DB::table('tra_docupload_reqextensions')
-            ->where('documentupload_requirement_id', $id)
-            ->delete();
-        if (count($document_extension_ids) > 0) {
-            foreach ($document_extension_ids as $document_extension_id) {
-                $params[] = array(
-                    'documentupload_requirement_id' => $id,
-                    'document_extensionstype_id' => $document_extension_id,
-                    'created_on' => Carbon::now(),
-                    'created_by' => \Auth::user()->id
-                );
-            }
-            DB::table('tra_docupload_reqextensions')
-                ->insert($params);
-        }
-    } catch (\Exception $exception) {
-        $res = array(
-            'success' => false,
-            'message' => $exception->getMessage()
-        );
-    } catch (\Throwable $throwable) {
-        $res = array(
-            'success' => false,
-            'message' => $throwable->getMessage()
-        );
     }
-    return response()->json($res);
-}
-
     function uploadDocumentRequirementTemplate($req,$params){
         $file = $req->file('document_template');
         $user_id = $this->user_id;
@@ -732,8 +966,6 @@ public function saveDocDefinationrequirement(Request $req)
         }
         return \response()->json($res);
     }
-
-
     public function getNonrefParameter(Request $req)
     {
         try {
@@ -1062,6 +1294,12 @@ public function getConfigParamFromTable(Request $req)
             }
             $results = $qry->get();
 
+            if($table_name == 'par_meeting_groups'){
+
+            foreach ($results as $result) {
+                $result->participant_id = json_decode($result->participant_id);
+              }
+            }
             $res = array(
                 'success' => true,
                 'results' => $results,
@@ -1925,6 +2163,8 @@ public function getParameterGridColumnsConfig(Request $req)
         $labels[] = $param_join->table_label;
     }
     $param_columns = DB::getSchemaBuilder()->getColumnListing($param->table_name);
+    
+ 
     $join_columns = DB::table('par_parameter_join_tables')->select('param_column_name')->where('param_id',$param->id)->get();
    $col_diff = array();
    foreach ($join_columns as $column) {
@@ -1932,6 +2172,8 @@ public function getParameterGridColumnsConfig(Request $req)
    }
 
     $results = array_merge( $param_columns, $labels);
+
+
     
    foreach ($results as $key => $value) {
        if($value == 'is_enabled'){
@@ -1964,6 +2206,10 @@ public function getParameterGridColumnsConfig(Request $req)
     foreach ($results as $result) {
         $pure_array[] = $result;
     }
+     //modification by Mulinge to array_reverse 2024/02/25
+    //$pure_array = array_reverse($pure_array);
+
+ 
      $res = array(
                 'success' => true,
                 'results' => $pure_array,
@@ -2005,94 +2251,184 @@ public function getParameterGridConfig(Request $req){
             );
        return $res; 
    }
-public function getParameterFormColumnsConfig(Request $req)
-   {
-    $def_id = $req->def_id;
-    $param = DB::table('par_parameter_definations')->where('id',$def_id)->first();
-    $param_joins = DB::table('par_parameter_join_tables')->where('param_id',$param->id)->orderBy('id','ASC')->get();
-    $labels = array();
-    $child = true;
-    $param_column_name=''; 
-    $link_column_name = '';
-    foreach ($param_joins as $param_join) {
-        if($param_join->is_parent == 1){
-            $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>$param_join->table_label,'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>0);
-            $param_column_name = $param_join->param_column_name;
-            $link_column_name = $param_join->link_column_name;
-        }
-        else if($param_join->is_child == 1){
-            $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>$param_join->table_label,'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>1,'parent_combo_name'=> $param_column_name, 'link_column_name'=>$link_column_name);
-            $param_column_name = '';
-            $link_column_name = '';
-        }else{
-             $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>$param_join->table_label,'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>0);
-        }
-    }
-    $colums = DB::select('SHOW COLUMNS FROM '.$param->table_name);
-    $fields = array();
-    foreach ($colums as $column) {
-        if($column->Null == 'YES'){
-            $fields[] = ['field'=>$column->Field,'null'=>true];
-        }else{
-            $fields[] = ['field'=>$column->Field,'null'=>false];
-        }
-        
-    }
-    //dd($fields);
-    $param_columns = $fields;//DB::getSchemaBuilder()->getColumnListing($param->table_name);
-    $join_columns = DB::table('par_parameter_join_tables')->select('param_column_name')->where('param_id',$param->id)->get();
-    $col_diff = array();
-    foreach ($join_columns as $column) {
-       $col_diff[] = $column->param_column_name;
-    }
+// public function getParameterFormColumnsConfig(Request $req)
+//    {
+//     $def_id = $req->def_id;
+//     $param = DB::table('par_parameter_definations')->where('id',$def_id)->first();
+//     $param_joins = DB::table('par_parameter_join_tables')->where('param_id',$param->id)->orderBy('id','ASC')->get();
+//     $labels = array();
+//     $child = true;
+//     $param_column_name=''; 
+//     $link_column_name = '';
 
-    foreach ($param_columns as $key => $value) {
-       if($value['field'] == 'is_enabled'){
-            unset($param_columns[$key]);
-       }
-       if($value['field'] == 'created_on'){
-            unset($param_columns[$key]);
-       }
-       if($value['field'] == 'created_by'){
-            unset($param_columns[$key]);
-       }
-       if($value['field'] == 'dola'){
-            unset($param_columns[$key]);
-       }
-       if($value['field'] == 'altered_by'){
-            unset($param_columns[$key]);
-       }
-       if($value['field'] == 'id'){
-            unset($param_columns[$key]);
-       }
-       if($value['field'] == 'altered_on'){
-            unset($param_columns[$key]);
-       }
-       if(in_array($value['field'], $col_diff)){
-          unset($param_columns[$key]);
-       }
-   }
+//     foreach ($param_joins as $param_join) {
+//         if($param_join->is_parent == 1){
+//             $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>$param_join->table_label,'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>0);
+//             $param_column_name = $param_join->param_column_name;
+//             $link_column_name = $param_join->link_column_name;
+//         }
+//         else if($param_join->is_child == 1){
+//             $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>$param_join->table_label,'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>1,'parent_combo_name'=> $param_column_name, 'link_column_name'=>$link_column_name);
+//             $param_column_name = '';
+//             $link_column_name = '';
+//         }else{
+//              $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>$param_join->table_label,'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>0);
+//         }
+//     }
+//     $colums = DB::select('SHOW COLUMNS FROM '.$param->table_name);
+//     $fields = array();
+//     foreach ($colums as $column) {
+//         if($column->Null == 'YES'){
+//             $fields[] = ['field'=>$column->Field,'null'=>true];
+//         }else{
+//             $fields[] = ['field'=>$column->Field,'null'=>false];
+//         }
+        
+//     }
+//     //dd($fields);
+//     $param_columns = $fields;//DB::getSchemaBuilder()->getColumnListing($param->table_name);
+//     $join_columns = DB::table('par_parameter_join_tables')->select('param_column_name')->where('param_id',$param->id)->get();
+//     $col_diff = array();
+//     foreach ($join_columns as $column) {
+//        $col_diff[] = $column->param_column_name;
+//     }
+
+//     foreach ($param_columns as $key => $value) {
+//        if($value['field'] == 'is_enabled'){
+//             unset($param_columns[$key]);
+//        }
+//        if($value['field'] == 'created_on'){
+//             unset($param_columns[$key]);
+//        }
+//        if($value['field'] == 'created_by'){
+//             unset($param_columns[$key]);
+//        }
+//        if($value['field'] == 'dola'){
+//             unset($param_columns[$key]);
+//        }
+//        if($value['field'] == 'altered_by'){
+//             unset($param_columns[$key]);
+//        }
+//        if($value['field'] == 'id'){
+//             unset($param_columns[$key]);
+//        }
+//        if($value['field'] == 'altered_on'){
+//             unset($param_columns[$key]);
+//        }
+//        if(in_array($value['field'], $col_diff)){
+//           unset($param_columns[$key]);
+//        }
+//    }
   
 
-    $pure_array = array();
-    foreach ($param_columns as $result) {
-         //$result = array_map('ucwords', $result);
-        $pure_array[] = array_map('ucwords', $result);
+    
+//      $pure_array = array();
+//     foreach ($param_columns as $result) {
+//         $pure_array[] = $result;
+//     }
+//     $labels = array_reverse($labels);
+//     $res = array(
+//                 'success' => true,
+//                 'main_fields' => $pure_array,
+//                 'join_fields' => $labels,
+//                 'table_name'=>$param->table_name,
+//                 'message' => 'All is well'
+//             );
+      
+//          return response()->json($res);
+//    }
+
+    public function getParameterFormColumnsConfig(Request $req)
+    {
+        $def_id = $req->def_id;
+        $param = DB::table('par_parameter_definations')->where('id',$def_id)->first();
+        $param_joins = DB::table('par_parameter_join_tables')->where('param_id',$param->id)->orderBy('id','ASC')->get();
+        $labels = array();
+        $child = true;
+        $param_column_name='';
+        $logic = '';
+        foreach ($param_joins as $param_join) {
+            if($param_join->is_parent == 1){
+                $logic = $param_join->logic;
+                $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>ucwords($param_join->table_label),'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>0, 'is_parent'=>1,'logic'=>$logic);
+                $param_column_name = $param_join->param_column_name;
+                
+            }
+            else if($param_join->is_child == 1){
+                $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>ucwords($param_join->table_label),'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>1, 'is_parent'=>0, 'parent_combo_name'=> $param_column_name);
+                $param_column_name = '';
+                $logic = '';
+            }else{
+                $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>ucwords($param_join->table_label),'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>0, 'is_parent'=>0);
+            }
+        }
+        $colums = DB::getDoctrineSchemaManager()->listTableColumns($param->table_name);
+        //$colums = DB::select('SHOW COLUMNS FROM '.$param->table_name);
+        $fields = array();
+        foreach ($colums as $column) {
+
+            if($column->getNotnull()){
+                $fields[] = ['field'=>$column->getName(),'label'=>ucwords($column->getName()), 'null'=>false];
+            }else{
+                $fields[] = ['field'=>$column->getName(),'label'=>ucwords($column->getName()),'null'=>true];
+            }
+
+        }
+        //dd($fields);
+        $param_columns = $fields;//DB::getSchemaBuilder()->getColumnListing($param->table_name);
+        $join_columns = DB::table('par_parameter_join_tables')->select('param_column_name')->where('param_id',$param->id)->get();
+        $col_diff = array();
+        foreach ($join_columns as $column) {
+        $col_diff[] = ucwords($column->param_column_name);
+        }
+        foreach ($param_columns as $key => $value) {
+        if($value['label'] == ucwords('is_enabled')){
+                unset($param_columns[$key]);
+        }
+        if($value['label'] == ucwords('created_on')){
+                unset($param_columns[$key]);
+        }
+        if($value['label'] == ucwords('created_by')){
+                unset($param_columns[$key]);
+        }
+        if($value['label'] == ucwords('dola')){
+                unset($param_columns[$key]);
+        }
+        if($value['label'] == ucwords('altered_by')){
+                unset($param_columns[$key]);
+            }
+        if($value['label'] == ucwords('id')){
+                unset($param_columns[$key]);
+        }
+        if($value['label'] == ucwords('altered_on')){
+                unset($param_columns[$key]);
+        }
+        if($value['label'] == ucwords('is_other_config')){
+                unset($param_columns[$key]);
+        }
+        if(in_array($value['label'], $col_diff)){
+            unset($param_columns[$key]);
+        }
+
     }
 
-    $labels = array_reverse($labels);
 
+        $pure_array = array();
+        foreach ($param_columns as $result) {
+            $pure_array[] = $result;
+        }
+        $labels = array_reverse($labels);
+        $res = array(
+                    'success' => true,
+                    'main_fields' => $pure_array,
+                    'join_fields' => $labels,
+                    'table_name'=>$param->table_name,
+                    'message' => 'All is well'
+                );
 
-    $res = array(
-                'success' => true,
-                'main_fields' => $pure_array,
-                'join_fields' => $labels,
-                'table_name'=>$param->table_name,
-                'message' => 'All is well'
-            );
+            return response()->json($res);
+    }
       
-         return response()->json($res);
-   }
    public function getCountryMappedProcedures(Request $req){
         $assessment_procedure_id = $req->assessment_procedure_id;
         $category = $req->category;
@@ -2384,11 +2720,12 @@ public function getParameterFormColumnsConfig(Request $req)
                $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
         }
         return response()->json($res);
-    }public function getAppModuleFeeConfig(Request $req)
+    }
+    public function getAppModuleFeeConfig(Request $req)
     {
         $user_id = \Auth::user()->id;
         $module_id = $req->module_id;
-        try{
+        try{ 
             $qry = DB::table('tra_appmodules_feesconfigurations as t1')
                 ->leftJoin('modules as t2', 't1.module_id', 't2.id')
                 ->leftJoin('sub_modules as t3', 't1.sub_module_id', 't3.id')
@@ -2411,8 +2748,11 @@ public function getParameterFormColumnsConfig(Request $req)
                 ->leftJoin('par_advertisement_types as t23', 't1.advertisement_type_id', 't23.id')
                 ->leftJoin('par_investigationprod_classifications as t24', 't1.investigationprod_classification_id', 't24.id')
                 ->leftJoin('par_product_categories as t25', 't1.product_category_id', 't25.id')
+                 ->leftJoin('par_locationcouncils_definations as t26', 't1.locationcouncils_defination_id', 't26.id')
+                 ->leftJoin('par_business_types as t27', 't1.business_type_id', 't27.id')
+                  ->leftJoin('par_premise_class as t28', 't1.premise_product_classification_id', 't28.id')
                 ->select('t12.*', 't2.name as module','t25.name as product_category', 't3.name as sub_module', 't4.name as section','t12.cost as costs',
-                't5.name as assessment_proceduretype', 't6.name as prodclass_category','t24.name as investigationprod_classification', 't18.name as cost_element', 't7.name as product_subcategory', 't9.name as product_origin', 't10.name as applicationfeetype', 't1.*', 't11.name as classification_name','t15.name as fee_type','t16.name as cost_category','t17.name as cost_sub_category', DB::raw("CONCAT(t12.cost,' (',t14.name,')') as element_cost"),'t20.name as premise_type', 't21.name as gmp_type','t23.name as advertisement_type', 't22.name as importexport_permittype');
+                't5.name as assessment_proceduretype', 't6.name as prodclass_category','t24.name as investigationprod_classification', 't18.name as cost_element', 't7.name as product_subcategory', 't9.name as product_origin', 't10.name as applicationfeetype', 't1.*', 't11.name as classification_name','t15.name as fee_type','t16.name as cost_category','t17.name as cost_sub_category', DB::raw("CONCAT(t12.cost,' (',t14.name,')') as element_cost"),'t20.name as premise_type', 't21.name as gmp_type','t23.name as advertisement_type', 't22.name as importexport_permittype','t26.name as locationcouncils_defination','t27.name as business_type','t28.name as premise_product_classification');
             if(validateIsNumeric($module_id)){
                 $qry->where('t1.module_id', $module_id);
             }
@@ -2467,5 +2807,62 @@ public function getParameterFormColumnsConfig(Request $req)
             $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
         }
         return \response()->json($res);
+    }
+
+
+     public function onSaveMeetingGroups(Request $req)
+    {
+        try {
+                        $user_id = \Auth::user()->id;
+                        $post_data = $req->post();
+                        $table_name = $post_data['table_name'];
+                        $id = $post_data['id'];
+                        $participant_ids = $post_data['participant_id'];
+                        if(validateIsnumeric($id)){
+                          DB::table('par_meeting_groups')
+                            ->where('id', $id)
+                            ->delete();
+                        }
+  
+                        $table_data = array(
+                            'name' => $req->input('name'),
+                            'description' => $req->input('description'),
+                            'participant_id' => json_encode(json_decode($req->input('participant_id')))
+                        );
+                      
+                        //saving records
+                        $res = insertRecord('par_meeting_groups', $table_data, $user_id);
+            
+                        if(!isset($res['success'])||$res['success']==false){
+                          return $res;
+                        }
+                        $group_id= $res['record_id'];
+                        $Participant_Id= json_decode( $participant_ids);
+                        $userdata=array();
+                            if(isset($Participant_Id)>0){
+                                foreach($Participant_Id as $Participant_Id){
+                                    $userdata []= array(
+                                        'user_id'=> $Participant_Id,
+                                        'group_id'=> $group_id
+                                      );
+                                  }
+                                  
+                                $res = insertMultipleRecords('par_meeting_groups_participants',   $userdata);
+                                if(!isset($res['success'])||$res['success']==false){
+                                    return $res;
+                                  }
+                                }
+                            $res= array(
+                                'success' => true,
+                                'message' => 'Record saved Successfully!!'
+                            ); 
+                       
+                    }catch (\Exception $exception) {
+                        $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+            
+                    } catch (\Throwable $throwable) {
+                        $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+                    }
+                    return response()->json($res);
     }
 }

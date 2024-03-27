@@ -30,7 +30,7 @@ Ext.define('Admin.view.Enforcement.views.forms.investigation.WorkplanFrm', {
         },
         {
             xtype: 'textfield',
-            fieldLabel: 'Matter Name',
+            fieldLabel: 'Particular Name',
             identity:'matter_name',
             name:'matter_name',
             margin: '0 20 20 0',
@@ -38,7 +38,7 @@ Ext.define('Admin.view.Enforcement.views.forms.investigation.WorkplanFrm', {
         },
         {
             xtype: 'textfield',
-            fieldLabel: 'Matter Details',
+            fieldLabel: 'Particular Details',
             name:'matter_details',
             identity:'matter_details',
             margin: '0 20 20 0',
@@ -46,7 +46,7 @@ Ext.define('Admin.view.Enforcement.views.forms.investigation.WorkplanFrm', {
         },
         {
             xtype: 'textfield',
-            fieldLabel: 'Investigation Subject',
+            fieldLabel: 'Particular Subject',
             margin: '0 20 20 0',
             name: 'investigation_subject',
         },

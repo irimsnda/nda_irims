@@ -170,6 +170,24 @@ Ext.define('Admin.view.configurations.views.grids.PromotionalAppFeeConfigGrid', 
          flex:1
     },{
         xtype: 'gridcolumn',
+        dataIndex: 'section_name',
+        text: 'Section',
+        flex:1,
+        tbCls: 'wrap'
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'advertisement_material',
+        text: 'Type of Advertisement Material',
+         flex:1,
+        tbCls: 'wrap'
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'promotion_language_name',
+        text: 'Language of Publication or Advert',
+         flex:1,
+        tbCls: 'wrap'
+    },{
+        xtype: 'gridcolumn',
         dataIndex: 'applicationfeetype',
         text: 'Application Fee Type',
         tdCls: 'wrap',

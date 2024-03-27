@@ -694,7 +694,11 @@ class WorkflowController extends Controller
             $results = $qry->first();
             //initial status details
             $statusDetails = getApplicationInitialStatus($module_id, $sub_module_id);
+
+
             $results->initialAppStatus = $statusDetails->name;
+
+
             $res = array(
                 'success' => true,
                 'results' => $results,
@@ -767,7 +771,8 @@ class WorkflowController extends Controller
                 ->leftJoin('wf_workflows as t2', 't1.workflow_id', '=', 't2.id')
                 ->join('wf_workflow_stages as t3', 't3.workflow_id', '=', 't2.id')
                 ->leftJoin('wf_workflow_interfaces as t4', 't3.interface_id', '=', 't4.id')
-                ->select('t1.workflow_id', 't2.name', 't4.viewtype', 't1.id as processId', 't1.name as processName', 't3.name as initialStageName', 't3.id as initialStageId');
+                ->leftJoin('wf_workflow_interfaces as t5', 't3.alternative_interface_id', '=', 't5.id')
+                ->select('t1.workflow_id', 't2.name', 't4.viewtype','t5.viewtype as altviewtype', 't1.id as processId', 't1.name as processName', 't3.name as initialStageName', 't3.id as initialStageId');
             $qry->where($where);
             $results = $qry->first();
             $res = array(
@@ -1011,31 +1016,11 @@ class WorkflowController extends Controller
         $status_type_id = $request->input('status_type_id');
         $application_code = $request->input('application_code');
         $action_type = $request->action_type;
-
-
-
-        if ($module_id == 4 || $module_id === 4) {
-            $records = DB::connection('portal_db')
-                ->table('wb_importexport_applications as t7')
-                ->where('t7.application_code', $application_code)
-                ->first(); 
-        
-            if ($records) {
-                $where = array(
-                    't1.module_id' => $request->module_id,
-                    't1.sub_module_id' => $request->sub_module_id,
-                    't1.importexport_permittype_id' => $records->licence_type_id, 
-                    't1.importexport_applicationtype_id' => $records->has_registered_premises, 
-                );
-            }
-        } else {
-            $where = array(
-                't1.module_id' => $request->module_id,
-                't1.sub_module_id' => $request->sub_module_id
-                //'t1.section_id' => $records->section_id
-            );
-        }
-        
+        $where = array(
+            't1.module_id' => $module_id,
+            't1.sub_module_id' => $sub_module_id,
+            't1.section_id' => $section_id
+        );
         try {
             if ($status_type_id == 2) {
                /* if ($this->hasUnclosedStructuredQueries($application_code)) {
@@ -1503,12 +1488,15 @@ public function getProcessApplicableChecklistItems(Request $request)
     
         }
        
+    
  
         $submission_details = getLastApplicationSubmissionDetails($application_code);
+
 
         if($submission_details['success']){
             $submission_details = $submission_details['results'];
             $submission_id = $submission_details->id;
+            $process_id = $submission_details->process_id;
         }
         $where = array(
             'process_id' => $process_id
@@ -1601,7 +1589,7 @@ public function getProcessApplicableChecklistItems(Request $request)
                 
                 ->leftJoin('par_checklist_categories as t5', 't3.checklist_category_id', '=', 't5.id')
                 ->leftJoin('checklistitems_queryresponses as t6', 't6.query_id', '=', 't4.id')
-                ->join('users as t8', 't2.responses_by', '=', 't8.id')
+                ->leftJoin('users as t8', 't2.responses_by', '=', 't8.id')
                 ->select(DB::raw("t1.name,t4.id, t1.id as checklist_item_id,CONCAT_WS(' ',decrypt(t8.first_name),decrypt(t8.last_name)) as screened_by , t2.id as item_resp_id,t2.pass_status,t6.response as query_response, t2.comment,t2.observation, t2.auditor_comment, t1.checklist_type_id,t3.name as checklist_type, t2.auditorpass_status, $module_id as module_id, $sub_module_id as sub_module_id,  t4.query"));
           
                
@@ -2548,7 +2536,18 @@ public function getProcessApplicableChecklistItems(Request $request)
             $this->processImportExportApplicationSubmission($request);
         }else if ($module_id == 29) {//DRUG SHOP REGISTRATION
             $this->processPremiseApplicationSubmission($request);
+        }else if ($module_id == 33) {//Surgical Instrument & Appliances
+            $this->processPremiseApplicationSubmission($request);
         }else if ($module_id == 30) { //LAW ENFORCEMENT
+            $this->processNormalApplicationSubmission($request);
+
+        }else if ($module_id == 24) { //ADR Reporting
+            $this->processNormalApplicationSubmission($request);
+
+        }else if ($module_id == 23) { //Signal Management
+            $this->processNormalApplicationSubmission($request);
+
+        }else if ($module_id == 32) { //Signal Management
             $this->processNormalApplicationSubmission($request);
 
         }else {
@@ -2579,8 +2578,14 @@ public function getProcessApplicableChecklistItems(Request $request)
             $this->processImportExportManagersApplicationSubmission($request);
         }  else if ($module_id == 29) {//DRUG SHOP REGISTRATION
             $this->processPremiseManagersApplicationSubmission($request);
+        }else if ($module_id == 33) {// SIA Premise REGISTRATION
+            $this->processPremiseManagersApplicationSubmission($request);
         } else if ($module_id == 30) {//Enforcement
             $this->processManagerInvestigationApplicationSubmission($request);
+        } else if ($module_id == 24) {//ADR
+            $this->processNormalManagersApplicationSubmission($request);
+        }else if ($module_id == 23) {//Alert
+            $this->processNormalManagersApplicationSubmission($request);
         }else {
             //unknown module
             echo "module not set";
@@ -2816,7 +2821,7 @@ public function getProcessApplicableChecklistItems(Request $request)
         $selected_ids = json_decode($selected);
         $user_id = $this->user_id;
         DB::beginTransaction();
-if($table_name == ''){
+          if($table_name == ''){
                 $table_name = getSingleRecordColValue('modules', array('id' => $module_id), 'table_name');
                 $request->table_name = $table_name;
                 
@@ -2867,7 +2872,9 @@ if($table_name == ''){
             $action = $request->input('action');
             $to_stage = $request->input('next_stage');
            
+            // $responsible_user = $request->input('responsible_user');
             $responsible_user = $request->input('responsible_user');
+            $responsible_users = json_decode($responsible_user);
             $remarks = $request->input('remarks');
             $directive_id = $request->input('directive_id');
             $urgency = $request->input('urgency');
@@ -2915,8 +2922,17 @@ if($table_name == ''){
             $multisubmission_params = array();
             $inspectors = array();
             //application details
+              /*--------------------------------
+                confirm the responsible_users is an array or collection
+            ----------------------------------*/
+            if($responsible_users instanceof Collection || is_array($responsible_users)){
+                //is okay to proceed
+            }else{
+                $responsible_users = array($responsible_users);
+            }
+
             foreach ($application_details as $key => $application_detail) {
-                
+              foreach($responsible_users as $responsible_user){ 
                 if ($keep_status == true) {
                     $application_status_id = $application_detail->application_status_id;
                 }
@@ -3223,10 +3239,10 @@ if($table_name == ''){
                         }//endforeach
                     }//endif
 
-             }
+                 }
             
-
-          }
+              }
+             }
           
 
 
@@ -4862,12 +4878,11 @@ $application_processdefdata = array();
         return \response()->json($res);
     }
 
-    public function getApplicationTransitioning(Request $req)
+     public function getApplicationTransitioning(Request $req)
     {
         $application_id = $req->input('application_id');
         $application_code = $req->input('application_code');
         $where = array(
-            'application_id' => $application_id,
             'application_code' => $application_code
         );
         try {
@@ -4886,11 +4901,9 @@ $application_processdefdata = array();
                 'results' => $data,
                 'message' => 'All is well'
             );
-        } catch (\Exception $e) {
-            $res = array(
-                'success' => false,
-                'message' => $e->getMessage()
-            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
         }
         return response()->json($res);
     }

@@ -499,7 +499,7 @@ Ext.define('Admin.controller.SurveillanceCtr', {
             activeTab = mainTabPanel.getActiveTab(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
         childObject.down('hiddenfield[name=section_id]').setValue(section_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     
     showPmsPlansAppSelectionList: function (btn) {
@@ -541,7 +541,7 @@ Ext.define('Admin.controller.SurveillanceCtr', {
         childObject.down('hiddenfield[name=program_implementation_id]').setValue(program_implementation_id);
         
         
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     
     showPmsPlansSelectionList: function (btn) {
@@ -582,7 +582,7 @@ Ext.define('Admin.controller.SurveillanceCtr', {
         }
         childObject.down('hiddenfield[name=section_id]').setValue(section_id);
         
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     
     onPmsApplicationProgramSelectionListDblClick: function (view, record, item, index, e, eOpts) {
@@ -1549,7 +1549,7 @@ nextStep = wizardPnl.items.indexOf(layout.getNext());
         childObject.down('button[action=save_form_data]').storeID = btn.storeID;
         childObject.down('hiddenfield[name=section_id]').setValue(section_id);
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showSampleCollectionSiteSelectionList: function (btn) {
@@ -1571,9 +1571,13 @@ nextStep = wizardPnl.items.indexOf(layout.getNext());
             if(activeTab.down('hiddenfield[name=program_implementation_id]')){
                 program_implementation_id = activeTab.down('hiddenfield[name=program_implementation_id]').getValue();
             }else{
-                if(planProgramForm.down('hiddenfield[name=program_implementation_id]')){
-                    program_implementation_id = planProgramForm.down('hiddenfield[name=program_implementation_id]').getValue();
+                if(planProgramForm){
+                    if(planProgramForm.down('hiddenfield[name=program_implementation_id]')){
+                        program_implementation_id = planProgramForm.down('hiddenfield[name=program_implementation_id]').getValue();
 
+                    }else{
+                      program_implementation_id =0;  
+                    }
                 }
                 else{
                     program_implementation_id =0;
@@ -1589,7 +1593,7 @@ nextStep = wizardPnl.items.indexOf(layout.getNext());
     
                     childObject.down('hiddenfield[name=region_id]').setValue(region_id);
                    
-                    funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
 
                 }
                 else{
@@ -1603,7 +1607,7 @@ nextStep = wizardPnl.items.indexOf(layout.getNext());
                 var childObject = Ext.widget(childXtype);
                     childObject.down('hiddenfield[name=section_id]').setValue(section_id);
                     childObject.down('hiddenfield[name=region_id]').setValue(region_id);
-                    funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
             }
             else{
                 toastr.warning('Please select PMS program Implementation Plan!!', 'Warning Response');
@@ -1622,7 +1626,7 @@ nextStep = wizardPnl.items.indexOf(layout.getNext());
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
         var childObject = Ext.widget(childXtype);
         childObject.down('hiddenfield[name=section_id]').setValue(section_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     onCollectionSiteSelectionListDblClick: function (view, record, item, index, e, eOpts) {
@@ -1670,8 +1674,8 @@ nextStep = wizardPnl.items.indexOf(layout.getNext());
             collectionSiteForm = activeTab.down('samplecollectionsitefrm'),
             collectionSiteFrm = collectionSiteForm.getForm();
         if (!zone_id) {
-            toastr.warning('Please select zone!!', 'Warning Response');
-            return false;
+            // toastr.warning('Please select zone!!', 'Warning Response');
+            // return false;
         }
         if (!directorate_id) {
             toastr.warning('Please select directorate!!', 'Warning Response');
@@ -1843,8 +1847,8 @@ saveStructuredPmsEdittingBaseDetails: function (btn) {
             collectionSiteForm = activeTab.down('samplecollectionsitefrm'),
             collectionSiteFrm = collectionSiteForm.getForm();
         if (!zone_id) {
-            toastr.warning('Please select zone!!', 'Warning Response');
-            return false;
+            // toastr.warning('Please select zone!!', 'Warning Response');
+            // return false;
         }
         if (!directorate_id) {
             toastr.warning('Please select directorate!!', 'Warning Response');
@@ -1987,8 +1991,8 @@ saveStructuredPmsEdittingBaseDetails: function (btn) {
             pms_sample_gridStr = activeTab.down('sampledetailsgrid').getStore(),
             sampleSiteFrm = activeTab.down('samplecollectionsitefrm');
         if (!program_id) {
-            toastr.warning('Please Select PMS program details!!', 'Warning Response');
-            return false;
+            // toastr.warning('Please Select PMS program details!!', 'Warning Response');
+            // return false;
         }
         if (!sampleSiteFrm.isValid()) {
             toastr.warning('Please Enter All the required sample collection site Details!!', 'Warning Response');
@@ -2339,7 +2343,7 @@ saveStructuredPmsEdittingBaseDetails: function (btn) {
                         sampleSiteFrm.loadRecord(model2);
                     }
                     
-                    funcShowCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
                    // var productsStr = pmsPlanFrm.down('combo[name=product_id]').getStore(),
                      var   regionsStr = pmsPlanFrm.down('combo[name=region_id]').getStore();
                    // productsStr.load({params: {program_id: pmsResults.program_id}});
@@ -2449,7 +2453,7 @@ saveStructuredPmsEdittingBaseDetails: function (btn) {
                         var model2 = Ext.create('Ext.data.Model', sampleSiteResults);
                         sampleSiteFrm.loadRecord(model2);
                     }
-                    funcShowCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', wizardPnl, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -2489,7 +2493,7 @@ saveStructuredPmsEdittingBaseDetails: function (btn) {
         inclusionStr.removeAll();
         inclusionStr.load({params: {section_id: section_id}});
         childObject.down('hiddenfield[name=sample_id]').setValue(sample_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showEditSampleIngredientsWin: function (item, record) {
@@ -2510,7 +2514,7 @@ saveStructuredPmsEdittingBaseDetails: function (btn) {
         inclusionStr.removeAll();
         inclusionStr.load({params: {section_id: section_id}});
         childObject.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     savePmsTCMeetingDetails: function (btn) {

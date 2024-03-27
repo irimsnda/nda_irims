@@ -5,16 +5,16 @@ namespace Modules\Pv\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-
 class PvController extends Controller
 {
-     protected $user_id;
+    protected $user_id;
 
     public function __construct(Request $req)
     {
@@ -36,6 +36,275 @@ class PvController extends Controller
             });
         }
     }
+
+    public function getRelatedProblems(Request $request){
+        $application_code = $request->input('application_code');
+        try {
+           $qry = DB::table('tra_additional_problems as t1')
+                ->leftJoin('par_adr_related_problems as t2', 't1.adr_related_problems_id', '=', 't2.id')
+                ->select('t1.*','t2.name as related_problem')
+                ->groupBy('t1.id');
+           
+            $qry->Where('t1.application_code', $application_code);
+
+             $results = $qry->get();
+
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+}
+
+
+ public function getStudyDetails(Request $request){
+        $application_code = $request->input('application_code');
+        try {
+           $qry = DB::table('tra_pv_study_details as t1')
+                ->leftJoin('par_countries as t2', 't1.country_id', '=', 't2.id')
+                ->select('t1.*','t2.name as study_country')
+                ->groupBy('t1.id');
+           
+            $qry->where('t1.application_code', $application_code);
+
+             $results = $qry->get();
+
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+}
+
+
+public function getCasaultyAssessment(Request $request)
+{
+    $application_code = $request->input('application_code');
+
+    try {
+        $causalityReport_main = DB::table('tra_pv_causality_assessment as t1')
+            ->leftJoin('par_pv_causality_asssessment as t2', 't1.question_id', '=', 't2.id')
+            ->where('t1.application_code', $application_code)
+            ->select(DB::raw("DISTINCT t1.id, t1.*, t2.question,t2.quidelines"))
+            ->get();
+
+        if ($causalityReport_main->isNotEmpty()) {
+            $results = $causalityReport_main;
+        } else {
+            $templatereport_qry = DB::table('par_pv_causality_asssessment as t1')
+                ->select(DB::raw("DISTINCT t1.id, t1.*, t1.id as question_id "));
+            $results = $templatereport_qry->get();
+        }
+
+        $res = array(
+            'success' => true,
+            'results' => $results,
+            'message' => 'All is well'
+        );
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return \response()->json($res);
+}
+
+
+    public function saveAssessmentReportdetails(Request $request)
+        {
+            $application_code = $request->input('application_code');
+            $report_questions = $request->input('report_questions');
+            $report_questions = json_decode($report_questions);
+            $table_name = 'tra_pv_causality_assessment';
+            $user_id = $this->user_id;
+
+            try {
+                foreach ($report_questions as $report_question) {
+                    $id = ''; 
+                    $question_id = $report_question->question_id;
+                    $score_id = $report_question->score_id;
+                    $score = '';
+
+                     switch ($question_id) {
+                        case 1:
+                            if ($score_id == 1) {
+                                $score = 1;
+                            } elseif ($score_id == 2) {
+                                $score = 0;
+                            } elseif ($score_id == 3) {
+                                $score = 0;
+                            }
+                            break;
+                        case 2:
+                            if ($score_id == 1) {
+                                $score = 2;
+                            } elseif ($score_id == 2) {
+                                $score = -1;
+                            } elseif ($score_id == 3) {
+                                $score = 0;
+                            }
+                        break;
+                        case 3:
+                            if ($score_id == 1) {
+                                $score = 1;
+                            } elseif ($score_id == 2) {
+                                $score = 0;
+                            } elseif ($score_id == 3) {
+                                $score = 0;
+                            }
+                        break;
+                        case 4:
+                            if ($score_id == 1) {
+                                $score = 2;
+                            } elseif ($score_id == 2) {
+                                $score = -1;
+                            } elseif ($score_id == 3) {
+                                $score = 0;
+                            }
+                        break;
+                        case 5:
+                            if ($score_id == 1) {
+                                $score = -1;
+                            } elseif ($score_id == 2) {
+                                $score = 2;
+                            } elseif ($score_id == 3) {
+                                $score = 0;
+                            }
+                        break;
+                        case 6:
+                            if ($score_id == 1) {
+                                $score = -1;
+                            } elseif ($score_id == 2) {
+                                $score = 1;
+                            } elseif ($score_id == 3) {
+                                $score = 0;
+                            }
+                        break;
+                        case 7:
+                            if ($score_id == 1) {
+                                $score = 1;
+                            } elseif ($score_id == 2) {
+                                $score = 0;
+                            } elseif ($score_id == 3) {
+                                $score = 0;
+                            }
+                        break;
+                        case 8:
+                            if ($score_id == 1) {
+                                $score = 1;
+                            } elseif ($score_id == 2) {
+                                $score = 0;
+                            } elseif ($score_id == 3) {
+                                $score = 0;
+                            }
+                        break;
+                        case 9:
+                            if ($score_id == 1) {
+                                $score = 1;
+                            } elseif ($score_id == 2) {
+                                $score = 0;
+                            } elseif ($score_id == 3) {
+                                $score = 0;
+                            }
+                        break;
+                        case 10:
+                            if ($score_id == 1) {
+                                $score = 1;
+                            } elseif ($score_id == 2) {
+                                $score = 0;
+                            } elseif ($score_id == 3) {
+                                $score = 0;
+                            }
+                        break;
+                    }
+
+                    $report_question_data = array(
+                        'question_id' => $question_id,
+                        'application_code' => $application_code,
+                        'score_id' => $score_id,
+                        'score' => $score
+                    );
+
+                    $where = array(
+                        'question_id' => $question_id,
+                        'application_code' => $application_code
+                    );
+
+                    if (recordExists($table_name, $where)) {
+                        $existingRecord = getPreviousRecords($table_name, $where);
+                        if ($existingRecord['success'] == false) {
+                            return $existingRecord;
+                        }
+                        $report_question_data['dola'] = Carbon::now();
+                        $report_question_data['altered_by'] = $user_id;
+                        updateRecord($table_name, $existingRecord['results'], $where, $report_question_data, $user_id);
+                          $res = array(
+                            'success' => true,
+                            'message' => 'Causality Assessment report updated successfully!!'
+                        );
+                    } else {
+
+                        // Insert as a new record
+                        $report_question_data['dola'] = Carbon::now();
+                        $report_question_data['altered_by'] = $user_id;
+                        DB::table($table_name)->insert($report_question_data);
+
+                          $res = array(
+                            'success' => true,
+                            'message' => 'Causality Assessment report saved successfully!!'
+                        );
+                    }
+                }
+
+              
+            } catch (\Exception $exception) {
+                $res = array(
+                    'success' => false,
+                    'message' => $exception->getMessage()
+                );
+            } catch (\Throwable $throwable) {
+                $res = array(
+                    'success' => false,
+                    'message' => $throwable->getMessage()
+                );
+            }
+
+            return \response()->json($res);
+        }
+
+
+
+
     public function savePvReceivingBaseDetails(Request $req, $inCall = 0)
     {
         try {
@@ -43,6 +312,7 @@ class PvController extends Controller
             $active_application_id = $req->input('active_application_id');
             $process_id = $req->input('process_id');
             $workflow_stage_id = $req->input('workflow_stage_id');
+           
             $section_id = $req->input('section_id');
             $module_id = $req->input('module_id');
             $sub_module_id = $req->input('sub_module_id');
@@ -57,11 +327,11 @@ class PvController extends Controller
             unset($data['pv_id']);
             unset($data['table_name']);
             
-            //check submodule 
-            if($sub_module_id == 77){ //variation/reevaluation
-                return $this->saveReEvaluationApplication($req, $inCall);
-                 DB::commit();
-            }
+            // //check submodule 
+            // if($sub_module_id == 77){ //variation/reevaluation
+            //     return $this->saveReEvaluationApplication($req, $inCall);
+            //      DB::commit();
+            // }
             DB::beginTransaction();
             //data updates
             if (validateIsNumeric($active_application_id)) {
@@ -73,7 +343,7 @@ class PvController extends Controller
                 $app_details = array();
                 if (recordExists($applications_table, $where_app)) {
                     //update data
-                    updateRecord($applications_table, $where_app, $data, $user_id);
+                    updateRecordNoPrevious($applications_table, $where_app, $data, $user_id);
                 }
 
                 //get existing data
@@ -159,7 +429,7 @@ class PvController extends Controller
                         'application_status_id' => $application_status->status_id,
                         'urgency' => 1,
                         'applicant_id' => $applicant_id,
-                        'branch_id' => 1,
+                        'zone_id' => 1,
                         'remarks' => 'Initial save of the application',
                         'date_received' => Carbon::now(),
                         'created_on' => Carbon::now(),
@@ -222,6 +492,204 @@ class PvController extends Controller
         }
         return \response()->json($res);
     }
+
+       public function onLoadTestProcedures(Request $req){
+        try{
+            $application_code = $req->application_code;
+            $qry = DB::table('tra_pv_test_procedures as t1')
+             ->leftJoin('par_adr_test_result_signs as t2', 't1.test_logic_id', '=', 't2.id') 
+             ->leftJoin('par_si_units as t3', 't1.test_si_unit_id', '=', 't3.id') 
+             ->leftJoin('par_adr_test_code as t4', 't1.test_result_code_id', '=', 't4.id') 
+             ->leftJoin('par_si_units as t5', 't1.lowvalue_si_unit_id', '=', 't5.id')
+             ->leftJoin('par_si_units as t6', 't1.highvalue_si_unit_id', '=', 't6.id')  
+             ->select(DB::raw("DISTINCT  t1.id,t1.*,CONCAT_WS(' ',t2.name,t1.no_of_tests,t3.name) as test_result,t4.name as test_result_code,CONCAT_WS(' ',t1.normal_low_value,t5.name) as low_value,CONCAT_WS(' ',t1.normal_high_value,t6.name) as high_value"))
+                    ->where('t1.application_code', $application_code);
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+           $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        }
+        return \response()->json($res);
+    }
+
+    public function onLoadReaction(Request $req){
+        try{
+            $application_code = $req->application_code;
+            $qry = DB::table('tra_pv_reaction as t1')
+             ->leftJoin('par_adr_outcomes as t2', 't1.adr_outcome_id', '=', 't2.id') 
+             ->leftJoin('par_aefi_categories as t3', 't1.aefi_category_id', '=', 't3.id') 
+             ->select(DB::raw("DISTINCT  t1.id,t1.*,t2.name as outcomes,t3.name as aefi_category"))
+                    ->where('t1.application_code', $application_code);
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+           $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        }
+        return \response()->json($res);
+    }
+
+       public function getIndication(Request $req){
+        try{
+            $application_code = $req->application_code;
+            $qry = DB::table('tra_pv_indication as t1')
+            ->where('t1.application_code', $application_code);
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+           $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        }
+        return \response()->json($res);
+    }
+
+      public function onLoadStudyInformation(Request $req){
+        try{
+            $application_code = $req->application_code;
+            $qry = DB::table('tra_pv_study_information as t1')
+             ->leftJoin('par_adr_study_types as t2', 't1.study_type_id', '=', 't2.id') 
+             ->select(DB::raw("DISTINCT  t1.id,t1.*,t2.name as study_type"))
+                    ->where('t1.application_code', $application_code);
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+           $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        }
+        return \response()->json($res);
+    }
+
+    public function onLoadMedicalHistory(Request $req){
+        try{
+            $application_code = $req->application_code;
+            $qry = DB::table('tra_pv_medical_history as t1')
+            ->leftJoin('par_confirmations as t2', 't1.is_family_history_id', '=', 't2.id')
+             ->leftJoin('par_confirmations as t3', 't1.continueing_id', '=', 't3.id')
+            ->select(DB::raw("DISTINCT  t1.id,t1.*,t2.name as family_history,t3.name as continuing")) 
+                    ->where('t1.application_code', $application_code);
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+           $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        }
+        return \response()->json($res);
+    }
+
+     public function onLoadPersonnel(Request $req){
+        try{
+            $application_code = $req->application_code;
+            $qry = DB::table('tra_pv_personnel as t1')
+            ->leftJoin('par_adr_reporter_types as t2', 't1.adr_reporter_type_id', '=', 't2.id')
+            ->leftJoin('par_titles as t3', 't1.title_id', '=', 't3.id')
+            ->leftJoin('par_cities as t4', 't1.city_id', '=', 't4.id')
+            ->leftJoin('par_regions as t5', 't1.region_id', '=', 't5.id')
+            ->leftJoin('par_districts as t6', 't1.district_id', '=', 't6.id')
+            ->leftJoin('par_pv_reporter_qualifications as t7', 't1.qualification_id', '=', 't7.id')
+            ->select(DB::raw("DISTINCT  t1.id,t1.*,t2.name as reporter_as,t3.name as title,t4.name as city,t5.name as region,t6.name as district,t7.name as qualification")) 
+                    ->where('t1.application_code', $application_code);
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+           $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        }
+        return \response()->json($res);
+    }
+
+    public function onLoadSenderDetails(Request $req){
+        try{
+            $application_code = $req->application_code;
+            $qry = DB::table('tra_pv_sender_details as t1')
+             ->leftJoin('par_adr_reporter_types as t2', 't1.adr_reporter_type_id', '=', 't2.id')
+            ->leftJoin('par_titles as t3', 't1.title_id', '=', 't3.id')
+            ->leftJoin('par_cities as t4', 't1.city_id', '=', 't4.id')
+            ->leftJoin('par_regions as t5', 't1.region_id', '=', 't5.id')
+            ->leftJoin('par_districts as t6', 't1.district_id', '=', 't6.id')
+            ->select(DB::raw("DISTINCT  t1.id,t1.*,t2.name as reporter_as,t3.name as title,t4.name as city,t5.name as region,t6.name as district")) 
+                    ->where('t1.application_code', $application_code);
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+           $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        }
+        return \response()->json($res);
+    }
+
+
+    public function onLoadDrugHistory(Request $req){
+        try{
+            $application_code = $req->application_code;
+            $qry = DB::table('tra_pv_drug_history as t1')
+                    ->where('t1.application_code', $application_code);
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+           $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        }
+        return \response()->json($res);
+    }
+
+
      public function getDashboardApplications(Request $request)
     {
         $module_id = $request->input('module_id');
@@ -250,7 +718,7 @@ class PvController extends Controller
                     t3.postal_address as app_postal_address, t3.telephone_no as app_telephone, t3.fax as app_fax, t3.email as app_email, t3.website as app_website,
                     t1.*"))
                 ->where('t5.stage_status','<>',3)
-                ->where('is_done', 0);
+                ->where('isDone', 0);
 
             if(!$is_super){
                 $qry->whereIn('t1.workflow_stage_id', $assigned_stages);
@@ -267,7 +735,7 @@ class PvController extends Controller
                 $qry->where('t7.current_stage', $workflow_stage_id);
             }
 
-            $qry->where('t7.is_done', 0);
+            $qry->where('t7.isDone', 0);
             $results = $qry->get();
 
             $res = array(
@@ -331,6 +799,10 @@ class PvController extends Controller
         }
         return \response()->json($res);
     }
+
+
+   
+
     public function getStagePvApplications(Request $request)
     {
         $module_id = $request->input('module_id');
@@ -353,9 +825,9 @@ class PvController extends Controller
                 })
                 ->leftJoin('tra_approval_recommendations as t14', 't1.application_code', 't14.application_code')
                ->leftJoin('tra_pv_reporter_notification_logs as t15', 't1.application_code', 't15.application_code')
-                ->select('t1.*', 't1.id as pv_id', DB::raw("CONCAT(decryptval(t10.first_name,".getDecryptFunParams()."),' ',decryptval(t10.last_name,".getDecryptFunParams().")) as submitted_by"), 't9.date_received as submitted_on', 't3.name as applicant_name', 't4.name as application_status','t2.name as adr_type','t6.name as gender',
+                ->select('t1.*', 't1.id as pv_id', DB::raw("CONCAT_WS(' ',decrypt(t10.first_name),decrypt(t10.last_name)) as submitted_by"), 't9.date_received as submitted_on', 't3.name as applicant_name', 't4.name as application_status','t2.name as adr_type','t6.name as gender',
                      't1.id as active_application_id', 't12.stage_category_id','t13.id as recommendation_record_id','t13.recommendation_id','t13.remarks','t14.decision_id as approval_decision_id', 't1.treatment as final_recommendation', 't15.id as response_id','t15.response', 't15.subject')
-                ->where(array('t9.current_stage'=>$workflow_stage,'is_done'=>0) );
+                ->where(array('t9.current_stage'=>$workflow_stage,'isDone'=>0) );
           
             $results = $qry->orderBy('t9.id','desc')->get();
             $res = array(
@@ -411,7 +883,7 @@ class PvController extends Controller
 
             if(isset($applicant->applicant_email)){
                 //reporter and cc contact person
-                sendMailFromNotification($applicant->contact_person, $applicant->applicant_email,$subject, $response,'pv@bomra.bw', [$applicant->contact_person_email]);
+                sendMailFromNotification($applicant->contact_person, $applicant->applicant_email,$subject, $response,'kenedy.mulinge@softclans.co.ke', [$applicant->contact_person_email]);
                 // //their contact person
                 // sendMailFromNotification($applicant->contact_person, $applicant->contact_person_email,$subject, $response,'pv@bomra.bw', '');
             }
@@ -420,7 +892,7 @@ class PvController extends Controller
                 'application_code' => $application_code
             );
             $update = ['is_reporter_notified' => 1];
-            $res = updateRecord('tra_pv_applications', $where, $update);
+            $res = updateRecordNoPrevious('tra_pv_applications', $where, $update);
             //log notification
             if($res['success']){
                 $data = array(
@@ -451,7 +923,9 @@ class PvController extends Controller
                 'application_code' => $application_code
             );
             $update = ['is_published' => 1];
-            $res = updateRecord('tra_pv_applications', $where, $update);
+            $res = updateRecordNoPrevious('tra_pv_applications', $where, $update);
+
+
 
             //log publishing
             if($res['success']){
@@ -460,7 +934,8 @@ class PvController extends Controller
                     'published_by' => $this->user_id,
                     'published_on' => Carbon::now()
                 );
-                insertRecord('tra_pv_published_logs', $data);
+                $res =insertRecord('tra_pv_published_logs', $data);
+
             }
         } catch (\Exception $exception) {
             $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
@@ -513,7 +988,8 @@ class PvController extends Controller
                     'application_code' => $application_code
                 );
                 $update = ['is_exported' => 1];
-                $res = updateRecord('tra_pv_applications', $where, $update);
+
+                $res = updateRecordNoPrevious('tra_pv_applications', $where, $update);
 
                 //log export
             }
@@ -542,5 +1018,39 @@ class PvController extends Controller
         return $response;
     }
     
+    public function getPvRegisterApplications(Request $request)
+    {
+        $module_id = $request->input('module_id');
+        $workflow_stage = $request->input('workflow_stage_id');
+        try {
+            $qry = DB::table('tra_pv_applications as t1')
+                ->leftJoin('par_adr_types as t2', 't1.adr_type_id', '=', 't2.id')
+                ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->leftJoin('par_system_statuses as t4', 't1.application_status_id', 't4.id')
+                ->leftJoin('tra_approval_recommendations as t5', 't5.application_code', '=', 't1.application_code')
+                ->leftJoin('par_gender as t6', 't1.gender_id', '=', 't6.id')
+                ->leftJoin('tra_submissions as t9', 't9.application_code', '=', 't1.application_code')
+                ->leftJoin('users as t10', 't9.usr_from', '=', 't10.id')
+                ->leftJoin('wf_workflow_stages as t12', 't9.current_stage', 't12.id')
+                ->leftJoin('tra_evaluation_recommendations as t13', 't1.application_code', 't13.application_code')
+                ->leftJoin('tra_approval_recommendations as t14', 't1.application_code', 't14.application_code')
+               ->leftJoin('tra_pv_reporter_notification_logs as t15', 't1.application_code', 't15.application_code')
+                ->select('t1.*', 't1.id as pv_id', DB::raw("CONCAT_WS(' ',decrypt(t10.first_name),decrypt(t10.last_name)) as submitted_by"), 't9.date_received as submitted_on', 't3.name as applicant_name', 't4.name as application_status','t2.name as adr_type','t6.name as gender',
+                     't1.id as active_application_id', 't12.stage_category_id','t13.id as recommendation_record_id','t13.recommendation_id','t13.remarks','t14.decision_id as approval_decision_id', 't1.treatment as final_recommendation', 't15.id as response_id','t15.response', 't15.subject');
+                //->where('t14.decision_id',1);
+          
+            $results = $qry->orderBy('t9.id','desc')->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
     
 }

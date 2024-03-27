@@ -83,11 +83,8 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductsScre
         ui: 'soft-green',
         iconCls: 'fa fa-save',
         name: 'savegrid_screening_btn'
-    },
-    
-    '->',{
+    },'->',{
         xtype: 'button',
-        hidden: true,
         text: "Raise/View Query(Request for Information)",
         tooltip: 'Raise Query/View Query(Request for Information) and query Responses',
         ui: 'soft-green',
@@ -98,6 +95,5 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductsScre
                     grid.fireEvent('showAppQueries', grid);
                 }
             }
-    }
-]
+    }]
 });

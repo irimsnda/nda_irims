@@ -162,20 +162,24 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.common.RegisteredProm
         }, {
             xtype: 'gridcolumn',
             dataIndex: 'venue_of_exhibition',
+            hidden:true,
             text: 'Venue of the Advertisement/Exhibition',
             flex: 1
         },{
             xtype: 'gridcolumn',
+            hidden:true,
             dataIndex: 'exhibition_start_date',
             text: ' Advertisement/Exhibition Start Date',
             flex: 1
         },{
             xtype: 'gridcolumn',
+            hidden:true,
             dataIndex: 'exhibition_start_date',
             text: ' Advertisement/Exhibition End Date',
             flex: 1
         },  {
             xtype: 'gridcolumn',
+            hidden:true,
             dataIndex: 'sponsor_name',
             text: 'Sponsor Name',
             flex: 1,

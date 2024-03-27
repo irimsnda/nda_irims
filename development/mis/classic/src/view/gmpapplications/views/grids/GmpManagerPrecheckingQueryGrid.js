@@ -145,7 +145,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpManagerPrecheckingQueryGri
                         action: 'edit',
                         childXtype: '',
                         winTitle: 'Application Documents',
-                        winWidth: '40%',
+                        winWidth: '80%',
                         isReadOnly: 1,
                         document_type_id: '',
                         handler: 'showPreviousUploadedDocs'
@@ -161,7 +161,13 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpManagerPrecheckingQueryGri
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 1,
                         handler: 'showGmpApplicationMoreDetails'
-                    },
+                    },{
+                        text: 'View  Online Assessment Tool',
+                        iconCls: 'x-fa fa-bars',
+                        appDetailsReadOnly: 1,
+                        winTitle: 'Online Assessment Tool Details',
+                        handler: 'showGMPAssessmentToolDetails'
+                    }, 
                     {
                         text: 'Compare Details',
                         iconCls: 'x-fa fa-bars',

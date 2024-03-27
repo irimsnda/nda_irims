@@ -30,6 +30,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialPersonnelGrid', {
             text: 'Add Personnel',
             iconCls: 'x-fa fa-plus',
             ui: 'soft-green',
+             hidden:true,
             name: 'add_clinicaltrial_personnel',
             childXtype: 'clinicaltrialpersonnelfrm',
             winTitle: 'Clinical Trial Personnel',

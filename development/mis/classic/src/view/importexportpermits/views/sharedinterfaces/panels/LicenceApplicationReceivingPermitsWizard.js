@@ -1,7 +1,5 @@
 /**
  * Created by softclans
- * user robinson odhiambo
- * Kip on 9/24/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.LicenceApplicationReceivingPermitsWizard', {
     extend: 'Ext.panel.Panel',
@@ -46,7 +44,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Licence
                 }, {
                     xtype: 'displayfield',
                     name: 'workflow_stage',
-                    fieldLabel: 'Workflow Stage',
+                    fieldLabel: 'Application Status',
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
@@ -125,77 +123,78 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Licence
                             xtype: 'tbseparator',
                             width: 2
                         },
-                        {
-                            xtype: 'combo',
-                            fieldLabel: 'Zone',
-                            labelWidth: 50,
-                            width: 400,
-                            name: 'zone_id',
-                            valueField: 'id',
-                            displayField: 'name',
-                            queryMode: 'local',
-                            forceSelection: true,
-                            listeners: {
-                                beforerender: {
-                                    fn: 'setOrgConfigCombosStore',
-                                    config: {
-                                        pageSize: 1000,
-                                        proxy: {
-                                            extraParams: {
-                                                model_name: 'Zone'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            },
-                            labelStyle: 'font-weight:bold'
-                        },'->',{
-                            xtype: 'fieldcontainer',
-                            layout: 'column',
+                        // {
+                        //     xtype: 'combo',
+                        //     fieldLabel: 'Zone',
+                        //     labelWidth: 50,
+                        //     width: 400,
+                        //     name: 'zone_id',
+                        //     valueField: 'id',
+                        //     displayField: 'name',
+                        //     queryMode: 'local',
+                        //     forceSelection: true,
+                        //     listeners: {
+                        //         beforerender: {
+                        //             fn: 'setOrgConfigCombosStore',
+                        //             config: {
+                        //                 pageSize: 1000,
+                        //                 proxy: {
+                        //                     extraParams: {
+                        //                         model_name: 'Zone'
+                        //                     }
+                        //                 }
+                        //             },
+                        //             isLoad: true
+                        //         }
+                        //     },
+                        //     labelStyle: 'font-weight:bold'
+                        // }
+                        // '->',{
+                        //     xtype: 'fieldcontainer',
+                        //     layout: 'column',
                            
-                            items: [
-                                {
-                                    xtype: 'textfield',
-                                    name: 'reference_no',
-                                    hidden: false,fieldLabel: 'Visa Application Details',
-                                    readOnly: true,
-                                    columnWidth: 0.9
-                                },
-                                {
-                                    xtype: 'button',
-                                    iconCls: 'x-fa fa-search',
-                                    columnWidth: 0.1,
-                                    hidden: false,
-                                    text: 'Search',
-                                    tooltip: 'Select Application',
-                                    name: 'select_applications',
-                                    childXtype: 'allapprovedvisaapplicationsgrid',
-                                    winTitle:'Approved Visa Applications',
-                                    winWidth:'70%',
-                                    handler: 'showIEApplicationsSelectionList'
-                                }
-                            ]
-                        }
+                        //     items: [
+                        //         {
+                        //             xtype: 'textfield',
+                        //             name: 'reference_no',
+                        //             hidden: false,fieldLabel: 'Visa Application Details',
+                        //             readOnly: true,
+                        //             columnWidth: 0.9
+                        //         },
+                        //         {
+                        //             xtype: 'button',
+                        //             iconCls: 'x-fa fa-search',
+                        //             columnWidth: 0.1,
+                        //             hidden: false,
+                        //             text: 'Search',
+                        //             tooltip: 'Select Application',
+                        //             name: 'select_applications',
+                        //             childXtype: 'allapprovedvisaapplicationsgrid',
+                        //             winTitle:'Approved Visa Applications',
+                        //             winWidth:'70%',
+                        //             handler: 'showIEApplicationsSelectionList'
+                        //         }
+                        //     ]
+                        // }
                     ]
                 }
             ],
-        },{
-            xtype: 'licensepermitsproductsgrid',
-            title: 'Permit Products Details',
-         },  {
+        },
+        // {
+        //     xtype: 'licensepermitsproductsgrid',
+        //     title: 'Permit Products Details',
+        //  },
+          {
             xtype: 'importexportdocuploadsgrid',
-            title: 'Documents Submission'
-        },{
-            xtype: 'productscreeninggrid',
-            title: 'Import/Export Permit Prechecking'
-        },{
+            title: 'Document Upload'
+         },
+        //{
+        //     xtype: 'productscreeninggrid',
+        //     title: 'Import/Export Permit Prechecking'
+        // },
+        {
             xtype: 'appinvoicepaymentspanel'
            
-        },{
-            xtype: 'importexportapplicantdetailsfrm',
-            hidden: true,
-            title: 'APPLICANT DETAILS'
         },
         {
             xtype: 'hiddenfield',
@@ -224,36 +223,40 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Licence
                     step: 0,
                     iconCls: 'fa fa-university',
                     enableToggle: true,iconAlign: 'top',
-                    text: 'License Application Details',max_step:4,
+                    text: 'License Application Details',max_step:2,
                     action: 'quickNav', wizard: 'licenceapplicationreceivingpermitswizard',
                     handler: 'quickNavigation'
-                },{
+                },
+                // {
+                //     step: 1,
+                //     iconCls: 'fa fa-university',
+                //     enableToggle: true,iconAlign: 'top',
+                //     text: 'License Product Details',max_step:4,
+                //     action: 'quickNav', wizard: 'licenceapplicationreceivingpermitswizard',
+                //     handler: 'quickNavigation'
+                // }, 
+                {
                     step: 1,
-                    iconCls: 'fa fa-university',
-                    enableToggle: true,iconAlign: 'top',
-                    text: 'License Product Details',max_step:4,
-                    action: 'quickNav', wizard: 'licenceapplicationreceivingpermitswizard',
-                    handler: 'quickNavigation'
-                }, {
-                    step: 2,
                     iconCls: 'fa fa-upload',
-                    enableToggle: true,max_step: 4,
-                    text: 'License Documents Submission',
+                    enableToggle: true,max_step: 2,
+                    text: 'License Document Upload',
                     action: 'quickNav', iconAlign: 'top',
                     wizard: 'licenceapplicationreceivingpermitswizard',
                     handler: 'quickNavigation'
-                }, {
-                    step: 3,
-                    iconCls: 'fa fa-product-hunt',
-                    enableToggle: true,max_step: 4,
-                    text: 'License Prechecking Checklist',
-                    action: 'quickNav', iconAlign: 'top',
-                    wizard: 'licenceapplicationreceivingpermitswizard',
-                    handler: 'quickNavigation'
-                },{
-                    step: 4,
-                    iconCls: 'fa fa-money',
-                    enableToggle: true,max_step: 4,
+                }, 
+                // {
+                //     step: 3,
+                //     iconCls: 'fa fa-product-hunt',
+                //     enableToggle: true,max_step: 4,
+                //     text: 'License Prechecking Checklist',
+                //     action: 'quickNav', iconAlign: 'top',
+                //     wizard: 'licenceapplicationreceivingpermitswizard',
+                //     handler: 'quickNavigation'
+                // },
+                {
+                    step: 2,
+                    iconCls: 'fa fa-dollar',
+                    enableToggle: true,max_step: 2,
                     text: 'Invoice & Payment Details',
                     action: 'quickNav',iconAlign: 'top',
                     wizard: 'licenceapplicationreceivingpermitswizard',
@@ -275,7 +278,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Licence
                 '->',
                 {
                     text: 'Previous',
-                    ui: 'soft-purple',max_step:4,
+                    ui: 'soft-purple',max_step:2,
                     iconCls: 'fa fa-arrow-left',
                     bind: {
                         disabled: '{atBeginning}'
@@ -288,7 +291,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Licence
                     ui: 'soft-purple',
                     iconCls: 'fa fa-save',
                     name: 'save_btn', 
-                    form_panel:'#importexportdetailsfrm',
+                    form_panel:'#importexportlicencedetailsfrm',
                     action_url: 'saveImportPermittReceivingBaseDetails',
                     wizard: 'licenceapplicationreceivingpermitswizard',
                     handler: 'saveImporExportPermitReceivingBaseDetails'
@@ -301,7 +304,6 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Licence
                     storeID: 'drugproductregistrationstr',
                     table_name: 'tra_importexport_applications',
                     winWidth: '50%',
-                   hidden: true,
                     handler: 'showReceivingApplicationSubmissionWin'
                 },
                 {
@@ -309,7 +311,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Licence
                     ui: 'soft-purple',
                     reference: 'nextbutton',
                     iconCls: 'fa fa-arrow-right',
-                    max_step:4,
+                    max_step:2,
                     iconAlign: 'right',
                     bind: {
                         disabled: '{atEnd}'

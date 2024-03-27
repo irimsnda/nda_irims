@@ -148,6 +148,23 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialManagerAuditingGri
                         appDetailsReadOnly: 1,
                         handler: 'showClinicalTrialApplicationMoreDetails'
                     },{
+                        text: 'View  Online Assessment Tool',
+                        iconCls: 'x-fa fa-bars',
+                        appDetailsReadOnly: 1,
+                        winTitle: 'Online Assessment Tool Details',
+                        handler: 'showAssessmentToolDetails'
+                    },
+                    {
+                        text: 'View Assessment Comments',
+                        iconCls: 'x-fa fa-edit',
+                        childXtype: 'applicationprevcommentsgrid',
+                        winTitle: 'Assessment Comments',
+                        comment_type_id: 3,
+                        winWidth: '60%',
+                        name: 'prev_comments',
+                        handler: 'showApplicationComments',
+                        stores: '[]'
+                    },{
                         text: 'All Application Documents',
                         iconCls: 'x-fa fa-file',
                         tooltip: 'Application Documents',

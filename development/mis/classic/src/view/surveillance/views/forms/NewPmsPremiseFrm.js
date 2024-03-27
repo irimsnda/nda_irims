@@ -16,7 +16,12 @@ Ext.define('Admin.view.surveillance.views.forms.NewPmsPremiseFrm', {
     },{
     	xtype: 'hiddenfield',
     	name: 'section_id'
-    },
+    },{
+		xtype: "hiddenfield",
+		name: "_token",
+		value: token,
+
+	},
 	        {
 	            xtype: 'textfield',
 	            name: 'name',

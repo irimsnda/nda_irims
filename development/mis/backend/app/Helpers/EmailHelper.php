@@ -71,7 +71,7 @@ class EmailHelper
         $message = $template_info->body;
         ## Mail::to($email)->send(new ForgotPassword($subject, $message, $link));
         Mail::to($email)->send(new ForgotPassword($subject, $link, $link));
-        if (count(Mail::failures()) > 0) {
+        if (Mail::flushMacros ()){
             $res = array(
                 'success' => false,
                 'message' => 'Problem was encountered while sending email. Please try again later!!'
@@ -84,13 +84,13 @@ class EmailHelper
         }
         return $res;
     }
-    static function accountRegistrationEmail($template_id, $email, $password, $link, $vars)
+      static function accountRegistrationEmail($template_id, $email, $password, $link, $vars)
     {
         $template_info = self::getEmailTemplateInfo($template_id, $vars);
         $subject = $template_info->subject;
         $message = $template_info->body;
         Mail::to($email)->send(new AccountActivation($subject, $message, $email, $password, $link));
-        if (count(Mail::failures()) > 0) {
+        if (Mail::flushMacros ()){
             $res = array(
                 'success' => false,
                 'message' => 'Problem was encountered while sending email. Please try again later!!'
@@ -103,6 +103,26 @@ class EmailHelper
         }
         return $res;
     }
+
+    //  static function accountRegistrationEmail($template_id, $email, $password, $link, $vars)
+    // {
+    //     $template_info = self::getEmailTemplateInfo($template_id, $vars);
+    //     $subject = $template_info->subject;
+    //     $message = $template_info->body;
+    //     Mail::to($email)->send(new AccountActivation($subject, $message, $email, $password, $link));
+    //     if (!Mail::send($email)) {
+    //          $res = array(
+    //             'success' => false,
+    //             'message' => 'Problem was encountered while sending email. Please try again later!!'
+    //         );
+    //     } else {
+    //         $res = array(
+    //             'success' => true,
+    //             'message' => 'Account registration instructions sent to your email address!!'
+    //         );
+    //     }
+    //     return $res;
+    // }
 
     static function applicationInvoiceEmail($template_id, $email, $vars, $report, $attachment_name)
     {

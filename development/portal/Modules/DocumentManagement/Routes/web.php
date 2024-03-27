@@ -23,7 +23,8 @@ Route::group(['middleware' => 'api', 'prefix' => 'documentmanagement'], function
     Route::get('getApplicationDocploads', 'DocumentManagementController@getApplicationDocploads');
     Route::get('getUploadedApplicationDoc', 'DocumentManagementController@getUploadedApplicationDoc');
     
-    
+        Route::get('getQualitySummaryDocumentRequirements', 'DocumentManagementController@getQualitySummaryDocumentRequirements');
+
     Route::get('getDocumentRequirements', 'DocumentManagementController@getDocumentRequirements');
     Route::get('getProcessApplicationDocploads', 'DocumentManagementController@getProcessApplicationDocploads');
 
@@ -37,6 +38,9 @@ Route::group(['middleware' => 'api', 'prefix' => 'documentmanagement'], function
     Route::get('getApplicationDocumentPreviousVersions', 'DocumentManagementController@getApplicationDocumentPreviousVersions');
 	Route::get('getUnstructuredApplicationDocploads', 'DocumentManagementController@getUnstructuredApplicationDocploads');
 	Route::get('onLoadOnlineProductImagesUploads', 'DocumentManagementController@onLoadOnlineProductImagesUploads');
+
+    Route::get('onLoadOnlineQualiySummaryUploads', 'DocumentManagementController@onLoadOnlineQualiySummaryUploads');
+    
 	Route::post('uploadProductImages', 'DocumentManagementController@uploadProductImages');
     Route::get('onLoadProductImagesRequirements', 'DocumentManagementController@onLoadProductImagesRequirements');
     

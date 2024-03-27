@@ -29,7 +29,8 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
         }
     },
     selModel: {
-        selType: 'checkboxmodel'
+        selType: 'checkboxmodel',
+        mode: 'MULTI'
     },
     dockedItems: [
         {
@@ -50,9 +51,10 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
                 '->',
                 {
                     xtype: 'button',
-                    text: 'Submit Application(s)',
+                    text: 'Submit Application(s)3',
                     iconCls: 'x-fa fa-check',
                     ui: 'soft-purple',
+                    isApprovalSubmission:1,
                     name: 'submit_selected',
                     disabled: true,
                     storeID: 'foodpremiseregistrationstr',
@@ -71,7 +73,18 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
      tbar: [{
         xtype: 'tbspacer',
         width: 5
-     }, 
+     },{
+            text:'Batch Approval Recommendation',
+            name:'batch_approval_recommendation',
+            disabled: true,
+            table_name: 'tra_premises_applications',
+            stores: '["approvaldecisionsstr"]',
+            handler:'getBatPremisechApplicationApprovalDetails',
+            approval_frm: 'batchpremiseapprovalrecommfrm',
+            iconCls: 'x-fa fa-chevron-circle-up',
+            margin: 5
+        
+      }, 
    {
         xtype: 'combo',
         emptyText: 'DISTRICT',
@@ -252,14 +265,15 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
                 selCount = grid.getSelectionModel().getCount();
             if (selCount > 0) {
                 grid.down('button[name=submit_selected]').setDisabled(false);
+                grid.down('button[name=batch_approval_recommendation]').setDisabled(false);
             }
         },
         beforeselect: function (sel, record, index, eOpts) {
             var recommendation_id = record.get('recommendation_id');
             if (recommendation_id > 0) {
-                return true;
-            }else{
-                return false;
+               // return true;
+            } else {
+             //   return false;
             }
         },
         deselect: function (sel, record, index, eOpts) {
@@ -267,9 +281,10 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
                 selCount = grid.getSelectionModel().getCount();
             if (selCount < 1) {
                 grid.down('button[name=submit_selected]').setDisabled(true);
+                grid.down('button[name=batch_approval_recommendation]').setDisabled(true);
             }
-        }
-    },
+         }
+     },
     columns: [{
         xtype: 'widgetcolumn',
         width: 120,
@@ -282,7 +297,8 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
             text: 'Print Approvals',
             iconCls: 'x-fa fa-certificate',
             backend_function: 'printPremiseRegistrationCertificate',
-            handler: 'printColumnPremisePermit',
+            //handler: 'printColumnPremisePermit',
+            handler: 'printTCPDFColumnPremisePermit',
             bind: {
                 disabled: '{record.decision_id <= 0 || record.decision_id === null}'
                 //disabled: '{record.decision_id !== 1}'
@@ -295,6 +311,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
         flex: 1
     },{
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'reference_no',
         text: 'Application No',
         flex: 1
@@ -306,6 +323,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'region_name',
+        hidden:true,
         text: 'Region/Province Name',
         flex: 1
     }, {
@@ -316,10 +334,12 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'zone_name',
+        hidden:true,
         text: 'Zone Name',
         flex: 1
     }, {
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'physical_address',
         text: 'Physical Address',
         flex: 1
@@ -330,11 +350,22 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
         text: 'Date Received',
         flex: 1
     },{
-        xtype: 'gridcolumn',
-        dataIndex: 'recommendation',
-        text: 'Recommendation',
-        flex: 1
-    }, {
+        header: 'Recomendation',
+        dataIndex: 'chiefregional_inspector_recommendation_id',
+        flex: 1,
+        renderer: function (value, metaData,record) {
+            var chiefregional_inspector_recommendation_id = record.get('chiefregional_inspector_recommendation_id')
+            if (chiefregional_inspector_recommendation_id==1 || chiefregional_inspector_recommendation_id===1) {
+                metaData.tdStyle = 'color:white;background-color:green';
+                return 'Recommended';
+            }else if(chiefregional_inspector_recommendation_id==2 || chiefregional_inspector_recommendation_id===2){
+              metaData.tdStyle = 'color:white;background-color:red';
+              return 'Not Recommended';
+          }else{
+            return 'Missing Recommendation';
+           }
+        }
+      }, {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
         text: 'Status',
@@ -347,7 +378,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
             textAlign: 'left',
             xtype: 'button',
             ui: 'soft-red',
-            text: 'Recommendation',
+            text: 'Approve/Reject',
             iconCls: 'x-fa fa-chevron-circle-up',
             handler: 'getApplicationApprovalDetails',
             stores: '["approvaldecisionsstr"]',
@@ -365,7 +396,11 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
             ui: 'gray',
             menu: {
                 xtype: 'menu',
-                items: [
+                items: [{
+                            text: 'Request for Additional Information',
+                            iconCls: 'x-fa fa-file-pdf-o',
+                            handler: 'showApplicationQueries'
+                        },
                     // {
                     //     text: 'Recommendation',
                     //     iconCls: 'x-fa fa-chevron-circle-up',
@@ -378,7 +413,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
                         iconCls: 'x-fa fa-exchange',
                         menu: {
                             xtype: 'menu',
-                            items: [
+                            items: [ 
                                 
                                 {
                                     text: 'Inspection Report',
@@ -430,6 +465,16 @@ Ext.define('Admin.view.premiseregistration.views.grids.ApprovalsGrid', {
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 1,
                         handler: 'showPremApplicationMoreDetails'
+                    },{
+                        xtype: 'button',
+                        text: 'Return Back Application(s)',
+                        iconCls: 'x-fa fa-check',
+                        ui: 'soft-green',
+                        storeID: 'productManagerMeetingStr',
+                        table_name: 'tra_premises_applications',
+                        action: 'process_returnsubmission_btn',
+                        winWidth: '50%',
+                        toaster: 0
                     },
                     // {
                     //     text: 'Print',

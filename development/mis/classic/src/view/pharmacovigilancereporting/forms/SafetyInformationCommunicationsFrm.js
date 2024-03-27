@@ -4,6 +4,7 @@
 Ext.define('Admin.view.pharmacovigilancereporting.views.forms.SafetyInformationCommunicationsFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'safetyinformationcommunicationsfrm',
+    scrollable:true,
     layout: 'column',
     defaults: {
         columnWidth: 0.33,

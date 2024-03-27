@@ -89,6 +89,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.CtrRegistryInterventionsFrm', {
             }
         },{
             xtype:'textarea',
+            grow: true, 
+            growMax: 200, 
             fieldLabel:'Intervention Description ',
             name:'intervention_description'
         }

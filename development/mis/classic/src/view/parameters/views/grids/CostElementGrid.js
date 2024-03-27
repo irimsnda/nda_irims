@@ -116,8 +116,14 @@ Ext.define('Admin.view.parameters.views.grids.CostElementGrid', {
         tdCls: 'wrap'
     },{
         xtype: 'gridcolumn',
+        dataIndex: 'revenue_description',
+        text: 'Revenue Description',
+        width: 200,
+        tdCls: 'wrap'
+    },{
+        xtype: 'gridcolumn',
         dataIndex: 'revenue_code',
-        text: 'Revenue Code',
+        text: 'Revenue Account',
         width: 200,
         tdCls: 'wrap'
     },{

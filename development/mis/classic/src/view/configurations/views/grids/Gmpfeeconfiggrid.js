@@ -178,6 +178,7 @@ Ext.define('Admin.view.configurations.views.grids.Gmpfeeconfiggrid', {
         xtype: 'gridcolumn',
         dataIndex: 'inspection_type',
         text: 'Inspection Type',
+        hidden:true,
         tdCls: 'wrap',
         flex:1
     },{
@@ -186,7 +187,31 @@ Ext.define('Admin.view.configurations.views.grids.Gmpfeeconfiggrid', {
         text: 'Application Fee Type',
         tdCls: 'wrap',
         flex:1
-    },{
+    },
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'inspection_activities',
+        text: 'Inpection Manufacturing Activities',
+        tdCls: 'wrap',
+        flex:1
+    },
+
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'intermediate_manufacturing_activity',
+        text: 'Manufacturing Activity(s)',
+        tdCls: 'wrap',
+        flex:1
+    },
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'intermediate_manufacturing_activity',
+        text: 'Manufacturing Activity(s)',
+        tdCls: 'wrap',
+        flex:1
+    },
+    
+    {
         xtype: 'gridcolumn',
         dataIndex: 'fee_type',
         text: 'Fee Type',

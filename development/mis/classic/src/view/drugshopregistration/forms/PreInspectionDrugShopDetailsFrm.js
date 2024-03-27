@@ -1,4 +1,4 @@
-
+                                                                                                                                                                                                                               
 Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDetailsFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'preinspectiondrugshopdetailsfrm',
@@ -75,7 +75,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
     },{
             xtype:'fieldset',
             columnWidth: 1,
-            title: 'Drug Shop Details',
+            title: 'Licensed Seller Details',
             collapsible: true,
             defaults: {
                 labelAlign: 'top',
@@ -122,26 +122,45 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                 items: [
                     {
                         xtype: 'textfield',
-                        name: 'name',
+                        name: 'company_registration_no',   
                         columnWidth: 0.9,
-                        allowBlank: false,
-                        fieldLabel: 'Name of the Business'
+                        allowBlank: true,
+                        fieldLabel: 'Business/Company Registration No'
                     },
                     {
                         xtype: 'button',
                         iconCls: 'x-fa fa-search',
-                        disabled: true,
+                        disabled: false,
+                        disabled:true,
                         columnWidth: 0.1,
+                        handler: 'doSearchBussiness',
                         tooltip: 'Search',
-                        action: 'search_premise',
-                        childXtype: 'premiseselectiongrid',
-                        winTitle: 'Premises Selection List',
-                        winWidth: '90%',
                         margin: '30 0 0 0'
                     }
                 ]
             },
+             
+             {
+                xtype: 'textfield',
+                name: 'name',
+                readOnly:false,
+                fieldLabel: 'Name of the Business',
+                allowBlank: false
+            },  
             {
+            xtype: 'datefield',
+            name: 'registration_date',
+            fieldLabel: 'Business Registration Date',
+            submitFormat: 'Y-m-d',
+            format: 'd/m/Y',
+            readOnly:false,
+            //format: 'Y-m-d H:i:s', // Use the correct format here
+            allowBlank: true,
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+            maxValue: new Date() 
+           },
+
+           {
                 xtype: 'fieldcontainer',
                 layout: 'column',
                 defaults: {
@@ -152,7 +171,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                         xtype: 'textfield',
                         name: 'tpin_no',
                         columnWidth: 0.9,
-                        allowBlank: false,
+                        allowBlank: true,
                         fieldLabel: 'Tin No'
                     },
                     {
@@ -169,24 +188,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                         margin: '30 0 0 0'
                     }
                 ]
-            }, 
-             {
-                xtype: 'textfield',
-                name: 'company_registration_no',
-                fieldLabel: 'Company Registration',
-                allowBlank: true
-            },  
-            {
-            xtype: 'datefield',
-            name: 'registration_date',
-            fieldLabel: 'Business Registration Date',
-            submitFormat: 'Y-m-d',
-            format: 'd/m/Y',
-            //format: 'Y-m-d H:i:s', // Use the correct format here
-            allowBlank: true,
-            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
-            maxValue: new Date() 
-           },
+            },
            
             
                {
@@ -333,16 +335,16 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                     change: function(combo, newVal, oldValue, eopts) {
                         if(newVal == 1){
                             var form = combo.up('form'),
-                                offence = form.down('htmleditor[name=cancelling_reason]');
-                            offence.setVisible(true);
-                            offence.allowBlank = false;
-                            offence.validate();
+                                cancelling_reason = form.down('htmleditor[name=cancelling_reason]');
+                            cancelling_reason.setVisible(true);
+                            cancelling_reason.allowBlank = false;
+                            cancelling_reason.validate();
                         }else{
                             var form = combo.up('form'),
-                                offence = form.down('htmleditor[name=cancelling_reason]');
-                            offence.setVisible(false);
-                            offence.allowBlank = true;
-                            offence.validate();
+                                cancelling_reason = form.down('htmleditor[name=cancelling_reason]');
+                            cancelling_reason.setVisible(false);
+                            cancelling_reason.allowBlank = true;
+                            cancelling_reason.validate();
                         }
                         
                     }
@@ -386,16 +388,16 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                     change: function(combo, newVal, oldValue, eopts) {
                         if(newVal == 1){
                             var form = combo.up('form'),
-                                offence = form.down('htmleditor[name=working_inotherinstitutions]');
-                            offence.setVisible(true);
-                            offence.allowBlank = false;
-                            offence.validate();
+                                working_inotherinstitutions = form.down('htmleditor[name=working_inotherinstitutions]');
+                            working_inotherinstitutions.setVisible(true);
+                            working_inotherinstitutions.allowBlank = false;
+                            working_inotherinstitutions.validate();
                         }else{
                             var form = combo.up('form'),
-                                offence = form.down('htmleditor[name=working_inotherinstitutions]');
-                            offence.setVisible(false);
-                            offence.allowBlank = true;
-                            offence.validate();
+                                working_inotherinstitutions = form.down('htmleditor[name=working_inotherinstitutions]');
+                            working_inotherinstitutions.setVisible(false);
+                            working_inotherinstitutions.allowBlank = true;
+                            working_inotherinstitutions.validate();
                         }
                         
                     }
@@ -411,10 +413,10 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                 allowBlank: true
             }]
         },
-        {
+             {
                 xtype:'fieldset',
                 columnWidth: 1,
-                title: "Details of the Applicant (Full time in Charge)",
+                title: "Details of Full time in Charge",
                 collapsible: true,
                 defaults: {
                     labelAlign: 'top',
@@ -428,12 +430,86 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                 layout: 'column',
                   items:[
 
-          
-
+          //          {
+          //               xtype: 'combo',
+          //               fieldLabel: 'Is applicant same as the full time Incharge?',
+          //               name: 'has_incharge',
+          //               columnWidth: 1,
+          //               allowBlank: false,
+          //               valueField: 'id',
+          //               displayField: 'name',
+          //               forceSelection: true,
+          //               queryMode: 'local',
+          //               emptyText: 'Select',
+          //               listeners: {
+          //                   beforerender: {
+          //                       fn: 'setConfigCombosStore',
+          //                       config: {
+          //                           pageSize: 1000,
+          //                           proxy: {
+          //                               url: 'commonparam/getCommonParamFromTable',
+          //                               extraParams: {
+          //                                   table_name: 'par_confirmations'
+          //                               }
+          //                           }
+          //                       },
+          //                       isLoad: true
+          //                   },
+          //                   change: function(combo, newVal, oldValue, eopts) {
+          //                       if(newVal == 1){
+          //                           var form = combo.up('form'),
+          //                           nin_container= form.down('fieldcontainer[name=nin_container]');
+          //                           nin_no = form.down('textfield[name=nin_no]');
+          //                           nin_container.setVisible(false);
+          //                           nin_no.allowBlank = true;
+          //                           nin_no.validate();
+          //                           incharge_name= form.down('textfield[name=incharge_name]');
+          //                           incharge_name.setVisible(false);
+          //                           incharge_qualification_id= form.down('combo[name=incharge_qualification_id]');
+          //                           incharge_qualification_id.setVisible(false);
+          //                           incharge_telephone_no= form.down('textfield[name=incharge_telephone_no]');
+          //                           incharge_telephone_no.setVisible(false);
+          //                           incharge_email_address= form.down('textfield[name=incharge_email_address]');
+          //                           incharge_email_address.setVisible(false);
+          //                           incharge_country_id= form.down('combo[name=incharge_country_id]');
+          //                           incharge_country_id.setVisible(false);
+          //                           incharge_district_id= form.down('combo[name=incharge_district_id]');
+          //                           incharge_district_id.setVisible(false);
+          //                           incharge_region_id= form.down('combo[name=incharge_region_id]');
+          //                           incharge_region_id.setVisible(false);
+          //                       }else{
+          //                           var form = combo.up('form'),
+          //                           nin_container= form.down('fieldcontainer[name=nin_container]');
+          //                           nin_no = form.down('textfield[name=nin_no]');
+          //                           nin_container.setVisible(true);
+          //                           nin_no.allowBlank = false;
+          //                           nin_no.validate();
+          //                           incharge_name= form.down('textfield[name=incharge_name]');
+          //                           incharge_name.setVisible(true);
+          //                           incharge_qualification_id= form.down('combo[name=incharge_qualification_id]');
+          //                           incharge_qualification_id.setVisible(true);
+          //                           incharge_telephone_no= form.down('textfield[name=incharge_telephone_no]');
+          //                           incharge_telephone_no.setVisible(true);
+          //                           incharge_email_address= form.down('textfield[name=incharge_email_address]');
+          //                           incharge_email_address.setVisible(true);
+          //                           incharge_country_id= form.down('combo[name=incharge_country_id]');
+          //                           incharge_country_id.setVisible(true);
+          //                           incharge_district_id= form.down('combo[name=incharge_district_id]');
+          //                           incharge_district_id.setVisible(true);
+          //                           incharge_region_id= form.down('combo[name=incharge_region_id]');
+          //                           incharge_region_id.setVisible(true);
+          //                       }
+                                
+          //                   }
+                           
+          //               }
+          //           },
 
             {
                 xtype: 'fieldcontainer',
                 layout: 'column',
+                //hidden:true,
+                name:'nin_container',
                 defaults: {
                     labelAlign: 'top'
                 },
@@ -442,7 +518,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                         xtype: 'textfield',
                         name: 'nin_no',
                         columnWidth: 0.9,
-                        allowBlank: false,
+                        allowBlank: true,
                         fieldLabel: 'NIN'
                     },
                     {
@@ -452,7 +528,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                         columnWidth: 0.1,
                         tooltip: 'Search',
                         childXtype: 'premiseinchargeselectiongrid',
-                        winTitle: 'Drug Shop Incharge',
+                        winTitle: 'Incharge',
                         winWidth: '90%',
                         handlerFn: 'loadSelectedPremiseIncharge',
                         handler: 'showPremiseInchargeSelectionGrid',
@@ -464,7 +540,8 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
              {
                 xtype: 'textfield',
                 name: 'incharge_name',
-                allowBlank:false,
+                allowBlank:true,
+                 //hidden:true,
                 fieldLabel: 'Full Names',
                 readOnly: true
             },
@@ -472,8 +549,9 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
              {
                 xtype: 'combo',
                 name: 'incharge_qualification_id',
-                fieldLabel: 'Qualification',
+                fieldLabel: 'Level of Education',
                 forceSelection: true,
+               // hidden:true,
                 queryMode: 'local',
                 allowBlank: true,
                 readOnly: true,
@@ -500,6 +578,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                 xtype: 'textfield',
                 name: 'incharge_telephone_no',
                 allowBlank:true,
+                //hidden:true,
                 fieldLabel: 'Telephone No',
                 readOnly: true
             },
@@ -548,6 +627,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                 xtype: 'textfield',
                 name: 'incharge_email_address',
                 allowBlank:true,
+               // hidden:true,
                 fieldLabel: 'Email Address',
                 readOnly: true
               },
@@ -597,6 +677,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                 fieldLabel: 'Country',
                 name: 'incharge_country_id',
                 allowBlank:true,
+                //hidden:true,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
@@ -626,6 +707,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                 fieldLabel: 'District',
                 name: 'incharge_district_id',
                 allowBlank:true,
+               // hidden:true,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
@@ -661,6 +743,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                 name: 'incharge_region_id',
                 //store: 'regionsstr',
                 allowBlank:true,
+                //hidden:true,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
@@ -729,10 +812,11 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
             },
              {
                 xtype: 'combo',
-                fieldLabel: 'DISTRICT',
+                fieldLabel: 'District',
                 name: 'district_id',
                 //store: 'regionsstr',
-                allowBlank:true,
+                readOnly:false,
+                allowBlank:false,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
@@ -754,11 +838,13 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                     change: function (cmbo, newVal) {
                         var form = cmbo.up('form'),
                         regionStore = form.down('combo[name=region_id]').getStore(),
+                        countyStore = form.down('combo[name=county_id]').getStore(),
                         filterObj = {district_id: newVal},
                         filterStr = JSON.stringify(filterObj);
                         regionStore.removeAll();
                         regionStore.load({params: {filters: filterStr}});
-                        
+                        countyStore.removeAll();
+                        countyStore.load({params: {filters: filterStr}});
                     }
                 },
                 triggers: {
@@ -773,10 +859,11 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
 
              {
                 xtype: 'combo',
-                fieldLabel: 'REGION',
+                fieldLabel: 'Region',
                 name: 'region_id',
                 //store: 'regionsstr',
-                allowBlank:true,
+                readOnly:false,
+                allowBlank:false,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
@@ -806,65 +893,178 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                 }
             },
 
-            {
+             {
                 xtype: 'combo',
                 fieldLabel: 'County/Division',
                 name: 'county_id',
-                allowBlank: true,
+                readOnly:false,
+                allowBlank:false,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
                 displayField: 'name',
                 listeners: {
-                    beforerender: {
-                        fn: 'setParamCombosStore',
-                        config: {
-                            pageSize: 10000,
-                            proxy: {
-                                url: 'parameters/county'
-                            }
-                        },
-                        isLoad: true
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_county'
+                                }
+                               }
+                            },
+                         isLoad: false
                     },
                     change: function (cmbo, newVal) {
                         var form = cmbo.up('form'),
-                            districtStore = form.down('combo[name=sub_county_id]').getStore(),
-                            filterObj = {region_id: newVal},
-                            filterStr = JSON.stringify(filterObj);
-                        districtStore.removeAll();
-                        districtStore.load({params: {filter: filterStr}});
+                        subCountyStore = form.down('combo[name=sub_county_id]').getStore(),
+                        filterObj = {county_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        subCountyStore.removeAll();
+                        subCountyStore.load({params: {filters: filterStr}});
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+            },
+
+            {
+                xtype: 'combo',
+                fieldLabel: 'Sub County',
+                name: 'sub_county_id',
+                readOnly:false,
+                allowBlank:true,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_sub_county'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    },
+                    change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        parishStore = form.down('combo[name=parish_id]').getStore(),
+                        filterObj = {sub_county_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        parishStore.removeAll();
+                        parishStore.load({params: {filters: filterStr}});
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
                     }
                 }
             },
             {
                 xtype: 'combo',
-                fieldLabel: 'Sub County',
-                name: 'sub_county_id',
-                allowBlank: true,
+                fieldLabel: 'Parish',
+                name: 'parish_id',
+                readOnly:false,
+                allowBlank:true,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
                 displayField: 'name',
                 listeners: {
-                    beforerender: {
-                        fn: 'setParamCombosStore',
-                        config: {
-                            pageSize: 10000,
-                            proxy: {
-                                url: 'parameters/subcounty'
-                            }
-                        },
-                        isLoad: true
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_parishes'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    },
+                     change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        villageStore = form.down('combo[name=village_id]').getStore(),
+                        filterObj = {parish_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        villageStore.removeAll();
+                        villageStore.load({params: {filters: filterStr}});
                     }
-                  
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
                 }
-            }, 
-           {
-                xtype: 'textfield',
-                fieldLabel: 'village',
+            },
+
+
+             {
+                xtype: 'combo',
+                fieldLabel: 'Village',
+                name: 'village_id',
+                readOnly:false,
                 allowBlank:true,
-                name: 'village'
-            },{
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                            beforerender: {
+                                fn: 'setParamCombosStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_villages'
+                                }
+                               }
+                            },
+                         isLoad: false
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+            },
+
+           // {
+           //      xtype: 'textfield',
+           //      fieldLabel: 'village',
+           //      allowBlank:true,
+           //      readOnly:true,
+           //      name: 'village'
+           //  },
+            {
                 xtype: 'textfield',
                 name: 'street',
                 allowBlank:false,
@@ -878,25 +1078,56 @@ Ext.define('Admin.view.drugshopregistration.views.forms.PreInspectionDrugShopDet
                 name: 'physical_address'
             },
             {
-                xtype:'fieldcontainer',
+                xtype: 'fieldcontainer',
+                columnWidth: 1,
                 layout: {
-                    type: 'column'
+                    type: 'column',
                 },
-                defaults:{
+                defaults: {
                     columnWidth: 0.49,
                     labelAlign: 'top'
                 },
-                items:[
+                items: [
                     {
                         xtype: 'textfield',
                         fieldLabel: 'Latitude',
                         name: 'latitude',
                         allowBlank: false
-                    },{
+                    },
+                    {
                         xtype: 'textfield',
                         fieldLabel: 'Longitude',
                         name: 'longitude',
                         allowBlank: false
+                    },
+                    {
+                        xtype: 'button',
+                        columnWidth: 0.3,
+                        name:'capture_location',
+                        margin:'10 0 0 0',
+                        iconCls: 'fa fa-location-arrow',
+                        iconAlign: 'right', 
+                        text: 'Capture Location',
+                        handler: function () {
+                        
+                            if ("geolocation" in navigator) {
+                                navigator.geolocation.getCurrentPosition(
+                                    function (position) {
+                                        var latitude = position.coords.latitude;
+                                        var longitude = position.coords.longitude;
+                                        // Populate the textfields
+                                        Ext.ComponentQuery.query('textfield[name=latitude]')[0].setValue(latitude);
+                                        Ext.ComponentQuery.query('textfield[name=longitude]')[0].setValue(longitude);
+                                    },
+                                    function (error) {
+                                        Ext.Msg.alert("Geolocation Error", error);
+                                    }
+                                );
+                            } else {
+                                 Ext.Msg.alert("Geolocation Error", "Geolocation not available");
+                                
+                            }
+                        }
                     }
                 ]
             } 

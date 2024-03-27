@@ -35,7 +35,7 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.grids.PromotionAd
             ptype: 'gridexporter'
         }
     ],
-    export_title: 'Evaluation comments',
+    export_title: 'Asssesment comments',
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '100%',

@@ -9,9 +9,10 @@ Ext.define('Admin.view.commoninterfaces.MultiTransitionAppOtherDetails', {
     controller:'commoninterfacesVctr',
     layout: 'border',
     tbar:[
+        // {
+        //     xtype: 'exportbtn'
+        // },
         {
-            xtype: 'exportbtn'
-        },{
 			xtype:'hiddenfield',
 			name:'application_code'
 			

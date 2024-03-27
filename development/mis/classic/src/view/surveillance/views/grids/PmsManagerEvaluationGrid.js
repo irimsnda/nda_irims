@@ -121,6 +121,7 @@ Ext.define('Admin.view.surveillance.views.grids.PmsManagerEvaluationGrid', {
         dataIndex: 'zone',
         text: 'Zone',
         flex: 1,
+        hidden: true,
         tdCls: 'wrap'
     },{
         xtype: 'gridcolumn',

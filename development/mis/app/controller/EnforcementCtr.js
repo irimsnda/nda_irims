@@ -2348,10 +2348,11 @@ Ext.define('Admin.controller.EnforcementCtr', {
             mainTabPanel = me.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
             applicationsGrid = activeTab.down('#application_list');
+            console.log(activeTab);
         this.prepareEnforcementMeetingDetailsGeneric(activeTab, applicationsGrid, 0);
     },
     prepareEnforcementMeetingDetailsGeneric: function (activeTab, applicationsGrid, isReadOnly) {
-        Ext.getBody().mask('Please wait...');
+        Ext.getBody().mask('Please wait...'); 
         var me = this,
             meetingDetailsFrm = activeTab.down('form'),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
@@ -2362,6 +2363,8 @@ Ext.define('Admin.controller.EnforcementCtr', {
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             sm = applicationsGrid.getSelectionModel();
         participantsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+
+
         if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
             meetingDetailsFrm.getForm().getFields().each(function (field) {
                 field.setReadOnly(true);

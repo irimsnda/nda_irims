@@ -46,7 +46,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
             }, {
                 xtype: 'displayfield',
                 name: 'workflow_stage',
-                fieldLabel: 'Workflow Stage',
+                fieldLabel: 'Application Status',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
@@ -131,7 +131,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     collapsible: true,
                     title: 'APPLICANT DETAILS'
                 },{
-                    xtype: 'onlineimportexportlicencedetailsfrm',
+                    xtype: 'onlineimportexportnonlicencebusinessdetailsfrm',
                     autoScroll: true,
                     collapsible: true,
                     title: 'Application Details', 
@@ -141,8 +141,8 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     title: 'Sender/Receiver Details',
                 },
                 {
-                    xtype: 'importexportpremisesfrm',collapsible: true,
-                    hidden: true,
+                    xtype: 'onlineimportexportnonlicencebusinessdetailsfrm',collapsible: true,
+                   // hidden: true,
                     title: 'Business Details',
                 }],
                 bbar:[{
@@ -320,7 +320,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
              }, 
 
                 {
-                    text: 'Recommend',
+                    text: 'Submit To Director',
                     ui: 'soft-purple',
                     hidden: true,
                     iconCls: 'fa fa-check',

@@ -111,7 +111,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
     ],
     items: [
         {
-            title: 'Product Application & 1st Assessment Uploads',
+            //title: 'Product Application & 1st Assessment Uploads',
             region: 'center',
             xtype:'tabpanel', 
             autoScroll: true,
@@ -122,16 +122,19 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                 itemId:'preview_productdetails',
                 title: 'Preview Product Details'
             },{
-                title: '1st Assessment Report Uploads',
+                title: 'Assessment Report',
                 itemId:'evaluation_panel',
                 xtype: 'tabpanel',
                 layout:'fit', margin:5,
                 items:[{
-                    xtype: 'qualitysummaryReportevaluationGrid',
-                    title: '1st Assessment Evaluation Report',
+                    xtype: 'productqualityassessmentDocUploadsGrid',
+                    title: 'Quality Overall Summary Dossier',
+                },{
+                    xtype: 'productbioequivalencetrialinformationDocUploadsGrid',
+                    title: 'Bioequivalence Trial Information'
                 },{
                     xtype: 'productEvaluationUploadsGrid',
-                    title: '1st Assessment Report Uploads',
+                    title: 'Assessment Report Uploads',
                 },{
                     xtype: 'productscreeninggrid',
                     title: 'Application Screening & Recommendation',

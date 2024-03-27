@@ -5,6 +5,8 @@ import { SpinnerVisibilityService } from 'ng-http-loader';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { AppSettings } from 'src/app/app-settings';
+import { ConfigurationsService } from 'src/app/services/shared/configurations.service';
+
 @Component({
   selector: 'app-appheader',
   templateUrl: './appheader.component.html',
@@ -18,13 +20,15 @@ export class AppheaderComponent implements OnInit {
   email_address:string;
   is_confirmedUser:number;
   changePasswordFrm:FormGroup;
+  irimshelpdesk_url:string = AppSettings.irimshelpdesk_url;
   response:any;
   ischangePasswordModal: boolean=false;
   checkPasswordChangeOption: boolean=true;
   assets_url = AppSettings.assets_url;
+  isDocumentPreviewDownloadwin:boolean;
+  document_previewurl:any;
 
-
-  constructor(private cdr: ChangeDetectorRef,private toastr:ToastrService, private spinner: SpinnerVisibilityService,private authService:AuthService,public modalService: NgxSmartModalService,) { }
+  constructor(private cdr: ChangeDetectorRef,private toastr:ToastrService, private spinner: SpinnerVisibilityService,private authService:AuthService,public modalService: NgxSmartModalService,private configService:ConfigurationsService) { }
   
   ngOnInit() {
     //the modal form
@@ -53,6 +57,14 @@ export class AppheaderComponent implements OnInit {
         this.checkPasswordChangeOption = false;
 
     }this.cdr.detectChanges();
+  }
+
+  funcOpenIrimsHelpdesk(){
+    this.document_previewurl  = this.configService.getSafeUrl(this.irimshelpdesk_url);
+    this.isDocumentPreviewDownloadwin = true;
+  }
+ funcpopWidth(percentage_width) {
+    return window.innerWidth * percentage_width/100;
   }
   onFuncChangePassword(){
     if (this.changePasswordFrm.invalid) {

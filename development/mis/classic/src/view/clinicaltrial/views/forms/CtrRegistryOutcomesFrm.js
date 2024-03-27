@@ -48,10 +48,14 @@ Ext.define('Admin.view.clinicaltrial.views.forms.CtrRegistryOutcomesFrm', {
         },{
             fieldLabel:'Time Point',
             name:'time_point',
+            grow: true, 
+            growMax: 200, 
             xtype:'textarea'
 
         },{
             xtype:'textarea',
+            grow: true, 
+            growMax: 200, 
             fieldLabel:'Outcome ',
             name:'outcome'
         }

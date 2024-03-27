@@ -60,7 +60,7 @@ Ext.define('Admin.view.commoninterfaces.grids.ApplicationDocUploadsGrid', {
         margin:5,
         childXtype: 'appresumabledocuploadsfrm',
         newTab: 'applicationDocUploadsFrm',
-        winWidth: '35%',
+        winWidth: '40%',
         show_assessor: true,
         stores: '["applicationDocumentsUploadsStr"]',
         storeID: 'applicationDocumentsUploadsStr',

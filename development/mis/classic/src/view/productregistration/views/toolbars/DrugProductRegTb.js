@@ -38,12 +38,13 @@ Ext.define('Admin.view.productregistration.views.toolbars.DrugProductRegTb', {
                     {
                         text: 'Product Renewal',
                         iconCls: 'x-fa fa-check',
+                        hidden:true,
                         handler: 'showRenAltProductRegistration',
                         app_type: 8
                     },
                     '-',
                     {
-                        text: 'Product Alteration',
+                        text: 'Product Variation',
                         iconCls: 'x-fa fa-check',
                         handler: 'showRenAltProductRegistration',
                         app_type: 9

@@ -4,6 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=10, user-scalable=yes">
     <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/org-logo.jpg') }}"/>
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
 
     <link rel="stylesheet" type="text/css" href="{{asset('resources/css/toastr.css')}}"/>

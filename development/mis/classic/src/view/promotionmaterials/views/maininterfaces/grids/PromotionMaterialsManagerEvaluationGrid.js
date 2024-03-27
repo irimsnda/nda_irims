@@ -108,85 +108,105 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.grids.PromotionMa
             xtype: 'gridcolumn',
             dataIndex: 'tracking_no',
             text: 'Tracking Number',
-            flex: 1
+             flex: 1,
+            tdCls: 'wrap-text'
         },
         {
             xtype: 'gridcolumn',
             dataIndex: 'reference_no',
             text: 'Ref Number',
-            flex: 1
+             flex: 1,
+            tdCls: 'wrap-text'
         },  {
             xtype: 'gridcolumn',
             text: 'From',
+             hidden:true,
             dataIndex: 'from_user',
-            flex: 1,
-            tdCls: 'wrap'
+             flex: 1,
+            tdCls: 'wrap-text'
         },
         {
             xtype: 'gridcolumn',
             text: 'To',
+             hidden:true,
             dataIndex: 'to_user',
-            flex: 1,
-            tdCls: 'wrap'
+             flex: 1,
+            tdCls: 'wrap-text'
         }, {
             xtype: 'gridcolumn',
             dataIndex: 'applicant_name',
             text: 'Applicant',
-            flex: 1
+            hidden:true,
+             flex: 1,
+            tdCls: 'wrap-text'
         },{
             xtype: 'gridcolumn',
             dataIndex: 'applicant_name',
             text: 'Applicant',
-            flex: 1
+             flex: 1,
+            tdCls: 'wrap-text'
         },
     
         {
             xtype: 'gridcolumn',
             dataIndex: 'advertisement_type',
             text: 'Advertisement Type',
-            flex: 1
+             flex: 1,
+            tdCls: 'wrap-text'
         },
         {
             xtype: 'gridcolumn',
             dataIndex: 'description_of_advert',
             text: 'Description of Advertisement',
-            flex: 1
+             flex: 1,
+            tdCls: 'wrap-text'
         }, {
             xtype: 'gridcolumn',
+            hidden:true,
             dataIndex: 'venue_of_exhibition',
             text: 'Venue of the Advertisement/Exhibition',
-            flex: 1
+             flex: 1,
+            tdCls: 'wrap-text'
         },{
             xtype: 'gridcolumn',
+            hidden:true,
             dataIndex: 'exhibition_start_date',
             text: ' Advertisement/Exhibition Start Date',
-            flex: 1
+             flex: 1,
+            tdCls: 'wrap-text'
         },{
             xtype: 'gridcolumn',
+            hidden:true,
             dataIndex: 'exhibition_start_date',
             text: ' Advertisement/Exhibition End Date',
-            flex: 1
+             flex: 1,
+            tdCls: 'wrap-text'
         },  {
             xtype: 'gridcolumn',
             dataIndex: 'sponsor_name',
+            hidden:true,
             text: 'Sponsor Name',
-            flex: 1
+             flex: 1,
+            tdCls: 'wrap-text'
         }, 	
         {
             xtype: 'gridcolumn',
             dataIndex: 'workflow_stage',
+             hidden:true,
             text: 'Workflow Stage',
-            flex: 1
+             flex: 1,
+            tdCls: 'wrap-text'
         }, {
             xtype: 'gridcolumn',
             dataIndex: 'application_status',
             text: 'Application Status',
-            flex: 1,
-            tdCls: 'wrap'
+             flex: 1,
+            tdCls: 'wrap-text'
         }, {
             xtype: 'gridcolumn',
             text: 'Date Received',
             dataIndex: 'date_received',
+            hidden:true,
             flex: 1,
             tdCls: 'wrap-text',
             renderer: Ext.util.Format.dateRenderer('d/m/Y H:i:s')
@@ -203,13 +223,28 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.grids.PromotionMa
                 menu: {
                     xtype: 'menu',
                     items: [{
+                        text: 'Request for Additional Information',
+                        iconCls: 'x-fa fa-file-pdf-o',
+                        handler: 'showApplicationQueries'
+                    },{
+                        xtype: 'button',
+                        text: 'Return Back Application(s)',
+                        iconCls: 'x-fa fa-check',
+                        ui: 'soft-green',
+                        hidden:true,
+                        storeID: 'productManagerMeetingStr',
+                        table_name: 'tra_premises_applications',
+                        action: 'process_returnsubmission_btn',
+                        winWidth: '50%',
+                        toaster: 0
+                    },{
                         text: 'Preview Application Details',
                         iconCls: 'x-fa fa-edit',
                         tooltip: 'Preview Record',
                         action: 'edit',
                         childXtype: '',
                         winTitle: 'Promotional & Advertisements Information',
-                        winWidth: '40%',
+                        winWidth: '70%',
                         isReadOnly:1,
                         handler: 'showPromotionAndAdvertsApplicationMoreDetailsOnDblClick'
                     },{
@@ -219,13 +254,14 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.grids.PromotionMa
                         action: 'edit',
                         childXtype: '',
                         winTitle: 'Application Documents',
-                        winWidth: '40%',
+                        winWidth: '70%',
                         isReadOnly: 1,
                         document_type_id: '',
                         handler: 'showPreviousUploadedDocs'
                     }, ,{
                         text: 'View Screening Checklists & Recommendation',
                         iconCls: 'x-fa fa-check-square',
+                        hidden:true,
                         handler: 'showApplicationChecklists'
                     }]
                 }

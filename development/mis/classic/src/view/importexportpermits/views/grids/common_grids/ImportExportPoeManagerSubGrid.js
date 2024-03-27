@@ -1,0 +1,205 @@
+/*** Created by softclans.
+ */
+Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExportPoeManagerSubGrid', {
+    extend: 'Ext.grid.Panel',
+    xtype: 'importexportpoemanagersubgrid',
+    listeners: {
+        
+    },
+    listeners: {
+        beforerender: {
+            fn: 'setConfigGridsStore',
+            config: {
+                pageSize: 10000,
+                storeId: 'importexportpermitmanagersubstr',
+                proxy: {
+                    url: 'importexportpermits/getImportExportManagerReviewApplications'
+                }
+            },
+            isLoad: false
+        },
+       select: function (sel, record, index, eOpts) {
+            var grid = sel.view.grid,
+                selCount = grid.getSelectionModel().getCount();
+            if (selCount > 0) {
+                grid.down('button[name=submit_selected]').setDisabled(false);
+            }
+        },
+        deselect: function (sel, record, index, eOpts) {
+            var grid = sel.view.grid,
+                selCount = grid.getSelectionModel().getCount();
+            if (selCount < 1) {
+                grid.down('button[name=submit_selected]').setDisabled(true);
+            }
+        }
+    }, selModel: {
+        selType: 'checkboxmodel',
+        mode: 'MULTI'
+    },
+    tbar: [{
+        xtype: 'exportbtn'
+    }, {
+        xtype: 'tbspacer'
+    },'->',{
+        xtype: 'combo',
+        fieldLabel: 'Zones',
+        forceSelection: true,
+        queryMode: 'local',
+        valueField: 'id',
+        hidden: true,
+        labelAlign : 'top',
+        displayField: 'name',
+        name: 'zone_id',
+        fieldStyle: {
+            'color': 'green',
+            'font-weight': 'bold'
+        },
+        listeners: {
+             beforerender: {
+                fn: 'setOrgConfigCombosStore',
+                config: {
+                    pageSize: 100,
+                    proxy: {
+                    url: 'configurations/getConfigParamFromTable',
+                    extraParams: {
+                        table_name: 'par_zones'
+                    }
+                   }
+                },
+                isLoad: true
+            },
+           beforequery: function() {
+                var store=this.getStore();
+                
+                var all={name: 'All',id:0};
+                  store.insert(0, all);
+                },
+            afterrender: function(combo) {
+                        combo.select(combo.getStore().getAt(0));	
+                    }
+        }
+    }],
+    
+    selModel: {
+        selType: 'checkboxmodel',
+        mode: 'MULTI'
+    },
+    columns: [{
+        xtype: 'gridcolumn',
+        dataIndex: 'tracking_no',
+        text: 'Tracking No',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'technical_declaration_id',
+        text: 'Technical Declaration ID',
+        flex: 1
+    }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'date_added',
+        text: 'Date of Booking',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        text: 'Agent Contact',
+        dataIndex: 'clearing_agent_no',
+        flex: 1,
+        tdCls: 'wrap'
+        
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'applicant_name',
+        text: 'Exporter/Importer Name',
+        flex: 1
+    }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'importation_reason',
+        text: 'Reason',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'product_category',
+        text: 'Product Category',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'custom_declaration_no',
+        text: 'URA Entry No.',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'port',
+        text: 'Port of Entry/Exit',
+        flex: 1
+    },
+    {
+        xtype: 'gridcolumn',
+        text: 'Has Licensed Premises', 
+        dataIndex: 'has_registered_premises',
+        renderer: function (value, metaData) {
+            if (value == 1) {
+                metaData.tdStyle = 'color:white;background-color:green';
+                return "NDA Licensed";
+            }
+
+            metaData.tdStyle = 'color:white;background-color:red';
+            return "NDA Non-Licensed";
+        }
+
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'application_status',
+        text: 'Status',
+        flex: 1
+    },
+    // {
+    //     xtype: 'gridcolumn',
+    //     dataIndex: 'premises_validation_recommendation',
+    //     text: 'Premises Validation Recommendation',
+    //     flex: 1
+    // },{
+    //     xtype: 'gridcolumn',
+    //     dataIndex: 'products_validation_recommendation',
+    //     text: 'Products Validation Recommendation',
+    //     flex: 1
+    // },
+    {
+        text: 'Options',
+        xtype: 'widgetcolumn',
+        width: 90,
+        widget: {
+            width: 75,
+            textAlign: 'left',
+            xtype: 'splitbutton',
+            iconCls: 'x-fa fa-th-list',
+            iconCls: 'x-fa fa-th-list',
+            ui: 'gray',
+            menu: {
+                xtype: 'menu',
+                items: [{
+                        text: 'Preview Import/Export Details',
+                        iconCls: 'x-fa fa-bars',
+                        appDetailsReadOnly: 0,
+                        handler: 'editpreviewPoeinformation'
+                    },{
+                        text: 'All Application Documents',
+                        iconCls: 'x-fa fa-file',
+                        tooltip: 'Application Documents',
+                        action: 'edit',
+                        childXtype: '',
+                        winTitle: 'Application Documents',
+                        winWidth: '40%',
+                        isReadOnly: 1,
+                        document_type_id: '',
+                        hidden: true,
+                        handler: 'showPreviousUploadedDocs'
+                    },{
+                        text: 'View Screening Checklists & Recommendation',
+                        iconCls: 'x-fa fa-check-square',hidden: true,
+                        handler: 'showApplicationChecklists'
+                    }
+                ]
+            }
+        }
+    }]
+});

@@ -41,6 +41,7 @@ export class RegisteredDrugshopappsComponent implements OnInit {
       this.registration_status = this.premisesapp_details.registration_status;
       this.validity_status = this.premisesapp_details.validity_status;
       this.process_title = this.premisesapp_details.process_title;
+      this.sub_module_id = this.premisesapp_details.sub_module_id;
     }
     if(this.registration_status == 2){
       this.contextMenu = [{
@@ -48,8 +49,8 @@ export class RegisteredDrugshopappsComponent implements OnInit {
           icon: 'menu',
           items: [
             { text: "Preview Application Details", action: 'preview',  icon: 'fa fa-print' },
-            { text: "Drug Shop Renewal Request", action: 'renew',sub_module_id: 108, icon: 'fa fa-repeat' },
-            { text: "Drug Shop Variation Request", action: 'alteration',sub_module_id: 109, icon: 'fa fa-edit'},
+            { text: "Drug Shop Renewal Request", action: 'renew',sub_module_id: 110, icon: 'fa fa-repeat' },
+            { text: "Drug Shop Variation Request", action: 'alteration',sub_module_id: 111, icon: 'fa fa-edit'},
             { text: "Product Widthdrawal Request", action: 'withdrawal', sub_module_id: 4,icon: 'fa fa-times'},
           ]
         }
@@ -146,4 +147,5 @@ funSelectRegisteredPremisessApp(data,sub_module_id){
             });
         return false;
  }
+
 }

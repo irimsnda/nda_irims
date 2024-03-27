@@ -127,7 +127,7 @@ Ext.define('Admin.view.clinicaltrial.views.sharedinterfaces.panels.PreClinicalTr
     ], 
     items: [
         {
-            title: 'Application Assessment Details',
+            //title: 'Application Assessment Details',
             region: 'center',
             xtype: 'tabpanel',
             items: [{

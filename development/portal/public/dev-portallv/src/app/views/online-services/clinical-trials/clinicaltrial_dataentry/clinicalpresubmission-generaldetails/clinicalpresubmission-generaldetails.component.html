@@ -1,18 +1,21 @@
-<form role="form" enctype="multipart/form-data" role="form" [formGroup]="preSubmissionGeneraldetailsfrm">
-
+<form role="form" enctype="multipart/form-data"  role="form" [formGroup]="preSubmissionGeneraldetailsfrm">
 <div class="row wizard-content">
 
   <div class="col-lg-12">
     <label class="control-label">Study Title</label>
-    <dx-text-area  formControlName="study_title"   placeholder="Study Title" >
-    </dx-text-area>
+    <textarea  (input)="adjustTextAreaHeight($event)" formControlName="study_title"   placeholder="Study Title" class="custom-textarea" >
+    </textarea>
   </div>
-  <div class=" col-lg-12">
-      <label class="control-label">Brief summary describing the background and objectives of trial</label>
-      <dx-text-area formControlName="brief_description"   placeholder="Brief summary describing the background and objectives of trial" >
-      </dx-text-area>
-    </div>
-    <div class="col-lg-4">
+
+   <div class="col-lg-12 " >
+    <label class="control-label">Brief summary describing the background and objectives of trial</label>
+    <textarea (input)="adjustTextAreaHeight($event)"
+    formControlName="brief_description" class="custom-textarea"
+    placeholder="Brief summary describing the background and objectives of the trial"
+  ></textarea>
+
+  </div>
+  <div class="col-lg-4">
       <label class="control-label">Proposed Meeting Date</label>
       <dx-date-box
         [type]="'date'"
@@ -21,30 +24,27 @@
        >
       </dx-date-box>
     </div>
-  <div class="col-lg-4">
-    <label class="control-label">Proposed Meeting Time</label>
-    <dx-date-box
-      [type]="'time'"
-      [formControlName]="'meeting_time'"
-      [value]="meetingTime"
+    <div class="col-lg-4">
+      <label class="control-label">Proposed Meeting Time</label>
+      <dx-date-box
+        [type]="'time'"
+        [(value)]="selectedMeetingTime"
+        (onValueChanged)="validateMeetingTime($event)"
+        [formControlName]="'meeting_time'"
+        [showClearButton]="true"
+        [pickerType]="'rollers'"
+        [displayFormat]="'shortTime'"
       >
-    </dx-date-box>
-  </div>
+      </dx-date-box>
+      <div *ngIf="isInvalidMeetingTime" class="warning-message">
+        Meeting time must be between 9:00 AM and 5:00 PM.
+      </div>
+    </div>
     <div class=" col-lg-4">
       <label class="control-label">Meeting Type</label>
       <dx-select-box [dataSource]="meetingTypeData"  (onValueChanged)="onClinicalTriaMeetingTypeChange($event)" valueExpr="id" displayExpr="name"  
        [searchEnabled]="true" formControlName="meeting_type_id">
       </dx-select-box>
-    </div>
-     <div class=" col-lg-12" *ngIf="is_meeting_venue">
-      <label class="control-label">Meeting Venue</label>
-      <dx-text-area formControlName="meeting_venue"   placeholder="Meeting Venue">
-      </dx-text-area>
-    </div>
-     <div class=" col-lg-12" *ngIf="is_virtual_meeting">
-      <label class="control-label">Meeting Invitation Details(Copy & Paste the Meeting Invitation Details & link</label>
-      <dx-text-area formControlName="meeting_invitation_details"   placeholder="Meeting Invitation link">
-      </dx-text-area>
     </div>
   <div class="col-lg-4 form-group" style="margin:1px;">
 

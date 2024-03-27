@@ -39,6 +39,7 @@ Ext.define('Admin.view.gmpapplications.views.forms.LTRFrm', {
             name: 'applicant_as_ltr',
             queryMode: 'local',
             forceSelection: true,
+            value: 2,  // Set the default value here
             listeners: {
                 change: function (cmbo, newVal) {
                     var form = cmbo.up('form'),
@@ -53,8 +54,8 @@ Ext.define('Admin.view.gmpapplications.views.forms.LTRFrm', {
                     }
                 }
             }
-        },
-        {
+          },
+          {
             xtype: 'fieldset',
             title: 'Local Technical Representative Details',
             style: 'background:white',
@@ -94,23 +95,26 @@ Ext.define('Admin.view.gmpapplications.views.forms.LTRFrm', {
                             readOnly: true,
                             columnWidth: 0.9
                         },
+                    
                         {
                             xtype: 'button',
                             iconCls: 'x-fa fa-search',
                             columnWidth: 0.1,
                             tooltip: 'Search LTR',
-                            action: 'link_ltr',
-                            childXtype: 'ltrselectiongrid',
+                            name:'link_ltr',
+                            action:'link_ltr',
+                            //handler: 'showLTRSelectionList',
                             winTitle: 'LTR Selection List',
                             winWidth: '90%'
                         }
                     ]
                 },
+
                 {
                     xtype: 'textfield',
                     fieldLabel: 'TIN',
                     readOnly: true,
-                    name: 'tin_no'
+                    name: 'ltr_tin_no'
                 },
                 {
                     xtype: 'combo',
@@ -173,11 +177,12 @@ Ext.define('Admin.view.gmpapplications.views.forms.LTRFrm', {
                     xtype: 'textfield',
                     fieldLabel: 'Registration No',
                     readOnly: true,
+                    hidden:true,
                     name: 'link_premise_reg_no'
                 },
                 {
                     xtype: 'textfield',
-                    fieldLabel: 'Permit No',
+                    fieldLabel: 'Premise No',
                     readOnly: true,
                     name: 'link_permit_no'
                 },

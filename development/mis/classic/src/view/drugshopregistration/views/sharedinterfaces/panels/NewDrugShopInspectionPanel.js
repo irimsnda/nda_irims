@@ -77,9 +77,8 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.NewDru
             items: [
                 {
                     xtype: 'transitionsbtn',
-                    hidden:true,
                 },
-                  {
+                   {
                     text: 'Return Back',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-check',
@@ -94,7 +93,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.NewDru
                     tooltip: 'Raise Query/View Query(Request for Information) and query Responses',
                     ui: 'soft-red',
                     handler: 'showAddApplicationUnstrcuturedQueries',
-                },
+                },  
             
                  {
                     text: 'Preview License/Inspection Report',
@@ -109,7 +108,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.NewDru
                                 iconCls: 'x-fa fa-print',
                                 ui: 'soft-green',
                                 peview:1,
-                                handler: 'doPreviewLicense'                            },
+                                handler: 'doPreviewDrugShopLicense'                            },
                             {
                                 text: 'Print Inspection Report',
                                 iconCls: 'x-fa fa-print',
@@ -119,35 +118,6 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.NewDru
                         ]
                     }
                 },
-
-
-                // {
-                //     text: 'View IOD Report',
-                //     ui: 'soft-green',
-                //     iconCls: 'fa fa-eye',
-                //     childXtype: 'premiseinspectiondetailstabpnl',
-                //     winTitle: 'IOD Report',
-                //     winWidth: '60%',
-                //     name: 'preview_report_btn',
-                //     stores: '[]',
-                //     report_type_id:1,
-                //     handler: 'showInspectionReportDetails',
-                //     hidden: true
-                // },
-                // {
-                //     text: 'View RID Recommendation',
-                //     ui: 'soft-red',
-                //     iconCls: 'fa fa-eye',
-                //     childXtype: 'premiseinspectiondetailstabpnl',
-                //     winTitle: 'RID Recommendation',
-                //     winWidth: '60%',
-                //     name: 'regional_inspector_report_btn',
-                //     stores: '[]',
-                //     report_type_id:2,
-                //     handler: 'showInspectionReportDetails',
-                //     hidden: true
-                // },
-
                   {
                     text: 'Inspection History',
                     ui: 'soft-purple',
@@ -171,52 +141,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.NewDru
                     name: 'save_screening_btn',
                     hidden: true
                 },
-                // {
-                //     text: 'Submit Application',
-                //     ui: 'soft-purple',
-                //     iconCls: 'fa fa-check',
-                //     isInspectionSubmit:1,
-                //     name: 'process_submission_btn',
-                //     storeID: 'foodpremiseregistrationstr',
-                //     table_name: 'tra_premises_applications',
-                //     winWidth: '50%'
-                // }
-
-                // {
-                //         text: 'Review & Approval Recommendation',
-                //         ui: 'soft-purple',
-                //         iconCls: 'fa fa-check',
-                //         ui: 'soft-purple',
-                //         iconCls: 'fa fa-sliders',
-                //         menu: {
-                //             xtype: 'menu',
-                //             items: [
-                //                 {
-                //                     text: 'Recommend Application',
-                //                     iconCls: 'x-fa fa-bars',
-                //                     recommendation_id: 1,
-                //                     winWidth: '90%', ui: 'soft-red',
-                //                     name: 'reject_recommendation',
-                //                     stores: '[]'
-                //                 },{
-                //                     text: 'Not Recommend Application',
-                //                     iconCls: 'x-fa fa-bars', recommendation_id: 2,
-                //                     winWidth: '90%',ui: 'soft-green',
-                //                     name: 'approve_recommendation',
-                //                     stores: '[]'
-                //                 }
-                //                 //,
-                //                 // {
-                //                 //     text: 'Request Re-Inspection',
-                //                 //     iconCls: 'x-fa fa-bars', 
-                //                 //     recommendation_id: 3,
-                //                 //     winWidth: '90%',ui: 'soft-green',
-                //                 //     name: 'approve_recommendation',
-                //                 //     stores: '[]'
-                //                 // }
-                //             ]
-                //         }
-                // },
+               
                 {
                     text: 'Close & Submit Application',
                     ui: 'soft-purple',

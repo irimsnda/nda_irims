@@ -1,9 +1,7 @@
 Ext.define('Admin.view.pv.views.panels.PvDetailsPnl', {
     extend: 'Ext.tab.Panel',
     xtype: 'pvDetailsPnl',
-    // layout: {//
-    //     type: 'fit'
-    // },
+    
     controller: 'pvvctr',
     autoScroll: true,
     defaults:{
@@ -18,20 +16,23 @@ Ext.define('Admin.view.pv.views.panels.PvDetailsPnl', {
     },
     items: [{
         xtype: 'panel',
+        region: 'center',
+        layout: 'fit',
+        title: 'Report information',
         itemId:'detailspanel',
-        title: 'Patient Details',
-        autoScroll: true,
         items:[{
             xtype: 'pvDetailsFrm',
-            autoScroll: true,
+            scrollable:true
         }]
     },{
-        xtype: 'pvSuspectedDrugGrid',
-        title: 'Suspected Medicine/Vaccine/Device',
+        xtype: 'pvpersonnelGrid',
+        title: 'Initial Reporter Information',
     },{
-        xtype: 'pvSuspectedDrugGrid',
-        is_other_drugs_used: 1,//1 when called from other drug used grid
-        title: 'Other Medicine/Vaccine/Device Used',
+        xtype: 'pvsenderGrid',
+        title: 'Sender Information',
+    },{
+        xtype: 'pvstudyinformationtGrid',
+        title: 'Study Information',
     },{
         xtype: 'hiddenfield',
         name: 'section_id'

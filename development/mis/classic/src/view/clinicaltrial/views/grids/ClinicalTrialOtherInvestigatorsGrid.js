@@ -25,6 +25,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialOtherInvestigators
             text: 'Add Investigator',
             iconCls: 'x-fa fa-plus',
             ui: 'soft-green',
+           // hidden:true,
             name: 'add_otherinvestigator',
             childXtype: 'clinicaltrialpersonnelgrid',
             winTitle: 'Clinical Trial Personnel Selection List',
@@ -66,6 +67,16 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialOtherInvestigators
                 }
             },
             isLoad: true
+        },
+        afterrender: function () {
+            var grid = this,
+                isReadOnly = grid.down('hiddenfield[name=isReadOnly]').getValue(),
+                add_btn = grid.down('button[name=add_otherinvestigator]'),
+                widgetCol = grid.columns[grid.columns.length - 1];
+            if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
+                add_btn.setVisible(false);
+                widgetCol.widget.menu.items = [];
+            }
         }
         },
     columns: [
@@ -95,6 +106,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialOtherInvestigators
                             text: 'Delete',
                             iconCls: 'x-fa fa-trash',
                             tooltip: 'Delete Record',
+                             hidden:true,
                             table_name: 'clinical_trial_investigators',
                             storeID: 'clinicaltrialotherinvestigatorsstr',
                             action_url: 'clinicaltrial/deleteClinicalTrialRecord',

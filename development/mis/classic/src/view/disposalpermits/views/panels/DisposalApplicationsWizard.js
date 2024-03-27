@@ -188,7 +188,7 @@ Ext.define('Admin.view.disposalpermits.views.panels.DisposalApplicationsWizard',
                 }, 
 				{
                     step: 3,
-                    iconCls: 'fa fa-money',
+                    iconCls: 'fa fa-money-bill-wave',
                     enableToggle: true, max_step: 3,
                     text: 'Invoice & Payment Details',
                     action: 'quickNav',iconAlign: 'top',

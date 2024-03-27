@@ -67,7 +67,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
 ],
     items: [
         {
-            xtype: 'importexportdetailspnl',//onlinefoodproductsdetailspnl
+            xtype: 'vcdetailspnl',//onlinefoodproductsdetailspnl
             dockedItems: [
                 {
                     xtype: 'toolbar',
@@ -113,10 +113,12 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
         },{
             xtype: 'importexportpermitsproductsgrid',
             title: 'Import/Export VC Products Details',
-        },{
-            xtype: 'importexportapplicantdetailsfrm',
-            title: 'APPLICANT DETAILS'
         },
+        
+        // {
+        //     xtype: 'importexportapplicantdetailsfrm',
+        //     title: 'APPLICANT DETAILS'
+        // },
         {
             xtype: 'hiddenfield',
             name: 'active_application_id'
@@ -155,16 +157,17 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     action: 'quickNav',
                     wizard: 'previewimportexportpermitdetails',
                     handler: 'prevquickNavigation'
-                },{
-                    step: 2,
-                    iconCls: 'fa fa-user',
-                    enableToggle: true,
-                    pressed: true,
-                    text: 'Applicant',
-                    action: 'quickNav',
-                    wizard: 'previewimportexportpermitdetails',
-                    handler: 'prevquickNavigation'
-                }
+                },
+                // {
+                //     step: 2,
+                //     iconCls: 'fa fa-user',
+                //     enableToggle: true,
+                //     pressed: true,
+                //     text: 'Applicant',
+                //     action: 'quickNav',
+                //     wizard: 'previewimportexportpermitdetails',
+                //     handler: 'prevquickNavigation'
+                // }
             ]
         };
         this.bbar = {
@@ -183,6 +186,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     text: 'Previous',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-arrow-left',
+                    hidden: true,
                     bind: {
                         disabled: '{atBeginning}'
                     },
@@ -212,6 +216,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     ui: 'soft-purple',
                     reference: 'nextbutton',
                     iconCls: 'fa fa-arrow-right',
+                    hidden: true,
                     iconAlign: 'right', max_step: 1,
                     bind: {
                         disabled: '{atEnd}'

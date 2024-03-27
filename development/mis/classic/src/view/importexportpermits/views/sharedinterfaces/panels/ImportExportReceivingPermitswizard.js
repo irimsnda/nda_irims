@@ -43,7 +43,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                 }, {
                     xtype: 'displayfield',
                     name: 'workflow_stage',
-                    fieldLabel: 'Workflow Stage',
+                    fieldLabel: 'Application Status',
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
@@ -163,7 +163,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
          },
            {
             xtype: 'importexportdocuploadsgrid',
-            title: 'Documents Submission'
+            title: 'Document Review'
         },{
             xtype: 'productscreeninggrid',
             title: 'Import/Export VC Screening Checklists'
@@ -221,7 +221,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     step: 3,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,max_step:4,
-                    text: 'Documents Submission',
+                    text: 'Document Review',
                     action: 'quickNav', iconAlign: 'top',
                     wizard: 'importexportreceivingpermitswizard',
                     handler: 'quickNavigation'

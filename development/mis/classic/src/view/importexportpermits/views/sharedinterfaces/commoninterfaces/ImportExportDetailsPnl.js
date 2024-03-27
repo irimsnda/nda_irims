@@ -20,11 +20,17 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.ImportExportDe
             xtype: 'panel',
             autoScroll: true, 
             title: 'Application Details',
-            items:[{
-                xtype: 'onlineimportexportlicencedetailsfrm',
+            items:[
+            {
+            xtype: 'importexportapplicantdetailsfrm',
+            autoScroll: true,
+            title: 'APPLICANT DETAILS'
+            },{
+               // xtype: 'onlineimportexportlicencedetailsfrm',
+               // xtype: 'importexportdetailsfrm',
+                xtype: 'importexportlicencedetailsfrm',
                 autoScroll: true,
-                title: 'Application Details', 
-                title: 'Import/Export Licence Information'
+                title: 'Licence Details'
             }, 
              {
                 xtype: 'senderreceiverdetailsfrm',
@@ -33,8 +39,8 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.ImportExportDe
             },
             {
                 xtype: 'importexportpremisesfrm',
-                hidden: true,
-                title: 'Licensed Outlet Details',
+                autoScroll: true,
+                title: 'Pharmacist in Charge Details',
             }]
         },{
         xtype: 'hiddenfield',

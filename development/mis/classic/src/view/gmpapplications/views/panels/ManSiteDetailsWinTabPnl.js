@@ -15,14 +15,16 @@ Ext.define('Admin.view.gmpapplications.views.panels.ManSiteDetailsWinTabPnl', {
         },
         {
             title: 'Personnel Details',
-            xtype: 'mansitepersonneltabpnl'//'mansitepersonneldetailswingrid'
+            xtype: 'mansitepersonneltabpnl'
         },
         {
             title: 'Manufacturing Site Blocks',
+            hidden:true,
             xtype: 'mansiteblockdetailswingrid'
         },
         {
             title: 'Business Details',
+            hidden:true,
             xtype: 'mansiteotherdetailswingrid'
         }
     ]

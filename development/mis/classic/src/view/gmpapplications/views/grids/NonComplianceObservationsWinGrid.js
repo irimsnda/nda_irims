@@ -21,15 +21,18 @@ Ext.define('Admin.view.gmpapplications.views.grids.NonComplianceObservationsWinG
             name: 'add_observation',
             hidden: true,
             iconCls: 'x-fa fa-plus',
-            handler: 'showAddGmpApplicationsForInspections',
-            childXtype: 'noncomplianceobservationsfrm',
+            //handler: 'showAddGmpApplicationsForInspections',
+            childXtype: 'applicationunstructuredqueriesfrm',
             winTitle: 'DETAILS OF NON-COMPLIANCE OBSERVATIONS',
-            winWidth: '60%',
+            winWidth: '70%',
             stores: '[]'
         },
         {
             xtype: 'hiddenfield',
             name: 'manufacturing_site_id'
+        },{
+            xtype: 'hiddenfield',
+            name: 'application_code'
         }
     ],
     dockedItems: [

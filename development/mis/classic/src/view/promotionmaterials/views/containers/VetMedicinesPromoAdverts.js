@@ -13,7 +13,7 @@ Ext.define('Admin.view.promotionmaterials.views.containers.VetMedicinesPromoAdve
         {
             xtype: 'hiddenfield',
             name: 'section_id',
-            value: 1
+            value: 2
         },
         {
             xtype: 'vetmedicinespromowrapper',//'promotionmaterialswrapper',

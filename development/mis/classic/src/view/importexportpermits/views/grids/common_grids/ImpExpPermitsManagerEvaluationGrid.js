@@ -103,11 +103,6 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImpExpPermit
         dataIndex: 'tracking_no',
         text: 'Tracking Number',
         flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'tracking_no',
-        text: 'Ref Number',
-        flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'applicant_name',
@@ -119,6 +114,40 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImpExpPermit
         text: 'Premises Name',
         flex: 1
     },{
+        xtype: 'gridcolumn',
+        dataIndex: 'business_type',
+        text: 'Business Type',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'reason',
+        text: 'Import/Export Reason',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'product_category',
+        text: 'Product Category',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        text: 'Has Licensed Premises', 
+        dataIndex: 'has_registered_premises',
+        renderer: function (value, metaData) {
+            if (value == 1) {
+                metaData.tdStyle = 'color:white;background-color:green';
+                return "NDA Licensed";
+            }
+
+            metaData.tdStyle = 'color:white;background-color:red';
+            return "NDA Non-Licensed";
+        }
+
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'country',
+        text: 'Country Of Supply',
+        flex: 1
+    }, {
         xtype: 'gridcolumn',
         dataIndex: 'proforma_invoice_no',
         text: 'Proforma Invoice No',
@@ -141,7 +170,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImpExpPermit
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'submitted_on',
-        text: 'Submitted On',
+        text: 'Date Submitted',
         flex: 1
     }, {
         xtype: 'gridcolumn',
@@ -169,11 +198,13 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImpExpPermit
                     winTitle: 'Import/Export Permit Applications',
                     winWidth: '40%',
                     isReadOnly:1,
-                    handler: 'editpreviewvcinformation'
+                    //handler: 'editpreviewvcinformation'
+                    handler: 'editpreviewPermitinformation'
                 },{
                     text: 'Application Documents',
                     iconCls: 'x-fa fa-file',
                     tooltip: 'Application Documents',
+                    hidden: true,
                     action: 'edit',
                     document_previewpnl: 'previewpermitdocuploadsgrid',
                     winTitle: 'Application Documents',
@@ -186,6 +217,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImpExpPermit
                     tooltip: 'Print Record',
                     action: 'edit',
                     childXtype: '',
+                    hidden: true,
                     winTitle: 'Product Information',
                     winWidth: '40%',
                     handler: 'printpreviewProductInformation'

@@ -18,13 +18,19 @@ Ext.define('Admin.view.usermanagement.viewcontrollers.UserManagementVctr', {
             form.loadRecord(record);
   
             form.down('displayfield[name=reference_no]').setValue(application);
-            funcShowCustomizableWindow("Assign Application", "40%", form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow("Assign Application", "40%", form, 'customizablewindow');
           
       },
 
     setUserGridsStore: function (obj, options) {
         this.fireEvent('setUserGridsStore', obj, options);
     },
+
+
+    setWorkflowCombosStore: function (obj, options) {
+        this.fireEvent('setWorkflowCombosStore', obj, options);
+    },
+
 
     setUserCombosStore: function (obj, options) {
         this.fireEvent('setUserCombosStore', obj, options);
@@ -161,10 +167,10 @@ Ext.define('Admin.view.usermanagement.viewcontrollers.UserManagementVctr', {
             basicFrm = wizardPnl.down('userbasicinfofrm'),
             department_id = basicFrm.down('combo[name=department_id]').getValue(),
             zone_id = basicFrm.down('combo[name=zone_id]').getValue();
-        if (department_id && zone_id) {
+        if (department_id ) {
             //continue
         } else {
-            toastr.warning('Select department and zone!!', 'Warning Response');
+            toastr.warning('Select Directorate!!', 'Warning Response');
             return false;
         }
         motherPnl.getViewModel().set('atBeginning', false);
@@ -230,11 +236,11 @@ Ext.define('Admin.view.usermanagement.viewcontrollers.UserManagementVctr', {
 
         if (step > 0) {
             var thisItem = progressItems[step];
-            if (department_id && zone_id) {
+            if (department_id) {
                 //continue
             } else {
                 thisItem.setPressed(false);
-                toastr.warning('Select department and zone!!', 'Warning Response');
+                toastr.warning('Select Directorate!!', 'Warning Response');
                 return false;
             }
         }
@@ -441,7 +447,7 @@ Ext.define('Admin.view.usermanagement.viewcontrollers.UserManagementVctr', {
             user = record.get('fullnames'),
             childObject = Ext.widget('signatureuploadfrm');
         childObject.down('hiddenfield[name=user_id]').setValue(user_id);
-        funcShowCustomizableWindow(user, '30%', childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(user, '30%', childObject, 'customizablewindow');
     },
 
     updateModelUserFirstNameOnChange: function (textfield, newVal, oldVal) {
@@ -472,7 +478,7 @@ Ext.define('Admin.view.usermanagement.viewcontrollers.UserManagementVctr', {
             user_id = basic_frm.down('hiddenfield[name=id]').getValue(),
             form = Ext.widget('passresetoptionsfrm');
         form.down('hiddenfield[name=user_id]').setValue(user_id);
-        funcShowCustomizableWindow('Password Reset Options', '30%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Password Reset Options', '30%', form, 'customizablewindow');
     },
 
     deactivateSystemUser: function (button) {
@@ -662,7 +668,7 @@ showEditApiSystemUser: function (view, record, item, index, e, eOpts) {
             user = record.get('fullnames'),
             childObject = Ext.widget('signatureuploadfrm');
         childObject.down('hiddenfield[name=user_id]').setValue(user_id);
-        funcShowCustomizableWindow(user, '30%', childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(user, '30%', childObject, 'customizablewindow');
     },
 
     updateModelApiUserFirstNameOnChange: function (textfield, newVal, oldVal) {
@@ -1113,7 +1119,7 @@ showEditApiSystemUser: function (view, record, item, index, e, eOpts) {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -1133,7 +1139,7 @@ showEditApiSystemUser: function (view, record, item, index, e, eOpts) {
             me.fireEvent('refreshStores', storeArray);
         }
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -1324,7 +1330,7 @@ showEditApiSystemUser: function (view, record, item, index, e, eOpts) {
             grid = Ext.widget(childXtype);
             grid.down('combo[name=user_id]').setValue(record.get('id'));
             grid.down('combo[name=user_id]').setReadOnly(true);
-        funcShowCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
               
     },
     showUserPasswordResetLogs: function (item) {
@@ -1337,7 +1343,7 @@ showEditApiSystemUser: function (view, record, item, index, e, eOpts) {
             grid.down('displayfield[name=user_name]').setValue(record.get('first_name')+" "+record.get('last_name')+" Logs");
             grid.down('hiddenfield[name=user_id]').setValue(record.get('id'));
             
-        funcShowCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
               
     },
     showPreviewUpdatedUserDetails: function(view, record, item, index, e, eOpts) {
@@ -1374,8 +1380,81 @@ showEditApiSystemUser: function (view, record, item, index, e, eOpts) {
         if (profile_url) {
             basicFrm.down('image[name=user_photo]').setSrc(base_url + '/resources/images/user-profile/' + profile_url);
         }
-        funcShowCustomizableWindow("Update Logs", "70%", userContainerPnl, 'customizablewindow');
+        funcShowOnlineCustomizableWindow("Update Logs", "70%", userContainerPnl, 'customizablewindow');
 
     },
+    setCompStore: function (obj, options) {
+        this.fireEvent('setCompStore', obj, options);
+    },
+
+    getUpdateinfo: function(form){
+    // var form=form.getForm();
+  console.log(form);
+         Ext.Ajax.request({
+                url: 'usermanagement/getUpdateInfo',
+                method: 'GET',
+               
+                success: function (response) {
+                   Ext.getBody().unmask();
+                   var  resp =Ext.JSON.decode(response.responseText),
+                   message = resp.message,
+                   success=resp.success;
+                   if(success == true || success === true) {
+                       var results = resp.results,
+                      
+                       model= Ext.create('Ext.data.Model',results);
+                       form.loadRecord(model);
+                       file_name=results.profile_photo;
+                       form.getViewModel().set('imgData', base_url + '/resources/images/user-profile/' + file_name);
+                   }
+                },
+                failure: function (response) {
+                    Ext.Msg.alert('Status', 'Request Failed.');
+    
+                }
+            });
+},
+
+
+     saveUpdateUserInformation: function (btn) {
+       var form=  btn.up('form');
+       var window = form.up('window')
+        if(form.isValid()){
+                form.submit({
+                    url: 'usermanagement/saveUserInformation',
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + access_token,
+                        'Accept': 'application/json'
+                    },
+                    waitMsg: 'Please wait...',
+                    success: function (fm, action) {
+                        var response = Ext.decode(action.response.responseText),
+                            message = response.message,
+                            success = response.success;
+                        if (success == true || success === true) {
+                            toastr.success(message, 'Success Response');
+                            window.close();
+                        } else {
+                            toastr.error(message, 'Failure Response');
+                        }
+                    },
+                    failure: function (form, action) {
+                        var response = Ext.decode(action.response.responseText),
+                            message = response.message,
+                            success = response.success;
+                        toastr.error(message, 'Failure Response');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        toastr.error('Error: ' + errorThrown, 'Error Response');
+                    }
+                });
+            }else {
+                toastr.warning('Invalid form submission, please fill all the required details!!', 'Warning Response');
+                return false;
+            }
+        
+    },
+
 
 });

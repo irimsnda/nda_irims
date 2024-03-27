@@ -194,10 +194,10 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
             xtype: 'tabpanel',
             items: [{
                 xtype: 'importexportextentiondocuploadsgrid',
-                title: 'Documents Submission'
+                title: 'Document Review'
             },{
                 xtype: 'previousimportexportdocuploadsgrid',
-                title: 'Previous Documents Submission'
+                title: 'Previous Document Review'
             }]
         },{
             xtype: 'extensionimportexportapppnl',
@@ -248,7 +248,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     step: 1,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'Import/Export permit Documents Submission',
+                    text: 'Import/Export Licence Document Review',
                     action: 'quickNav', 
                     wizard: 'importexportedittingswizard',
                     handler: 'quickNavigation'

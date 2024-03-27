@@ -5,6 +5,7 @@ Ext.define('Admin.view.dashboard.grids.OutTrayGrid', {
     extend: 'Ext.grid.Panel',
     xtype: 'outtraygrid',
     id: 'outtraygrid',
+    itemId: 'outtraygrid',
     controller: 'dashboardvctr',
     viewConfig: {
         deferEmptyText: false,

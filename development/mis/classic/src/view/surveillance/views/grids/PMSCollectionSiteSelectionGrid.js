@@ -29,21 +29,24 @@ Ext.define('Admin.view.surveillance.views.grids.PMSCollectionSiteSelectionGrid',
             name: 'add_premise',
             text: 'Add Premise',
             ui: 'soft-green',
+            hidden:true,
             childXtype: 'newpmspremisefrm',
             winTitle: 'New Premise',
             winWidth: '70%',
             iconCls: 'x-fa fa-add',
             handler: 'showAddPremiseParamWinFrm'
-        },{
+        },
+        {
             xtype: 'tbspacer',
             width: 20
         },
         {
             xtype: 'displayfield',
-            value: 'Double click to select!!',
+            value: 'Double click to select',
             fieldStyle: {
                 'color': 'green',
-                'font-style': 'italic'
+                'font-style': 'italic',
+                'font-weight': 'bold'
             }
         },
     ],

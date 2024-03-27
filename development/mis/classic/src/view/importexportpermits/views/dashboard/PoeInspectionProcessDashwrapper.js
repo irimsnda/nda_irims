@@ -3,7 +3,7 @@ Ext.define('Admin.view.importexportpermits.views.dashboard.PoeInspectionProcessD
     extend: 'Ext.Container',
     xtype: 'poeinspectionprocessdashwrapper',
 	itemId:'poeinspectionprocessdashwrapper',
-    //layout: 'fit',
+    layout: 'fit',
     items: [
         {
             xtype: 'poeinspectionprocessdash'

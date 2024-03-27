@@ -1,114 +1,72 @@
 <?php
 
 namespace Modules\MigrationScripts\Providers;
-
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Eloquent\Factory;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class MigrationScriptsServiceProvider extends ServiceProvider
 {
     /**
-     * @var string $moduleName
+     * The module namespace to assume when generating URLs to actions.
+     *
+     * @var string
      */
-    protected $moduleName = 'MigrationScripts';
+    protected $moduleNamespace = 'Modules\MigrationScripts\Http\Controllers';
 
     /**
-     * @var string $moduleNameLower
-     */
-    protected $moduleNameLower = 'migrationscripts';
-
-    /**
-     * Boot the application events.
+     * Called before routes are registered.
+     *
+     * Register any model bindings or pattern based filters.
      *
      * @return void
      */
     public function boot()
     {
-        $this->registerTranslations();
-        $this->registerConfig();
-        $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+        parent::boot();
     }
 
     /**
-     * Register the service provider.
+     * Define the routes for the application.
      *
      * @return void
      */
-    public function register()
+    public function map()
     {
-        $this->app->register(RouteServiceProvider::class);
+        $this->mapApiRoutes();
+
+        $this->mapWebRoutes();
     }
 
     /**
-     * Register config.
+     * Define the "web" routes for the application.
+     *
+     * These routes all receive session state, CSRF protection, etc.
      *
      * @return void
      */
-    protected function registerConfig()
+    protected function mapWebRoutes()
     {
-        $this->publishes([
-            module_path($this->moduleName, 'Config/config.php') => config_path($this->moduleNameLower . '.php'),
-        ], 'config');
-        $this->mergeConfigFrom(
-            module_path($this->moduleName, 'Config/config.php'), $this->moduleNameLower
-        );
+
+     
+        Route::middleware('web')
+            ->namespace($this->moduleNamespace)
+            ->group(module_path('MigrationScripts', '/Routes/web.php'));
     }
 
     /**
-     * Register views.
+     * Define the "api" routes for the application.
+     *
+     * These routes are typically stateless.
      *
      * @return void
      */
-    public function registerViews()
+    protected function mapApiRoutes()
     {
-        $viewPath = resource_path('views/modules/' . $this->moduleNameLower);
-
-        $sourcePath = module_path($this->moduleName, 'Resources/views');
-
-        $this->publishes([
-            $sourcePath => $viewPath
-        ], ['views', $this->moduleNameLower . '-module-views']);
-
-        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->moduleNameLower);
-    }
-
-    /**
-     * Register translations.
-     *
-     * @return void
-     */
-    public function registerTranslations()
-    {
-        $langPath = resource_path('lang/modules/' . $this->moduleNameLower);
-
-        if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, $this->moduleNameLower);
-            $this->loadJsonTranslationsFrom($langPath);
-        } else {
-            $this->loadTranslationsFrom(module_path($this->moduleName, 'Resources/lang'), $this->moduleNameLower);
-            $this->loadJsonTranslationsFrom(module_path($this->moduleName, 'Resources/lang'));
-        }
-    }
-
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return [];
-    }
-
-    private function getPublishableViewPaths(): array
-    {
-        $paths = [];
-        foreach (\Config::get('view.paths') as $path) {
-            if (is_dir($path . '/modules/' . $this->moduleNameLower)) {
-                $paths[] = $path . '/modules/' . $this->moduleNameLower;
-            }
-        }
-        return $paths;
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->moduleNamespace)
+            ->group(module_path('MigrationScripts', '/Routes/api.php'));
     }
 }
+
+

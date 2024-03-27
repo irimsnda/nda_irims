@@ -360,7 +360,8 @@ Ext.define('Admin.view.dashboard.grids.InTrayGrid', {
         {
             ftype: 'grouping',
             startCollapsed: false,
-            groupHeaderTpl: '{[values.rows[0].data.workflow_stage]}, Sub-Process: {[values.rows[0].data.sub_module]}, [{rows.length} {[values.rows.length > 1 ? "Items" : "Item"]}]',
+            groupHeaderTpl: 'Process: {[values.rows[0].data.process_name]}, Stage: {[values.rows[0].data.workflow_stage]}  [{rows.length} {[values.rows.length > 1 ? "Items" : "Item"]}]',
+            //groupHeaderTpl: '{[values.rows[0].data.workflow_stage]}, Sub-Process: {[values.rows[0].data.sub_module]}, [{rows.length} {[values.rows.length > 1 ? "Items" : "Item"]}]',
             hideGroupedHeader: false,
             enableGroupingMenu: false
         }

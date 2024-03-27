@@ -30,12 +30,16 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
             fieldLabel: 'Study Title',
             name: 'study_title',
             readOnly:true,
+            grow: true, 
+            growMax: 200, 
             columnWidth: 1
         },
         {
             xtype: 'textarea',
             columnWidth: 1,
             readOnly:true,
+            grow: true, 
+            growMax: 200, 
             fieldLabel: 'Brief summary describing the background and objectives of trial',
             name: 'brief_description'
         },
@@ -98,18 +102,6 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
                         }
                     },
                     isLoad: true
-                },
-                change:function(cbo, newValue){
-                        var form = cbo.up('form');
-
-                        if(newValue ==1){
-                            form.down('textfield[name=meeting_venue]').setVisible(true);
-                            form.down('textfield[name=meeting_invitation_details]').setVisible(false);
-                        }else{
-                            form.down('textfield[name=meeting_venue]').setVisible(false);
-                            form.down('textfield[name=meeting_invitation_details]').setVisible(true);
-                        }
-
                 }
             }
         },{
@@ -117,7 +109,9 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
             fieldLabel: 'Meeting Venue',
             columnWidth: 0.99,
             readOnly:true,
-            name: 'meeting_venue', allowBlank: true,
+            hidden:true,
+            name: 'meeting_venue', 
+            allowBlank: true,
             bind: {
                 readOnly: '{isReadOnly}'  // negated
             }
@@ -209,6 +203,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
                 labelAlign: 'top',
                 name: 'preferred_meeting_date',
                 hidden: true,
+                allowBlank: true,
                 submitFormat: 'Y-m-d',
                 format: 'd/m/Y',width: '60%',
                 altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s'
@@ -217,6 +212,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
                 fieldLabel:'Preferred Meeting Time',
                 labelAlign: 'top',
                 hidden: true,
+                allowBlank: true,
                 name: 'preferred_meeting_time',
                 format: 'H:i',
                 altFormats:'H:i',
@@ -229,7 +225,7 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
             queryMode: 'local',
             hidden: true,
             forceSelection: true,
-            allowBlank: false,
+            allowBlank: true,
             valueField: 'id',
             displayField: 'name',
 
@@ -267,13 +263,19 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
                 }
             }
         },{
-            xtype: 'textfield',
+            xtype: 'textarea',
             fieldLabel: 'Preferred Meeting Venue',
             columnWidth: 0.99,
             hidden: true,
+            allowBlank: true,
+            grow: true, 
+            growMax: 200, 
             name: 'preferred_meeting_venue'
         },{
-            xtype: 'textfield',
+            xtype: 'textarea',
+            grow: true, 
+            growMax: 200, 
+            allowBlank: true,
             fieldLabel: 'Preferred Meeting Invitation Details(Copy & Paste the Meeting Invitation Details & link) ', columnWidth: 0.99,
             name: 'preferred_meeting_invitation_details', 
             hidden: true
@@ -282,6 +284,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.PreSubmissionEvaluationFrm', {
         {
             xtype: 'textarea',
             name: 'remarks',
+            grow: true, 
+            growMax: 200, 
             columnWidth: 1,
             fieldLabel: 'Remarks',
             allowBlank: true

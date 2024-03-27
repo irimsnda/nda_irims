@@ -14,12 +14,14 @@ Ext.define('Admin.view.commoninterfaces.grids.ClinicalTrialPersonnelAbstractGrid
             },{
                 xtype: 'gridcolumn',
                 dataIndex: 'contact_person',
+                hidden:true,
                 text: 'Contact Person',
                 flex: 1
             },{
                 xtype: 'gridcolumn',
                 dataIndex: 'tin_no',
                 text: 'TIN',
+                hidden:true,
                 flex: 1
             },{
                 xtype: 'gridcolumn',

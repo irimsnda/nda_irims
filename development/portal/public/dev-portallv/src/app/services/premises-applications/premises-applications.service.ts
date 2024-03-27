@@ -44,6 +44,23 @@ export class PremisesApplicationsService {
       }));
   }
 
+  onPsurNotificationApplicationLoading(filter_params) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+    filter_params.trader_id = this.trader_id;
+    this.config = {
+      params: filter_params,
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getpsurNotificationApplicationLoading', this.config)
+      .pipe(map(data => {
+
+        return <any>data;
+
+      }));
+  }
 
     onPremisesApplicationPharmacist(filter_params) {
     var headers = new HttpHeaders({
@@ -79,6 +96,26 @@ export class PremisesApplicationsService {
 
       }));
   }
+
+  onPremisesApplicantDetails() {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { trader_id: this.trader_id },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getApplicantDetails', this.config)
+      .pipe(map(data => {
+
+        return <any>data;
+
+      }));
+  }
+
+
+
   onLoadPersonnelInformations() {
     var headers = new HttpHeaders({
       "Accept": "application/json",
@@ -131,6 +168,43 @@ export class PremisesApplicationsService {
       }));
 
   } 
+  onLoadApplicantInchargeDetails() {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+
+    this.config = {
+      headers: headers,
+      params: { email: this.email_address }
+    };
+
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getApplicantInchargeDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+
+  } 
+
+  onLoadApplicant() {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+
+    this.config = {
+      headers: headers,
+      params: { trader_id: this.trader_id }
+    };
+
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getApplicantDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+
+  } 
+
+
    onLoadApplicantPharmacist(psuNo) {
     var headers = new HttpHeaders({
       "Accept": "application/json",
@@ -148,6 +222,27 @@ export class PremisesApplicationsService {
       }));
 
   }
+
+   onLoadCompanyDetails(company_registration_no) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+
+    this.config = {
+      headers: headers,
+      params: { company_registration_no: company_registration_no }
+    };
+
+    return this.httpClient.get(AppSettings.base_url + 'authentication/getCompanyDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+
+  }
+
+
+
 
   onLoadPersonnerQualifationsDetails(personnel_id) {
     var headers = new HttpHeaders({
@@ -181,7 +276,7 @@ export class PremisesApplicationsService {
         return <any>data;
       }));
   }
-onLoadRegisteredDrugShops(params) {
+  onLoadRegisteredDrugShops(params) {
     var headers = new HttpHeaders({
       "Accept": "application/json",
       "Authorization": 'Bearer ' + this.authService.getAccessToken(),
@@ -196,6 +291,9 @@ onLoadRegisteredDrugShops(params) {
         return <any>data;
       }));
   }
+
+  
+
  onLoadNearestPremises(premise_id) {
     var headers = new HttpHeaders({
       "Accept": "application/json",
@@ -210,7 +308,9 @@ onLoadRegisteredDrugShops(params) {
         return <any>data;
       }));
   }
-   onLoadNearestDrugShops(premise_id) {
+
+
+ onLoadNearestDrugShops(premise_id) {
     var headers = new HttpHeaders({
       "Accept": "application/json",
       "Authorization": 'Bearer ' + this.authService.getAccessToken(),
@@ -224,8 +324,6 @@ onLoadRegisteredDrugShops(params) {
         return <any>data;
       }));
   }
-  
-
   onCheckPendingPremisesRenewal(premise_target_id) {
     var headers = new HttpHeaders({
       "Accept": "application/json",
@@ -247,7 +345,6 @@ onLoadRegisteredDrugShops(params) {
   setPremisesApplicationDetail(data: any[]) {
     this.premisesapp_details = data;
   }
-
   onSavePremisesApplication(premise_id, premisesData, tracking_no) {
 
     var headers = new Headers({
@@ -256,6 +353,33 @@ onLoadRegisteredDrugShops(params) {
     });
     let user = this.authService.getUserDetails();
     return this.http.post(AppSettings.base_url + 'premisesregistration/onSavePremisesApplication', premisesData, { params: { premise_id: premise_id, tracking_no: tracking_no, 'trader_id': this.trader_id, 'trader_email': this.email_address }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  onSaveProductNotificationApplication(application_id,premisesData, tracking_no) {
+
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'premisesregistration/onSaveProductNotificationApplication', premisesData, { params: { tracking_no: tracking_no,application_id:application_id,'trader_id': this.trader_id, 'trader_email': this.email_address }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+
+  onSaveDrugShopApplication(premise_id, premisesData, tracking_no) {
+
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'premisesregistration/onSaveDrugShopApplication', premisesData, { params: { premise_id: premise_id, tracking_no: tracking_no, 'trader_id': this.trader_id, 'trader_email': this.email_address }, headers: headers })
       .pipe(map(data => {
         return data;
       }));
@@ -283,6 +407,31 @@ onLoadRegisteredDrugShops(params) {
         return data;
       }));
   }
+    onSaveNotificationOtherDetails(application_id, premisesOtherData) {
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'premisesregistration/onSaveNotificationOtherDetails', premisesOtherData, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address, application_id: application_id }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  onSavePharmacistDetails(premise_id, premisesOtherData) {
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'premisesregistration/onSaveChangedPharmacistDetails', premisesOtherData, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address, premise_id: premise_id }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+
   onSavePremisesAmmendmentsRequest(premise_id, premisesOtherData) {
     var headers = new Headers({
       "Accept": "application/json",
@@ -328,6 +477,19 @@ onLoadRegisteredDrugShops(params) {
         return data;
       }));
   }
+
+  onSaveClinicalPersonnelDetails(personnelData, premise_id) {
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'premisesregistration/onSaveClinicalPersonnel', personnelData, { params: { 'trader_id': this.trader_id, 'traderemail_address': this.email_address, 'mistrader_id': this.mistrader_id, premise_id: premise_id }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
   onSavePremisesDirectorsDetails(personnelData, premise_id) {
     var headers = new Headers({
       "Accept": "application/json",
@@ -338,7 +500,18 @@ onLoadRegisteredDrugShops(params) {
       .pipe(map(data => {
         return data;
       }));
-  } 
+  }
+   onSavePremisesExternalStore(personnelData, premise_id) {
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'premisesregistration/onSavePremisesExternalStore', personnelData, { params: { 'trader_id': this.trader_id, 'traderemail_address': this.email_address, 'mistrader_id': this.mistrader_id, premise_id: premise_id }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }  
   onSaveApprovalRecomDetails(personnelData, premise_id) {
     var headers = new Headers({
       "Accept": "application/json",
@@ -374,6 +547,24 @@ onLoadRegisteredDrugShops(params) {
       }));
   }
 
+  getNotificationOtherdetails(data,path){
+
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    //trader_id:  
+    data.trader_id = this.trader_id;
+    data.mistrader_id = this.mistrader_id;
+    this.config = {
+      params: data,
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/'+path, this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  } 
 
   onSavePremisesStoreLocationDetails(personnelData, premise_id,uploadData ='') {
     var headers = new Headers({
@@ -446,7 +637,21 @@ onLoadRegisteredDrugShops(params) {
         return <any>data;
       }));
   }
+  getproductNotificationDetails(application_id) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
 
+    this.config = {
+      params: { application_id: application_id },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getNotificationApplicationDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
   onLoadPremisesPersonnelDetails(premise_id) {
     var headers = new HttpHeaders({
       "Accept": "application/json",
@@ -457,6 +662,51 @@ onLoadRegisteredDrugShops(params) {
       headers: headers
     };
     return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getPremisesPersonnelDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+  onLoadNotificationProdDetails(application_id) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { application_id: application_id },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getPremisesPersonnelDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+  onLoadPremisesPharmacistDetails(premise_id) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { premise_id: premise_id },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getPremisesPharmacistDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
+
+
+onLoadClinicalDetails() {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params:{trader_id:this.trader_id},
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getClinicalPersonnelDetails', this.config)
       .pipe(map(data => {
         return <any>data;
       }));
@@ -506,6 +756,20 @@ onLoadRegisteredDrugShops(params) {
       headers: headers
     };
     return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getPremisesDirectorsDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+    onLoadPremisesExternalStore(premise_id) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: { premise_id: premise_id },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getPremisesExternalStoreDetails', this.config)
       .pipe(map(data => {
         return <any>data;
       }));
@@ -627,7 +891,7 @@ onLoadRegisteredDrugShops(params) {
         return data;
       }));
   }
-  onValidatePremisesOtherdetails(premise_id,table_name,title){
+  onValidatePremisesOtherdetails(premise_id,sub_module_id){
    
     var headers = new Headers({
       "Accept": "application/json",
@@ -637,7 +901,7 @@ onLoadRegisteredDrugShops(params) {
     });
 
     this.config = {
-      params: { 'trader_id': this.trader_id, 'trader_email': this.email_address, premise_id: premise_id, table_name: table_name,title:title },
+      params: { 'trader_id': this.trader_id, 'trader_email': this.email_address, premise_id: premise_id,sub_module_id:sub_module_id},
       headers: headers
     };
     return this.httpClient.get(AppSettings.base_url + 'utilities/onValidatePremisesOtherdetails', this.config)

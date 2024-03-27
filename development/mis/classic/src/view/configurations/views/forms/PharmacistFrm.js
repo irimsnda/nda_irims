@@ -194,7 +194,7 @@ Ext.define('Admin.view.configurations.views.forms.PharmacistFrm', {
         xtype: 'textfield',
         name: 'email2',
         hidden:true,
-        allowBlank: false,
+        allowBlank: true,
         fieldLabel: 'Email Address 2',
         listeners: {
             afterrender: function (textfield) {
@@ -213,7 +213,7 @@ Ext.define('Admin.view.configurations.views.forms.PharmacistFrm', {
         xtype: 'textfield',
         name: 'email3',
         hidden:true,
-        allowBlank: false,
+        allowBlank: true,
         fieldLabel: 'Email Address 3', 
         listeners: {
             afterrender: function (textfield) {
@@ -353,7 +353,7 @@ Ext.define('Admin.view.configurations.views.forms.PharmacistFrm', {
     },{
         xtype: 'checkbox',
         inputValue: 1,
-        hidden:true,
+        //hidden:true,
         uncheckedValue: 1,
         fieldLabel: 'Is Active',
         name: 'is_enabled',

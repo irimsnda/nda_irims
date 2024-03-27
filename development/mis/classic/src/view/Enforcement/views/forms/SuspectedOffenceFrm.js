@@ -6,7 +6,8 @@ Ext.define('Admin.view.Enforcement.views.forms.SuspectedOffenceFrm', {
     layout: {
         type: 'column'
     },
-    // autoScroll: true,
+    autoScroll: true,
+    scrollable:true,
     bodyPadding: 5,
     defaults: {
         columnWidth: 1,
@@ -85,7 +86,7 @@ Ext.define('Admin.view.Enforcement.views.forms.SuspectedOffenceFrm', {
 		},
         {
             xtype: 'datefield',
-            fieldLabel: 'Date of Offence',
+            fieldLabel: 'Date Offence Reported',
             name: 'offence_date',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',

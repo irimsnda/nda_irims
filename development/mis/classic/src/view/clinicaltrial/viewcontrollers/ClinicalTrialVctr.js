@@ -16,6 +16,12 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         this.fireEvent('funcUploadTCMeetingtechnicalDocuments', btn);
         
     },
+    setCompStore: function (obj, options) {
+        this.fireEvent('setCompStore', obj, options);
+    },
+    loadAssessmentFrm: function(frm){
+        this.fireEvent('loadAssessmentFrm', frm, frm.type_id);
+    },
      setConfigCombosStore: function (obj, options) {
         this.fireEvent('setConfigCombosStore', obj, options);
     },
@@ -83,7 +89,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -134,6 +140,147 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
                 }
             });
         }
+    },
+
+
+    showAssessmentToolDetails: function(btn) {
+        var button = btn.up('button'),
+           record = button.getWidgetRecord(),
+           application_code = record.get('application_code');
+           panel = Ext.widget('assessmentDetailsPnl');
+           ClinicalTrialOnlineAssessmentfrm =panel.down('ClinicalTrialOnlineAssessmentfrm');
+           panel.down('ClinicalTrialOnlineAssessmentfrm').down('button[name=save_btn]').setHidden(true);
+           //ClinicalTrialOnlineAssessmentfrm.down('button[name=save_btn]').setHidden(true);
+           panel.down('hiddenfield[name=application_code]').setValue(application_code);
+           
+           funcShowOnlineCustomizableWindow(btn.winTitle, '90%', panel, 'customizablewindow');
+    },
+
+    updateMeetingAttendance: function(btn){
+        btn.setLoading(true);
+        var grid = btn.up('grid'),
+            pnl = grid.up('panel'),
+            mainTabPnl = pnl.up('#contentPanel'),
+            activeTab = mainTabPnl.getActiveTab(),
+            meeting_id = activeTab.down('hiddenfield[name=id]').getValue(),
+            store = grid.getStore(),
+            selected = [];
+        for (var i = 0; i < store.data.items.length; i++) {
+            var record = store.data.items [i],
+                has_attended = record.get('has_attended'),
+                personnel_id = record.get('id');
+            var obj = {
+                has_attended: has_attended,
+                personnel_id: personnel_id
+            };
+            if (record.dirty) {
+                selected.push(obj);
+            }
+        }
+        if (selected.length < 1) {
+            btn.setLoading(false);
+            toastr.warning('No records to save!!', 'Warning Response');
+            return false;
+        }
+           grid.mask('Updating Attendance....');
+           Ext.Ajax.request({
+                url: 'common/updateMeetingAttendance',
+                method: 'POST',
+                params: {
+                    selected: JSON.stringify(selected),
+                    meeting_id: meeting_id,
+                    _token: token
+                },
+                success: function (response) {
+                    btn.setLoading(false);
+                    grid.unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        success = resp.success;
+                        if (success == true || success === true) {
+                            store.load();
+                            toastr.success(resp.message, 'Success');
+                        } else {
+                            grid.unmask();
+                            toastr.error(resp.message, 'Failure Response');
+                        }
+                },
+                failure: function (response) {
+                    grid.unmask();
+                    btn.setLoading(false);
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    grid.unmask();
+                    btn.setLoading(false);
+                    toastr.error('Error downloading data: ' + errorThrown, 'Error Response');
+                }
+            });
+    },
+
+
+    updateParticipantRole: function(btn){
+        btn.setLoading(true);
+        var grid = btn.up('grid'),
+            pnl = grid.up('panel'),
+            mainTabPnl = pnl.up('#contentPanel'),
+            activeTab = mainTabPnl.getActiveTab(),
+            meeting_id = activeTab.down('hiddenfield[name=id]').getValue(),
+            store = grid.getStore(),
+            selected = [];
+        for (var i = 0; i < store.data.items.length; i++) {
+            var record = store.data.items [i],
+                role_id = record.get('role_id'),
+                personnel_id = record.get('id');
+            var obj = {
+                role_id: role_id,
+                personnel_id: personnel_id
+            };
+            if (record.dirty) {
+                selected.push(obj);
+            }
+        }
+        if (selected.length < 1) {
+            btn.setLoading(false);
+            toastr.warning('No records to save!!', 'Warning Response');
+            return false;
+        }
+           grid.mask('Updating Role....');
+           Ext.Ajax.request({
+                url: 'common/updateParticipantRole',
+                method: 'POST',
+                params: {
+                    selected: JSON.stringify(selected),
+                    meeting_id: meeting_id,
+                    _token: token
+                },
+                success: function (response) {
+                    btn.setLoading(false);
+                    grid.unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        success = resp.success;
+                        if (success == true || success === true) {
+                            store.load();
+                            toastr.success(resp.message, 'Success');
+                        } else {
+                            grid.unmask();
+                            toastr.error(resp.message, 'Failure Response');
+                        }
+                },
+                failure: function (response) {
+                    grid.unmask();
+                    btn.setLoading(false);
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    grid.unmask();
+                    btn.setLoading(false);
+                    toastr.error('Error downloading data: ' + errorThrown, 'Error Response');
+                }
+            });
     },
 
     doDeleteClinicalTrialWidgetParam: function (item) {
@@ -260,7 +407,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             arrayLength = storeArray.length;
             child.setHeight(600);
        
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -280,7 +427,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             winWidth=btn.winWidth,
             child = Ext.widget(childXtype);
 
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
        
     }, 
     quickNavigationMoreDetails: function (btn) {
@@ -1200,6 +1347,9 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         if (frm.isValid()) {
             frm.submit({
                 url: 'clinicaltrial/saveClinicalTrialCommonData',
+                params: {
+                    _token:token 
+                },
                 waitMsg: 'Please wait...',
                 headers: {
                     'Authorization': 'Bearer ' + access_token
@@ -1215,7 +1365,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
                         
                         Ext.getStore('impproductsstr').load();
                         Ext.getStore('comparatorproductsstr').load();
-                        Ext.getStore('placeboproductsstr').load();
+                        //Ext.getStore('placeboproductsstr').load();
 
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -1238,7 +1388,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             winTitle = item.winTitle,
             winWidth = item.winWidth;
             childObject.loadRecord(record);
-            funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     showImpProductDetails: function (item) {
         var btn = item.up('button'),
@@ -1269,7 +1419,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
 
         childObject.down('hiddenfield[name=table_name]').setValue(table_name);
         
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showImpProductDetailsFromWin: function (item) {
@@ -1300,7 +1450,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
 
         childObject.down('form').getViewModel().set('isReadOnly', isReadOnly);
         
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddExternalAssessor: function (item) {
@@ -1336,7 +1486,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
                         var model = Ext.create('Ext.data.Model', results);
                         childObject.loadRecord(model);
                     }
-                    funcShowCustomizableWindow(ref_no + ' External Assessor', '40%', childObject, 'customizablewindow')
+                    funcShowOnlineCustomizableWindow(ref_no + ' External Assessor', '40%', childObject, 'customizablewindow')
                 } else {
                     toastr.error(message, 'Failure Response!!');
                 }
@@ -1376,7 +1526,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddTcMeetingExternalParticipant: function (btn) {
@@ -1398,7 +1548,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showTcRecommendation: function (btn) {
@@ -1548,7 +1698,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
                         var model = Ext.create('Ext.data.Model', results);
                         form.loadRecord(model);
                     }
-                    funcShowCustomizableWindow('TC Meeting', '50%', childObject, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('TC Meeting', '50%', childObject, 'customizablewindow');
                 } else {
                     toastr.error(message, "Failure Response");
                 }
@@ -1570,7 +1720,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             win = btn.up('window'),
             application_id = win.down('hiddenfield[name=application_id]').getValue();
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddClinicalTrialOtherInvestigatorFromWin: function (btn) {
@@ -1583,7 +1733,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             application_id = win.down('hiddenfield[name=application_id]').getValue();
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
         childObject.down('hiddenfield[name=personnel_type]').setValue(personnel_type);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddImpProductFromWin: function (btn) {
@@ -1607,7 +1757,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         manufacturersStr.removeAll();
         manufacturersStr.load({params: {section_id: section_id}});
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showClinicalTrialApplicationMoreDetails: function (item) {
@@ -1735,7 +1885,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         Ext.each(misPanel.query('field'), function (field) {
             field.setReadOnly(true);
         });
-        funcShowCustomizableWindow(ref_no + ' Compare Details', '95%', comparePanel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no + ' Compare Details', '95%', comparePanel, 'customizablewindow');
     },
 
     acceptPortalAmendedDetails: function (button) {
@@ -1805,7 +1955,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             queriesGrid.down('button[action=submit_app]').setVisible(false);
             queriesGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
         }
-        funcShowCustomizableWindow(ref_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
     },
 
     queryOnlineApplicationFrmBtn: function (btn) {
@@ -1824,7 +1974,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             queriesGrid.down('button[action=submit_app]').setVisible(false);
             queriesGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
         }
-        funcShowCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
     },
 
     submitRejectedOnlineApplication: function (item) {
@@ -1849,7 +1999,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
     
     showApplicationComments: function (item) {
            var me = this,
-            record = btn.getWidgetRecord(),
+            record = item.getWidgetRecord(),
             application_code = record.get('application_code'),
             application_id = record.get('active_application_id');
         this.fireEvent('showApplicationCommentsWin', item, application_id, application_code);
@@ -1858,15 +2008,23 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
     printClinicalTrialCertificate: function (btn) {
         var me = this,
             record = btn.getWidgetRecord(),
-            application_id = record.get('active_application_id'),
             application_code = record.get('application_code');
-        this.fireEvent('generateClinicalCertificate', application_id, application_code);
+            module_id = record.get('module_id');
+            sub_module_id = record.get('sub_module_id');
+            report_type_id = 3;
+            isPreview = 0;
+        this.fireEvent('generateClinicalCertificate', application_code,module_id,sub_module_id,report_type_id,isPreview);
     },
-    printColumnClinicalTrialCertificate:function(item){
+
+
+    printColumnClinicalTrialCertificate: function (item) {
         var record = item.getWidgetRecord(),
-        application_id = record.get('active_application_id'),
-        application_code = record.get('application_code');
-        this.fireEvent('generateClinicalCertificate', application_id, application_code);
+            application_code = record.get('application_code');
+            module_id = record.get('module_id');
+            sub_module_id = record.get('sub_module_id');
+            report_type_id = 3;
+            isPreview = 0;
+        this.fireEvent('generateClinicalCertificate', application_code,module_id,sub_module_id,report_type_id,isPreview);
     },
    
     showAddClinicalTrialUnstructuredQueriesWin: function (btn) {
@@ -1903,7 +2061,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             }
         }
         child.setHeight(600);
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         child.down('hiddenfield[name=application_code]').setValue(application_code);
         child.down('hiddenfield[name=section_id]').setValue(section_id);
         child.down('hiddenfield[name=module_id]').setValue(module_id);
@@ -1911,6 +2069,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         child.down('displayfield[name=tracking_no]').setValue(tracking_no);
         child.down('displayfield[name=reference_no]').setValue(reference_no);
     },
+    
     doSaveInspectionDetails: function (btn) {
         var me = this,
             url = btn.action_url,
@@ -1934,10 +2093,8 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
                         message = response.message;
                     if (success == true || success === true) {
                         toastr.success(message, "Success Response");
-                       
                             store.removeAll();
                             store.load();
-                            //close the window
                             win.close();
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -2199,7 +2356,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         if(grid.down('hiddenfield[name=gridCaller]')){
            grid.down('hiddenfield[name=gridCaller]').setValue(btn.origin);
         }
-       funcShowCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
+       funcShowOnlineCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
     },
   saveEditAppBaseDetails: function (btn) {
         var me = this,
@@ -2425,9 +2582,9 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
                         if (success == true || success === true) {
                             var model = Ext.create('Ext.data.Model', resp.results[0]);    
                            child.loadRecord(model);
-                           child.setHeight(500);
+                           child.setHeight(700);
                            child.down('button[name=save_btn]').setHidden(true);
-                           funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow'); 
+                           funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow'); 
                         } else {
                             toastr.error(message, 'Failure Response');
                             var model = Ext.create('Ext.data.Model', []);
@@ -2462,7 +2619,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             winTitle = btn.winTitle,
             winWidth = btn.winWidth;
             childObject.loadRecord(record);
-            funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     viewSiteDetails:function(btn) {
@@ -2475,7 +2632,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             winWidth = btn.winWidth;
             childObject.loadRecord(record);
             childObject.down('hiddenfield[name=isReadOnly]').setValue(1);
-            funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
 
@@ -2484,7 +2641,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             form = Ext.widget('studysitefrm');
             form.loadRecord(record);
             form.down('hiddenfield[name=isReadOnly]').setValue(1);
-            funcShowCustomizableWindow('Study Site', '70%', form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow('Study Site', '70%', form, 'customizablewindow');
     },
 
 });

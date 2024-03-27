@@ -3,6 +3,8 @@ Ext.define('Admin.view.premiseregistration.views.grids.PremiseDirectorsDetailsGr
     extend: 'Ext.grid.Panel',
     controller: 'premiseregistrationvctr',
     xtype: 'premisedirectorsdetailsgrid',
+    itemId:'premisedirectorsdetailsgrid',
+    id:'premisedirectorsdetailsgrid',
     autoScroll: true,
     autoHeight: true,
     width: '100%',

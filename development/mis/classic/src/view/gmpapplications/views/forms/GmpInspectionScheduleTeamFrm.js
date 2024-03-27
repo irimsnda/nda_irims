@@ -20,6 +20,11 @@ Ext.define('Admin.view.gmpapplications.views.forms.GmpInspectionScheduleTeamFrm'
             xtype: 'hiddenfield',
             name: 'section_id'
         },
+         {
+            xtype: 'hiddenfield',
+            name: '_token',
+            value: token
+        },
         
         {
             xtype: 'fieldcontainer',
@@ -47,12 +52,10 @@ Ext.define('Admin.view.gmpapplications.views.forms.GmpInspectionScheduleTeamFrm'
                 }
             ]
         },
-        
-        
         {
             xtype: 'datefield',
-            fieldLabel: 'Start Date',
-            name: 'start_date',
+            fieldLabel: 'Date of Travel',
+            name: 'travel_date',
             allowBlank: false,
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
@@ -62,21 +65,52 @@ Ext.define('Admin.view.gmpapplications.views.forms.GmpInspectionScheduleTeamFrm'
             listeners: {
                 change: function (field,newVal,oldVal) {
                     var form=field.up('form'),
-                        end_date=form.down('datefield[name=end_date]');
+                        end_date=form.down('datefield[name=return_date]');
                     end_date.setMinValue(newVal);
                 }
             }
         },
         {
             xtype: 'datefield',
-            fieldLabel: 'End Date',
-            name: 'end_date',
+            fieldLabel: 'Date of Return',
+            name: 'return_date',
             allowBlank: false,
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
             columnWidth: 0.5,
             altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
-        },,{
+        },
+        
+        
+        // {
+        //     xtype: 'datefield',
+        //     fieldLabel: 'Start Date',
+        //     name: 'start_date',
+        //     allowBlank: false,
+        //     submitFormat: 'Y-m-d',
+        //     format: 'd/m/Y',
+        //     columnWidth: 0.5,
+        //     altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+        //     enableKeyEvents: true,
+        //     listeners: {
+        //         change: function (field,newVal,oldVal) {
+        //             var form=field.up('form'),
+        //                 end_date=form.down('datefield[name=end_date]');
+        //             end_date.setMinValue(newVal);
+        //         }
+        //     }
+        // },
+        // {
+        //     xtype: 'datefield',
+        //     fieldLabel: 'End Date',
+        //     name: 'end_date',
+        //     allowBlank: false,
+        //     submitFormat: 'Y-m-d',
+        //     format: 'd/m/Y',
+        //     columnWidth: 0.5,
+        //     altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
+        // },
+        {
             xtype: 'textfield',
             fieldLabel: 'Team Description', columnWidth: 0.5,
             name: 'inspectionteam_desc'

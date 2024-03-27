@@ -80,7 +80,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
         
         form.setHeight(height);
         
-        funcShowCustomizableWindow("Add New Safet Alert Observation & Recommendation", "80%", form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow("Add New Safet Alert Observation & Recommendation", "80%", form, 'customizablewindow');
     },
 
     showAddClinicalTrialParamWinFrm: function (btn) {
@@ -95,7 +95,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -106,7 +106,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
         var grid = Ext.widget('pmsregisteredproductsdetailsgrid'),
 		            form=btn.up('form');
         
-        funcShowCustomizableWindowWithObject('Registered Product Selection List', '90%', grid, 'customizablewindow',form);
+        funcShowOnlineCustomizableWindowWithObject('Registered Product Selection List', '90%', grid, 'customizablewindow',form);
     }, 
 	
     doCreateClinicalTrialParamWin: function (btn) {
@@ -265,7 +265,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
             arrayLength = storeArray.length;
             child.setHeight(600);
        
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -285,7 +285,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
             winWidth=btn.winWidth,
             child = Ext.widget(childXtype);
 
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
        
     },   onViewpharmacovigilanceReportingApplication: function (view, record) {
         this.fireEvent('viewApplicationDetails', record);
@@ -1039,7 +1039,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
             arrayLength = storeArray.length;
             child.setHeight(600);
        
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -1061,7 +1061,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
             winTitle = item.winTitle,
             winWidth = item.winWidth;
             childObject.loadRecord(record);
-            funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },editwAddApplicationalertObservations:function(item){
         var btn = item.up('button'),
             grid = btn.up('grid'),
@@ -1070,7 +1070,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
             winTitle = item.winTitle,
             winWidth = item.winWidth;
             childObject.loadRecord(record);
-            funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     showImpProductDetails: function (item) {
         var btn = item.up('button'),
@@ -1097,7 +1097,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
         manufacturersStr.removeAll();
         manufacturersStr.load({params: {section_id: section_id}});
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showImpProductDetailsFromWin: function (item) {
@@ -1128,7 +1128,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
 
         childObject.down('form').getViewModel().set('isReadOnly', isReadOnly);
         
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddExternalAssessor: function (item) {
@@ -1164,7 +1164,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
                         var model = Ext.create('Ext.data.Model', results);
                         childObject.loadRecord(model);
                     }
-                    funcShowCustomizableWindow(ref_no + ' External Assessor', '40%', childObject, 'customizablewindow')
+                    funcShowOnlineCustomizableWindow(ref_no + ' External Assessor', '40%', childObject, 'customizablewindow')
                 } else {
                     toastr.error(message, 'Failure Response!!');
                 }
@@ -1204,7 +1204,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddTcMeetingExternalParticipant: function (btn) {
@@ -1226,7 +1226,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showTcRecommendation: function (item) {
@@ -1247,7 +1247,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
         childObject.down('hiddenfield[name=id]').setValue(record.get('recomm_id'));
         childObject.down('combo[name=decision_id]').setValue(record.get('decision_id'));
         childObject.down('textarea[name=comments]').setValue(record.get('comments'));
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     
     showGCPInspectionDetailsWizard: function (view, record) {
@@ -1337,7 +1337,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
                     form.down('hiddenfield[name=application_code]').setValue(application_code);
                     form.down('hiddenfield[name=process_id]').setValue(process_id);
                     form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
-                    funcShowCustomizableWindow('Recommendation', '40%', form, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('Recommendation', '40%', form, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -1393,7 +1393,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
                         var model = Ext.create('Ext.data.Model', results);
                         form.loadRecord(model);
                     }
-                    funcShowCustomizableWindow('TC Meeting', '50%', childObject, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('TC Meeting', '50%', childObject, 'customizablewindow');
                 } else {
                     toastr.error(message, "Failure Response");
                 }
@@ -1415,7 +1415,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
             win = btn.up('window'),
             application_id = win.down('hiddenfield[name=application_id]').getValue();
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddClinicalTrialOtherInvestigatorFromWin: function (btn) {
@@ -1428,7 +1428,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
             application_id = win.down('hiddenfield[name=application_id]').getValue();
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
         childObject.down('hiddenfield[name=personnel_type]').setValue(personnel_type);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddImpProductFromWin: function (btn) {
@@ -1452,7 +1452,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
         manufacturersStr.removeAll();
         manufacturersStr.load({params: {section_id: section_id}});
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     
     showSafetyAlertApplicationMoreDetails: function (item) {
@@ -1541,7 +1541,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
         Ext.each(misPanel.query('field'), function (field) {
             field.setReadOnly(true);
         });
-        funcShowCustomizableWindow(ref_no + ' Compare Details', '95%', comparePanel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no + ' Compare Details', '95%', comparePanel, 'customizablewindow');
     },
 
     acceptPortalAmendedDetails: function (button) {
@@ -1611,7 +1611,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
             queriesGrid.down('button[action=submit_app]').setVisible(false);
             queriesGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
         }
-        funcShowCustomizableWindow(ref_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
     },
 
     queryOnlineApplicationFrmBtn: function (btn) {
@@ -1630,7 +1630,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
             queriesGrid.down('button[action=submit_app]').setVisible(false);
             queriesGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
         }
-        funcShowCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
     },
 
     submitRejectedOnlineApplication: function (item) {
@@ -1713,7 +1713,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
             }
         }
         child.setHeight(600);
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         child.down('hiddenfield[name=application_code]').setValue(application_code);
         child.down('hiddenfield[name=section_id]').setValue(section_id);
         child.down('hiddenfield[name=module_id]').setValue(module_id);
@@ -2047,7 +2047,7 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.PharmacoVigilanceVctr', {
         if(grid.down('hiddenfield[name=gridCaller]')){
            grid.down('hiddenfield[name=gridCaller]').setValue(btn.origin);
         }
-       funcShowCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
+       funcShowOnlineCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
     },
   saveEditAppBaseDetails: function (btn) {
         var me = this,

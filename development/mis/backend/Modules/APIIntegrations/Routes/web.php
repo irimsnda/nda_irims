@@ -16,6 +16,8 @@ use Modules\APIIntegrations\Http\Controllers\EACHarmonizationController;
 use Modules\APIIntegrations\Http\Controllers\PaymentsIntegrationController;
 use Modules\APIIntegrations\Http\Controllers\TeswsIntegrationController;
 
+use Modules\APIIntegrations\Http\Controllers\NewIntegrationsController;
+
 
 Route::group(['prefix' => 'apiintegrations','middleware' => ['auth:api', 'web']], function() {
 Route::get('getLtrsDetails', [EACHarmonizationController::class, 'getLTRTradersWithLimit']);
@@ -48,6 +50,16 @@ Route::get('gepgReconcReq', [PaymentsIntegrationController::class, 'gepgReconcRe
 
 Route::get('permitApprovalNotification', [TeswsIntegrationController::class, 'permitApprovalNotification']);  
 Route::get('processDeclaredImportExportapps', [TeswsIntegrationController::class, 'processDeclaredImportExportapps']); 
+});
+
+///new routes 
+
+Route::group(['middleware' => 'web', 'prefix' => 'integration'], function () {
+    Route::get('generateAccessToken', [NewIntegrationsController::class, 'generateAccessToken']);
+    Route::get('getCompanyDetails', [NewIntegrationsController::class, 'getCompanyDetails']);
+    Route::get('getCompanyShareholders', [NewIntegrationsController::class, 'getCompanyShareholders']);
+
+    Route::get('test', [NewIntegrationsController::class, 'test']);
 });
 
 

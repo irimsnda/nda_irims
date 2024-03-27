@@ -162,7 +162,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.NonLice
         //  },
            {
             xtype: 'importexportdocuploadsgrid',
-            title: 'Documents Submission'
+            title: 'Document Review'
         },{
             xtype: 'productscreeninggrid',
             title: 'Import/Export Non-Licenced Checklists'
@@ -220,7 +220,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.NonLice
                     step: 2,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,max_step:3,
-                    text: 'Documents Submission',
+                    text: 'Document Review',
                     action: 'quickNav', iconAlign: 'top',
                     wizard: 'nonlicencedreceivingwizard',
                     handler: 'quickNavigation'

@@ -179,7 +179,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
         }],
         
         tbar:[{
-            text:'Recommend Selected Permits Products',
+            text:'Update Application Product Recommendation',
            // name:'btn_recommendallproducts',
            viewXtype: 'permitsproductsrecommendationfrm',
            winTitle: 'Permits Porducts Recommendation',
@@ -188,7 +188,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
             iconCls: 'x-fa fa-plus',
             ui: 'soft-red',
         },'->',{
-            text:'Update Permits Products Recommendation',
+            text:'Update Application Product Recommendation',
             name:'btn_updatesprodrecommendtion',
             iconCls: 'x-fa fa-plus',
             ui: 'soft-green',

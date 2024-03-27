@@ -4,6 +4,17 @@
 Ext.define('Admin.view.gmpapplications.views.forms.ProductLineRecommendationFrm', {
     extend: 'Admin.view.gmpapplications.views.forms.ProductLineAbstractFrm',
     xtype: 'productlinerecommendationfrm',
+    scrollable:true,
+    listeners: {
+        afterrender: function () {
+            var form = this,
+            productLineCategoryStr = form.down('combo[name=category_id]').getStore(),
+            manufacturingSiteStr = form.down('combo[name=manufacturing_activity_id]').getStore();
+            productLineCategoryStr.load();
+            manufacturingSiteStr.load();
+            
+        }
+    },
 
     initComponent: function () {
         this.callParent();
@@ -14,7 +25,7 @@ Ext.define('Admin.view.gmpapplications.views.forms.ProductLineRecommendationFrm'
                 value: 1
             },  {
                 xtype: 'combo',
-                fieldLabel: 'TC Recommendation',
+                fieldLabel: 'Review Recommendation',
                 name: 'prodline_tcmeetingstatus_id',
                 store: 'gmpproductlinestatusstr',
                 forceSelection: true,

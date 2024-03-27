@@ -244,6 +244,7 @@
         {
             xtype: 'textfield',
             fieldLabel: 'Postal Address',
+            allowBlank:true,
             name: 'postal_address',
         },
         {

@@ -82,6 +82,35 @@ trait GmpApplicationsTrait
         return $codes_array;
     }
 
+
+    public function calculateReturnDate($startDate, $numberOfDays) {
+        $currentDate = new \DateTime($startDate);
+
+        while ($numberOfDays > 0) {
+            // Move to the next day
+            $currentDate->modify('+1 day');
+            // Check if the current day is a weekend (Saturday or Sunday)
+            $dayOfWeek = $currentDate->format('N');
+            if ($dayOfWeek >= 6) { // 6 is Saturday, 7 is Sunday
+                continue; // Skip weekends
+            }
+
+            // Check if the current day is a holiday
+            $escapedDate = $currentDate->format('Y-m-d');
+            $count = DB::table('holidays')->where('holiday_date', $escapedDate)->count();
+
+            if ($count > 0) {
+                continue; // Skip holidays
+            }
+
+            $numberOfDays--;
+        }
+
+        // Return the calculated return date
+        return $currentDate->format('Y-m-d');
+    }
+
+
     public function processGmpApplicationsSubmission(Request $request)
     {
         $action = $request->input('action');

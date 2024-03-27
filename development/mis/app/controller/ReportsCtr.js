@@ -89,8 +89,11 @@ Ext.define('Admin.controller.ReportsCtr', {
                 printReceipt: 'printApplicationReceipt',
                 generatePremiseCert: 'generatePremiseCertificate',
                 generatePremisePermit: 'generatePremisePermit',
+                generateTCPDPremisePermit: 'generateTCPDPremisePermit',
+                generatePremiseInspectionReport: 'generatePremiseInspectionReport',
                 generateProductRegCertificate: 'generateProductRegCertificate',
                 generatePromotionalRegCertificate:'generatePromotionalRegCertificate',
+                generatePromotionalTCPDFRegCertificate:'generatePromotionalTCPDFRegCertificate',
                 generateProductNotificationApprovalLetter:'generateProductNotificationApprovalLetter',
                 
                 generateProductNotificationCertificate:'generateProductNotificationCertificate',
@@ -137,7 +140,15 @@ Ext.define('Admin.controller.ReportsCtr', {
             print_report(action_url);
 
     },
-     generateImportExportpermit:function(application_code,module_id,sub_module_id,report_type_id,isPreview) {
+    // generateImportExportpermit:function(application_code,module_id,permit_watermark ){
+
+    //     var action_url = 'reports/genenerateImportExportPermit?application_code=' + application_code + '&&module_id=' + module_id+'&permit_watermark='+permit_watermark;
+    //         print_report(action_url);
+
+    // },
+
+
+    generateImportExportpermit:function(application_code,module_id,sub_module_id,licence_type_id, has_registered_premises,report_type_id,isPreview) {
         Ext.getBody().mask();
           Ext.Ajax.request({
                           url: 'reports/getReportUrl',
@@ -146,6 +157,8 @@ Ext.define('Admin.controller.ReportsCtr', {
                               application_code:application_code,
                               module_id: module_id,
                               sub_module_id:sub_module_id,
+                              licence_type_id:licence_type_id,
+                              has_registered_premises:has_registered_premises,
                               report_type_id:report_type_id,
                               isPreview:isPreview
                           },
@@ -181,6 +194,50 @@ Ext.define('Admin.controller.ReportsCtr', {
               
       },
 
+      generateImportExportVCPermit:function(application_code,module_id,sub_module_id,has_registered_premises,report_type_id,isPreview) {
+        Ext.getBody().mask();
+          Ext.Ajax.request({
+                          url: 'reports/getReportUrl',
+                          method: 'GET',
+                          params: {
+                              application_code:application_code,
+                              module_id: module_id,
+                              sub_module_id:sub_module_id,
+                              has_registered_premises:has_registered_premises,
+                              report_type_id:report_type_id,
+                              isPreview:isPreview
+                          },
+                          headers: {
+                              'Authorization': 'Bearer ' + access_token,
+                              'X-CSRF-Token': token
+                          },
+                          success: function (response) {
+                              Ext.getBody().unmask();
+                              var resp = Ext.JSON.decode(response.responseText),
+                                  success = resp.success;
+                              document_url = resp.document_url;
+                              if (success == true || success === true) {
+                                  
+                                  print_report(document_url);
+                                  
+                              } else {
+                                  toastr.error(resp.message, 'Failure Response');
+                              }
+                          },
+                          failure: function (response) {
+                              Ext.getBody().unmask();
+                              var resp = Ext.JSON.decode(response.responseText),
+                                  message = resp.message;
+                              toastr.error(message, 'Failure Response');
+                          },
+                          error: function (jqXHR, textStatus, errorThrown) {
+                              Ext.getBody().unmask();
+                              toastr.error('Error downloading data: ' + errorThrown, 'Error Response');
+                          }
+                  });
+                  
+              
+      },
     printSampleSubmissionReport:function(btn){
         var me = this,
             mainTabPanel = me.getMainTabPanel(),
@@ -294,6 +351,11 @@ Ext.define('Admin.controller.ReportsCtr', {
             
     },
 
+     generateTCPDPremisePermit: function (application_code) {
+        var action_url = 'reports/generatePremisePermit?application_code=' + application_code;
+        print_report(action_url);
+    },
+
     generatePremisePermit: function (application_code,module_id,sub_module_id,business_type_id,report_type_id,isPreview) {
       Ext.getBody().mask();
         Ext.Ajax.request({
@@ -304,6 +366,228 @@ Ext.define('Admin.controller.ReportsCtr', {
                             module_id: module_id,
                             sub_module_id:sub_module_id,
                             business_type_id:business_type_id,
+                            report_type_id:report_type_id,
+                            isPreview:isPreview
+                        },
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token,
+                            'X-CSRF-Token': token
+                        },
+                        success: function (response) {
+                            Ext.getBody().unmask();
+                            var resp = Ext.JSON.decode(response.responseText),
+                                success = resp.success;
+                            document_url = resp.document_url;
+                            if (success == true || success === true) {
+                                 //window.open(document_url,'_blank', 'resizable=yes,scrollbars=yes,directories=no, titlebar=no, toolbar=no,menubar=no,location=no,directories=no, status=no');
+
+                                 var newWindow = window.open(document_url, '_blank', 'resizable=yes,scrollbars=yes,directories=no,titlebar=no,toolbar=no,menubar=no,location=no,status=no');
+                                // Check if the new window was successfully opened
+                                if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                                      Ext.MessageBox.confirm('Preview Confirmation', 'Do you want to open  this document?', function (button) {
+                                        if (button === 'yes') {
+                                            window.open(document_url, '_blank', 'resizable=yes,scrollbars=yes,directories=no,titlebar=no,toolbar=no,menubar=no,location=no,status=no');
+                                        }
+                                    })
+                                }
+                               // print_report(document_url);
+                                
+                            } else {
+                                toastr.error(resp.message, 'Failure Response');
+                            }
+                        },
+                        failure: function (response) {
+                            Ext.getBody().unmask();
+                            var resp = Ext.JSON.decode(response.responseText),
+                                message = resp.message;
+                            toastr.error(message, 'Failure Response');
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            Ext.getBody().unmask();
+                            toastr.error('Error downloading data: ' + errorThrown, 'Error Response');
+                        }
+                });
+                
+            
+    },
+
+
+    generatePremiseInspectionReport: function (application_code,module_id,sub_module_id,premise_id,report_type_id,inspection_report_type_id) {
+      Ext.getBody().mask();
+        Ext.Ajax.request({
+                        url: 'reports/getReportUrl',
+                        method: 'GET',
+                        params: {
+                            application_code:application_code,
+                            module_id: module_id,
+                            sub_module_id:sub_module_id,
+                            premise_id:premise_id,
+                            report_type_id:report_type_id,
+                            inspection_report_type_id:inspection_report_type_id
+                        },
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token,
+                            'X-CSRF-Token': token
+                        },
+                        success: function (response) {
+                            Ext.getBody().unmask();
+                            var resp = Ext.JSON.decode(response.responseText),
+                                success = resp.success;
+                            document_url = resp.document_url;
+                            if (success == true || success === true) {
+                                
+                                print_report(document_url);
+                                
+                            } else {
+                                toastr.error(resp.message, 'Failure Response');
+                            }
+                        },
+                        failure: function (response) {
+                            Ext.getBody().unmask();
+                            var resp = Ext.JSON.decode(response.responseText),
+                                message = resp.message;
+                            toastr.error(message, 'Failure Response');
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            Ext.getBody().unmask();
+                            toastr.error('Error downloading data: ' + errorThrown, 'Error Response');
+                        }
+                });
+                
+            
+    },
+
+
+    generateProductRegCertificate: function (application_code,module_id,sub_module_id,report_type_id,isPreview) {
+      Ext.getBody().mask();
+        Ext.Ajax.request({
+                        url: 'reports/getReportUrl',
+                        method: 'GET',
+                        params: {
+                            application_code:application_code,
+                            module_id: module_id,
+                            sub_module_id:sub_module_id,
+                            report_type_id:report_type_id,
+                            isPreview:isPreview
+                        },
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token,
+                            'X-CSRF-Token': token
+                        },
+                        success: function (response) {
+                            Ext.getBody().unmask();
+                            var resp = Ext.JSON.decode(response.responseText),
+                                success = resp.success;
+                            document_url = resp.document_url;
+                            if (success == true || success === true) {
+                                
+                                print_report(document_url);
+                                
+                            } else {
+                                toastr.error(resp.message, 'Failure Response');
+                            }
+                        },
+                        failure: function (response) {
+                            Ext.getBody().unmask();
+                            var resp = Ext.JSON.decode(response.responseText),
+                                message = resp.message;
+                            toastr.error(message, 'Failure Response');
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            Ext.getBody().unmask();
+                            toastr.error('Error downloading data: ' + errorThrown, 'Error Response');
+                        }
+                })
+    },
+   
+    
+    generateProductNotificationApprovalLetter: function (application_code) {
+        var action_url = 'reports/generateProductNotificationApprovalLetter?application_code=' + application_code;
+        print_report(action_url);
+    },
+
+
+    generatePromotionalTCPDFRegCertificate: function (application_code) {
+        var action_url = 'reports/generatePromotionalRegCertificate?application_code=' + application_code;
+        print_report(action_url);
+    },
+
+
+    generatePromotionalRegCertificate: function (application_code,module_id,sub_module_id,report_type_id,isPreview) {
+      Ext.getBody().mask();
+        Ext.Ajax.request({
+                        url: 'reports/getReportUrl',
+                        method: 'GET',
+                        params: {
+                            application_code:application_code,
+                            module_id: module_id,
+                            sub_module_id:sub_module_id,
+                            report_type_id:report_type_id,
+                            isPreview:isPreview
+                        },
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token,
+                            'X-CSRF-Token': token
+                        },
+                        success: function (response) {
+                            Ext.getBody().unmask();
+                            var resp = Ext.JSON.decode(response.responseText),
+                                success = resp.success;
+                            document_url = resp.document_url;
+                            if (success == true || success === true) {
+                                
+                                print_report(document_url);
+                                
+                            } else {
+                                toastr.error(resp.message, 'Failure Response');
+                            }
+                        },
+                        failure: function (response) {
+                            Ext.getBody().unmask();
+                            var resp = Ext.JSON.decode(response.responseText),
+                                message = resp.message;
+                            toastr.error(message, 'Failure Response');
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            Ext.getBody().unmask();
+                            toastr.error('Error downloading data: ' + errorThrown, 'Error Response');
+                        }
+                });
+                
+            
+    },
+    
+    
+    generateProductNotificationCertificate: function (application_code) {
+        var action_url = 'reports/generateProductNotificationCertificate?application_code=' + application_code;
+        print_report(action_url);
+    },
+    generateGMPCertificate: function (application_code, section_id) {
+        var action_url = 'reports/generateGmpCertificate?application_code=' + application_code + '&&section_id=' + section_id;
+        print_report(action_url);
+    },
+
+    generateGmpApprovalLetter: function (application_code, section_id) {
+        var action_url = 'reports/generateGmpApprovalLetter?application_code=' + application_code + '&&section_id=' + section_id;
+        print_report(action_url);
+    },
+
+    // generateClinicalTrialCertificate: function (application_id, application_code) {
+    //     var action_url = 'reports/generateClinicalTrialCertificate?application_id=' + application_id + '&&application_code=' + application_code;
+    //     print_report(action_url);
+    // },
+    //rejections 
+
+
+      generateClinicalTrialCertificate: function (application_code,module_id,sub_module_id,report_type_id,isPreview) {
+      Ext.getBody().mask();
+        Ext.Ajax.request({
+                        url: 'reports/getReportUrl',
+                        method: 'GET',
+                        params: {
+                            application_code:application_code,
+                            module_id: module_id,
+                            sub_module_id:sub_module_id,
                             report_type_id:report_type_id,
                             isPreview:isPreview
                         },
@@ -339,47 +623,6 @@ Ext.define('Admin.controller.ReportsCtr', {
             
     },
 
-    // generatePremisePermit: function (application_code) {
-    //     var action_url = 'reports/generatePremisePermit?application_code=' + application_code;
-    //     print_report(action_url);
-    // },
-
-    generateProductRegCertificate: function (application_code) {
-        var action_url = 'reports/generateProductRegCertificate?application_code=' + application_code;
-        print_report(action_url);
-    },
-   
-    
-    generateProductNotificationApprovalLetter: function (application_code) {
-        var action_url = 'reports/generateProductNotificationApprovalLetter?application_code=' + application_code;
-        print_report(action_url);
-    },
-    
-    generatePromotionalRegCertificate: function (application_code) {
-        var action_url = 'reports/generatePromotionalRegCertificate?application_code=' + application_code;
-        print_report(action_url);
-    },
-    
-    
-    generateProductNotificationCertificate: function (application_code) {
-        var action_url = 'reports/generateProductNotificationCertificate?application_code=' + application_code;
-        print_report(action_url);
-    },
-    generateGMPCertificate: function (application_code, section_id) {
-        var action_url = 'reports/generateGmpCertificate?application_code=' + application_code + '&&section_id=' + section_id;
-        print_report(action_url);
-    },
-
-    generateGmpApprovalLetter: function (application_code, section_id) {
-        var action_url = 'reports/generateGmpApprovalLetter?application_code=' + application_code + '&&section_id=' + section_id;
-        print_report(action_url);
-    },
-
-    generateClinicalTrialCertificate: function (application_id, application_code) {
-        var action_url = 'reports/generateClinicalTrialCertificate?application_id=' + application_id + '&&application_code=' + application_code;
-        print_report(action_url);
-    },
-    //rejections 
 
     
     generateProductRejectionLetter: function (product_id) {

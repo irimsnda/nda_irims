@@ -28,7 +28,7 @@ Ext.define('Admin.view.document_management.views.grids.Docdefinationrequirementg
         ui: 'soft-green',
         childXtype: 'docdefinationrequirementfrm',
         winTitle: 'Documents requirements Definition',
-        winWidth: '40%',
+        winWidth: '60%',
         handler: 'showAddConfigParamWinFrm',
         stores: '[]'
     },{
@@ -282,7 +282,7 @@ Ext.define('Admin.view.document_management.views.grids.Docdefinationrequirementg
                     action: 'edit',
                     childXtype: 'docdefinationrequirementfrm',
                     winTitle: 'Documents requirements Definition',
-                    winWidth: '40%',
+                    winWidth: '60%',
                     handler: 'showEditConfigParamWinFrm',
                     stores: '[]'
                 }, {

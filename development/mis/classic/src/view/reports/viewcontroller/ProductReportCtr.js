@@ -83,7 +83,7 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
         tabs = panel.down('producttabpnl'),
         gridStr = tabs.down('producttabularrepresentationgrid').getStore(),
 
-        graphStr = tabs.down('cartesian').getStore();
+        //graphStr = tabs.down('cartesian').getStore();
 
            
 
@@ -106,21 +106,21 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
             });
 
          
-        graphStr.removeAll();
-        graphStr.load({
-            params:{
-                sub_module_id:sub_module_id,
-                module_id: module_id,
-                section_id: section_id,
-                classification_category: classification_category,
-                from_date: from_date,
-                to_date: to_date,
-                prodclass_category: prodclass_category,
-                product_origin_id: product_origin_id
+        // graphStr.removeAll();
+        // graphStr.load({
+        //     params:{
+        //         sub_module_id:sub_module_id,
+        //         module_id: module_id,
+        //         section_id: section_id,
+        //         classification_category: classification_category,
+        //         from_date: from_date,
+        //         to_date: to_date,
+        //         prodclass_category: prodclass_category,
+        //         product_origin_id: product_origin_id
 
-                },
+        //         },
                   
-            });
+        //     });
                
     },
      reloadProductCartesianFilters: function (btn) {

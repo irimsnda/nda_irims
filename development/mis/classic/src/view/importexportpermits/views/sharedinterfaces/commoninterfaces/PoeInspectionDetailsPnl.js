@@ -1,32 +1,29 @@
-
-/**
- * Created by Kip on 11/12/2018.
- */
 Ext.define('Admin.view.importexportpermits.views.commoninterfaces.PoeInspectionDetailsPnl', {
     extend: 'Ext.panel.Panel',
     xtype: 'poeinspectiondetailspnl',
     
-    layout: {//
+    layout: {
         type: 'border'
     },
-    defaults:{
+    defaults: {
         margin: 3
-    },viewModel: {
+    },
+    viewModel: {
         type: 'importexportpermitsvm'
     },
     items: [{
         xtype: 'poeinspectionpnlfrm',
         autoScroll: true,
         collapsible: true,
-        height: 250,
+        height: 350,
         region: 'north',
         title: 'Import/Export Inspection Details',
-        buttons:[{
-            text:'Save Inspection Details',
-            iconCls:'x-fa fa-save',
-            ui:'soft-purple',
-            action_url:'savePOEInspectionPermitDetails',
-            handler:'funcSavePOEInspectionPermitDetails'
+        buttons: [{
+            text: 'Save Inspection Details',
+            iconCls: 'x-fa fa-save',
+            ui: 'soft-purple',
+            action_url: 'savePOEInspectionPermitDetails',
+            handler: 'funcSavePOEInspectionPermitDetails'
         }]
     }, {
         xtype: 'poeinspectionpermitsproductsgrid',
@@ -34,11 +31,11 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.PoeInspectionD
         title: 'Permit Products Details',
     },  {
         xtype: 'previousinspectionsgrid',
-        autoScroll:true,
+        autoScroll: true,
+        hidden: true,
         region: 'south',
         title: 'Previous Inspections',
-        
-    },{
+    }, {
         xtype: 'hiddenfield',
         name: '_token',
         value: token

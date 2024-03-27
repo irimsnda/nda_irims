@@ -5,6 +5,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.PremisePersonnelDetailsGr
     extend: 'Ext.grid.Panel',
     controller: 'premiseregistrationvctr',
     xtype: 'premisepersonneldetailsgrid',
+    itemId:'premisepersonneldetailsgrid',
     autoScroll: true,
     autoHeight: true,
     width: '100%',

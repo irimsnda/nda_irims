@@ -40,15 +40,35 @@ Ext.define('Admin.view.parameters.views.forms.RevenueAccountsFrm', {
         name: '_token',
         hidden: true
     }, {
-        xtype: 'textfield',
-        fieldLabel: 'Name',
+        xtype: 'combobox',
+        forceSelection: true,
+        name: 'gl_code_id',
+        displayField: 'name',
         allowBlank: false,
-        margin: '0 20 20 0',
-        name: 'name'
+        fieldLabel: 'Revenue Description',
+        margin: '0 20 0 0',
+        valueField: 'id',
+        queryMode: 'local',
+        listeners:{
+                afterrender: {
+                    fn: 'setConfigCombosStore',
+                    config:{
+                        pageSize: 10000,
+                        proxy:{
+                            url: 'configurations/getConfigParamFromTable',
+                            extraParams:{
+                                table_name: 'par_gl_accounts',
+                                is_enabled: 1
+                            }
+                        }
+                    },
+                    isLoad: true
+            }
+        }
     },{
         xtype: 'textfield',
-        fieldLabel: 'NDA Revenue Code',
-        allowBlank: true,
+        fieldLabel: 'Revenue Account',
+        allowBlank: false,
         margin: '0 20 20 0',
         name: 'code'
     },

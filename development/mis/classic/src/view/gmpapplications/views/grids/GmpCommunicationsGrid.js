@@ -264,6 +264,12 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpCommunicationsGrid', {
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 0,
                         handler: 'showGmpApplicationMoreDetails'
+                    },{
+                        text: 'View  Online Assessment Tool',
+                        iconCls: 'x-fa fa-bars',
+                        appDetailsReadOnly: 1,
+                        winTitle: 'Online Assessment Tool Details',
+                        handler: 'showGMPAssessmentToolDetails'
                     },  {
                         text: 'Inspection Documents',
                         iconCls: 'x-fa fa-upload',
@@ -279,7 +285,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpCommunicationsGrid', {
                         action: 'edit',
                         childXtype: '',
                         winTitle: 'Application Documents',
-                        winWidth: '40%',
+                        winWidth: '80%',
                         isReadOnly: 1,
                         document_type_id: '',
                         handler: 'showPreviousUploadedDocs'

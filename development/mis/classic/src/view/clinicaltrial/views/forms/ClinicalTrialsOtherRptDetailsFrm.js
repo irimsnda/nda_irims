@@ -31,6 +31,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsOtherRptDetailsFr
             xtype: 'textarea',
             fieldLabel: 'Study Title',
             name: 'study_title',
+            grow: true, 
+            growMax: 200, 
             readOnly: true,
             columnWidth: 1
         },{
@@ -167,6 +169,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsOtherRptDetailsFr
         {
             xtype: 'textarea',columnWidth: 1,
             fieldLabel: 'Brief Description',
+            grow: true, 
+            growMax: 200, 
             name: 'brief_description',            
 
         },

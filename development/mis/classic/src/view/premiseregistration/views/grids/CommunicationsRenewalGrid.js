@@ -146,7 +146,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.CommunicationsRenewalGrid
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'approval_status',
-        text: 'DG Recommendation',
+        text: 'SA Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',

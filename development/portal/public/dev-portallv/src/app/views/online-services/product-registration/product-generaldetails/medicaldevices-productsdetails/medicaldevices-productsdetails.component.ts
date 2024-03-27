@@ -30,12 +30,14 @@ export class MedicaldevicesProductsdetailsComponent  extends SharedProductregist
   @Input() distributionCategoryData: any;
   @Input() storageConditionData: any;
   @Input() dosageFormsData: any;
+  @Input() commonAtcNamesData:any;
   @Input() routeOfAdministrationData: any;
   @Input() productCategoryData: any;
+  @Input() productTypeDta:any;
   @Input() durationDescData: any;
   @Input() productTypeData: any;
   @Input() confirmDataParam: any;
-
+  @Input() therapeuticGroupData:any;
   @Input() productFormData: any;
   @Input() methodOfUseData: any;
   @Input() intendedEndUserData: any;
@@ -82,7 +84,7 @@ export class MedicaldevicesProductsdetailsComponent  extends SharedProductregist
   isHasModelChange:boolean = false;
   isHasMedicalFamily:boolean = false;
   isonHasReagents_accessories:boolean = false;
-
+  device_type_id:number;
  
   ngOnInit() {
     this.onLoadGmdnCodeData(this.section_id);
@@ -114,6 +116,7 @@ export class MedicaldevicesProductsdetailsComponent  extends SharedProductregist
           return false;
         });
   }
+
   onTraderasLocalAgentChange($event) {
     
     if($event.value == 1){
@@ -234,10 +237,9 @@ onValidateBrandNameDetails(e){
         this.gmdnCodeData = data;
       });
 }
-onLoadreasonForClassificationData(device_type_id,classification_id) {
+onLoadreasonForClassificationData(device_type_id) {
   var data = {
-    table_name: 'par_product_classificationrules',
-    classification_id: classification_id,
+    table_name: 'par_classification_rules',
     device_type_id:device_type_id
   };
   this.config.onLoadConfigurationData(data)
@@ -280,10 +282,14 @@ onHasReagents_accessories($event) {
     this.isonHasReagents_accessories = true;
   }
 }
-onclassificationDevTypeDataSelect($event) {
-  let device_type_id =  this.productGeneraldetailsfrm.get('device_type_id').value;
-  let classification_id =  this.productGeneraldetailsfrm.get('classification_id').value;
-  this.onLoadreasonForClassificationData(device_type_id,classification_id);
-}
+
+ onclassificationDevTypeDataSelect($event) {
+    this.device_type_id = $event.selectedItem.id;
+    this.onLoadreasonForClassificationData(this.device_type_id);
+
+  }
+
+
+
 
 }

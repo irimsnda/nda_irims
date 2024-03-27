@@ -80,6 +80,7 @@ Ext.define('Admin.view.configurations.views.forms.Gmpfeeconfigfrm', {
             margin:5,
             name: 'section_id',
             valueField: 'id',
+            allowBlank:true,
             displayField: 'name',
             forceSelection: true,
             queryMode: 'local',
@@ -154,6 +155,7 @@ Ext.define('Admin.view.configurations.views.forms.Gmpfeeconfigfrm', {
             xtype: 'combo',
             fieldLabel: 'GMP Inspection Type(Optional)',
             margin:5,
+            hidden:true,
             allowBlank: true,
             name: 'inspection_type_id',
             valueField: 'id',
@@ -180,6 +182,7 @@ Ext.define('Admin.view.configurations.views.forms.Gmpfeeconfigfrm', {
             xtype: 'combo',
             fieldLabel: "SME's Option Selection",
             margin:5,
+            hidden:true,
             name: 'smes_option_id',
             valueField: 'id',
             displayField: 'name',
@@ -202,7 +205,88 @@ Ext.define('Admin.view.configurations.views.forms.Gmpfeeconfigfrm', {
                 }
                
             }
-        },{
+        },
+
+         {
+                    xtype: 'combo',
+                    fieldLabel: 'Inpection Manufacturing Activities',
+                    name: 'inspection_activities_id',
+                    columnWidth: 1,
+                    allowBlank: true,
+                    forceSelection: true,
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    listeners: {
+                        beforerender: {
+                            fn: 'setConfigCombosStore',
+                            config: {
+                                pageSize: 10000,
+                                proxy: {
+                                    url: 'commonparam/getCommonParamFromTable',
+                                    extraParams: {
+                                        table_name: 'par_manufacturinginspection_activities'
+                                    }
+                                }
+                            },
+                            isLoad: true
+                        },change: function(combo, newVal, oldValue, eopts) {
+                             var form = combo.up('form'),
+                             intermediate_manufacturing_activity_id = form.down('combo[name=intermediate_manufacturing_activity_id]');
+                           if(newVal == 2){
+                                manufacturing_activity_str = intermediate_manufacturing_activity_id.getStore();
+                                manufacturing_activity_str.removeAll();
+                                manufacturing_activity_str.load();
+                                intermediate_manufacturing_activity_id.setHidden(false);
+                                intermediate_manufacturing_activity_id.allowBlank = false;
+                                intermediate_manufacturing_activity_id.validate();
+                           }else if(newVal == 3){
+                                manufacturing_activity_str = intermediate_manufacturing_activity_id.getStore();
+                                manufacturing_activity_str.removeAll();
+                                manufacturing_activity_str.load();
+                                intermediate_manufacturing_activity_id.setHidden(false);
+                                intermediate_manufacturing_activity_id.allowBlank = false;
+                                intermediate_manufacturing_activity_id.validate();
+                           }
+                           else{
+                            intermediate_manufacturing_activity_id.setHidden(true);
+                            intermediate_manufacturing_activity_id.allowBlank = true;
+                          
+
+                          }
+                       }
+                    }
+                },
+
+                {
+                    xtype: 'combo',
+                    fieldLabel: 'Manufacturing Activity(s)',
+                    name: 'intermediate_manufacturing_activity_id',
+                    forceSelection: true,
+                    allowBlank:true,
+                    hidden:true,
+                    columnWidth: 1,
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    listeners: {
+                        beforerender: {
+                            fn: 'setConfigCombosStore',
+                            config: {
+                                pageSize: 10000,
+                                proxy: {
+                                    url: 'commonparam/getCommonParamFromTable',
+                                    extraParams: {
+                                        table_name: 'par_site_manufacturing_activities'
+                                    }
+                                }
+                            },
+                            isLoad: false
+                        }
+                    }
+                },
+
+           {
             xtype: 'combo',
             fieldLabel: 'Fee Type',
             margin:5,

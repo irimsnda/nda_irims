@@ -78,9 +78,9 @@
 <div class=" row">
      
     <dx-button *ngFor="let sub_module of clincialtrialappTypeData;" 
-        text="{{sub_module.name}} Application"
+        text="{{sub_module.name}}"
         type="default"
-        width="270"
+        width="350"
         icon="fa {{sub_module.icon}}"
         [elementAttr]="{ id: 'elementId', class: 'col-lg-2' }"
         (onClick)="onClickSubModuleAppSelection(sub_module.id,sub_module.name)">
@@ -156,10 +156,6 @@
                                 <div [innerHTML]="data.data.study_title"></div>
                             </div>
                         </dxi-column>
-      <dxi-column dataField="protocol_no"></dxi-column>
-      <dxi-column dataField="clinical_trial_sponsor"></dxi-column>
-      <dxi-column dataField="principal_investigator"></dxi-column>
-      <dxi-column dataField="date_of_protocol"></dxi-column>
       <dxi-column dataField="date_added"></dxi-column>
       <dxi-column  dataField="status_name"></dxi-column>
       <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
@@ -233,10 +229,10 @@
     </dx-data-grid>
   </div>
 </dx-popup>
-<dx-popup class="popup" [width]="funcpopWidth(45)" [height]="450" [showTitle]="true" title="Preview Details"
+<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="500" [showTitle]="true" title="Preview Details"
   [dragEnabled]="false" [closeOnOutsideClick]="true" [(visible)]="isPreviewApplicationsDetails">
   <div *dxTemplate="let data of 'content'" style="background:#fff;">
-    <form role="form" class="col-lg-12" enctype="multipart/form-data" role="form" [formGroup]="frmPreviewApplicationsDetails">
+    <form role="form" class="col-lg-12" enctype="multipart/form-data" role="form" [formGroup]="frmPreviewApprovedApplicationsDetails">
       <div class="row">
           <div class="col-lg-12">
             <label class="control-label">Tracking No</label>
@@ -244,27 +240,26 @@
             </dx-text-box>
           </div>
           <div class="col-lg-12">
-            <label class="control-label">Study Title/</label>
-            <dx-text-box formControlName="study_title" placeholder="Enter Brand Name" readOnly=true [showClearButton]="true">
+            <label class="control-label">Study Title</label>
+            <dx-text-box formControlName="study_title" placeholder="Study Title" readOnly=true [showClearButton]="true">
             </dx-text-box>
           </div>
           <div class="col-lg-12 ">
-            <label for="ti" class="control-label">Protocol No</label>
+            <label for="ti" class="control-label">Confirmed Meeting Date</label>
 
-            <dx-text-box formControlName="protocol_no" readOnly=true  placeholder="Classification" [showClearButton]="true">
+            <dx-text-box formControlName="date_requested " readOnly=true  placeholder="Approved Meeting Date" [showClearButton]="true">
             </dx-text-box>
           </div>
-        
-          <div class="col-lg-12">
-            <label class="control-label">Application Type</label>
+          <div class="col-lg-12 ">
+            <label for="ti" class="control-label">Confirmed Meeting Time</label>
 
-            <dx-text-box formControlName="application_type" readOnly=true  placeholder="" [showClearButton]="true">
+            <dx-text-box formControlName="meeting_time " readOnly=true  placeholder="Approved Meeting Time" [showClearButton]="true">
             </dx-text-box>
-          </div>
+          </div>         
           <div class="col-lg-12">
-            <label class="control-label">Current Status</label>
+            <label class="control-label">Meeting Venue</label>
 
-            <dx-text-box formControlName="status" readOnly=true  [showClearButton]="true">
+            <dx-text-box formControlName="meeting_venue " readOnly=true  placeholder="" [showClearButton]="true">
             </dx-text-box>
           </div>
     </div>

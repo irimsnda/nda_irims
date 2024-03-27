@@ -15,18 +15,24 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                     url: 'importexportpermits/getImportExportManagerReviewApplications'
                 }
             },
-            isLoad: false
+            isLoad: true 
         },
-        
+
+        select: function (sel, record, index, eOpts) {
+            var grid = sel.view.grid,
+                selCount = grid.getSelectionModel().getCount();
+            if (selCount > 0) {
+                grid.down('button[name=submit_selected]').setDisabled(false);
+            }
+        },
         deselect: function (sel, record, index, eOpts) {
-            
             var grid = sel.view.grid,
                 selCount = grid.getSelectionModel().getCount();
             if (selCount < 1) {
                 grid.down('button[name=submit_selected]').setDisabled(true);
             }
-            
         }
+        
     }, selModel: {
         selType: 'checkboxmodel',
         mode: 'MULTI'
@@ -40,6 +46,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         fieldLabel: 'Zones',
         forceSelection: true,
         queryMode: 'local',
+        hidden: true,
         valueField: 'id',
         labelAlign : 'top',
         displayField: 'name',
@@ -96,6 +103,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
     },{
         xtype: 'gridcolumn',
         dataIndex: 'reference_no',
+        hidden:true,
         text: 'Import Permit Number',
         flex: 1
     },{
@@ -145,17 +153,18 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         text: 'Status',
         flex: 1
     },
-    // {
-    //     xtype: 'gridcolumn',
-    //     dataIndex: 'premises_validation_recommendation',
-    //     text: 'Premises Validation Recommendation',
-    //     flex: 1
-    // },{
-    //     xtype: 'gridcolumn',
-    //     dataIndex: 'products_validation_recommendation',
-    //     text: 'Products Validation Recommendation',
-    //     flex: 1
-    // },
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'premises_validation_recommendation',
+        text: 'Validation Recommendation',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'products_validation_recommendation',
+        hidden: true,
+        text: 'Products Validation Recommendation',
+        flex: 1
+    },
     {
         text: 'Options',
         xtype: 'widgetcolumn',

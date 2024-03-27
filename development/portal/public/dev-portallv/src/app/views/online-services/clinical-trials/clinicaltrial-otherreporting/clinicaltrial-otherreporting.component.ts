@@ -38,6 +38,7 @@ export class ClinicaltrialOtherreportingComponent extends SharedClinicaltrialCom
             this.application_id = this.app_resp.application_id;
             this.application_code = this.app_resp.application_code;
             this.toastr.success(this.app_resp.message, 'Response');
+            this.wizard.model.navigationMode.goToStep(1);
           } else {
             this.toastr.error(this.app_resp.message, 'Alert');
           }

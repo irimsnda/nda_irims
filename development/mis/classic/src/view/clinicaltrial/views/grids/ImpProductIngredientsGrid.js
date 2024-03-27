@@ -89,6 +89,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ImpProductIngredientsGrid', {
                     iconCls: 'x-fa fa-edit',
                     winTitle: 'IMP Product Ingredient',
                     winWidth: '35%',
+                     hidden:true,
                     childXtype: 'impproductingredientsfrm',
                     handler: function () {
                         var btn = this.up('button'),
@@ -104,6 +105,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ImpProductIngredientsGrid', {
                     storeID: 'impproductingredientsstr',
                     action_url: 'clinicaltrial/deleteClinicalTrialRecord',
                     action: 'actual_delete',
+                     hidden:true,
                     handler: 'doDeleteClinicalTrialWidgetParam',
                     hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
                 }

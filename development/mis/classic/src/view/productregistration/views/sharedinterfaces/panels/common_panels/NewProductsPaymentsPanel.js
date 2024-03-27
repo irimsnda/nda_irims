@@ -217,7 +217,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.common_
                     iconCls: 'x-fa fa-plus',
                     ui: 'soft-purple',
                     winTitle: 'Account Transactions',
-                    winWidth: '60%',
+                    winWidth: '80%',
                     name: 'receive_payments',
                     childXtype: 'paymentsreceptionfrm',
                     table_name: 'tra_product_applications',

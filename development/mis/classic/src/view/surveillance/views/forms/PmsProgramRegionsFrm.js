@@ -17,6 +17,11 @@ Ext.define('Admin.view.surveillance.views.forms.PmsProgramRegionsFrm', {
             xtype: 'hiddenfield',
             name: 'program_id'
         },
+        {
+            xtype: 'hiddenfield',
+            name: '_token',
+            value: token
+         },
        
         {
             xtype: 'tagfield',
@@ -38,7 +43,7 @@ Ext.define('Admin.view.surveillance.views.forms.PmsProgramRegionsFrm', {
                     var store = this.getStore();
                     store.removeAll();
                     filter = {
-                            country_id: 36
+                            country_id: 37
                         };
                     filter = JSON.stringify(filter);
                     store.load({params:{filter:filter}});

@@ -86,11 +86,11 @@ Ext.define('Admin.view.pharmacovigilancereporting.views.maininterfaces.Receiving
                 '->',
                 
                 {
-                    text: 'Save Clinical Trial Details',
+                    text: 'Safety Report Details',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-save',
                     name: 'save_btn',
-                    // saveSafetyAlertReportsDetails
+                    //handler:'saveSafetyAlertReportsDetails',
                     toaster: 1
                 },
                 
@@ -106,7 +106,7 @@ Ext.define('Admin.view.pharmacovigilancereporting.views.maininterfaces.Receiving
                     max_step: 2,
                     name: 'next_btn'
                 },{
-                    text: 'Submit Application',
+                    text: 'Submit Report',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-check', hidden: true,
                     name: 'process_submission_btn',

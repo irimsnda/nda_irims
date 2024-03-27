@@ -218,10 +218,10 @@ Ext.define('Admin.view.usermanagement.views.forms.UserBasicInfoFrm', {
                     }
                 }, {
                     xtype: 'combo',
-                    fieldLabel: 'Department',
+                    fieldLabel: 'Directorate',
                     forceSelection: true,
                     columnWidth: 0.25,
-                    allowBlank: true,
+                    allowBlank: false,
                     queryMode: 'local',
                     margin: '0 20 0 0',
                     name: 'directorate_id',
@@ -284,13 +284,13 @@ Ext.define('Admin.view.usermanagement.views.forms.UserBasicInfoFrm', {
                             },
                             isLoad: false
                         },
-                        // change: function (cmb, newVal) {
-                        //     var form = cmb.up('form'),
-                        //         wizard=form.up('userswizardfrm'),
-                        //         dragGroupStore=wizard.down('draggroupgrid').getStore();
-                        //       dragGroupStore.removeAll();
-                        //       dragGroupStore.load();
-                        // }
+                        change: function (cmb, newVal) {
+                            var form = cmb.up('form'),
+                                wizard=form.up('userswizardfrm'),
+                                dragGroupStore=wizard.down('draggroupgrid').getStore();
+                              dragGroupStore.removeAll();
+                              dragGroupStore.load();
+                        }
                     }
                 },{
                     xtype: 'tagfield',
@@ -325,6 +325,7 @@ Ext.define('Admin.view.usermanagement.views.forms.UserBasicInfoFrm', {
                 }, {
                     xtype: 'combo',
                     fieldLabel: 'Zone',
+                    hidden: true,
                     forceSelection: true,
                     columnWidth: 0.25,
                     allowBlank: true,

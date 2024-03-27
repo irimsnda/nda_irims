@@ -23,7 +23,7 @@ Ext.define('Admin.view.pharmacovigilancereporting.views.toolbars.PharmacoVigilan
             dashboard: 'pharmacovigilancereportingdashwrapper'
         },
         {
-            text: 'Application Initialisation (PharmacoVigilance Reporting & Inspection)',
+            text: 'Application Initialisation (Signal Alerts and Safety Information Communication)',
             iconCls: 'x-fa fa-plus-square',
             menu: {
                 xtype: 'menu',
@@ -45,18 +45,21 @@ Ext.define('Admin.view.pharmacovigilancereporting.views.toolbars.PharmacoVigilan
                     {
                         text: 'PV Inspections(Pharmacovigelnce plan on registered products)',
                         iconCls: 'x-fa fa-check',
+                        hidden:true,
                         wrapper_xtype: 'pharmacovigilancereportingdashwrapper',
                         handler:'showNewClinicalTrialApplication',
                         app_type: 72
                     },{
                         text: 'Periodic Benefit risks evaluation report(PSUR/PBRES/DSUR)',
                         iconCls: 'x-fa fa-check',
+                        hidden:true,
                         wrapper_xtype: 'pharmacovigilancereportingdashwrapper',
                         handler:'showNewClinicalTrialApplication',
                         app_type: 75
                     },{
                         text: 'ADR Assessment, Monitoring & Reporting',
                         iconCls: 'x-fa fa-check',
+                        hidden:true,
                         wrapper_xtype: 'pharmacovigilancereportingdashwrapper',
                         handler:'showNewClinicalTrialApplication',
                         app_type: 77
@@ -64,6 +67,7 @@ Ext.define('Admin.view.pharmacovigilancereporting.views.toolbars.PharmacoVigilan
                     '-',{
                         text: 'Register for Qualified Person for PharmacoVigilance',
                         iconCls: 'x-fa fa-check',
+                        hidden:true,
                         wrapper_xtype: 'pharmacovigilancereportingdashwrapper',
                         handler:'showNewClinicalTrialApplication',
                         app_type: 76

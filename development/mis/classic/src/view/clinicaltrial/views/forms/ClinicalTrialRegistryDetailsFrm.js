@@ -28,16 +28,22 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialRegistryDetailsFrm
             xtype: 'textarea',
             fieldLabel: 'Public Title',
             name: 'public_title',
+            grow: true, 
+            growMax: 200, 
             columnWidth: 0.5
         },{
             xtype: 'textarea',
             fieldLabel: 'Official Scientific Title',
             name: 'study_title',
+            grow: true, 
+            growMax: 200, 
             columnWidth: 0.5
         },{
             xtype: 'textarea',
             fieldLabel: 'Brief summary describing the background and objectives of trial',
             name: 'clinicaltrial_description',
+            grow: true, 
+            growMax: 200, 
             columnWidth: 1
         },{
             xtype: 'combo',
@@ -132,6 +138,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialRegistryDetailsFrm
             xtype: 'textarea',
             fieldLabel: 'Other Obstetrics Disease or condition',
             name: 'other_obstetrics_disease',
+            grow: true, 
+            growMax: 200, 
             width:0.5
         },{
             xtype: 'combo',

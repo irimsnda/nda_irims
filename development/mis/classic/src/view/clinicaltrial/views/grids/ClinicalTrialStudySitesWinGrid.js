@@ -15,6 +15,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialStudySitesWinGrid'
             text: 'Add Clinical Study Site',
             iconCls: 'x-fa fa-plus',
             ui: 'soft-green',
+             hidden:true,
             name: 'add_clinical_site_win',
             childXtype: 'clinicalstudysitesfrm',
             winTitle: 'Study Sites Selection',
@@ -71,6 +72,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialStudySitesWinGrid'
                     handler: 'showImpProductDetails',
                     winTitle: 'IMP Product',
                     winWidth: '90%',
+                     hidden:true,
                     childXtype: 'impproductspnl'
                 }, 
                     {
@@ -81,6 +83,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialStudySitesWinGrid'
                         storeID: 'clinicaltrialstudysitesstr',
                         action_url: 'clinicaltrial/deleteClinicalTrialRecord',
                         action: 'actual_delete',
+                         hidden:true,
                         handler: 'doDeleteClinicalTrialWidgetParam',
                         hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
                     }

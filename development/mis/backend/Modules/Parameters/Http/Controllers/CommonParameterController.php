@@ -23,8 +23,6 @@ use Modules\Parameters\Entities\Locations\SubCounty;
 use Modules\Parameters\Entities\Locations\City;
 use Modules\Parameters\Entities\PortalParameter;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
 
 class CommonParameterController extends BaseController
 {
@@ -539,8 +537,9 @@ class CommonParameterController extends BaseController
         return response()->json($res);
     }
 
+
     public function getCommonParamFromTable(Request $request)
-    {
+    {   
         $table_name = $request->input('table_name');
         $strict_mode = $request->input('strict_mode');
         $is_config = $request->input('is_config');
@@ -550,15 +549,15 @@ class CommonParameterController extends BaseController
         if (isset($con) && $con != '') {
             $db_con = $con;
         }
-       
         $filters = (array)json_decode($filters);
         $filters=array_filter($filters);
+
         
         try {
             if($table_name == 'par_business_types'){
                 $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')
-                        //->whereIn('id',[1,2,4])
+                        ->whereIn('id',[1,2,4])
                         ->select('t1.*');
             } else if($table_name == 'par_premise_districts'){
                  $qry = DB::connection($db_con)
@@ -566,6 +565,83 @@ class CommonParameterController extends BaseController
                         ->select('t1.*');
 
             }
+
+            
+            else if($table_name == 'par_variation_categories'){
+                 $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->leftJoin('modules as t2', 't1.module_id', 't2.id')
+                        ->leftJoin('sub_modules as t3', 't1.sub_module_id', 't3.id')
+                        ->leftJoin('par_sections as t4', 't1.section_id', 't4.id')
+                        ->leftJoin('par_product_categories as t10', 't1.product_category_id', 't10.id')
+                        ->select('t1.*','t2.name as module_name', 't3.name as sub_module_name', 't4.name as section_name','t10.name as product_category');
+
+            }
+
+            else if($table_name == 'par_variation_subcategories'){
+                 $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->leftJoin('modules as t2', 't1.module_id', 't2.id')
+                        ->leftJoin('sub_modules as t3', 't1.sub_module_id', 't3.id')
+                        ->leftJoin('par_sections as t4', 't1.section_id', 't4.id')
+                        ->leftJoin('par_product_categories as t10', 't1.product_category_id', 't10.id')
+                        ->leftJoin('par_variation_categories as t8', 't1.variation_category_id', 't8.id')
+                        ->select('t1.*','t2.name as module_name', 't3.name as sub_module_name', 't4.name as section_name','t10.name as product_category','t8.name as variation_category');
+
+            }
+
+             else if($table_name == 'par_variation_description'){
+                 $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->leftJoin('modules as t2', 't1.module_id', 't2.id')
+                        ->leftJoin('sub_modules as t3', 't1.sub_module_id', 't3.id')
+                        ->leftJoin('par_sections as t4', 't1.section_id', 't4.id')
+                        ->leftJoin('par_product_categories as t10', 't1.product_category_id', 't10.id')
+                        ->leftJoin('par_variation_categories as t8', 't1.variation_category_id', 't8.id')
+                         ->leftJoin('par_variation_subcategories as t9', 't1.variation_subcategory_id', 't9.id')
+                        ->select('t1.*','t2.name as module_name', 't3.name as sub_module_name', 't4.name as section_name','t10.name as product_category','t8.name as variation_category','t9.name as variation_subcategory');
+
+            }
+
+            else if($table_name == 'par_variation_subdescription'){
+                 $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->leftJoin('modules as t2', 't1.module_id', 't2.id')
+                        ->leftJoin('sub_modules as t3', 't1.sub_module_id', 't3.id')
+                        ->leftJoin('par_sections as t4', 't1.section_id', 't4.id')
+                        ->leftJoin('par_product_categories as t10', 't1.product_category_id', 't10.id')
+                        ->leftJoin('par_variation_categories as t8', 't1.variation_category_id', 't8.id')
+                         ->leftJoin('par_variation_subcategories as t9', 't1.variation_subcategory_id', 't9.id')
+                        ->leftJoin('par_variation_description as t7', 't1.variation_description_id', 't7.id')
+                        ->select('t1.*','t2.name as module_name', 't3.name as sub_module_name', 't4.name as section_name','t10.name as product_category','t8.name as variation_category','t9.name as variation_subcategory','t7.name as variation_description');
+
+            }
+
+
+            else if($table_name == 'par_variationconditions_details'){
+                 $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->leftJoin('modules as t2', 't1.module_id', 't2.id')
+                        ->leftJoin('sub_modules as t3', 't1.sub_module_id', 't3.id')
+                        ->leftJoin('par_sections as t4', 't1.section_id', 't4.id')
+                        ->leftJoin('par_product_categories as t10', 't1.product_category_id', 't10.id')
+                        ->leftJoin('par_variation_categories as t8', 't1.variation_category_id', 't8.id')
+                        ->select('t1.*','t2.name as module_name', 't3.name as sub_module_name', 't4.name as section_name','t10.name as product_category','t8.name as variation_category');
+
+            }
+
+             else if($table_name == 'par_variationsupporting_datadocs'){
+                 $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->leftJoin('modules as t2', 't1.module_id', 't2.id')
+                        ->leftJoin('sub_modules as t3', 't1.sub_module_id', 't3.id')
+                        ->leftJoin('par_sections as t4', 't1.section_id', 't4.id')
+                        ->leftJoin('par_product_categories as t10', 't1.product_category_id', 't10.id')
+                        ->leftJoin('par_variation_categories as t8', 't1.variation_category_id', 't8.id')
+                        ->select('t1.*','t2.name as module_name', 't3.name as sub_module_name', 't4.name as section_name','t10.name as product_category','t8.name as variation_category');
+
+            }
+
 
             else if($table_name == 'par_premise_regions' && isset($filters['district_id'])){
                  $qry = DB::connection($db_con)
@@ -576,6 +652,14 @@ class CommonParameterController extends BaseController
 
             }
             
+                else if ($table_name == 'par_formtype_fields') {
+                $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->Join('par_formfield_designs as t4','t1.field_id','=','t4.id')
+                        ->select('t1.*', 't4.label as field_name', 't4.label');
+                //order
+                $qry->orderBy('order_no', 'ASC');
+            }
 
              else if($table_name == 'pms_program_details'){
                  $qry = DB::connection($db_con)
@@ -584,30 +668,41 @@ class CommonParameterController extends BaseController
                         ->select('t1.*');
 
             }
-            // else if ($table_name == 'par_importexport_product_range') {
-            //     $qry = DB::connection($db_con)
-            //             ->table($table_name . ' as t1')
-            //             ->leftJoin('par_importexport_productrange_details as t2', 't1.id', '=', 't2.importexport_product_range_id')
-            //             ->leftJoin('tra_importexport_applications as t3', function ($join) {
-            //                 $join->on('t3.id', '=', 't2.application_id');
-            //             })
-            //             ->select('t1.name as importexport_product_range_id');
-            // }
-            
-            
+
              else if($table_name == 'par_inspection_types'){
                 $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')
                         //->join('par_sections as t2','t1.section_id','=','t2.id')
                         ->select('t1.*');
             }
+
+
             else if($table_name == 'par_business_type_details'){
                 $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')
-                        ->join('par_business_types as t3','t1.business_type_id','=','t3.id')
-                        ->join('par_sections as t2','t3.section_id','=','t2.id')
+                        ->leftjoin('par_business_types as t3','t1.business_type_id','=','t3.id')
+                        ->leftjoin('par_sections as t2','t3.section_id','=','t2.id')
                         ->select('t1.*','t3.section_id', 't2.name as section_name', 't3.name as business_type_name');
-            }else if($table_name == 'par_countries'){
+            }
+
+            else if($table_name == 'par_systemreports_repconfig'){
+                $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->leftjoin('par_business_types as t3','t1.business_type_id','=','t3.id')
+                        ->leftjoin('par_sections as t2','t3.section_id','=','t2.id')
+                        ->leftjoin('modules as t4','t1.module_id','=','t4.id')
+                        ->leftjoin('sub_modules as t5','t1.sub_module_id','=','t5.id')
+                        ->leftjoin('par_systemreport_types as t6','t1.sysreports_type_id','=','t6.id')
+                        ->leftjoin('par_approval_decisions as t7','t1.decision_id','=','t7.id')
+                        ->leftjoin('par_confirmations as t8','t1.is_preview','=','t8.id')
+                        ->leftjoin('par_confirmations as t9','t1.is_uniformreport','=','t9.id')
+                        ->leftjoin('par_prodclass_categories as t10','t1.prodclass_category_id','=','t10.id')
+                        ->leftjoin('par_importexport_permittypes as t11','t1.import_export_type_id','=','t11.id')
+                        ->select('t1.*','t3.section_id', 't2.name as section_name', 't3.name as bussiness_type','t4.name as module_name','t5.name as sub_module_name','t5.name as report_type_name','t7.name as decision','t8.name as is_preview_name','t9.name as is_uniformreport_name','t10.name as prodclass_category_name','t11.name as import_export_type_name');
+            }
+
+
+            else if($table_name == 'par_countries'){
                 $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')
                         ->leftJoin('par_countriesregions as t3','t1.country_region_id','=','t3.id')
@@ -763,8 +858,8 @@ class CommonParameterController extends BaseController
                         ->Join('sub_modules as t5','t1.sub_module_id','=','t5.id')
                         ->leftJoin('par_sections as t6','t1.section_id','=','t6.id')
                         ->leftJoin('par_prodclass_categories as t7','t1.prodclass_category_id','=','t7.id')
-                        ->select('t1.*', 't4.name as module_name', 't5.name as sub_module_name', 't6.name as section_name', 't7.name as prodclass_category_name');
-            }else if ($table_name == 'par_formtype_fields') {
+                        ->select('t1.*','t1.id  as form_category_id','t4.name as module_name', 't5.name as sub_module_name', 't6.name as section_name', 't7.name as prodclass_category_name');
+            }else if ($table_name == '') {
                 $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')
                         ->Join('par_formfield_designs as t4','t1.field_id','=','t4.id')
@@ -839,20 +934,53 @@ class CommonParameterController extends BaseController
                     $qry->leftJoin('par_prodcat_classifications as t2','t1.id', 't2.classification_id')
                         ->select('t1.*')
                         ->where('t2.prodclass_category_id', $filters['prodclass_category_id']);
-                }else{
-                    $qry->where($filters);
                 }
-            }
-            if (count((array)$filters) > 0) {
-                if($table_name == 'par_countries'){
+                else if($table_name == 'par_variation_reportingtypes'){
+                if($filters){
+                     $qry = DB::connection($db_con)
+
+                        ->table('tra_variationsummary_guidelinesconfig as t1')
+                        ->leftJoin('modules as t2', 't1.module_id', 't2.id')
+                        ->leftJoin('sub_modules as t3', 't1.sub_module_id', 't3.id')
+                        ->leftJoin('par_sections as t4', 't1.section_id', 't4.id')
+                        ->leftJoin('par_variation_reportingtypes as t5', 't1.variation_reportingtype_id', 't5.id')
+                        ->leftJoin('par_variation_subdescription as t6', 't1.variation_subdescription_id', 't6.id')
+                        ->leftJoin('par_variation_description as t7', 't1.variation_description_id', 't7.id')
+                        ->leftJoin('par_variation_categories as t8', 't7.variation_category_id', 't8.id')
+                        ->leftJoin('par_variation_subcategories as t9', 't7.variation_subcategory_id', 't9.id')
+                        ->leftJoin('par_product_categories as t10', 't1.product_category_id', 't10.id')
+                        ->select('t5.*');
+
+                         
+                        if(isset($filters['variation_subcategory_id']) && validateIsnumeric($filters['variation_subcategory_id'])){
+                          $qry->where('t9.id', $filters['variation_subcategory_id']);
+                        }
+                        if(isset($filters['variation_category_id']) && validateIsnumeric($filters['variation_category_id'])){
+                          $qry->where('t8.id', $filters['variation_category_id']);
+                        }
+                        if(isset($filters['variation_description_id']) && validateIsnumeric($filters['variation_description_id'])){
+                          $qry->where('t7.id', $filters['variation_description_id']);
+                        }
+
+                        if(isset($filters['variation_subdescription_id']) && validateIsnumeric($filters['variation_subdescription_id'])){
+                          $qry->where('t6.id', $filters['variation_subdescription_id']);
+                        }
+                      
+                }else{
+                 $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                        ->select('t1.*');
+                }
+
+            }else if($table_name == 'par_countries'){
                     $id = $filters['id'];
                     $qry->where(array('t1.id'=>$id));
-                }else{
+            }
+            else{
                     $qry->where($filters);
                 }
-
-
             }
+           
            // $qry->where('t1.is_enabled',1);
            if(validateIsnumeric($is_config)){
                 $qry->where('t1.is_enabled', 1);
@@ -933,56 +1061,8 @@ class CommonParameterController extends BaseController
         }
         return \response()->json($res);
     }
-    public function getelementcos12t(request $request){
-         $fee_type_id = $request->input('fee_type_id');
-         $cost_category_id = $request->input('cost_category_id');
-         $sub_cat_id = $request->input('sub_cat_id');
-         $cost_item_id = $request->input('cost_item_id');
-         $application_feetype_id = $request->input('applicationfee_types_id');
-         $currency_id = $request->input('currency_id');
-      //   {feetype}: {category} : {sub_category} {element} {cost_type} {costs} {currency_name}&nbsp;</div></tpl>';
-        try {
-            $qry = DB::table('tra_element_costs as t1')
-                ->LeftJoin('par_cost_elements as t2', 't1.element_id', 't2.id')
-                ->LeftJoin('par_cost_sub_categories as t5', 't1.sub_cat_id', 't5.id')
-                ->LeftJoin('par_fee_types as t6', 't1.feetype_id', 't6.id')
-                ->LeftJoin('par_cost_categories as a7','t5.cost_category_id','a7.id')
-                ->LeftJoin('par_confirmations as t8', 't1.formula','t8.flag')
-                ->LeftJoin('par_gl_accounts as t10','t1.gl_code_id','t10.id')
-                ->LeftJoin('par_currencies as t11','t1.currency_id','t11.id')
-                ->LeftJoin('par_applicationfee_types as t12','t1.application_feetype_id','t12.id')
-                ->select('t1.*', 't1.id as element_costs_id','t11.name as currency_name', 't2.name as element', 't5.name as sub_category','t6.name as feetype','a7.name as category', 't8.name as formulaflag','t10.name as glcode','t12.name as cost_type',DB::raw("concat(t6.name,' ',a7.name,' ',t5.name,' ',t2.name, ' ',if(costs >0,costs,formula_rate),' ',if(t1.currency_id >0,t11.name, 'Is Formular Rate')) as element_desc") );
-            if(validateIsNumeric($fee_type_id)){
-                $qry->where('t1.fee_type_id',$fee_type_id);
-              }
-            if(validateIsNumeric($cost_category_id)){
-                $qry->where('t5.cost_category_id',$cost_category_id);
-              }
-            if(validateIsNumeric($sub_cat_id)){
-                $qry->where('t1.sub_cat_id',$sub_cat_id);
-              }
-            if(validateIsNumeric($cost_item_id)){
-                $qry->where('t1.element_id',$cost_item_id);
-              }
-            if(validateIsNumeric($application_feetype_id)){
-                $qry->where('t1.application_feetype_id',$application_feetype_id);
-              }
-           
-            $results = $qry->get();
-            $res = array(
-                'success' => true,
-                'results' => $results,
-                'message' => 'All is well'
-            );
-        } catch (\Exception $exception) {
-            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
-
-        } catch (\Throwable $throwable) {
-            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
-        }
-        return \response()->json($res);
-    }
-     public function getRetentionChargeConfig(Request $req)
+   
+    public function getRetentionChargeConfig(Request $req)
     {
         try{
             $qry = DB::table('tra_retentioncharge_config as t1')
@@ -1396,5 +1476,108 @@ public function getcostCategories(Request $request){
 
 
     }
+
+
+    public function getVariationsRequestConfiguration(Request $req){
+            try{
+                    $table_name = 'tra_variationsummary_guidelinesconfig'; 
+$results = array();
+                    $records = DB::table($table_name.' as t1')
+                                    ->leftJoin('modules as t2', 't1.module_id', 't2.id')
+                                    ->leftJoin('sub_modules as t3', 't1.sub_module_id', 't3.id')
+                                    ->leftJoin('par_sections as t4', 't1.section_id', 't4.id')
+                                    ->leftJoin('par_variation_reportingtypes as t5', 't1.variation_reportingtype_id', 't5.id')
+                                    ->leftJoin('par_variation_subdescription as t6', 't1.variation_subdescription_id', 't6.id')
+                                    ->leftJoin('par_variation_description as t7', 't1.variation_description_id', 't7.id')
+                                    ->leftJoin('par_variation_categories as t8', 't7.variation_category_id', 't8.id')
+                                    ->leftJoin('par_variation_subcategories as t9', 't7.variation_subcategory_id', 't9.id')
+                                    ->leftJoin('par_product_categories as t10', 't1.product_category_id', 't10.id')
+
+                                    ->select('t1.*', 't8.name as variation_category','t7.variation_subcategory_id','t7.variation_category_id', 't9.name as variation_subcategory', 't1.id as variationsummary_guidelinesconfig_id', 't2.name as module_name', 't3.name as sub_module_name', 't4.name as section_name','t10.name as product_category', 't5.name as variation_reportingtype', 't6.name as variation_subdescription', 't7.name as variation_description', DB::raw("(SELECT group_concat(concat(code,': ', name)  SEPARATOR '<br/> <br/>') AS variationconditions_detail_id FROM tra_variationconfigconditions_details q left join par_variationconditions_details j on q.variationconditions_detail_id = j.id WHERE variationsummary_guidelinesconfig_id =t1.id) as variationconditions_detailsdata , (SELECT group_concat(concat(code,': ', name) SEPARATOR '<br/> <br/>') AS variationsupporting_datadoc_id  FROM tra_variationconfigsupporting_datadocs k left join par_variationsupporting_datadocs l on k.variationsupporting_datadoc_id =l.id WHERE variationsummary_guidelinesconfig_id =t1.id) as variationsupporting_datadocs"))
+                                    ->get();
+                    foreach($records as $rec){
+                                $rec->variationsupporting_datadocs_code = explode(',',$rec->variationsupporting_datadocs);
+                                $rec->variationconditions_detailscodes = explode(',',$rec->variationconditions_detailsdata);
+
+                                $rec->variationsupporting_datadoc_id = explode(',',$rec->variationsupporting_datadocs);
+                                $rec->variationconditions_detail_id = explode(',',$rec->variationconditions_detailsdata);
+                                $results[] = $rec;
+
+                    }
+                                    $res = array(
+                                        'success' => true,
+                                        'results' => $results
+                                    );           
+
+                 
+            } catch (\Exception $e) {
+                $res = array(
+                    'success' => false,
+                    'message' => $e->getMessage()
+                );
+            } catch (\Throwable $throwable) {
+                $res = array(
+                    'success' => false,
+                    'message' => $throwable->getMessage()
+                );
+            }
+            return response()->json($res);  
+    }
+    public function getVariationSupportingDataDetails(Request $req){
+        try{
+                $variationsummary_guidelinesconfig_id = $req->variationsummary_guidelinesconfig_id;
+            
+                $records = DB::table('tra_variationconfigsupporting_datadocs as t1')
+                                ->join('par_variationsupporting_datadocs as t2', 't1.variationsupporting_datadoc_id','t2.id')
+                                ->select('t2.*')
+                                ->where('variationsummary_guidelinesconfig_id',$variationsummary_guidelinesconfig_id)
+                                ->get();
+                                $res = array(
+                                    'success' => true,
+                                    'results'=>$records
+                                );
+
+
+        } catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);  
+}   
+public function getVariationConditionsDetails(Request $req){
+    try{
+
+             $variationsummary_guidelinesconfig_id = $req->variationsummary_guidelinesconfig_id;
+            
+            $records = DB::table('tra_variationconfigconditions_details as t1')
+                            ->join('par_variationconditions_details as t2', 't1.variationconditions_detail_id','t2.id')
+                            ->select('t2.*')
+                            ->where('variationsummary_guidelinesconfig_id',$variationsummary_guidelinesconfig_id)
+                            ->get();
+                            $res = array(
+                                'success' => true,
+                                'results'=>$records
+                            );
+
+    } catch (\Exception $e) {
+        $res = array(
+            'success' => false,
+            'message' => $e->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($res);  
+}
 
 }

@@ -17,7 +17,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.QualitySumma
             }
         }
     },
-    tbar: [ {
+    tbar: [{
         xtype: 'button',
         text: 'Update/Save',
         iconCls: 'x-fa fa-plus',
@@ -114,50 +114,4 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.QualitySumma
     columns: [
          ]
 });
-
-
-
-
-// Ext.Ajax.request({
-//     url: 'productregistration/getQualitySectionPerSection', // Replace with the actual URL that provides the data
-//     success: function(response) {
-//         var data = Ext.JSON.decode(response.responseText);
-        
-//         var accordionItems = [];
-//         Ext.Array.each(data, function(item) {
-//             var accordionItem = Ext.create('Ext.panel.Panel', {
-//                 title: item.Section,
-//                 layout: 'fit',
-//                 items: [{
-//                     xtype: 'textareafield',
-//                     readOnly: true,
-//                     value: item.report,
-//                     flex: 1
-//                 }, {
-//                     xtype: 'textareafield',
-//                     itemId: 'commentField',
-//                     flex: 1
-//                 }],
-//                 tools: [{
-//                     type: 'save',
-//                     handler: function() {
-//                         var comment = this.up('panel').getComponent('commentField').getValue();
-//                         // Perform action with the comment (e.g., send it to a server)
-//                         Ext.Msg.alert('Comment Saved', 'Comment: ' + comment);
-//                     }
-//                 }]
-//             });
-//             accordionItems.push(accordionItem);
-//         });
-        
-//         Ext.create('Ext.panel.Panel', {
-//             title: 'Accordion with Comments',
-//             width: 400,
-//             height: 400,
-//             layout: 'accordion',
-//             items: accordionItems,
-//             renderTo: Ext.getBody()
-//         });
-//     }
-// });
 

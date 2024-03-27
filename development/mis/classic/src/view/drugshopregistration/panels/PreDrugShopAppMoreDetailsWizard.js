@@ -52,7 +52,7 @@ Ext.define('Admin.view.drugshopregistration.views.panels.PreDrugShopAppMoreDetai
            collapsible: true, 
            collapsed: true,
            hidden: true,
-          title:'Drug Shop Applicant Details'
+          title:' Applicant Details'
         }
     ],
     bbar:[{

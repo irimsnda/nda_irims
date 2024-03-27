@@ -430,7 +430,7 @@ Ext.define('Admin.view.Enforcement.views.forms.SuspectInforFrm', {
         },
         {
             xtype: 'combo', anyMatch: true,
-            fieldLabel: 'District',
+            fieldLabel: 'Region/City/Town',
             name: 'region_id',
             identity:'suspect_region_id',
             forceSelection: true,
@@ -463,7 +463,7 @@ Ext.define('Admin.view.Enforcement.views.forms.SuspectInforFrm', {
         },
         {
             xtype: 'combo', anyMatch: true,
-            fieldLabel: 'Region/City/Town',
+            fieldLabel: 'District',
             name: 'district_id',
             identity:'suspect_district_id',
             forceSelection: true,
@@ -496,13 +496,13 @@ Ext.define('Admin.view.Enforcement.views.forms.SuspectInforFrm', {
             xtype: 'textfield',
             fieldLabel: 'Postal Address',
             name: 'suspect_postal_address',
-            allowBlank: false,
+            allowBlank: true,
         },
         {
             xtype: 'numberfield',
             fieldLabel: 'Telephone',
             name: 'suspect_telephone',
-            allowBlank: false,
+            allowBlank: true,
         },
         {
             xtype:'htmleditor',

@@ -120,7 +120,7 @@ Ext.define('Admin.view.Enforcement.views.forms.ComplainantFrm', {
                                country.allowBlank = false;
                             //    approver_designation.allowBlank = false;
                             //    approved_by_id.allowBlank = false;
-                                fullnames.allowBlank = false;
+                                fullnames.allowBlank = true;
                                 applicant_name.allowBlank= true;
                                 email.allowBlank = false;
                                 gender.allowBlank = false;

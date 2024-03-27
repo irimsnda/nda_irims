@@ -1,80 +1,49 @@
-// /**
-//  * Created by Kip on 12/19/2018.
-//  */
-// Ext.define('Admin.view.gmpapplications.views.forms.ProductLineDetailsFrm', {
-//     extend: 'Admin.view.gmpapplications.views.forms.ProductLineAbstractFrm',
-//     xtype: 'productlinedetailsfrm',
-//     initComponent: function () {
-//         this.callParent();
-//         this.add(
-//             {
-//                 xtype: 'combo',
-//                 fieldLabel: 'Block',
-//                 name: 'manufacturingsite_block_id',
-//                 forceSelection: true,
-//                 queryMode: 'local',
-//                 valueField: 'id',
-//                 displayField: 'name',
-//                 listeners: {
-//                     beforerender: {
-//                         fn: 'setParamCombosStore',
-//                         config: {
-//                             pageSize: 10000,
-//                             proxy: {
-//                                 url: 'gmpapplications/getSiteBlockDetails'
-//                             }
-//                         },
-//                         isLoad: false
-//                     },
-//                     afterrender: function(){
-//                         var store=this.getStore(),
-//                             form=this.up('form'),
-//                             site_id=form.down('hiddenfield[name=manufacturing_site_id]').getValue();
-//                         store.load({params:{manufacturing_site_id: site_id}})
-//                     }
-//                 }
-//             }
-//         );
-//     }
-// });
 
 Ext.define('Admin.view.gmpapplications.views.forms.ProductLineDetailsFrm', {
     extend: 'Admin.view.gmpapplications.views.forms.ProductLineAbstractFrm',
     xtype: 'productlinedetailsfrm',
+    itemId:'productlinedetailsfrm',
+    listeners: {
+        afterrender: function () {
+            var form = this,
+                special_category_id = form.down('hiddenfield[name=special_category_id]').getValue(),
+                inspection_category_id = form.down('hiddenfield[name=inspection_category_id]').getValue(),
+                isSpecialCategory = form.down('hiddenfield[name=isSpecialCategory]').getValue(),
+                productLineCategoryCombo = form.down('combo[name=category_id]'),
+                productLineCategoryStr = form.down('combo[name=category_id]').getStore(),
+                manufacturingSiteStr = form.down('combo[name=manufacturing_activity_id]').getStore();
+                var filter = {'inspection_category_id':inspection_category_id};
+                var filters = JSON.stringify(filter);
+            if ((isSpecialCategory) && (isSpecialCategory == 1 || isSpecialCategory === 1)) {
+                productLineCategoryStr.load({params:{filters:filters}});
+                productLineCategoryCombo.setReadOnly(true);
+                productLineCategoryCombo.setValue(special_category_id);
+                manufacturingSiteStr.load({params:{filters:filters}});
+            }else{
+             productLineCategoryStr.load({params:{filters:filters}});
+             manufacturingSiteStr.load({params:{filters:filters}});
+            }
+            
+        }
+    },
     initComponent: function () {
         this.callParent();
         this.add(
             {
             xtype: 'hiddenfield',
             name: 'manufacturingsite_block_id'
+        },{
+            xtype: 'hiddenfield',
+            name: 'inspection_category_id'
+        },
+        {
+            xtype: 'hiddenfield',
+            name: 'isSpecialCategory'
+        },
+        {
+            xtype: 'hiddenfield',
+            name: 'special_category_id'
         }
-            // {
-            //     xtype: 'combo', anyMatch: true,
-            //     fieldLabel: 'Block',
-            //     name: 'manufacturingsite_block_id',
-            //     forceSelection: true,
-            //     queryMode: 'local',
-            //     valueField: 'id',
-            //     displayField: 'name',
-            //     listeners: {
-            //         beforerender: {
-            //             fn: 'setGmpApplicationCombosStore',
-            //             config: {
-            //                 pageSize: 10000,
-            //                 proxy: {
-            //                     url: 'gmpapplications/getSiteBlockDetails'
-            //                 }
-            //             },
-            //             isLoad: true
-            //         },
-            //         afterrender: function(){
-            //             var store=this.getStore(),
-            //                 form=this.up('form'),
-            //                 site_id=form.down('hiddenfield[name=manufacturing_site_id]').getValue();
-            //             store.load({params:{manufacturing_site_id: site_id}});
-            //         }
-            //     }
-            // }
         );
     }
 });

@@ -13,6 +13,7 @@ Ext.define('Admin.view.gmpapplications.views.sharedinterfaces.panels.GmpTCMeetin
             title: 'Meeting Details',
             region: 'north',
             height: 170,
+            collapsible: true,
             xtype: 'meetingdetailsfrm'
         },
         {
@@ -22,7 +23,9 @@ Ext.define('Admin.view.gmpapplications.views.sharedinterfaces.panels.GmpTCMeetin
         },{
             xtype: 'panel',
             layout:'accordion', region: 'west',
-            width: 400,collapsed: false,
+            width: 400,
+            collapsible: true,
+            collapsed: false,
             titleCollapse: true,
             title:'Meeting Participants & Agendas',
             layout: {

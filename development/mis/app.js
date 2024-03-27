@@ -232,6 +232,34 @@ function validateHasInvoiceGeneration(application_code,sub_module_id=0) {
     });
     return hasInvoice;
 }
+
+
+function getInitialImportExportLicenceWorkflowDetails(module_id, is_licenced, sub_module_id,is_dataammendment_request=null) {
+    var results = [];
+    Ext.Ajax.request({
+        method: 'GET',
+        async: false,
+        url: 'workflow/getInitialImportExportLicenceWorkflowDetails',
+        params: {
+            module_id: module_id,
+            is_licenced: is_licenced,
+            sub_module_id: sub_module_id,
+            is_dataammendment_request:is_dataammendment_request
+        },
+        headers: {
+            'Authorization': 'Bearer ' + access_token
+        },
+        success: function (response) {
+            var resp = Ext.JSON.decode(response.responseText),
+                success = resp.success;
+            if (success || success == true || success === true) {
+                results = resp.results;
+            }
+        }
+    });
+    return results;
+}
+
 function validateHasImportExportProductDetils(application_code) {
     var hasProducts = 0;
     
@@ -282,7 +310,7 @@ function print_report(url) {
         modal: true,
         minimizable: true,
         width: 1000,
-        height: 650,
+        height: '95%',
         frame: true,
         items: [{
             xtype: 'component',
@@ -299,13 +327,73 @@ function print_report(url) {
                     }
                 },
                 render: function () {
-
-                   // this.up('window').body.mask('Loading...');
+                 this.up('window').body.mask('Loading...');
                 }
             }
         }]
     });
     win.show();
+}
+
+
+function print_doc_report(url) {
+    //var googleDocsViewerUrl = 'https://docs.google.com/gview?url=' + encodeURIComponent(url) + '&embedded=true';
+    var googleDocsViewerUrl =  'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(url)
+    var win = Ext.create('Ext.window.Window', {
+        title: 'Preview Dialog',
+        modal: true,
+        minimizable: true,
+        width: 1000,
+        height: '95%',
+        frame: true,
+        items: [{
+            xtype: 'component',
+            autoEl: {
+                tag: 'iframe',
+                style: 'height: 100%; width: 100%; overflow-x: auto;',
+                src: googleDocsViewerUrl
+            },
+            listeners: {
+                load: {
+                    element: 'el',
+                    fn: function () {
+                        // Handle load event if needed
+                    }
+                },
+                render: function () {
+                    // Handle render event if needed
+                }
+            }
+        }]
+    });
+
+    win.show();
+}
+
+function canViewInWindow(url) {
+        // Extract the file extension from the URL
+        var fileExtension = url.split('.').pop().toLowerCase();
+        // List of file extensions that can be viewed in the browser
+        var viewableExtensions = ['pdf','jpeg', 'jpg', 'png'];
+
+        // Check if the file extension is in the list of viewable extensions
+        return viewableExtensions.includes(fileExtension);
+ }
+
+ function canViewInGoogleViewer(url) {
+        // Extract the file extension from the URL
+        var fileExtension = url.split('.').pop().toLowerCase();
+
+        // List of file extensions that can be viewed in the browser
+        var viewableExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt','ppt','ppt'];
+
+        // Check if the file extension is in the list of viewable extensions
+        return viewableExtensions.includes(fileExtension);
+ }
+
+
+function print_downloaddmsreport(url) {
+     window.open(url);
 }
 
 function download_report(url) {
@@ -369,6 +457,24 @@ function funcShowCustomizableWindow(title, width, childObject, winXtype) {
         title: title,
         bodyPadding: 3,
         height: '70%',
+        width: width,
+        autoScroll: true,
+        items: [
+            Ext.apply(
+                childObject
+            )
+        ]
+    });
+    Ext.create(view);
+}
+
+
+function funcShowResumableUploadWindow(title, width, childObject, winXtype) {
+    var view = Ext.apply({
+        xtype: winXtype,
+        title: title,
+        bodyPadding: 3,
+        height: '25%',
         width: width,
         autoScroll: true,
         items: [
@@ -448,6 +554,7 @@ function funcShowCustomizableWindowWithObject(title, width, childObject, winXtyp
         xtype: winXtype,
         object_1: object_1,
         title: title,
+        height: '90%',
         bodyPadding: 3, autoScroll: true,
         width: width,
         items: [
@@ -1250,6 +1357,10 @@ function getApplicationStore(module_id, section_id,sub_module_id) {
         enforcement_stores = {
             medicine: 'enforcementStr'
         },
+
+        pv_stores = {
+            medicine: 'pvStr'
+        },
         productnotificationapplicationstr = {
             medicine: 'medicaldevicenotificationdashstr'
         },disposalapplicationsdashgridstr = {
@@ -1271,6 +1382,7 @@ function getApplicationStore(module_id, section_id,sub_module_id) {
             pms_stores: pms_stores,
             impexp_stores: impexp_stores,
             enforcement_stores:enforcement_stores,
+            pv_stores:pv_stores,
             promotionmaterialapplicationstr: promotionmaterialapplicationstr,
             productnotificationapplicationstr: productnotificationapplicationstr,
             disposalapplicationsdashgridstr:disposalapplicationsdashgridstr,
@@ -1313,9 +1425,13 @@ function getApplicationStore(module_id, section_id,sub_module_id) {
         module_name = 'pharmacovigilanceapp_stores';
     }else if (module_id == 29 || module_id === 29) {
             module_name = 'premise_stores';
+    }else if (module_id == 33 || module_id === 33) {
+            module_name = 'premise_stores';
     }else if (module_id ==30 || module_id ===30) {
             module_name = 'enforcement_stores';
-    }  else {
+    }else if (module_id ==24 || module_id ===24) {
+            module_name = 'enforcement_stores';
+    }   else {
         //unknown module
     } 
 
@@ -1373,6 +1489,8 @@ function getApplicationTable(module_id, section_id) {
     }else if (module_id == 23 || module_id === 23) {
         table_name = 'pharmacovigilance';
     }else if (module_id == 29 || module_id === 29) {
+        table_name = 'premise_table';
+    }else if (module_id == 33 || module_id === 33) {
         table_name = 'premise_table';
     }  else {
         //unknown module 
@@ -1572,6 +1690,31 @@ function validateInspectionReportSubmisson(application_code,report_type_id) {
         }
     });
     return hasReviewrecommendation;
+}
+
+
+function validateIsPopupSubmission(workflow_stage_id) {
+    var isPopupSubmission = 0;
+    
+    Ext.Ajax.request({
+        method: 'GET',
+        async: false,
+        url: 'api/validateIsPopupSubmission',
+        params: {
+            workflow_stage_id: workflow_stage_id
+        },
+        headers: {
+            'Authorization': 'Bearer ' + access_token
+        },
+        success: function (response) {
+            var resp = Ext.JSON.decode(response.responseText),
+                success = resp.success;
+            if (success || success == true || success === true) {
+                isPopupSubmission = 1;
+            }
+        }
+    });
+    return isPopupSubmission;
 }
 
 

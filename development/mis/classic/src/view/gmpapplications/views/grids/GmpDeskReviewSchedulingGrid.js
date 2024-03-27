@@ -93,6 +93,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpDeskReviewSchedulingGrid',
                     text: 'Save Details',
                     ui: 'soft-purple',
                     toaster: 1,
+                    hidden:true,
                     iconCls: 'x-fa fa-save',
                     name: 'save_btn'
                 },

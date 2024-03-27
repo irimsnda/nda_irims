@@ -31,8 +31,7 @@ Route::group(['prefix' => 'promotionmaterials','middleware' => ['auth:api', 'web
     Route::post('/insertUpdateProductParticulars',[PromotionMaterialsController::class,'insertUpdateProductParticulars']);
     Route::post('/genericDeleteRecord',[PromotionMaterialsController::class,'genericDeleteRecord']);//
     //Route::post('/insertUpdateProductIngredStren',[PromotionMaterialsController::class,'insertUpdateProductIngredinetsStrength']);//
-    
-    
+    Route::post('/savePromotionCommentData',[PromotionMaterialsController::class,'savePromotionCommentData']);//
     
     Route::get('/getPromotionMaterialsDetails',[PromotionMaterialsController::class,'getPromotionMaterialsDetails']);
     

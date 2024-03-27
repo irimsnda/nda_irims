@@ -33,6 +33,7 @@ export class PremisesStaffdetailsComponent implements OnInit {
   @Input() isStaffPopupVisible: boolean;
   @Input() staffDetailsData: any = {};
   @Input() countries: any;
+  @Input() sub_module_id: number;
   @Input() regions: any;
   @Input() districts: any;
   @Input() personnel_informationData: any;
@@ -42,7 +43,7 @@ export class PremisesStaffdetailsComponent implements OnInit {
   @Input() premise_id: number;
   @Input() premisesGeneraldetailsfrm: FormGroup;
   personnelIdentificationTypeData:any;
-  
+
   personnel_id:number;
   district_id:number;
   region_id:number;
@@ -50,17 +51,24 @@ export class PremisesStaffdetailsComponent implements OnInit {
   personnel_QualificationData:any;
   personnel_type_id:number;
   app_resp:any;
+  auto:any;
   isPersonnelPopupVisible:boolean;
   premises_resp:any;
   isperssonelAddPopupVisible:boolean;
   loading:boolean;
   constructor(public cdr: ChangeDetectorRef,public dmsService:DocumentManagementService,public fb: FormBuilder,public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: PremisesApplicationsService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public utilityService:Utilities) {
-
   }
   ngOnInit() {
     this.onLoadPremisesStaffDetails();
     this.onLoadPremisesPersonnelDetails()
     this.onpersonnelIdentificationTypeDataLoad();
+    if(this.sub_module_id == 108){
+        this.is_readonly = true;
+    }else{
+      this.is_readonly = false;
+
+    }
+
   }
   funcEditPersonnelDetails(data) {
 

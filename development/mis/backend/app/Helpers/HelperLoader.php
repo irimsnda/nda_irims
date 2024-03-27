@@ -29,6 +29,13 @@ if (!function_exists('aes_decrypt')) {
     }
 }
 
+if (!function_exists('getRegistrationSerial')) {
+    function getRegistrationSerial($module_id)
+    {
+        return UtilityHelper::getRegistrationSerial($module_id);
+    }
+}
+
 if (!function_exists('returnTableNamefromModule')) {
     function returnTableNamefromModule($table_name, $module_id)
     {
@@ -213,6 +220,14 @@ if (!function_exists('updateRecord')) {
     function updateRecord($table_name, $previous_data, $where, $table_data, $user_id, $con = 'mysql')
     {
         return DbHelper::updateRecord($table_name, $previous_data, $where, $table_data, $user_id, $con);
+    }
+}
+
+
+if (!function_exists('updateRecordNoPrevious')) {
+    function updateRecordNoPrevious($table_name, $where, $table_data, $user_id=null, $con = 'mysql')
+    {
+        return DbHelper::updateRecordNoPrevious($table_name, $where, $table_data, $user_id, $con);
     }
 }
 
@@ -584,9 +599,9 @@ if (!function_exists('getPermitSignatory')) {
 }
 
 if (!function_exists('generatePremisePermitNo')) {
-    function generatePremisePermitNo($zone_id, $section_id, $table_name, $user_id, $ref_id,$sub_module_id)
+    function generatePremisePermitNo($district_id, $section_id, $table_name, $user_id, $ref_id,$sub_module_id)
     {
-        return UtilityHelper::generatePremisePermitNo($zone_id, $section_id, $table_name, $user_id, $ref_id,$sub_module_id);
+        return UtilityHelper::generatePremisePermitNo($district_id, $section_id, $table_name, $user_id, $ref_id,$sub_module_id);
     }
 }
 

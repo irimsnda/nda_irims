@@ -122,6 +122,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductLocal
             xtype: 'textfield',
             fieldLabel: 'Registration No',
             readOnly: true,
+            hidden:true,
             name: 'premise_reg_no'
         },
         {

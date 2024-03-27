@@ -52,6 +52,8 @@ export class PerimportProductsdetailsComponent extends SharedpersonalisedimpAppl
    isManufacturerSitePopupVisible:boolean= false;
    isproductManufacturerModalShow:boolean;
    isnewmanufacturerModalShow:boolean= false;
+   isReadOnlyProduct:boolean= false;
+   is_surgical_instruments:boolean= false;
    addproductCommonNameModal:boolean;
   addProductParamsdetailsfrm:FormGroup;
    isFoodPermitProducts:boolean;
@@ -96,12 +98,12 @@ export class PerimportProductsdetailsComponent extends SharedpersonalisedimpAppl
   printReportTitle:string;
   isPrintReportVisible:boolean = false;
   document_previewurl: any;
-  
+  productImportationCategoryData:any;
   isDocumentPreviewDownloadwin: boolean = false;
   is_brandreadonly:boolean = true;
   common_name_title: string = 'Common Name';
   productSubCategoryData: any;
-
+auto:any;
   ngOnInit(){
     this.manufacturerFrm = new FormGroup({
       name: new FormControl('', Validators.compose([Validators.required])),
@@ -117,7 +119,8 @@ export class PerimportProductsdetailsComponent extends SharedpersonalisedimpAppl
     });
 
     this.onLoadcommonNameData();
-    
+    this.onLoadImportCategoryData();
+
     let user = this.authService.getUserDetails();
     this.trader_id = user.trader_id;
     this.mistrader_id = user.mistrader_id;
@@ -129,11 +132,16 @@ export class PerimportProductsdetailsComponent extends SharedpersonalisedimpAppl
 
     });
   }
+
+
+
+
+
   funcPermitsProductPreviewedit(data) {
     this.permitProductsFrm.patchValue(data);
     //load the personnel qualifiations
   //  this.permitProductsFrm.get('currency_id').setValue(this.proforma_currency_id);
-    this.isPermitproductsAddPopupVisible = true;
+    this.isPermitproductsPopupVisible = true;
 
   }
   
@@ -211,7 +219,21 @@ export class PerimportProductsdetailsComponent extends SharedpersonalisedimpAppl
       ]
     });
   }
- 
+  onLoadImportCategoryData() {
+    var data = {
+      table_name: 'par_importexport_product_category',
+      is_personal_id:1
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.productImportationCategoryData = data;
+        },
+      error => {
+          return false
+        });
+  }
   onRegisteredProductGridToolbar(e) {
     e.toolbarOptions.items.unshift({
         location: 'after',
@@ -474,7 +496,7 @@ export class PerimportProductsdetailsComponent extends SharedpersonalisedimpAppl
       location: 'before',
       widget: 'dxButton',
       options: {
-        text: 'Add Invoice Products',
+        text: 'Add Products',
         type: 'default',
         icon: 'fa fa-plus',
         onClick: this.funAddPermitProducts.bind(this)
@@ -492,11 +514,35 @@ export class PerimportProductsdetailsComponent extends SharedpersonalisedimpAppl
   }
   funAddPermitProducts() {
    
-    this.OnReloadPermitProducts();
+   // this.OnReloadPermitProducts();
     this.isPermitproductsPopupVisible = true;
     
   }
   
+  onSearchRegisteredProductApplication() {
+   
+    this.OnReloadPermitProducts();
+    this.isPermitproductsAddPopupVisible = true;
+    
+  }
+  
+
+
+      onIsRegisteredProductChange($event) {
+    
+    if($event.value == 1){
+        this.isReadOnlyProduct =true;
+       // this.clinicalTrialControl.setValidators([Validators.required]);
+      //  this.clinicalTrialControl.updateValueAndValidity();
+
+    }else{
+      this.isReadOnlyProduct =false;
+     // this.clinicalTrialControl.clearValidators();
+    //  this.clinicalTrialControl.updateValueAndValidity();
+    }
+    
+
+  }
   OnReloadPermitProducts(){
 
     let me = this;
@@ -622,7 +668,18 @@ this.manufacturersData.store = new CustomStore({
           .catch(error => { throw 'Data Loading Error' });
   }
 });
-} funcAddManufacturerSite() {
+} 
+
+  onProductSectionChange($event){
+    if($event.value == 3 || $event.value == 4 ){
+      this.is_surgical_instruments = true;
+    }
+    else{
+      this.is_surgical_instruments = false;
+    }
+      
+}
+funcAddManufacturerSite() {
   this.isnewmanufacturerModalShow = true;
   this.manufacturerFrm.reset();
 }

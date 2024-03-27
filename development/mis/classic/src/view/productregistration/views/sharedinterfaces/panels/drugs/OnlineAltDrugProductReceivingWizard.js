@@ -255,7 +255,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.O
                     handler: 'quickNavigationonlineprev'
                 }, {
                     step: 5,
-                    iconCls: 'fa fa-check-square',
+                    iconCls: 'fa fa-money-bill-wave',
                     enableToggle: true,
                     text: 'Invoice & Payment Details',
                     action: 'quickNav',iconAlign: 'top',

@@ -5,13 +5,14 @@
   <title>Portal</title>
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" href="{{ asset('public/front-end/assets/images/logo.ico')}}">
    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
   
  
-       <link rel="stylesheet" href="{{asset('public/front-end/styles.8b85a787ebe5a6cc9af0.css')}}">
-  <link rel="stylesheet"href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+<link rel="stylesheet" href="{{asset('public/front-end/styles.8b85a787ebe5a6cc9af0.css')}}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
 
   <script type="text/javascript">
    var assets_url = 'http://localhost/zamra_rimsv2\zamra_v1\portal\demostration\public\public/resources/';
@@ -41,7 +42,6 @@
     
    <app-root></app-root>
 
-</body>
 <script type="text/javascript" src="{{asset('public/front-end/runtime.26209474bfa8dc87a77c.js')}}"></script>
     <script type="text/javascript" src="{{asset('public/front-end/polyfills.4c4f8ef040147bb3e499.js')}}"></script>
 	

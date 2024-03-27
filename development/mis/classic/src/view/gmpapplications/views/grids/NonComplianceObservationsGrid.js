@@ -18,10 +18,16 @@ Ext.define('Admin.view.gmpapplications.views.grids.NonComplianceObservationsGrid
             ui: 'soft-green',
             name: 'add_observation',
             iconCls: 'x-fa fa-plus',
-            childXtype: 'applicationunstructuredqueriesfrm',//'noncomplianceobservationsfrm',
+            childXtype: 'noncomplianceobservationsfrm',//'noncomplianceobservationsfrm',
             winTitle: 'DETAILS OF NON-COMPLIANCE OBSERVATIONS',
             winWidth: '60%',
             stores: '[]'
+        },{
+            xtype: 'hiddenfield',
+            name: 'manufacturing_site_id'
+        },{
+            xtype: 'hiddenfield',
+            name: 'application_code'
         }
     ],
     dockedItems: [
@@ -38,10 +44,27 @@ Ext.define('Admin.view.gmpapplications.views.grids.NonComplianceObservationsGrid
                     width: '100%',
                     beforeLoad: function () {
                         var store = this.getStore(),
-                            grid = this.up('grid'),
-                            mainTabPanel = grid.up('#contentPanel'),
-                            activeTab = mainTabPanel.getActiveTab(),
+                            grid = this.up('grid');
+                            if(grid.up('window')){
+                                var win = grid.up('window');
+                                if(win.down('gmpassessmentDetailsPnl')){
+                                  var site_id = win.down('gmpassessmentDetailsPnl').down('hiddenfield[name=manufacturing_site_id]').getValue();
+                                  //section_id = win.down('hiddenfield[name=section_id]').getValue();
+                                }
+                                else{
+                                   var site_id = win.down('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue(),
+                                   section_id = win.down('hiddenfield[name=section_id]').getValue();
+                                
+                             }
+                            }else{
+                            mainTabPanel = grid.up('#contentPanel');
+                            if(mainTabPanel){
+                            var activeTab = mainTabPanel.getActiveTab(),
                             site_id = activeTab.down('hiddenfield[name=manufacturing_site_id]').getValue();
+                             }else{
+                             var site_id = grid.down('hiddenfield[name=manufacturing_site_id]').getValue();
+                             }
+                         }
                         store.getProxy().extraParams = {
                             site_id: site_id
                         };
@@ -50,6 +73,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.NonComplianceObservationsGrid
             ]
         }
     ],
+
     features: [{
         ftype: 'searching',
         mode: 'local',
@@ -72,7 +96,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.NonComplianceObservationsGrid
                     url: 'gmpapplications/getNonComplianceObservations'
                 }
             },
-            isLoad: false
+            isLoad: true
         }
     },
     columns: [{

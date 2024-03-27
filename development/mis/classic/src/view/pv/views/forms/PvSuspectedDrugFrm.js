@@ -43,11 +43,54 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
             value: token
         },
         {
-            xtype: 'combo',
-            fieldLabel: 'ADR Type',
+            xtype:'fieldset',
+            columnWidth: 1,
+            itemId: 'main_fieldset',
+            title: 'Drug Details',
+            collapsible: true,
+            defaults: {
+                labelAlign: 'top',
+                allowBlank: false,
+                labelAlign: 'top',
+                margin: 5,
+                xtype: 'textfield',
+                allowBlank: false,
+                columnWidth: 0.33,
+            },
+            layout: 'column',
+            items:[ {
+            xtype: 'combo', 
+            anyMatch: true,
+            fieldLabel: 'Report Category',
+            name: 'report_category_id',
+            forceSelection: true,
+            readOnly: true,
+            allowBlank:true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setCompStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                            extraParams: {
+                                table_name: 'par_adr_categories'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+            }
+        },
+        {
+            xtype: 'combo', anyMatch: true,
+            fieldLabel: 'Report Type',
             name: 'adr_type_id',
             forceSelection: true,
             readOnly: true,
+            allowBlank:true,
             queryMode: 'local',
             valueField: 'id',
             displayField: 'name',
@@ -89,15 +132,111 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
             }
         },
         {
+            xtype: 'combo', anyMatch: true,
+            fieldLabel: 'Drug Role',
+            name: 'drug_role_id',
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setCompStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                            extraParams: {
+                                table_name: 'par_adr_drugrole'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+            }
+        },
+        {
             xtype: 'textfield',
-            fieldLabel: 'Brand Name (Name of Medicine/Vaccine/Device)',
+            fieldLabel: 'Drug Name (WHODrug)',
+            name: 'who_drug_name',
+            allowBlank: true,
+        },
+        {
+            xtype: 'textfield',
+            fieldLabel: 'Drug Name as Reported',
             name: 'brand_name',
             allowBlank: false,
-        },{
+        }, {
             xtype: 'textfield',
-            name: 'batch_no',
-            fieldLabel: 'Batch/Lot Number'
+            fieldLabel: 'MAH',
+            name: 'mah_holder',
+            allowBlank: true,
         },
+        {
+            xtype: 'textfield',
+            fieldLabel: 'Strength',
+            name: 'strength',
+            emptyText: 'e.g., 125mg/250mg | 30%/70%',
+            allowBlank: false,
+            listeners: {
+                render: function (field) {
+                    Ext.create('Ext.tip.ToolTip', {
+                        target: field.getEl(),
+                        html: 'e.g., 125mg/250mg |30%/70%',
+                        trackMouse: true
+                    });
+                }
+            }
+        },
+     
+        {
+            xtype: 'combo', anyMatch: true,
+            fieldLabel: 'Suspected Ingredient',
+            name: 'suspected_ingredient_id',
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setCompStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                            extraParams: {
+                                table_name: 'par_adr_suspected_ingredients'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+            }
+        }
+         ]
+        },
+
+          {
+               xtype: 'fieldcontainer',
+                columnWidth: 1,
+                fieldLabel: 'Additional drug-related problems',
+                layout: 'fit',
+                items:[{
+                xtype: 'pvadditionalproblemsgrid'
+
+             }]
+         },
+
+         {
+               xtype: 'fieldcontainer',
+                columnWidth: 1,
+                fieldLabel: 'Indication',
+                layout: 'fit',
+                items:[{
+                xtype: 'pvindicationgrid'
+
+             }]
+         },
+
+
         //medical devices 
         {
             xtype: 'textfield',
@@ -122,7 +261,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
             name: 'dosage',
             fieldLabel: 'Dose'
         },{
-            xtype: 'combo',
+            xtype: 'combo', anyMatch: true,
             fieldLabel: 'Route of Administration',
             name: 'route_of_administration_id',
             forceSelection: true,
@@ -198,7 +337,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                     table_name: 'tra_pv_suspected_drugs',
                     storeID: 'pvSuspectedDrugStr',
                     formBind: true,
-                    ui: 'soft-blue',
+                    ui: 'soft-green',
                     action_url: 'configurations/saveConfigCommonData',
                     handler: 'doCreatePvWin'
                 }

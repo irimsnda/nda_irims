@@ -77,8 +77,15 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.PreDru
             items: [
                 {
                     xtype: 'transitionsbtn',
-                    hidden:true,
                 },
+                //  {
+                //     text: 'Return Back',
+                //     ui: 'soft-purple',
+                //     iconCls: 'fa fa-check',
+                //     //name: 'returnback_submission_btn',
+                //     handler: 'showAddApplicationInternalQueries',
+                    
+                // },
                   {
                     text: 'Return Back',
                     ui: 'soft-purple',
@@ -109,7 +116,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.PreDru
                                 iconCls: 'x-fa fa-print',
                                 ui: 'soft-green',
                                 peview:1,
-                                handler: 'doPreviewLicense'                            },
+                                handler: 'doPreviewDrugShopLicense'                            },
                             {
                                 text: 'Print Inspection Report',
                                 iconCls: 'x-fa fa-print',

@@ -56,6 +56,17 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ParMeetingParticipantsGrid', {
         },
         {
             xtype: 'button',
+            text: 'Select a Meeting Group',
+            ui: 'soft-green',
+            iconCls: 'x-fa fa-plus',
+            handler: 'showAddTcMeetingExternalParticipant',
+            childXtype: 'meetingGroupSelectionPnl',
+            winTitle: 'Meeting Participant',
+            winWidth: '40%',
+            stores: '[]'
+        },
+        {
+            xtype: 'button',
             text: 'Save Selected',
             ui: 'soft-green',
             iconCls: 'x-fa fa-save',

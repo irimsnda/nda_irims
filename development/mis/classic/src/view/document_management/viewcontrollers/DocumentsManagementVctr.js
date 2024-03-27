@@ -241,7 +241,7 @@ showEditConfigParamWinFrm: function (item) {
             me.fireEvent('refreshStores', storeArray);
         }
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -261,7 +261,7 @@ showEditConfigParamWinFrm: function (item) {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         
     },
     setConfigGridsStore: function (obj, options) {
@@ -419,7 +419,7 @@ showEditConfigParamWinFrm: function (item) {
             doc_section_id = wizardFrm.down('hiddenfield[name=doc_section_id]').getValue();
             
             form.down('hiddenfield[name=doc_section_id]').setValue(doc_section_id);
-            funcShowCustomizableWindow(title, '55%', form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(title, '55%', form, 'customizablewindow');
 
     },
     showSectionsDocDefDetailsToDashboard: function (btn) {

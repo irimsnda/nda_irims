@@ -21,11 +21,33 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpProductsLinkageDetailsOnli
             }
         }
     },
+    plugins: [{
+        ptype: 'gridexporter'
+    }, {
+        ptype: 'rowexpander',
+        rowBodyTpl: new Ext.XTemplate(
+            '<p>' +
+            '<b>Product Line:</b> {product_line_name} <br>' +
+            '<b>Product Line Category:</b> {product_line_category}<br> ' +
+            '<b>Product Line Description:</b> {product_line_description}<br> ' +
+            '<b>Block:</b> {block} ' +
+            '</p>'
+        )
+    }],
     tbar: [{
         xtype: 'hiddenfield',
         name: 'isReadOnly'
     }, {
         xtype: 'exportbtn'
+    },{
+        xtype: 'tbspacer',
+        width: 20
+    },{
+        xtype: 'displayfield',
+        value: 'Expand to view product line details',
+        fieldStyle: {
+            'color':'green'
+        }
     }],
     bbar: [{
         xtype: 'pagingtoolbar',

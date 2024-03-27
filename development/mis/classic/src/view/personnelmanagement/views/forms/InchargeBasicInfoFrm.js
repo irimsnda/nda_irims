@@ -240,7 +240,7 @@ Ext.define('Admin.view.personnelmanagement.views.forms.InchargeBasicInfoFrm', {
                 items: [{
                       xtype: 'textfield',
                       fieldLabel:'Email Address',
-                      allowBlank: false,
+                      allowBlank: true,
                       name: 'email',
                       columnWidth: 0.9,
                       listeners: {
@@ -343,103 +343,96 @@ Ext.define('Admin.view.personnelmanagement.views.forms.InchargeBasicInfoFrm', {
                           
                 }
             }, 
+
             {
                 xtype: 'combo',
-                fieldLabel: 'Country',
-                name: 'country_id',
+                fieldLabel: 'District',
+                name: 'district_id',
+                 columnWidth: 0.25,
+                readOnly:false,
+                allowBlank:false,
                 forceSelection: true,
-                columnWidth: 0.25,
-                margin: '0 20 0 0',
                 queryMode: 'local',
                 valueField: 'id',
-                allowBlank: false,
                 displayField: 'name',
                 listeners: {
-                    beforerender: {
-                        fn: 'setParamCombosStore',
-                        config: {
-                            pageSize: 10000,
-                            proxy: {
-                            url: 'parameters/country'
-                        }
-                    },
-                    isLoad: false
-                    },afterrender: function (cmbo) {
-                             var grid = cmbo.up('form'),
-                             is_local =1,
-                             store = cmbo.getStore(),
-                             filterObj = {is_local: is_local},
-                             filterStr = JSON.stringify(filterObj);
-                             store.removeAll();
-                             store.load({params: {filter: filterStr}});
-                          },
-                            change: function (cmbo, newVal) {
-                                var form = cmbo.up('form'),
-                                    regionStore = form.down('combo[name=region_id]').getStore(),
-                                    filterObj = {country_id: newVal},
-                                    filterStr = JSON.stringify(filterObj);
-                                regionStore.removeAll();
-                                regionStore.load({params: {filter: filterStr}});
-                            }
-                        }
-                    },
-                    {
-                        xtype: 'combo',
-                        fieldLabel: 'Region',
-                        name: 'region_id',
-                        columnWidth: 0.25,
-                        margin: '0 20 0 0',
-                        forceSelection: true,
-                        queryMode: 'local',
-                        valueField: 'id',
-                        allowBlank: false,
-                        displayField: 'name',
-                        listeners: {
                             beforerender: {
                                 fn: 'setParamCombosStore',
                                 config: {
                                     pageSize: 10000,
                                     proxy: {
-                                        url: 'parameters/region'
-                                    }
-                                },
-                                isLoad: false
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_premise_districts'
+                                }
+                               }
                             },
-                            change: function (cmbo, newVal) {
-                                var form = cmbo.up('form'),
-                                    districtStore = form.down('combo[name=district_id]').getStore(),
-                                    filterObj = {region_id: newVal},
-                                    filterStr = JSON.stringify(filterObj);
-                                districtStore.removeAll();
-                                districtStore.load({params: {filter: filterStr}});
-                            }
-                        }
+                                isLoad: false
                     },
-                    {
-                        xtype: 'combo',
-                        fieldLabel: 'District',
-                        name: 'district_id',
-                        allowBlank: false,
-                        columnWidth: 0.25,
-                        margin: '0 20 0 0',
-                        forceSelection: true,
-                        queryMode: 'local',
-                        valueField: 'id',
-                        displayField: 'name',
-                        listeners: {
+                    afterrender: function (cmbo) {
+                         var grid = cmbo.up('grid'),
+                         store = cmbo.getStore(),
+                         filterObj = {country_id: 37},
+                         filterStr = JSON.stringify(filterObj);
+                         store.removeAll();
+                         store.load({params: {filters: filterStr}});
+                      },
+                    change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        regionStore = form.down('combo[name=region_id]').getStore(),
+                        filterObj = {district_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        regionStore.removeAll();
+                        regionStore.load({params: {filters: filterStr}});
+                       
+                    }
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
+                }
+            },
+
+             {
+                xtype: 'combo',
+                fieldLabel: 'Region',
+                name: 'region_id',
+                 columnWidth: 0.25,
+                readOnly:false,
+                allowBlank:false,
+                forceSelection: true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
                             beforerender: {
                                 fn: 'setParamCombosStore',
                                 config: {
                                     pageSize: 10000,
                                     proxy: {
-                                        url: 'parameters/district'
-                                    }
-                                },
-                                isLoad: false
+                                         url: 'commonparam/getCommonParamFromTable',
+                                         extraParams: {
+                                         table_name: 'par_premise_regions'
+                                }
+                               }
+                            },
+                         isLoad: false
                     }
-                          
+                },
+                triggers: {
+                    clear: {
+                        type: 'clear',
+                        hideWhenEmpty: true,
+                        hideWhenMouseOut: false,
+                        clearOnEscape: true
+                    }
                 }
-            }, 
+            },
+            
                   
             {
                 xtype: 'textarea',

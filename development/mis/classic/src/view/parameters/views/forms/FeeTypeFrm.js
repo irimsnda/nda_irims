@@ -41,7 +41,7 @@ Ext.define('Admin.view.parameters.views.forms.FeeTypeFrm', {
     },{
         xtype: 'textfield',
         fieldLabel: 'GL Code',
-        allowBlank: true,
+        allowBlank: false,
         margin: '0 20 20 0',
         name: 'gl_code'
     }],

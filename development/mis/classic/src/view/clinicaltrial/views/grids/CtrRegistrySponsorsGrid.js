@@ -109,6 +109,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.CtrRegistrySponsorsGrid', {
                 items: [{
                     text: 'Edit/Details',
                     iconCls: 'x-fa fa-edit',
+                     hidden:true,
                     handler: 'editClinicalStudySiteDetails',
                     winTitle: 'Clinical Sponsor details',
                     winWidth: '60%',

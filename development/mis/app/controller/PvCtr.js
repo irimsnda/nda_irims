@@ -20,12 +20,68 @@ Ext.define('Admin.controller.PvCtr', {
             'pvSuspectedDrugGrid': {
                 refresh: 'refreshGridsWithAppDetails'
             },
+            'pvtestGrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
+
+            'pvstudyinformationtGrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
+             'pvstudydetailsGrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
+             'pvSuspectedassessmentDrugGrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
+             'pvmedicalhistoryGrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
+
+            'casualityevaluationgrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
+            
+            'pvdrughistoryGrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
+            'pvpersonnelGrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
+
+            'pvindicationgrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
+            'pvadditionalproblemsgrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
+
+             'pvsenderGrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
+
+            'pvpersonnelFrm combo[name=country_id]': {
+                afterrender: 'afterPVCountriesComboRender'
+            },
+
+
+             'pvreactionGrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
+
             'newPvReceivingWizard': {
                 afterrender: 'preparePvReceiving'
             },
             'newPvReceivingWizard button[name=process_submission_btn]': {
                 click: 'showReceivingApplicationSubmissionWin'
             },
+
+             'evaluationPvReceivingWizard': {
+                afterrender: 'preparePvReceiving'
+            },
+            'evaluationPvReceivingWizard button[name=process_submission_btn]': {
+                click: 'showReceivingApplicationSubmissionWin'
+            },
+
             //meeting panel 
             'pvReviewPeerSchedulingPnl': {
                 afterrender: 'preparePvManagerMeeting'
@@ -38,8 +94,6 @@ Ext.define('Admin.controller.PvCtr', {
             },
             'pvReviewRcMeetingPnl': {
                 afterrender: 'preparePvManagerMeeting'
-            },'videocnt': {
-                afterrender: 'showVideo'
             },
             'pvPeerMeetingApplicationListGrid button[name=save_btn]': {
                 click: 'saveTCMeetingDetails'
@@ -62,7 +116,9 @@ Ext.define('Admin.controller.PvCtr', {
         controller: {
             '*': {
                 onNewPvApplication: 'onNewPvApplication',
-                funcActiveOtherPvInformationTab: 'funcActiveOtherPvInformationTab'
+                funcActiveOtherPvInformationTab: 'funcActiveOtherPvInformationTab',
+                showPvApplicationMoreDetails: 'showPvApplicationMoreDetails',
+                showPvRegisterMoreDetails: 'showPvRegisterMoreDetails'
                 // showDynamicSelectionList: 'showDynamicSelectionList',
                 // LoadCallerForm: 'LoadCallerForm',
                 // viewApplicationRecommendationLogs: 'viewApplicationRecommendationLogs',
@@ -119,12 +175,46 @@ Ext.define('Admin.controller.PvCtr', {
             sec_dashboard = btn.sec_dashboard,
             activeTab = mainTabPanel.getActiveTab(),
             dashboardWrapper = activeTab.down('#pvDashWrapper');
-            console.log(sec_dashboard);
         if (!dashboardWrapper.down(sec_dashboard)) {
             dashboardWrapper.removeAll();
             dashboardWrapper.add({xtype: sec_dashboard});
         }
     },
+
+        afterPVCountriesComboRender: function (cmbo) {
+        var form = cmbo.up('form'),
+            store = cmbo.getStore(),
+            filterObj = {is_local:1},
+            filterStr = JSON.stringify(filterObj);
+        store.removeAll();
+        },
+        
+
+     showPvRegisterMoreDetails: function (btn,application_code,ref_no) {
+        var isReadOnly = btn.isReadOnly,
+            is_temporal = btn.is_temporal,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab();
+          
+        this.showPvApplicationMoreDetailsGeneric(application_code,'pvmoredetailswizard',isReadOnly,ref_no);
+    },
+
+
+     showPvApplicationMoreDetails: function (btn) {
+        var isReadOnly = btn.isReadOnly,
+            is_temporal = btn.is_temporal,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            ref_no = activeTab.down('displayfield[name=reference_no]').getValue(),
+             tracking_no=activeTab.down('displayfield[name=tracking_no]');
+            if(!ref_no && !tracking_no){
+                ref_no = activeTab.down('displayfield[name=tracking_no]').getValue();
+            }
+      this.showPvApplicationMoreDetailsGeneric(application_code,'pvmoredetailswizard',isReadOnly,ref_no);
+    },
+
+
     refreshPvMainGrids: function (me) {
 
         var store = me.store,
@@ -167,6 +257,7 @@ Ext.define('Admin.controller.PvCtr', {
             };
 
     },
+
     preparePvReceiving: function (me) {
         // this.updateVisibilityAccess(me);
         Ext.getBody().mask('Please wait...');
@@ -176,9 +267,9 @@ Ext.define('Admin.controller.PvCtr', {
             application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
 
             app_doc_types_store = activeTab.down('combo[name=applicable_documents]').getStore(),
-            applicantFrm = activeTab.down('productapplicantdetailsfrm'),
+            pvpatientFrm = activeTab.down('pvpatientFrm'),
             // localagentFrm = activeTab.down('productlocalapplicantdetailsfrm'),
-            detailsFrm = activeTab.down('#DetailsFrm'),
+            detailsFrm = activeTab.down('pvDetailsFrm'),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
@@ -221,7 +312,7 @@ Ext.define('Admin.controller.PvCtr', {
 
                     if (success == true || success === true) {
                         detailsFrm.loadRecord(model);
-                        applicantFrm.loadRecord(model);
+                        pvpatientFrm.loadRecord(model);
                         // localagentFrm.loadRecord(ltr_model);
                         activeTab.down('hiddenfield[name=invoice_id]').setValue(results.invoice_id);
 
@@ -273,12 +364,82 @@ Ext.define('Admin.controller.PvCtr', {
             return;
         }
     },
+
+
+     showPvApplicationMoreDetailsGeneric: function (application_code,details_panel,isReadOnly,ref_no) {
+        Ext.getBody().mask('Please wait...');
+        var mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            tracking_no=activeTab.down('displayfield[name=tracking_no]');
+            if(!ref_no && !tracking_no){
+                ref_no = activeTab.down('displayfield[name=tracking_no]').getValue();
+            }
+            is_dataammendment_request =0;
+       
+        var me = this,
+            details_panel = Ext.widget(details_panel);
+
+        // details_panel.down('hiddenfield[name=section_id]').setValue(section_id);
+        details_panel.height = Ext.Element.getViewportHeight() - 118;
+
+        Ext.Ajax.request({
+            method: 'GET',
+            url: 'pv/getPvApplicationMoreDetails',
+            params: {
+                application_code: application_code,
+                _token:token
+            },
+            success: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    success = resp.success,
+                    message = resp.message,
+                    // applicantDetails = resp.applicant_details,
+                    pv_details = resp.pv_details;
+                if (success == true || success === true) {
+                    pvpatientFrm = details_panel.down('pvpatientFrm');
+                    detailsFrm = details_panel.down('pvDetailsFrm');
+                 
+                    funcShowOnlineCustomizableWindow(ref_no, '85%', details_panel, 'customizablewindow');
+                    if (pv_details) {
+                        var model2 = Ext.create('Ext.data.Model', pv_details);
+                        pvpatientFrm.loadRecord(model2);
+                        detailsFrm.loadRecord(model2);
+                        details_panel.getViewModel().set('model', model2);
+                    }
+
+                    if (isReadOnly == 1) {
+
+                        details_panel.getViewModel().set('isReadOnly', true);
+
+                    } else {
+                        details_panel.getViewModel().set('isReadOnly', false);
+
+                    }
+
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+    },
+
     validateNewPvReceivingSubmission: function (btn) {
         var mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
             applicantFrm = activeTab.down('productapplicantdetailsfrm'),
             application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
-            applicant_id = applicantFrm.down('hiddenfield[name=applicant_id]').getValue(),
+            //applicant_id = applicantFrm.down('hiddenfield[name=applicant_id]').getValue(),
 
             productsDetailsFrm = activeTab.down('#DetailsFrm'),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue();
@@ -286,10 +447,10 @@ Ext.define('Admin.controller.PvCtr', {
             toastr.warning('Please Save Application Details!!', 'Warning Response');
             return false;
         }
-        if (!applicant_id) {
-            toastr.warning('Please Select Applicant!!', 'Warning Response');
-            return false;
-        }
+        // if (!applicant_id) {
+        //     // toastr.warning('Please Select Applicant!!', 'Warning Response');
+        //     // return false;
+        // }
         if (!productsDetailsFrm.isValid()) {
             toastr.warning('Please Enter All the required Request Details!!', 'Warning Response');
             return false;
@@ -312,7 +473,7 @@ Ext.define('Admin.controller.PvCtr', {
         }
         if (pv_id == '') {
             tab.setActiveTab(0);
-            toastr.error('Save Patient details to proceed', 'Failure Response');
+            toastr.error('Save Report Information details to proceed', 'Failure Response');
             return false;
         }
     },
@@ -323,49 +484,6 @@ Ext.define('Admin.controller.PvCtr', {
             applicationsGrid = activeTab.down('#application_list');
         this.preparePvMeetingDetailsGeneric(activeTab, applicationsGrid, 0);
     },
-
-     showVideo: function () {
-        var me = this,
-            form = me.getMainTabPanel();
-         Ext.Ajax.request({
-                 method: 'GET',
-                    url: 'commonparam/getCommonParamFromTable',
-                    params: {
-                        table_name:'par_video_test'
-                    },
-                    headers: {
-                        'Authorization': 'Bearer ' + access_token
-                    }, 
-                    success: function (response) {
-                        Ext.getBody().unmask();
-                        var resp = Ext.JSON.decode(response.responseText),
-                            message = resp.message,
-                            success = resp.success,
-                            videoData = resp.results;
-                        if (success == true || success === true) {
-                           
-                            videoData.forEach(function (videoInfo) {
-                                form.add({
-                                        xtype: 'video',
-                                        url: videoInfo.url,
-                                        autoPause: true,
-                                        autoResume: true
-                                    });
-                                });
-                            form.updateLayout();
-                        }else {
-                            toastr.error(message, "Failure Response");
-                        }
-                      },
-                        failure: function (response) {
-                            var resp = Ext.JSON.decode(response.responseText),
-                             message = resp.message,
-                            success = resp.success;
-                            toastr.error(message, 'Failure Response');
-                    }
-        });
-     },
-    
     preparePvMeetingDetailsGeneric: function (activeTab, applicationsGrid, isReadOnly) {
         Ext.getBody().mask('Please wait...');
         var me = this,

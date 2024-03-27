@@ -125,7 +125,8 @@ export class SharedProductdashboardComponent implements  OnInit {
 
           }
         });
-  } funcpopWidth(percentage_width) {
+  } 
+  funcpopWidth(percentage_width) {
     return window.innerWidth * percentage_width/100;
   }
   onLoadApplicationProcessingData(data) {

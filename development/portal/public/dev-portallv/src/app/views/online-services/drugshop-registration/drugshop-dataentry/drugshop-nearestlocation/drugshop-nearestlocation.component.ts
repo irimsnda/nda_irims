@@ -1,9 +1,10 @@
-import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, Input,ViewChild, OnInit, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ModalDialogService } from 'ngx-modal-dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PremisesApplicationsService } from 'src/app/services/premises-applications/premises-applications.service';
 import { ConfigurationsService } from 'src/app/services/shared/configurations.service';
+import { DxDataGridComponent } from 'devextreme-angular';
 
 @Component({
   selector: 'app-drugshop-nearestlocation',
@@ -11,6 +12,8 @@ import { ConfigurationsService } from 'src/app/services/shared/configurations.se
   styleUrls: ['./drugshop-nearestlocation.component.css']
 })
 export class DrugshopNearestlocationComponent implements OnInit {
+    @ViewChild(DxDataGridComponent)
+  dataGrid: DxDataGridComponent;
   @Input() countries: any;
   @Input() regions: any;
   @Input() districts: any;
@@ -19,6 +22,7 @@ export class DrugshopNearestlocationComponent implements OnInit {
   @Input() premisesStoreslocationFrm: FormGroup;
   country_id:number;
   subCountyData:any;
+  auto:any;
   countyData:any;
   registeredPremisesData:any;
   filesToUpload: Array<File> = []; 
@@ -27,33 +31,22 @@ export class DrugshopNearestlocationComponent implements OnInit {
   county_id:number;
   
   @Input() premise_id: number;
-  premisesStoreLocationDetailsData:any;
+  drugshopStoreLocationDetailsData:any;
   isStoreLocationPopupVisible:boolean=false;
   premises_resp:any;
   loading:any;
   constructor(public config: ConfigurationsService,public modalServ: ModalDialogService,public viewRef: ViewContainerRef,public appService: PremisesApplicationsService,public toastr: ToastrService) { }
 
   ngOnInit() {
-    this.onLoadPremisesStoreLocationDetails();
     this.onLoadDrugShopStoreLocationDetails();
 
   }
-  onLoadPremisesStoreLocationDetails(){
-    this.appService.onLoadPremisesStoreLocationDetails(this.premise_id)
-      //.pipe(first())
-      .subscribe(
-        data => {//dtpremPersonnelDetailsData
-          this.premisesStoreLocationDetailsData = data;
-        },
-        error => {
-          return false
-        });
-  }   
+  
   onLoadDrugShopStoreLocationDetails(){
     this.appService.onLoadDrugShopStoreLocationDetails(this.premise_id)
       .subscribe(
         data => {
-          this.premisesStoreLocationDetailsData = data;
+          this.drugshopStoreLocationDetailsData = data;
         },
         error => {
           return false
@@ -67,34 +60,32 @@ export class DrugshopNearestlocationComponent implements OnInit {
       this.premisesStoreslocationFrm.get('file').setValue(file);
     }
   }
-onCoutryCboSelect($event) {
+  onCoutryCboSelect($event) {
 
     this.country_id = $event.selectedItem.id;
 
-    this.onLoadRegions(this.country_id);
+    this.onLoadDistricts(this.country_id);
 
   }
-  onLoadRegions(country_id) {
-
-    var data = {
-      table_name: 'par_regions',
-      country_id: country_id
-    };
-    this.config.onLoadConfigurationData(data)
-      //.pipe(first())
-      .subscribe(
-        data => {
-          this.regions = data;
-        },
-        error => {
-          return false
-        });
-  }
+onLoadRegions(district_id) {
+  this.config.onLoadRegionsData(district_id)
+    .subscribe(
+      data => {
+        if (data.success) {
+          this.regions = data.data;
+        } else {
+        }
+      },
+      error => {
+        console.error('HTTP request failed:', error);
+        return false;
+      });
+}
   
-  onLoadDistricts(region_id) {
+  onLoadDistricts(country_id) {
     var data = {
-      table_name: 'par_districts',
-      region_id: region_id
+      table_name: 'par_premise_districts',
+      country_id: country_id
     };
     this.config.onLoadConfigurationData(data)
       //.pipe(first())
@@ -106,10 +97,10 @@ onCoutryCboSelect($event) {
           return false;
         });
   }
-  onLoadCounty(district_id) {
+  onLoadCounty(region_id) {
     var data = {
       table_name: 'par_county',
-      district_id: district_id
+      region_id: region_id
     };
     this.config.onLoadConfigurationData(data)
       //.pipe(first())
@@ -142,19 +133,20 @@ onCoutryCboSelect($event) {
 }
 
   
-  onRegionsCboSelect($event) {
+ onRegionsCboSelect($event) {
     this.region_id = $event.selectedItem.id;
 
-    this.onLoadDistricts(this.region_id);
+    this.onLoadCounty(this.region_id);
 
   }
   
   oDistrictsCboSelect($event) {
     this.district_id = $event.selectedItem.id;
 
-    this.onLoadCounty(this.district_id);
+    this.onLoadRegions(this.district_id);
 
   }
+
    oCountyCboSelect($event) {
     this.county_id = $event.selectedItem.id;
 
@@ -173,8 +165,8 @@ onCoutryCboSelect($event) {
     //func_delete records 
     let record_id = data.data.id;
     let apppremises_id = data.data.premise_id;
-    let table_name = 'wb_premises_storelocation';
-    this.funcDeleteDetailhelper(record_id, apppremises_id, table_name, 'busines_personnel', 'Premises Store Location');
+    let table_name = 'wb_drugshop_storelocation';
+    this.funcDeleteDetailhelper(record_id, apppremises_id, table_name, 'busines_personnel', 'Drug Shop Store Location');
 
   }
   funcDeleteDetailhelper(record_id, apppremises_id, table_name, reload_type, title) {
@@ -197,7 +189,7 @@ onCoutryCboSelect($event) {
 
                   if (resp.success) {
                     
-                      this.onLoadPremisesStoreLocationDetails();
+                      this.onLoadDrugShopStoreLocationDetails();
 
                     this.toastr.success(resp.message, 'Response');
                   }
@@ -224,9 +216,9 @@ onCoutryCboSelect($event) {
     });
   }
 
-  onPremisesStoreLocationToolbar(e,is_readonly) {
+  onDrugShopStoreLocationToolbar(e,is_readonly) {
 
-    this.functDataGridToolbar(e, this.funAddPremisesStreLocationDetails, 'Premise Nearest Location',is_readonly);
+    this.functDataGridToolbar(e, this.funAddPremisesStreLocationDetails, 'Drug shop Nearest Location',is_readonly);
 
   }
 
@@ -254,10 +246,13 @@ onCoutryCboSelect($event) {
         widget: 'dxButton',
         options: {
           icon: 'refresh',
-         // onClick: this.refreshDataGrid.bind(this)
+          onClick: this.refreshDataGrid.bind(this)
         }
       });
-  } 
+  }  
+  refreshDataGrid() {
+      this.dataGrid.instance.refresh();
+    }
     private prepareSaveSketchtDoc(): any {
 
       let input = { ...this.premisesStoreslocationFrm.value }; // Create a copy of the object
@@ -279,27 +274,7 @@ onCoutryCboSelect($event) {
     // }
     // return input;
   }
-  onSavePremisesStoreLocationDetails() {
-    if (this.premisesStoreslocationFrm.invalid) {
-      return;
-    }
-    const uploadData = this.prepareSaveSketchtDoc();
-    this.appService.onSavePremisesStoreLocationDetails(this.premisesStoreslocationFrm.value, this.premise_id,uploadData)
-      .subscribe(
-        response => {
-          this.premises_resp = response.json();
-          if (this.premises_resp.success) {
-            this.toastr.success(this.premises_resp.message, 'Response');
-            this.isStoreLocationPopupVisible = false;
-            this.onLoadPremisesStoreLocationDetails();
-          } else {
-            this.toastr.error(this.premises_resp.message, 'Alert');
-          }
-        },
-        error => {
-          this.loading = false;
-        });
-  }   
+  
   onSaveDrugShopStoreLocationDetails() {
     if (this.premisesStoreslocationFrm.invalid) {
       return;
@@ -322,8 +297,8 @@ onCoutryCboSelect($event) {
         });
   } 
 
-    onSearchNearestLocationDetails() {  
-    this.appService.onLoadNearestPremises(this.premise_id)
+    onSearchNearestDrugShopLocationDetails() {  
+    this.appService.onLoadNearestDrugShops(this.premise_id)
         .subscribe(
           data_response => {
             this.isLocationPopupVisible = true;
@@ -336,6 +311,8 @@ onCoutryCboSelect($event) {
 
        });
   } 
+
+  
   funcSelectLocationDetails(data){ 
 
     this.premisesStoreslocationFrm.patchValue(data.data);
@@ -348,4 +325,3 @@ onCoutryCboSelect($event) {
 
 
 }
-

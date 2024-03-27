@@ -83,7 +83,7 @@ Ext.define('Admin.view.scheduledtcmeeting.viewcontrollers.ScheduledTcmeetingsVct
                                 meetingDetailsFrm.loadRecord(model);
                             }
                             viewscheduledtcmeetingapplications.add({xtype:tc_meetingpnlgrid});                            
-                            funcShowCustomizableWindow(winTitle, winWidth, childXtype, 'customizablewindow');
+                            funcShowOnlineCustomizableWindow(winTitle, winWidth, childXtype, 'customizablewindow');
                             //applicationsStore.load();
                            // participantsStore.load();
                         } else {

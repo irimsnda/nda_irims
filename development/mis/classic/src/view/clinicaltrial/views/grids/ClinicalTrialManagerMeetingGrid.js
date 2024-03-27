@@ -32,6 +32,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialManagerMeetingGrid
         xtype: 'exportbtn'
     }, {
         xtype: 'button',
+        hidden:true,
         text: 'Print Meeting Details',
         iconCls: 'x-fa fa-print',
         ui: 'soft-green',
@@ -207,6 +208,13 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialManagerMeetingGrid
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 1,
                         handler: 'showClinicalTrialApplicationMoreDetails'
+                    },
+                    {
+                        text: 'View  Online Assessment Tool',
+                        iconCls: 'x-fa fa-bars',
+                        appDetailsReadOnly: 1,
+                        winTitle: 'Online Assessment Tool Details',
+                        handler: 'showAssessmentToolDetails'
                     },{
                         xtype: 'button',
                         text: 'Return Back Application(s)',

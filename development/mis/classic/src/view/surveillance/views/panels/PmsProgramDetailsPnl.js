@@ -16,8 +16,9 @@ Ext.define('Admin.view.surveillance.views.panels.PmsProgramDetailsPnl', {
         {
             xtype: 'pmsprogramdetailsfrm',
            // height:260,
+           scrollable:true,
             collapsible: true,
-			 region:'west',
+			region:'west',
 			width: 650,
             
         },

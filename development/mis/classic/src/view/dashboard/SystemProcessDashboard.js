@@ -28,6 +28,11 @@ Ext.define('Admin.view.dashboard.SystemProcessDashboard', {
                     height: Ext.Element.getViewportHeight() - 161
                 },
                 {
+                    title: 'Out-Tray',
+                    xtype: 'outtraygrid',
+                    height: Ext.Element.getViewportHeight() - 161
+                },
+                {
                     xtype:'panel',
                     layout:'border',
                     hidden:true,

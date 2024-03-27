@@ -527,13 +527,6 @@ searchAudit:function(btn) {
             win = form_xtype.up('window'),
             storeID = btn.storeID,
             store = Ext.getStore(storeID);
-
-        // if(table=='tra_departmental_notifications'){
-        //     var combo=form_xtype.down('combo[name=group_ids]'),
-        //         value=combo.getValue(),
-        //         string= value.join(',');
-        //         combo.setValue(string);
-        // }
         var frm = form_xtype.getForm();
             
         if (frm.isValid()) {

@@ -17,8 +17,9 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.PromtionAdverts
     colorScheme: 'soft-green',
     items: [
         {
-            xtype: 'promotionalapplicantdetailsfrm',
-            title:'Applicant Details'
+            xtype: 'promotionalapplicantdetailsfrm'
+            // ,
+            // title:'Applicant Details'
         },
         {
             xtype: 'promotionaldetailspnl',
@@ -32,34 +33,35 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.PromtionAdverts
                         {
                             xtype: 'tbspacer',
                             width: 2
-                        },
-                        {
-                            xtype: 'combo',
-                            fieldLabel: 'Zone',
-                            labelWidth: 50,
-                            width: 400,
-                            name: 'zone_id',
-                            valueField: 'id',
-                            displayField: 'name',
-                            queryMode: 'local',
-                            forceSelection: true,
-                            readOnly: true,
-                            listeners: {
-                                beforerender: {
-                                    fn: 'setOrgConfigCombosStore',
-                                    config: {
-                                        pageSize: 1000,
-                                        proxy: {
-                                            extraParams: {
-                                                model_name: 'Zone'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            },
-                            labelStyle: 'font-weight:bold'
                         }
+                        // ,
+                        // {
+                        //     xtype: 'combo',
+                        //     fieldLabel: 'Zone',
+                        //     labelWidth: 50,
+                        //     width: 400,
+                        //     name: 'zone_id',
+                        //     valueField: 'id',
+                        //     displayField: 'name',
+                        //     queryMode: 'local',
+                        //     forceSelection: true,
+                        //     readOnly: true,
+                        //     listeners: {
+                        //         beforerender: {
+                        //             fn: 'setOrgConfigCombosStore',
+                        //             config: {
+                        //                 pageSize: 1000,
+                        //                 proxy: {
+                        //                     extraParams: {
+                        //                         model_name: 'Zone'
+                        //                     }
+                        //                 }
+                        //             },
+                        //             isLoad: true
+                        //         }
+                        //     },
+                        //     labelStyle: 'font-weight:bold'
+                        // }
                     ]
                 }
             ],
@@ -92,7 +94,7 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.PromtionAdverts
                     pressed: true,
                     text: 'Applicant & Application Details',
                     action: 'quickNav',
-                    handler: 'quickNavigationMoreDetails'
+                    handler: 'quickCustomNavigationMoreDetails'
                 },
                 {
                     step: 1,
@@ -100,15 +102,7 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.PromtionAdverts
                     enableToggle: true,
                     text: 'Products Particulars',
                     action: 'quickNav',
-                    handler: 'quickNavigationMoreDetails'
-                },
-				 {
-                    step: 2,
-                    iconCls: 'fa fa-university',
-                    enableToggle: true,
-                    text: '',
-                    action: 'quickNav',
-                    handler: 'quickNavigationMoreDetails'
+                    handler: 'quickCustomNavigationMoreDetails'
                 }
 				
             ]
@@ -124,7 +118,7 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.PromtionAdverts
                     bind: {
                         disabled: '{atBeginning}'
                     },
-                    handler: 'onPrevCardClickMoreDetails'
+                    handler: 'onCustomPrevCardClickMoreDetails'
                 },
                 '->',
                {
@@ -172,7 +166,7 @@ Ext.define('Admin.view.promotionmaterials.views.sharedinterfaces.PromtionAdverts
                     bind: {
                         disabled: '{atEnd}'
                     },
-                    handler: 'onNextCardClickMoreDetails'
+                    handler: 'onCustomNextCardClickMoreDetails'
                 }
             ]
         };

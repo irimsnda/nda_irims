@@ -64,9 +64,10 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
             }
 
         }
-    },{
+    },
+    {
         xtype: 'combo',
-        fieldLabel: 'Type Of Application',
+        fieldLabel: 'Application Type',
         labelWidth: 80,
    
         valueField: 'id',
@@ -106,6 +107,32 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
 
             // }
         }
+    },{
+        xtype: 'combo',
+        fieldLabel: 'Business Type',
+        name: 'business_type_id',
+        forceSelection: true,
+        queryMode: 'local',
+        valueField: 'id',
+        displayField: 'name',
+        listeners: {
+            beforerender: {
+                fn: 'setConfigCombosSectionfilterStore',
+                config: {
+                    pageSize: 10000,
+                    proxy: {
+                       // url: 'configurations/getRegistrationApplicationParameters',
+                        url: 'configurations/getNonrefParameter',
+                        extraParams: {
+                            table_name: 'par_business_types'
+                        }
+                    }
+                },
+                isLoad: true
+            }
+        },bind: {
+            readOnly: '{isReadOnly}'
+        },
     },
     {
         xtype: 'combo',
@@ -164,7 +191,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
 
     {
         xtype: 'combo',
-        fieldLabel: 'Permit Product Classification',
+        fieldLabel: 'Product Category',
         name: 'product_classification_id',
         forceSelection: true,
         queryMode: 'local',
@@ -216,36 +243,10 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
     //         readOnly: '{isReadOnly}'
     //     },
     // },
-    {
-        xtype: 'combo',
-        fieldLabel: 'Permit Business Type',
-        name: 'business_type_id',
-        forceSelection: true,
-        queryMode: 'local',
-        valueField: 'id',
-        displayField: 'name',
-        listeners: {
-            beforerender: {
-                fn: 'setConfigCombosSectionfilterStore',
-                config: {
-                    pageSize: 10000,
-                    proxy: {
-                       // url: 'configurations/getRegistrationApplicationParameters',
-                        url: 'configurations/getNonrefParameter',
-                        extraParams: {
-                            table_name: 'par_business_types'
-                        }
-                    }
-                },
-                isLoad: true
-            }
-        },bind: {
-            readOnly: '{isReadOnly}'
-        },
-    },
+    
     {
         xtype: 'tagfield',
-        fieldLabel: 'Product Range',
+        fieldLabel: 'Product Classification',
         columnWidth: 0.33,
         name: 'importexport_product_range_id',
         allowBlank: true,

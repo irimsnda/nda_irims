@@ -26,7 +26,7 @@ export class InitiateNewbatchApplicationComponent extends SharedProductregistrat
   isInitiateAddProductGroupAppWin:boolean=false;
 
   ngOnInit() {
-    this.onLoadGuidelines(this.sub_module_id, this.section_id);
+    this.onLoadGuidelines(this.sub_module_id);
     this.productapp_details = this.appService.getProductApplicationDetail();
     if (!this.productapp_details) {
       this.router.navigate(['./../online-services/newprodreg-dashboard']);
@@ -59,8 +59,8 @@ export class InitiateNewbatchApplicationComponent extends SharedProductregistrat
     this.onLoadProductApplciations();
     this.readOnlyOrigin =true;
 
-  }onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+  }onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {

@@ -13,10 +13,10 @@
 use Modules\Auth\Http\Controllers\AuthController;
 
 Route::post('login',[AuthController::class,'handleLogin'])->name('login');
-Route::post('forgotPassword',[AuthController::class,'forgotPassword']);
+Route::post('forgotPassword',[AuthController::class,'forgotPasswordHandler']);
 Route::post('saveNewPassword',[AuthController::class,'saveNewPassword']);
 Route::post('resetPassword',[AuthController::class,'resetPassword']);
-Route::post('updatePassword',[AuthController::class,'updatePassword']);
+Route::post('updatePassword',[AuthController::class,'updateUserPassword']);
 Route::post('saveNewPassword',[AuthController::class,'saveNewPassword']);
 Route::get('authenticateUserSession',[AuthController::class,'authenticateUserSession']);
 Route::post('logout',[AuthController::class,'logout']);

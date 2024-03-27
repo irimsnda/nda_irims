@@ -24,7 +24,7 @@ Ext.define('Admin.view.pv.views.grids.PvGrid', {
         xtype: 'tbspacer',
         width: 50
     }, {
-        xtype: 'combo',
+        xtype: 'combo', anyMatch: true,
         fieldLabel: 'Sub Module',
         labelWidth: 80,
         width: 320,
@@ -64,7 +64,7 @@ Ext.define('Admin.view.pv.views.grids.PvGrid', {
         xtype: 'tbspacer',
         width: 10
     }, {
-        xtype: 'combo',
+        xtype: 'combo', anyMatch: true,
         fieldLabel: 'Workflow Stage',
         valueField: 'id',
         name: 'workflow_stage_id',

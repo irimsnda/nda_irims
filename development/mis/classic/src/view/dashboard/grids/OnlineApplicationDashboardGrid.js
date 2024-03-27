@@ -220,17 +220,15 @@ Ext.define('Admin.view.dashboard.grids.OnlineApplicationDashboardGrid', {
                     grid = this.up("#contentPanel").getActiveTab().down('tabpanel').getActiveTab(),
                     is_management_dashboard = grid.is_management_dashboard,
                     section_id = grid.down('combo[name=section_id]').getValue(),
+                    //online_status_id = grid.down('combo[name=online_status_id]').getValue(),
                     module_id = grid.down('combo[name=module_id]').getValue(),
                     
                     zone_id = grid.down('combo[name=zone_id]').getValue(),
                     sub_module_id = grid.down('combo[name=sub_module_id]').getValue();
-                    if(grid.down('combo[name=online_status_id]')){
-                      online_status_id = grid.down('combo[name=online_status_id]').getValue();
-                    }
                     store.getProxy().extraParams = {
                         section_id: section_id,
                         module_id: module_id,
-                        online_status_id: online_status_id,
+                     //   online_status_id: online_status_id,
                         zone_id:zone_id,
                         sub_module_id: sub_module_id,
                         is_management_dashboard:is_management_dashboard

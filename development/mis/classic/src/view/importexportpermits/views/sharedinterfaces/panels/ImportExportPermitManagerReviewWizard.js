@@ -46,7 +46,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                 }, {
                     xtype: 'displayfield',
                     name: 'workflow_stage',
-                    fieldLabel: 'Workflow Stage',
+                    fieldLabel: 'Application Status',
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
@@ -262,7 +262,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                         title: 'Sender/Receiver Details',
                     },
                     {
-                        xtype: 'onlineimportexportnonlicencebusinessdetailsfrm',collapsible: true,
+                        xtype: 'vcimportexportnonlicencebusinessdetailsfrm',collapsible: true,
                         title: 'Non Licensed Outlet Details',
                     }]
                 },{
@@ -287,89 +287,119 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     }],
                     listeners:{
                         beforerender: function(grid){
-                            var btn = grid.down('button[name=add_products]');
-                            btn.setVisible(false);
+                            // var btn = grid.down('button[name=add_products]');
+                            // btn.setVisible(false);
                         }
                     },
                     columns: [{
                         xtype:'rownumberer'  
                     },{
-                        xtype: 'gridcolumn',
-                        dataIndex: 'brand_name',
-                        tdCls: 'wrap-text',
-                        text: 'Brand Name/Device Name',
-                        flex: 1
-                    }, {
-                        xtype: 'gridcolumn',
-                        dataIndex: 'certificate_no',
-                        tdCls: 'wrap-text',
-                        text: 'Certificate No',
-                        flex: 1,
-                    },{
-                        xtype: 'gridcolumn',
-                        dataIndex: 'common_name',
-                        tdCls: 'wrap-text',
-                        text: 'Common Name',
-                        flex: 1,
-                    },{
-                        xtype: 'gridcolumn',
-                        dataIndex: 'product_category',
-                        hidden: true,
-                        tdCls: 'wrap-text',
-                        text: 'Product Category',
-                        flex: 1,
-                    }, {
-                        xtype: 'gridcolumn',
-                        dataIndex: 'quantity',
-                        tdCls: 'wrap-text',
-                        text: 'Quantity',
-                        flex: 1,
-                    }, {
-                        xtype: 'gridcolumn',
-                        dataIndex: 'packaging_units',
-                        tdCls: 'wrap-text',
-                        text: 'Packaging Units',
-                        flex: 1,
-                    }, {
-                        xtype: 'gridcolumn',
-                        dataIndex: 'pack_size',hidden: true,
-                        text: 'Unit Pack size',
-                
-                        flex: 1,
-                    },{
-                        xtype: 'gridcolumn',
-                        dataIndex: 'pack_unit',hidden: true,
-                        text: 'Unit Pack',
-                
-                        flex: 1,
-                    },{
-                        xtype: 'gridcolumn',
-                        dataIndex: 'currency_name',
-                        tdCls: 'wrap-text',
-                        text: 'Currency Name',
-                        flex: 1
-                    },{
-                        
-                        xtype: 'gridcolumn',
-                        dataIndex: 'unit_price',
-                        tdCls: 'wrap-text',
-                        text: 'Unit Price',
-                        flex: 1,
-                        
-                    },{
+          xtype: 'gridcolumn',
+          dataIndex: 'brand_name',
+          tdCls: 'wrap-text',
+          text: 'Brand Name/Device Name',
+          flex: 1
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'certificate_no',
+          hidden: true,
+          tdCls: 'wrap-text',
+          text: 'Certificate No',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'common_name',
+          tdCls: 'wrap-text',
+          text: 'Common Name',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'product_category',
+          hidden: true,
+          tdCls: 'wrap-text',
+          text: 'Product Category',
+          flex: 1,
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'quantity',
+          tdCls: 'wrap-text',
+          text: 'Quantity',hidden: true,
+          flex: 1,
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'si_unit',
+          tdCls: 'wrap-text',
+          text: 'Packaging Units',
+          flex: 1,
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'pack_size',hidden: true,
+          text: 'Unit Pack size',
+  
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'pack_unit',hidden: true,
+          text: 'Unit Pack',
+  
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'no_of_packs_tertiary',
+          tdCls: 'wrap-text',
+          text: 'Tertiary',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'no_of_packs_secondary',
+          tdCls: 'wrap-text',
+          text: 'Secondary',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'no_of_packs',
+          tdCls: 'wrap-text',
+          text: 'Primary',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'verification_fee_percent',
+          tdCls: 'wrap-text',
+          text: 'Verification Percentage',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'total_units',
+          text: 'Total Units',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'currency_name',
+          tdCls: 'wrap-text',
+          text: 'Currency Name',
+          flex: 1,
+      },{
+          
+          xtype: 'gridcolumn',
+          dataIndex: 'unit_price',
+          tdCls: 'wrap-text',
+          text: 'Unit Price',
+          flex: 1,
+        
+      },{
                         xtype: 'gridcolumn',
                         dataIndex: 'total_value',
                         tdCls: 'wrap-text',
                         text: 'Total Value',
                         width: 200,
                         summaryType: 'sum',
-                        renderer: function (val, meta, record) {
-                            return Ext.util.Format.number(val, '0,000.00');
-                        },
-                        summaryRenderer: function (val) {
-                            val = Ext.util.Format.number(val, '0,000.00');
-                            return 'Total Fob '+val
-                        }
+                        // renderer: function (val, meta, record) {
+                        //     return Ext.util.Format.number(val, '0,000.00');
+                        // },
+                        // summaryRenderer: function (val) {
+                        //     val = Ext.util.Format.number(val, '0,000.00');
+                        //     return 'Total Fob '+val
+                        // }
                     },{
                         xtype: 'gridcolumn',
                         text: 'Registration Status', 
@@ -490,7 +520,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                         }
                     }]
             },{
-                title: 'Screening Checklist & Recommendation',
+                title: 'Application Checklist Details',
                 xtype: 'panel',
                 autoScroll: true, 
                 layout: 'fit',

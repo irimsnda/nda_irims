@@ -1019,10 +1019,10 @@ class DMSHelper
         ]);
 
         try {
-			
-			$destination_node = str_replace(":","-",$destination_node);
-			$destination_node = str_replace("*","-",$destination_node);
-			
+            
+            $destination_node = str_replace(":","-",$destination_node);
+            $destination_node = str_replace("*","-",$destination_node);
+            
             $destination_node = 'workspace://SpacesStore/' . $destination_node;
             if ($update_noderef != '') {
 
@@ -1077,7 +1077,7 @@ class DMSHelper
         $auth_resp = authDms('');
         $ticket = $auth_resp['ticket'];
      //   dms_url 197.243.23.246
-        $server_address = 'http://127.0.0.1:8080/alfresco/';//Config('constants.dms.dms_url');
+         $server_address = 'http://localhost:8080/alfresco/';//Config('constants.dms.dms_url');
 
         if ($version_id != '') {
             $url = $server_address . 'service/api/node/content/workspace/SpacesStore/' . $node_ref . '/version/' . $version_id . '?a=false&alf_ticket=' . $ticket;
@@ -1093,15 +1093,14 @@ class DMSHelper
     static function getApplicationSubModuleNodeDetails($section_id, $module_id, $sub_module_id, $user_id, $con = 'mysql')
     {
         $root_site_id = Config('constants.dms.dms_approotsite_id');
-
+        
         $rec = DB::connection($con)->table('tra_sectionssubmodule_docdefination as t1')
             ->select('t1.node_ref')
             ->join('tra_sections_docdefination as t2', 't1.doc_section_id', '=', 't2.id')
             ->join('tra_dmsdocument_sites as t3', 't2.dms_site_id', '=', 't3.id')
             ->where(array('t2.section_id' => $section_id, 't3.site_id' => $root_site_id, 't1.sub_module_id' => $sub_module_id))
             ->first();
-
-
+    
         if ($rec) {
             $record = $rec;
 
@@ -1111,7 +1110,7 @@ class DMSHelper
             $table_name = 'tra_sections_docdefination';
             $where_section = array('section_id' => $section_id, 'dms_site_id' => $root_site_id);
             $record = getPreviousRecords($table_name, $where_section);
-
+               
             if (count($record['results']) > 0) {
 
                 $section_node_ref = $record['results']['0']['node_ref'];
@@ -1122,7 +1121,6 @@ class DMSHelper
                 $table_data = array('section_id' => $section_id, 'dms_site_id' => $root_site_id);
 
                 $resp = self::funcCreatApplicationNode($table_name, $where_section, $section_id, 'par_sections', $site_node_ref, $table_data, $user_id);
-
                 $section_node_ref = $resp['node_ref'];
                 $doc_section_id = $resp['record_id'];
 
@@ -1169,16 +1167,17 @@ class DMSHelper
     {
         $variable_name = getSingleRecordColValue($table_variable, array('id' => $variable_id), 'name');
         $node_name = strtoupper(str_replace(' ', '', $variable_name));
-		$node_name = str_replace(":","-",$node_name);
-			$node_name = str_replace("*","-",$node_name);
-			
-        $node_details = array('name' => $node_name,
-            'nodeType' => 'cm:folder');
+        $node_name = str_replace(":","-",$node_name);
+            $node_name = str_replace("*","-",$node_name);
+            
+        $node_details = array('name' => $node_name.rand(0,10002323033),
+         'nodeType' => 'cm:folder');
 
         $response = dmsCreateAppRootNodesChildren($site_node_ref, $node_details);
-
+       // dd($response);
         $node_ref = '';
         $record_id = '';
+        //exit();
         if ($response['success']) {
             $node_id = $response['node_details']->id;
             $table_data['node_ref'] = $node_id;
@@ -1187,15 +1186,14 @@ class DMSHelper
             $table_data['created_by'] = $user_id;
 
             $table_data['node_name'] = $node_name;
-
+           
             $res = insertRecord($table_name, $table_data, $user_id);
 
             $node_ref = $node_id;
             $record_id = $res['record_id'];
+            }
+            return array('node_ref' => $node_ref, 'record_id' => $record_id);
         }
-        return array('node_ref' => $node_ref, 'record_id' => $record_id);
-    }
-
     static function getApplicationRootNode($application_code)
     {
         $rec = DB::connection('mysql')->table('tra_application_documentsdefination as t1')
@@ -1349,7 +1347,10 @@ class DMSHelper
 
     static function initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $ref_number, $user_id)
     {
+
+
         $dms_node_details = self::getApplicationSubModuleNodeDetails($section_id, $module_id, $sub_module_id, $user_id);
+     
 
         $nodeTracking = str_replace("/", "-", $ref_number);
         $parentNode_ref = $dms_node_details->node_ref;

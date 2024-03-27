@@ -37,6 +37,7 @@ Ext.define('Admin.view.productregistration.views.toolbars.MedicaldevicesProductR
                     {
                         text: 'Product Notifications',
                         iconCls: 'x-fa fa-check',
+                        hidden:true,
                         handler: 'showRenAltProductRegistration',
                         app_type: 8
                     },

@@ -13,17 +13,38 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
     setDynamicTreeGridStore: function (obj, options) {
         this.fireEvent('setDynamicTreeGridStore', obj, options);
     },
-    setWorkflowCombosStore: function (obj, options) {
-        this.fireEvent('setWorkflowCombosStore', obj, options);
-    },
 
     setCompStore: function (obj, options) {
         this.fireEvent('setCompStore', obj, options);
+    },
+    setWorkflowCombosStore: function (obj, options) {
+        this.fireEvent('setWorkflowCombosStore', obj, options);
     },
     showNewPv: function (btn) {
         var application_type = btn.app_type,
             me = this;
             me.fireEvent('onNewPvApplication', application_type, btn, 0);
+    },
+
+    showRCMemberRecommendationLogsWin:function(btn) {
+        var button = btn.up('button'),
+            grid = button.up('grid'),
+            panel = grid.up('panel'),
+            meeting_id = panel.down('hiddenfield[name=id]').getValue(),
+            grid = Ext.widget('rcRecommendationLogGrid'),
+            record = button.getWidgetRecord(),
+            application_code = record.get('application_code'),
+            stage_category_id = record.get('stage_category_id'),
+            module_id = record.get('module_id');
+      
+       
+        grid.down('hiddenfield[name=application_code]').setValue(application_code);
+        grid.down('hiddenfield[name=stage_category_id]').setValue(stage_category_id);
+        grid.down('hiddenfield[name=module_id]').setValue(module_id);
+        grid.down('hiddenfield[name=meeting_id]').setValue(meeting_id);
+        
+        funcShowCustomizableWindow('RC Recommendations', '60%', grid, 'customizablewindow', btn);
+        
     },
 	showAddConfigParamWinFrm: function (btn) {
         var me = this,
@@ -32,9 +53,19 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             winWidth=btn.winWidth,
             child = Ext.widget(childXtype);
 
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
        
     },
+    func_setStore: function(me,options){
+        var config = options.config,
+              isLoad = options.isLoad,
+              store = Ext.create('Admin.store.common.CommonGridAbstractStore', config);
+           me.setStore(store); 
+          if (isLoad === true || isLoad == true) {
+              store.removeAll();
+              store.load();
+          }
+      }, 
     onViewMirApplication: function (grid, record) {
         this.fireEvent('viewApplicationDetails', record);
 
@@ -63,6 +94,93 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
         this.navigate(btn, wizardPnl, 'prev');
 
     },
+
+     viewAssesmentDetails:function(btn) {
+           var me = this,
+            record = btn.getWidgetRecord(),
+            grid = btn.up('grid'),
+            childObject = Ext.widget(btn.childXtype),
+            winTitle = btn.winTitle,
+            winWidth = btn.winWidth;
+            //childObject.down('hiddenfield[name=isReadOnly]').setValue(1);
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+    },
+
+    saveCausalityAssessmentReport:function(btn){
+        var  grid = btn.up('grid'),
+            mainTabPnl = Ext.ComponentQuery.query("#contentPanel")[0],
+            activeTab = mainTabPnl.getActiveTab(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+               
+            casualityevaluationgrid = btn.up('grid'),
+            causalityevaluationgridstr = Ext.getStore('causalityevaluationgridstr'),
+
+        store = casualityevaluationgrid.getStore(),
+        report_questions = []; 
+        for (var i = 0; i < store.data.items.length; i++) {
+            var record = store.data.items [i],
+                 question_id = record.get('question_id'),
+                 report = record.get('report'),
+                 score_id = record.get('score_id'),
+                 id = record.get('id');
+
+            var obj = {
+                id: id,
+                question_id: question_id,
+                application_code: application_code,
+                score_id: score_id,
+                created_by: user_id
+            };
+            if (record.dirty) {
+                report_questions.push(obj);
+            }
+        }
+        if (report_questions.length < 1) {
+            btn.setLoading(false);
+            toastr.warning('No records to save!!', 'Warning Response');
+            return false;
+        }
+        report_questions = JSON.stringify(report_questions);
+        Ext.Ajax.request({
+            url: 'pv/saveAssessmentReportdetails',
+            params: {
+                application_code: application_code,
+                report_questions: report_questions
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+            },
+            success: function (response) {
+                btn.setLoading(false);
+                var resp = Ext.JSON.decode(response.responseText),
+                    success = resp.success,
+                    message = resp.message;
+                if (success == true || success === true) {
+                    toastr.success(message, 'Success Response');
+                    store.load();
+                    productlinedetailsstr.load();
+
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (response) {
+                btn.setLoading(false);
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                btn.setLoading(false);
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+
+
+    },
+
+
 
     navigate: function (button, wizardPanel, direction) {
         var layout = wizardPanel.getLayout(),
@@ -134,7 +252,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             progress = wizardPnl.down('#progress_tbar'),
             progressItems = progress.items.items;
 
-        if (step > 1) {
+        if (step > 0) {
             var thisItem = progressItems[step];
             if (!application_id) {
                 thisItem.setPressed(false);
@@ -143,10 +261,10 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             }
         }
         if (step == 0) {
-            wizardPnl.down('button[name=save_btn]').setDisabled(true);
+            wizardPnl.down('button[name=save_btn]').setDisabled(false);
             motherPnl.getViewModel().set('atBeginning', true);
         } else if (step == 1) {
-            wizardPnl.down('button[name=save_btn]').setDisabled(false);
+            wizardPnl.down('button[name=save_btn]').setDisabled(true);
             motherPnl.getViewModel().set('atBeginning', false);
         } else {
             motherPnl.getViewModel().set('atBeginning', false);
@@ -204,14 +322,14 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             checkapplication_id = containerPnl.down('hiddenfield[name=active_application_id]').getValue(),
 
             applicantDetailsForm = containerPnl.down('productapplicantdetailsfrm'),
-            applicant_id = applicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue(),
+            //applicant_id = applicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue(),
             DetailsForm = containerPnl.down('#DetailsFrm'),
             DetailsFrm = DetailsForm.getForm();
 
-        if (!applicant_id) {
-            toastr.warning('Please select Reporter!!', 'Warning Response');
-            return false;
-        }
+        // if (!applicant_id) {
+        //     //toastr.warning('Please select Reporter!!', 'Warning Response');
+        //     //return false;
+        // }
 
         if (DetailsFrm.isValid()) {
             DetailsFrm.submit({
@@ -221,7 +339,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
                     process_id: process_id,
                     workflow_stage_id: workflow_stage_id,
                     active_application_id: active_application_id,
-                    applicant_id: applicant_id,
+                    //applicant_id: applicant_id,
                     module_id: module_id,
                     sub_module_id: sub_module_id,
                     section_id: section_id,
@@ -275,13 +393,13 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
         } else {
             grid.applicantType = 'nonlocal';
         }
-        funcShowCustomizableWindow('Applicant Selection List', '90%', grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Applicant Selection List', '90%', grid, 'customizablewindow');
     },
     showUploadEvaluationDocuments: function (item) {
         this.fireEvent('showUploadEvaluationDocuments', item);
     },
     showApplicationMoreDetails: function (btn) {
-        this.fireEvent('showApplicationMoreDetails', btn);
+        this.fireEvent('showPvApplicationMoreDetails', btn);
     },
     showSelectedApplicationMoreDetails: function(btn) {
         // showApplicationMoreDetails
@@ -293,10 +411,10 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             pv_id = record.get('pv_id');
         container.down('hiddenfield[name=active_application_code]').setValue(application_code);
         container.down('hiddenfield[name=pv_id]').setValue(pv_id);
-        this.fireEvent('showApplicationMoreDetails', btn);
+        this.fireEvent('showPvApplicationMoreDetails', btn);
     },
     showApplicationUploadedDocument: function(btn) {
-        // showApplicationMoreDetails
+        // showPvApplicationMoreDetails
          this.fireEvent('showPreviousUploadedDocs', btn);
     },
      onFindingsNextCardClick: function (btn) {
@@ -419,6 +537,13 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
         }
         activeItem.focus();
     },
+
+     funcUploadTCMeetingtechnicalDocuments:function(btn){
+        
+        this.fireEvent('funcUploadTCMeetingtechnicalDocuments', btn);
+        
+    },
+    
     viewApplicationRecommendationLogs:function(btn) {
         this.fireEvent('viewApplicationRecommendationLogs', btn);
     },
@@ -437,7 +562,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             form = Ext.widget(childXtype);
       
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
        
     },
     showAddPvWinFrm: function (btn) {
@@ -451,6 +576,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             pv_id = activeTab.down('hiddenfield[name=pv_id]').getValue(),
             adr_type = activeTab.down('combo[name=adr_type_id]'),
+            report_category_id = activeTab.down('combo[name=report_category_id]'),
             is_other_drugs_used = btn.up('grid').is_other_drugs_used;//1 when called from other drug used grid
 
         if(is_other_drugs_used){
@@ -466,9 +592,73 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
        if(child.down('combo[name=adr_type_id]') && adr_type ) {
             child.down('combo[name=adr_type_id]').setValue(adr_type.getValue());
        }
+       if(child.down('combo[name=report_category_id]') && report_category_id ) {
+            child.down('combo[name=report_category_id]').setValue(report_category_id.getValue());
+       }
        
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
        
+    },
+
+     doCreateRelatedProblem: function (btn) {
+        var me = this,
+            url = btn.action_url,
+            table = btn.table_name,
+            container_xtype = btn.up('container'),
+            adr_related_problems_id = container_xtype.down('combo[name=adr_related_problems_id]').getValue(),
+            storeID = btn.storeID,
+            store = Ext.getStore(storeID);
+            var pvIdField = Ext.ComponentQuery.query('hiddenfield[name=pv_id]')[0];
+            if (pvIdField) {
+              var pv_id = pvIdField.getValue();
+            }else{
+               toastr.error('Kindly save Application Details first', 'Warning Response');
+               return false; 
+            }
+            if(adr_related_problems_id){
+            Ext.Ajax.request({
+                params: {
+                    id:'',
+                    _token: token,
+                    pv_id:pv_id,
+                    adr_related_problems_id:adr_related_problems_id,
+                    table_name:table
+                },
+                method: 'POST',
+                url: url, 
+                headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+               }, 
+                success: function (response) {
+                    var response = Ext.JSON.decode(response.responseText),
+                        success = response.success,
+                        message = response.message;
+                    if (success == true || success === true) {
+                        toastr.success(message, "Success Response");
+                        container_xtype.down('textfield[name=adr_related_problems_id]').setValue('');
+                        store.removeAll();
+                         store.load();
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                 error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        }else{
+            toastr.error('Please ensure you have added the Additional drug-related problem you want to Save', 'Warning Response');
+        }
+    },
+
+    doDeleteRelatedProblem: function (btn) {
+            var record = btn.getWidgetRecord(),
+            id = record.get('id'),
+            storeID = btn.storeID,
+            table_name = btn.table_name,
+            url = btn.action_url;
+        this.fireEvent('deleteRecord', id, table_name, storeID, url);
     },
     doCreatePvWin: function (btn) {
         var me = this,
@@ -488,7 +678,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
                 url: url,
                 params: {
                     table_name: table,
-                    is_variation: is_variation,
+                    //is_variation: is_variation,
                     _token: token
                 },
                 waitMsg: 'Please wait...',
@@ -527,6 +717,52 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             });
         }
     },
+
+    doCreatePvPatientDetails: function (btn) {
+        var me = this,
+            url = btn.action_url,
+            mainTabPnl = Ext.ComponentQuery.query("#contentPanel")[0],
+            activeTab = mainTabPnl.getActiveTab(),
+            pv_id = activeTab.down('hiddenfield[name=pv_id]').getValue(),
+            table = btn.table_name,
+            form_xtype = btn.up('form'),
+            storeID = btn.storeID,
+            store = Ext.getStore(storeID);
+
+        //for variations calls add flag
+        var is_variation = form_xtype.is_variation
+        var frm = form_xtype.getForm();
+            
+        if (frm.isValid()) {
+            frm.submit({
+                url: url,
+                params: {
+                    table_name: table,
+                    id:pv_id,
+                    _token: token
+                },
+                waitMsg: 'Please wait...',
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (form, action) {
+                    var response = Ext.decode(action.response.responseText),
+                        success = response.success,
+                        message = response.message;
+                    if (success == true || success === true) {
+                        toastr.success(message, "Success Response");
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (form, action) {
+                    var resp = action.result;
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        }
+    },
+
     doDeleteConfigWidgetParam: function (item) {
         var me = this,
             btn = item.up('button'),
@@ -571,7 +807,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
         }
         form.down('hiddenfield[name=application_code]').setValue(application_code);
 
-        funcShowCustomizableWindow('Notification to Reporter', '60%', form, 'customizablewindow', item);
+        funcShowOnlineCustomizableWindow('Notification to Reporter', '60%', form, 'customizablewindow', item);
     }, 
     publishReport: function(item){
         var me = this,
@@ -628,7 +864,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
         form.down('hiddenfield[name=stage_category_id]').setValue(stage_category_id);
         form.down('hiddenfield[name=module_id]').setValue(module_id);
         
-        funcShowCustomizableWindow('Recommendation Form', '50%', form, 'customizablewindow', btn);
+        funcShowOnlineCustomizableWindow('Recommendation Form', '50%', form, 'customizablewindow', btn);
         
     },
     exportADR: function(btn){
@@ -653,6 +889,28 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
     },
     showExcelImportFrm: function(btn){
         this.fireEvent('showExcelImportFrm', btn);
-    }
-
+    },
+    showPvRegisterMoreDetails: function(btn) {
+        // showPvApplicationMoreDetails
+         var button = btn.up('button'),
+            grid = button.up('grid'),
+            container = grid.up('panel'),
+            record = button.getWidgetRecord(),
+            application_code = record.get('application_code'),
+            pv_id = record.get('pv_id'),
+            active_application_id = record.get('active_application_id'),
+            module_id = record.get('module_id'),
+            sub_module_id = record.get('sub_module_id'),
+            section_id = record.get('section_id'),
+            workflow_stage_id = record.get('workflow_stage_id'),
+            ref_no = record.get('tracking_no');
+       container.down('hiddenfield[name=active_application_code]').setValue(application_code);
+       container.down('hiddenfield[name=active_application_id]').setValue(active_application_id);
+       container.down('hiddenfield[name=pv_id]').setValue(pv_id);
+       container.down('hiddenfield[name=module_id]').setValue(module_id);
+       container.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+       container.down('hiddenfield[name=section_id]').setValue(section_id);
+       container.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
+       this.fireEvent('showPvRegisterMoreDetails', btn,application_code,ref_no);
+    },
 });

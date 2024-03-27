@@ -22,6 +22,10 @@ Ext.define('Admin.view.premiseregistration.views.forms.GcpInspectionRecommendati
             xtype: 'hiddenfield',
             name: 'application_id'
         },{
+            xtype: 'hiddenfield',
+            name: '_token',
+            value: token
+        },{
             xtype: 'combo',
             name: 'study_status_id',
             fieldLabel: 'Study Status',
@@ -219,6 +223,8 @@ Ext.define('Admin.view.premiseregistration.views.forms.GcpInspectionRecommendati
         {
             xtype: 'textarea',
             name: 'remarks',
+            grow: true, 
+            growMax: 200, 
             columnWidth: 1,
             fieldLabel: 'Remarks',
             allowBlank: true

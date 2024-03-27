@@ -56,7 +56,7 @@ Ext.define('Admin.view.Enforcement.views.grids.SuspectedOffenceGrid', {
     }, 
     {
         xtype: 'gridcolumn',
-        text: 'Date of Offence',
+        text: 'Date Offence Reported',
         dataIndex: 'offence_date',
         flex: 1
     },

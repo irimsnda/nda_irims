@@ -78,19 +78,19 @@ Ext.define('Admin.view.gmpapplications.views.grids.SearchInspectionSchedulesGrid
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'inspectioncountry_list',
-        text: 'Inspection Country(ies)',
+        text: 'Inspection Country(s)',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'start_date',
-        text: 'Start Date',
+        dataIndex: 'travel_date',
+        text: 'Travel Date',
         flex: 1,
         renderer: Ext.util.Format.dateRenderer('d/m/Y')
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'end_date',
-        text: 'End Date',
+        dataIndex: 'return_date',
+        text: 'Return Date',
         flex: 1,
         renderer: Ext.util.Format.dateRenderer('d/m/Y')
-    },]
+    }]
 });

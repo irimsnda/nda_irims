@@ -2,24 +2,18 @@ Ext.define('Admin.view.promotionmaterials.views.forms.PromotionMaterialDetailsFo
     extend: 'Ext.form.Panel',
     xtype: 'promotionmaterialdetailsform',
     controller: 'promotionmaterialviewcontroller',
-	
-	 layout: {
-        type: 'column'
-    },
-    bodyPadding: 5,
-    defaults: {
-        columnWidth: 1,
-        margin: 5,
-        labelAlign: 'top'
-    },
-    /* frame: true,
+	frame: true,
+    autoScroll: true,
+    scrollable:true,
     layout: {
-        type: 'form'
-    }, */
+        type: 'column',
+        columns: 2
+    },
     bodyPadding: 5,
     defaults: {
         margin: 5,
-        allowBlank: false
+        labelAlign: 'top',
+        columnWidth:0.5
     },
     items: [
         {
@@ -41,30 +35,120 @@ Ext.define('Admin.view.promotionmaterials.views.forms.PromotionMaterialDetailsFo
    
 		 {
             xtype: 'combo',
-            fieldLabel: 'Promotion Materials',
-            name: 'material_id',
+            fieldLabel: 'Type of Advertisements Material',
+            //columnWidth: 0.99,
+            columnWidth: 1,  
+            name: 'promotions_material_id',
+            allowBlank: false,
             forceSelection: true,
+            // filterPickList: true,
+            // encodeSubmitValue: true,
+            emptyText: 'Type of Advertisements Material',
+            //growMax: 100,
             queryMode: 'local',
             valueField: 'id',
             displayField: 'name',
             listeners: {
-                afterrender: {
-                    fn: 'setWorkflowCombosStore',
+                beforerender: {
+                   // fn: 'setPromParamCombosStore',
+                    fn: 'setParamCombosStore',
                     config: {
-                        pageSize: 10000,
+                        pageSize: 100,
                         proxy: {
-                            url: 'configurations/getproductApplicationParameters',
+                            url: 'commonparam/getCommonParamFromTable',
                             extraParams: {
                                 table_name: 'par_promotion_material_items'
                             }
                         }
                     },
                     isLoad: true
+                },
+                change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                            Others = form.down('textfield[name=other_advert_materials]');
+                        if (newVal == 10 || newVal === 10) {
+                            Others.setVisible(true);
+                            Others.allowBlank = false;
+                            Others.validate();
+                        } else {
+                            Others.reset();
+                            Others.setVisible(false);
+                            Others.allowBlank = true;
+                            Others.validate();
+                        }
                 }
             }
+        },{
+                xtype:'textarea',
+                grow: true, 
+                growMax: 200, 
+                name: 'other_advert_materials',
+                fieldLabel: 'Specify the Advertisement Material',
+                columnWidth: 1,  
+                hidden: true,
+                allowBlank: true
+        },
+
+
+        {
+            xtype: 'combo',
+            fieldLabel: 'Language of Publication or Advert',
+            //columnWidth: 0.99,
+            columnWidth: 1,  
+            name: 'language_id',
+            allowBlank: false,
+            forceSelection: true,
+            // filterPickList: true,
+            // encodeSubmitValue: true,
+            emptyText: 'Language of Publication or Advert',
+            //growMax: 100,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setParamCombosStore',
+                    config: {
+                        pageSize: 100,
+                        proxy: {
+                            url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_promotion_material_language'
+                            }
+                        }
+                    },
+                    isLoad: true
+                },
+                change: function (cmbo, newVal) {
+                        // var form = cmbo.up('form'),
+                        //     Others = form.down('textfield[name=other_advert_language]');
+                        // if (newVal == 2 || newVal === 2) {
+                        //     Others.setVisible(true);
+                        //     Others.allowBlank = false;
+                        //     Others.validate();
+                        // } else {
+                        //     Others.reset();
+                        //     Others.setVisible(false);
+                        //     Others.allowBlank = true;
+                        //     Others.validate();
+                        // }
+                }
+            }
+        },{
+                xtype:'textarea',
+                grow: true, 
+                growMax: 200, 
+                name: 'other_advert_language',
+                fieldLabel: 'Specify Other Language of Publication or Advert',
+                columnWidth: 1,  
+                hidden: true,
+                allowBlank: true
         }, {
 			xtype:'textarea',
 			name:'remarks',
+            grow: true, 
+            columnWidth: 1, 
+            growMax: 200, 
 			colSpan:3,
 			fieldLabel:'Remarks'
 		}
@@ -77,7 +161,7 @@ Ext.define('Admin.view.promotionmaterials.views.forms.PromotionMaterialDetailsFo
             iconCls: 'x-fa fa-save',
             formBind: true,
             table_name: 'tra_promotion_materials_details',
-            storeID: 'promotionmaterialdetailstr',
+            storeID: 'promotionmaterialdetailsgridstr',
             action_url: 'promotionmaterials/insertUpdateProductParticulars',
             action: 'save_promotion_materials_other_details'
         }

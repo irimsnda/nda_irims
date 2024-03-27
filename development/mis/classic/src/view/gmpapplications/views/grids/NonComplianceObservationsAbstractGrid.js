@@ -22,12 +22,12 @@ Ext.define('Admin.view.gmpapplications.views.grids.NonComplianceObservationsAbst
             }, {
                 xtype: 'gridcolumn',
                 dataIndex: 'reference',
-                text: 'EAC GMP Guidelines reference',
+                text: 'GMP Guidelines reference',
                 flex: 1
             },{
                 xtype: 'gridcolumn',
                 dataIndex: 'application_section',
-                text: 'Application Section',
+                text: 'Section',
                 flex: 1
             },{
                 xtype: 'gridcolumn',

@@ -112,7 +112,7 @@ Ext.define('Admin.view.drugshopregistration.views.sharedinterfaces.panels.PreIns
                 },
                 {
                     step: 3,
-                    iconCls: 'fa fa-money',
+                    iconCls: 'fa fa-money-bill-wave',
                     enableToggle: true,iconAlign:'top',
                     text: 'INVOICE & PAYMENT DETAILS',
                     wizard_pnl : 'preinspectiondrugshopreceivingwizard',

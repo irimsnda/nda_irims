@@ -209,7 +209,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             textAlign: 'left',
             xtype: 'button',
             ui: 'soft-red',
-            text: 'Approve/Reject',
+            text: 'Regulatory Decision',
              iconCls: 'x-fa fa-chevron-circle-up',
                     handler: 'getPermitReleaseRecommendationDetails',
                     approval_frm:'permitReleaseRecommFrm',
@@ -231,20 +231,20 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                 xtype: 'menu',
                 items: [{
                     text: 'Permit Release Recommendation',
+                    hidden: true,
                     iconCls: 'x-fa fa-chevron-circle-up',
                     handler: 'getPermitReleaseRecommendationDetails',
                     approval_frm:'permitReleaseRecommFrm',
-                    hidden: true,
                     vwcontroller: '',
                     stores: '[]',
                     table_name: 'tra_importexport_applications'
                 },
                     {
                         text: 'Print/Preview Permit',
+                        hidden: true,
                         iconCls: 'x-fa fa-certificate',
                         handler: '',
                         name: 'certificate',
-                        hidden: true,
                         handler: 'generateImportExportPermit'
                     },
                     {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SharedImportexportclassComponent } from '../../shared-importexportclass/shared-importexportclass.component';
+import { SharedImportexportclassComponent } from '../../shared-importexportclass/SharedImportexportclassComponent';
 
 @Component({
   selector: 'app-exprt-licenseapp',
@@ -10,7 +10,7 @@ export class ExprtLicenseappComponent extends SharedImportexportclassComponent i
 
   ngOnInit() {
     if (!this.application_details) {
-      this.router.navigate(['./../online-services/exportlicense-dashboard']);
+      this.router.navigate(['./../online-services/importlicenseapplication-dashboard']);
        return
      }
   }

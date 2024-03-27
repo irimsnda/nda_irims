@@ -88,7 +88,7 @@ plugins: [
         {
             xtype: 'gridcolumn',
             dataIndex: 'offence_date',
-            text: 'Date of Offence',
+            text: 'Date Offence Reported',
             flex: 1,
         },{
 	        xtype: 'gridcolumn',

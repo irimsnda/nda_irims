@@ -130,20 +130,22 @@ Ext.define('Admin.view.pv.views.panels.PvReviewPeerMeetingPnl', {
         ]
     }
     ],
-    items: [{
+    items: [
+    {
         xtype: 'meetingdetailsfrm',
         title: 'Meeting Details',
-        is_meeting: 1,//on all tcmeetingparticipantsgrid to differentiate when called from meeting/schedule
+        is_meeting: 0,
         header: {
             style: {
                 backgroundColor: '#2eadf5'
             }
         },
-    },{
+    },
+    {
         xtype: 'pvPeerMeetingApplicationListGrid',
-        itemId: 'application_list',//included to identifly the specific grid globaly
+        itemId: 'application_list',
         reference: 'application_list',
-        is_meeting: 1,//on all tcmeetingparticipantsgrid to differentiate when called from meeting/schedule
+        is_meeting: 0,
         title: 'Applications Ready For the Review',
         header: {
             style: {
@@ -152,14 +154,15 @@ Ext.define('Admin.view.pv.views.panels.PvReviewPeerMeetingPnl', {
         },
     },{
         xtype: 'tcmeetingparticipantsgrid',
-        is_meeting: 1,//on all tcmeetingparticipantsgrid to differentiate when called from meeting/schedule
+        is_meeting: 0,
         title: 'Participants Details',
         header: {
             style: {
                 backgroundColor: '#2eadf5'
             }
         },
-    }],
+    }
+    ],
     initComponent: function () {
         var me = this;
         this.bbar = {
@@ -170,7 +173,7 @@ Ext.define('Admin.view.pv.views.panels.PvReviewPeerMeetingPnl', {
                     xtype: 'button',
                     text: 'Upload Meeting Documents',
                     iconCls: 'x-fa fa-upload',
-                    ui: 'soft-blue',
+                    ui: 'soft-green',
                     name: 'save_btn',
                     reference_table_name: 'tc_meeting_details',
                     table_name: 'tc_meeting_uploaddocuments',
@@ -183,7 +186,7 @@ Ext.define('Admin.view.pv.views.panels.PvReviewPeerMeetingPnl', {
                 },
                 {
                     text: 'Submit Application',
-                    ui: 'soft-blue',
+                    ui: 'soft-green',
                     iconCls: 'fa fa-check',
                     name: 'process_submission_btn',
                     storeID: 'pvMeetingApplicationListGridStr',

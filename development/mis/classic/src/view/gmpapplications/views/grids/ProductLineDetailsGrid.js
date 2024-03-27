@@ -47,10 +47,16 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsGrid', {
         beforeLoad: function () {
             var store=this.getStore(),
                 grid=this.up('grid'),
-                 mainTabPanel = grid.up('#contentPanel'),
-                 activeTab = mainTabPanel.getActiveTab(),
+                 mainTabPanel = grid.up('#contentPanel');
+                 if(mainTabPanel){
+                  var activeTab = mainTabPanel.getActiveTab(),
                  site_id = activeTab.down('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue();
-            store.getProxy().extraParams={
+                 }else{
+                  var  win = grid.up('window'),
+                  site_id = win.down('mansitedetailsfrm').down('hiddenfield[name=manufacturing_site_id]').getValue();
+                 }
+                
+             store.getProxy().extraParams={
                 manufacturing_site_id: site_id
             };
         }
@@ -71,7 +77,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsGrid', {
                     url: 'gmpapplications/getSiteBlockDetails'
                 }
             },
-            isLoad: true
+            isLoad: false
         },
         afterrender: function () {
             var grid = this,
@@ -106,6 +112,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsGrid', {
             }
         }
     },
+
     columns: [ {
         text: 'Options',
         xtype: 'widgetcolumn',
@@ -174,6 +181,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsGrid', {
                             minChars: 2,
                             mode: 'local'
                         }],
+                      
                         listeners: {
                             beforerender: {
                                 fn: 'setConfigGridsStore',
@@ -192,6 +200,8 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsGrid', {
                             }
                         },
                         columns: [{
+                            xtype: 'rownumberer'
+                          },{
                             xtype: 'gridcolumn',
                             dataIndex: 'product_line_name',
                             text: 'DOSAGE FORM (line type)',
@@ -242,78 +252,6 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsGrid', {
                            }
                        },'->']
                    }
-            //,
-           //         {
-           //          xtype:'grid',
-           //          height: 200,
-           //          width: '100%',
-           //          bind: {
-           //              title: 'Conditions to be fulfilled'
-           //          },
-           //          features: [{
-           //              ftype: 'searching',
-           //              minChars: 2,
-           //              mode: 'local'
-           //          }],
-           //          tbar:[{
-           //               xtype: 'hiddenfield',
-           //               name:'variationsummary_guidelinesconfig_id',
-           //               bind: {
-           //                   value: '{record.variationsummary_guidelinesconfig_id}'
-           //               }
-           //           }],
-           //           listeners: {
-           //              beforerender: {
-           //                  fn: 'setConfigGridsStore',
-           //                  config: {
-           //                      pageSize: 1000,
-           //                      storeId: 'variationsupportingdatastr', 
-           //                      proxy: {
-           //                          url: 'commonparam/getVariationConditionsDetails',
-           //                          extraParams: {
-           //                              table_name: 'par_variationsupporting_datadocs'
-           //                          }
-           //                      }
-           //                  },
-           //                  isLoad: false
-           //              },
-           //              afterrender:function(grid){
-           //                      grid.getStore().load();
-           //              }
-           //          },
-           //          columns: [{
-           //              xtype: 'gridcolumn',
-           //              dataIndex: 'id',
-           //              text: 'code/Number',
-           //              flex: 0.2,
-           //              tdCls: 'wrap-text'
-           //          },  {
-           //              xtype: 'gridcolumn',
-           //              dataIndex: 'name',
-           //              text: 'Conditions',
-           //              flex: 1,
-           //              tdCls: 'wrap-text'
-           //          }],
-           //          bbar: [{
-           //              xtype: 'pagingtoolbar',
-           //              width: '60%',
-           //              displayInfo: true,
-           //              displayMsg: 'Showing {0} - {1} of {2} total records',
-           //              emptyMsg: 'No Records',
-                      
-           //              beforeLoad: function() {
-           //                  var grid = this.up('grid'),
-           //                      store= grid.getStore(),
-           //                      variationsummary_guidelinesconfig_id = grid.down('hiddenfield[name=variationsummary_guidelinesconfig_id]').getValue();
-           //                      store.removeAll();
-           //                      store.getProxy().extraParams = {
-           //                       variationsummary_guidelinesconfig_id: variationsummary_guidelinesconfig_id,
-                                       
-           //                      };
-           //              }
-           //          },'->']
-
-           //      }
 
            ]
         }

@@ -53,7 +53,7 @@ Ext.define('Admin.view.parameters.views.forms.costs.CostCategoryFrm', {
         columnWidth: 1,
         fieldLabel: 'Section',
         forceSelection: true,
-        allowBlank: false,
+        allowBlank: true,
         margin: '0 20 20 0',
         name: 'section_id',
         queryMode: 'local',

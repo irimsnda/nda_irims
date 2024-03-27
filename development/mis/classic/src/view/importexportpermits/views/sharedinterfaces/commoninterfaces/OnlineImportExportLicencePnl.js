@@ -14,7 +14,7 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.OnlineImportEx
         type: 'importexportpermitsvm'
     },
     items: [{
-        xtype: 'onlineimportexportlicencedetailsfrm',
+        xtype: 'onlineimportexportnonlicencebusinessdetailsfrm',
         autoScroll: true,
         
         title: 'Import/Export Licence Information'

@@ -116,7 +116,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.PermitD
             xtype: 'tabpanel',
             items: [{
                 xtype: 'declaredimportexportonlinereceivingwizard',
-                title: 'Documents Submission'
+                title: 'Document Review'
             }]
         },{
             xtype: 'tabpanel',
@@ -151,7 +151,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.PermitD
                     step: 0,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
-                    text: 'Import/Export Permit Details',
+                    text: 'Import/Export Licence Details',
                     action: 'quickNav', 
                     wizard: 'permitdeclarationpreviewwizard',
                     handler: 'prevquickNavigation'
@@ -168,7 +168,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.PermitD
                     step: 2,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'Import/Export permit Documents Submission',
+                    text: 'Import/Export Licence Document Review',
                     action: 'quickNav', 
                     wizard: 'permitdeclarationpreviewwizard',
                     handler: 'prevquickNavigation'

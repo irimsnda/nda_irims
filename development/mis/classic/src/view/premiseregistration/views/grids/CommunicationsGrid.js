@@ -270,7 +270,8 @@ Ext.define('Admin.view.premiseregistration.views.grids.CommunicationsGrid', {
             text: 'Print Approvals',
             iconCls: 'x-fa fa-certificate',
             backend_function: 'printPremiseRegistrationCertificate',
-            handler: 'printColumnPremiseCertificate'
+            //handler: 'printColumnPremiseCertificate',
+            handler: 'printTCPDFColumnPremisePermit'
         }
     },{
         xtype: 'gridcolumn',
@@ -279,6 +280,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.CommunicationsGrid', {
         flex: 1
     }, {
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'reference_no',
         text: 'Application No',
         flex: 1
@@ -290,6 +292,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.CommunicationsGrid', {
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'region_name',
+        hidden:true,
         text: 'Region/Province Name',
         flex: 1
     }, {
@@ -299,15 +302,27 @@ Ext.define('Admin.view.premiseregistration.views.grids.CommunicationsGrid', {
         flex: 1
     }, {
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'physical_address',
         text: 'Physical Address',
         flex: 1
     }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'approval_status',
-        text: 'DG Recommendation',
-        flex: 1
-    }, {
+        header: 'Recomendation',
+        dataIndex: 'decision_id',
+        flex: 1,
+        renderer: function (value, metaData,record) {
+            var decision_id = record.get('decision_id')
+            if (decision_id==1 || decision_id===1) {
+                metaData.tdStyle = 'color:white;background-color:green';
+                return record.get('approval_status');
+            }else if(decision_id==2 || decision_id===2){
+              metaData.tdStyle = 'color:white;background-color:red';
+              return record.get('approval_status');
+          }else{
+            return 'Missing Final Decision';
+           }
+        }
+      }, {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
         text: 'Application Status',
@@ -339,6 +354,7 @@ Ext.define('Admin.view.premiseregistration.views.grids.CommunicationsGrid', {
                                 },  {
                                     text: 'Cancellation Form',
                                     iconCls: 'x-fa fa-certificate',
+                                    hidden:true,
                                     backend_function: 'printPremiseBusinessPermit',
                                     handler: 'printPremisePermit'
                                 }

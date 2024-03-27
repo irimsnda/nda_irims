@@ -228,7 +228,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showEditSurveillanceWinFrm: function (item) {
@@ -245,7 +245,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
             me.fireEvent('refreshStores', storeArray);
         }
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     },
 
     showAddPmsProgramRegionWinFrm: function (btn) {
@@ -267,7 +267,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddPmsProgramProductWinFrm: function (btn) {
@@ -299,7 +299,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showAddPmsProgramPlanWinFrm: function (btn) {
@@ -350,7 +350,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showEditPmsProgramPlanWinFrm: function (item) {
@@ -391,7 +391,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
         } else {
             childObject.down('combo[name=dosage_form_id]').setHidden(false);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     onViewSurveillanceApplication: function (view, record) {
@@ -429,14 +429,19 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
                     activeTab = wizard.up('panel');
             }
             
+        
             var section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             
             pms_program_id = activeTab.down('hiddenfield[name=program_id]').getValue(),
             childObject = Ext.widget(childXtype),
-            sampleDetailsFrm = childObject.down('form'),
+            sampleDetailsFrm = childObject.down('form');
+            if(childObject.down('#pmsprogramplan')){
+                productsStr = childObject.down('#pmsprogramplan').down('combo[name=product_id]').getStore();
+            }else{
+                productsStr='';
+            }
             
-            productsStr = childObject.down('#pmsprogramplan').down('combo[name=product_id]').getStore(),
-            pmsprogramplan = childObject.down('#pmsprogramplan'); 
+            var pmsprogramplan = childObject.down('#pmsprogramplan'); 
 
            
         if (section_id == 1 || section_id == 3 || section_id === 1 || section_id === 3) {//food and cosmetics
@@ -448,8 +453,9 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
             sampleDetailsFrm.down('combo[name=dosage_form_id]').setHidden(false);
             //childObject.items.getAt(1).tab.setHidden(false);
         }
-        
+        if(pmsprogramplan){
         pmsprogramplan.loadRecord(record);
+        }   
         childObject.down('#sampledetailsfrm').loadRecord(record);
         childObject.down('#sampledetailsfrm').down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         childObject.down('pmssampleingredientsgrid').down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
@@ -458,10 +464,13 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
         if (isReadOnly == 1) {
             childObject.down('button[action=save_form_data]').setVisible(false);
         }
-        productsStr.removeAll();
-        productsStr.load({params: {program_id: pms_program_id}});
+        if(productsStr){
+            productsStr.removeAll();
+            productsStr.load({params: {program_id: pms_program_id}});
+        }
+       
         //
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showPmsApplicationMoreDetailsOnDblClick: function (view, record) {
@@ -773,7 +782,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
         childObject.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         childObject.down('hiddenfield[name=sample_id]').setValue(sample_id);
         parentTabPnl.items.getAt(tabIndex).tab.setHidden(false);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showPmsSampleLabRecommendation: function (item) {
@@ -799,7 +808,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
         childObject.down('hiddenfield[name=sample_application_code]').setValue(sample_application_code);
         childObject.down('hiddenfield[name=sample_id]').setValue(sample_id);
         childObject.down('hiddenfield[name=analysis_type_id]').setValue(analysis_type);
-        funcShowCustomizableWindow('Application Ref Number: ' + sample_refNo, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Application Ref Number: ' + sample_refNo, winWidth, childObject, 'customizablewindow');
     },
 
     showPmsSampleRecommendationWin: function (item) {
@@ -831,7 +840,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
         childObject.down('combo[name=decision_id]').setValue(decision_id);
         childObject.down('textfield[name=comments]').setValue(comments);
         childObject.setHeight(520);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     showPmsSampleTCMeetingRecommendation: function (item) {
@@ -856,7 +865,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
         childObject.down('hiddenfield[name=sample_id]').setValue(sample_id);
         childObject.down('combo[name=decision_id]').setValue(decision_id);
         childObject.down('textfield[name=comments]').setValue(comments);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     printPIRReport:function(btn){
          var panel = btn.up('panel'),
@@ -881,13 +890,15 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
             toastr.warning('Please give PIR Recommendation to save!!', 'Warning Response');
             return false;
         }
+
         Ext.Ajax.request({
             url: 'surveillance/savePmsPIRRecommendation',
             params: {
                 sample_id: sample_id,
                 decision_id: decision_id,
                 comments: comments,
-                analysis_type_id: analysis_type_id
+                analysis_type_id: analysis_type_id,
+                '_token': token
             },
             headers: {
                 'Authorization': 'Bearer ' + access_token
@@ -926,7 +937,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
             win = btn.up('window'),
             sample_id = win.down('hiddenfield[name=sample_id]').getValue();
         childObject.down('hiddenfield[name=sample_id]').setValue(sample_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
     onPrevCardClickCmn: function (btn) {
@@ -1110,7 +1121,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
             program_id = activeTab.down('hiddenfield[name=id]').getValue();
             childObject.down('hiddenfield[name=program_id]').setValue(program_id);
 
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     showProgramImplementationEdit:function(item){
         var btn = item.up('button'),
@@ -1123,7 +1134,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
             
             frm.loadRecord(record);
             
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     showProgramImplementationPlans:function(item){
         var childObject = item.childObject,
@@ -1177,7 +1188,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
             childObject = btn.childObject;
             childObject = Ext.widget(childObject);
             
-            funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
 
     },
     showAddConfigParamWinFrm: function (btn) {
@@ -1187,7 +1198,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
                 winWidth=btn.winWidth,
                 child = Ext.widget(childXtype);
 
-            funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
            
         }, 
    showAddPremiseParamWinFrm: function (btn) {
@@ -1199,7 +1210,7 @@ Ext.define('Admin.view.surveillance.viewcontrollers.SurveillanceVctr', {
                 winWidth=btn.winWidth,
                 child = Ext.widget(childXtype);
             child.down('hiddenfield[name=section_id]').setValue(section_id);
-            funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
            
         }, 
     doSaveNewPmsPremise: function (btn) {

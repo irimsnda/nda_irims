@@ -62,7 +62,7 @@ Ext.define('Admin.view.main.Main', {
                     {
                     iconCls: 'x-fa fa-home',
                     xtype:'button',
-                    hidden:true,
+                    //hidden:true,
                     tooltip: 'Back',
                     name: 'dashboardback_btn',
                     text: '<span style="color: white;">Back</span>',
@@ -70,132 +70,134 @@ Ext.define('Admin.view.main.Main', {
                         backgroundColor: '#32404E'
                     },
                    handler: function () {
-                        var confirmationWindow = Ext.create('Ext.window.Window', {
-                        //title: 'Terms and Conditions',
-                        bodyPadding: 3,
-                        width: '90%',
-                        height: '90%',
-                        autoScroll: true,
-                        closable: false,
-                        modal: true,
-                        draggable: false,
-                        resizable: false,
-                        style: {
-                            border: 'none'
-                        },
-                        layout: 'fit',
-                        items: [{
-                                xtype: 'panel',
-                                layout: 'fit',
-                                id: 'dashboardPnl',
-                                width: '100%',
-                                listeners: {
-                                    afterrender: function () {
-                                        var mainTabPanel = Ext.getCmp('dashboardPnl');
-                                        if (mainTabPanel) {
-                                            Ext.getBody().mask('Loading Dashboard...');
-                                            Ext.Ajax.request({
-                                                url: 'administration/getSystemNavigationMenuItems',
-                                                method: 'GET',
-                                                headers: {
-                                                    'Authorization': 'Bearer ' + access_token,
-                                                    'X-CSRF-Token': token
-                                                },
-                                                success: function (response) {
-                                                    var jsonData = Ext.decode(response.responseText);
-                                                    console.log(jsonData);
 
-                                                    // Create an array to hold button configurations
-                                                    var buttons = [];
+                     window.location.reload();
+                     
+                    //     var confirmationWindow = Ext.create('Ext.window.Window', {
+                    //     //title: 'Terms and Conditions',
+                    //     bodyPadding: 3,
+                    //     width: '90%',
+                    //     height: '90%',
+                    //     autoScroll: true,
+                    //     closable: false,
+                    //     modal: true,
+                    //     draggable: false,
+                    //     resizable: false,
+                    //     style: {
+                    //         border: 'none'
+                    //     },
+                    //     layout: 'fit',
+                    //     items: [{
+                    //             xtype: 'panel',
+                    //             layout: 'fit',
+                    //             id: 'dashboardPnl',
+                    //             width: '100%',
+                    //             listeners: {
+                    //                 afterrender: function () {
+                    //                     var mainTabPanel = Ext.getCmp('dashboardPnl');
+                    //                     if (mainTabPanel) {
+                    //                         Ext.getBody().mask('Loading Dashboard...');
+                    //                         Ext.Ajax.request({
+                    //                             url: 'administration/getSystemNavigationMenuItems',
+                    //                             method: 'GET',
+                    //                             headers: {
+                    //                                 'Authorization': 'Bearer ' + access_token,
+                    //                                 'X-CSRF-Token': token
+                    //                             },
+                    //                             success: function (response) {
+                    //                                 var jsonData = Ext.decode(response.responseText);
+                    //                                 console.log(jsonData);
 
-                                                    Ext.each(jsonData, function (dataItem) {
-                                                        var buttonConfig = {
-                                                            text: '<span style="font-size: 12px;color:white;">' + dataItem.name + '</span>',
-                                                            iconCls: dataItem.iconCls,
-                                                            height: 50,
-                                                            menu_id: dataItem.menu_id,
-                                                            module_id: 1,
-                                                            style: {
-                                                                margin: '10px',
-                                                                backgroundColor: dataItem.background
-                                                            },
-                                                            handler: function () {
-                                                                console.log(this.module_id);
-                                                                confirmationWindow.close();
+                    //                                 // Create an array to hold button configurations
+                    //                                 var buttons = [];
+
+                    //                                 Ext.each(jsonData, function (dataItem) {
+                    //                                     var buttonConfig = {
+                    //                                         text: '<span style="font-size: 12px;color:white;">' + dataItem.name + '</span>',
+                    //                                         iconCls: dataItem.iconCls,
+                    //                                         height: 50,
+                    //                                         menu_id: dataItem.menu_id,
+                    //                                         module_id: 1,
+                    //                                         style: {
+                    //                                             margin: '10px',
+                    //                                             backgroundColor: dataItem.background
+                    //                                         },
+                    //                                         handler: function () {
+                    //                                             console.log(this.module_id);
+                    //                                             confirmationWindow.close();
                                                         
-                                                                checkUserSessionValidity(800000);
-                                                                setupTimers();
+                    //                                             checkUserSessionValidity(800000);
+                    //                                             setupTimers();
 
-                                                                var usersstr = Ext.getStore('usersstr'),
-                                                                intraygrid = Ext.getCmp('intraygrid'),
-                                                                outtraygrid = Ext.getCmp('outtraygrid'),
-                                                                summaryintraygrid = Ext.getCmp('summaryintraygrid'),
-                                                                gmpproductlinestatusstr = Ext.getStore('gmpproductlinestatusstr'),
-                                                                confirmationstr = Ext.getStore('confirmationstr'),
-                                                                navigationstr = Ext.getStore('navigationstr');
-                                                                intraygrid.down('combo[name=module_id]').setValue(this.module_id);
-                                                                outtraygrid.down('combo[name=module_id]').setValue(this.module_id);
-                                                                summaryintraygrid.down('combo[name=module_id]').setValue(this.module_id);
-                                                                var filter = {'menu_id':this.menu_id};
-                                                                var filters = JSON.stringify(filter);
-                                                                navigationstr.removeAll();
-                                                                navigationstr.getProxy().setExtraParams({
-                                                                    strict_check: true,
-                                                                    filters: filters
-                                                                });
-                                                                navigationstr.load();
+                    //                                             var usersstr = Ext.getStore('usersstr'),
+                    //                                             intraygrid = Ext.getCmp('intraygrid'),
+                    //                                             //outtraygrid = Ext.getCmp('outtraygrid'),
+                    //                                             summaryintraygrid = Ext.getCmp('summaryintraygrid'),
+                    //                                             gmpproductlinestatusstr = Ext.getStore('gmpproductlinestatusstr'),
+                    //                                             confirmationstr = Ext.getStore('confirmationstr'),
+                    //                                             navigationstr = Ext.getStore('navigationstr');
+                    //                                             intraygrid.down('combo[name=module_id]').setValue(this.module_id);
+                    //                                             //outtraygrid.down('combo[name=module_id]').setValue(this.module_id);
+                    //                                             summaryintraygrid.down('combo[name=module_id]').setValue(this.module_id);
+                    //                                             var filter = {'menu_id':this.menu_id};
+                    //                                             var filters = JSON.stringify(filter);
+                    //                                             navigationstr.removeAll();
+                    //                                             navigationstr.getProxy().setExtraParams({
+                    //                                                 strict_check: true,
+                    //                                                 filters: filters
+                    //                                             });
+                    //                                             navigationstr.load();
+                    //                                             usersstr.load();
+                    //                                             gmpproductlinestatusstr.load();
+                    //                                             //navigationstr.load();
+                    //                                             confirmationstr.load();
+                    //                                         }
+                    //                                     };
 
-                                                                usersstr.load();
-                                                                gmpproductlinestatusstr.load();
-                                                                //navigationstr.load();
-                                                                confirmationstr.load();
-                                                            }
-                                                        };
+                    //                                     // Push the button configuration into the buttons array
+                    //                                     buttons.push(buttonConfig);
+                    //                                 });
 
-                                                        // Push the button configuration into the buttons array
-                                                        buttons.push(buttonConfig);
-                                                    });
+                    //                                 // Create a button group containing the buttons
+                    //                                 var buttonGroup = Ext.create('Ext.container.ButtonGroup', {
+                    //                                     layout: 'column',
+                    //                                     width: '100%',
+                    //                                     defaults: {
+                    //                                         columnWidth: 0.25,
+                    //                                         padding: 10
+                    //                                     },
+                    //                                     style: {
+                    //                                         margin: '0 auto',
+                    //                                         border: 'none'
+                    //                                     },
+                    //                                      //columns: 5,
+                    //                                     items: buttons, 
+                    //                                     //width: '100%',
+                    //                                 });
 
-                                                    // Create a button group containing the buttons
-                                                    var buttonGroup = Ext.create('Ext.container.ButtonGroup', {
-                                                        layout: 'column',
-                                                        width: '100%',
-                                                        defaults: {
-                                                            columnWidth: 0.25,
-                                                            padding: 10
-                                                        },
-                                                        style: {
-                                                            margin: '0 auto',
-                                                            border: 'none'
-                                                        },
-                                                         //columns: 5,
-                                                        items: buttons, 
-                                                        //width: '100%',
-                                                    });
-
-                                                    // Add the button group to mainTabPanel
-                                                    mainTabPanel.add(buttonGroup);
-                                                    mainTabPanel.updateLayout();
-                                                    Ext.getBody().unmask();
-                                                },
-                                                failure: function (response) {
-                                                    var resp = Ext.JSON.decode(response.responseText),
-                                                        message = resp.message;
-                                                    toastr.error(message, 'Failure Response');
-                                                    Ext.getBody().unmask();
-                                                },
-                                                error: function (jqXHR, textStatus, errorThrown) {
-                                                    Ext.getBody().unmask();
-                                                    toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
-                                                    Ext.getBody().unmask();
-                                             },
-                                        });
-                                    }
-                                },
-                            },
-                        }],
-                    });
-                    confirmationWindow.show();
+                    //                                 // Add the button group to mainTabPanel
+                    //                                 mainTabPanel.add(buttonGroup);
+                    //                                 mainTabPanel.updateLayout();
+                    //                                 Ext.getBody().unmask();
+                    //                             },
+                    //                             failure: function (response) {
+                    //                                 var resp = Ext.JSON.decode(response.responseText),
+                    //                                     message = resp.message;
+                    //                                 toastr.error(message, 'Failure Response');
+                    //                                 Ext.getBody().unmask();
+                    //                             },
+                    //                             error: function (jqXHR, textStatus, errorThrown) {
+                    //                                 Ext.getBody().unmask();
+                    //                                 toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
+                    //                                 Ext.getBody().unmask();
+                    //                          },
+                    //                     });
+                    //                 }
+                    //             },
+                    //         },
+                    //     }],
+                    // });
+                    // confirmationWindow.show();
                             
                     }
                 },
@@ -235,11 +237,11 @@ Ext.define('Admin.view.main.Main', {
                     ui: 'soft-green',
                     handler: 'funcViewScheduledTcMeetingDetails',
                 },
-                      {
-                    iconCls: 'x-fa fa-users',
+                  {
+                    iconCls: 'x-fa fa-calendar',
                     tooltip: 'Notifications',
                     name: 'tcmeeting_btn',
-                    badgeText: 12,
+                    badgeText: scheduledtcmeeting_counter,
                     //text:' Scheduled Technical Meeting ('+ scheduledtcmeeting_counter +')',
                     itemId: 'tcmeeting_btn',
                     //text:' Technical Meeting',
@@ -250,6 +252,7 @@ Ext.define('Admin.view.main.Main', {
                     },
                     handler: 'funcViewScheduledTcMeetingDetails',
                 },
+
                 {
                     xtype: 'splitbutton',
                     cls: 'header-right-profile-image',

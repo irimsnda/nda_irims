@@ -57,6 +57,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('validateDocumentsSubmissonRecRecommendation', [commonController::class, 'validateDocumentsSubmissonRecRecommendation']);
 
     Route::get('validateInspectionReportSubmission', [commonController::class, 'validateInspectionReportSubmission']);
+     Route::get('validateIsPopupSubmission', [commonController::class, 'validateIsPopupSubmission']);
 
     Route::get('checkPrecheckingrecommendation', [commonController::class, 'checkPrecheckingrecommendation']);
 
@@ -78,6 +79,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('closeApplicationQuery', [commonController::class, 'closeApplicationQuery']);
 
     Route::post('saveApplicationReQueryDetails', [commonController::class, 'saveApplicationReQueryDetails']);
+
+    Route::post('saveApplicationInternalReQueryDetails', [commonController::class, 'saveApplicationInternalReQueryDetails']);
 
     Route::get('checkApplicationRespondedUnclosedQueries', [commonController::class, 'checkApplicationRespondedUnclosedQueries']);
 

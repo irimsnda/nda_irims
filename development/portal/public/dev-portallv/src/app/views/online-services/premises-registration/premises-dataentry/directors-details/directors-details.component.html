@@ -16,12 +16,12 @@
                 <dx-button text="Edit" (click)="funcEditPersonnelDetails(data)" 
                     type="success" icon="edit">
                     </dx-button> 
-                <dx-button text="Delete" (click)="funcDeleteDirectorsDetails(data)" 
+                <dx-button text="Delete" [disabled]= "is_readonly" (click)="funcDeleteDirectorsDetails(data)" 
                     type="danger" icon="delete">
                 </dx-button> 
             </div>
         </dxi-column>
-        <dxi-column dataField="directorfull_names"></dxi-column>
+        <dxi-column dataField="director_full_name"></dxi-column>
         <dxi-column dataField="director_email_address"></dxi-column>
         <dxi-column dataField="director_telephone_no"></dxi-column>
         <dxi-column dataField="shares"></dxi-column>
@@ -30,54 +30,52 @@
 </div>
 
 
-<dx-popup class="popup"  [width]="funcpopWidth(80)" [showTitle]="true" title="Directors or Partners Details" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isBusinessPersonnelPopupVisible">
+<dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="auto" [showTitle]="true" title="Directors or Partners Details" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isBusinessPersonnelPopupVisible">
     <div *dxTemplate="let data of 'content'" class="row">
         <dx-scroll-view></dx-scroll-view>
         <div class="col-lg-12">
-            <wizard style="background: #fff !important; height: 100% !important;">
-                <wizard-step stepTitle=" Directors or Partners Details" class="wizardStep-height">
                     <form role="form" enctype="multipart/form-data" role="form" [formGroup]="premisesDirectorsDetailsfrm" class="col-lg-12" (ngSubmit)="onSavePremisesDirectorsDetails()">
-                        <div class="row wizard-contentwin">
+                        <div class="col-lg-12 row">
                         <div class="col-lg-4 row input-group ">
                             <div class="col-lg-8">
                                 <label class="control-label">Full Names</label>
-                                <dx-text-box formControlName="directorfull_names"  placeholder="Full Name" [showClearButton]="true">
+                                <dx-text-box [readOnly]= "is_readonly" formControlName="name"  placeholder="Full Name" [showClearButton]="true">
                                 </dx-text-box>
                             </div>
                             <div class="col-lg-4 no-padding">
-                                <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:25px  !important;"  text="Search Partners Details"  type="default" (onClick)="onSearchPartnersDetails()">
+                                <dx-button  [disabled]= "is_readonly" [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:25px  !important;"  text="Search Partners Details"  type="default" (onClick)="onSearchPartnersDetails()">
                                  <i class="fa fa-search"></i>Search  Details
                                  </dx-button>
                             </div>
                         </div>
                             <div class="col-lg-4">
                                 <label class="control-label">Telephone No</label>
-                                <dx-text-box formControlName="director_telephone_no" placeholder="Telephone" [showClearButton]="true">
+                                <dx-text-box [readOnly]= "is_readonly" formControlName="telephone_no" placeholder="Telephone" [showClearButton]="true">
                                 </dx-text-box>
                             </div>
                             <div class="col-lg-4">
                                 <label class="control-label">Email Address</label>
-                                <dx-text-box formControlName="director_email_address"  placeholder="Email" [showClearButton]="true">
+                                <dx-text-box [readOnly]= "is_readonly" formControlName="email_address"  placeholder="Email" [showClearButton]="true">
                                 </dx-text-box>
                             </div>
                             <div class="col-lg-4">
                                 <label>Qualification</label>
-                                <dx-select-box [dataSource]="qualificationsData" valueExpr="id" placeholder="Qualification" displayExpr="name" [searchEnabled]="true" formControlName="qualification_id">
+                                <dx-select-box [readOnly]= "is_readonly" [dataSource]="qualificationsData" valueExpr="id" placeholder="Qualification" displayExpr="name" [searchEnabled]="true" formControlName="qualification_id">
                                 </dx-select-box>
                             </div>
                             <div class="col-lg-4">
                                 <label for="ti" class="control-label">Shares</label>
-                                <dx-text-box  formControlName="shares" placeholder="Shares" [showClearButton]="true">
+                                <dx-text-box  [readOnly]= "is_readonly" formControlName="shares" placeholder="Shares" [showClearButton]="true">
                                 </dx-text-box>
                             </div>
                             <div class="col-lg-4">
                                 <label class="control-label">Country</label>
-                                <dx-select-box [dataSource]="countries" valueExpr="id" displayExpr="name" placeholder="Select Country" (onSelectionChanged)="onCoutryCboSelect($event)" [searchEnabled]="true" formControlName="country_id">
+                                <dx-select-box [readOnly]= "is_readonly" [dataSource]="countries" valueExpr="id" displayExpr="name" placeholder="Select Country" (onSelectionChanged)="onCoutryCboSelect($event)" [searchEnabled]="true" formControlName="country_id">
                                  </dx-select-box>
                             </div>
                             <div class="col-lg-4" [hidden]="true">
                                 <label for="ti" class="control-label">Region</label>
-                                <dx-select-box  [dataSource]="regions" valueExpr="id" 
+                                <dx-select-box  [readOnly]= "is_readonly" [dataSource]="regions" valueExpr="id" 
                                     displayExpr="name" (onSelectionChanged)="onRegionsCboSelect($event)" [searchEnabled]="true" formControlName="region_id">
                                 </dx-select-box>
                             </div>
@@ -88,8 +86,8 @@
                                 </dx-select-box>
                             </div>      
                             <div class="col-lg-4"[hidden]="true">
-                                <label for="ti" class="control-label">Postal Address</label>
-                                <dx-text-box  formControlName="director_postal_address" placeholder="Postal Address" [showClearButton]="true">
+                                <label for="ti" class="control-label">Physical Address</label>
+                                <dx-text-box  formControlName="physical_address" placeholder="Physical Address" [showClearButton]="true">
                                 </dx-text-box>
                             </div>
                             <div class="col-lg-12">
@@ -101,9 +99,7 @@
                             <dx-button text="Save Directors Details" [disabled]="!premisesDirectorsDetailsfrm.valid" (onClick)="onSavePremisesDirectorsDetails()" type="success" class="btn" icon="save" [elementAttr]="{ class: 'btn btn-primary; pull-right' }">
                             </dx-button>
                         </div>
-                    </form>
-                </wizard-step>
-            </wizard>
+            </form>
         </div>
     </div>
 </dx-popup>
@@ -131,9 +127,9 @@
                       </div>
                     </dxi-column>
                     <dxi-column [groupIndex]="1" dataField="names"></dxi-column>
-                    <dxi-column dataField="directorfull_names"></dxi-column>
-                    <dxi-column dataField="director_postal_address"></dxi-column>
-                    <dxi-column dataField="director_email_address"></dxi-column>
+                    <dxi-column dataField="name"></dxi-column>
+                    <dxi-column dataField="telephone_no"></dxi-column>
+                    <dxi-column dataField="email_address"></dxi-column>
                     <dxi-column dataField="shares"></dxi-column>
                     <dxi-column dataField="qualification"></dxi-column>
           </dx-data-grid>

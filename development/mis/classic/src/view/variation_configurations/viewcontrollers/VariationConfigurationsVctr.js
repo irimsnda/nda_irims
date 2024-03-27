@@ -132,7 +132,7 @@ Ext.define('Admin.view.variation_configurations.viewcontrollers.VariationConfigu
         }
         child.down('combo[name=checklist_type_id]').setValue(checklist_type_id);
         child.down('combo[name=checklist_category_id]').setValue(checklist_category_id);
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -150,7 +150,7 @@ Ext.define('Admin.view.variation_configurations.viewcontrollers.VariationConfigu
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -170,7 +170,7 @@ Ext.define('Admin.view.variation_configurations.viewcontrollers.VariationConfigu
             me.fireEvent('refreshStores', storeArray);
         }
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
         /* } else {
              toastr.warning('Sorry you don\'t have permission to perform this action!!', 'Warning Response');
              return false;
@@ -893,7 +893,7 @@ Ext.define('Admin.view.variation_configurations.viewcontrollers.VariationConfigu
                                 form.loadRecord(record);
                             }
                             Ext.getBody().unmask();
-                            funcShowCustomizableWindow(btn.winTitle, btn.winWidth, form, 'customizablewindow');
+                            funcShowOnlineCustomizableWindow(btn.winTitle, btn.winWidth, form, 'customizablewindow');
                           }
                         },
                        failure: function (response) {
@@ -1014,7 +1014,7 @@ Ext.define('Admin.view.variation_configurations.viewcontrollers.VariationConfigu
                               
                                model = Ext.create('Ext.data.Model', results);
                                form.loadRecord(model);
-                               funcShowCustomizableWindow("Config Parameter", '80%', form, 'customizablewindow');
+                               funcShowOnlineCustomizableWindow("Config Parameter", '80%', form, 'customizablewindow');
 
                            }
                         } else {
@@ -1035,7 +1035,7 @@ Ext.define('Admin.view.variation_configurations.viewcontrollers.VariationConfigu
                 });
         }else{
             var form = Ext.widget('parameterformfieldsfrm');
-            funcShowCustomizableWindow("Config Parameter", '80%', form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow("Config Parameter", '80%', form, 'customizablewindow');
         }
        
        
@@ -1294,7 +1294,7 @@ Ext.define('Admin.view.variation_configurations.viewcontrollers.VariationConfigu
                                if(menu_id != 0){
                                    form.down('hiddenfield[name=menu_id]').setValue(menu_id);
 
-                                   funcShowCustomizableWindow("Config Parameter", '80%', form, 'customizablewindow');  
+                                   funcShowOnlineCustomizableWindow("Config Parameter", '80%', form, 'customizablewindow');  
                                    }
                                 else{
                                     toastr.error("Failed to get Menu", 'Failure Response');
@@ -1470,7 +1470,7 @@ Ext.define('Admin.view.variation_configurations.viewcontrollers.VariationConfigu
             me.fireEvent('refreshStores', storeArray);
         }
         child.down('hiddenfield[name=docdirective_id]').setValue(grid.down('hiddenfield[name=docdirective_id]').getValue());
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
        
     }
 });

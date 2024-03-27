@@ -33,6 +33,8 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsSAERptDetailsFrm'
             xtype: 'textarea',
             fieldLabel: 'Study Title',
             name: 'study_title',
+            grow: true, 
+            growMax: 200, 
             readOnly: true,
             columnWidth: 1
         },{
@@ -203,12 +205,16 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ClinicalTrialsSAERptDetailsFrm'
         },
         {
             xtype: 'textarea',columnWidth: 1,
+              grow: true, 
+            growMax: 200, 
             fieldLabel: 'Inclusion Criteria',
             name: 'inclusion_criteria',            
 
         },
         {
             xtype: 'textarea',columnWidth: 1,
+              grow: true, 
+            growMax: 200, 
             fieldLabel: 'Exclusion Criteria',
             name: 'exclusion_criteria',            
 

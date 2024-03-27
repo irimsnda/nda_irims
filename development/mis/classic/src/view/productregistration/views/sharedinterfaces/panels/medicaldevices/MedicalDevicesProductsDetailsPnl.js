@@ -18,7 +18,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.medical
         title: 'Product Details'
     }, {
         xtype: 'medicaldevicesProductsOtherInformationFrm',
-        title: 'Product Other Details',
+        title: 'Product Composition',
     },{
         xtype: 'hiddenfield',
         name: 'product_id'

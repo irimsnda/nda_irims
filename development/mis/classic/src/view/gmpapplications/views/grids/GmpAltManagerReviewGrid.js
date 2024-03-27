@@ -17,7 +17,20 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpAltManagerReviewGrid', {
     },
     selModel: {
         selType: 'checkboxmodel'
-    },
+    }, 
+    features:[
+        {
+            ftype: 'grouping',
+            startCollapsed: true,
+            groupHeaderTpl: '{[values.rows[0].data.inspection_details]} [{rows.length}]',
+            hideGroupedHeader: true,
+            enableGroupingMenu: false
+        },{
+        ftype: 'searching',
+        mode: 'local',
+        minChars: 2
+     }
+    ],
     tbar: [{
         xtype: 'exportbtn'
     }, {
@@ -96,16 +109,13 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpAltManagerReviewGrid', {
             ]
         }
     ],
-    features: [{
-        ftype: 'searching',
-        mode: 'local',
-        minChars: 2
-    }],
+    
     listeners: {
         beforerender: {
             fn: 'setGmpApplicationGridsStore',
             config: {
                 pageSize: 10000,
+                groupField: 'inspection_id',
                 proxy: {
                     url: 'gmpapplications/getManagerApplicationsGeneric'
                 }

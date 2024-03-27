@@ -1,5 +1,5 @@
 /**
- * Created by Kip on 9/22/2018.
+ * Created by Softclans.
  */
 Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExportPermitsProductsGrid', {
     extend: 'Ext.grid.Panel',
@@ -21,22 +21,25 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             }
         }
     },
-    tbar: [{
-        xtype: 'button',
-        text: 'Add VC Products Details',
-        iconCls: 'x-fa fa-plus',
-        action: 'add',
-        name: 'add_products',
-        ui: 'soft-green',
-        childXtype: 'importexportpermitsproductspnl',
-        winTitle: 'Add VC Products Details',
-        winWidth: '80%',
-        handler: 'showAddImpPermitProductsWinFrm',
-        stores: '[]',
-        bind: {
-            hidden: '{isReadOnly}'  // negated
-        }
-    }, {
+    tbar: [
+    // {
+    //     xtype: 'button',
+    //     text: 'Add VC Products Details',
+    //     iconCls: 'x-fa fa-plus',
+    //     action: 'add',
+    //     name: 'add_products',
+    //     ui: 'soft-green',
+    //     childXtype: 'importexportpermitsproductspnl',
+    //     winTitle: 'Add VC Products Details',
+    //     hidden: true,
+    //     winWidth: '80%',
+    //     handler: 'showAddImpPermitProductsWinFrm',
+    //     stores: '[]',
+    //     bind: {
+    //         hidden: '{isReadOnly}'  // negated
+    //     }
+    // }, 
+    {
         xtype: 'exportbtn'
     }, {
         xtype: 'hiddenfield',
@@ -109,6 +112,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
       }, {
           xtype: 'gridcolumn',
           dataIndex: 'certificate_no',
+          hidden: true,
           tdCls: 'wrap-text',
           text: 'Certificate No',
           flex: 1,
@@ -148,6 +152,30 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
           dataIndex: 'pack_unit',hidden: true,
           text: 'Unit Pack',
   
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'no_of_packs_tertiary',
+          tdCls: 'wrap-text',
+          text: 'Tertiary',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'no_of_packs_secondary',
+          tdCls: 'wrap-text',
+          text: 'Secondary',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'no_of_packs',
+          tdCls: 'wrap-text',
+          text: 'Primary',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'verification_fee_percent',
+          tdCls: 'wrap-text',
+          text: 'Verification Percentage',
           flex: 1,
       },{
           xtype: 'gridcolumn',

@@ -113,7 +113,7 @@ Ext.define('Admin.view.clinicaltrial.views.panels.PreviewSafetyAlertReportsWizar
                     disabled:true
                 },
                 {
-                    text: 'Save Clinical Trial Details',
+                    text: 'Safty Report Details',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-save',
                     name: 'save_clinicaltrial_details_btn',

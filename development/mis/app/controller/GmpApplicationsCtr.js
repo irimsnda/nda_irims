@@ -78,6 +78,12 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             'altgmpreceivingwizard button[action=quickNav]': {
                 click: 'quickNavigationAlteration'
             },
+
+              'GMPOnlineAssessmentfrm button[name=save_assessement_btn]': {
+                click: 'saveGMPOnlineAssessmentdetails'
+            },
+
+
             //end
             'mansitedetailstabpnl': {
                 beforetabchange: 'beforeManSiteTabChange'
@@ -124,6 +130,12 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             'gmptcmeetingrecommendation': {
                 afterrender: 'prepareNewGmpTCRecommendation'
             },
+
+            'gmpgprcmeetingrecommendation': {
+                afterrender: 'prepareNewGmpGPRCRecommendation'
+            },
+
+
             'gmpapprovals': {
                 afterrender: 'prepareNewGmpMainApprovals'
             },
@@ -207,7 +219,13 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             
             'ltrfrm button[action=link_ltr]': {
                 click: 'showLTRSelectionList'
-            },'gmpinspectionscheduleteamfrm button[action=search_inspectionteam]': {
+            },
+
+           'gmpltrselectiongrid': {
+                itemdblclick: 'onLTRselectionListDblClick'
+            },
+
+            'gmpinspectionscheduleteamfrm button[action=search_inspectionteam]': {
                 click: 'showSearch_inspectionteam'
             },
             'ltrselectiongrid': {
@@ -238,16 +256,45 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             },
 
 
+            'mdproductLineDetailsaddgrid button[name=add_line]': {
+                click: 'showAddProductLine'
+            },
+
+
             'mansiteblockdetailsgrid button[name=add_block]': {
                 click: 'showAddGmpBlockWinFrm'
+            },
+
+            '#localgmpinspectionfrm button[name=btn_addrecommendation]': {
+                click: 'funcAddPremiseApplicationParamter'
+            },
+
+            'localgmpinspectionfrm button[name=new_room]': {
+                click: 'showAddOtherDetailsPremiseForm'
             },
 
             'noncomplianceobservationsgrid button[name=add_observation]': {
                 click: 'showAddGmpNonComplianceDetails'
             },
+
+            'noncomplianceobservationswingrid button[name=add_observation]': {
+                click: 'showAddGmpNonComplianceDetails'
+            },
+
+            
+            'gmpinspectionpanel button[name=non_compliance]': {
+                click: 'showAddGmpNonComplianceDetails'
+            },
+
+
             'newsinglegmpapprovalpanel button[name=non_compliance]': {
                 click: 'showAddGmpNonComplianceDetails'
             },
+
+             'gmpgprcmeetingrecommendationpanel button[name=non_compliance]': {
+                click: 'showAddGmpNonComplianceDetails'
+            },
+
             //Submission SHARED
             'gmpsmfuploadspanel button[name=process_submission_btn]': {
                 click: 'showSmfUploadsApplicationSubmissionWin'
@@ -274,22 +321,24 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 click: 'showScreeningApplicationSubmissionWin'
             },
             
-            'gmpdeskreviewprocesspanel button[name=process_submission_btn]': {
-                click: 'showInspectionApplicationSubmissionWin'
+             'gmpdeskreviewprocesspanel button[name=process_submission_btn]': {
+                click: 'showDeskReviewInspectionApplicationSubmissionWin'
             },
+
+
             'gmpprovisionalinspectionpanel button[name=process_submission_btn]': {
                 click: 'showInspectionApplicationSubmissionWin'
             },
             
-            /*'gmpmeetingschedulinggrid button[action=process_submission_btn]': {
-                click: 'showTCMeetingSchedulingApplicationSubmissionWin'
-            },'gmptcmeetingrecommendationgrid button[action=process_submission_btn]': {
-                click: 'showTCMeetingReviewgApplicationSubmissionWin'
-            },
-            'gmptcmeetingrecommendationpanel button[name=process_submission_btn]': {
+            // 'gmpmeetingschedulinggrid button[action=process_submission_btn]': {
+            //     click: 'showTCMeetingSchedulingApplicationSubmissionWin'
+            // },'gmptcmeetingrecommendationgrid button[action=process_submission_btn]': {
+            //     click: 'showTCMeetingReviewgApplicationSubmissionWin'
+            // },
+            'gmpgprcmeetingrecommendationpanel button[name=process_submission_btn]': {
                 click: 'showTCMeetingRecommendationApplicationSubmissionWin'
             },
-            */
+            
             'singlegmpapprovalpanel button[name=process_submission_btn]': {
                 click: 'showSingleApprovalApplicationSubmissionWin'
             },
@@ -344,10 +393,15 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             'gmpdeskreviewuploadspanel form toolbar button[name=more_app_details]': {
                 click: 'showGmpApplicationMoreDetails'
             },
-            'gmpinspectionpanel button[name=more_app_details]': {
+            'gmpdeskreviewprocesspanel button[name=more_app_details]': {
                 click: 'showGmpApplicationMoreDetails'
             },
+
             'gmpscreeningpanel button[name=more_app_details]': {
+                click: 'showGmpApplicationMoreDetails'
+            },
+
+            'gmpinspectionpanel button[name=more_app_details]': {
                 click: 'showGmpApplicationMoreDetails'
             },
             
@@ -357,6 +411,11 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             'gmptcmeetingrecommendationpanel form toolbar button[name=more_app_details]': {
                 click: 'showGmpApplicationMoreDetails'
             },
+            'gmpgprcmeetingrecommendationpanel form toolbar button[name=more_app_details]': {
+                click: 'showGmpApplicationMoreDetails'
+            },
+
+
             'singlegmpapprovalpanel form toolbar button[name=more_app_details]': {
                 click: 'showGmpApplicationMoreDetails'
             },
@@ -448,16 +507,30 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 click: 'showAddGmpWithdrawalReason'
 
 
-            }, 'productlinedetailsgrid button[name=add_line]': {
+            },
+
+             'productlinedetailsgrid button[name=add_line]': {
                 click: 'showAddGmpProductLineDetails'
             },
 
             'productlinedetailsgrid button[name=update_line]': {
                 click: 'saveGmpproductlinedetails'
             },
+
+              'mdproductlinedetailsgrid button[name=add_line]': {
+                click: 'showAddGmpProductLineDetails'
+            },
+
+            'mdproductlinedetailsgrid button[name=update_line]': {
+                click: 'saveGmpproductlinedetails'
+            },
+
+
             'productlinedetailsinspectiongrid button[name=update_line]': {
                 click: 'saveGmpproductlinedetails'
-            },'productLineDetailsaddgrid button[name=update_line]': {
+            },
+
+            'mdproductLineDetailsaddgrid button[name=update_line]': {
                 click: 'saveGmpproductlinedetails'
             },
             
@@ -480,12 +553,58 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 gmpApplicationMoreDetails: 'showGmpApplicationMoreDetailsGeneric',
                 redoManSiteOtherDetailsGrid: 'redoManSiteOtherDetailsGrid',
                 redoManSitePersonnelDetailsGrid: 'redoManSitePersonnelDetailsGrid',
-                previewGmpOnlineApplication:'previewGmpOnlineApplication'
+                previewGmpOnlineApplication:'previewGmpOnlineApplication',
+                loadGMPAssessmentFrm:'loadGMPAssessmentFrm'
             }
         }
     },
     saveGmpproductAddlinedetails:function(btn){
 
+
+    },
+
+
+    saveGMPOnlineAssessmentdetails:function(btn){
+        var form = btn.up('form'),
+        win = form.up('window'),
+        frm = form.getForm(),
+        storeID = btn.storeID,
+        store = Ext.getStore(storeID);
+        var me = this,
+        mainTabPanel = me.getMainTabPanel(),
+        activeTab = mainTabPanel.getActiveTab(),
+        sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+        active_application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+        if (frm.isValid()) {
+            frm.submit({
+                url: 'gmpapplications/saveGMPOnlineAssessmentdetails',
+                waitMsg: 'Please wait...',
+                params:{
+                    sub_module_id :sub_module_id,
+                   active_application_code:active_application_code
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token,
+                    'X-CSRF-Token': token
+                },
+                success: function (form, action) {
+                    var response = Ext.decode(action.response.responseText),
+                        success = response.success,
+                        message = response.message;
+                    if (success == true || success === true) {
+                        toastr.success(message, "Success Response");
+                        store.load();
+                       // win.close();
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (form, action) {
+                    var resp = action.result;
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        }
 
     },
     saveGmpproductlinedetails:function(btn){
@@ -505,19 +624,18 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 
 
             }
-            
-            
-         
-            productLineGrid = btn.up('grid');
-            productlinedetailsstr = Ext.getStore('productlinedetailsstr'),
 
-        store = productLineGrid.getStore(),
+            var productLineGrid = btn.up('grid'),
+            productlinedetailsstr = Ext.getStore('productlinetr'),
+            store = Ext.getStore('productlinetr'),
         product_lines = [];
+        record='';
         for (var i = 0; i < store.data.items.length; i++) {
             var record = store.data.items [i],
                 product_line_category = record.get('product_line_category'),
                  product_line_name = record.get('product_line_name'),
                  product_line_namecheck = record.get('product_line_namecheck'),
+                 manufacturing_site_id = record.get('manufacturing_site_id'),
                  manufacturingsite_block_no = record.get('manufacturingsite_block_no'),
                  no_ofproduction_lines = record.get('no_ofproduction_lines'),
                  non_betalactam = record.get('non_betalactam'),
@@ -527,8 +645,10 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                  product_line_id = record.get('product_line_id'),
                  gmp_product_categories_id = record.get('gmp_product_categories_id'),
                  prodline_inspectionstatus_id = record.get('prodline_inspectionstatus_id'),
-
+                 inspection_confirmation_id = record.get('inspection_confirmation_id'),
+                 no_inspection_justification = record.get('no_inspection_justification'),
                  
+
                  id = record.get('id');
 
             var obj = {
@@ -546,11 +666,23 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 beta_lactam_id: beta_lactam_id,
                 product_line_id: product_line_id,
                 gmp_product_categories_id: gmp_product_categories_id,
-                prodline_inspectionstatus_id:prodline_inspectionstatus_id
+                prodline_inspectionstatus_id:prodline_inspectionstatus_id,
+                inspection_confirmation_id:inspection_confirmation_id,
+                no_inspection_justification:no_inspection_justification
             };
             if (record.dirty) {
                 product_lines.push(obj);
             }
+        }
+
+         if (!manufacturing_site_id) {
+                manufacturing_site_id = record.get('manufacturing_site_id');
+             }
+            
+             if (!manufacturing_site_id) {
+                btn.setLoading(false);
+                toastr.warning('Missing Manufacturing Site Details!!', 'Warning Response');
+                return false;
         }
         if (product_lines.length < 1) {
             btn.setLoading(false);
@@ -576,7 +708,6 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                     message = resp.message;
                 if (success == true || success === true) {
                     toastr.success(message, 'Success Response');
-                    store.load();
                     productlinedetailsstr.load();
 
                 } else {
@@ -596,7 +727,225 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         });
 
 
-    },previewGmpOnlineApplication: function (view, record) {
+    },
+
+
+    loadGMPAssessmentFrm: function(frm, type_id,is_inspection,is_gprc,is_preview){
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+
+            if(is_inspection==1 || is_inspection===1){
+               var is_comment_readOnly=0,
+                   is_review_readOnly=1;
+
+            }else if(is_gprc==1 || is_gprc===1){
+                 var is_comment_readOnly=1,
+                 is_review_readOnly=0;
+
+            }else{
+                var is_comment_readOnly=1,
+                is_review_readOnly=1;
+            }
+
+
+            if(is_preview==1 || is_preview===1){
+                frm.down('button[name=save_assessement_btn]').setHidden(true);
+            }
+
+        Ext.getBody().mask('Please wait...');
+          Ext.Ajax.request({
+                url: 'configurations/getGMPInspectionForm',
+                method: 'GET',
+                params: {
+                    type_id: type_id, 
+                    application_code: application_code
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token,
+                    'X-CSRF-Token': token
+                },
+                success: function (response) {
+                    var resp = Ext.JSON.decode(response.responseText),
+                        success = resp.success,
+                        message = resp.message,
+                        assessment_categories = resp.assessment_categories;
+
+                    if (success == true || success === true) {
+                        var counter = 0;
+                        for (var i = assessment_categories.length - 1; i >= 0; i--) {
+                           
+                            //default field display
+                            var mainCont = field = Ext.create('Ext.form.FieldContainer',{
+                                            layout: 'column',
+                                            collapsible: true,
+                                            columnWidth: 1,
+                                            frame: true,
+                                            bodyPadding: 1,
+                                            items: [{
+                                                xtype: 'displayfield',
+                                                value: assessment_categories[i]['name'],
+                                                columnWidth:1,
+                                                fieldLabel:'Category',
+                                                width: '40%',
+                                                fieldStyle: {
+                                                        'color':'green',
+                                                        'font-weight': 'bold'
+                                                    }
+                                            }]
+                                        });
+                            
+                            frm.insert(0, mainCont);
+                            //sub items per fieldset
+                            for (var j = assessment_categories[i]['sub_categories'].length - 1; j >= 0; j--) {
+                                var held = assessment_categories[i]['sub_categories'];
+                
+                                //get Items if Available
+                                for (var k = held[j]['items'].length - 1; k >= 0; k--) {
+                                    var holder = held[j]['items'];
+                                    if(holder[k]['is_checklist'] == 1){
+                                        var field = Ext.create('Ext.form.FieldContainer',{
+                                            layout: 'column',
+                                            anchor: '100%',
+                                            columnWidth: 1,
+                                            items: [{
+                                                xtype: 'displayfield',
+                                                name: holder[k]['id']+'-displayitem',
+                                                value: holder[k]['name'],
+                                                columnWidth: 0.60
+                                            },{
+                                                xtype: 'combo',
+                                                anyMatch: true,
+                                                fieldLabel: 'Check',
+                                                labelAlign: 'left',
+                                                name: holder[k]['id']+'-itemcheck',
+                                                value: holder[k]['item_value'],
+                                                valueField: 'id',
+                                                readOnly :is_comment_readOnly,
+                                                displayField: 'name',
+                                                forceSelection: true,
+                                                allowBlank: true,
+                                                columnWidth: 0.3,
+                                                queryMode: 'local',
+                                                store: 'confirmationstr'
+                                            }]
+                                        });
+                                    }else{
+
+                                        var field = Ext.create('Ext.form.FieldContainer',{
+                                            layout: 'column',
+                                            items: [{
+                                                xtype: 'displayfield',
+                                                name: holder[k]['id']+'-displayitem',
+                                                value: holder[k]['name'],
+                                                columnWidth: 1
+                                            },{
+                                                xtype: 'htmleditor',
+                                                anyMatch: true,
+                                                value: holder[k]['item_value'],
+                                                labelAlign: 'top',
+                                                readOnly :is_comment_readOnly,
+                                                fieldLabel: '<span style="font-size: 8px; color: blue;">NOTE: If this field is disabled, click the edit option on the right side of this field to enable it</span>',
+                                                //isReadOnly:false,
+                                                disabled: false,
+                                                name: holder[k]['id']+'-item',
+                                                allowBlank: false,
+                                               columnWidth: 1
+                                            }]
+                                        });
+                                    }
+
+
+                                    var FieldSet = Ext.create('Ext.form.FieldSet',{
+                                        name: held[j]['id'],
+                                        title:  held[j]['name'],
+                                        collapsible: true,
+                                        columnWidth: 1,
+                                        items: [{
+                                            xtype: 'htmleditor',
+                                            name: held[j]['id']+'-workspace',
+                                            value: held[j]['workspace_value'],
+                                            fieldLabel: 'Workspace',
+                                            anchor: '100%',
+                                            //columnWidth: 1,
+                                            hidden:true,
+                                            height:180,
+                                            labelAlign: 'top'
+                                        },
+
+                                        {
+                                            xtype: 'textarea',
+                                            grow: true, 
+                                            growMax: 200, 
+                                            name: held[j]['id']+'-comment',
+                                            value: held[j]['comment_value'],
+                                            fieldLabel: "GPRC's Comment",
+                                            allowBlank: true,
+                                            columnWidth: 1,
+                                            // Set the anchor to '100%' for full width
+                                            anchor: '100%',
+                                           // hidden:true,
+                                           // height:180,
+                                            readOnly :is_review_readOnly,
+                                            labelAlign: 'top'
+                                        }]
+                                    });
+                                    //add to form
+                                    FieldSet.insert(0, field);
+                                }
+                                mainCont.insert(1,FieldSet);
+                            }
+
+                        }
+                    }
+
+                Ext.getBody().unmask();
+            },
+           failure: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+    },
+
+
+     funcAddPremiseApplicationParamter:function(btn){
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab();
+        var childXtype = btn.childXtype,
+            table_name = btn.table_name,
+            childXtype = Ext.widget(childXtype);
+        funcShowCustomizableWindow('Parameter', '55%', childXtype, 'customizablewindow');
+    },
+
+
+
+    showAddOtherDetailsPremiseForm: function (btn) {
+        var grid = btn.up('grid'),
+        mainTabPanel = this.getMainTabPanel(),
+        activeTab = mainTabPanel.getActiveTab(),
+        premise_id = activeTab.down('hiddenfield[name=manufacturing_site_id]').getValue(),
+        width = btn.winWidth,
+        winTitle = btn.winTitle,
+        childObject = Ext.widget(btn.childXtype);
+
+        childObject.down('hiddenfield[name=premise_id]').setValue(premise_id);
+        funcShowCustomizableWindow(winTitle, width, childObject, 'customizablewindow');
+    },
+
+
+
+
+
+    previewGmpOnlineApplication: function (view, record) {
         console.log(record);
         var grid = view.grid,
             isReadOnly = grid.isReadOnly,
@@ -675,7 +1024,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         siteBlockDetailsGrid.setIsOnline(1);
         siteOtherDetailsGrid.setIsOnline(1);
        
-        funcShowCustomizableWindow(tracking_no, '80%', onlinePanel, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no, '98%', onlinePanel, 'customizablewindow');
     },
 
     setGmpApplicationGridsStore: function (me, options) {
@@ -893,7 +1242,6 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
          
             wizardPnl.getViewModel().set('atEnd', false);
         }
-        console.log(step)
         wizardPnl.getLayout().setActiveItem(step);
         var layout = wizardPnl.getLayout(),
             item = null,
@@ -1445,6 +1793,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             applicantFrm = activeTab.down('applicantdetailsfrm'),
             manufacturingSiteFrm = activeTab.down('mansitedetailsfrm'),
+            wizardPanel = activeTab.down('newgmpreceivingwizard'),
             ltrFrm = activeTab.down('ltrfrm'),
             contactPersonFrm = activeTab.down('premisecontactpersonfrm'),
             billingPersonFrm = activeTab.down('billingdetailsfrm'),
@@ -1475,6 +1824,15 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 workflow_stage: workflow_stage_id
             }
         });
+
+        if (section_id==5 || section_id===5) {
+          if(wizardPanel.down('productlinedetailsgrid')){
+                wizardPanel.down('productlinedetailsgrid').destroy();
+            }
+            wizardPanel.add(2, { xtype: 'mdproductlinedetailsgrid'});
+            var mdproductLinesGrid = wizardPanel.down('mdproductlinedetailsgrid'),
+            mdproductline_store = mdproductLinesGrid.getStore();
+        }
        
         if (section_id != 2) {
             // productLinesGrid.columns[4].setHidden(true);
@@ -1542,6 +1900,16 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                         gmpproducts_store.removeAll();
                         gmpproducts_store.load();
                         if (results) {
+                            mdproductline_store=mdproductLinesGrid.getStore();
+                            if(mdproductline_store){
+                                mdproductline_store.getProxy().extraParams={
+                                manufacturing_site_id: results.manufacturing_site_id
+                                };
+                                if (mdproductline_store) {
+                                        mdproductline_store.removeAll();
+                                        mdproductline_store.load();
+                                }
+                            }
                             if (results.gmp_type_id == 2 || results.gmp_type_id === 2) {//domestic
                                 manufacturingSiteFrm.getForm().getFields().each(function (field) {
                                     // field.setReadOnly(true);
@@ -1576,7 +1944,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 //manufacturingSiteFrm.down('textfield[name=premise_reg_no]').setVisible(true);
                 //premiseFrm.down('textfield[name=permit_no]').setVisible(true);
                 manufacturingSiteFrm.down('button[action=search_premise]').setDisabled(false);
-                if (section_id == 4) {
+                if (section_id ==5) {
                     activeTab.down('combo[name=device_type_id]').setVisible(true);
                     activeTab.down('combo[name=device_type_id]').setReadOnly(false);
                 }
@@ -1949,8 +2317,8 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             otherDetailsFrm = activeTab.down('form'),
-            applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
-            premise_details = otherDetailsFrm.down('displayfield[name=premise_details]'),
+            applicant_details = activeTab.down('displayfield[name=applicant_details]'),
+            premise_details = activeTab.down('displayfield[name=premise_details]'),
             gmp_type_id_fld = activeTab.down('hiddenfield[name=gmp_type_id]'),
             gmp_type_txt_fld = activeTab.down('displayfield[name=gmp_type_txt]');
         premise_details.setFieldLabel('Name of Manufacturing facility');
@@ -1962,6 +2330,8 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 workflow_stage: workflow_stage_id
             }
         });
+
+
         if (sub_module_id == 6) {
             activeTab.down('button[name=prev_productline_details]').setVisible(true);
         }
@@ -1991,8 +2361,8 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                             activeTab.down('hiddenfield[name=manufacturing_site_id]').setValue(results.premise_id);
                             activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
                             applicant_details.setValue(results.applicant_details);
-                            premise_details.setVisible(true);
-                            premise_details.setValue(results.premise_details);
+                            //premise_details.setVisible(true);
+                            //premise_details.setValue(results.premise_details);
                             productLine_store.removeAll();
                             productLine_store.load({
                                 params: {
@@ -2051,7 +2421,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             personnelDetailsGrid = Ext.widget('mansitepersonneldetailswingrid', {
                 title: 'Other Personnel'
             });
-            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            var application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
@@ -2059,17 +2429,19 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(), section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             otherDetailsFrm = activeTab.down('form'),
-            applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
-            premise_details = otherDetailsFrm.down('displayfield[name=premise_details]'),
+            applicant_details = activeTab.down('displayfield[name=applicant_details]'),
+            premise_details = activeTab.down('displayfield[name=premise_details]'),
             gmp_type_id_fld = activeTab.down('hiddenfield[name=gmp_type_id]'),
             gmp_type_txt_fld = activeTab.down('displayfield[name=gmp_type_txt]');
            // premise_details.setFieldLabel('Name of Manufacturing facility');
 
 
+
+
             //edit preview details 
             contactPersonFrm.setMoreDetails(1);
-            personnelTabPnl.remove(personnelTabPnl.items.getAt(1));
-            personnelTabPnl.add(personnelDetailsGrid);
+            // personnelTabPnl.remove(personnelTabPnl.items.getAt(1));
+            // personnelTabPnl.add(personnelDetailsGrid);
             
             applicantFrm.down('button[action=link_applicant]').setDisabled(false);
             siteFrm.down('button[action=search_site]').setDisabled(false);
@@ -2172,15 +2544,23 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
-            otherDetailsFrm = activeTab.down('form'),
+            otherDetailsFrm = activeTab.down('form'), // wizzardFrm
+                    
             productlinedetailsgrid = activeTab.down('productlinedetailsinspectiongrid'),
-            applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
-            inspectionscaparequestsgrid = activeTab.down('inspectionscaparequestsgrid'),
+            applicant_details = Ext.ComponentQuery.query('displayfield[name=applicant_details]')[0];
+
+            inspectorsGrid = Ext.ComponentQuery.query('grid[name=inspectorsGrid]')[0];
+
+            var inspectionscaparequestsgrid = activeTab.down('inspectionscaparequestsgrid'),
+            inspectorsGridStore = inspectorsGrid.getStore(),
             inspectiondetailsupdatefrm = activeTab.down('inspectiondetailsupdatefrm'),
             gmp_type_id_fld = activeTab.down('hiddenfield[name=gmp_type_id]'),
-            section_id = activeTab.down('hiddenfield[name=section_id]'),
-            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]'),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             gmp_type_txt_fld = activeTab.down('displayfield[name=gmp_type_txt]');
+
+
+           
       
         if (sub_module_id == 6) {
             activeTab.down('button[name=prev_productline_details]').setVisible(true);
@@ -2200,8 +2580,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             // productlinedetailsgrid.columns[6].setHidden(true);
             // productlinedetailsgrid.columns[7].setHidden(true);
         }
-
-
+        
         if (application_id) {
             Ext.Ajax.request({
                 method: 'GET',
@@ -2228,14 +2607,41 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                             activeTab.down('hiddenfield[name=premise_id]').setValue(results.premise_id);
                             activeTab.down('hiddenfield[name=manufacturing_site_id]').setValue(results.premise_id);
                             activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
+                            //  console.log(results.section_id);
+                            // if (results.section_id==5 || results.section_id===5) {
+                            //   if(activeTab.down('productlinedetailsinspectiongrid')){
+                            //         activeTab.down('productlinedetailsinspectiongrid').destroy();
+                            //     }
+                            //    // var wizardPanel = Ext.ComponentQuery.query("#inspectionreport")[0];
+                            //      var wizardPanel = Ext.ComponentQuery.query('tabpanel[name=inspectionreportTabPanel]')[0];
+                            //     console.log(wizardPanel);
+                            //     wizardPanel.add(1, { xtype: 'mdproductlinedetailsinspectiongrid'});
+                            //     var mdproductLinesGrid = wizardPanel.down('mdproductlinedetailsinspectiongrid'),
+                            //     mdproductline_store = mdproductLinesGrid.getStore();
+                            // }
+
+                             // mdproductline_store=mdproductLinesGrid.getStore();
+                             //    if(mdproductline_store){
+                             //        mdproductline_store.getProxy().extraParams={
+                             //        manufacturing_site_id: results.manufacturing_site_id
+                             //        };
+                             //        if (mdproductline_store) {
+                             //                mdproductline_store.removeAll();
+                             //                mdproductline_store.load();
+                             //        }
+                             //    }
+
                             applicant_details.setValue(results.applicant_details);
-                          
                             if(activeTab.down('inspectiondetailsupdatefrm')){
                                 if(inspection_details){
                                     var inspection_details = Ext.create('Ext.data.Model', inspection_details);
                        
                                     var inspectiondetailsupdatefrm = activeTab.down('inspectiondetailsupdatefrm');
                                     inspectiondetailsupdatefrm.loadRecord(inspection_details);
+
+                                    console.log(inspectorsGrid);
+                                     inspectorsGridStore.load();
+        
                                 }
                                
                             }
@@ -2348,12 +2754,12 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             applicationsGrid = activeTab.down('gmptcmeetingrecommendationgrid');
         this.prepareGmpTCMeetingSchedulingGeneric(activeTab, applicationsGrid, 0);
     },
-    prepareNewGmpTCRecommendation1: function () {
+    prepareNewGmpGPRCRecommendation: function () {
         Ext.getBody().mask('Please wait...');
         var me = this,
             mainTabPanel = me.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
-            productLine_store = activeTab.down('productlinedetailstcrecommgrid').store,
+            productLine_store = activeTab.down('productlinedetailgprcrecommgrid').store,
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
@@ -2361,11 +2767,12 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             otherDetailsFrm = activeTab.down('form'),
-            applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
-            site_details = otherDetailsFrm.down('displayfield[name=premise_details]'),
+            applicant_details = activeTab.down('displayfield[name=applicant_details]'),
+           // site_details = otherDetailsFrm.down('displayfield[name=premise_details]'),
             gmp_type_id_fld = activeTab.down('hiddenfield[name=gmp_type_id]'),
             gmp_type_txt_fld = activeTab.down('displayfield[name=gmp_type_txt]');
-        site_details.setFieldLabel('Name of Manufacturing facility');
+            console.log(applicant_details);
+        //site_details.setFieldLabel('Name of Manufacturing facility');
         app_doc_types_store.removeAll();
         app_doc_types_store.load({
             params: {
@@ -2402,14 +2809,14 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                             activeTab.down('hiddenfield[name=manufacturing_site_id]').setValue(results.premise_id);
                             activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
                             applicant_details.setValue(results.applicant_details);
-                            site_details.setVisible(true);
-                            site_details.setValue(results.premise_details);
+                            //site_details.setVisible(true);
+                           // site_details.setValue(results.premise_details);
                             productLine_store.removeAll();
-                            productLine_store.load({
-                                params: {
-                                    site_id: results.premise_id
-                                }
+                            productLine_store.getProxy().setExtraParams({
+                               site_id: results.premise_id
                             });
+                            productLine_store.load();
+                        
                         }
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -2467,11 +2874,11 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             otherDetailsFrm = activeTab.down('form'),
-            applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
-            site_details = otherDetailsFrm.down('displayfield[name=premise_details]'),
+            applicant_details = activeTab.down('displayfield[name=applicant_details]'),
+            //site_details = otherDetailsFrm.down('displayfield[name=premise_details]'),
             gmp_type_id_fld = activeTab.down('hiddenfield[name=gmp_type_id]'),
             gmp_type_txt_fld = activeTab.down('displayfield[name=gmp_type_txt]');
-        site_details.setFieldLabel('Name of Manufacturing facility');
+        //site_details.setFieldLabel('Name of Manufacturing facility');
         app_doc_types_store.removeAll();
         app_doc_types_store.load({
             params: {
@@ -2508,15 +2915,15 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                             activeTab.down('hiddenfield[name=manufacturing_site_id]').setValue(results.premise_id);
                             activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
                             applicant_details.setValue(results.applicant_details);
-                            site_details.setVisible(true);
-                            site_details.setValue(results.premise_details);
+                            //site_details.setVisible(true);
+                           // site_details.setValue(results.premise_details);
                             productLine_store.removeAll();
-                            productLine_store.load({
-                                params: {
-                                    site_id: results.premise_id
-                                }
+                            productLine_store.removeAll();
+                            productLine_store.getProxy().setExtraParams({
+                               site_id: results.premise_id
                             });
-                        }
+                            
+                            productLine_store.load();                        }
                     } else {
                         toastr.error(message, 'Failure Response');
                     }
@@ -2571,30 +2978,35 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 workflow_stage: workflow_stage_id
             }
         });
-        siteFrm.getForm().getFields().each(function (field) {
-            field.setReadOnly(true);
-        });
+
+
+        // siteFrm.getForm().getFields().each(function (field) {
+        //     field.setReadOnly(true);
+        // });
+
+
+
         siteFrm.down('textfield[name=gmp_cert_no]').setVisible(true);
-        activeTab.down('mansiteotherdetailsgrid').down('hiddenfield[name=isReadOnly]').setValue(1);
-        activeTab.down('mansitepersonneldetailsgrid').down('hiddenfield[name=isReadOnly]').setValue(1);
-        activeTab.down('mansiteblockdetailsgrid').down('hiddenfield[name=isReadOnly]').setValue(1);
-        contactFrm.down('hiddenfield[name=isReadOnly]').setValue(1);
-        ltrFrm.down('hiddenfield[name=isReadOnly]').setValue(1);
-        productlinedetailsgrid.down('button[name=add_line]').setVisible(false);
-        productlinedetailsgrid.columns[productlinedetailsgrid.columns.length - 1].setHidden(true);
-        gmpProductsGrid.down('button[action=search_product]').setVisible(false);
-        gmpProductsGrid.columns[gmpProductsGrid.columns.length - 1].setHidden(true);
+       // activeTab.down('mansiteotherdetailsgrid').down('hiddenfield[name=isReadOnly]').setValue(1);
+        //activeTab.down('mansitepersonneldetailsgrid').down('hiddenfield[name=isReadOnly]').setValue(1);
+        //activeTab.down('mansiteblockdetailsgrid').down('hiddenfield[name=isReadOnly]').setValue(1);
+        //contactFrm.down('hiddenfield[name=isReadOnly]').setValue(1);
+       // ltrFrm.down('hiddenfield[name=isReadOnly]').setValue(1);
+       // productlinedetailsgrid.down('button[name=add_line]').setVisible(false);
+       // productlinedetailsgrid.columns[productlinedetailsgrid.columns.length - 1].setHidden(true);
+       // gmpProductsGrid.down('button[action=search_product]').setVisible(false);
+       // gmpProductsGrid.columns[gmpProductsGrid.columns.length - 1].setHidden(true);
 
         me.fireEvent('gmpOtherPartsAuth', process_id, activeTab);
         //me.fireEvent('formAuth', process_id, 1, premiseFrm);
-        siteFrm.down('button[action=search_site]').setDisabled(false);
-        applicantFrm.down('button[action=link_applicant]').setDisabled(true);
+       // siteFrm.down('button[action=search_site]').setDisabled(false);
+       // applicantFrm.down('button[action=link_applicant]').setDisabled(true);
         
         if (section_id != 2) {
-            productlinedetailsgrid.columns[4].setHidden(true);
-            productlinedetailsgrid.columns[5].setHidden(true);
-            productlinedetailsgrid.columns[6].setHidden(true);
-            productlinedetailsgrid.columns[7].setHidden(true);
+            // productlinedetailsgrid.columns[4].setHidden(true);
+            // productlinedetailsgrid.columns[5].setHidden(true);
+            // productlinedetailsgrid.columns[6].setHidden(true);
+            // productlinedetailsgrid.columns[7].setHidden(true);
         }
         if (application_id) {
             siteFrm.down('button[name=search_site]').setDisabled(true);
@@ -2642,9 +3054,12 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                         gmpproducts_store.load();
                         if (results) {
                             if (results.gmp_type_id == 2 || results.gmp_type_id === 2) {//domestic
-                                siteFrm.getForm().getFields().each(function (field) {
-                                    field.setReadOnly(true);
-                                });
+
+                                // siteFrm.getForm().getFields().each(function (field) {
+                                //     field.setReadOnly(true);
+                                // });
+
+
                             } else {
                                 me.fireEvent('formAuth', process_id, 1, siteFrm);
                             }
@@ -2669,9 +3084,9 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             //It's a new application
             var gmp_type_id = gmp_type_id_fld.getValue();
             if (gmp_type_id == 2 || gmp_type_id === 2) {//domestic
-                siteFrm.getForm().getFields().each(function (field) {
-                    field.setReadOnly(true);
-                });
+                // siteFrm.getForm().getFields().each(function (field) {
+                //     field.setReadOnly(true);
+                // });
                 siteFrm.down('textfield[name=premise_reg_no]').setVisible(true);
                 //premiseFrm.down('textfield[name=permit_no]').setVisible(true);
                 siteFrm.down('button[action=search_premise]').setDisabled(false);
@@ -3000,17 +3415,17 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 toastr.warning('Please select Local Technical Representative!!', 'Warning Response');
                 return false;
             }
-            if (!applicant_as_billingperson) {
-                toastr.warning('Please select Billing Address!!', 'Warning Response');
-                return false;
-            } else if (applicant_as_billingperson == 2 && !billing_person_id) {
-                toastr.warning('Please select Billing Address!!', 'Warning Response');
-                return false;
-            }
-             if (!contract_manufacturing_id) {
-                toastr.warning('Please select Contract Manufacturing Acitivity!!', 'Warning Response');
-                return false;
-            } 
+            // if (!applicant_as_billingperson) {
+            //     toastr.warning('Please select Billing Address!!', 'Warning Response');
+            //     return false;
+            // } else if (applicant_as_billingperson == 2 && !billing_person_id) {
+            //     toastr.warning('Please select Billing Address!!', 'Warning Response');
+            //     return false;
+            // }
+            //  if (!contract_manufacturing_id) {
+            //     toastr.warning('Please select Contract Manufacturing Acitivity!!', 'Warning Response');
+            //     return false;
+            //} 
             // else if (contract_manufacturing_id == 1 || contract_manufacturing_id == 2 && !manufacturing_site_id) {
             //     toastr.warning('Please note application can not be received until all manufacturing parties have applied for an inspection!!', 'Warning Response');
             //     return false;
@@ -3280,15 +3695,13 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
 
             applicantDetailsForm = wizardPnl.down('applicantdetailsfrm'),
             ltrForm = wizardPnl.down('ltrfrm'),
-            billingForm = activeTab.down('billingdetailsfrm'),
-            contractManufactureForm = activeTab.down('contractmanufacturingfrm'),
+            billingForm = wizardPnl.down('billingdetailsfrm'),
+            contractManufactureForm = wizardPnl.down('contractmanufacturingfrm'),
             applicant_id = applicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue(),
             ltr_id = ltrForm.down('hiddenfield[name=ltr_id]').getValue(),
             applicant_as_ltr = ltrForm.down('combo[name=applicant_as_ltr]').getValue(),
-
             applicant_as_billingperson = billingForm.down('combo[name=applicant_as_billingperson]').getValue(),
             billing_person_id = billingForm.down('hiddenfield[name=id]').getValue(),
-            manufacturing_site_id = contractManufactureForm.down('hiddenfield[name=manufacturing_site_id]').getValue(),
             contract_manufacturing_id = contractManufactureForm.down('combo[name=contract_manufacturing_id]').getValue(),
             contract_manufacturer_name = contractManufactureForm.down('textfield[name=contract_manufacturer_name]').getValue(),
             contract_physical_address = contractManufactureForm.down('textfield[name=contract_physical_address]').getValue(),
@@ -3401,13 +3814,9 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         }
     },
 
-    showLTRSelectionList: function (btn) {
-        var childXtype = btn.childXtype,
-            winTitle = btn.winTitle,
-            winWidth = btn.winWidth,
-            childObject = Ext.widget(childXtype);
-            childObject.applicantType = 'local';
-        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+     showLTRSelectionList: function (btn) {
+        var grid = Ext.widget('gmpltrselectiongrid');
+        funcShowOnlineCustomizableWindow('LTR Selection List', '90%', grid, 'customizablewindow');
     },
     showSearch_inspectionteam: function (btn) {
         var me = this,
@@ -3624,25 +4033,42 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             title = btn.winTitle,
             grid=btn.up('grid'),
             block_id = grid.down('hiddenfield[name=block_id]').getValue(),
+            special_category_id = grid.down('hiddenfield[name=special_category_id]').getValue(),
+            inspection_category_id = grid.down('hiddenfield[name=inspection_category_id]').getValue(),
             winWidth = btn.winWidth,
             childObject = Ext.widget(childXtype),
             storeArray = eval(btn.stores),
-            arrayLength = storeArray.length,
-            productLineStr = childObject.down('combo[name=product_line_id]').getStore(),
-            productLineCategoryStr = childObject.down('combo[name=category_id]').getStore();
+            arrayLength = storeArray.length;
             childObject.down('hiddenfield[name=manufacturing_site_id]').setValue(site_id);
             childObject.down('hiddenfield[name=manufacturingsite_block_id]').setValue(block_id);
-            //console.log(block_id);
-        //switch recommendation combo
+            childObject.down('hiddenfield[name=inspection_category_id]').setValue(inspection_category_id);
+     
         if(activeTab.down('newgmpreceivingwizard')){
             if(childObject.down('combo[name=prodline_inspectionstatus_id]')){
                 childObject.down('combo[name=prodline_inspectionstatus_id]').setVisible(false);
             }
         }
-        productLineStr.removeAll();
-        productLineStr.load({params: {section_id: section_id}});
-        productLineCategoryStr.removeAll();
-        productLineCategoryStr.load({params: {section_id: section_id}});
+        
+    
+        if(inspection_category_id==3 ||inspection_category_id===3){
+           childObject.down('hiddenfield[name=isSpecialCategory]').setValue(1);
+           childObject.down('hiddenfield[name=special_category_id]').setValue(special_category_id);
+        }
+
+        if(section_id==5 ||section_id===5){
+            childObject.down('combo[name=group_family_id]').setVisible(true);
+            childObject.down('combo[name=sterile_id]').setVisible(true);
+            childObject.down('combo[name=invasive_id]').setVisible(true);
+            childObject.down('combo[name=active_id]').setVisible(true);
+            childObject.down('combo[name=medicated_id]').setVisible(true);
+
+            childObject.down('combo[name=product_line_id]').setVisible(false);
+            childObject.down('combo[name=category_id]').setVisible(false);
+
+            childObject.down('combo[name=product_line_id]').allowBlank =true;
+            childObject.down('combo[name=category_id]').allowBlank = true;
+        }
+
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -3696,7 +4122,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },
 
 
@@ -3726,7 +4152,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },
 
     showAddGmpNonComplianceDetails: function (btn) {
@@ -3744,11 +4170,11 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
-        //childObject.down('hiddenfield[name=manufacturing_site_id]').setValue(site_id);
+        childObject.down('hiddenfield[name=manufacturing_site_id]').setValue(site_id);
         childObject.down('hiddenfield[name=application_code]').setValue(application_code);
-        childObject.down('hiddenfield[name=module_id]').setValue(module_id);
-        childObject.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
-        childObject.down('hiddenfield[name=section_id]').setValue(section_id);
+        // childObject.down('hiddenfield[name=module_id]').setValue(module_id);
+        // childObject.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+        // childObject.down('hiddenfield[name=section_id]').setValue(section_id);
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -3775,7 +4201,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, winWidth, childObject, 'customizablewindow');
     },
 
     //New
@@ -3842,6 +4268,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             valid = true,
             storeID = getApplicationStore(module_id, section_id),
             table_name = getApplicationTable(module_id);
+            table_name = getApplicationTable(module_id);
         if (valid == true || valid === true) {
             showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsfrm', winWidth, storeID);
         } else {
@@ -3869,6 +4296,30 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             }],
             storeID = getApplicationStore(module_id, section_id),
             table_name = getApplicationTable(module_id);
+            if(btn.up('grid')){
+              grid = btn.up('grid'); 
+            }else{
+             grid = btn.up('panel').down('grid');
+            }
+            if(grid){
+            var sm = grid.getSelectionModel(),
+            selected_records = sm.getSelection();
+            var selected_appcodes = [];
+        
+            Ext.each(selected_records, function (record) {
+                var application_code = record.get('application_code');
+                if (application_code) {
+                    selected_appcodes.push(application_code);
+                }
+            });
+
+             if (selected_appcodes.length===0 || selected_appcodes.length==0) {
+                Ext.getBody().unmask();
+                toastr.error('Please ensure you have selected application(s) to proceed!!', 'Warning Response');
+                return false;
+            }
+           }
+        
         if (valid == true || valid === true) {
             showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth, storeID, extraParams, gridXtype);
         } else {
@@ -3939,6 +4390,30 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 field_name: 'inspection_id',
                 value: inspection_id
             }];
+
+            if(btn.up('grid')){
+              grid = btn.up('grid'); 
+            }else{
+             grid = btn.up('panel').down('grid');
+            }
+            if(grid){
+            var sm = grid.getSelectionModel(),
+            selected_records = sm.getSelection();
+            var selected_appcodes = [];
+        
+            Ext.each(selected_records, function (record) {
+                var application_code = record.get('application_code');
+                if (application_code) {
+                    selected_appcodes.push(application_code);
+                }
+            });
+
+             if (selected_appcodes.length===0 || selected_appcodes.length==0) {
+                Ext.getBody().unmask();
+                toastr.error('Please ensure you have selected application(s) to proceed!!', 'Warning Response');
+                return false;
+            }
+           }
         if (!leadInspectorDetails) {
             Ext.getBody().unmask();
             toastr.warning('No lead inspector found!!', 'Warning Response');
@@ -3963,31 +4438,77 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             hasQueries = checkApplicationRaisedQueries(application_code, module_id, 2),
             hasRespondedUnclosedQueries = checkApplicationRespondedUnclosedQueries(application_code, module_id),
             valid = true,
+            workflowaction_type_id = 1, 
             storeID = getApplicationStore(module_id, section_id),
             table_name = getApplicationTable(module_id);
-            var inspection_frm = activeTab.down('inspectiondetailsupdatefrm');
-                    insp_frm = inspection_frm.getForm();
-                if(inspection_frm.isValid()){
-                    gmpinspection_recommendation_id = inspection_frm.down('combo[name=gmpinspection_recommendation_id]').getValue();
 
+            // var inspection_frm = activeTab.down('inspectiondetailsupdatefrm');
+            // insp_frm = inspection_frm.getForm();
+            //     if(inspection_frm.isValid()){
+            //         gmpinspection_recommendation_id = inspection_frm.down('combo[name=gmpinspection_recommendation_id]').getValue();
+            //     }
+            //     else{
+            //         Ext.getBody().unmask();
+            //         toastr.warning('Please fill and save in the GMP Inspection Details before submission!!', 'Validation Check');
+            //         return false;
 
-                }
-                else{
-                    Ext.getBody().unmask();
-                    toastr.warning('Please fill and save in the GMP Inspection Details before submission!!', 'Validation Check');
-                    return false;
+            //     }
+            // if(gmpinspection_recommendation_id == 1 ){
+            //         var workflowaction_type_id = 31;
 
-                }
-            if(gmpinspection_recommendation_id == 1 ){
-                    var workflowaction_type_id = 31;
+            // }
+            // else if (gmpinspection_recommendation_id == 2 ){
+            //     var workflowaction_type_id = 29;
 
-            }
-            else if (gmpinspection_recommendation_id == 2 ){
-                var workflowaction_type_id = 29;
+            // }else{
+            //     var workflowaction_type_id = 27;
+            // }
 
-            }else{
-                var workflowaction_type_id = 27;
-            }
+            extraParams = [{
+                field_type: 'hiddenfield',
+                field_name: 'has_queries',
+                value: hasQueries
+            },{
+                field_type: 'hiddenfield',
+                field_name: 'workflowaction_type_id',
+                value: workflowaction_type_id
+            }];
+
+        if (hasRespondedUnclosedQueries > 0) {
+            Ext.getBody().unmask();
+            toastr.warning('Please close responded queries to proceed!!', 'Warning Response');
+            return false;
+        }
+        if(hasQueries ==2){
+            toastr.warning('Enter the query Items for the open query to proceed with the query submission!!', 'Warning Response');
+            Ext.getBody().unmask();
+            return false;
+           
+        }
+        if (valid == true || valid === true) {
+            showRecommendationWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsstrictrecommfrm', winWidth, storeID, 1, extraParams);
+        } else {
+            Ext.getBody().unmask();
+        }
+    },
+
+      showDeskReviewInspectionApplicationSubmissionWin: function (btn) {
+        Ext.getBody().mask('Please wait...');
+        var mainTabPanel = this.getMainTabPanel(),
+            winWidth = btn.winWidth,
+            activeTab = mainTabPanel.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            hasQueries = checkApplicationRaisedQueries(application_code, module_id, 2),
+            hasRespondedUnclosedQueries = checkApplicationRespondedUnclosedQueries(application_code, module_id),
+            valid = true,
+            workflowaction_type_id = 1,
+            storeID = getApplicationStore(module_id, section_id),
+            table_name = getApplicationTable(module_id);
+         
+
             extraParams = [{
                 field_type: 'hiddenfield',
                 field_name: 'has_queries',
@@ -4115,7 +4636,8 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             valid = true,
-            storeID = 'gmpapprovalsstr',//getApplicationStore(module_id, section_id),//static
+            storeID = getApplicationStore(module_id, section_id),
+            //storeID = 'gmpapprovalsstr',//getApplicationStore(module_id, section_id),//static
             table_name = getApplicationTable(module_id);
         if (valid == true || valid === true) {
             showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsfrm', winWidth, storeID);
@@ -4260,6 +4782,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             ltrFrm = wizardPnl.down('ltrfrm'),
             otherDetailsGrid = wizardPnl.down('mansiteotherdetailswingrid'),
             productLinesGrid = wizardPnl.down('productlinedetailsgrid'),
+            //wizardPanel = childXtype.down('productlinedetailsgrid'),
             gmpProductDetailsGrid = wizardPnl.down('gmpproductslinkagedetailswingrid'),
             blocksGrid = wizardPnl.down('mansiteblockdetailswingrid'),
             assessmentType_fld = wizardPnl.down('combo[name=assessment_type_id]'),
@@ -4290,16 +4813,26 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         wizardPnl.down('hiddenfield[name=section_id]').setValue(section_id);
         wizardPnl.down('hiddenfield[name=gmp_type_id]').setValue(gmp_type_id);
         wizardPnl.down('combo[name=zone_id]').setReadOnly(false);
+       
         if ((siteReadOnly) && (siteReadOnly == 1 || siteReadOnly === 1)) {
             wizardPnl.down('button[name=save_btn]').setVisible(false);
         }
-       /* personnelDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        personnelDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         blocksGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         otherDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
-        productLineDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
+        //productLineDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
         gmpProductDetailsGrid.down('hiddenfield[name=isReadOnly]').setValue(isReadOnly);
-        */
+        
         siteFrm.down('hiddenfield[name=isReadOnly]').setValue(siteReadOnly);
+
+        if (section_id==5 || section_id===5) {
+          if(wizardPnl.down('productlinedetailsgrid')){
+                wizardPnl.down('productlinedetailsgrid').destroy();
+            }
+            var wizardPanel = Ext.ComponentQuery.query("#mansiteappmoredetailswizard")[0];
+            wizardPanel.add(2, { xtype: 'mdproductlinedetailsgrid'});
+            var mdproductLinesGrid = wizardPanel.down('mdproductlinedetailsgrid');
+        }
         if (section_id != 2) {
             if(wizardPnl.down('productlinedetailsgrid')){
                 // productLinesGrid.columns[4].setHidden(true);
@@ -4339,6 +4872,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                     applicantDetails = resp.applicant_details,
                     siteDetails = resp.site_details,
                     ltrDetails = resp.ltr_details,
+                    InspectionDetails = resp.inspection_details,
                     contactPersonDetails = resp.contact_details;
                 if (success == true || success === true) {
                     if (applicantDetails) {
@@ -4383,7 +4917,18 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
               
                    wizardPnl.add({xtype:'previewproductDocUploadsGrid',title: 'Application Uploaded Documents (All)'});
 
-
+                    productLinesGrid.getStore().load();
+                    gmpProductDetailsGrid.getStore().load();
+                    mdproductline_store=mdproductLinesGrid.getStore();
+                    if(mdproductline_store){
+                        mdproductline_store.getProxy().extraParams={
+                        manufacturing_site_id: siteDetails.manufacturing_site_id
+                        };
+                        if (mdproductline_store) {
+                                mdproductline_store.removeAll();
+                                mdproductline_store.load();
+                        }
+                    }
                     documents_grid = wizardPnl.down('previewproductDocUploadsGrid');
                     documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
                     documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
@@ -4907,6 +5452,8 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             apps_grid = activeTab.down('gmpinspectionschedulingphysicalgrid'),
             apps_sm = apps_grid.getSelectionModel(),
             app_records = apps_sm.getSelection(),
+            storeID = btn.storeID,
+            store = Ext.getStore(storeID),
             grid = btn.up('grid'),
             win = grid.up('window'),
             sm = grid.getSelectionModel(),
@@ -4945,6 +5492,8 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                     message = resp.message;
                 if (success == true || success === true) {
                     toastr.success(message, 'Success Response');
+                    store.removeAll();
+                    store.load();
                     win.close();
                 } else {
                     toastr.error(message, 'Failure Response');
@@ -5007,7 +5556,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                     form.down('hiddenfield[name=application_code]').setValue(application_code);
                     form.down('hiddenfield[name=process_id]').setValue(process_id);
                     form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
-                    funcShowOnlineCustomizableWindow('Recommendation', '40%', form, 'customizablewindow');
+                    funcShowOnlineCustomizableWindow('Recommendation', '60%', form, 'customizablewindow');
                 } else {
                     toastr.error(message, 'Failure Response');
                 }
@@ -5023,6 +5572,28 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 toastr.error('Error: ' + errorThrown, 'Error Response');
             }
         });
+    },
+
+
+    onLTRselectionListDblClick: function (view, record, item, index, e, eOpts) {
+        var me = this,
+            grid = view.grid,
+            win = grid.up('window'),
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            mask = new Ext.LoadMask({
+                msg: 'Please wait...',
+                target: win
+            });
+        mask.show();
+        
+        var applicantForm = activeTab.down('ltrfrm');
+        applicantForm.loadRecord(record);
+        Ext.Function.defer(function () {
+            mask.hide();
+            win.close();
+        }, 200);
+        
     },
 
     saveDeskReviewScheduleDetails: function (btn) {

@@ -56,6 +56,7 @@ Ext.define('Admin.view.commoninterfaces.grids.UnstructuredDocumentUploadsGrid', 
     },{
         xtype: 'splitbutton',
         name: 'downloadAll',
+        hidden:true,
         text: 'Download All',
         iconCls: 'fa fa-download',
         ui: 'soft-green',
@@ -185,7 +186,7 @@ Ext.define('Admin.view.commoninterfaces.grids.UnstructuredDocumentUploadsGrid', 
                 items: [{
                     text: 'Preview',
                     iconCls: 'x-fa fa-eye',
-                    handler: 'previewUploadedDocument',
+                    handler: 'previewUploadedUnstructuredDocument',
                     download: 0
                 }, {
                     text: 'Update Document',
@@ -193,6 +194,7 @@ Ext.define('Admin.view.commoninterfaces.grids.UnstructuredDocumentUploadsGrid', 
                     winTitle: 'Update Document',
                     childXtype: 'unstructureddocumentuploadsfrm',
                     winWidth: '35%',
+                    hidden:true,
                     handler: 'updateApplicationDocUploadWin',
                     stores: '[]',
                     bind: {

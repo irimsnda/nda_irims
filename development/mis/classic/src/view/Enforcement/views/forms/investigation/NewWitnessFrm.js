@@ -71,20 +71,45 @@ Ext.define('Admin.view.Enforcement.views.forms.investigation.NewWitnessFrm', {
             },         
         }, 
         {
+            xtype: 'combo', anyMatch: true,
+            name: 'witness_type_id',
+            allowBlank: false,
+            columnWidth: 1,
+            queryMode: 'local',
+            fieldLabel: 'Complainant/Witness Type',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                afterrender: {
+                    fn: 'setCompStore',
+                    config: {
+                        pageSize: 10000,
+                        proxy: {
+                            extraParams:{
+                                table_name: 'par_witness_types'
+
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+            }
+        },
+        {
             xtype:'textfield',
             name:'witness_name',
-            fieldLabel:'Witness Name',
+            fieldLabel:'Complainant/ Witness Name',
             columnWidth: 1,
         },
         {
             xtype:'htmleditor',
             name:'witness_information',
-            fieldLabel:'witness Information',
+            fieldLabel:'Complainant/ witness Information',
         },
         {
             xtype:'htmleditor',
             name:'witness_relevance',
-            fieldLabel:'witness Relevance'
+            fieldLabel:'Complainant/ witness Relevance'
         }, 
         // {
         //     xtype:'textareafield',

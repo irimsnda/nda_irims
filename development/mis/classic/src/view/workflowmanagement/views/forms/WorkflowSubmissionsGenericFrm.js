@@ -297,6 +297,7 @@ Ext.define('Admin.view.workflowmanagement.views.forms.WorkflowSubmissionsGeneric
                 xtype: 'combo',
                 fieldLabel: 'Urgency',
                 name: 'urgency',
+                hidden:true,
                 store: 'submissionsurgenciesstr',
                 valueField: 'id',
                 displayField: 'name',

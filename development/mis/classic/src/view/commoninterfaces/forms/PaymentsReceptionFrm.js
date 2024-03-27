@@ -6,6 +6,7 @@ Ext.define('Admin.view.commoninterfaces.forms.PaymentsReceptionFrm', {
     xtype: 'paymentsreceptionfrm',
     controller: 'commoninterfacesVctr',
     frame: true,
+    scrollable:true,
     bodyPadding: 5,
     items: [
         {
@@ -138,10 +139,29 @@ Ext.define('Admin.view.commoninterfaces.forms.PaymentsReceptionFrm', {
             },
             items: [
                 {
+                    xtype: 'textfield',
+                    fieldLabel: 'Invoice No',
+                    allowBlank:true,
+                    readOnly:true,
+                    name: 'invoice_no'
+                },
+                 {
+                    xtype: 'datefield',
+                    fieldLabel: 'Invoice Date',
+                    maxValue: new Date(),
+                    name: 'date_of_invoicing',
+                    readOnly:true,
+                    format: 'd/m/Y',
+                    submitFormat: 'Y-m-d',
+                    altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00|Y-m-d H:i:s',
+                    allowBlank: false
+                },
+                {
                     xtype: 'datefield',
                     fieldLabel: 'Transaction Date',
                     maxValue: new Date(),
                     name: 'trans_date',
+                    format: 'd/m/Y',
                     submitFormat: 'Y-m-d',
                     allowBlank: false
                 },
@@ -150,6 +170,7 @@ Ext.define('Admin.view.commoninterfaces.forms.PaymentsReceptionFrm', {
                     fieldLabel: 'Currency',
                     store: 'currenciesstr',
                     valueField: 'id',
+                    readOnly:true,
                     displayField: 'name',
                     queryMode: 'local',
                     forceSelection: true,
@@ -170,6 +191,7 @@ Ext.define('Admin.view.commoninterfaces.forms.PaymentsReceptionFrm', {
                     xtype: 'numberfield',
                     fieldLabel: 'Amount',
                     minValue: 1,
+                    readOnly:true,
                     name: 'amount_paid',
                     allowBlank: false
                 },

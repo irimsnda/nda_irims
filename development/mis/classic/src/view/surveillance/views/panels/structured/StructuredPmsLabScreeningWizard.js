@@ -44,7 +44,8 @@ Ext.define('Admin.view.surveillance.views.panels.structured.StructuredPmsLabScre
                     valueField: 'id',
                     displayField: 'name',
                     queryMode: 'local',
-                    allowBlank: false,
+                    hidden:true,
+                    allowBlank: true,
                     forceSelection: true,
                     listeners: {
                         beforerender: {

@@ -25,6 +25,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ImpProductsGrid', {
             text: 'Add Product',
             iconCls: 'x-fa fa-plus',
             ui: 'soft-green',
+             hidden:true,
             table_name: 'clinical_trial_products',
             name: 'add_impproduct',
             winTitle: 'IMP Product',
@@ -52,14 +53,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ImpProductsGrid', {
         displayMsg: 'Showing {0} - {1} of {2} total records',
         emptyMsg: 'No Records',
         beforeLoad: function () {
-            var store = this.getStore(),
-                grid = this.up('grid'),
-                wizzard=grid.up('panel'),
-                mainPnl=wizzard.up('panel'),
-                application_id = mainPnl.down('hiddenfield[name=active_application_id]').getValue();
-            store.getProxy().extraParams = {
-                application_id: application_id
-            };
+            this.up('grid').fireEvent('refresh', this);
         }
     }],
     features: [{
@@ -97,6 +91,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ImpProductsGrid', {
                     iconCls: 'x-fa fa-edit',
                     handler: 'showImpProductDetails',
                     winTitle: 'IP Product',
+                     hidden:true,
                     table_name: 'clinical_trial_products',
                     winWidth: '90%',
                     childXtype: 'impproductspnl'
@@ -106,6 +101,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ImpProductsGrid', {
                     tooltip: 'Delete Record',
                     table_name: 'clinical_trial_products',
                     storeID: 'impproductsstr',
+                     hidden:true,
                     action_url: 'clinicaltrial/deleteClinicalTrialRecord',
                     action: 'actual_delete',
                     handler: 'doDeleteClinicalTrialWidgetParam',

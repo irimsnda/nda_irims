@@ -29,6 +29,11 @@ Ext.define('Admin.view.surveillance.views.forms.SampleIngredientsFrm', {
             value: 'tra_pmssample_ingredients'
         },
         {
+            xtype: 'hiddenfield',
+            name: '_token',
+            value: token
+        },
+        {
             xtype: 'combo',
             fieldLabel: 'Ingredient',
             //store: 'masteringredientsstr',

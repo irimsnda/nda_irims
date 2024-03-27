@@ -7,6 +7,11 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpInspectionSchedulingPhysic
     selModel: {
         selType: 'checkboxmodel'
     },
+     plugins: [{
+        ptype: 'cellediting',
+        clicksToEdit: 1,
+        editing: true
+    }],
     features:[
         {
             ftype: 'grouping',
@@ -16,16 +21,8 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpInspectionSchedulingPhysic
             enableGroupingMenu: false
         }
     ],
+
     tbar: [{
-        xtype: 'button',
-        text: 'Inspection Schedules',
-        ui: 'soft-green',
-        childXtype: 'inspectionscheduleselectiongrid',
-        winTitle: 'Inspection Schedules',
-        winWidth: '65%',hidden: true,
-        name: 'inspection_schedule',
-        is_assign: 0
-    },{
         xtype: 'button',
         text: 'Assign Schedule',
         ui: 'soft-green',
@@ -33,8 +30,18 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpInspectionSchedulingPhysic
         name: 'assign_schedule',
         childXtype: 'inspectionscheduleselectiongrid',
         winTitle: 'Inspection Schedules',
-        winWidth: '65%',
+        winWidth: '85%',
         is_assign: 1
+    },{
+        xtype: 'button',
+        text: 'Update/Save Inspection Dates',
+        iconCls: 'x-fa fa-plus',
+        name:'update_dates',
+        hidden:true,
+        handler:'saveInspectionDates',
+        ui: 'soft-green',
+        winWidth: '35%',
+        stores: '[]'
     }],
     dockedItems: [
         {
@@ -74,6 +81,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpInspectionSchedulingPhysic
             fn: 'setGmpApplicationGridsStore',
             config: {
                 pageSize: 10000,
+                storeId: 'gmpinspectionschedulingphysicalgridstr',
                 groupField: 'inspection_id',
                 proxy: {
                     url: 'gmpapplications/getGmpInspectionSchedulingApplications'
@@ -100,10 +108,46 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpInspectionSchedulingPhysic
     },
     columns:[
         {
-            xtype: 'gridcolumn',
-            text: 'Schedule',
-            dataIndex: 'inspectionteam_name',
-            flex: 1
+        xtype: 'gridcolumn',
+        dataIndex: 'start_date', 
+        tdCls: 'wrap-text',
+        text: 'Start Date',
+        renderer: Ext.util.Format.dateRenderer('d/m/Y'),
+        flex:1,
+        editor: {
+            xtype: 'datefield',
+            format: 'd/m/Y' 
+        },
+        renderer: function (val) {
+            if (val === '') { 
+                val = 'Start Date';
+            }
+            return val;
         }
+      },
+      {
+        xtype: 'gridcolumn',
+        dataIndex: 'inspection_days', 
+        tdCls: 'wrap-text',
+        text: 'No of Inspection Days',
+        flex:1,
+        editor: {
+            xtype: 'textareafield'
+        },
+        renderer: function (val) {
+            if (val === '') { 
+                val = 'No of Inspection Days';
+            }
+            return val;
+         }
+        },
+        {
+            xtype: 'gridcolumn',
+            dataIndex: 'end_date',
+            text: 'End Date',
+            tdCls: 'wrap-text',
+            flex: 1,
+            renderer: Ext.util.Format.dateRenderer('d/m/Y')
+        } 
     ]
 });

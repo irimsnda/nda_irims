@@ -43,13 +43,14 @@ Ext.define('Admin.view.premiseregistration.views.panels.PremiseAppMoreDetailsWiz
     }],
     items: [{
             xtype: 'premisedetailswintabpnl',
-            title:'Premises, Personnel and Activities Details',
+            title:'Premises Details',
             layout:'fit'
         },
         {
             xtype: 'applicationapplicantpnl',
             collapsible: true, 
-           collapsed: true,hidden: true,
+            collapsed: true,
+            hidden:true,
             title:'Premises Applicant Details'
         }
     ],

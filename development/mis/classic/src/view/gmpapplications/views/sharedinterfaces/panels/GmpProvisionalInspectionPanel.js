@@ -12,18 +12,81 @@ Ext.define('Admin.view.gmpapplications.views.sharedinterfaces.panels.GmpProvisio
     },
     items: [
         {
-            title: 'Manufacturing Site Inspection Process',
+            //title: 'Manufacturing Site Inspection Process',
             region: 'center',
             xtype:'tabpanel',
             layout: 'fit',
-            items: [ {
-                    xtype: 'gmpscreeninggrid',
-                    title: 'Provisional Inspection Checklist',
-                    
+            items: [{
+                    xtype: 'gmpappdocuploadsgenericgrid',
+                    title: 'Inspection Documents'
+                    },
+                     {
+                    title: 'GMP Inspection Report',
+                    region: 'center',
+                    name: 'inspectionreportTabPanel',
+                    itemId:'inspectionreportTabPanel',
+                    xtype: 'tabpanel',
+                    items:[{
+                        xtype: 'GMPOnlineAssessmentfrm',
+                        title:'General Information',
+                        type_id: 1,
+
+                    },
+                    // {
+                    //     xtype: 'productlinedetailsinspectiongrid',
+                    //     title:'Brief Report of the Inspection activities',
+                    //     type_id: 2,
+
+                    // },
+                    {
+                        title: 'Brief Report of the Inspection activities',
+                        region: 'center',
+                        xtype: 'tabpanel',
+                        items:[{
+                            xtype: 'GMPOnlineAssessmentfrm',
+                             title:'Brief Report of the Inspection activities(a)',
+                            type_id: 2,
+
+                        },{
+                            xtype: 'productlinedetailsinspectiongrid',
+                            title:'Brief Report of the Inspection activities(b)',
+                            type_id: 2,
+
+                        }
+                    ]
+                    },
+                     {
+                        title: 'Summary of non-conformances',
+                        region: 'center',
+                        xtype: 'tabpanel',
+                        items:[{
+                            xtype: 'GMPOnlineAssessmentfrm',
+                             title:'Summary of non-conformances(a)',
+                            type_id: 3,
+
+                        },{
+                            xtype: 'noncomplianceobservationsgrid',
+                            title:'Summary of non-conformances(b)',
+                            type_id: 3,
+
+                        }
+                    ]
+                    },
+
+                     {
+                        xtype: 'GMPOnlineAssessmentfrm',
+                        title:'Recommendations',
+                        type_id: 4,
+                    }]
                 },
                 {
-                    xtype: 'gmpappdocuploadsgenericgrid',
-                    title: 'Provisional Upload Report'
+                    xtype: 'localgmpinspectionfrm',
+                    hidden:true,
+                    itemId: 'localgmpinspectionfrm',
+                    title:'GMP Online Assessment'
+               }, {
+                    xtype: 'productscreeninggrid',
+                    title: 'Inspection Checklist'
                 }, {
                     xtype: 'productlinedetailsinspectiongrid',
                     title: 'Manufacturing Site Product Line Details Recommendations',

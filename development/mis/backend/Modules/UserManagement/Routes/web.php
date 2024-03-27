@@ -19,6 +19,7 @@ Route::group(['prefix' => 'usermanagement','middleware' => ['web']], function() 
 
 Route::group(['middleware' => ['web'], 'prefix' => 'usermanagement'], function(){
     Route::get('/', [UserManagementController::class, 'index']);
+    Route::get('getUpdateInfo', [UserManagementController::class, 'getUpdateInfo']);
     Route::get('getActiveSystemUsers', [UserManagementController::class, 'getActiveSystemUsers']);
     Route::get('getUserParamFromModel', [UserManagementController::class, 'getUserParamFromModel']);
     Route::post('saveUserCommonData', [UserManagementController::class, 'saveUserCommonData']);

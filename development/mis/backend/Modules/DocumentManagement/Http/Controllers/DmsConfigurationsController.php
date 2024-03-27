@@ -153,7 +153,7 @@ class DmsConfigurationsController extends Controller
                 ->leftJoin('modules as t3', 't4.module_id', '=', 't3.id')
                 ->leftJoin('par_sections as t5', 't1.section_id', '=', 't5.id')
                 ->leftJoin('par_prodclass_categories as t6', 't1.prodclass_category_id', '=', 't6.id')
-                ->select(DB::raw("t1.*,0 as leaf,t1.name as mtype, t2.name as document_type,t6.name as prodclass_category, t3.name as module_name, t4.name as sub_module, t5.name as section_name, (select group_concat(concat(`j`.`name`, '.',`j`.`extension`) separator ' ,') FROM tra_docupload_reqextensions t INNER JOIN par_document_extensionstypes j ON t.document_extensionstype_id = j.id WHERE t.documentupload_requirement_id = t1.id) as allowed_extensions"));
+                ->select(DB::raw("t1.*,0 as leaf,t1.name as mtype, t2.name as document_type,t6.name as prodclass_category, t3.name as module_name, t4.name as sub_module, t5.name as section_name, (select group_concat(concat(`j`.`name`, '.',`j`.`extension`) separator ' ,') FROM tra_docupload_reqextensions t INNER JOIN par_document_extensionstypes j ON t.document_extensionstype_id = j.id WHERE t.documentupload_requirement_id = t1.id) as allowed_extensions, CONCAT_WS('','[',(select group_concat(concat(`k`.`id`) separator ' ,') FROM tra_docupload_reqextensions l INNER JOIN par_document_extensionstypes k ON l.document_extensionstype_id = k.id WHERE l.documentupload_requirement_id = t1.id),']') as document_extension_ids"));
             // ->select(DB::raw("t1.*,if(t1.docparent_id >0 and (select id from tra_documentupload_requirements q where q.docparent_id = t1.id) >0, false, true) as leaf,t1.name as mtype, t2.name as document_type,t6.name as prodclass_category, t3.name as module_name, t4.name as sub_module, t5.name as section_name, (select group_concat(concat(`j`.`name`, '.',`j`.`extension`) separator ' ,') FROM tra_docupload_reqextensions t INNER JOIN par_document_extensionstypes j ON t.document_extensionstype_id = j.id WHERE t.documentupload_requirement_id = t1.id) as allowed_extensions"));
                
             if(validateIsNumeric($module_id)){
@@ -167,6 +167,9 @@ class DmsConfigurationsController extends Controller
             }
 
             $results=$results->get();
+            foreach ($results as $result) {
+                $result->document_extension_ids = json_decode($result->document_extension_ids);
+            }
             $res = array(
                 'success' => true,
                 'results' => $results,

@@ -95,6 +95,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.Promotionand
         },  {
             xtype: 'gridcolumn',
             text: 'From',
+            hidden:true,
             dataIndex: 'from_user',
             flex: 1,
             tdCls: 'wrap'
@@ -102,6 +103,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.Promotionand
         {
             xtype: 'gridcolumn',
             text: 'To',
+             hidden:true,
             dataIndex: 'to_user',
             flex: 1,
             tdCls: 'wrap'
@@ -130,27 +132,32 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.Promotionand
             flex: 1
         }, {
             xtype: 'gridcolumn',
+            hidden:true,
             dataIndex: 'venue_of_exhibition',
             text: 'Venue of the Advertisement/Exhibition',
             flex: 1
         },{
             xtype: 'gridcolumn',
+            hidden:true,
             dataIndex: 'exhibition_start_date',
             text: ' Advertisement/Exhibition Start Date',
             flex: 1
         },{
             xtype: 'gridcolumn',
+            hidden:true,
             dataIndex: 'exhibition_start_date',
             text: ' Advertisement/Exhibition End Date',
             flex: 1
         },  {
             xtype: 'gridcolumn',
             dataIndex: 'sponsor_name',
+            hidden:true,
             text: 'Sponsor Name',
             flex: 1
         }, 	
         {
             xtype: 'gridcolumn',
+            hidden:true,
             dataIndex: 'workflow_stage',
             text: 'Workflow Stage',
             flex: 1

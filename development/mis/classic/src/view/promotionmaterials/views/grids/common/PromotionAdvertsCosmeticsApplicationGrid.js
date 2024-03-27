@@ -187,6 +187,7 @@ Ext.define('Admin.view.promotionmaterials.views.grids.common.PromotionAdvertsCos
         flex: 1
     },  {
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'sponsor_name',
         text: 'Sponsor Name',
         flex: 1
