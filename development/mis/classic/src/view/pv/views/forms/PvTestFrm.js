@@ -59,16 +59,92 @@ Ext.define('Admin.view.pv.views.forms.PvTestFrm', {
             xtype: 'datefield',
             fieldLabel: 'Test date',
             format: 'Y-m-d',
+            columnWidth: 1,
             altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
             name: 'test_date',
             maxValue: new Date()
         },
-        {
-            xtype: 'textfield',
-            fieldLabel: 'Test Name(MedDRA)',
-            name: 'tes_name_medra',
-            allowBlank: true,
-        },
+        
+           {
+                xtype:'fieldcontainer',
+                fieldLabel: 'Test Name(MedDRA)',
+                columnWidth: 1,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[
+                     {
+                    xtype: 'combo',
+                    anyMatch: true,
+                    fieldLabel: 'MedDRA Level',
+                    name: 'test_name_meddra_level_id',
+                    forceSelection: true,
+                    columnWidth: 0.5,
+                    allowBlank:false,
+                    queryMode: 'local',
+                    valueField: 'id',
+                    displayField: 'name',
+                    listeners: {
+                        beforerender: {
+                            fn: 'setCompStore',
+                            config: {
+                                pageSize: 10000,
+                                proxy: {
+                                    extraParams: {
+                                        table_name: 'par_pv_medra_levels'
+                                    }
+                                }
+                            },
+                            isLoad: true
+                        },
+                     change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                            testNameStore = form.down('combo[name=test_name_medra]').getStore(),
+                            filterObj = {meddra_level_id: newVal},
+                            filterStr = JSON.stringify(filterObj);
+                        testNameStore.removeAll();
+                        testNameStore.load({params: {filter: filterStr}});
+                    }
+                  
+                 }
+               },
+             {
+                    xtype: 'combo',
+                    anyMatch: true,
+                    fieldLabel: 'Test Name',
+                    name: 'test_name_medra',
+                    forceSelection: true,
+                    columnWidth: 0.5,
+                    allowBlank:false,
+                    queryMode: 'local',
+                    valueField: 'name',
+                    displayField: 'name',
+                     listeners: {
+                        beforerender: {
+                            fn: 'setOrgConfigCombosStore',
+                            config: {
+                                pageSize: 10000,
+                                proxy: {
+                                url: 'configurations/getMedDRAtearm'
+                               }
+                            },
+                            isLoad: false
+                        }
+                   }
+                  }
+                ]
+            } ,
+
+        // {
+        //     xtype: 'textfield',
+        //     fieldLabel: 'Test Name(MedDRA)',
+        //     name: 'test_name_medra',
+        //     allowBlank: true,
+        // },
         {
             xtype: 'textfield',
             fieldLabel: 'Test Name',
@@ -168,13 +244,8 @@ Ext.define('Admin.view.pv.views.forms.PvTestFrm', {
                 }
             }
         },
-        {
-            xtype: 'htmleditor',
-            fieldLabel: 'Result',
-            columnWidth: 1,
-            name: 'result',
-        },
-        {
+
+         {
                 xtype:'fieldcontainer',
                 fieldLabel: 'Normal low value',
                 layout: {
@@ -265,6 +336,13 @@ Ext.define('Admin.view.pv.views.forms.PvTestFrm', {
                  }
                 ]
             } ,
+        {
+            xtype: 'htmleditor',
+            fieldLabel: 'Result',
+            columnWidth: 1,
+            name: 'result',
+        },
+       
 
         {
             xtype: 'htmleditor',

@@ -70,7 +70,7 @@ Ext.define('Admin.view.pv.views.grids.PvTestGrid', {
         xtype: 'rownumberer',
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'tes_name_medra',
+        dataIndex: 'test_name_medra',
         text: 'Test Name(MedDRA)',
         tdCls: 'wrap-text',
         flex: 1,

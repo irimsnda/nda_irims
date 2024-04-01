@@ -99,7 +99,7 @@ Ext.define('Admin.view.commoninterfaces.grids.PaymentInvoicingCostDetailsGrid', 
     },{
         xtype: 'gridcolumn',
         dataIndex: 'invoice_type',
-        text: 'Invoice Type',
+        text: 'Invoice Urgency',
         flex: 1
     }, {
         text: 'Options',

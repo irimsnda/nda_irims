@@ -140,14 +140,14 @@ Ext.define('Admin.view.commoninterfaces.forms.PaymentsReceptionFrm', {
             items: [
                 {
                     xtype: 'textfield',
-                    fieldLabel: 'Invoice No',
+                    fieldLabel: 'Proforma Invoice No',
                     allowBlank:true,
                     readOnly:true,
                     name: 'invoice_no'
                 },
                  {
                     xtype: 'datefield',
-                    fieldLabel: 'Invoice Date',
+                    fieldLabel: 'Proforma Invoice Date',
                     maxValue: new Date(),
                     name: 'date_of_invoicing',
                     readOnly:true,

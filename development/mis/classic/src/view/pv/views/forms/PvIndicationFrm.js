@@ -54,13 +54,88 @@ Ext.define('Admin.view.pv.views.forms.PvIndicationFrm', {
                 columnWidth: 0.33,
             },
             layout: 'column',
-           items:[  {
-                            xtype: 'textfield',
-                            columnWidth: 1,
-                            fieldLabel: 'Indication (MedDRA)',
+           items:[
+
+           {
+                xtype:'fieldcontainer',
+                fieldLabel: 'Indication (MedDRA)',
+                columnWidth: 1,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[
+                      {
+                            xtype: 'combo',
+                            anyMatch: true,
+                            fieldLabel: 'MedDRA Level',
+                            name: 'indication_meddra_level_id',
+                            forceSelection: true,
+                            columnWidth: 0.5,
+                            allowBlank:false,
+                            queryMode: 'local',
+                            valueField: 'id',
+                            displayField: 'name',
+                            listeners: {
+                                beforerender: {
+                                    fn: 'setCompStore',
+                                    config: {
+                                        pageSize: 10000,
+                                        proxy: {
+                                            extraParams: {
+                                                table_name: 'par_pv_medra_levels'
+                                            }
+                                        }
+                                    },
+                                    isLoad: true
+                                },
+                             change: function (cmbo, newVal) {
+                                var form = cmbo.up('form'),
+                                    indicationMedraStore = form.down('combo[name=indication_medra]').getStore(),
+                                    filterObj = {meddra_level_id: newVal},
+                                    filterStr = JSON.stringify(filterObj);
+                                indicationMedraStore.removeAll();
+                                indicationMedraStore.load({params: {filter: filterStr}});
+                            }
+                          
+                        }
+                     },
+                  {
+                            xtype: 'combo',
+                            anyMatch: true,
+                            fieldLabel: 'Indication',
                             name: 'indication_medra',
-                            allowBlank: true,
-                        },
+                            forceSelection: true,
+                            columnWidth: 0.5,
+                            allowBlank:false,
+                            queryMode: 'local',
+                            valueField: 'name',
+                            displayField: 'name',
+                             listeners: {
+                                beforerender: {
+                                    fn: 'setOrgConfigCombosStore',
+                                    config: {
+                                        pageSize: 100,
+                                        proxy: {
+                                        url: 'configurations/getMedDRAtearm'
+                                       }
+                                    },
+                                    isLoad: false
+                                }
+                         }
+                       }
+                    ]
+                } ,
+            // {
+            //                 xtype: 'textfield',
+            //                 columnWidth: 1,
+            //                 fieldLabel: 'Indication (MedDRA)',
+            //                 name: 'indication_medra',
+            //                 allowBlank: true,
+            //             },
                      {
                             xtype: 'textfield',
                             columnWidth: 1,

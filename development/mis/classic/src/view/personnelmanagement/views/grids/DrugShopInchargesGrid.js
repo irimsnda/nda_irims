@@ -109,6 +109,12 @@ Ext.define('Admin.view.personnelmanagement.views.grids.DrugShopInchargesGrid', {
         dataIndex: 'name',
         text: 'Full Name',
         flex: 1
+    },
+     {
+        xtype: 'gridcolumn',
+        dataIndex: 'supervising_premise',
+        text: 'Supervising Drugshop/Premise',
+        flex: 1
     },{
         xtype: 'gridcolumn',
         dataIndex: 'telephone',

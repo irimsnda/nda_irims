@@ -54,16 +54,80 @@ Ext.define('Admin.view.pv.views.forms.PvMedicalHistoryFrm', {
                 columnWidth: 0.33,
             },
             layout: 'column',
-           items:[ 
-        {
-                    xtype: 'htmleditor',
-                    fieldLabel:'Relevant History(MedDRA)',
-                    name: 'relevant_history',
-                    grow: true, 
-                    columnWidth: 1,
-                    growMax: 200, 
-                    allowBlank: false,
-         },
+           items:[
+            {
+                xtype:'fieldcontainer',
+                fieldLabel: 'Relevant History(MedDRA)',
+                columnWidth: 1,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[
+                     {
+                            xtype: 'combo',
+                            anyMatch: true,
+                            fieldLabel: 'MedDRA Level',
+                            name: 'relevant_history_meddra_level_id',
+                            forceSelection: true,
+                            columnWidth: 0.5,
+                            allowBlank:false,
+                            queryMode: 'local',
+                            valueField: 'id',
+                            displayField: 'name',
+                            listeners: {
+                                beforerender: {
+                                    fn: 'setCompStore',
+                                    config: {
+                                        pageSize: 10000,
+                                        proxy: {
+                                            extraParams: {
+                                                table_name: 'par_pv_medra_levels'
+                                            }
+                                        }
+                                    },
+                                    isLoad: true
+                                },
+                             change: function (cmbo, newVal) {
+                                var form = cmbo.up('form'),
+                                    relavantHistoryStore = form.down('combo[name=relevant_history]').getStore(),
+                                    filterObj = {meddra_level_id: newVal},
+                                    filterStr = JSON.stringify(filterObj);
+                                relavantHistoryStore.removeAll();
+                                relavantHistoryStore.load({params: {filter: filterStr}});
+                            }
+                          
+                        }
+                     },
+                  {
+                            xtype: 'combo',
+                            anyMatch: true,
+                            fieldLabel: 'Relevant History',
+                            name: 'relevant_history',
+                            forceSelection: true,
+                            columnWidth: 0.5,
+                            allowBlank:false,
+                            queryMode: 'local',
+                            valueField: 'name',
+                            displayField: 'name',
+                             listeners: {
+                                beforerender: {
+                                    fn: 'setOrgConfigCombosStore',
+                                    config: {
+                                        pageSize: 10000,
+                                        proxy: {
+                                        url: 'configurations/getMedDRAtearm'
+                                       }
+                                    },
+                                    isLoad: false
+                                }
+                         }
+                   }
+                ]
+            } ,
           {
                     xtype: 'combo', anyMatch: true,
                     fieldLabel: 'Continuing',
@@ -90,7 +154,8 @@ Ext.define('Admin.view.pv.views.forms.PvMedicalHistoryFrm', {
                     }
         },
         {
-                    xtype: 'combo', anyMatch: true,
+                    xtype: 'combo',
+                     anyMatch: true,
                     fieldLabel: 'Family history',
                     name: 'is_family_history_id',
                     forceSelection: true,

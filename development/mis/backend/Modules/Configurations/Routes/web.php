@@ -39,6 +39,7 @@ use Modules\Configurations\Http\Controllers\ConfigurationsController;
 
 
     Route::get('prepareInterfaceBasedonConfig', [ConfigurationsController::class, 'prepareInterfaceBasedonConfig']);
+    Route::get('getMedDRAtearm', [ConfigurationsController::class, 'getMedDRAtearm']);
 
     Route::get('getChecklistItems', [ConfigurationsController::class, 'getChecklistItems']);
     Route::get('getAllApplicationStatuses', [ConfigurationsController::class, 'getAllApplicationStatuses']);

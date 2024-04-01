@@ -1213,6 +1213,189 @@ function returnAuthenticationKeys(){
 return $data;
 }
 
+public function getWHODrugAPIConfigurations(){
+        $whodrugapi_configs = DB::table('tra_whodrugapi_configurations')->first();
+        return $whodrugapi_configs;
+
+    }
+
+
+public function whoDrugDownloadApi (Request $req){
+        $whodrug_level_id = $req->input('whodrug_level_id');
+        $whodrugapi_configs = $this->getWHODrugAPIConfigurations();
+        $queryParams = http_build_query([
+            'MedProdLevel' =>  ($whodrug_level_id == 1) ? 0 : (($whodrug_level_id == 2) ? 1 : (($whodrug_level_id == 3) ? 2 : 0)),  
+            'IncludeAtc' => 'true',  
+            'IngredientTranslations' => 'false'  
+        ]);
+
+        $headers = [
+            'umc-license-key: ' . $whodrugapi_configs->license_key,
+            'Cache-Control: no-cache',
+            'umc-client-key: ' . $whodrugapi_configs->client_key,
+            
+        ];
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $whodrugapi_configs->request_url . '?' . $queryParams);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $response = curl_exec($ch);
+
+        if(curl_errno($ch)){
+            $res = array(
+                    'success' => false,
+                    'message' => 'Curl error: ' . curl_error($ch).'!!'
+                );
+            echo json_encode($res);
+            exit();
+        }
+
+        curl_close($ch);
+
+        // Handle the response
+        if ($response) {
+            $decodedResponse = json_decode($response, true);
+            if ($decodedResponse) {
+                    // Flatten the array structure
+                    $flattenedDrugs = [];
+
+                    foreach ($decodedResponse as $drug) {
+                        $activeIngredients = array_map(function ($active) {
+                            return $active['ingredient'];
+                        }, $drug['activeIngredients']);
+
+                        // Concatenate activeIngredients with commas and "and" for the last one
+                        $concatenatedIngredients = implode(', ', array_slice($activeIngredients, 0, -1));
+                        if (count($activeIngredients) > 1) {
+                            $concatenatedIngredients .= ' and ' . end($activeIngredients);
+                        } else {
+                            $concatenatedIngredients = reset($activeIngredients);
+                        }
+
+                        // Handle countryOfSales and maHolders
+                        if (!empty($drug['countryOfSales'])) {
+                            foreach ($drug['countryOfSales'] as $country) {
+                                $countryCode = $country['iso3Code'];
+                                if (!empty($country['maHolders'])) {
+                                    foreach ($country['maHolders'] as $maHolder) {
+                                        $flattenedDrug = [
+                                            'drugName' => $drug['drugName'],
+                                            'drugCode' => $drug['drugCode'],
+                                            'medicinalProductID' => $drug['medicinalProductID'],
+                                            'isGeneric' => $drug['isGeneric'],
+                                            'isPreferred' => $drug['isPreferred'],
+                                            'countryOfSales' => $countryCode,
+                                            'activeIngredients' => $concatenatedIngredients,
+                                            'atc_code' => null,
+                                            'atc_text' => null,
+                                            'atc_official_flag' => null,
+                                            'maHolder_name' => $maHolder['name'],
+                                            'maHolder_medicinalProductID' => $maHolder['medicinalProductID'],
+                                        ];
+
+                                        // Check if 'atcs' array is present
+                                        if (!empty($drug['atcs'])) {
+                                            foreach ($drug['atcs'] as $atc) {
+                                                $flattenedDrug['atc_code'] = $atc['code'];
+                                                $flattenedDrug['atc_text'] = $atc['text'];
+                                                $flattenedDrug['atc_official_flag'] = $atc['officialFlag'];
+                                                $flattenedDrugs[] = $flattenedDrug;
+                                            }
+                                        } else {
+                                            $flattenedDrugs[] = $flattenedDrug;
+                                        }
+                                    }
+                                } else {
+                                    // No maHolders, add a record with empty maHolder details
+                                    $flattenedDrug = [
+                                        'drugName' => $drug['drugName'],
+                                        'drugCode' => $drug['drugCode'],
+                                        'medicinalProductID' => $drug['medicinalProductID'],
+                                        'isGeneric' => $drug['isGeneric'],
+                                        'isPreferred' => $drug['isPreferred'],
+                                        'countryOfSales' => $countryCode,
+                                        'activeIngredients' => $concatenatedIngredients,
+                                        'atc_code' => null,
+                                        'atc_text' => null,
+                                        'atc_official_flag' => null,
+                                        'maHolder_name' => null,
+                                        'maHolder_medicinalProductID' => null,
+                                    ];
+
+                                    // Check if 'atcs' array is present
+                                    if (!empty($drug['atcs'])) {
+                                        foreach ($drug['atcs'] as $atc) {
+                                            $flattenedDrug['atc_code'] = $atc['code'];
+                                            $flattenedDrug['atc_text'] = $atc['text'];
+                                            $flattenedDrug['atc_official_flag'] = $atc['officialFlag'];
+                                            $flattenedDrugs[] = $flattenedDrug;
+                                        }
+                                    } else {
+                                        $flattenedDrugs[] = $flattenedDrug;
+                                    }
+                                }
+                            }
+                        } else {
+                            // No countryOfSales, handle as before
+                            $flattenedDrug = [
+                                'drugName' => $drug['drugName'],
+                                'drugCode' => $drug['drugCode'],
+                                'medicinalProductID' => $drug['medicinalProductID'],
+                                'isGeneric' => $drug['isGeneric'],
+                                'isPreferred' => $drug['isPreferred'],
+                                'countryOfSales' => null,
+                                'activeIngredients' => $concatenatedIngredients,
+                                'atc_code' => null,
+                                'atc_text' => null,
+                                'atc_official_flag' => null,
+                            ];
+
+                            // Check if 'atcs' array is present
+                            if (!empty($drug['atcs'])) {
+                                foreach ($drug['atcs'] as $atc) {
+                                    $flattenedDrug['atc_code'] = $atc['code'];
+                                    $flattenedDrug['atc_text'] = $atc['text'];
+                                    $flattenedDrug['atc_official_flag'] = $atc['officialFlag'];
+                                    $flattenedDrugs[] = $flattenedDrug;
+                                }
+                            } else {
+                                $flattenedDrugs[] = $flattenedDrug;
+                            }
+                        }
+                    }
+                     $res = array(
+                            'success' => true,
+                            'message' => 'All is well!!',
+                            'results' => $flattenedDrugs
+                            
+                        );
+
+                    // Return the flattened array as JSON response
+                    return response()->json($res);
+            } else {
+                $res = array(
+                    'success' => false,
+                    'message' => 'Problem encountered while decoding JSON response!!'
+                );
+                echo json_encode($res);
+                exit();
+                
+            }
+        } else {
+            $res = array(
+                    'success' => false,
+                    'message' => 'No response from the API!!'
+                );
+            echo json_encode($res);
+            exit();
+        }
+
+
+}
+
 
 public function test1111 (Request $req){
         $contentType = $req->header('Content-Type');

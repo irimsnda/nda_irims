@@ -29,6 +29,7 @@ Ext.define('Admin.view.pv.views.panels.PvDetailsPnl', {
         title: 'Initial Reporter Information',
     },{
         xtype: 'pvsenderGrid',
+        hidden:true,
         title: 'Sender Information',
     },{
         xtype: 'pvstudyinformationtGrid',

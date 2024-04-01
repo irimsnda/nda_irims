@@ -17,9 +17,17 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
     setCompStore: function (obj, options) {
         this.fireEvent('setCompStore', obj, options);
     },
+     setOrgConfigCombosStore: function (obj, options) {
+        this.fireEvent('setOrgConfigCombosStore', obj, options);
+    },
     setWorkflowCombosStore: function (obj, options) {
         this.fireEvent('setWorkflowCombosStore', obj, options);
+    }
+    ,setConfigGridsStore: function (obj, options) {
+
+        this.fireEvent('setConfigGridsStore', obj, options);
     },
+
     showNewPv: function (btn) {
         var application_type = btn.app_type,
             me = this;
@@ -56,6 +64,28 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
         funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
        
     },
+
+    showWHODugSelectionList: function (btn) {
+
+        var grid = Ext.widget('whodrugproductSelectionGrid');
+        if(btn.up('pvSuspectedDrugFrm')){
+           whodrug_level_id = btn.up('pvSuspectedDrugFrm').down('combo[name=whodrug_level_id]').getValue();  
+        }
+
+        if(btn.up('pvdrughistoryFrm')){
+           whodrug_level_id = btn.up('pvdrughistoryFrm').down('combo[name=whodrug_level_id]').getValue();  
+        }
+       
+        if(whodrug_level_id){
+          grid.down('hiddenfield[name=whodrug_level_id]').setValue(whodrug_level_id);
+          funcShowOnlineCustomizableWindow('WHODrug Product Search', '90%', grid, 'customizablewindow');
+       }else{
+         toastr.error('Kindly Select WHODrug Level first', 'Warning Response');
+         return false; 
+
+       }
+    },
+
     func_setStore: function(me,options){
         var config = options.config,
               isLoad = options.isLoad,
@@ -102,7 +132,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             childObject = Ext.widget(btn.childXtype),
             winTitle = btn.winTitle,
             winWidth = btn.winWidth;
-            //childObject.down('hiddenfield[name=isReadOnly]').setValue(1);
+            childObject.down('hiddenfield[name=reaction_id]').setValue(record.get('id'));
             funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
@@ -120,6 +150,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
         for (var i = 0; i < store.data.items.length; i++) {
             var record = store.data.items [i],
                  question_id = record.get('question_id'),
+                 reaction_id = record.get('reaction_id'),
                  report = record.get('report'),
                  score_id = record.get('score_id'),
                  id = record.get('id');
@@ -127,6 +158,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             var obj = {
                 id: id,
                 question_id: question_id,
+                reaction_id: reaction_id,
                 application_code: application_code,
                 score_id: score_id,
                 created_by: user_id

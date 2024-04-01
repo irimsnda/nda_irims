@@ -121,6 +121,12 @@ Ext.define('Admin.view.personnelmanagement.views.grids.PremisePharmacistGrid', {
         dataIndex: 'name',
         text: 'Full Name',
         flex: 1
+    },
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'supervising_premise',
+        text: 'Supervising Premise',
+        flex: 1
     },{
         xtype: 'gridcolumn',
         dataIndex: 'telephone',

@@ -98,6 +98,11 @@ Ext.define('Admin.controller.PvCtr', {
             'pvPeerMeetingApplicationListGrid button[name=save_btn]': {
                 click: 'saveTCMeetingDetails'
             },
+
+             'whodrugproductSelectionGrid': {
+                itemdblclick: 'onWHODrugselectionListDblClick'
+            },
+
             'pvRcMeetingApplicationListGrid button[name=save_btn]': {
                 click: 'saveTCMeetingDetails'
             },
@@ -105,6 +110,10 @@ Ext.define('Admin.controller.PvCtr', {
         }
 
     },
+
+
+   
+
     /**
      * Called when the view is created
      */
@@ -179,6 +188,44 @@ Ext.define('Admin.controller.PvCtr', {
             dashboardWrapper.removeAll();
             dashboardWrapper.add({xtype: sec_dashboard});
         }
+    },
+
+
+
+     onWHODrugselectionListDblClick: function (view, record, item, index, e, eOpts) {
+        var me = this,
+            grid = view.grid,
+            win = grid.up('window'),
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            mask = new Ext.LoadMask({
+                msg: 'Please wait...',
+                target: win
+            });
+        mask.show();
+        
+        //var drugForm = activeTab.down('pvSuspectedDrugFrm');
+        drugForm = Ext.ComponentQuery.query("#pvsuspectedgrugfrm")[0];
+
+        drugHistoryForm = Ext.ComponentQuery.query("#pvdrughistoryfrm")[0];
+
+       if(drugForm){
+          drugForm.down('textfield[name=who_drug_name]').setValue(record.get('drugName'));
+          if(record.get('maHolder_name')){
+            drugForm.down('textfield[name=mah_holder]').setValue(record.get('maHolder_name'));
+          }
+          
+        }
+
+        if(drugHistoryForm){
+          drugHistoryForm.down('textfield[name=previous_medication_whodrug]').setValue(record.get('drugName'));
+          
+        }
+        Ext.Function.defer(function () {
+            mask.hide();
+            win.close();
+        }, 200);
+        
     },
 
         afterPVCountriesComboRender: function (cmbo) {
@@ -461,17 +508,17 @@ Ext.define('Admin.controller.PvCtr', {
 
         var mainTabPnl = this.getMainTabPanel(),
             activeTab = mainTabPnl.getActiveTab(),
-            pv_id = '';
-        if(tab.down('hiddenfield[name=pv_id]')){
-            pv_id = tab.down('hiddenfield[name=pv_id]').getValue();
-            if(activeTab.down('hiddenfield[name=pv_id]')){
-                activeTab.down('hiddenfield[name=pv_id]').setValue(pv_id);
+            active_application_code = '';
+        if(tab.down('hiddenfield[name=active_application_code]')){
+            active_application_code = tab.down('hiddenfield[name=active_application_code]').getValue();
+            if(activeTab.down('hiddenfield[name=active_application_code]')){
+                activeTab.down('hiddenfield[name=active_application_code]').setValue(active_application_code);
             }
         }
-        if (activeTab.down('hiddenfield[name=pv_id]') && pv_id == '') {
-            pv_id = activeTab.down('hiddenfield[name=pv_id]').getValue();
+        if (activeTab.down('hiddenfield[name=active_application_code]') && active_application_code == '') {
+            active_application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
         }
-        if (pv_id == '') {
+        if (active_application_code == '') {
             tab.setActiveTab(0);
             toastr.error('Save Report Information details to proceed', 'Failure Response');
             return false;

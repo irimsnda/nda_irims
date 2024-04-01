@@ -1,6 +1,7 @@
 Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'pvSuspectedDrugFrm',
+    itemId: 'pvsuspectedgrugfrm',
     controller: 'pvvctr',
     height: Ext.Element.getViewportHeight() - 118,
     layout: {
@@ -155,11 +156,80 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
             }
         },
         {
-            xtype: 'textfield',
-            fieldLabel: 'Drug Name (WHODrug)',
-            name: 'who_drug_name',
-            allowBlank: true,
-        },
+                xtype:'fieldcontainer',
+                fieldLabel: 'Drug Name (WHODrug)',
+                columnWidth: 1,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[
+                     {
+                            xtype: 'combo', anyMatch: true,
+                            fieldLabel: 'Who Drug Level',
+                            name: 'whodrug_level_id',
+                            columnWidth: 0.5,
+                            allowBlank:false,
+                            forceSelection: true,
+                            queryMode: 'local',
+                            valueField: 'id',
+                            displayField: 'name',
+                            listeners: {
+                                beforerender: {
+                                    fn: 'setCompStore',
+                                    config: {
+                                        pageSize: 1000,
+                                        proxy: {
+                                            extraParams: {
+                                                table_name: 'par_pv_whodrug_levels'
+                                            }
+                                        }
+                                    },
+                                    isLoad: true
+                                }
+                            }
+                },
+                // {
+                //     xtype: 'textfield',
+                //     columnWidth: 0.5,
+                //     fieldLabel: 'Drug Name',
+                //     name: 'who_drug_name',
+                //     allowBlank: false,
+                // }
+                 {
+                    xtype: 'fieldcontainer',
+                    layout: 'column',
+                    columnWidth: 0.5,
+                    defaults: {
+                        labelAlign: 'top'
+                    },
+                    fieldLabel: 'Name',
+                    items: [
+                        {
+                            xtype: 'textfield',
+                            name: 'who_drug_name',
+                            readOnly: true,
+                            allowBlank:false,
+                            columnWidth: 0.9
+                        },
+                    
+                        {
+                            xtype: 'button',
+                            iconCls: 'x-fa fa-search',
+                            columnWidth: 0.1,
+                            tooltip: 'Search WHODrug',
+                            handler: 'showWHODugSelectionList',
+                            winTitle: 'LTR Selection List',
+                            winWidth: '90%'
+                        }
+                    ]
+                }
+                ]
+            } ,
+        
         {
             xtype: 'textfield',
             fieldLabel: 'Drug Name as Reported',
@@ -289,14 +359,14 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
         },
         {
             xtype: 'datefield',
-            fieldLabel: 'When did you start taking/using the medicine/vaccine/device?',
+            fieldLabel: 'When did the patient start taking/using the medicine/vaccine/device?',
             format: 'Y-m-d',
             altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
             name: 'start_date',
             maxValue: new Date()
         },{
             xtype: 'datefield',
-            fieldLabel: 'When did you stop taking/using the medicine/vaccine/device?',
+            fieldLabel: 'When did the patient stop taking/using the medicine/vaccine/device?',
             format: 'Y-m-d',
             altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
             name: 'end_date'

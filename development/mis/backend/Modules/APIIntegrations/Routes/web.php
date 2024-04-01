@@ -58,6 +58,7 @@ Route::group(['middleware' => 'web', 'prefix' => 'integration'], function () {
     Route::get('generateAccessToken', [NewIntegrationsController::class, 'generateAccessToken']);
     Route::get('getCompanyDetails', [NewIntegrationsController::class, 'getCompanyDetails']);
     Route::get('getCompanyShareholders', [NewIntegrationsController::class, 'getCompanyShareholders']);
+     Route::get('whoDrugDownloadApi', [NewIntegrationsController::class, 'whoDrugDownloadApi']);
 
     Route::get('test', [NewIntegrationsController::class, 'test']);
 });

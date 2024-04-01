@@ -42,7 +42,7 @@ Ext.define('Admin.view.pv.views.forms.PvReactionFrm', {
             xtype:'fieldset',
             columnWidth: 1,
             itemId: 'main_fieldset',
-            title: 'Drug history',
+            title: 'Reaction',
             collapsible: true,
             defaults: {
                 labelAlign: 'top',
@@ -55,13 +55,80 @@ Ext.define('Admin.view.pv.views.forms.PvReactionFrm', {
             },
             layout: 'column',
             items:[
-        {
-            xtype: 'textfield',
-            columnWidth: 1,
-            fieldLabel: 'Reaction /Event(MedDRA)',
-            name: 'reaction_event_medra',
-            allowBlank: true,
-        },
+
+             {
+                xtype:'fieldcontainer',
+                fieldLabel: 'Reaction /Event(MedDRA)',
+                columnWidth: 1,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[
+                      {
+                            xtype: 'combo',
+                            anyMatch: true,
+                            fieldLabel: 'MedDRA Level',
+                            name: 'reaction_event_meddra_level_id',
+                            forceSelection: true,
+                            columnWidth: 0.5,
+                            allowBlank:false,
+                            queryMode: 'local',
+                            valueField: 'id',
+                            displayField: 'name',
+                            listeners: {
+                                beforerender: {
+                                    fn: 'setCompStore',
+                                    config: {
+                                        pageSize: 10000,
+                                        proxy: {
+                                            extraParams: {
+                                                table_name: 'par_pv_medra_levels'
+                                            }
+                                        }
+                                    },
+                                    isLoad: true
+                                },
+                             change: function (cmbo, newVal) {
+                                var form = cmbo.up('form'),
+                                    reactionEventStore = form.down('combo[name=reaction_event_medra]').getStore(),
+                                    filterObj = {meddra_level_id: newVal},
+                                    filterStr = JSON.stringify(filterObj);
+                                reactionEventStore.removeAll();
+                                reactionEventStore.load({params: {filter: filterStr}});
+                            }
+                          
+                        }
+                     },
+                  {
+                            xtype: 'combo',
+                            anyMatch: true,
+                            fieldLabel: 'Reaction /Event',
+                            name: 'reaction_event_medra',
+                            forceSelection: true,
+                            columnWidth: 0.5,
+                            allowBlank:false,
+                            queryMode: 'local',
+                            valueField: 'name',
+                            displayField: 'name',
+                             listeners: {
+                                beforerender: {
+                                    fn: 'setOrgConfigCombosStore',
+                                    config: {
+                                        pageSize: 10000,
+                                        proxy: {
+                                        url: 'configurations/getMedDRAtearm'
+                                       }
+                                    },
+                                    isLoad: false
+                                }
+                         }
+                   }
+                ]
+            } ,
         {
             xtype: 'textarea',
             fieldLabel:'Reaction / event as reported by initial reporter',

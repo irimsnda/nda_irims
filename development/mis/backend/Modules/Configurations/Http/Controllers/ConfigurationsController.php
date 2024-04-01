@@ -1157,6 +1157,59 @@ public function deleteWorkflowRecord(Request $req)
 
     }
 
+
+     public function getMedDRAtearm(Request $req)
+    {
+        try {
+            $filters = $req->filter;
+            if ($filters != '') {
+                    $filters = (array)json_decode($filters);
+                    if($filters['meddra_level_id']){
+                        
+                        $meddra_level_id = $filters['meddra_level_id'];
+
+                    }
+                 
+            } 
+            if($meddra_level_id ==1) {
+                $table_name='par_soc_term';
+            }else if($meddra_level_id ==2){
+                $table_name='par_hlgt_pref_term';
+            }else if($meddra_level_id ==3){
+                $table_name='par_hlt_pref_term';
+            }else if($meddra_level_id ==4){
+                $table_name='par_pref_term';
+            }else if($meddra_level_id==5){
+                $table_name='par_low_level_term';
+            } else{
+              $table_name='par_soc_term';
+            }
+
+       
+            
+            $qry = DB::table($table_name);
+            $results = $qry->get();
+
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
+
      public function getproductApplicationParameters(Request $req)
     {
         try {
