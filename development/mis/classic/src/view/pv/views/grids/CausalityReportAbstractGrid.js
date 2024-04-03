@@ -48,13 +48,19 @@ Ext.define('Admin.view.pv.views.grids.CausalityReportAbstractGrid', {
                 
                 renderer: function (val, meta, record, rowIndex, colIndex, store, view) {
                     var textVal = 'Select true or False or Do Not Know';
+                   if (val) {
                     if (view.grid.columns[colIndex].getEditor().getStore().getById(val)) {
                         textVal = view.grid.columns[colIndex].getEditor().getStore().getById(val).data.name;
+                    }else{
+                       var textVal = record.get('score_option');  
+                     }
                     }
                     return textVal;
                 }
                 
             },
+
+
             {
                 xtype: 'gridcolumn',
                 dataIndex: 'score', 
@@ -71,13 +77,13 @@ Ext.define('Admin.view.pv.views.grids.CausalityReportAbstractGrid', {
                     val = Ext.util.Format.number(val, '0,000.00');
                     var message = 'Total Score: ' + val;
                     if (val > 9) {
-                        message = 'Definite ' + message;
+                        message =  message+' '+'(Definite)';
                     } else if (val >= 5 && val <= 8) {
-                        message = 'Probable ' + message;
+                        message = message+' '+'(Probable)';
                     } else if (val >= 1 && val <= 4) {
-                        message = 'Possible ' + message;
+                        message = message+' '+'(Possible)';
                     } else if (val <= 0) {
-                        message = 'Doubtful ' + message;
+                        message = message+' '+'(Doubtful)';
                     }
 
                     return message;

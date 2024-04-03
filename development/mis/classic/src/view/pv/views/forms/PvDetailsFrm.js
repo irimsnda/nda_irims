@@ -109,15 +109,39 @@ Ext.define('Admin.view.pv.views.forms.PvDetailsFrm', {
             format: 'Y-m-d',
             altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
             name: 'initial_receive_date',
-            maxValue: new Date()
-            },{
+            maxValue: new Date(),
+            listeners: {
+                change: function(field, newValue) {
+                    var reportDateField = field.up('form').down('datefield[name=report_date]');
+                    var reportDateValue = reportDateField.getValue();
+
+                    if (reportDateValue && newValue > reportDateValue) {
+                        reportDateField.setValue(null);
+                        toastr.error('Validation Error', 'Date of report must be later than the Initial received date(NDA)', 'Warning Response');
+                    }
+                }
+            }
+        },
+        {
             xtype: 'datefield',
             fieldLabel: 'Date of report',
             format: 'Y-m-d',
             altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
             name: 'report_date',
-            maxValue: new Date()
-            },{
+            maxValue: new Date(),
+            listeners: {
+                change: function(field, newValue) {
+                    var initialReceiveDateField = field.up('form').down('datefield[name=initial_receive_date]');
+                    var initialReceiveDateValue = initialReceiveDateField.getValue();
+
+                    if (initialReceiveDateValue && newValue < initialReceiveDateValue) {
+                        field.setValue(null);
+                        toastr.error('Validation Error', 'Date of report must be later than the Initial received date(NDA)', 'Warning Response');
+                    }
+                }
+            }
+        },
+           {
             xtype: 'combo',
             fieldLabel: 'Received from',
             name: 'adr_reporter_category_id',

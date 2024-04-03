@@ -6,7 +6,9 @@
 
     background-color: #078ECE !important;
 
-}  
+} 
+
+
 .x-btn-soft-purple-small{
     border-color: #078ECE  !important;
        background-color: #078ECE !important;
@@ -269,7 +271,8 @@
 /* end hiram*/
 body {
     background-color: #497d36; /*coral;*/
-    background: linear-gradient(50deg, #497d36, #497d36, #497d36);
+    background: linear-gradient(50deg,#497d36, #E2E2E2, #497d36) !important;
+    /*background: linear-gradient(50deg, #497d36, #497d36, #497d36);*/
     font-size: 12px !important;
     overflow-x: hidden;
     overflow-y: hidden;

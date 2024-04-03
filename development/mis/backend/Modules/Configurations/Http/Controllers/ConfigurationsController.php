@@ -54,6 +54,8 @@ class ConfigurationsController extends Controller
                 
                 unset($post_data['section_id']);
             }
+
+
             $id = $post_data['id'];
             $unsetData = $req->input('unset_data');
             //unset unnecessary values
@@ -67,6 +69,15 @@ class ConfigurationsController extends Controller
                 $unsetData = explode(",", $unsetData);
                 $post_data = unsetArrayData($post_data, $unsetData);
             }
+
+             foreach ($post_data as $key => $value) {
+             
+                if (substr($key, 0, strlen('trigger')) === 'trigger') {
+                    unset($post_data[$key]);
+                }
+            }
+
+            
             $table_data = $post_data;
             //add extra params
             $table_data['created_on'] = Carbon::now();
@@ -92,6 +103,19 @@ class ConfigurationsController extends Controller
                     $res = "Update record not found";
                 }
             } else {
+
+                 if($table_name == 'tra_pv_suspected_drugs'){
+                     $application_code = $req->input('application_code');
+                     if (recordExists($table_name, $where = array('application_code' => $application_code,'drug_role_id' => 1))) {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Suspect Drug Already added!!'
+                             );
+                            echo json_encode($res);
+                            exit();
+                    }
+                
+                  }
                
 
                 $res = insertRecord($table_name, $table_data, $user_id);

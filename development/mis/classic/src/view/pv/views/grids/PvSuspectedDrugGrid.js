@@ -54,7 +54,7 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugGrid', {
             fn: 'setGridStore',
             config: {
                 pageSize: 1000,
-                // storeId: 'pvSuspectedDrugStr',
+                storeId: 'pvSuspectedDrugStr',
                 proxy: {
                     url: 'pv/onLoadSuspectedDrugs',
                     extraParams:{
@@ -70,8 +70,44 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugGrid', {
         xtype: 'rownumberer',
     },{
         xtype: 'gridcolumn',
+        dataIndex: 'who_drug_name',
+        text: 'Drug Name(WHODrug',
+        tdCls: 'wrap',
+        flex: 1,
+        tdCls: 'wrap'
+    },{
+        xtype: 'gridcolumn',
         dataIndex: 'brand_name',
-        text: 'Brand Name',
+        text: 'Drug Name(Reporter)',
+        tdCls: 'wrap',
+        flex: 1,
+        tdCls: 'wrap'
+    },
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'drug_role',
+        text: 'Drug Role',
+        tdCls: 'wrap',
+        flex: 1,
+        tdCls: 'wrap'
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'suspected_ingredient',
+        text: 'Suspected Ingredient',
+        tdCls: 'wrap',
+        flex: 1,
+        tdCls: 'wrap'
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'strength',
+        text: 'Strength',
+        tdCls: 'wrap',
+        flex: 1,
+        tdCls: 'wrap'
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'mah_holder',
+        text: 'MAH',
         tdCls: 'wrap',
         flex: 1,
         tdCls: 'wrap'

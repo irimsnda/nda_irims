@@ -18,9 +18,25 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugAssessmentGrid', {
         displayMsg: 'Showing {0} - {1} of {2} total records',
         emptyMsg: 'No Records',
         beforeLoad: function(){
-            this.up('grid').fireEvent('refresh', this, 'tra_pv_suspected_drugs');
+            this.up('grid').fireEvent('refresh', this, 'tra_pv_reaction');
         }
     }],
+    tbar: [ {
+        xtype: 'button',
+        text: 'AEFI Category',
+        iconCls: 'x-fa fa-plus',
+        name:'update_report',
+        handler:'updateAEFICategory',
+        ui: 'soft-green',
+        winWidth: '35%',
+        stores: '[]'
+    }],
+    plugins: [{
+        ptype: 'cellediting',
+        clicksToEdit: 1,
+        editing: true
+    }
+    ],
     features: [{
         ftype: 'searching',
         minChars: 2,
@@ -31,12 +47,12 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugAssessmentGrid', {
             fn: 'setGridStore',
             config: {
                 pageSize: 1000,
-                // storeId: 'pvSuspectedDrugStr',
+                storeId: 'pvsuspecteddrugassessmentstr',
                 proxy: {
-                    url: 'pv/onLoadSuspectedDrugs',
+                    url: 'pv/onLoadReaction',
                     extraParams:{
                         is_config: 1,
-                        table_name: 'tra_pv_suspected_drugs'
+                        table_name: 'tra_pv_reaction'
                     }
                 }
             },
@@ -47,59 +63,141 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugAssessmentGrid', {
         xtype: 'rownumberer',
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'brand_name',
-        text: 'Brand Name',
-        tdCls: 'wrap',
+        dataIndex: 'reaction_event_medra',
+        text: 'Reaction /Event(MedDRA)',
+        tdCls: 'wrap-text',
         flex: 1,
-        tdCls: 'wrap'
+        tdCls: 'wrap-text'
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'reaction_event',
+        text: 'Reaction Event',
+        tdCls: 'wrap-text',
+        flex: 1,
+        tdCls: 'wrap-text'
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'suspected_drug',
+        text: 'Suspected Drug(WHODrug)',
+        tdCls: 'wrap-text',
+        flex: 1,
+        tdCls: 'wrap-text'
     },{
         xtype: 'datecolumn',
-        dataIndex: 'start_date',
+        dataIndex: 'onset_date',
         format: 'Y-m-d',
-        text: 'Start Date',
+        text: 'onset Date',
         flex: 1,
-        tdCls: 'wrap'
+        tdCls: 'wrap-text'
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'onset_time',
+        text: 'Onset Time',
+        tdCls: 'wrap-text',
+        flex: 1,
+        tdCls: 'wrap-text'
     },{
         xtype: 'datecolumn',
         dataIndex: 'end_date',
-        text: 'End Date',
         format: 'Y-m-d',
+        text: 'End Date',
         flex: 1,
-        tdCls: 'wrap'
+        tdCls: 'wrap-text'
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'manufacturer_name',
-        text: 'Manufacturer',
+        dataIndex: 'end_time',
+        text: 'End Time',
+        tdCls: 'wrap-text',
+        flex: 1,
+        tdCls: 'wrap-text'
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'outcomes',
+        text: 'Outcome',
+        tdCls: 'wrap-text',
+        flex: 1,
+        tdCls: 'wrap-text'
+    },
+
+    // {
+    //     xtype: 'gridcolumn',
+    //     dataIndex: 'aefi_category',
+    //     text: 'AEFI Category',
+    //     tdCls: 'wrap',
+    //     flex: 1,
+    // },
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'aefi_category_id',
+        text: 'AEFI Category',
+        width: 100,
+        editor: {
+                    xtype: 'combo',
+                    queryMode: 'local',
+                    valueField: 'id',
+                    displayField: 'name',
+                    listeners: {
+                        beforerender: {
+                            fn: 'setCompStore',
+                            config: {
+                                pageSize: 1000,
+                                proxy: {
+                                    extraParams: {
+                                        table_name: 'par_aefi_categories'
+                                    }
+                                }
+                            },
+                            isLoad: true
+                        }
+                    }
+                },
+                
+                renderer: function (val, meta, record, rowIndex, colIndex, store, view) {
+                    var textVal = record.get('aefi_category');
+                    if (view.grid.columns[colIndex].getEditor().getStore().getById(val)) {
+                        textVal = view.grid.columns[colIndex].getEditor().getStore().getById(val).data.name;
+                    }
+                    return textVal;
+                }
+                
+        },
+
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'causality_outcomes',
+        text: 'Causality Outcome',
         tdCls: 'wrap',
         flex: 1,
-        tdCls: 'wrap'
-    },{
-        xtype: 'datecolumn',
-        dataIndex: 'expiry_date',
-        text: 'Expiry date',
-        format: 'Y-m-d',
-        flex: 1,
-        tdCls: 'wrap'
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'remarks',
-        text: 'Comments',
-        flex: 1,
-        tdCls: 'wrap'
+      
     },{
         xtype: 'widgetcolumn',
-        width: 180,
+        width: 140,
         widget:{
         xtype: 'button',
-        text: 'Assessment',
+        text: 'Naranjo Assessment',
         childXtype: 'casualityevaluationgrid',
-        winTitle: 'Causality Assessment',
+        winTitle: 'Naranjo Causality Assessment',
         winWidth: '70%',
         ui: 'soft-green',
         iconCls: 'fa fa-eye',
         handler: 'viewAssesmentDetails'
         }
-        },{
+        },
+        {
+        xtype: 'widgetcolumn',
+        width: 140,
+        widget:{
+        xtype: 'button',
+        text: 'WHO Assessment',
+        childXtype: 'whocasualityevaluationgrid',
+        winTitle: 'WHO Causality Assessment',
+        winWidth: '70%',
+        ui: 'soft-purple',
+        iconCls: 'fa fa-eye',
+        handler: 'viewAssesmentDetails'
+        }
+        },
+        {
         text: 'Options',
         hidden:true,
         xtype: 'widgetcolumn',

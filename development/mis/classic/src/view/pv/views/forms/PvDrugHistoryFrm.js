@@ -1,6 +1,7 @@
 Ext.define('Admin.view.pv.views.forms.PvDrugHistoryFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'pvdrughistoryFrm',
+    itemId: 'pvdrughistoryfrm',
     controller: 'pvvctr',
     height: Ext.Element.getViewportHeight() - 118,
     layout: {
@@ -64,6 +65,7 @@ Ext.define('Admin.view.pv.views.forms.PvDrugHistoryFrm', {
                     growMax: 200, 
                     allowBlank: false,
          },
+
         {
             xtype:'fieldset',
             columnWidth: 1,
@@ -79,31 +81,223 @@ Ext.define('Admin.view.pv.views.forms.PvDrugHistoryFrm', {
             },
             layout: 'column',
             items:[
-              {
-                    xtype: 'htmleditor',
-                    fieldLabel:'Previous Medication(WHODrug)',
-                    name: 'previous_medication_whodrug',
-                    grow: true, 
+                  {
+                    xtype:'fieldcontainer',
+                    fieldLabel: 'Previous Medication(WHODrug)',
                     columnWidth: 1,
-                    growMax: 200, 
-                    allowBlank: false,
-                }
+                    layout: {
+                        type: 'column'
+                    },
+                    defaults:{
+                        columnWidth: 0.5,
+                        labelAlign: 'top'
+                    },
+                    items:[
+                         {
+                                xtype: 'combo', anyMatch: true,
+                                fieldLabel: 'Who Drug Level',
+                                name: 'whodrug_level_id',
+                                columnWidth: 0.5,
+                                allowBlank:false,
+                                forceSelection: true,
+                                queryMode: 'local',
+                                valueField: 'id',
+                                displayField: 'name',
+                                listeners: {
+                                    beforerender: {
+                                        fn: 'setCompStore',
+                                        config: {
+                                            pageSize: 1000,
+                                            proxy: {
+                                                extraParams: {
+                                                    table_name: 'par_pv_whodrug_levels'
+                                                }
+                                            }
+                                        },
+                                        isLoad: true
+                                    }
+                                }
+                    },
+                
+                     {
+                        xtype: 'fieldcontainer',
+                        layout: 'column',
+                        columnWidth: 0.5,
+                        defaults: {
+                            labelAlign: 'top'
+                        },
+                        fieldLabel: 'Name',
+                        items: [
+                            {
+                                xtype: 'textfield',
+                                name: 'previous_medication_whodrug',
+                                readOnly: true,
+                                allowBlank:false,
+                                columnWidth: 0.9
+                            },
+                        
+                            {
+                                xtype: 'button',
+                                iconCls: 'x-fa fa-search',
+                                columnWidth: 0.1,
+                                tooltip: 'Search WHODrug',
+                                handler: 'showWHODugSelectionList',
+                                winTitle: 'LTR Selection List',
+                                winWidth: '90%'
+                            }
+                        ]
+                    }
+                    ]
+                } 
                 ]
             },
-        {
-            xtype: 'textfield',
-            columnWidth: 0.5,
-            fieldLabel: 'Indication MedDRA',
-            name: 'indication_meddra',
-            allowBlank: true,
-        },
           {
-            xtype: 'textfield',
-            columnWidth: 0.5,
-            fieldLabel: 'Reaction MedDRA',
-            name: 'reaction_meddra',
-            allowBlank: true,
-        },{
+                xtype:'fieldcontainer',
+                fieldLabel: 'Indication MedDRA',
+                columnWidth: 0.5,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[
+                      {
+                            xtype: 'combo',
+                            anyMatch: true,
+                            fieldLabel: 'MedDRA Level',
+                            name: 'indication_meddra_level_id',
+                            forceSelection: true,
+                            columnWidth: 0.5,
+                            allowBlank:false,
+                            queryMode: 'local',
+                            valueField: 'id',
+                            displayField: 'name',
+                            listeners: {
+                                beforerender: {
+                                    fn: 'setCompStore',
+                                    config: {
+                                        pageSize: 10000,
+                                        proxy: {
+                                            extraParams: {
+                                                table_name: 'par_pv_medra_levels'
+                                            }
+                                        }
+                                    },
+                                    isLoad: true
+                                },
+                             change: function (cmbo, newVal) {
+                                var form = cmbo.up('form'),
+                                    indicationMedraStore = form.down('combo[name=indication_meddra]').getStore(),
+                                    filterObj = {meddra_level_id: newVal},
+                                    filterStr = JSON.stringify(filterObj);
+                                indicationMedraStore.removeAll();
+                                indicationMedraStore.load({params: {filter: filterStr}});
+                            }
+                          
+                        }
+                     },
+                  {
+                            xtype: 'combo',
+                            anyMatch: true,
+                            fieldLabel: 'Indication',
+                            name: 'indication_meddra',
+                            forceSelection: true,
+                            columnWidth: 0.5,
+                            allowBlank:false,
+                            queryMode: 'local',
+                            valueField: 'name',
+                            displayField: 'name',
+                             listeners: {
+                                beforerender: {
+                                    fn: 'setOrgConfigCombosStore',
+                                    config: {
+                                        pageSize: 100,
+                                        proxy: {
+                                        url: 'configurations/getMedDRAtearm'
+                                       }
+                                    },
+                                    isLoad: false
+                                }
+                         }
+                       }
+                    ]
+           } ,
+          {
+                xtype:'fieldcontainer',
+                fieldLabel: 'Reaction MedDRA',
+                columnWidth: 0.5,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[
+                      {
+                            xtype: 'combo',
+                            anyMatch: true,
+                            fieldLabel: 'MedDRA Level',
+                            name: 'reaction_meddra_level_id',
+                            forceSelection: true,
+                            columnWidth: 0.5,
+                            allowBlank:false,
+                            queryMode: 'local',
+                            valueField: 'id',
+                            displayField: 'name',
+                            listeners: {
+                                beforerender: {
+                                    fn: 'setCompStore',
+                                    config: {
+                                        pageSize: 10000,
+                                        proxy: {
+                                            extraParams: {
+                                                table_name: 'par_pv_medra_levels'
+                                            }
+                                        }
+                                    },
+                                    isLoad: true
+                                },
+                             change: function (cmbo, newVal) {
+                                var form = cmbo.up('form'),
+                                    reactionMedraStore = form.down('combo[name=reaction_meddra]').getStore(),
+                                    filterObj = {meddra_level_id: newVal},
+                                    filterStr = JSON.stringify(filterObj);
+                                reactionMedraStore.removeAll();
+                                reactionMedraStore.load({params: {filter: filterStr}});
+                            }
+                          
+                        }
+                     },
+                  {
+                            xtype: 'combo',
+                            anyMatch: true,
+                            fieldLabel: 'Reaction',
+                            name: 'reaction_meddra',
+                            forceSelection: true,
+                            columnWidth: 0.5,
+                            allowBlank:false,
+                            queryMode: 'local',
+                            valueField: 'name',
+                            displayField: 'name',
+                             listeners: {
+                                beforerender: {
+                                    fn: 'setOrgConfigCombosStore',
+                                    config: {
+                                        pageSize: 100,
+                                        proxy: {
+                                        url: 'configurations/getMedDRAtearm'
+                                       }
+                                    },
+                                    isLoad: false
+                                }
+                         }
+                       }
+                    ]
+           } ,
+        {
             xtype: 'datefield',
             fieldLabel: 'Start date',
             format: 'Y-m-d',

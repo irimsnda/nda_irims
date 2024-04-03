@@ -69,6 +69,35 @@ class PvController extends Controller
 }
 
 
+public function updateAEFICategory(Request $req)
+    {
+        $application_code = $req->application_code;
+        $selected = $req->selected;
+        $selected_recs = json_decode($selected);
+        $res = array('success' => true, 'message' => 'No record to update');
+        try {
+            foreach ($selected_recs as $selected) {
+                $aefi_category_id = $selected->aefi_category_id;
+                $reaction_id = $selected->reaction_id;
+                $update_data = array(
+                    'aefi_category_id' => $aefi_category_id,
+                );
+                $where = array(
+                    'application_code' => $application_code,
+                    'id' => $reaction_id
+                );
+                $res = updateRecordNoPrevious('tra_pv_reaction', $where, $update_data);
+            }
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return response()->json($res);
+    }
+
+
+
  public function getStudyDetails(Request $request){
         $application_code = $request->input('application_code');
         try {
@@ -104,19 +133,75 @@ class PvController extends Controller
 public function getCasaultyAssessment(Request $request)
 {
     $application_code = $request->input('application_code');
+    $reaction_id = $request->input('reaction_id');
 
     try {
-        $causalityReport_main = DB::table('tra_pv_causality_assessment as t1')
+        $qry = DB::table('tra_pv_causality_assessment as t1')
             ->leftJoin('par_pv_causality_asssessment as t2', 't1.question_id', '=', 't2.id')
+            ->leftJoin('par_pv_assessment_confirmation as t3', 't1.score_id', '=', 't3.id')
             ->where('t1.application_code', $application_code)
-            ->select(DB::raw("DISTINCT t1.id, t1.*, t2.question,t2.quidelines"))
-            ->get();
+            ->select(DB::raw("DISTINCT t1.id, t1.*, t2.question,t2.quidelines,t3.name as score_option"));
+
+
+            if(validateIsNumeric($reaction_id)){
+                $qry->where('t1.reaction_id',$reaction_id);
+            }
+
+            $causalityReport_main = $qry->get();
 
         if ($causalityReport_main->isNotEmpty()) {
             $results = $causalityReport_main;
         } else {
             $templatereport_qry = DB::table('par_pv_causality_asssessment as t1')
-                ->select(DB::raw("DISTINCT t1.id, t1.*, t1.id as question_id "));
+                ->select(DB::raw("DISTINCT t1.id, t1.*, t1.id as question_id,'' as score_option "));
+            $results = $templatereport_qry->get();
+        }
+
+        $res = array(
+            'success' => true,
+            'results' => $results,
+            'message' => 'All is well'
+        );
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return \response()->json($res);
+}
+
+
+
+public function getWHOCasaultyAssessment(Request $request)
+{
+    $application_code = $request->input('application_code');
+    $reaction_id = $request->input('reaction_id');
+
+    try {
+        $qry = DB::table('tra_pv_who_causality_assessment as t1')
+            ->leftJoin('par_pv_who_causality_asssessment as t2', 't1.question_id', '=', 't2.id')
+            ->leftJoin('par_confirmations as t3', 't1.score_id', '=', 't3.id')
+            ->where('t1.application_code', $application_code)
+            ->select(DB::raw("DISTINCT t1.id, t1.*, t2.question,t2.quidelines,t3.name as score_option"));
+
+
+            if(validateIsNumeric($reaction_id)){
+                $qry->where('t1.reaction_id',$reaction_id);
+            }
+
+            $causalityReport_main = $qry->get();
+
+        if ($causalityReport_main->isNotEmpty()) {
+            $results = $causalityReport_main;
+        } else {
+            $templatereport_qry = DB::table('par_pv_who_causality_asssessment as t1')
+                ->select(DB::raw("DISTINCT t1.id, t1.*, t1.id as question_id,'' as score_option "));
             $results = $templatereport_qry->get();
         }
 
@@ -148,12 +233,23 @@ public function getCasaultyAssessment(Request $request)
             $table_name = 'tra_pv_causality_assessment';
             $user_id = $this->user_id;
 
+           
+
             try {
                 foreach ($report_questions as $report_question) {
                     $id = ''; 
                     $question_id = $report_question->question_id;
+                    $reaction_id = $report_question->reaction_id;
                     $score_id = $report_question->score_id;
                     $score = '';
+                    if (recordExists('tra_pv_who_causality_assessment', $where = array('application_code' => $application_code,'reaction_id' => $reaction_id))) {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Causality Assessment already done using WHO Assessment Tool!!'
+                             );
+                            echo json_encode($res);
+                            exit();
+                    }
 
                      switch ($question_id) {
                         case 1:
@@ -249,6 +345,7 @@ public function getCasaultyAssessment(Request $request)
                     }
 
                     $report_question_data = array(
+                        'reaction_id' => $reaction_id,
                         'question_id' => $question_id,
                         'application_code' => $application_code,
                         'score_id' => $score_id,
@@ -256,6 +353,7 @@ public function getCasaultyAssessment(Request $request)
                     );
 
                     $where = array(
+                        'reaction_id' => $reaction_id,
                         'question_id' => $question_id,
                         'application_code' => $application_code
                     );
@@ -274,6 +372,94 @@ public function getCasaultyAssessment(Request $request)
                         );
                     } else {
 
+                        // Insert as a new record
+                        $report_question_data['dola'] = Carbon::now();
+                        $report_question_data['altered_by'] = $user_id;
+                        DB::table($table_name)->insert($report_question_data);
+
+                          $res = array(
+                            'success' => true,
+                            'message' => 'Causality Assessment report saved successfully!!'
+                        );
+                    }
+                }
+
+              
+            } catch (\Exception $exception) {
+                $res = array(
+                    'success' => false,
+                    'message' => $exception->getMessage()
+                );
+            } catch (\Throwable $throwable) {
+                $res = array(
+                    'success' => false,
+                    'message' => $throwable->getMessage()
+                );
+            }
+
+            return \response()->json($res);
+        }
+
+
+
+        public function saveWHOAssessmentReportdetails(Request $request)
+        {
+            $application_code = $request->input('application_code');
+            $report_questions = $request->input('report_questions');
+            $report_questions = json_decode($report_questions);
+            $table_name = 'tra_pv_who_causality_assessment';
+            $user_id = $this->user_id;
+
+            try {
+                foreach ($report_questions as $report_question) {
+                    $id = ''; 
+                    $question_id = $report_question->question_id;
+                    $reaction_id = $report_question->reaction_id;
+                    $score_id = $report_question->score_id;
+                    $comment = isset($report_question->comment) ? $report_question->comment : '';
+
+
+                     if (recordExists('tra_pv_causality_assessment', $where = array('application_code' => $application_code,'reaction_id' => $reaction_id))) {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Causality Assessment already done using Naranjo Assessment Tool!!'
+                             );
+                            echo json_encode($res);
+                            exit();
+                    }
+
+                    $report_question_data = array(
+                        'reaction_id' => $reaction_id,
+                        'question_id' => $question_id,
+                        'comment' => $comment,
+                        'application_code' => $application_code,
+                        'score_id' => $score_id
+                    );
+
+
+                    $where = array(
+                        'reaction_id' => $reaction_id,
+                        'question_id' => $question_id,
+                        'application_code' => $application_code
+                    );
+
+                    if (recordExists($table_name, $where)) {
+
+                        $existingRecord = getPreviousRecords($table_name, $where);
+                        if ($existingRecord['success'] == false) {
+                            return $existingRecord;
+                        }
+                        $report_question_data['dola'] = Carbon::now();
+                        $report_question_data['altered_by'] = $user_id;
+
+
+                        $dd=updateRecord($table_name, $existingRecord['results'], $where, $report_question_data, $user_id);
+
+                          $res = array(
+                            'success' => true,
+                            'message' => 'Causality Assessment report updated successfully!!'
+                        );
+                    } else {
                         // Insert as a new record
                         $report_question_data['dola'] = Carbon::now();
                         $report_question_data['altered_by'] = $user_id;
@@ -520,29 +706,128 @@ public function getCasaultyAssessment(Request $request)
         return \response()->json($res);
     }
 
-    public function onLoadReaction(Request $req){
-        try{
+    public function onLoadReaction(Request $req)
+    {
+        try {
             $application_code = $req->application_code;
-            $qry = DB::table('tra_pv_reaction as t1')
-             ->leftJoin('par_adr_outcomes as t2', 't1.adr_outcome_id', '=', 't2.id') 
-             ->leftJoin('par_aefi_categories as t3', 't1.aefi_category_id', '=', 't3.id') 
-             ->select(DB::raw("DISTINCT  t1.id,t1.*,t2.name as outcomes,t3.name as aefi_category"))
-                    ->where('t1.application_code', $application_code);
-            $results = $qry->get();
-            $res = array(
+            // First Query: Retrieve results from tra_pv_reaction
+            $results = DB::table('tra_pv_reaction as t1')
+                ->leftJoin('par_adr_outcomes as t2', 't1.adr_outcome_id', '=', 't2.id')
+                ->leftJoin('par_aefi_categories as t3', 't1.aefi_category_id', '=', 't3.id')
+                ->select(
+                    DB::raw("DISTINCT  t1.id,t1.*,t2.name as outcomes,t3.name as aefi_category")
+                )
+                ->where('t1.application_code', $application_code)
+                ->get();
+
+            // Iterate through each result and get the corresponding sum
+            foreach ($results as $result) {
+                $id = $result->id;
+                $sumResult = DB::table('tra_pv_causality_assessment as t1')
+                    ->leftJoin('par_pv_causality_asssessment as t2', 't1.question_id', '=', 't2.id')
+                    ->where('t1.reaction_id', $id)
+                    ->where('t1.application_code', $application_code)
+                    ->select(DB::raw('SUM(t1.score) as causality_outcomes'))
+                    ->first();
+
+                // Set causality_outcomes based on the sum
+                if ($sumResult && $sumResult->causality_outcomes !== null) {
+                    $sum = $sumResult->causality_outcomes;
+                    $message = 'Total Score: ' . $sum;
+                    if ($sum > 9) {
+                        $message .= ' (Definite)';
+                    } else if ($sum >= 5 && $sum <= 8) {
+                        $message .= ' (Probable)';
+                    } else if ($sum >= 1 && $sum <= 4) {
+                        $message .= ' (Possible)';
+                    } else if ($sum <= 0) {
+                        $message .= ' (Doubtful)-Naranjo';
+                    }
+                } else {
+                    // Query for $scoreResult from another table
+                    $scoreResult = DB::table('tra_pv_who_causality_assessment as t1')
+                        ->leftJoin('par_pv_who_causality_asssessment as t2', 't1.question_id', '=', 't2.id')
+                        ->where('t1.reaction_id', $id)
+                        ->where('t1.application_code', $application_code)
+                        ->select(DB::raw('t1.*'))
+                        ->get();
+
+                    // Logic to handle $scoreResult and set $message
+                    if ($scoreResult->isEmpty()) {
+                        // No records found in tra_pv_who_causality_assessment
+                        $message = '<span style="color: red;">Pending Assessment</span>';
+                    } else {
+                        $outcomeCounts = [];
+                        foreach ($scoreResult as $score) {
+                            $questionId = $score->question_id;
+                            $scoreId = $score->score_id;
+
+                            if ($scoreId === 1) {
+                                if (!array_key_exists($questionId, $outcomeCounts)) {
+                                    $outcomeCounts[$questionId] = 0;
+                                }
+                                $outcomeCounts[$questionId]++;
+                            }
+                        }
+
+              
+                        $certainQuestionIds = [1, 2, 3, 4, 5];
+                        $probableQuestionIds = [6, 7, 8, 9];
+                        $possibleQuestionIds = [6, 10, 11];
+                        $unlikelyQuestionIds = [12, 13];
+                        $conditionalQuestionIds = [14, 15];
+                        $unassessableQuestionIds = [17, 18];
+
+                   
+                        $maxOutcome = '';
+
+                        if (array_intersect(array_keys($outcomeCounts), $certainQuestionIds) === $certainQuestionIds) {
+                            $maxOutcome = 'Certain';
+                        } else if (array_intersect(array_keys($outcomeCounts), $probableQuestionIds) === $probableQuestionIds) {
+                            $maxOutcome = 'Probable / Likely';
+                        } else if (array_intersect(array_keys($outcomeCounts), $possibleQuestionIds) === $possibleQuestionIds) {
+                            $maxOutcome = 'Possible';
+                        } else if (array_intersect(array_keys($outcomeCounts), $unlikelyQuestionIds) === $unlikelyQuestionIds) {
+                            $maxOutcome = 'Unlikely';
+                        } else if (array_intersect(array_keys($outcomeCounts), $conditionalQuestionIds) === $conditionalQuestionIds) {
+                            $maxOutcome = 'Conditional / Unclassified';
+                        } else if (array_intersect(array_keys($outcomeCounts), $unassessableQuestionIds) === $unassessableQuestionIds) {
+                            $maxOutcome = 'Unassessable / Unclassifiable';
+                        }
+
+                       $message = $maxOutcome !== '' ? $maxOutcome . ' (WHO)' : 'Outcome Unknown (WHO)';
+                    }
+                }
+
+                // Append suspected drug to result
+                $suspectedDrug = DB::table('tra_pv_suspected_drugs')
+                    ->where('application_code', $application_code)
+                    ->where('drug_role_id', 1)
+                    ->pluck('who_drug_name')
+                    ->toArray();
+
+                $result->suspected_drug = implode(', ', $suspectedDrug);
+
+                // Assign the message to causality_outcomes
+                $result->causality_outcomes = $message;
+            }
+
+            $res = [
                 'success' => true,
                 'results' => $results,
                 'message' => 'All is well'
-            );
+            ];
         } catch (\Exception $exception) {
-            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
-
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
         } catch (\Throwable $throwable) {
-           $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
-
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
         }
-        return \response()->json($res);
+
+        return response()->json($res);
     }
+
+
+
 
        public function getIndication(Request $req){
         try{

@@ -32,7 +32,10 @@ Route::group(['middleware' => 'web', 'prefix' => 'pv'], function () {
     Route::get('onLoadSenderDetails', [PvController::class, 'onLoadSenderDetails']);
     Route::get('getIndication', [PvController::class, 'getIndication']);
     Route::get('getCasaultyAssessment', [PvController::class, 'getCasaultyAssessment']);
+    Route::get('getWHOCasaultyAssessment', [PvController::class, 'getWHOCasaultyAssessment']);
     Route::post('saveAssessmentReportdetails', [PvController::class, 'saveAssessmentReportdetails']);
+    Route::post('updateAEFICategory', [PvController::class, 'updateAEFICategory']);
+    Route::post('saveWHOAssessmentReportdetails', [PvController::class, 'saveWHOAssessmentReportdetails']);
 
 });
 //non json calls

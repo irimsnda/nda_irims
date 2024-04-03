@@ -136,29 +136,103 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
+
+    updateAEFICategory: function(btn){
+        btn.setLoading(true);
+        var grid = btn.up('grid'),
+            mainTabPnl = Ext.ComponentQuery.query("#contentPanel")[0],
+            activeTab = mainTabPnl.getActiveTab(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            store = grid.getStore(),
+            selected = [];
+        for (var i = 0; i < store.data.items.length; i++) {
+            var record = store.data.items [i],
+                aefi_category_id = record.get('aefi_category_id'),
+                reaction_id = record.get('id');
+            var obj = {
+                aefi_category_id: aefi_category_id,
+                reaction_id: reaction_id
+            };
+            if (record.dirty) {
+                selected.push(obj);
+            }
+        }
+        if (selected.length < 1) {
+            btn.setLoading(false);
+            toastr.warning('No records to save!!', 'Warning Response');
+            return false;
+        }
+           grid.mask('Updating AEFI Category....');
+           Ext.Ajax.request({
+                url: 'pv/updateAEFICategory',
+                method: 'POST',
+                params: {
+                    selected: JSON.stringify(selected),
+                    application_code: application_code,
+                    _token: token
+                },
+                success: function (response) {
+                    btn.setLoading(false);
+                    grid.unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        success = resp.success;
+                        if (success == true || success === true) {
+                            store.load();
+                            toastr.success(resp.message, 'Success');
+                        } else {
+                            grid.unmask();
+                            toastr.error(resp.message, 'Failure Response');
+                        }
+                },
+                failure: function (response) {
+                    grid.unmask();
+                    btn.setLoading(false);
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    grid.unmask();
+                    btn.setLoading(false);
+                    toastr.error('Error downloading data: ' + errorThrown, 'Error Response');
+                }
+            });
+    },
+
     saveCausalityAssessmentReport:function(btn){
         var  grid = btn.up('grid'),
+
             mainTabPnl = Ext.ComponentQuery.query("#contentPanel")[0],
             activeTab = mainTabPnl.getActiveTab(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
                
             casualityevaluationgrid = btn.up('grid'),
             causalityevaluationgridstr = Ext.getStore('causalityevaluationgridstr'),
+            pvsuspecteddrugassessmentstr = Ext.getStore('pvsuspecteddrugassessmentstr'),
 
         store = casualityevaluationgrid.getStore(),
         report_questions = []; 
+        var hasEmptyScore = false;
+
+        if(casualityevaluationgrid.down('hiddenfield[name=reaction_id]')){
+            reaction_id = casualityevaluationgrid.down('hiddenfield[name=reaction_id]').getValue();   
+        }
         for (var i = 0; i < store.data.items.length; i++) {
             var record = store.data.items [i],
                  question_id = record.get('question_id'),
-                 reaction_id = record.get('reaction_id'),
                  report = record.get('report'),
                  score_id = record.get('score_id'),
                  id = record.get('id');
 
+
+          if (!score_id) {
+            hasEmptyScore = true;
+           }
+
             var obj = {
                 id: id,
-                question_id: question_id,
                 reaction_id: reaction_id,
+                question_id: question_id,
                 application_code: application_code,
                 score_id: score_id,
                 created_by: user_id
@@ -170,6 +244,12 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
         if (report_questions.length < 1) {
             btn.setLoading(false);
             toastr.warning('No records to save!!', 'Warning Response');
+            return false;
+        }
+
+        if (hasEmptyScore) {
+            btn.setLoading(false);
+            toastr.warning('Some records have causality checklist not filled!', 'Warning');
             return false;
         }
         report_questions = JSON.stringify(report_questions);
@@ -191,7 +271,105 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
                 if (success == true || success === true) {
                     toastr.success(message, 'Success Response');
                     store.load();
-                    productlinedetailsstr.load();
+                    pvsuspecteddrugassessmentstr.load();
+                    causalityevaluationgridstr.load();
+
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (response) {
+                btn.setLoading(false);
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                btn.setLoading(false);
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+
+
+    },
+
+
+    saveWHOCausalityAssessmentReport:function(btn){
+        var  grid = btn.up('grid'),
+
+            mainTabPnl = Ext.ComponentQuery.query("#contentPanel")[0],
+            activeTab = mainTabPnl.getActiveTab(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+               
+            casualityevaluationgrid = btn.up('grid'),
+            causalityevaluationgridstr = Ext.getStore('whocausalityevaluationgridstr'),
+            pvsuspecteddrugassessmentstr = Ext.getStore('pvsuspecteddrugassessmentstr'),
+
+        store = casualityevaluationgrid.getStore(),
+        report_questions = []; 
+        var hasEmptyScore = false;
+
+        if(casualityevaluationgrid.down('hiddenfield[name=reaction_id]')){
+            reaction_id = casualityevaluationgrid.down('hiddenfield[name=reaction_id]').getValue();   
+        }
+        for (var i = 0; i < store.data.items.length; i++) {
+            var record = store.data.items [i],
+                 question_id = record.get('question_id'),
+                 report = record.get('report'),
+                 comment = record.get('comment'),
+                 score_id = record.get('score_id'),
+                 id = record.get('id');
+
+
+          if (!score_id) {
+            hasEmptyScore = true;
+           }
+
+            var obj = {
+                id: id,
+                reaction_id: reaction_id,
+                question_id: question_id,
+                comment: comment === null ? '' : comment, // If comment is null, set it to empty string
+                application_code: application_code,
+                score_id: score_id,
+                created_by: user_id
+            };
+            if (record.dirty) {
+                report_questions.push(obj);
+            }
+        }
+        if (report_questions.length < 1) {
+            btn.setLoading(false);
+            toastr.warning('No records to save!!', 'Warning Response');
+            return false;
+        }
+
+        if (hasEmptyScore) {
+            btn.setLoading(false);
+            toastr.warning('Some records have causality checklist not filled!', 'Warning');
+            return false;
+        }
+        report_questions = JSON.stringify(report_questions);
+        Ext.Ajax.request({
+            url: 'pv/saveWHOAssessmentReportdetails',
+            params: {
+                application_code: application_code,
+                report_questions: report_questions
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+            },
+            success: function (response) {
+                btn.setLoading(false);
+                var resp = Ext.JSON.decode(response.responseText),
+                    success = resp.success,
+                    message = resp.message;
+                if (success == true || success === true) {
+                    toastr.success(message, 'Success Response');
+                    store.load();
+                    pvsuspecteddrugassessmentstr.load();
+                    causalityevaluationgridstr.load();
 
                 } else {
                     toastr.error(message, 'Failure Response');
@@ -728,9 +906,12 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
                             callerTab = Ext.ComponentQuery.query("#pvDetailsPnlId")[0];
                             if(callerTab){
                                 grid = callerTab.getActiveTab();
-                                if(grid.getStore()){
-                                    grid.getStore().reload();
-                                }
+                                pvSuspectedDrugStr = Ext.getStore('pvSuspectedDrugStr');
+                                // if(grid.getStore()){
+                                //     grid.getStore().reload();
+                                // }
+                                pvSuspectedDrugStr.removeAll();
+                                pvSuspectedDrugStr.load();
                             }
                         }
                         else{

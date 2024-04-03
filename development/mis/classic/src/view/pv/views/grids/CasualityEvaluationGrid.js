@@ -17,7 +17,6 @@ Ext.define('Admin.view.pv.views.grids.CasualityEvaluationGrid', {
             }
         }
     },
-
     tbar: [ {
         xtype: 'button',
         text: 'Update/Save',
@@ -30,6 +29,11 @@ Ext.define('Admin.view.pv.views.grids.CasualityEvaluationGrid', {
     },{
         xtype: 'hiddenfield',
         name: 'isReadOnly'
+    },
+    {
+        xtype:'hiddenfield',
+        name: 'reaction_id'
+
     },
     {
         xtype:'hiddenfield',
@@ -52,16 +56,6 @@ Ext.define('Admin.view.pv.views.grids.CasualityEvaluationGrid', {
     }],
     export_title: 'causality Assessment Report',
 
-    plugins: [
-    {
-        ptype: 'gridexporter'
-    },{
-        ptype: 'rowexpander',
-        rowBodyTpl: new Ext.XTemplate(
-            '<p><b>Guidelines(s):</b> {quidelines}</p>'
-        )
-    }],
-
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '100%',
@@ -69,20 +63,35 @@ Ext.define('Admin.view.pv.views.grids.CasualityEvaluationGrid', {
         displayMsg: 'Showing {0} - {1} of {2} total records',
         emptyMsg: 'No Records',
         beforeLoad: function(){
-            this.up('grid').fireEvent('refresh', this, 'tra_pv_drug_history');
+         //     var store = this.getStore(),
+         //     grid = this.up('grid'),
+         //     reaction_id = grid.down('hiddenfield[name=reaction_id]').getValue();
+         //     store.getProxy().extraParams = {
+         //     reaction_id: reaction_id,
+         // };
+         this.up('grid').fireEvent('refresh', this, 'tra_pv_drug_history');
         }
     }],
 
     selType: 'cellmodel',
     plugins: [{
-        ptype: 'gridexporter'
-    }, {
         ptype: 'cellediting',
         clicksToEdit: 1,
         editing: true
     },{
         ptype: 'filterfield'
-    }],
+    }
+    // ,
+    // {
+    //     ptype: 'rowexpander',
+    //     rowBodyTpl: new Ext.XTemplate(
+    //         '<p>' +
+    //         '<b>Guidelines(s):</b> {quidelines} ' +
+    //         '</p>'
+    //     )
+    // }
+    
+    ],
     listeners: {
         beforerender: {
             fn: 'setGridStore',

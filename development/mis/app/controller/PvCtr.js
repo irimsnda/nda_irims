@@ -40,6 +40,11 @@ Ext.define('Admin.controller.PvCtr', {
             'casualityevaluationgrid': {
                 refresh: 'refreshGridsWithAppDetails'
             },
+
+            'whocasualityevaluationgrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
+            
             
             'pvdrughistoryGrid': {
                 refresh: 'refreshGridsWithAppDetails'
@@ -285,6 +290,7 @@ Ext.define('Admin.controller.PvCtr', {
 
         var store = me.store,
             grid = me.up('grid'),
+            reaction_id='',
             mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
@@ -294,13 +300,19 @@ Ext.define('Admin.controller.PvCtr', {
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             is_other_drugs_used = grid.is_other_drugs_used;
 
+            if(grid.down('hiddenfield[name=reaction_id]')){
+              reaction_id = grid.down('hiddenfield[name=reaction_id]').getValue();   
+            }
+           
+
             store.getProxy().extraParams = {
                 module_id: module_id,
                 sub_module_id: sub_module_id,
                 section_id: section_id,
                 workflow_stage_id: workflow_stage_id,
                 application_code: application_code,
-                is_other_drugs_used: is_other_drugs_used
+                is_other_drugs_used: is_other_drugs_used,
+                reaction_id: reaction_id
             };
 
     },
