@@ -31,10 +31,12 @@ Ext.define('Admin.view.pv.views.forms.PvResponseFrm', {
             xtype: 'textfield',
             name: 'subject',
             fieldLabel: 'Response Subject'
-        },{
+        },
+        {
             xtype: 'htmleditor',
             fieldLabel: 'Response Body',
             columnWidth: 1,
+            resizable: true,
             name: 'response',
         }
     ],

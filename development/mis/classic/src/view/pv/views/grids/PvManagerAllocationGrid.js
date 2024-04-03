@@ -76,7 +76,31 @@ Ext.define('Admin.view.pv.views.grids.PvManagerAllocationGrid', {
 	        dataIndex: 'tracking_no',
 	        text: 'Tracking No',
 	        flex: 1
-	    }, {
+	    },
+
+        {
+        header: 'Report Category(ie AEFI,ADR,..)',
+        dataIndex: 'report_category_id',
+        flex: 1,
+        renderer: function (value, metaData,record) {
+            var report_category_id = record.get('report_category_id'),
+             report_category = record.get('report_category');
+            if (report_category_id==1 || report_category_id===1) {
+                metaData.tdStyle = 'color:white;background-color:green';
+                return report_category;
+            }else if(report_category_id==3 || report_category_id===3){
+              metaData.tdStyle = 'color:white;background-color:red';
+              return report_category;
+          }else if(report_category_id==2 || report_category_id===2){
+              metaData.tdStyle = 'color:white;background-color:orange';
+              return report_category;
+          }else{
+            return report_category;
+           }
+         }
+       }, 
+
+        {
 	        xtype: 'gridcolumn',
 	        dataIndex: 'adr_type',
 	        text: 'Report Type',
@@ -88,7 +112,7 @@ Ext.define('Admin.view.pv.views.grids.PvManagerAllocationGrid', {
 	        flex: 1
 	    }, {
 	        xtype: 'gridcolumn',
-	        dataIndex: 'applicant_name',
+	        dataIndex: 'reporter_name',
 	        text: 'Reporter',
 	        flex: 1
 	    }, {
@@ -133,7 +157,18 @@ Ext.define('Admin.view.pv.views.grids.PvManagerAllocationGrid', {
 	                    winWidth: '70%',
 	                    handler: 'showApplicationUploadedDocument',
 	                    stores: '[]'
-	                }
+	                },
+                    {
+                        text: 'Comments',
+                        iconCls: 'x-fa fa-weixin',
+                        childXtype: 'applicationprevcommentsgrid',
+                        winTitle: 'Assessment Comments',
+                        comment_type_id: 1,
+                        winWidth: '60%',
+                        name: 'prev_comments',
+                        handler: 'showApplicationComments',
+                        stores: '[]'
+                        }
 	                ]
 	            }
 	        }

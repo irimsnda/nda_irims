@@ -657,7 +657,14 @@ public function getWHOCasaultyAssessment(Request $request)
             $is_other_drugs_used = $req->is_other_drugs_used;
 
             $qry = DB::table('tra_pv_suspected_drugs as t1')
+             ->leftJoin('par_adr_drugrole as t2', 't1.drug_role_id', '=', 't2.id') 
+             ->leftJoin('par_adr_suspected_ingredients as t3', 't1.suspected_ingredient_id', '=', 't3.id') 
+             
+             ->select(DB::raw("DISTINCT  t1.id,t1.*,t2.name as drug_role,t3.name as suspected_ingredient"))
                     ->where('t1.application_code', $application_code);
+
+
+
             if(validateIsNumeric($is_other_drugs_used)){
                 $qry->where('is_other_drugs_used', $is_other_drugs_used);
             }else{
@@ -1096,6 +1103,7 @@ public function getWHOCasaultyAssessment(Request $request)
         try {
             $qry = DB::table($table_name . ' as t1')
                 ->leftJoin('par_adr_types as t2', 't1.adr_type_id', '=', 't2.id')
+                 ->leftJoin('par_adr_categories as t2a', 't1.report_category_id', '=', 't2a.id')
                 ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
                 ->leftJoin('par_system_statuses as t4', 't1.application_status_id', 't4.id')
                 ->leftJoin('tra_approval_recommendations as t5', 't5.application_code', '=', 't1.application_code')
@@ -1110,10 +1118,11 @@ public function getWHOCasaultyAssessment(Request $request)
                 })
                 ->leftJoin('tra_approval_recommendations as t14', 't1.application_code', 't14.application_code')
                ->leftJoin('tra_pv_reporter_notification_logs as t15', 't1.application_code', 't15.application_code')
-                ->select('t1.*', 't1.id as pv_id', DB::raw("CONCAT_WS(' ',decrypt(t10.first_name),decrypt(t10.last_name)) as submitted_by"), 't9.date_received as submitted_on', 't3.name as applicant_name', 't4.name as application_status','t2.name as adr_type','t6.name as gender',
-                     't1.id as active_application_id', 't12.stage_category_id','t13.id as recommendation_record_id','t13.recommendation_id','t13.remarks','t14.decision_id as approval_decision_id', 't1.treatment as final_recommendation', 't15.id as response_id','t15.response', 't15.subject')
+               ->join('tra_pv_personnel as t16', 't1.application_code', 't16.application_code')
+                        ->leftJoin('par_titles as t7', 't16.title_id', '=', 't7.id')
+                ->select('t1.*', 't1.id as pv_id', DB::raw("CONCAT_WS(' ',decrypt(t10.first_name),decrypt(t10.last_name)) as submitted_by,t16.email_address as reporter_email, CONCAT_WS(' ',t16.first_name,t16.last_name,'(',t7.name ,')') as reporter_name"), 't9.date_received as submitted_on', 't3.name as applicant_name', 't4.name as application_status','t2.name as adr_type','t6.name as gender',
+                     't1.id as active_application_id', 't12.stage_category_id','t13.id as recommendation_record_id','t13.recommendation_id','t13.remarks','t14.decision_id as approval_decision_id', 't1.treatment as final_recommendation', 't15.id as response_id','t15.response', 't15.subject','t2a.name as report_category')
                 ->where(array('t9.current_stage'=>$workflow_stage,'isDone'=>0) );
-          
             $results = $qry->orderBy('t9.id','desc')->get();
             $res = array(
                 'success' => true,
@@ -1160,15 +1169,15 @@ public function getWHOCasaultyAssessment(Request $request)
 
         try {
             //send mail
-            $applicant = DB::table('tra_pv_applications as t1')
-                        ->join('wb_trader_account as t2', 't1.applicant_id', 't2.id')
-                        ->select('t2.name as applicant_name', 't2.email as applicant_email','t2.contact_person', 't2.contact_person_email')
-                        ->where('application_code', $application_code)
+            $reporter = DB::table('tra_pv_applications as t1')
+                        ->join('tra_pv_personnel as t2', 't1.application_code', 't2.application_code')
+                        ->leftJoin('par_titles as t3', 't2.title_id', '=', 't3.id')
+                        ->select(DB::raw("t2.email_address as reporter_email, CONCAT_WS(' ',t2.first_name,t2.last_name,'(',t3.name ,')') as reporter_name "))
+                        ->where('t1.application_code', $application_code)
                         ->first();
-
-            if(isset($applicant->applicant_email)){
+            if(isset($reporter->reporter_email)){
                 //reporter and cc contact person
-                sendMailFromNotification($applicant->contact_person, $applicant->applicant_email,$subject, $response,'kenedy.mulinge@softclans.co.ke', [$applicant->contact_person_email]);
+                sendMailFromNotification($reporter->reporter_name, $reporter->reporter_email,$subject, $response,'', '');
                 // //their contact person
                 // sendMailFromNotification($applicant->contact_person, $applicant->contact_person_email,$subject, $response,'pv@bomra.bw', '');
             }

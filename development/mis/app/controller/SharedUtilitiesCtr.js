@@ -841,9 +841,17 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
             'renewgmpinspectionpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
-            }, 'gmpdeskreviewprocesspanel button[name=comments_btn]': {
+            }, 
+
+            'gmpdeskreviewprocesspanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
+
+            'evaluationPvReceivingWizard button[name=comments_btn]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+
             'clinicaltrialassessmentpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
@@ -3263,21 +3271,20 @@ setCompStore: function (me, options) {
             var selected_appcodes = [];
             var selected_appIds = [];
 
-            // console(grid):
-            //  if(grid)
-            //  if (selected_appcodes.length===0 || selected_appcodes.length==0) {
-            //     console.log(selected_appcodes);
-            //     Ext.getBody().unmask();
-            //     toastr.error('Please ensure you have selected application(s) to proceed!!', 'Warning Response');
-            //     throw 'BreakLoopException'; // Throw an exception to break out of the loop
-            // }
-            // }
+            
 
+            if (selected_records.length===0 || selected_records.length==0) {
+                        Ext.getBody().unmask();
+                        toastr.error('Please ensure you have selected application(s) to proceed!!', 'Warning Response');
+                        return false;
+            }
+            
             // Assuming selected_records is an array of records
             try {
                 Ext.each(selected_records, function (item) {
                     selected_appcodes.push(item.data.application_code);
                     selected_appIds.push(item.data.active_application_id);
+
                     if (isApprovalSubmission) {
                         var decision_id = item.data.decision_id;
                         // release_recommendation_id=item.data.release_recommendation_id;//import export
@@ -3305,6 +3312,7 @@ setCompStore: function (me, options) {
                     throw e;
                 }
             }
+
              var isPopupSubmission = validateIsPopupSubmission(workflow_stage_id);
 
             if(activeTab.down('hiddenfield[name=is_dataammendment_request]')){

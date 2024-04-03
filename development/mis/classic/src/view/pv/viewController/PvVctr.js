@@ -775,6 +775,35 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
         funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
        
     },
+
+    showApplicationComments: function(btn) {
+        // showApplicationMoreDetails
+        var button = btn.up('button'),
+        grid = button.up('grid'),
+        container = grid.up('panel'),
+        record = button.getWidgetRecord(),
+        application_code = record.get('application_code'),
+        application_id = record.get('active_application_id');
+        this.fireEvent('showApplicationCommentsWin', btn, application_id, application_code);
+    },
+
+
+    viewPvWinFrm:function(btn) {
+           var me = this,
+            record = btn.getWidgetRecord(),
+            grid = btn.up('grid'),
+            activeTab = grid.up('panel'),
+            childObject = Ext.widget(btn.childXtype),
+            winTitle = btn.winTitle,
+            winWidth = btn.winWidth;
+            childObject.loadRecord(record);
+            if(childObject.down('hiddenfield[name=isReadOnly]')){
+               childObject.down('hiddenfield[name=isReadOnly]').setValue(1); 
+            }
+            
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+    },
+
     showAddPvWinFrm: function (btn) {
         var me = this,
             mainTabPnl = Ext.ComponentQuery.query("#contentPanel")[0],
@@ -1020,7 +1049,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
         }
         form.down('hiddenfield[name=application_code]').setValue(application_code);
 
-        funcShowOnlineCustomizableWindow('Notification to Reporter', '60%', form, 'customizablewindow', item);
+        funcShowOnlineCustomizableWindow('Share Notification', '60%', form, 'customizablewindow', item);
     }, 
     publishReport: function(item){
         var me = this,

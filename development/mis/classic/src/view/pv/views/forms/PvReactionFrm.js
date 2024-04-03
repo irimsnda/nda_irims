@@ -330,6 +330,7 @@ Ext.define('Admin.view.pv.views.forms.PvReactionFrm', {
                     fieldLabel: 'AEFI category',
                     name: 'aefi_category_id',
                     columnWidth: 1,
+                    readOnly:true,
                     forceSelection: true,
                     queryMode: 'local',
                     valueField: 'id',

@@ -224,6 +224,18 @@ Ext.define('Admin.view.pv.views.panels.EvaluationPvReceivingWizard', {
                     handler: 'savePvReceivingBaseDetails'
                 },
                 {
+                    text: 'Overrall Comments and recommendation',
+                    ui: 'soft-purple',
+                    //hidden: true,
+                    iconCls: 'fa fa-weixin',
+                    childXtype: 'applicationcommentspnl',
+                    winTitle: 'Assessment Comments',
+                    winWidth: '60%',
+                    name: 'comments_btn',
+                    comment_type_id: 1,
+                    stores: '[]'
+                },
+                {
                     text: 'Submit Application',
                     ui: 'soft-green',
                     iconCls: 'fa fa-check',

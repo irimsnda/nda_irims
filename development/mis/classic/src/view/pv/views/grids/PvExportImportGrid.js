@@ -79,6 +79,7 @@ Ext.define('Admin.view.pv.views.grids.PvExportImportGrid', {
     	xtype: 'button',
     	text: 'Import (Importable Excel Format)',
     	ui: 'soft-blue',
+    	hidden:true,
     	iconCls: 'x-fa fa-file-import',
     	winTitle: 'Import ADR list from Excel/CSV',
 		winWidth: '50%',
@@ -92,7 +93,27 @@ Ext.define('Admin.view.pv.views.grids.PvExportImportGrid', {
 	        dataIndex: 'tracking_no',
 	        text: 'Tracking No',
 	        flex: 1
-	    }, {
+	    },{
+        header: 'Report Category(ie AEFI,ADR,..)',
+        dataIndex: 'report_category_id',
+        flex: 1,
+        renderer: function (value, metaData,record) {
+            var report_category_id = record.get('report_category_id'),
+             report_category = record.get('report_category');
+            if (report_category_id==1 || report_category_id===1) {
+                metaData.tdStyle = 'color:white;background-color:green';
+                return report_category;
+            }else if(report_category_id==3 || report_category_id===3){
+              metaData.tdStyle = 'color:white;background-color:red';
+              return report_category;
+          }else if(report_category_id==2 || report_category_id===2){
+              metaData.tdStyle = 'color:white;background-color:orange';
+              return report_category;
+          }else{
+            return report_category;
+           }
+         }
+       }, {
 	        xtype: 'gridcolumn',
 	        dataIndex: 'adr_type',
 	        text: 'Report Type',
@@ -104,7 +125,7 @@ Ext.define('Admin.view.pv.views.grids.PvExportImportGrid', {
 	        flex: 1
 	    }, {
 	        xtype: 'gridcolumn',
-	        dataIndex: 'applicant_name',
+	        dataIndex: 'reporter_name',
 	        text: 'Reporter',
 	        flex: 1
 	    }, {
@@ -151,7 +172,7 @@ Ext.define('Admin.view.pv.views.grids.PvExportImportGrid', {
 	    },{
 	        xtype: 'gridcolumn',
 	        dataIndex: 'is_reporter_notified',
-	        text: 'Reporter is Notified',
+	        text: 'Is Feedback Shared',
 	        width: 100,
 	        renderer: function (value, metaData) {
 	            if (value == 1) {
@@ -174,7 +195,7 @@ Ext.define('Admin.view.pv.views.grids.PvExportImportGrid', {
 	            menu: {
 	                xtype: 'menu',
 	                items: [{
-		                text: 'Notify Reporter',
+		                text: 'Share Feedback',
 		                iconCls: 'fa fa-mail-bulk',
 		                name: 'notify_reporter',
 		                ui: 'soft-blue',
@@ -189,16 +210,18 @@ Ext.define('Admin.view.pv.views.grids.PvExportImportGrid', {
 		                childXtype: 'pvResponseFrm',
 		                isReadOnly: true,
 		                handler: 'publishReport'
-		            },{
-	                    text: 'View Processing Recommendations',
-	                    iconCls: 'fa fa-clipboard-list',
-	                    tooltip: 'view process recommendations',
-	                    name: 'view_recommendation',
-	                    winWidth: '70%',
-	                    ui: 'soft-blue',
-	                    handler: 'viewApplicationRecommendationLogs',
-	                    stores: '[]'
-	                },{
+		            }, {
+                        text: 'Comments',
+                        iconCls: 'x-fa fa-weixin',
+                        childXtype: 'applicationprevcommentsgrid',
+                        winTitle: 'Assessment Comments',
+                        comment_type_id: 1,
+                        winWidth: '60%',
+                        name: 'prev_comments',
+                        handler: 'showApplicationComments',
+                        stores: '[]'
+                       },
+	                {
 		                text: 'View Application Details',
 		                iconCls: 'fa fa-eye',
 		                name: 'more_app_details',

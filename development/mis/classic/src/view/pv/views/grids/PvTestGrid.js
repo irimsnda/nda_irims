@@ -131,6 +131,20 @@ Ext.define('Admin.view.pv.views.grids.PvTestGrid', {
         flex: 1,
         tdCls: 'wrap-text'
     },{
+        xtype: 'widgetcolumn',
+        name:'view_sites',
+        width: 160,
+        widget:{
+            xtype: 'button',
+            text: 'View all Details',
+            childXtype: 'pvtestFrm',
+            winTitle: 'Tests and procedures',
+            winWidth: '70%',
+            ui: 'soft-green',
+            iconCls: 'fa fa-eye',
+            handler: 'viewPvWinFrm'
+            }
+        },{
         text: 'Options',
         xtype: 'widgetcolumn',
         width: 90,

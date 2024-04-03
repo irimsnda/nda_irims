@@ -195,10 +195,19 @@ Ext.define('Admin.view.pv.views.forms.PvPatientFrm', {
                 },change: function(combo, newVal, oldVal, eopts){
                     var form = combo.up('form'),
                     last_menstruation_date = form.down('datefield[name=last_menstruation_date]');
+                    is_pregnant = form.down('combo[name=is_pregnant]');
+                    is_lactating = form.down('combo[name=is_lactating]');
                 
                     if(newVal == 2){ 
                       last_menstruation_date.setVisible(true);
+                      is_pregnant.setVisible(true);
+                      is_lactating.setVisible(true);
                      // breed.setVisible(true);
+
+                    }else{
+                        last_menstruation_date.setVisible(false);
+                        is_pregnant.setVisible(false);
+                        is_lactating.setVisible(false);
 
                     }
             }
@@ -366,6 +375,7 @@ Ext.define('Admin.view.pv.views.forms.PvPatientFrm', {
             fieldLabel: 'Is Patient Pregnant?',
             name: 'is_pregnant',
             forceSelection: true,
+            hidden:true,
             allowBlank: true,
             queryMode: 'local',
             valueField: 'id',
@@ -390,6 +400,7 @@ Ext.define('Admin.view.pv.views.forms.PvPatientFrm', {
             name: 'is_lactating',
             forceSelection: true,
             allowBlank: true,
+            hidden:true,
             queryMode: 'local',
             valueField: 'id',
             displayField: 'name',
@@ -417,12 +428,58 @@ Ext.define('Admin.view.pv.views.forms.PvPatientFrm', {
             allowBlank: true,
             altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
            },
-            {
-            xtype: 'numberfield',
-            fieldLabel: 'Age',
-            name: 'patient_age',
-            allowBlank: true,
-            },
+            // {
+            // xtype: 'numberfield',
+            // fieldLabel: 'Age at onset of reaction',
+            // name: 'patient_age',
+            // allowBlank: true,
+            // },
+
+             {
+                xtype:'fieldcontainer',
+                fieldLabel: 'Age at onset of reaction',
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[{
+                        xtype: 'numberfield',
+                        hideLabel: true,
+                        fieldLabel: ' ',
+                        name: 'patient_age',
+                        allowBlank: true
+                    },
+                    {
+                        xtype: 'combo',
+                        name: 'patient_age_unit_id',
+                        fieldLabel: " ",
+                        queryMode: 'local',
+                        hideLabel: true,
+                        forceSelection: true,
+                        allowBlank: true,
+                        valueField: 'id',
+                        displayField: 'name',
+                        listeners: {
+                            beforerender: {
+                                fn: 'setCompStore',
+                                config: {
+                                    pageSize: 100,
+                                    proxy: {
+                                        url: 'commonparam/getCommonParamFromTable',
+                                        extraParams: {
+                                            table_name: 'par_age_units'
+                                        }
+                                    }
+                                },
+                                isLoad: true
+                            }
+                        }
+                 }
+                ]
+            } ,
            {
             xtype: 'combo', anyMatch: true,
             fieldLabel: 'Age group',

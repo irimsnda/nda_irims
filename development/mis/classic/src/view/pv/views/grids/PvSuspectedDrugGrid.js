@@ -152,6 +152,20 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugGrid', {
         flex: 1,
         tdCls: 'wrap'
     },{
+        xtype: 'widgetcolumn',
+        name:'view_sites',
+        width: 160,
+        widget:{
+            xtype: 'button',
+            text: 'View all Details',
+            childXtype: 'pvSuspectedDrugFrm',
+            winTitle: 'Suspected Medicine/Vaccine/Device',
+            winWidth: '70%',
+            ui: 'soft-green',
+            iconCls: 'fa fa-eye',
+            handler: 'viewPvWinFrm'
+            }
+        },{
         text: 'Options',
         xtype: 'widgetcolumn',
         width: 90,
