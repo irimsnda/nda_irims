@@ -48,7 +48,7 @@ Ext.define('Admin.view.pv.views.panels.PvReviewPeerSchedulingPnl', {
             }, {
                 xtype: 'displayfield',
                 name: 'application_status',
-                fieldLabel: 'App Status',
+                fieldLabel: 'Report Status',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
@@ -144,7 +144,7 @@ Ext.define('Admin.view.pv.views.panels.PvReviewPeerSchedulingPnl', {
         itemId: 'application_list',//included to identifly the specific grid globaly
         reference: 'application_list',
         is_meeting: 0,//on all tcmeetingparticipantsgrid to differentiate when called from meeting/schedule
-        title: 'Applications Ready For the Review',
+        title: 'Reports Ready For the Review',
         header: {
             style: {
                 backgroundColor: '#2eadf5'
@@ -182,7 +182,7 @@ Ext.define('Admin.view.pv.views.panels.PvReviewPeerSchedulingPnl', {
                     toaster: 0
                 },
                 {
-                    text: 'Submit Application',
+                    text: 'Submit Report',
                     ui: 'soft-green',
                     iconCls: 'fa fa-check',
                     name: 'process_submission_btn',

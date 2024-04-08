@@ -153,6 +153,7 @@
 
                  {
                     xtype: 'inspectionscaparequestsgrid',
+                    hidden:true,
                     title: 'Manufacturing Site CAPA Submission and Responses'
                 }
             ]

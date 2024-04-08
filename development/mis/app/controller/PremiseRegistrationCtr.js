@@ -1936,15 +1936,25 @@ previewPremisesOnlineApplication: function (view, record) {
                 // }
             });
           }  
-       /*
-        app_check_types_store.removeAll();
-        app_check_types_store.load({
-            params: {
-                process_id: process_id,
-                workflow_stage: workflow_stage_id
+
+
+        if(sub_module_id==89 || sub_module_id==89){
+            premiseFrm.down('#director_fieldset').setVisible(false);
+            premiseFrm.down('#Phamacist_fieldset').setVisible(false);
+            premiseFrm.down('combo[name=had_offence]').allowBlank = true;
+            premiseFrm.down('combo[name=had_cancelled_application]').allowBlank = true;
+            premiseFrm.down('textfield[name=psu_no]').allowBlank = true;
+            premiseFrm.down('textfield[name=supervising_name]').allowBlank = true;
+            if(activeTab.down('premisedirectorsdetailsgrid')){
+                activeTab.down('premisedirectorsdetailsgrid').destroy();
             }
-        });
-        */
+            if(activeTab.down('premisepersonneldetailsgrid')){
+                activeTab.down('premisepersonneldetailsgrid').destroy();
+            }
+            //premisedetailswintabpnl.add(2, {title: 'External Stores', xtype: 'inspectorslistgrid'});
+           }
+
+
         app_doc_types_store.removeAll();
         app_doc_types_store.load({
             params: {

@@ -159,7 +159,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PreInspectionPremiseDetai
                         columnWidth: 0.1,
                         tooltip: 'Search',
                         disabled:true,
-                        action: 'search_tinno',
+                       // action: 'search_tinno',
                         childXtype: 'tinnoeselectiongrid',
                         winTitle: 'Tin No Selection List',
                         winWidth: '90%',

@@ -556,6 +556,7 @@ public function getCompanyDetails(Request $req){
       //vigiflow
     public function generateUploadableE2BFile(Request $req){
         try {
+             $patientonsetageunit=''; //to be removed
             // $application_code = $req->application_code;
             $selected = json_decode($req->selected);
             //log export
@@ -569,7 +570,7 @@ public function getCompanyDetails(Request $req){
                 'date_generated' => Carbon::now(),
                 'application_codes' => json_encode($selected),
                 'reference' => $reference,
-                'generated_by' => $this->user_id
+                'generated_by' =>1
             );
             $log_res = insertRecord('tra_pv_vigiflow_export_log', $data);
             if(!isset($log_res['record_id'])){
@@ -645,8 +646,19 @@ public function getCompanyDetails(Request $req){
                             break;
                     }
                 }else{
-                    $serious = 2;
+                    // to be updated accordingly
+
+                    $serious = 1;
+                    $seriousness_id = $report->seriousness_id;
+                    $is_lifethreatening = 2;         
+                    $is_hospitalized = 2;
+                    $is_disabling = 2;
+                    $is_congenital = 2;
+                    $is_other_serious = 2;
+                    $is_death = 2;
                 }
+
+                //dd($is_death);
                 //dates preparation
                 //Date recieved
                 $date_added =strtotime($report->date_added); //gets dates instance
@@ -889,20 +901,35 @@ public function getCompanyDetails(Request $req){
                 </patient>
             </safetyreport>";
             //update status
-            updateRecord('tra_pv_applications', ['application_code' => $application_code], ['is_exported'=>1]);
+
+            if (recordExists('tra_pv_applications', ['application_code' => $application_code])) {
+                    $previous_data = getPreviousRecords('tra_pv_applications', ['application_code' => $application_code]);
+                    if ($previous_data['success'] == false) {
+                        return $previous_data;
+                    }
+                    $previous_data = $previous_data['results'];
+                   updateRecord('tra_pv_applications', $previous_data, ['application_code' => $application_code], ['is_exported'=>1], 1);
+
+                   //updateRecord('tra_pv_applications', ['application_code' => $application_code], );
+
+                }
+
+
+            
         }
         $xml_string.="</ichicsr>";
     
 
     //create a file and add content
     // file_put_contents(storage_path().'/file.xml', $xml_string);
-        $response = Response::create($xml_string, 200);
-        $response->header('Content-Type', 'text/xml');
-        $response->header('Cache-Control', 'public');
-        $response->header('Content-Description', 'File Transfer');
-        $response->header('Content-Disposition', 'attachment; filename='.$reportid.'.xml');
-        $response->header('Content-Transfer-Encoding', 'binary');
-        return $response;
+        $response = response($xml_string, 200)
+        ->header('Content-Type', 'text/xml')
+        ->header('Cache-Control', 'public')
+        ->header('Content-Description', 'File Transfer')
+        ->header('Content-Disposition', 'attachment; filename='.$reportid.'.xml')
+        ->header('Content-Transfer-Encoding', 'binary');
+
+         return $response;
 
             
         } catch (\Exception $exception) {
@@ -1256,6 +1283,10 @@ public function whoDrugDownloadApi (Request $req){
         curl_close($ch);
 
         // Handle the response
+
+        echo json_encode($response);
+                exit();
+
         if ($response) {
             $decodedResponse = json_decode($response, true);
             if ($decodedResponse) {

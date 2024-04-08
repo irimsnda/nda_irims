@@ -498,22 +498,80 @@ Ext.define('Admin.controller.PvCtr', {
             activeTab = mainTabPanel.getActiveTab(),
             applicantFrm = activeTab.down('productapplicantdetailsfrm'),
             application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
-            //applicant_id = applicantFrm.down('hiddenfield[name=applicant_id]').getValue(),
+
+            pvreactionGrid = activeTab.down('pvreactionGrid'),
+            pvreporterGridStr = activeTab.down('pvpersonnelGrid').getStore(),
+            pvSuspectedDrugGridStr = activeTab.down('pvSuspectedDrugGrid').getStore(),
 
             productsDetailsFrm = activeTab.down('#DetailsFrm'),
+            pvpatientFrm = activeTab.down('pvpatientFrm'),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue();
+
+         
+
         if (!application_id) {
             toastr.warning('Please Save Application Details!!', 'Warning Response');
             return false;
         }
-        // if (!applicant_id) {
-        //     // toastr.warning('Please Select Applicant!!', 'Warning Response');
-        //     // return false;
-        // }
+
         if (!productsDetailsFrm.isValid()) {
-            toastr.warning('Please Enter All the required Request Details!!', 'Warning Response');
+            toastr.warning('Please Enter All the required Required Report Details!!', 'Warning Response');
             return false;
         }
+
+        if (!pvpatientFrm.isValid()) {
+            toastr.warning('Please Enter All the required Required Patient Details!!', 'Warning Response');
+            return false;
+        }
+
+        if (pvreactionGrid.getStore().data.length < 1) {
+            toastr.warning('No Cost Elements Selected For Invoicing!!', 'Warning Response');
+            return false;
+        }
+
+
+        //  if(pvreactionGridStr){
+        //     // pvreactionGridStr.removeAll();
+        //     // pvreactionGridStr.load();
+        //     if(pvreactionGridStr.getCount()==0){
+        //         toastr.warning('Please add atleast one Reaction', 'Warning Response');
+        //         return false;
+        //     }
+        // }else{
+        //     toastr.warning('Please add atleast one Reaction', 'Warning Response');
+        //     return false;
+        // }
+
+        //  if (pvSuspectedDrugGridStr) {
+        //     console.log(pvSuspectedDrugGridStr);
+        //     var hasSuspectDrug = false;
+        //     pvSuspectedDrugGridStr.each(function(record) {
+        //         if (record.get('drug_role_id') === 1) {
+        //             hasSuspectDrug = true;
+        //             return false; // Exit the loop early since we found a suspect drug
+        //         }
+        //     });
+        //     if (!hasSuspectDrug) {
+        //         toastr.warning('At least one Suspect Drug is required', 'Warning Response');
+        //         return false;
+        //     }
+        //   } else {
+        //     toastr.warning('Please add at least one Reaction', 'Warning Response');
+        //     return false;
+        //   }
+
+        //  if(pvreporterGridStr){
+        //     if(pvreporterGridStr.getCount()==0){
+        //         toastr.warning('Please add atleast one Reporter', 'Warning Response');
+        //         return false;
+        //     }
+        // }else{
+        //     toastr.warning('Please add atleast one Reporter', 'Warning Response');
+        //     return false;
+        // }
+
+
+        
         return true;
     }, 
     funcActiveOtherPvInformationTab: function (tab) {

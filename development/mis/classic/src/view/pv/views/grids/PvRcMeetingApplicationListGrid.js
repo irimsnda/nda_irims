@@ -9,7 +9,7 @@ Ext.define('Admin.view.pv.views.grids.PvRcMeetingApplicationListGrid', {
     width: '100%',
     viewConfig: {
         deferEmptyText: false,
-        emptyText: 'No Applications Found',
+        emptyText: 'No Reports Found',
     },bbar: [{
         xtype: 'pagingtoolbar',
         width: '80%',
@@ -223,7 +223,7 @@ Ext.define('Admin.view.pv.views.grids.PvRcMeetingApplicationListGrid', {
 	                    handler: 'viewApplicationRecommendationLogs',
 	                    stores: '[]'
 	                },{
-		                text: 'View Application Details',
+		                text: 'View Report Details',
 		                iconCls: 'fa fa-eye',
 		                name: 'more_app_details',
 		                ui: 'soft-blue',

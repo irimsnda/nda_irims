@@ -53,7 +53,7 @@ Ext.define('Admin.view.pv.views.panels.NewPvReceivingWizard', {
                 }, {
                     xtype: 'displayfield',
                     name: 'application_status',
-                    fieldLabel: 'App Status',
+                    fieldLabel: 'Report Status',
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
@@ -129,7 +129,7 @@ Ext.define('Admin.view.pv.views.panels.NewPvReceivingWizard', {
             xtype: 'tabpanel',
             items: [{
                 xtype: 'productDocUploadsGrid',
-                title: 'Application Documents Submission'
+                title: 'Report Documents Submission'
             }]
         },
         {
@@ -227,7 +227,7 @@ Ext.define('Admin.view.pv.views.panels.NewPvReceivingWizard', {
                     handler: 'savePvReceivingBaseDetails'
                 },
                 {
-                    text: 'Submit Application',
+                    text: 'Submit Report',
                     ui: 'soft-green',
                     iconCls: 'fa fa-check',
                     name: 'process_submission_btn',

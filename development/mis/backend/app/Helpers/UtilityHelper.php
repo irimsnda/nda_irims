@@ -367,7 +367,7 @@ static function returnTableNamefromModule($table_name,$module_id){
 
             //get ref id
             $ref_id = DB::table('tra_submodule_referenceformats')
-                //->where('sub_module_id', $sub_module_id)
+                ->where('sub_module_id', $sub_module_id)
                 ->where('reference_type_id', $reference_type_id)
                 ->value('reference_format_id');
             if (!is_numeric($ref_id)) {

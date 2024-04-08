@@ -1827,6 +1827,37 @@ function checkAssignedProcessingZone(application_code, module_id){
 
 
 
+function validateApplicationDetails(application_code, module_id){
+    is_valid = true;
+    Ext.Ajax.request({
+        method: 'GET',
+        async: false,
+        url: 'api/validateApplicationDetails',
+        params: {
+            application_code: application_code,
+            module_id:module_id
+        },
+        headers: {
+            'Authorization': 'Bearer ' + access_token
+        },
+        success: function (response) {
+            var resp = Ext.JSON.decode(response.responseText),
+                success = resp.success;
+            if (success || success == true || success === true) {
+                is_valid = true;
+            }
+            else{
+               
+                is_valid = false;
+                return false;
+            }
+        }
+    });
+    return is_valid;
+}
+
+
+
 function checkApplicationEvaluationOverralRecom(application_code,comment_type_id){
     var hasRecommendation = 0;
     Ext.Ajax.request({

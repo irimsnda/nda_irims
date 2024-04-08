@@ -9,7 +9,7 @@ Ext.define('Admin.view.pv.views.grids.PvManagerAllocationGrid', {
     width: '100%',
     viewConfig: {
         deferEmptyText: false,
-        emptyText: 'No Applications Found',
+        emptyText: 'No Reports Found',
     },
     
     bbar: [{
@@ -143,7 +143,7 @@ Ext.define('Admin.view.pv.views.grids.PvManagerAllocationGrid', {
 	            menu: {
 	                xtype: 'menu',
 	                items: [{
-		                text: 'View Application Details',
+		                text: 'View Report Details',
 		                iconCls: 'fa fa-eye',
 		                name: 'more_app_details',
 		                ui: 'soft-blue',

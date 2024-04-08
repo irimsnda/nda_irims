@@ -180,7 +180,7 @@ Ext.define('Admin.view.pv.views.grids.PvGrid', {
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
-        text: 'Application Status',
+        text: 'Report Status',
         flex: 1,
         tdCls: 'wrap'
     }, {

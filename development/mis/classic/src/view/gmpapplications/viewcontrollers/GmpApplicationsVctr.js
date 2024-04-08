@@ -1122,6 +1122,7 @@ addInspectionType: function (button) {
             form.down('datefield[name=approval_date]').setReadOnly(true);
             form.down('datefield[name=expiry_date]').setReadOnly(true);
             form.down('textarea[name=comment]').setReadOnly(true);
+            form.down('hiddenfield[name=is_update]').setValue(is_update);
             form.down('button[name=save_recommendation]').setText('Update Recommendation');
         }
         form.down('hiddenfield[name=table_name]').setValue(table_name);
@@ -2202,12 +2203,40 @@ addInspectionType: function (button) {
             section_id = record.get('section_id');
         this.fireEvent('generateGmpCertificate', application_code, section_id);
     },
-     printColumnGmpCertificate: function (item) {
+ 
+
+    doPrintGmpApproval: function (btn) {
+        var me = this,
+            mainTabPnl = btn.up('#contentPanel'),
+            activeTab = mainTabPnl.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+          this.fireEvent('generateGmpCertificate', application_code, section_id);
+    },
+
+    doPrintInspectionReport: function (btn) {
+        var me = this,
+            mainTabPnl = btn.up('#contentPanel'),
+            activeTab = mainTabPnl.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+          this.fireEvent('generateGmpInspectionReport', application_code, section_id);
+    },
+
+
+
+    printColumnGmpCertificate: function (item) {
         var record = item.getWidgetRecord(),
             application_code = record.get('application_code'),
             section_id = record.get('section_id');
         this.fireEvent('generateGmpCertificate', application_code, section_id);
     },
+
+
 
     printGmpApprovalLetter: function (item) {
         var btn = item.up('button'),

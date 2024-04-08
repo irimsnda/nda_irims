@@ -367,6 +367,7 @@ Ext.define('Admin.view.pv.views.forms.PvPatientFrm', {
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
             hidden:true,
+            maxValue: new Date(),
             allowBlank: true,
             altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
            },
@@ -425,6 +426,7 @@ Ext.define('Admin.view.pv.views.forms.PvPatientFrm', {
             fieldLabel: 'Date of birth',
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
+            maxValue: new Date(),
             allowBlank: true,
             altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
            },

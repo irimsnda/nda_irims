@@ -31,6 +31,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
             }
 
             if ((isPreInspection) && (isPreInspection == 1 || isPreInspection === 1)) {
+                console.log(isPreInspection);
                 form.down('#director_fieldset').setVisible(false);
                 form.down('#Phamacist_fieldset').setVisible(false); 
             }
@@ -192,7 +193,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                             iconCls: 'x-fa fa-search',
                             disabled: true,
                             columnWidth: 0.1,
-                            handler: 'doSearchBussiness',
+                            //handler: 'doSearchBussiness',
                             tooltip: 'Search',
                             margin: '30 0 0 0'
                         }
@@ -233,7 +234,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                 fieldLabel: 'Business Registration Date',
                 submitFormat: 'Y-m-d',
                 format: 'd/m/Y',
-                readOnly:true,
+               // readOnly:true,
                 //format: 'Y-m-d H:i:s', // Use the correct format here
                 allowBlank: true,
                 altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
@@ -1086,7 +1087,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremiseDetailsFrm', {
                 xtype: 'textarea',
                 fieldLabel: 'Physical Address',
                 allowBlank:false,
-                readOnly:true,
+               // readOnly:true,
                 columnWidth: 1,
                 name: 'physical_address'
             },

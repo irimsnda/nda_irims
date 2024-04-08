@@ -29,6 +29,7 @@ Ext.define('Admin.view.gmpapplications.views.forms.ProductLineRecommendationFrm'
                 name: 'prodline_tcmeetingstatus_id',
                 store: 'gmpproductlinestatusstr',
                 forceSelection: true,
+                allowBlank: true,
                 queryMode: 'local',
                 displayField: 'name',
                 valueField: 'id'

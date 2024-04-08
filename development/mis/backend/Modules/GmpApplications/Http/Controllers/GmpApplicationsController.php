@@ -172,12 +172,14 @@ class GmpApplicationsController extends Controller
              $user_id = \Auth::user()->id;
              $post_data= $req->all();
              $post_data= $req->all();
-            unset($post_data['sub_module_id']);
-            unset($post_data['active_application_code']);
-            $Sub_cat_data =array();
-            $items_data = [];
-            $cat_data=[];
-            $sanitizedArray=[];
+             unset($post_data['sub_module_id']);
+             unset($post_data['active_application_code']);
+             $Sub_cat_data =array();
+             $items_data = [];
+             $cat_data=[];
+             $sanitizedArray=[];
+
+            
             foreach ($post_data as $key =>$value) {
                  $v=explode('-',$key);
                 // dd($v);
@@ -195,8 +197,6 @@ class GmpApplicationsController extends Controller
                  }
                 
                }
-
-
            foreach ($item_data as  $items_data) {
                // dd($items_data);
                $items_data['active_application_code'] = $active_application_code;
@@ -272,15 +272,40 @@ class GmpApplicationsController extends Controller
             $record_id = $req->input('id');
             $table_name = $req->input('table_name');
             $user_id = \Auth::user()->id;
-            $where = array(
+            if($table_name=='tra_manufacturing_sites_blocks'){
+              $where_line = array(
+                  'manufacturingsite_block_id' => $record_id
+              );
+
+              $previous_data = getPreviousRecords('gmp_productline_details', $where_line);
+              if ($previous_data['success'] == false) {
+                  return $previous_data;
+              }
+              $previous_data = $previous_data['results'];
+              $res = deleteRecord('gmp_productline_details', $previous_data, $where_line, $user_id);
+
+
+              $where = array(
+                  'id' => $record_id
+              );
+
+              $previous_data = getPreviousRecords($table_name, $where);
+              if ($previous_data['success'] == false) {
+                  return $previous_data;
+              }
+              $previous_data = $previous_data['results'];
+              $res = deleteRecord($table_name, $previous_data, $where, $user_id);
+            }else{
+                  $where = array(
                 'id' => $record_id
-            );
-            $previous_data = getPreviousRecords($table_name, $where);
-            if ($previous_data['success'] == false) {
-                return $previous_data;
-            }
-            $previous_data = $previous_data['results'];
-            $res = deleteRecord($table_name, $previous_data, $where, $user_id);
+                 );
+                $previous_data = getPreviousRecords($table_name, $where);
+                if ($previous_data['success'] == false) {
+                    return $previous_data;
+                }
+                $previous_data = $previous_data['results'];
+                $res = deleteRecord($table_name, $previous_data, $where, $user_id);
+          }
         } catch (\Exception $exception) {
             $res = array(
                 'success' => false,
@@ -335,11 +360,11 @@ class GmpApplicationsController extends Controller
         try {
             $qry = DB::table('registered_manufacturing_sites as t0')
                 ->join('tra_manufacturing_sites as t1', 't0.tra_site_id', '=', 't1.id')
-                ->join('tra_approval_recommendations as t2', 't1.permit_id', '=', 't2.id')
-                ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->leftJoin('tra_approval_recommendations as t2', 't1.permit_id', '=', 't2.id')
+                ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
                 ->join('tra_gmp_applications as t4', 't0.tra_site_id', '=', 't4.manufacturing_site_id')
                 ->leftJoin('par_gmplocation_details as t5', 't4.gmp_type_id', '=', 't5.id')
-                ->join('tra_manufacturers_information as t6', 't1.manufacturer_id', '=', 't6.id')
+                ->leftJoin('tra_manufacturers_information as t6', 't1.manufacturer_id', '=', 't6.id')
                 ->leftJoin('wb_trader_account as t7', 't1.ltr_id', '=', 't7.id')
                 ->leftJoin('tra_personnel_information as t8', 't1.contact_person_id', '=', 't8.id')
                 ->select('t1.id as manufacturing_site_id', 't1.*', 't2.permit_no', 't3.name as applicant_name',
@@ -351,10 +376,10 @@ class GmpApplicationsController extends Controller
                     't7.id as ltr_id', 't7.name as ltr_name', 't7.tin_no', 't7.country_id as ltr_country_id', 't7.region_id as ltr_region_id', 't7.district_id as ltr_district_id', 't7.physical_address as ltr_physical_address',
                     't7.postal_address as ltr_postal_address', 't7.telephone_no as ltr_telephone', 't7.email as ltr_email', 't7.website as ltr_website',
                     't8.name as contact_name', 't8.postal_address as contact_postal_address', 't8.telephone_no as contact_telephone_no', 't8.email_address as contact_email_address',
-                    't1.applicant_contact_person', 't1.contact_person_startdate as start_date', 't1.contact_person_enddate as end_date', 't4.gmp_type_id', 't4.device_type_id', 't4.assessment_type_id')
-                ->whereIn('t0.validity_status', array(2, 4));
+                    't1.applicant_contact_person', 't1.contact_person_startdate as start_date', 't1.contact_person_enddate as end_date', 't4.gmp_type_id', 't4.device_type_id', 't4.assessment_type_id');
+                //->whereIn('t0.validity_status', array(1, 2));
             if (isset($section_id) && $section_id != '') {
-                $qry->where('t4.section_id', $section_id);
+                //$qry->where('t4.section_id', $section_id);
             }
             if (isset($gmp_type_id) && $gmp_type_id > 0) {
                 $qry->where('t4.gmp_type_id', $gmp_type_id);
@@ -650,7 +675,7 @@ class GmpApplicationsController extends Controller
                 ->where(array('t10.current_stage'=> $workflow_stage,'isDone'=>0));
 
             if (isset($section_id) && $section_id != '') {
-                $qry->where('t1.section_id', $section_id);
+                //$qry->where('t1.section_id', $section_id);
             }
 
 
@@ -728,7 +753,7 @@ class GmpApplicationsController extends Controller
                      ->where(array('t11.current_stage'=> $workflow_stage,'isDone'=>0));
                
             if (isset($section_id) && $section_id != '') {
-                $qry->where('t1.section_id', $section_id);
+                //$qry->where('t1.section_id', $section_id);
             }
             if (isset($gmp_type_id) && $gmp_type_id != '') {
                 $qry->where('t1.gmp_type_id', $gmp_type_id);
@@ -789,8 +814,7 @@ class GmpApplicationsController extends Controller
                 ->leftjoin('par_countries as t14', 't2.country_id', '=', 't14.id')
                 ->leftJoin('par_regions as t15', 't2.region_id', '=', 't15.id')
                 ->leftJoin('tra_gmp_inspection_dates as t16', 't1.application_code', '=', 't16.application_code')
-                ->leftJoin('par_inspection_types as t17', 't16.inspection_category_id', '=', 't17.id')
-                ->select('t1.*','t2.id as premise_id','t2.name as premise_name','t3.name as applicant_name','t4.name as application_status','t10.inspectionteam_name','t8.name as inspection_type','t6.name as approval_status','t5.decision_id','t1.id as active_application_id','t7.name as gmp_type_txt','t14.name as country_name','t15.name as region_name',DB::raw('CONCAT(t10.inspectionteam_name, ": Travel Date(", CONCAT_WS("& return date ", DATE_FORMAT(t10.travel_date,"%d/%m/%Y"), DATE_FORMAT(t10.return_date,"%d/%m/%Y")), ")") as inspection_details'),DB::raw('COUNT(DISTINCT t12.id) as blocks_no'),DB::raw('COUNT(DISTINCT t13.id) as lines_no'),'t16.end_date','t16.start_date','t16.inspection_days','t17.name as inspection_category')
+                ->select('t1.*','t2.id as premise_id','t2.name as premise_name','t3.name as applicant_name','t4.name as application_status','t10.inspectionteam_name','t8.name as inspection_type','t6.name as approval_status','t5.decision_id','t1.id as active_application_id','t7.name as gmp_type_txt','t14.name as country_name','t15.name as region_name',DB::raw('CONCAT(t10.inspectionteam_name, ": Travel Date(", CONCAT_WS("& return date ", DATE_FORMAT(t10.travel_date,"%d/%m/%Y"), DATE_FORMAT(t10.return_date,"%d/%m/%Y")), ")") as inspection_details'),DB::raw('COUNT(DISTINCT t12.id) as blocks_no'),DB::raw('COUNT(DISTINCT t13.id) as lines_no'),'t16.end_date','t16.start_date','t16.inspection_days')
           
                      ->where(array('t11.current_stage'=> $workflow_stage,'isDone'=>0))
                      ->groupBy('t1.id');
@@ -798,7 +822,7 @@ class GmpApplicationsController extends Controller
 
                
             if (isset($section_id) && $section_id != '') {
-                $qry->where('t1.section_id', $section_id);
+                //$qry->where('t1.section_id', $section_id);
             }
             if (isset($gmp_type_id) && $gmp_type_id != '') {
                 $qry->where('t1.gmp_type_id', $gmp_type_id);
@@ -861,7 +885,7 @@ class GmpApplicationsController extends Controller
                      ->where(array('t16.current_stage'=> $workflow_stage,'isDone'=>0));
                
             if (isset($section_id) && $section_id != '') {
-                $qry->where('t1.section_id', $section_id);
+                //$qry->where('t1.section_id', $section_id);
             }
             if (isset($gmp_type_id) && $gmp_type_id != '') {
                 $qry->where('t1.gmp_type_id', $gmp_type_id);
@@ -939,7 +963,7 @@ class GmpApplicationsController extends Controller
                         ->where('t8.meeting_id', '<>', $meeting_id);
                 });*/
             if (isset($section_id) && $section_id != '') {
-                $qry->where('t1.section_id', $section_id);
+                //$qry->where('t1.section_id', $section_id);
             }
             if (isset($gmp_type_id) && $gmp_type_id != '') {
                 $qry->where('t1.gmp_type_id', $gmp_type_id);
@@ -998,7 +1022,7 @@ class GmpApplicationsController extends Controller
                 $qry->where('t1.gmp_type_id', $gmp_type_id);
             }
             if (isset($section_id) && $section_id != '') {
-                $qry->where('t1.section_id', $section_id);
+                //$qry->where('t1.section_id', $section_id);
             }
             $results = $qry->get();
             $res = array(
@@ -1052,7 +1076,7 @@ class GmpApplicationsController extends Controller
                 $qry->where('t1.gmp_type_id', $gmp_type_id);
             }
             if (isset($section_id) && $section_id != '') {
-                $qry->where('t1.section_id', $section_id);
+                //$qry->where('t1.section_id', $section_id);
             }
             $results = $qry->get();
             foreach ($results as $key => $result) {
@@ -1099,7 +1123,7 @@ class GmpApplicationsController extends Controller
                 ->whereIn('t10.current_stage', array(120, 121, 130, 131))
                 ->whereNull('t8.id');
             if (isset($section_id) && $section_id != '') {
-                $qry->where('t1.section_id', $section_id);
+                //$qry->where('t1.section_id', $section_id);
             }
             if (isset($gmp_type_id) && $gmp_type_id != '') {
                 $qry->where('t1.gmp_type_id', $gmp_type_id);
@@ -1144,9 +1168,8 @@ class GmpApplicationsController extends Controller
                 ->leftJoin('par_regions as t3', 't1.region_id', '=', 't3.id')
                 ->leftJoin('par_districts as t4', 't1.district_id', '=', 't4.id')
                 ->leftJoin('tra_manufacturers_information as t7', 't1.manufacturer_id', '=', 't7.id')
-                ->leftJoin('tra_pharmacist_personnel as t6aa', 't1.psu_no', '=', 't6aa.psu_no')
                 ->select('t1.name as premise_name', 't1.id as premise_id', 't1.id as manufacturing_site_id', 't1.*','t11.applicant_id', 't11.gmp_type_id', 't11.device_type_id', 't11.assessment_type_id',
-                    't7.name as manufacturer_name', 't7.email_address as manufacturer_email_address', 't7.physical_address as manufacturer_physical_address', 't7.country_id as manufacturer_country_id','t6aa.name as supervising_name','t6aa.psu_date as supervising_psu_date','t6aa.telephone as supervising_telephone_no','t6aa.telephone2 as supervising_telephone_no2','t6aa.telephone3 as supervising_telephone_no3','t6aa.email as supervising_email_address','t6aa.email2 as supervising_email_address2','t6aa.email3 as supervising_email_address3','t6aa.qualification_id as supervising_qualification_id','t6aa.country_id as supervising_country_id','t6aa.region_id as supervising_region_id','t6aa.district_id as supervising_district_id','t6aa.physical_address as supervising_physical_address');
+                    't7.name as manufacturer_name', 't7.email_address as manufacturer_email_address', 't7.physical_address as manufacturer_physical_address', 't7.country_id as manufacturer_country_id');
             $siteDetails = $qrySite->first();
 
              $qry = DB::table('tra_gmp_applications as t1')
@@ -1159,10 +1182,10 @@ class GmpApplicationsController extends Controller
                 $inspectionDetails = $qry->first();
 
             $qryLtr = clone $sharedQry;
-            $qryLtr->leftJoin('wb_trader_account as t2', 't1.ltr_id', '=', 't2.id')
-                ->select('t2.id as ltr_id', 't2.name as ltr_name', 't2.tin_no',
-                    't2.physical_address as ltr_physical_address', 't2.postal_address as ltr_postal_address', 't2.telephone_no as ltr_telephone',
-                    't1.applicant_as_ltr', 't2.fax as ltr_fax', 't2.email as ltr_email');
+            $qryLtr->leftJoin('tra_premises as t2', 't1.ltr_id', '=', 't2.id')
+                ->leftJoin('tra_premises_applications as t2a', 't2.id', '=', 't2a.premise_id')
+                ->Join('tra_approval_recommendations as t2b', 't2a.application_code', '=', 't2b.application_code')
+                ->select('t2.id as ltr_id', 't2b.permit_no as link_permit_no','t2.name as ltr_name','t2.tpin_no as ltr_tin_no', 't2.physical_address as link_physical_address','t2.telephone as link_telephone');
             $ltrDetails = $qryLtr->first();
 
             $qry3 = clone $sharedQry;
@@ -1247,7 +1270,8 @@ $applicant_id = $siteDetails->applicant_id;
         $region_id = $request->input('region_id');
         $device_type_id = $request->input('device_type_id');
         $contract_manufacturing_id = $request->input('contract_manufacturing_id');
-        
+        $country_id = $request->input('country_id');
+        $gmp_region_code=''; 
         $user_id = $this->user_id;
         if ($gmp_type_id == 1) {//oversea
             $zone_id = getHQZoneId();
@@ -1272,11 +1296,6 @@ $applicant_id = $siteDetails->applicant_id;
                 'country_id' => $request->input('country_id'),
                 'region_id' => $request->input('region_id'),
                 'district_id' => $request->input('district_id'),
-                'county_id' => $request->input('county_id'),
-                'sub_county_id' => $request->input('sub_county_id'),
-                'parish_id' => $request->input('parish_id'),
-                'village_id' => $request->input('village_id'),
-                'psu_no' => $request->input('psu_no'),
                 'street' => $request->input('street'),
                 'telephone' => $request->input('telephone'),
                 'fax' => $request->input('fax'),
@@ -1288,6 +1307,7 @@ $applicant_id = $siteDetails->applicant_id;
                 'longitude' => $request->input('longitude'),
                 'latitude' => $request->input('latitude'),
                 'inspection_activities_id' => $request->input('inspection_activities_id'),
+                'intermediate_manufacturing_activity_id' => $request->input('intermediate_manufacturing_activity_id'),
                 'business_type_id' => $request->input('business_type_id'),
                 'dola' => Carbon::now(),
                 'altered_by' => $user_id,
@@ -1414,14 +1434,25 @@ $applicant_id = $siteDetails->applicant_id;
                 $zone_code = getSingleRecordColValue('par_zones', array('id' => $zone_id), 'zone_code');
                 $section_code = getSingleRecordColValue('par_sections', array('id' => $section_id), 'code');
                 $gmp_code = getSingleRecordColValue('par_gmplocation_details', array('id' => $gmp_type_id), 'location_code');
+                $gmp_location = DB::table('par_countries as t1')
+                ->join('par_gmpcountries_regions as t2', 't1.gmpcountries_region_id', 't2.id')
+                ->select('t2.code')
+                ->where(array('t1.id'=>$country_id))
+                 ->first();
+                if ($gmp_location) {
+                  $gmp_region_code = $gmp_location->code;
+                }
+       
                 $codes_array = array(
                     'section_code' => $section_code,
                     'zone_code' => $zone_code,
-                    'gmp_type' => $gmp_code
+                    'gmp_type' => $gmp_code,
+                    'gmp_region_code' => $gmp_region_code
                 );
                 $view_id = generateApplicationViewID();
-                //$ref_number = generatePremiseRefNumber(9, $codes_array, date('Y'), $process_id, $zone_id, $user_id);
+                
                 $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, $zone_id, $user_id);
+               
                 if ($tracking_details['success'] == false) {
                     return \response()->json($tracking_details);
                 }
@@ -1701,7 +1732,9 @@ $applicant_id = $siteDetails->applicant_id;
                 $init_site_id = $request->input('manufacturing_site_id');
                 $applicant_id = $request->input('applicant_id');
                 $ltr_id = $request->input('ltr_id');
-
+                $billing_person_id = $request->input('billing_person_id');
+                $applicant_as_billingperson = $request->input('applicant_as_billingperson');
+                $contract_manufacturing_id = $request->input('contract_manufacturing_id');
                 $applicant_as_ltr = $request->input('applicant_as_ltr');
                 $applicant_contact_person = $request->input('applicant_contact_person');
                 $contact_person_id = $request->input('contact_person_id');
@@ -1717,6 +1750,7 @@ $applicant_id = $siteDetails->applicant_id;
                 $region_id = $request->input('region_id');
                 $device_type_id = $request->input('device_type_id');
                 $assessment_type_id = $request->input('assessment_type_id');
+                $country_id= $request->input('country_id');
                 $user_id = $this->user_id;
                 if ($gmp_type_id == 1) {//oversea
                     $zone_id = getHQZoneId();
@@ -1762,30 +1796,36 @@ $applicant_id = $siteDetails->applicant_id;
                     $tracking_no = $app_details[0]['tracking_no'];
                     //Site edit
                     $site_params = array(
-                        'name' => $request->input('name'),
-                        'applicant_id' => $applicant_id,
-                        'country_id' => $request->input('country_id'),
-                        'region_id' => $request->input('region_id'),
-                        'district_id' => $request->input('district_id'),
-                        'street' => $request->input('street'),
-                        'telephone' => $request->input('telephone'),
-                        'fax' => $request->input('fax'),
-                        'email' => $request->input('email'),
-                        'website' => $request->input('website'),
-                        'physical_address' => $request->input('physical_address'),
-                        'postal_address' => $request->input('postal_address'),
-                        'business_scale_id' => $request->input('business_scale_id'),
-                        'longitude' => $request->input('longitude'),
-                        'latitude' => $request->input('latitude'),
-
-                        'dola' => Carbon::now(),
-                        'altered_by' => $user_id,
-                        'applicant_as_ltr' => $applicant_as_ltr,
-                        'ltr_id' => $ltr_id,
-                        'applicant_contact_person' => $applicant_contact_person,
-                        'contact_person_id' => $contact_person_id,
-                        'contact_person_startdate' => $contact_person_startdate,
-                        'contact_person_enddate' => $contact_person_enddate
+                         'name' => $request->input('name'),
+                          'applicant_id' => $applicant_id,
+                          'country_id' => $request->input('country_id'),
+                          'region_id' => $request->input('region_id'),
+                          'district_id' => $request->input('district_id'),
+                          'street' => $request->input('street'),
+                          'telephone' => $request->input('telephone'),
+                          'fax' => $request->input('fax'),
+                          'email' => $request->input('email'),
+                          'website' => $request->input('website'),
+                          'physical_address' => $request->input('physical_address'),
+                          'postal_address' => $request->input('postal_address'),
+                          'business_scale_id' => $request->input('business_scale_id'),
+                          'longitude' => $request->input('longitude'),
+                          'latitude' => $request->input('latitude'),
+                          'inspection_activities_id' => $request->input('inspection_activities_id'),
+                          'intermediate_manufacturing_activity_id' => $request->input('intermediate_manufacturing_activity_id'),
+                          'business_type_id' => $request->input('business_type_id'),
+                          'dola' => Carbon::now(),
+                          'altered_by' => $user_id,
+                          'applicant_as_ltr' => $applicant_as_ltr,
+                          'ltr_id' => $ltr_id,
+                          'applicant_as_billingperson' => $applicant_as_billingperson,
+                          'billing_person_id' => $billing_person_id,
+                          'applicant_contact_person' => $applicant_contact_person,
+                          'contact_person_id' => $contact_person_id,
+                          'contract_manufacturing_id' => $contract_manufacturing_id,
+                          'contact_person_startdate' => $contact_person_startdate,
+                          'contact_person_enddate' => $contact_person_enddate
+                         
                     );
                     if (recordExists($site_table, $where_site)) {//just to make sure record exists
                         $previous_data = getPreviousRecords($site_table, $where_site);
@@ -1827,7 +1867,7 @@ $applicant_id = $siteDetails->applicant_id;
                     }
                     $site_params = convertStdClassObjToArray($init_site_params);
                     //Manufacturing site create
-                    $site_params['init_site_id'] = $init_site_id;
+                    $site_params['manufacturer_id'] = $init_site_id;
                     unset($site_params['id']);
                     $site_res = insertRecord($site_table, $site_params, $user_id);
                     if ($site_res['success'] == false) {
@@ -1882,18 +1922,46 @@ $applicant_id = $siteDetails->applicant_id;
                         'section_id' => $section_id,
                         'zone_id' => $zone_id,
                         'gmp_type_id' => $gmp_type_id,
+                        'country_id' => $country_id,
                         'reg_site_id' => $registered_manufacturing_site_id
                     );
-                    $appCodeDetails = (object)$appCodeDetails;
-                    $codes_array = $this->getGmpApplicationTrackingCodes($sub_module_id, $appCodeDetails, $applications_table);
 
+                    $appCodeDetails = (object)$appCodeDetails;
+                    $counter_details = $this->getGmpApplicationTrackingCodes($sub_module_id, $appCodeDetails, $applications_table);
+
+                   
+
+             
+                    $counter = $counter_details['alt_count'];
+
+                     $zone_code = getSingleRecordColValue('par_zones', array('id' => $zone_id), 'zone_code');
+                    $section_code = getSingleRecordColValue('par_sections', array('id' => $section_id), 'code');
+                    $gmp_code = getSingleRecordColValue('par_gmplocation_details', array('id' => $gmp_type_id), 'location_code');
+
+                    $gmp_location = DB::table('par_countries as t1')
+                      ->join('par_gmpcountries_regions as t2', 't1.gmpcountries_region_id', 't2.id')
+                      ->select('t2.code')
+                      ->where(array('t1.id'=>$country_id))
+                       ->first();
+                      if ($gmp_location) {
+                        $gmp_region_code = $gmp_location->code;
+                      }
+             
+                      $codes_array = array(
+                          'section_code' => $section_code,
+                          'zone_code' => $zone_code,
+                          'gmp_type' => $gmp_code,
+                          'gmp_region_code' => $gmp_region_code
+                      );
+                  
                     $view_id = generateApplicationViewID();
-                    //$ref_number = generatePremiseRefNumber($ref_id, $codes_array, date('Y'), $process_id, $zone_id, $user_id);
+                    // $ref_number = generatePremiseRefNumber($ref_id, $codes_array, date('Y'), $process_id, $zone_id, $user_id);
                     $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, $zone_id, $user_id);
                     if ($tracking_details['success'] == false) {
                         return \response()->json($tracking_details);
                     }
-                    $tracking_no = $tracking_details['tracking_no'];
+                    
+                    $tracking_no = $tracking_details['tracking_no'].'/R'.$counter;
 
                     $application_code = generateApplicationCode($sub_module_id, $applications_table);
                     $application_status = getApplicationInitialStatus($module_id, $sub_module_id);
@@ -2001,9 +2069,10 @@ $applicant_id = $siteDetails->applicant_id;
                 $results->manufacturer_country_id = $manufacturer_details->country_id;
             }
             $qry2 = clone $main_qry;
-            $qry2->leftJoin('wb_trader_account as t3', 't2.ltr_id', '=', 't3.id')
-                ->select('t3.id as ltr_id', 't3.name as ltr_name', 't2.applicant_as_ltr', 't3.tin_no', 't3.country_id as ltr_country_id', 't3.region_id as ltr_region_id', 't3.district_id as ltr_district_id', 't3.physical_address as ltr_physical_address',
-                    't3.postal_address as ltr_postal_address', 't3.telephone_no as ltr_telephone', 't3.fax as ltr_fax', 't3.email as ltr_email', 't3.website as ltr_website');
+            $qry2->leftJoin('wb_premises as t3', 't2.ltr_id', '=', 't3.id')
+                ->leftJoin('wb_premises_applications as t3a', 't3.id', '=', 't3a.premise_id')
+               // ->Join('tra_approval_recommendations as t3b', 't3a.application_code', '=', 't3b.application_code')
+                ->select('t3.id as ltr_id','t3.name as ltr_name','t3.tpin_no as ltr_tin_no', 't3.physical_address as link_physical_address');
             $ltrDetails = $qry2->first();
 
             $contactDetails = getTableData('tra_personnel_information', array('id' => $results->contact_person_id));
@@ -2098,9 +2167,10 @@ $applicant_id = $siteDetails->applicant_id;
         }
 
         $qry2 = clone $main_qry;
-        $qry2->join('wb_trader_account as t3', 't1.local_agent_id', '=', 't3.id')
-            ->select('t3.id as ltr_id', 't3.name as ltr_name', 't3.tin_no', 't3.country_id as ltr_country_id', 't3.region_id as ltr_region_id', 't3.district_id as ltr_district_id', 't3.physical_address as ltr_physical_address',
-                't2.applicant_as_ltr', 't3.postal_address as ltr_postal_address', 't3.telephone_no as ltr_telephone', 't3.email as ltr_email', 't3.website as ltr_website');
+        $qry2->leftJoin('tra_premises as t3', 't2.ltr_id', '=', 't3.id')
+                ->leftJoin('tra_premises_applications as t3a', 't3.id', '=', 't3a.premise_id')
+                ->Join('tra_approval_recommendations as t3b', 't3a.application_code', '=', 't3b.application_code')
+                ->select('t3.id as ltr_id', 't3b.permit_no as link_permit_no','t3.name as ltr_name','t3.tpin_no as ltr_tin_no', 't3.physical_address as link_physical_address','t3.telephone as link_telephone');
         $ltrDetails = $qry2->first();
 
         $qry3 = DB::table('tra_personnel_information as t3')
@@ -2145,10 +2215,13 @@ $applicant_id = $siteDetails->applicant_id;
         $results = $qry->first();
 
         $qryLtr = clone $sharedQry;
-        $qryLtr->leftJoin('wb_trader_account as t3', 't2.ltr_id', '=', 't3.id')
-            ->select('t3.id as ltr_id', 't3.name as ltr_name', 't3.tin_no', 't3.country_id as ltr_country_id', 't3.region_id as ltr_region_id', 't3.district_id as ltr_district_id', 't3.physical_address as ltr_physical_address',
-                't2.applicant_as_ltr', 't3.postal_address as ltr_postal_address', 't3.telephone_no as ltr_telephone', 't3.email as ltr_email', 't3.website as ltr_website');
+
+        $qryLtr->leftJoin('tra_premises as t3', 't1.ltr_id', '=', 't3.id')
+                ->leftJoin('tra_premises_applications as t3a', 't3.id', '=', 't3a.premise_id')
+                ->Join('tra_approval_recommendations as t3b', 't3a.application_code', '=', 't3b.application_code')
+                ->select('t3.id as ltr_id', 't3b.permit_no as link_permit_no','t3.name as ltr_name','t3.tpin_no as ltr_tin_no', 't3.physical_address as link_physical_address','t3.telephone as link_telephone');
         $ltrDetails = $qryLtr->first();
+
 
         $qry3 = clone $sharedQry;
         $qry3->leftJoin('tra_personnel_information as t3', 't2.contact_person_id', '=', 't3.id')
@@ -2180,21 +2253,21 @@ $applicant_id = $siteDetails->applicant_id;
                 ->leftJoin('tra_approval_recommendations as t5', 't2.permit_id', '=', 't5.id')
                 ->leftJoin('par_gmplocation_details as t6', 't1.gmp_type_id', '=', 't6.id')
                 ->leftJoin('tra_manufacturers_information as t7', 't2.manufacturer_id', '=', 't7.id')
-                ->leftJoin('tra_pharmacist_personnel as t6aa', 't2.psu_no', '=', 't6aa.psu_no')
                 ->select('t1.*', 't1.id as active_application_id', 't2.name as premise_name',
                     't3.name as applicant_name', 't3.contact_person', 't1.reg_site_id as registered_manufacturing_site_id',
                     't3.tin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
                     't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website',
                     't2.*', 't2.id as manufacturing_site_id', 't4.id as invoice_id', 't4.invoice_no', 't5.permit_no', 't5.permit_no as gmp_cert_no', 't6.name as gmp_type_txt', 't1.gmp_type_id',
-                    't7.name as manufacturer_name', 't7.email_address as manufacturer_email_address', 't7.physical_address as manufacturer_physical_address', 't7.country_id as manufacturer_country_id','t6aa.name as supervising_name','t6aa.psu_date as supervising_psu_date','t6aa.telephone as supervising_telephone_no','t6aa.telephone2 as supervising_telephone_no2','t6aa.telephone3 as supervising_telephone_no3','t6aa.email as supervising_email_address','t6aa.email2 as supervising_email_address2','t6aa.email3 as supervising_email_address3','t6aa.qualification_id as supervising_qualification_id','t6aa.country_id as supervising_country_id','t6aa.region_id as supervising_region_id','t6aa.district_id as supervising_district_id','t6aa.physical_address as supervising_physical_address');
+                    't7.name as manufacturer_name', 't7.email_address as manufacturer_email_address', 't7.physical_address as manufacturer_physical_address', 't7.country_id as manufacturer_country_id');
             $results = $qry1->first();
 
             $qry2 = clone $main_qry;
-            $qry2->leftJoin('wb_trader_account as t3', 't2.ltr_id', '=', 't3.id')
-                ->select('t3.id as ltr_id', 't3.name as ltr_name', 't3.contact_person',
-                    't3.tin_no', 't3.country_id as ltr_country_id', 't3.region_id as ltr_region_id', 't3.district_id as ltr_district_id', 't3.physical_address as ltr_physical_address',
-                    't2.applicant_as_ltr', 't3.postal_address as ltr_postal_address', 't3.telephone_no as ltr_telephone', 't3.fax as ltr_fax', 't3.email as ltr_email', 't3.website as ltr_website');
+            $qry2->leftJoin('tra_premises as t3', 't2.ltr_id', '=', 't3.id')
+                ->leftJoin('tra_premises_applications as t3a', 't3.id', '=', 't3a.premise_id')
+                ->Join('tra_approval_recommendations as t3b', 't3a.application_code', '=', 't3b.application_code')
+                ->select('t3.id as ltr_id', 't3b.permit_no as link_permit_no','t3.name as ltr_name','t3.tpin_no as ltr_tin_no', 't3.physical_address as link_physical_address','t3.telephone as link_telephone');
             $ltrDetails = $qry2->first();
+
 
             $qry3 = clone $main_qry;
             $qry3->leftJoin('tra_personnel_information as t3', 't2.contact_person_id', '=', 't3.id')
@@ -2408,11 +2481,11 @@ $applicant_id = $siteDetails->applicant_id;
                 $siteDetails = $qrySite->first();
 
                 $qryLtr = clone $sharedQry;
-                $qryLtr->leftJoin('wb_trader_account as t2', 't1.ltr_id', '=', 't2.id')
-                    ->select('t2.id as ltr_id', 't2.name as ltr_name', 't2.tin_no',
-                        't2.physical_address as ltr_physical_address', 't2.postal_address as ltr_postal_address', 't2.telephone_no as ltr_telephone',
-                        't1.applicant_as_ltr', 't2.fax as ltr_fax', 't2.email as ltr_email');
-                $ltrDetails = $qryLtr->first();
+                $qryLtr->leftJoin('tra_premises as t2', 't1.ltr_id', '=', 't2.id')
+                ->leftJoin('tra_premises_applications as t2a', 't2.id', '=', 't2a.premise_id')
+                ->Join('tra_approval_recommendations as t2b', 't2a.application_code', '=', 't2b.application_code')
+                ->select('t2.id as ltr_id', 't2b.permit_no as link_permit_no','t2.name as ltr_name','t2.tpin_no as ltr_tin_no', 't2.physical_address as link_physical_address','t2.telephone as link_telephone');
+               $ltrDetails = $qryLtr->first();
 
 
                 $qry = DB::table($table_name . ' as t1')
@@ -2631,7 +2704,9 @@ $applicant_id = $siteDetails->applicant_id;
         $isOnline = $request->input('isOnline');//PORTAL
         try {
             if (validateIsNumeric($isOnline) && $isOnline == 1) {
-                $results = $this->getOnlineSiteBlockDetails($request);
+                //$results = $this->getOnlineSiteBlockDetails($request);
+                $results = $this->getMISSiteBlockDetails($request);
+
             } else {
                 $results = $this->getMISSiteBlockDetails($request);
             }
@@ -2659,9 +2734,14 @@ $applicant_id = $siteDetails->applicant_id;
         $site_id = $request->input('manufacturing_site_id');
         $qry = DB::table('tra_manufacturing_sites_blocks as t1')
             ->leftJoin('par_manufacturinginspection_category as t2', 't1.inspection_category_id', '=', 't2.id')
-            ->leftJoin('par_manufacturinginspection_activities as t3', 't1.inspection_activities_id', '=', 't3.id')
-            ->leftJoin('gmp_productline_details as t4', 't4.manufacturingsite_block_id', '=', 't1.id')
-            ->select('t1.*', 't2.name as inspection_manufacturing_Category', 't3.name as inspection_manufacturing_activity','t4.no_inspection_justification', 't4.inspection_confirmation_id','t4.prodline_inspectionstatus_id', DB::raw('COUNT(DISTINCT t4.id) as lines_no'))
+           // ->leftJoin('par_manufacturinginspection_activities as t3', 't1.inspection_activities_id', '=', 't3.id')
+            ->Join('gmp_productline_details as t4', 't4.manufacturingsite_block_id', '=', 't1.id')
+
+            // ->Join('gmp_productline_details as t4', function ($join) use ($site_id) {
+            //         $join->on('t1.id', '=', 't4.manufacturingsite_block_id')
+            //       ->where('t4.manufacturing_site_id', $site_id);
+            //   })
+            ->select('t1.*', 't2.name as inspection_manufacturing_Category',DB::raw('COUNT(DISTINCT t4.id) as lines_no'))
             ->where('t1.manufacturing_site_id', $site_id)
             ->groupBy('t1.id');
 
@@ -2669,7 +2749,8 @@ $applicant_id = $siteDetails->applicant_id;
         return $results;
     }
 
-    public function getOnlineSiteBlockDetails(Request $request)
+ 
+   public function getOnlineSiteBlockDetails(Request $request)
     {
         $site_id = $request->input('manufacturing_site_id');
         $portal_db = DB::connection('portal_db');
@@ -2678,6 +2759,9 @@ $applicant_id = $siteDetails->applicant_id;
         $results = $qry->get();
         return $results;
     }
+ 
+
+
 
     public function saveSiteOtherDetails(Request $req)
     {
@@ -2762,9 +2846,6 @@ $applicant_id = $siteDetails->applicant_id;
             //unset unnecessary values
             unset($post_data['_token']);
             unset($post_data['table_name']);
-            unset($post_data['inspection_category_id']);
-            unset($post_data['isSpecialCategory']);
-            unset($post_data['special_category_id']);
             unset($post_data['model']);
             unset($post_data['id']);
             $table_data = $post_data;
@@ -2823,6 +2904,7 @@ $applicant_id = $siteDetails->applicant_id;
         }
         return response()->json($res);
     }
+
      public function getGmpInspectionLineDetails(Request $request)
     {
         $site_id = $request->input('site_id');
@@ -2886,6 +2968,38 @@ $applicant_id = $siteDetails->applicant_id;
     //     return response()->json($res);
     // }
 
+
+    public function getGmpProductLineDetails($site_id,$block_id)
+    {   
+        $qry = DB::table('gmp_productline_details as t1')
+            ->leftJoin('gmp_product_lines as t2', 't1.product_line_id', '=', 't2.id')
+            ->leftJoin('gmp_product_categories as t3', 't1.category_id', '=', 't3.id')
+            ->leftJoin('gmp_productlinestatus as t5', 't1.prodline_inspectionstatus_id', '=', 't5.id')
+            ->leftJoin('gmp_prodlinerecommenddesc as t6', 't1.product_line_status_id', '=', 't6.id')
+            ->leftJoin('tra_manufacturing_sites_blocks as t7', 't1.manufacturingsite_block_id', '=', 't7.id')
+            ->leftJoin('gmp_productlinestatus as t8', 't1.prodline_tcmeetingstatus_id', '=', 't8.id')
+            ->leftJoin('gmp_productlinestatus as t9', 't1.prodline_dgstatus_id', '=', 't9.id')
+            ->leftJoin('par_manufacturing_activities as t10', 't1.manufacturing_activity_id', '=', 't10.id')
+            ->leftJoin('par_gmpproduct_types as t11', 't1.category_id', '=', 't11.id')
+            ->leftJoin('par_gmpproduct_types as t16', 't7.special_category_id', '=', 't16.id')
+            ->leftJoin('par_activitity as t12', 't1.active_id', '=', 't12.id')
+            ->leftJoin('par_sterility as t13', 't1.sterile_id', '=', 't13.id')
+            ->leftJoin('par_invasivity as t14', 't1.invasive_id', '=', 't14.id')
+            ->leftJoin('par_medics as t15', 't1.medicated_id', '=', 't15.id')
+            ->where('t1.manufacturing_site_id', $site_id)
+            ->select('t1.*','t2.name as product_line_name', 't11.name as product_line_category','t16.name as special_line_category',           't1.prodline_description as product_line_description',
+                't7.name as block', 't6.name as product_line_status', 't5.name as inspection_recommendation', 't8.name as tc_recommendation', 't9.name as     dg_recommendation','t10.name as activities','t12.name as active','t13.name as sterility', 't14.name as invasive','t15.name as medicated');
+
+         if (isset($block_id) && $block_id != '') {
+                $qry->where('t1.manufacturingsite_block_id', $block_id);
+            }
+        $results = $qry->get();
+        return $results;
+    }
+
+
+
+
     public function getPreviousProductLineDetails(Request $request)
     {
         $site_id = $request->input('site_id');
@@ -2914,38 +3028,7 @@ $applicant_id = $siteDetails->applicant_id;
         return response()->json($res);
     }
 
-    public function getGmpProductLineDetails($site_id,$block_id)
-    {
-        $qry = DB::table('gmp_productline_details as t1')
-            ->leftJoin('gmp_product_lines as t2', 't1.product_line_id', '=', 't2.id')
-            ->leftJoin('par_gmpproduct_types as t3', 't1.category_id', '=', 't3.id')
-            ->leftJoin('gmp_productlinestatus as t5', 't1.prodline_inspectionstatus_id', '=', 't5.id')
-            ->leftJoin('gmp_prodlinerecommenddesc as t6', 't1.product_line_status_id', '=', 't6.id')
-            ->leftJoin('tra_manufacturing_sites_blocks as t7', 't1.manufacturingsite_block_id', '=', 't7.id')
-            ->leftJoin('gmp_productlinestatus as t8', 't1.prodline_tcmeetingstatus_id', '=', 't8.id')
-            ->leftJoin('gmp_productlinestatus as t9', 't1.prodline_dgstatus_id', '=', 't9.id')
-            ->leftJoin('par_manufacturing_activities as t10', 't1.manufacturing_activity_id', '=', 't10.id')
-
-            ->leftJoin('par_medical_device_family as t11', 't1.group_family_id', '=', 't11.id')
-
-            ->leftJoin('par_sterility as t12', 't1.sterile_id', '=', 't12.id')
-
-            ->leftJoin('par_invasivity as t13', 't1.invasive_id', '=', 't13.id')
-
-            ->leftJoin('par_activitity as t14', 't1.active_id', '=', 't14.id')
-            ->leftJoin('par_medics as t15', 't1.medicated_id', '=', 't15.id')
-
-
-            ->where('t1.manufacturing_site_id', $site_id)
-            ->select('t1.*','t2.name as product_line_name', 't3.name as product_line_category', 't1.prodline_description as product_line_description',
-                't7.name as block', 't6.name as product_line_status', 't5.name as inspection_recommendation', 't8.name as tc_recommendation', 't9.name as dg_recommendation','t10.name as activities','t11.name as medical_device_family_name','t12.name as sterile_category','t13.name as invasive_category','t14.name as active_category','t15.name as medicated_category');
-
-         if (isset($block_id) && $block_id != '') {
-                $qry->where('t1.manufacturingsite_block_id', $block_id);
-            }
-        $results = $qry->get();
-        return $results;
-    }
+ 
 
     public function getOnlineApplications(Request $request)
     {
@@ -2968,7 +3051,7 @@ $applicant_id = $siteDetails->applicant_id;
                 $qry->where('t1.sub_module_id', $sub_module_id);
             }
             if (isset($section_id) && $section_id != '') {
-                $qry->where('t1.section_id', $section_id);
+                //$qry->where('t1.section_id', $section_id);
             }
             $results = $qry->get();
             $subModulesData = getParameterItems('sub_modules', '', '');
@@ -3053,7 +3136,7 @@ $applicant_id = $siteDetails->applicant_id;
                 ->join('par_sections as t2', 't1.section_id', '=', 't2.id')
                 ->select('t1.*', 't2.name as section_name');
             if (isset($section_id) && $section_id != '') {
-                $qry->where('t1.section_id', $section_id);
+                //$qry->where('t1.section_id', $section_id);
             }
             $results = $qry->get();
             $res = array(
@@ -3416,12 +3499,10 @@ $applicant_id = $siteDetails->applicant_id;
                 ->leftJoin('par_dosage_forms as t14', 't7.dosage_form_id', '=', 't14.id')
                 ->leftJoin('gmp_productline_details as t15', 't1.gmp_productline_id', '=', 't15.id')
                 ->leftJoin('gmp_product_lines as t16', 't15.product_line_id', '=', 't16.id')
-                ->leftJoin('par_gmpproduct_types as t17', 't15.category_id', '=', 't17.id')
+                ->leftJoin('par_gmpproduct_types  as t17', 't15.category_id', '=', 't17.id')
                 ->leftJoin('tra_manufacturing_sites_blocks as t19', 't15.manufacturingsite_block_id', '=', 't19.id')
-                ->select('t7.*', 't1.*','t2.id as active_application_id','t2.product_id', 't2.applicant_id', 't2.application_code','t2.section_id', 't2.module_id','t2.sub_module_id','t13.name as storage_condition', 't7.brand_name', 't12.tra_product_id', 't8.name as common_name', 't10.name as classification_name',
-                    't7.brand_name as sample_name', 't11.certificate_no', 't14.name as dosage_form',
-                    't16.name as product_line_name', 't17.name as product_line_category', 't15.product_line_description',
-                    't2.product_id', 't19.name as block');
+                ->leftJoin('par_manufacturing_activities as t20', 't15.manufacturing_activity_id', '=', 't20.id')
+                ->select('t7.*', 't1.*','t2.id as active_application_id','t2.product_id', 't2.applicant_id', 't2.application_code','t2.section_id', 't2.module_id','t2.sub_module_id','t13.name as storage_condition', 't7.brand_name', 't12.tra_product_id', 't8.name as common_name', 't10.name as classification_name','t7.brand_name as sample_name', 't11.certificate_no', 't14.name as dosage_form','t16.name as product_line_name', DB::raw("CONCAT(t17.name, '<b> Manufacturing Activity </b>', t20.name) AS product_line_category"),'t15.product_line_description','t2.product_id', 't19.name as block');
             // if (isset($manufacturing_site_id) && is_numeric($manufacturing_site_id)) {
             $qry->where('t1.manufacturing_site_id', $manufacturing_site_id);
             // }
@@ -3602,9 +3683,8 @@ $applicant_id = $siteDetails->applicant_id;
                 ->join('par_gmp_noncompliance_categories as t2', 't1.category_id', '=', 't2.id')
                 ->join('par_gmp_guidelines_references as t3', 't1.reference_id', '=', 't3.id')
                 ->leftJoin('par_query_statuses as t4', 't1.status', '=', 't4.id')
-                //->leftJoin('par_application_sections as t5', 't1.application_section_id', '=', 't5.id')
-                ->leftJoin('par_gmp_assessment_categories as t5', 't1.application_section_id', '=', 't5.id')
-                ->select('t1.*', 't2.name as category', 't3.name as reference', 't4.name as status_name', 't5.name as application_section')
+                ->leftJoin('par_application_sections as t5', 't1.application_section_id', '=', 't5.id')
+                ->select('t1.*', 't2.name as category', 't3.name as reference', 't4.name as status_name', 't5.application_section')
                 ->where('t1.manufacturing_site_id', $site_id);
             $results = $qry->get();
             $res = array(
@@ -3862,7 +3942,7 @@ $applicant_id = $siteDetails->applicant_id;
                     'gmp_product_categories_id' => $product_line->gmp_product_categories_id,
                     'product_line_description' => $product_line->product_line_description,
                     'no_ofproduction_lines' => $product_line->no_ofproduction_lines,
-                    'manufacturingsite_block_no' => $product_line->manufacturingsite_block_no,
+                    //'manufacturingsite_block_no' => $product_line->manufacturingsite_block_no,
                     'prodline_inspectionstatus_id' => $product_line->prodline_inspectionstatus_id,
                     'inspection_confirmation_id' => $product_line->inspection_confirmation_id,
                     'no_inspection_justification' => $product_line->no_inspection_justification
@@ -3875,7 +3955,7 @@ $applicant_id = $siteDetails->applicant_id;
                     $productline_data['dola'] = Carbon::now();
                     $productline_data['altered_by'] = $user_id;
                     $prev_data = getPreviousRecords($table_name, $where);
-                    updateRecord($table_name, $prev_data['results'], $where, $productline_data, $user_id);
+                    $ddd=updateRecord($table_name, $prev_data['results'], $where, $productline_data, $user_id);
                     
                 } else {
                     $insertproductline_data =  $productline_data;
@@ -3923,7 +4003,6 @@ $applicant_id = $siteDetails->applicant_id;
                     $manufacturing_site_id = $inspection_section->manufacturing_site_id;
                     $start_date = $inspection_section->start_date;
                     $inspection_days = $inspection_section->inspection_days;
-                    $inspection_category_id = $inspection_section->inspection_category_id;
                     $end_date = '';
                     
                     $startDateTime = new \DateTime($start_date);
@@ -3937,8 +4016,7 @@ $applicant_id = $siteDetails->applicant_id;
                         'inspection_id' => $inspection_id,
                         //'start_date' => $start_date,
                         'end_date' => $end_date,
-                        'inspection_days' => $inspection_days,
-                        'inspection_category_id' => $inspection_category_id
+                        'inspection_days' => $inspection_days
                     );
 
                     $where = array(

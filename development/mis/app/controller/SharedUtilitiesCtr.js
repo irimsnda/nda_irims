@@ -821,9 +821,22 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'showApplicationCommentsWin'
             },
 
+            'gmpdeskreviewmanagerrecommendationpanel button[name=comments_btn]': {
+                click: 'showApplicationCommentsWin'
+            },
+
+
+
             'singlegmpapprovalpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
+
+
+
+            'singledeskreviewgmpapprovalpanel button[name=comments_btn]': {
+                click: 'showApplicationCommentsWin'
+            },
+
 
 
 

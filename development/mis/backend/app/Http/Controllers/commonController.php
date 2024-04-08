@@ -4028,11 +4028,9 @@ public function saveChecklistApplicationQuery(Request $req)
         $item_resp_id = $request->input('item_resp_id');
         $user_id = $this->user_id;
         $table_name = 'checklistitems_queries';
-        
-            $where = array(
-                'id' => $query_id
+        $where = array(
+                'query_id' => $query_id
             );
-
         
         $table_data = array(
             'status' => 4
@@ -4042,6 +4040,8 @@ public function saveChecklistApplicationQuery(Request $req)
             if ($prev_data['success'] == true) {
                 $previous_data = $prev_data['results'];
                 $res = updateRecord($table_name, $previous_data, $where, $table_data, $user_id);
+
+
                 //update the query ref tracker status
                 if(validateIsNumeric(($query_ref_id))){
                     DB::table('tra_application_query_reftracker')

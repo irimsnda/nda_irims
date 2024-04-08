@@ -99,6 +99,7 @@ Ext.define('Admin.controller.ReportsCtr', {
                 generateProductNotificationCertificate:'generateProductNotificationCertificate',
                 generateProductRejectionLetter: 'generateProductRejectionLetter',
                 generateGmpCertificate: 'generateGMPCertificate',
+                generateGmpInspectionReport: 'generateGmpInspectionReport',
                 generateGmpApprovalLetter: 'generateGmpApprovalLetter',
                 generateClinicalCertificate: 'generateClinicalTrialCertificate',
                 generateImportExportpermit: 'generateImportExportpermit',
@@ -564,6 +565,11 @@ Ext.define('Admin.controller.ReportsCtr', {
     },
     generateGMPCertificate: function (application_code, section_id) {
         var action_url = 'reports/generateGmpCertificate?application_code=' + application_code + '&&section_id=' + section_id;
+        print_report(action_url);
+    },
+
+    generateGmpInspectionReport: function (application_code, section_id) {
+        var action_url = 'reports/generateGmpInspectionReport?application_code=' + application_code + '&&section_id=' + section_id;
         print_report(action_url);
     },
 

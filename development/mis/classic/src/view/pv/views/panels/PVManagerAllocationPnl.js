@@ -42,7 +42,7 @@ Ext.define('Admin.view.pv.views.panels.PVManagerAllocationPnl', {
             }, {
                 xtype: 'displayfield',
                 name: 'application_status',
-                fieldLabel: 'App Status',
+                fieldLabel: 'Report Status',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
@@ -128,7 +128,7 @@ Ext.define('Admin.view.pv.views.panels.PVManagerAllocationPnl', {
             ui: 'footer',
             items: ['->',
                 {
-                    text: 'Submit Application',
+                    text: 'Submit Report',
                     ui: 'soft-blue',
                     iconCls: 'fa fa-check',
                     name: 'process_submission_btn',

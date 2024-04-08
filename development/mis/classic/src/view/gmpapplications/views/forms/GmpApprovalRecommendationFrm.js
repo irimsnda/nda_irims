@@ -38,6 +38,10 @@ Ext.define('Admin.view.gmpapplications.views.forms.GmpApprovalRecommendationFrm'
             xtype: 'hiddenfield',
             name: 'workflow_stage_id'
         },
+          {
+            xtype: 'hiddenfield',
+            name: 'is_update'
+        },
         {
             xtype: 'hiddenfield',
             name: 'table_name'
@@ -88,6 +92,8 @@ Ext.define('Admin.view.gmpapplications.views.forms.GmpApprovalRecommendationFrm'
             xtype: 'datefield',
             fieldLabel: 'Approval Date',
             value: new Date(),
+            hidden:true,
+            allowBlank: true,
           //  maxValue: new Date(),
           //  minValue: Ext.Date.subtract(new Date(), Ext.Date.DAY, approval_lag_days),
             name: 'approval_date',

@@ -136,6 +136,11 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             },
 
 
+            'gmpdeskreviewmanagerrecommendation': {
+                afterrender: 'prepareNewGmpGPRCRecommendation'
+            },
+
+
             'gmpapprovals': {
                 afterrender: 'prepareNewGmpMainApprovals'
             },
@@ -146,6 +151,13 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             'singlegmpapproval': {
                 afterrender: 'prepareNewGmpSingleApproval'
             },
+
+
+            'singledeskreviewgmpapproval': {
+                afterrender: 'prepareNewGmpSingleApproval'
+            },
+
+
             //NEW
             'newgmpreceiving': {
                 afterrender: 'prepareNewGmpReceiving'
@@ -291,7 +303,16 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 click: 'showAddGmpNonComplianceDetails'
             },
 
+
+            'newsingledeskreviewgmpapprovalpanel button[name=non_compliance]': {
+                click: 'showAddGmpNonComplianceDetails'
+            },
+
              'gmpgprcmeetingrecommendationpanel button[name=non_compliance]': {
+                click: 'showAddGmpNonComplianceDetails'
+            },
+
+             'gmpdeskreviewmanagerrecommendationpanel button[name=non_compliance]': {
                 click: 'showAddGmpNonComplianceDetails'
             },
 
@@ -338,10 +359,21 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             'gmpgprcmeetingrecommendationpanel button[name=process_submission_btn]': {
                 click: 'showTCMeetingRecommendationApplicationSubmissionWin'
             },
+
+             'gmpdeskreviewmanagerrecommendationpanel button[name=process_submission_btn]': {
+                click: 'showTCMeetingRecommendationApplicationSubmissionWin'
+            },
+
+
             
             'singlegmpapprovalpanel button[name=process_submission_btn]': {
                 click: 'showSingleApprovalApplicationSubmissionWin'
             },
+
+            'singledeskreviewgmpapprovalpanel button[name=process_submission_btn]': {
+                click: 'showSingleApprovalApplicationSubmissionWin'
+            },
+
             'gmpmanagerquerygrid button[action=process_submission_btn]': {
                 click: 'showManagerQueryApplicationSubmissionWin'
             },
@@ -397,11 +429,20 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 click: 'showGmpApplicationMoreDetails'
             },
 
+             'gmpdeskreviewmanagerrecommendationpanel button[name=more_app_details]': {
+                click: 'showGmpApplicationMoreDetails'
+            },
+
+
             'gmpscreeningpanel button[name=more_app_details]': {
                 click: 'showGmpApplicationMoreDetails'
             },
 
             'gmpinspectionpanel button[name=more_app_details]': {
+                click: 'showGmpApplicationMoreDetails'
+            },
+            
+            'gmpdeskreviewmanagerrecommendationpanel form toolbar button[name=more_app_details]': {
                 click: 'showGmpApplicationMoreDetails'
             },
             
@@ -415,13 +456,31 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 click: 'showGmpApplicationMoreDetails'
             },
 
+            'gmpdeskreviewmangerrecommendationpanel form toolbar button[name=more_app_details]': {
+                click: 'showGmpApplicationMoreDetails'
+            },
+
 
             'singlegmpapprovalpanel form toolbar button[name=more_app_details]': {
                 click: 'showGmpApplicationMoreDetails'
             },
+
+
+
+
+             'singledeskreviewgmpapprovalpanel form toolbar button[name=more_app_details]': {
+                click: 'showGmpApplicationMoreDetails'
+            },
+
             'renewgmpinvoicingpanel form toolbar button[name=more_app_details]': {
                 click: 'showGmpApplicationMoreDetails'
             },
+
+             'gmpdeskreviewmangerrecommendationpanel form toolbar button[name=more_app_details]': {
+                click: 'showGmpApplicationMoreDetails'
+            },
+
+
             'altgmpinvoicingpanel form toolbar button[name=more_app_details]': {
                 click: 'showGmpApplicationMoreDetails'
             },
@@ -488,6 +547,12 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             'newsinglegmpapprovalpanel button[name=show_recommendation]': {
                 click: 'getApplicationApprovalDetails'
             },
+
+            'newsingledeskreviewgmpapprovalpanel button[name=show_recommendation]': {
+                click: 'getApplicationApprovalDetails'
+            },
+
+
             'gmpdeskreviewschedulinggrid button[name=save_btn]': {
                 click: 'saveDeskReviewScheduleDetails'
             },
@@ -5529,6 +5594,11 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+            if(btn.is_update){
+                is_update=btn.is_update;
+            }else{
+                is_update='';
+            }
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -5555,6 +5625,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                     form.down('hiddenfield[name=application_id]').setValue(application_id);
                     form.down('hiddenfield[name=application_code]').setValue(application_code);
                     form.down('hiddenfield[name=process_id]').setValue(process_id);
+                    form.down('hiddenfield[name=is_update]').setValue(is_update);
                     form.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_stage_id);
                     funcShowOnlineCustomizableWindow('Recommendation', '60%', form, 'customizablewindow');
                 } else {

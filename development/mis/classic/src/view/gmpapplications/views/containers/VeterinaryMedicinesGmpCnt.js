@@ -22,7 +22,7 @@ Ext.define('Admin.view.gmpapplications.views.containers.VeterinaryMedicinesGmpCn
             region: 'center'
         },
         {
-            xtype: 'preveterinarymedicinesgmptb',
+            xtype: 'veterinarymedicinesgmptb',
             region: 'south'
         }
     ]

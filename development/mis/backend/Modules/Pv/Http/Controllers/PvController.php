@@ -999,16 +999,18 @@ public function getWHOCasaultyAssessment(Request $request)
                         ->on('t1.workflow_stage_id', '=', 't7.current_stage');
                 })
                 ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
-                ->join('wf_processes as t4', 't7.process_id', '=', 't4.id')
+                ->join('wf_tfdaprocesses as t4', 't7.process_id', '=', 't4.id')
                 ->leftJoin('wf_workflow_stages as t5', 't7.current_stage', '=', 't5.id')
                 ->leftJoin('par_system_statuses as t6', 't1.application_status_id', '=', 't6.id')
                 ->leftJoin('users as t8', 't7.usr_from', '=', 't8.id')
                 ->leftJoin('users as t9', 't7.usr_to', '=', 't9.id')
-                ->select(DB::raw("t7.date_received, CONCAT(decryptval(t8.first_name,".getDecryptFunParams()."),' ',decryptval(t8.last_name,".getDecryptFunParams().")) as from_user,CONCAT(decryptval(t9.first_name,".getDecryptFunParams()."),' ',decryptval(t9.last_name,".getDecryptFunParams().")) as to_user,  t1.id as active_application_id, t1.application_code, t4.module_id, t4.sub_module_id, t4.section_id,
+             
+                ->select(DB::raw("t7.date_received, CONCAT_WS(' ',decrypt(t8.first_name),decrypt(t8.last_name)) as from_user, CONCAT_WS(' ',decrypt(t9.first_name),decrypt(t9.last_name))  as to_user,  t1.id as active_application_id, t1.application_code, t4.module_id, t4.sub_module_id, t4.section_id,
                     t6.name as application_status, t3.name as applicant_name, t4.name as process_name, t5.name as workflow_stage, t5.is_general, t3.contact_person,
                     t3.tpin_no, t3.country_id as app_country_id, t3.region_id as app_region_id, t3.district_id as app_district_id, t3.physical_address as app_physical_address,
                     t3.postal_address as app_postal_address, t3.telephone_no as app_telephone, t3.fax as app_fax, t3.email as app_email, t3.website as app_website,
                     t1.*"))
+
                 ->where('t5.stage_status','<>',3)
                 ->where('isDone', 0);
 
@@ -1179,8 +1181,21 @@ public function getWHOCasaultyAssessment(Request $request)
                 //reporter and cc contact person
                 sendMailFromNotification($reporter->reporter_name, $reporter->reporter_email,$subject, $response,'', '');
                 // //their contact person
-                // sendMailFromNotification($applicant->contact_person, $applicant->contact_person_email,$subject, $response,'pv@bomra.bw', '');
+                // sendMailFromNotification($applicant->contact_person, $applicant->contact_person_email,$subject, $response,'pv@nda.or.ug', '');
             }
+
+
+            //  $email_address = 'kenedymuthui1@gmail.com';
+            //  $vars = array(
+            //     '{module_name}' => $module_name,
+            //     '{process_name}' => $process_name,
+            //     '{process_stage}' => $process_stage,
+            //     '{application_no}' => $rec->reference_no .' '.$rec->tracking_no
+            // );
+            // $email_res =sendTemplatedApplicationNotificationEmail(36, $email_address,$vars);
+                              
+
+
             //update db
             $where = array(
                 'application_code' => $application_code

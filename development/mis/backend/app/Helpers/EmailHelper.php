@@ -198,12 +198,17 @@ class EmailHelper
 
 	     });
 
-		 if (Mail::failures()) {
-		 	$data = array('success'=>false, 'message'=>'Email submission failed, contact system admin for further guidelines');
-		 }
-		 else{
-		 	$data = array('success'=>true, 'message'=>'Email Sent successfully');
-		 }
+		 // if (Mail::failures()) {
+		 // 	$data = array('success'=>false, 'message'=>'Email submission failed, contact system admin for further guidelines');
+		 // }
+		 // else{
+		 // 	$data = array('success'=>true, 'message'=>'Email Sent successfully');
+		 // }
+         if (Mail::flushMacros ()){
+            $data = array('success'=>false, 'message'=>'Email submission failed, contact system admin for further guidelines');
+        } else {
+            $data = array('success'=>true, 'message'=>'Email Sent successfully');
+        }
 		 return $data;
        // return true;
 	}
@@ -248,12 +253,12 @@ class EmailHelper
 
         });
 
-        if (Mail::failures()) {
+        if (Mail::flushMacros ()){
             $data = array('success'=>false, 'message'=>'Email submission failed, contact system admin for further guidelines');
-        }
-        else{
+        } else {
             $data = array('success'=>true, 'message'=>'Email Sent successfully');
         }
+         return $data;
         return $data;
     }
 

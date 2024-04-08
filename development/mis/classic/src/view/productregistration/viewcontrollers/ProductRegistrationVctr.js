@@ -961,7 +961,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             applicant_id = applicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue(),
             is_local_applicant = applicantDetailsForm.down('hiddenfield[name=is_local]').getValue(),
             localApplicantDetailsForm = containerPnl.down('productlocalapplicantdetailsfrm'),
-            local_applicant_id = localApplicantDetailsForm.down('hiddenfield[name=premise_id]').getValue(),
+            local_applicant_id = localApplicantDetailsForm.down('hiddenfield[name=ltr_id]').getValue(),
             productDetailsForm = containerPnl.down('#productsDetailsFrm'),
             //zone_id = 2,
             productDetailsFrm = productDetailsForm.getForm();

@@ -408,6 +408,15 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             }else{
                 activeIndex--;
             }
+
+             if(activeIndex > 0 && direction == 'next'){
+               if(application_id){
+                    //fgdg
+                }else{
+                    toastr.warning('Please save application details first!!', 'Warning Response');
+                    return false;
+                }
+              }
             
             if(activeIndex > 1 && direction == 'next'){
                 if(application_id){
@@ -1124,7 +1133,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             Ext.each(selected_records, function (item) {
                 selected.push(item.data.application_code);
             });
-            var url = 'pv/exportAdrReport?selected=' + encodeURIComponent(JSON.stringify(selected));
+            var url = 'integration/generateUploadableE2BFile?selected=' + encodeURIComponent(JSON.stringify(selected));
             print_report(url);
         }
         

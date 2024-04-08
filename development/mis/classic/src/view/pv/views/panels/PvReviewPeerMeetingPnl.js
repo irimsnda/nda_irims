@@ -48,7 +48,7 @@ Ext.define('Admin.view.pv.views.panels.PvReviewPeerMeetingPnl', {
             }, {
                 xtype: 'displayfield',
                 name: 'application_status',
-                fieldLabel: 'App Status',
+                fieldLabel: 'Report Status',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
@@ -146,7 +146,7 @@ Ext.define('Admin.view.pv.views.panels.PvReviewPeerMeetingPnl', {
         itemId: 'application_list',
         reference: 'application_list',
         is_meeting: 0,
-        title: 'Applications Ready For the Review',
+        title: 'Reports Ready For the Review',
         header: {
             style: {
                 backgroundColor: '#2eadf5'

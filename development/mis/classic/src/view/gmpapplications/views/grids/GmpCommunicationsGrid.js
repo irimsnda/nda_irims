@@ -150,6 +150,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpCommunicationsGrid', {
     },{
         xtype: 'widgetcolumn',
         width: 120,
+        hidden:true,
         widget: {
             width: 120,
             textAlign: 'left',
@@ -231,6 +232,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpCommunicationsGrid', {
                                     text: 'GMP Approval Letter',
                                     iconCls: 'x-fa fa-certificate',
                                     name: 'approval_letter',
+                                    hidden:true,
                                     handler: 'printGmpApprovalLetter'
                                 },
                                 {

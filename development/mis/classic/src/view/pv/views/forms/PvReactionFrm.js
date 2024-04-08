@@ -274,9 +274,12 @@ Ext.define('Admin.view.pv.views.forms.PvReactionFrm', {
 
                     if(newVal == 2){
                         seriousness_id.setReadOnly(true);
+                        seriousness_id.allowBlank = true;
                       
                     }else{
                          seriousness_id.setReadOnly(false);
+                         seriousness_id.allowBlank = false;
+                         seriousness_id.validate();
                     }
                 }
               }

@@ -2474,11 +2474,13 @@ $include-admin-view-gmpapplications-views-maininterfaces-cancellation-cancelgmpc
 $include-admin-view-gmpapplications-views-maininterfaces-cancellation-cancelgmponlinepreviewpnl: dynamic(true);;
 $include-admin-view-gmpapplications-views-maininterfaces-cancellation-cancelgmpreceiving: dynamic(true);;
 $include-admin-view-gmpapplications-views-maininterfaces-new-editgmpapplication: dynamic(true);;
+$include-admin-view-gmpapplications-views-maininterfaces-new-newdeskreviewsinglegmpapproval: dynamic(true);;
 $include-admin-view-gmpapplications-views-maininterfaces-new-newgmpconsitionalapprovals: dynamic(true);;
 $include-admin-view-gmpapplications-views-maininterfaces-new-newgmpapprovalfordeskreview: dynamic(true);;
 $include-admin-view-gmpapplications-views-maininterfaces-new-newgmpapprovals: dynamic(true);;
 $include-admin-view-gmpapplications-views-maininterfaces-new-newgmpcommunication: dynamic(true);;
 $include-admin-view-gmpapplications-views-maininterfaces-new-newgmpcustomerconfrmation: dynamic(true);;
+$include-admin-view-gmpapplications-views-maininterfaces-new-newgmpdeskreviewmanagerrecommendation: dynamic(true);;
 $include-admin-view-gmpapplications-views-maininterfaces-new-newgmpdeskreviewprocess: dynamic(true);;
 $include-admin-view-gmpapplications-views-maininterfaces-new-newgmpdeskreviewscheduling: dynamic(true);;
 $include-admin-view-gmpapplications-views-maininterfaces-new-newgmpdeskreviewuploads: dynamic(true);;
@@ -2572,6 +2574,7 @@ $include-admin-view-gmpapplications-views-panels-new-newgmpsmfuploadspanel: dyna
 $include-admin-view-gmpapplications-views-panels-new-newgmptcmeetingrecommendationpanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-panels-new-newgmptcmeetingschedulingpanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-panels-new-newsinglegmpapprovalpanel: dynamic(true);;
+$include-admin-view-gmpapplications-views-panels-new-newsinglegmpdeskreviewapprovalpanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-panels-renewal-renewgmpapprovalfordeskreviewpanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-panels-renewal-renewgmpapprovalspanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-panels-renewal-renewgmpcommunicationpanel: dynamic(true);;
@@ -2592,6 +2595,7 @@ $include-admin-view-gmpapplications-views-panels-renewal-renewsinglegmpapprovalp
 $include-admin-view-gmpapplications-views-sharedinterfaces-main-gmpapprovalfordeskreview: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-main-gmpapprovals: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-main-gmpcommunication: dynamic(true);;
+$include-admin-view-gmpapplications-views-sharedinterfaces-main-gmpdeskreviewmanagerrecommendation: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-main-gmpdeskreviewprocess: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-main-gmpdeskreviewscheduling: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-main-gmpdeskreviewuploads: dynamic(true);;
@@ -2614,11 +2618,13 @@ $include-admin-view-gmpapplications-views-sharedinterfaces-main-gmpscreeningpane
 $include-admin-view-gmpapplications-views-sharedinterfaces-main-gmpsmfuploads: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-main-gmptcmeetingrecommendation: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-main-gmptcmeetingscheduling: dynamic(true);;
+$include-admin-view-gmpapplications-views-sharedinterfaces-main-singledeskreviewgmpapproval: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-main-singlegmpapproval: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-panels-gmpapprovalfordeskreviewpanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-panels-gmpapprovalspanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-panels-gmpcommunicationpanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-panels-gmpconditionalapprovalspanel: dynamic(true);;
+$include-admin-view-gmpapplications-views-sharedinterfaces-panels-gmpdeskreviewmanagerrecommendationpanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-panels-gmpdeskreviewprocesspanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-panels-gmpdeskreviewschedulingpanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-panels-gmpdeskreviewuploadspanel: dynamic(true);;
@@ -2637,6 +2643,7 @@ $include-admin-view-gmpapplications-views-sharedinterfaces-panels-gmpscreeningpn
 $include-admin-view-gmpapplications-views-sharedinterfaces-panels-gmpsmfuploadspanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-panels-gmptcmeetingrecommendationpanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-panels-gmptcmeetingschedulingpanel: dynamic(true);;
+$include-admin-view-gmpapplications-views-sharedinterfaces-panels-singledeskreviewgmpapprovalpanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-sharedinterfaces-panels-singlegmpapprovalpanel: dynamic(true);;
 $include-admin-view-gmpapplications-views-toolbars-drugsgmptb: dynamic(true);;
 $include-admin-view-gmpapplications-views-toolbars-meddevicesgmptb: dynamic(true);;
