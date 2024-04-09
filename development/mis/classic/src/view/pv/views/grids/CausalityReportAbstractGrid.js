@@ -88,6 +88,25 @@ Ext.define('Admin.view.pv.views.grids.CausalityReportAbstractGrid', {
 
                     return message;
                 }
+            },{
+                xtype: 'gridcolumn',
+                dataIndex: 'comment', 
+                tdCls: 'wrap-text',
+                text: ' Comment(Assessor)',
+                flex:1,
+                editor: {
+                    xtype: 'textareafield'
+                }
+            },
+            {
+                xtype: 'gridcolumn',
+                dataIndex: 'reviewer_comment', 
+                tdCls: 'wrap-text',
+                text: ' Comment(Reviewer)',
+                flex:1,
+                editor: {
+                    xtype: 'textareafield'
+                }
             }
         ];
             this.columns = defaultColumns.concat(this.columns);

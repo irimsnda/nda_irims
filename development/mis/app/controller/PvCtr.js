@@ -327,6 +327,7 @@ Ext.define('Admin.controller.PvCtr', {
 
             app_doc_types_store = activeTab.down('combo[name=applicable_documents]').getStore(),
             pvpatientFrm = activeTab.down('pvpatientFrm'),
+            pvSuspectedassessmentDrugGrid = activeTab.down('pvSuspectedassessmentDrugGrid'),
             // localagentFrm = activeTab.down('productlocalapplicantdetailsfrm'),
             detailsFrm = activeTab.down('pvDetailsFrm'),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
@@ -374,6 +375,19 @@ Ext.define('Admin.controller.PvCtr', {
                         pvpatientFrm.loadRecord(model);
                         // localagentFrm.loadRecord(ltr_model);
                         activeTab.down('hiddenfield[name=invoice_id]').setValue(results.invoice_id);
+                        if(results.report_category_id==3){
+                              console.log(111);
+                              var add_btn = pvSuspectedassessmentDrugGrid.down('button[name=update_report]'),
+                                whoWidgetCol = pvSuspectedassessmentDrugGrid.columns[pvSuspectedassessmentDrugGrid.columns.length - 2];
+                                naranjoWidgetCol = pvSuspectedassessmentDrugGrid.columns[pvSuspectedassessmentDrugGrid.columns.length - 3];
+                                outComeWidgetCol = pvSuspectedassessmentDrugGrid.columns[pvSuspectedassessmentDrugGrid.columns.length - 4];
+                                eafiCategoryWidgetCol = pvSuspectedassessmentDrugGrid.columns[pvSuspectedassessmentDrugGrid.columns.length - 5];
+                                add_btn.setVisible(true);
+                                whoWidgetCol.setHidden(true);
+                                outComeWidgetCol.setHidden(true);
+                                naranjoWidgetCol.setHidden(true);
+                                eafiCategoryWidgetCol.setHidden(false);
+                        }
 
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -523,54 +537,6 @@ Ext.define('Admin.controller.PvCtr', {
             toastr.warning('Please Enter All the required Required Patient Details!!', 'Warning Response');
             return false;
         }
-
-        if (pvreactionGrid.getStore().data.length < 1) {
-            toastr.warning('No Cost Elements Selected For Invoicing!!', 'Warning Response');
-            return false;
-        }
-
-
-        //  if(pvreactionGridStr){
-        //     // pvreactionGridStr.removeAll();
-        //     // pvreactionGridStr.load();
-        //     if(pvreactionGridStr.getCount()==0){
-        //         toastr.warning('Please add atleast one Reaction', 'Warning Response');
-        //         return false;
-        //     }
-        // }else{
-        //     toastr.warning('Please add atleast one Reaction', 'Warning Response');
-        //     return false;
-        // }
-
-        //  if (pvSuspectedDrugGridStr) {
-        //     console.log(pvSuspectedDrugGridStr);
-        //     var hasSuspectDrug = false;
-        //     pvSuspectedDrugGridStr.each(function(record) {
-        //         if (record.get('drug_role_id') === 1) {
-        //             hasSuspectDrug = true;
-        //             return false; // Exit the loop early since we found a suspect drug
-        //         }
-        //     });
-        //     if (!hasSuspectDrug) {
-        //         toastr.warning('At least one Suspect Drug is required', 'Warning Response');
-        //         return false;
-        //     }
-        //   } else {
-        //     toastr.warning('Please add at least one Reaction', 'Warning Response');
-        //     return false;
-        //   }
-
-        //  if(pvreporterGridStr){
-        //     if(pvreporterGridStr.getCount()==0){
-        //         toastr.warning('Please add atleast one Reporter', 'Warning Response');
-        //         return false;
-        //     }
-        // }else{
-        //     toastr.warning('Please add atleast one Reporter', 'Warning Response');
-        //     return false;
-        // }
-
-
         
         return true;
     }, 

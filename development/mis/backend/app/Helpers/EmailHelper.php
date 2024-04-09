@@ -258,7 +258,6 @@ class EmailHelper
         } else {
             $data = array('success'=>true, 'message'=>'Email Sent successfully');
         }
-         return $data;
         return $data;
     }
 

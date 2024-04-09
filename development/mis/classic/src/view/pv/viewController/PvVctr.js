@@ -221,6 +221,8 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             var record = store.data.items [i],
                  question_id = record.get('question_id'),
                  report = record.get('report'),
+                 comment = record.get('comment'),
+                 reviewer_comment = record.get('reviewer_comment'),
                  score_id = record.get('score_id'),
                  id = record.get('id');
 
@@ -233,6 +235,8 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
                 id: id,
                 reaction_id: reaction_id,
                 question_id: question_id,
+                comment: comment === null ? '' : comment, // If comment is null, set it to empty string
+                reviewer_comment: reviewer_comment === null ? '' : reviewer_comment, // If comment is null, set it to empty string
                 application_code: application_code,
                 score_id: score_id,
                 created_by: user_id
@@ -317,6 +321,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
                  question_id = record.get('question_id'),
                  report = record.get('report'),
                  comment = record.get('comment'),
+                 reviewer_comment = record.get('reviewer_comment'),
                  score_id = record.get('score_id'),
                  id = record.get('id');
 
@@ -330,6 +335,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
                 reaction_id: reaction_id,
                 question_id: question_id,
                 comment: comment === null ? '' : comment, // If comment is null, set it to empty string
+                reviewer_comment: reviewer_comment === null ? '' : reviewer_comment, // If comment is null, set it to empty string
                 application_code: application_code,
                 score_id: score_id,
                 created_by: user_id

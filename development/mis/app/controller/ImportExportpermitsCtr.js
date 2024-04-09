@@ -975,17 +975,29 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
 
     // },
 
-    generateImportExportPermit: function (item) {
-        var record = item.getWidgetRecord(),
+    // generateImportExportPermit: function (item) {
+    //     var record = item.getWidgetRecord(),
+    //         application_code = record.get('application_code');
+    //         module_id = record.get('module_id');
+    //         sub_module_id = record.get('sub_module_id');
+    //         licence_type_id = record.get('licence_type_id');
+    //         has_registered_premises = record.get('has_registered_premises');
+    //         report_type_id = 3;
+    //         isPreview = 0;
+    //     this.fireEvent('generateImportExportPermit', application_code,module_id,sub_module_id,licence_type_id,has_registered_premises,report_type_id,isPreview);
+    // },
+
+
+     generateImportExportPermit: function (item) {
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord(),
             application_code = record.get('application_code');
             module_id = record.get('module_id');
-            sub_module_id = record.get('sub_module_id');
-            licence_type_id = record.get('licence_type_id');
-            has_registered_premises = record.get('has_registered_premises');
-            report_type_id = 3;
-            isPreview = 0;
-        this.fireEvent('generateImportExportPermit', application_code,module_id,sub_module_id,licence_type_id,has_registered_premises,report_type_id,isPreview);
+            this.fireEvent('generateImportExportpermit', application_code,module_id,'');
+            
     },
+
+    
     // generateImportExportVCPermit: function (item) {
     //     var record = item.getWidgetRecord(),
     //         application_code = record.get('application_code');

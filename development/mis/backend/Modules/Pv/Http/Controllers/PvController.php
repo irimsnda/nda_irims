@@ -242,6 +242,8 @@ public function getWHOCasaultyAssessment(Request $request)
                     $reaction_id = $report_question->reaction_id;
                     $score_id = $report_question->score_id;
                     $score = '';
+                    $comment = isset($report_question->comment) ? $report_question->comment : '';
+                    $reviewer_comment = isset($report_question->reviewer_comment) ? $report_question->reviewer_comment : '';
                     if (recordExists('tra_pv_who_causality_assessment', $where = array('application_code' => $application_code,'reaction_id' => $reaction_id))) {
                             $res = array(
                                 'success' => false,
@@ -349,6 +351,8 @@ public function getWHOCasaultyAssessment(Request $request)
                         'question_id' => $question_id,
                         'application_code' => $application_code,
                         'score_id' => $score_id,
+                        'comment' => $comment,
+                        'reviewer_comment' => $reviewer_comment,
                         'score' => $score
                     );
 
@@ -417,6 +421,7 @@ public function getWHOCasaultyAssessment(Request $request)
                     $reaction_id = $report_question->reaction_id;
                     $score_id = $report_question->score_id;
                     $comment = isset($report_question->comment) ? $report_question->comment : '';
+                    $reviewer_comment = isset($report_question->reviewer_comment) ? $report_question->reviewer_comment : '';
 
 
                      if (recordExists('tra_pv_causality_assessment', $where = array('application_code' => $application_code,'reaction_id' => $reaction_id))) {
@@ -432,6 +437,7 @@ public function getWHOCasaultyAssessment(Request $request)
                         'reaction_id' => $reaction_id,
                         'question_id' => $question_id,
                         'comment' => $comment,
+                        'reviewer_comment' => $reviewer_comment,
                         'application_code' => $application_code,
                         'score_id' => $score_id
                     );
@@ -779,12 +785,11 @@ public function getWHOCasaultyAssessment(Request $request)
 
               
                         $certainQuestionIds = [1, 2, 3, 4, 5];
-                        $probableQuestionIds = [6, 7, 8, 9];
-                        $possibleQuestionIds = [6, 10, 11];
-                        $unlikelyQuestionIds = [12, 13];
-                        $conditionalQuestionIds = [14, 15];
-                        $unassessableQuestionIds = [17, 18];
-
+                        $probableQuestionIds = [1, 2, 3, 4];
+                        $possibleQuestionIds = [1, 4];
+                        $unlikelyQuestionIds = [4];
+                        $conditionalQuestionIds = [6,7];
+                        $unassessableQuestionIds = [8];
                    
                         $maxOutcome = '';
 

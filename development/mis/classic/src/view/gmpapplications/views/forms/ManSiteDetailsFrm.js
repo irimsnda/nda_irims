@@ -313,7 +313,7 @@ Ext.define('Admin.view.gmpapplications.views.forms.ManSiteDetailsFrm', {
                 name: 'county_id',
                 hidden:true,
                 readOnly:false,
-                allowBlank:false,
+                allowBlank:true,
                 forceSelection: true,
                 queryMode: 'local',
                 valueField: 'id',
@@ -689,7 +689,7 @@ Ext.define('Admin.view.gmpapplications.views.forms.ManSiteDetailsFrm', {
                         xtype: 'textfield',
                         name: 'psu_no',
                         columnWidth: 0.9,
-                        allowBlank: true,
+                        allowBlank:true,
                         fieldLabel: 'P.S.U Registration No'
                     },
                     {

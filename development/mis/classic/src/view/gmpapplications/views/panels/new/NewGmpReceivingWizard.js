@@ -112,8 +112,8 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                                 parish_id.setVisible(false);
                                 village_id.setVisible(false);
                                 region_id.allowBlank = true;
-                                countryStore.removeAll();
-                                countryStore.load();
+                                // countryStore.removeAll();
+                                // countryStore.load();
                             }
                         }
                     }

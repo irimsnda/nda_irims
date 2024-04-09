@@ -4900,13 +4900,18 @@ public function initiatemappingProductRegistrationSubmission(Request $req){
             $records_migrated =0;
                 $records = DB::table('tra_product_applications as t1')
                                 ->join('tra_product_information as t2','t1.product_id', 't2.id')
-                                ->leftJoin('herbal_medicinal_productsjuly as t3', 't1.reference_no', 't3.Ref_Number')
+                               // ->leftJoin('herbal_medicinal_productsjuly as t3', 't1.reference_no', 't3.Ref_Number')
                                 ->select('t1.*', 't2.*', 't1.id as application_id')
                             
                                 ->get();
                 if($records){
                     foreach($records as $rec){
-                        $destination_process = 178;
+                        if($rec->section_id==1 || $rec->section_id==6){
+                             $destination_process = 12410;  
+                        }else{
+                             $destination_process = 12411;  
+                        }
+                         //human 12410    vet 12411
                         $sub_rec = DB::table('tra_submissions')->where(array('application_code'=>$rec->application_code,'current_stage'=>$destination_process,'isDone'=>0))->first();
 
                         if(!$sub_rec){
@@ -4973,6 +4978,9 @@ public function initiatemappingProductRegistrationSubmission(Request $req){
 
 
 }
+
+
+
 public function initiatNewCosmeticsProductsemigrateDetails(Request $req){
     try{
         $res = 'Error occurred';

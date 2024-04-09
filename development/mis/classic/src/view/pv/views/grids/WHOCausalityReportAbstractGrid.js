@@ -37,7 +37,7 @@ Ext.define('Admin.view.pv.views.grids.WHOCausalityReportAbstractGrid', {
                                 pageSize: 1000,
                                 proxy: {
                                     extraParams: {
-                                        table_name: 'par_confirmations'
+                                        table_name: 'par_pv_assessment_confirmation'
                                     }
                                 }
                             },
@@ -47,11 +47,11 @@ Ext.define('Admin.view.pv.views.grids.WHOCausalityReportAbstractGrid', {
                 },
                 summaryType: function (records, values) {
                     let certainQuestionIds = [1, 2, 3, 4, 5];
-                    let probableQuestionIds = [6, 7, 8, 9];
-                    let possibleQuestionIds = [6, 10, 11];
-                    let unlikelyQuestionIds = [12, 13];
-                    let conditionalQuestionIds = [14, 15];
-                    let unassessableQuestionIds = [17, 18];
+                    let probableQuestionIds = [1, 2, 3, 4];
+                    let possibleQuestionIds = [1, 4];
+                    let unlikelyQuestionIds = [4];
+                    let conditionalQuestionIds = [6,7];
+                    let unassessableQuestionIds = [8];
 
                     let outcomeCounts = {};
 
@@ -94,7 +94,7 @@ Ext.define('Admin.view.pv.views.grids.WHOCausalityReportAbstractGrid', {
                     return 'Outcome Unknown';
                 },
                 renderer: function (val, meta, record, rowIndex, colIndex, store, view) {
-                    var textVal = 'Select Yes or No';
+                    var textVal = 'Select yes or No or Do Not Know';
                     if (val) {
                         if (view.grid.columns[colIndex].getEditor().getStore().getById(val)) {
                             textVal = view.grid.columns[colIndex].getEditor().getStore().getById(val).data.name;
@@ -110,7 +110,17 @@ Ext.define('Admin.view.pv.views.grids.WHOCausalityReportAbstractGrid', {
                 xtype: 'gridcolumn',
                 dataIndex: 'comment', 
                 tdCls: 'wrap-text',
-                text: 'Comment',
+                text: ' Comment(Assessor)',
+                flex:1,
+                editor: {
+                    xtype: 'textareafield'
+                }
+            },
+            {
+                xtype: 'gridcolumn',
+                dataIndex: 'reviewer_comment', 
+                tdCls: 'wrap-text',
+                text: ' Comment(Reviewer)',
                 flex:1,
                 editor: {
                     xtype: 'textareafield'

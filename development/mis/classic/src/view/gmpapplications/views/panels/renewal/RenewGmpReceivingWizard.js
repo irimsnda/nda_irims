@@ -144,9 +144,24 @@ Ext.define('Admin.view.gmpapplications.views.panels.renewal.RenewGmpReceivingWiz
         {
             xtype: 'gmpappdocuploadsgenericgrid'
         },
-        {
-            xtype: 'gmpscreeninggrid'
-        }
+        // {
+        //     xtype: 'gmpscreeninggrid'
+        // },
+        {   
+        xtype: 'tabpanel',
+        autoScroll: true,
+        items:[{
+                    xtype: 'gmpscreeninggrid',
+                    title:'Pre Checking'
+               
+
+                },{
+                    xtype: 'appinvoicepaymentspanel',
+                    title:'Invoicing'
+                }
+               ]
+        },
+
     ],
 
     initComponent: function () {
@@ -204,7 +219,7 @@ Ext.define('Admin.view.gmpapplications.views.panels.renewal.RenewGmpReceivingWiz
                     step: 5,
                     iconCls: 'fa fa-check-square',
                     enableToggle: true,
-                    text: 'PRE-CHECKING',
+                    text: 'PRE-CHECKING & INVOICING',
                     action: 'quickNav'
                 }
             ]

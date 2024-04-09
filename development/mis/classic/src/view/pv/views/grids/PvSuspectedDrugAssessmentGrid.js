@@ -25,6 +25,7 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugAssessmentGrid', {
         xtype: 'button',
         text: 'AEFI Category',
         iconCls: 'x-fa fa-plus',
+        hidden:true,
         name:'update_report',
         handler:'updateAEFICategory',
         ui: 'soft-green',
@@ -118,17 +119,10 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugAssessmentGrid', {
         flex: 1,
         tdCls: 'wrap-text'
     },
-
-    // {
-    //     xtype: 'gridcolumn',
-    //     dataIndex: 'aefi_category',
-    //     text: 'AEFI Category',
-    //     tdCls: 'wrap',
-    //     flex: 1,
-    // },
     {
         xtype: 'gridcolumn',
         dataIndex: 'aefi_category_id',
+        hidden:true,
         text: 'AEFI Category',
         width: 100,
         editor: {
