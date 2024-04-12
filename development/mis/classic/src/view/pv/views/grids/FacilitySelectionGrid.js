@@ -1,8 +1,7 @@
-
-Ext.define('Admin.view.productregistration.views.grids.GmpLTRSelectionGrid', {
+Ext.define('Admin.view.pv.views.grids.FacilitySelectionGrid', {
     extend: 'Ext.grid.Panel',
-    controller: 'productregistrationvctr',
-    xtype: 'gmpltrselectiongrid',
+    controller: 'pvvctr',
+    xtype: 'facilitySelectionGrid',
     cls: 'dashboard-todo-list',
     autoScroll: true,
     autoHeight: true,
@@ -33,16 +32,9 @@ Ext.define('Admin.view.productregistration.views.grids.GmpLTRSelectionGrid', {
         },
         {
             xtype: 'hiddenfield',
-            name: 'section_id'
-        },
-        {
-            xtype: 'hiddenfield',
-            name: 'gmp_type_id'
-        },
-        {
-            xtype: 'hiddenfield',
             name: 'region_id'
-        },{
+        },
+        {
             xtype: 'hiddenfield',
             name: 'district_id'
         }
@@ -56,24 +48,25 @@ Ext.define('Admin.view.productregistration.views.grids.GmpLTRSelectionGrid', {
         beforeLoad: function () {
             var store = this.getStore(),
                 grid = this.up('grid'),
-                section_id = grid.down('hiddenfield[name=section_id]').getValue();
                 region_id = grid.down('hiddenfield[name=region_id]').getValue();
                 district_id = grid.down('hiddenfield[name=district_id]').getValue();
-            store.getProxy().extraParams = {
-                section_id: section_id,
+                store.getProxy().extraParams = {
                 region_id: region_id,
                 district_id: district_id
             };
         }
     }],
-    /* features: [{
-         ftype: 'searching',
-         minChars: 2,
-         mode: 'local'
-     }],*/
+
     plugins: [{
         ptype: 'filterfield'
     }],
+    // features: [{
+    //     ftype: 'searching',
+    //     minChars: 2,
+    //     mode: 'local'
+    // }],
+
+
     listeners: {
         beforerender: {
             fn: 'setConfigGridsStore',
@@ -81,8 +74,8 @@ Ext.define('Admin.view.productregistration.views.grids.GmpLTRSelectionGrid', {
                 pageSize: 10000,
                 remoteFilter: true,
                 proxy: {
-                    url: 'premiseregistration/getLtrPremisesList',
-					reader: {
+                    url: 'pv/getFacilityList',
+                    reader: {
                         type: 'json',
                         totalProperty: 'totalCount',
                         rootProperty: 'results'
@@ -92,51 +85,64 @@ Ext.define('Admin.view.productregistration.views.grids.GmpLTRSelectionGrid', {
             isLoad: true
         }
     },
-    columns: [{
+    columns: [
+    {
         xtype: 'gridcolumn',
-        dataIndex: 'name',
-        text: 'Premise Name',
+        dataIndex: 'facility_name',
+        text: 'Facility Name',
+        flex: 1,
+        filter: {
+            xtype: 'textfield'
+        }
+    },
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'facility_level',
+        text: 'Facility Level',
+        flex: 1,
+        filter: {
+            xtype: 'textfield'
+        }
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'facility_ownership',
+        text: 'Facility Ownership',
         flex: 1,
         filter: {
             xtype: 'textfield'
         }
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'applicant_name',
-        text: 'Applicant Name',
+        dataIndex: 'facility_authority',
+        text: 'Facility Authority',
+        flex: 1,
+        filter: {
+            xtype: 'textfield'
+        }
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'facility_hsd',
+        text: 'Facility HSD',
         flex: 1,
         filter: {
             xtype: 'textfield'
         }
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'premise_reg_no',
-        text: 'Registration No',
-        hidden:true,
+        dataIndex: 'facility_region',
+        text: 'Region',
         flex: 1,
         filter: {
             xtype: 'textfield'
         }
-    }, {
+    },
+    {
         xtype: 'gridcolumn',
-        dataIndex: 'permit_no',
-        text: 'Premise No',
+        dataIndex: 'facility_district',
+        text: 'District',
         flex: 1,
         filter: {
             xtype: 'textfield'
         }
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'physical_address',
-        text: 'Physical Address',
-        flex: 1,
-        filter: {
-            xtype: 'textfield'
-        }
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'postal_address',
-        text: 'Postal Address',
-        flex: 1
     }]
 });

@@ -24,6 +24,7 @@ Route::group(['middleware' => 'web', 'prefix' => 'reports'], function () {
     Route::get('generateApplicationReceipts',[ReportsController::class,'generateApplicationReceipt']);
    
     Route::get('generatePremiseCertificate',[ReportsController::class,'generatePremiseCertificate']);
+    Route::get('generatePersonalUsePermit',[ReportsController::class,'generatePersonalUsePermit']);
     Route::get('generatePremisePermit',[ReportsController::class,'generatePremisePermit']);
     Route::get('generateProductRegCertificate',[ReportsController::class,'generateProductRegCertificate']);
     Route::get('generateGmpCertificate',[ReportsController::class,'generateGmpCertificate']);

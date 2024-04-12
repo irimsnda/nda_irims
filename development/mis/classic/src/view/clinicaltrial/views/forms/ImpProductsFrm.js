@@ -66,11 +66,16 @@ Ext.define('Admin.view.clinicaltrial.views.forms.ImpProductsFrm', {
                         //load stores 
                         filters = {section_id:section_id};
                         filters = JSON.stringify(filters);
-                        Ext.getStore('ctrclassificationsStr').load({params:{filters:filters}});
-                         Ext.getStore('ctrcommonnamesstr').load({params:{filters:filters}});
-                        Ext.getStore('ctrdosageformstr').load({params:{filters:filters}});
-                        Ext.getStore('ctradministrationroutesstr').load({params:{filters:filters}});
-                        Ext.getStore('ctrsiunitstr').load({params:{filters:filters}});
+                       // Ext.getStore('ctrclassificationsStr').load({params:{filters:filters}});
+                        Ext.getStore('ctrclassificationsStr').load();
+                         //Ext.getStore('ctrcommonnamesstr').load({params:{filters:filters}});
+                        Ext.getStore('ctrcommonnamesstr').load();
+                        //Ext.getStore('ctrdosageformstr').load({params:{filters:filters}});
+                        Ext.getStore('ctrdosageformstr').load();
+                       // Ext.getStore('ctradministrationroutesstr').load({params:{filters:filters}});
+                       Ext.getStore('ctradministrationroutesstr').load();
+                        //Ext.getStore('ctrsiunitstr').load({params:{filters:filters}});
+                         Ext.getStore('ctrsiunitstr').load();
                         
                 }
                 

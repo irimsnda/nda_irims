@@ -25,7 +25,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalComparatorProductsGrid'
             text: 'Add Product',
             iconCls: 'x-fa fa-plus',
             ui: 'soft-green',
-            hidden:true,
+            //hidden:true,
             name: 'add_impproduct',
             table_name: 'tra_clinical_comparatorproducts',
             winTitle: 'Comparator Products',

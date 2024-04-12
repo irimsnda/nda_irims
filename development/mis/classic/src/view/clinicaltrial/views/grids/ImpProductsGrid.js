@@ -25,7 +25,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ImpProductsGrid', {
             text: 'Add Product',
             iconCls: 'x-fa fa-plus',
             ui: 'soft-green',
-             hidden:true,
+             //hidden:true,
             table_name: 'clinical_trial_products',
             name: 'add_impproduct',
             winTitle: 'IMP Product',

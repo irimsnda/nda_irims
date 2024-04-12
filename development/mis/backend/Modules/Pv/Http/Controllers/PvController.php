@@ -69,6 +69,94 @@ class PvController extends Controller
 }
 
 
+public function getFacilityList(Request $request)
+    {
+        $region_id = $request->input('region_id');
+        $district_id = $request->input('district_id');
+        $filter = $request->input('filter');
+        $whereClauses = array();
+        $start = $request->start;
+                $limit = $request->limit;
+
+        $filter_string = '';
+        if (isset($filter)) {
+            $filters = json_decode($filter);
+            if ($filters != NULL) {
+                foreach ($filters as $filter) {
+                    switch ($filter->property) {
+                        case 'facility_name' :
+                            $whereClauses[] = "t1.facility_name like '%" . ($filter->value) . "%'";
+                            break;
+                            case 'facility_level' :
+                            $whereClauses[] = "t3.name like '%" . ($filter->value) . "%'";
+                            break;
+                            case 'facility_ownership' :
+                            $whereClauses[] = "t6.name like '%" . ($filter->value) . "%'";
+                            break;
+                            case 'facility_authority' :
+                            $whereClauses[] = "t2.name like '%" . ($filter->value) . "%'";
+                            break;
+                            case 'facility_hsd' :
+                            $whereClauses[] = "t7.name like '%" . ($filter->value) . "%'";
+                            break;
+                            case 'facility_region' :
+                            $whereClauses[] = "t4.name like '%" . ($filter->value) . "%'";
+                            break;
+                            case 'facility_district' :
+                            $whereClauses[] = "t5.name like '%" . ($filter->value) . "%'";
+                            break;
+                    }
+                }
+                $whereClauses = array_filter($whereClauses);
+            }
+            if (!empty($whereClauses)) {
+                $filter_string = implode(' AND ', $whereClauses);
+            }
+        }
+
+        try {
+    
+                $qry = DB::table('pv_facility_cased as t1')
+                ->leftJoin('par_pv_facilityauthority as t2', 't1.facility_authority_id', '=', 't2.id')
+                ->leftJoin('par_facility_levels as t3', 't1.facility_level_id', '=', 't3.id')
+                ->leftJoin('par_premise_regions as t4', 't1.region_id', '=', 't4.id')
+                ->leftJoin('par_premise_districts as t5', 't1.district_id', '=', 't5.id')
+                ->leftJoin('par_facility_ownership as t6', 't1.facility_ownership_id', '=', 't6.id')
+                ->leftJoin('par_facility_hsd as t7', 't1.facility_hsd_id', '=', 't7.id')
+                ->select('t1.*','t1.id as facility_id','t2.name as facility_authority','t4.name as facility_region','t3.name as facility_level','t5.name as facility_district','t6.name as facility_ownership','t7.name as facility_hsd');
+           
+            if ($filter_string != '') {
+                $qry->whereRAW($filter_string);
+            }
+            if (validateIsNumeric($region_id)) {
+                $qry->where('t1.region_id', $region_id);
+            }
+            if (validateIsNumeric($district_id)) {
+                $qry->where('t1.district_id', $district_id);
+            }
+       
+            $totalCount  = $qry->count();
+                $records = $qry->skip($start*$limit)->take($limit)->get();
+                $res = array('success'=>true, 
+                                'results'=>$records,
+                                'totalCount'=>$totalCount
+                            );
+           
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
+
 public function updateAEFICategory(Request $req)
     {
         $application_code = $req->application_code;
@@ -866,7 +954,7 @@ public function getWHOCasaultyAssessment(Request $request)
         try{
             $application_code = $req->application_code;
             $qry = DB::table('tra_pv_study_information as t1')
-             ->leftJoin('par_adr_study_types as t2', 't1.study_type_id', '=', 't2.id') 
+             ->leftJoin('par_clinical_phases as t2', 't1.study_type_id', '=', 't2.id') 
              ->select(DB::raw("DISTINCT  t1.id,t1.*,t2.name as study_type"))
                     ->where('t1.application_code', $application_code);
             $results = $qry->get();

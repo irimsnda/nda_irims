@@ -87,6 +87,15 @@ Ext.define('Admin.controller.PvCtr', {
                 click: 'showReceivingApplicationSubmissionWin'
             },
 
+            'facilitySelectionGrid': {
+                itemdblclick: 'onFacilitySelectionListDblClick'
+            },
+
+            'pvltrselectiongrid': {
+                itemdblclick: 'onLTtrSelectionListDblClick'
+            },
+
+
             //meeting panel 
             'pvReviewPeerSchedulingPnl': {
                 afterrender: 'preparePvManagerMeeting'
@@ -233,6 +242,60 @@ Ext.define('Admin.controller.PvCtr', {
         
     },
 
+    onFacilitySelectionListDblClick: function (view, record, item, index, e, eOpts) {
+        var me = this,
+            grid = view.grid,
+            win = grid.up('window'),
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            pvpersonnelFrm = Ext.ComponentQuery.query("#pvpersonnelfrm")[0];
+            mask = new Ext.LoadMask({
+                msg: 'Please wait...',
+                target: win
+            });
+        mask.show();
+        if(pvpersonnelFrm){
+            pvpersonnelFrm.down('hiddenfield[name=facility_id]').setValue(record.get('facility_id'))
+            pvpersonnelFrm.down('textfield[name=facility_name]').setValue(record.get('facility_name'))
+            pvpersonnelFrm.down('combo[name=facility_authority_id]').setValue(record.get('facility_authority_id'))
+            pvpersonnelFrm.down('combo[name=facility_level_id]').setValue(record.get('facility_level_id'))
+            pvpersonnelFrm.down('combo[name=facility_ownership_id]').setValue(record.get('facility_ownership_id'))
+            pvpersonnelFrm.down('combo[name=facility_hsd_id]').setValue(record.get('facility_hsd_id'))
+            pvpersonnelFrm.down('textfield[name=organisation]').setValue(record.get('organisation'))
+
+        }  
+        Ext.Function.defer(function () {
+            mask.hide();
+            win.close();
+        }, 200);
+    },
+
+     onLTtrSelectionListDblClick: function (view, record, item, index, e, eOpts) {
+        var me = this,
+            grid = view.grid,
+            win = grid.up('window'),
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            pvpersonnelFrm = Ext.ComponentQuery.query("#pvpersonnelfrm")[0];
+            mask = new Ext.LoadMask({
+                msg: 'Please wait...',
+                target: win
+            });
+        mask.show();
+        if(pvpersonnelFrm){
+            //pvpersonnelFrm.loadRecord(record);
+            pvpersonnelFrm.down('hiddenfield[name=ltr_id]').setValue(record.get('ltr_id'))
+            pvpersonnelFrm.down('textfield[name=ltr_name]').setValue(record.get('ltr_name'))
+            pvpersonnelFrm.down('textfield[name=link_permit_no]').setValue(record.get('link_permit_no'))
+            pvpersonnelFrm.down('textfield[name=link_physical_address]').setValue(record.get('link_physical_address'))
+            pvpersonnelFrm.down('textfield[name=link_telephone]').setValue(record.get('link_telephone'))
+        }  
+        Ext.Function.defer(function () {
+            mask.hide();
+            win.close();
+        }, 200);
+    },
+
         afterPVCountriesComboRender: function (cmbo) {
         var form = cmbo.up('form'),
             store = cmbo.getStore(),
@@ -376,7 +439,6 @@ Ext.define('Admin.controller.PvCtr', {
                         // localagentFrm.loadRecord(ltr_model);
                         activeTab.down('hiddenfield[name=invoice_id]').setValue(results.invoice_id);
                         if(results.report_category_id==3){
-                              console.log(111);
                               var add_btn = pvSuspectedassessmentDrugGrid.down('button[name=update_report]'),
                                 whoWidgetCol = pvSuspectedassessmentDrugGrid.columns[pvSuspectedassessmentDrugGrid.columns.length - 2];
                                 naranjoWidgetCol = pvSuspectedassessmentDrugGrid.columns[pvSuspectedassessmentDrugGrid.columns.length - 3];
@@ -433,7 +495,7 @@ Ext.define('Admin.controller.PvCtr', {
           
         } else {
             Ext.getBody().unmask();
-            toastr.warning('Please Enter All the required Request Details!!', 'Warning Response');
+            // toastr.warning('Please Enter All the required Request Details!!', 'Warning Response');
             return;
         }
     },
@@ -443,6 +505,7 @@ Ext.define('Admin.controller.PvCtr', {
         Ext.getBody().mask('Please wait...');
         var mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
+            
             tracking_no=activeTab.down('displayfield[name=tracking_no]');
             if(!ref_no && !tracking_no){
                 ref_no = activeTab.down('displayfield[name=tracking_no]').getValue();
@@ -472,6 +535,7 @@ Ext.define('Admin.controller.PvCtr', {
                 if (success == true || success === true) {
                     pvpatientFrm = details_panel.down('pvpatientFrm');
                     detailsFrm = details_panel.down('pvDetailsFrm');
+                    pvSuspectedassessmentDrugGrid = details_panel.down('pvSuspectedassessmentDrugGrid');
                  
                     funcShowOnlineCustomizableWindow(ref_no, '85%', details_panel, 'customizablewindow');
                     if (pv_details) {
@@ -479,6 +543,20 @@ Ext.define('Admin.controller.PvCtr', {
                         pvpatientFrm.loadRecord(model2);
                         detailsFrm.loadRecord(model2);
                         details_panel.getViewModel().set('model', model2);
+
+                        if(pv_details.report_category_id==3){
+                              var add_btn = pvSuspectedassessmentDrugGrid.down('button[name=update_report]'),
+                                whoWidgetCol = pvSuspectedassessmentDrugGrid.columns[pvSuspectedassessmentDrugGrid.columns.length - 2];
+                                naranjoWidgetCol = pvSuspectedassessmentDrugGrid.columns[pvSuspectedassessmentDrugGrid.columns.length - 3];
+                                outComeWidgetCol = pvSuspectedassessmentDrugGrid.columns[pvSuspectedassessmentDrugGrid.columns.length - 4];
+                                eafiCategoryWidgetCol = pvSuspectedassessmentDrugGrid.columns[pvSuspectedassessmentDrugGrid.columns.length - 5];
+                                add_btn.setVisible(true);
+                                whoWidgetCol.setHidden(true);
+                                outComeWidgetCol.setHidden(true);
+                                naranjoWidgetCol.setHidden(true);
+                                eafiCategoryWidgetCol.setHidden(false);
+                        }
+
                     }
 
                     if (isReadOnly == 1) {
@@ -513,9 +591,9 @@ Ext.define('Admin.controller.PvCtr', {
             applicantFrm = activeTab.down('productapplicantdetailsfrm'),
             application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
 
-            pvreactionGrid = activeTab.down('pvreactionGrid'),
-            pvreporterGridStr = activeTab.down('pvpersonnelGrid').getStore(),
-            pvSuspectedDrugGridStr = activeTab.down('pvSuspectedDrugGrid').getStore(),
+            // pvreactionGrid = activeTab.down('pvreactionGrid'),
+            // pvreporterGridStr = activeTab.down('pvpersonnelGrid').getStore(),
+            // pvSuspectedDrugGridStr = activeTab.down('pvSuspectedDrugGrid').getStore(),
 
             productsDetailsFrm = activeTab.down('#DetailsFrm'),
             pvpatientFrm = activeTab.down('pvpatientFrm'),
@@ -537,6 +615,15 @@ Ext.define('Admin.controller.PvCtr', {
             toastr.warning('Please Enter All the required Required Patient Details!!', 'Warning Response');
             return false;
         }
+
+        // if(activeTab.down('pvreactionGrid')){
+
+        //     pvreactionGrid = activeTab.down('pvreactionGrid');
+        //     if (!pvreactionGrid.getStore().getTotalCount() > 0) {
+        //         toastr.warning('Please Add Reaction(s)!!', 'Warning Response');
+        //         return false;
+        //     }
+        // }
         
         return true;
     }, 

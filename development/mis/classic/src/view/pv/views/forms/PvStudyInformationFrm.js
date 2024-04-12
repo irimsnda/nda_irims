@@ -1,6 +1,7 @@
 Ext.define('Admin.view.pv.views.forms.PvStudyInformationFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'pvstudyinformationFrm',
+    itemId: 'pvstudyinformationfrm',
     controller: 'pvvctr',
     height: Ext.Element.getViewportHeight() - 118,
     layout: {
@@ -35,6 +36,14 @@ Ext.define('Admin.view.pv.views.forms.PvStudyInformationFrm', {
         },
         {
             xtype: 'hiddenfield',
+            name: 'clinicaltrial_registry_id'
+        },
+        {
+            xtype: 'hiddenfield',
+            name: 'sponsor_id'
+        },
+        {
+            xtype: 'hiddenfield',
             name: '_token',
             value: token
         },
@@ -54,11 +63,53 @@ Ext.define('Admin.view.pv.views.forms.PvStudyInformationFrm', {
                 columnWidth: 0.33,
             },
             layout: 'column',
-           items:[ {  
+           items:[
+
+        //     {
+            // xtype: 'textfield',
+            // columnWidth: 0.5,
+            // fieldLabel: 'Study name',
+            // name: 'study_name',
+            // allowBlank: false,
+        // }, 
+
+        {
+                    xtype: 'fieldcontainer',
+                    layout: 'column',
+                    columnWidth: 0.5,
+                    defaults: {
+                        labelAlign: 'top'
+                    },
+                    fieldLabel: 'Study name',
+                    items: [
+                        {
+                            xtype: 'textfield',
+                            name: 'study_name',
+                            readOnly: true,
+                            allowBlank:false,
+                            columnWidth: 0.9
+                        },
+                    
+                        {
+                            xtype: 'button',
+                            iconCls: 'x-fa fa-search',
+                            columnWidth: 0.1,
+                            tooltip: 'Search Clinical Study',
+                             childXtype: 'clinicaltrialsselectiongrid',
+                            handler: 'showAddPvWinFrm',
+                            winTitle: 'Clinical Study Selection List',
+                            winWidth: '90%',
+                            stores: '[]'
+                        }
+                    ]
+         } ,
+
+
+        {  
             xtype: 'combo', anyMatch: true,
             fieldLabel: 'Study type',
             name: 'study_type_id',
-            columnWidth: 1,
+            columnWidth: 0.5,
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
@@ -70,7 +121,7 @@ Ext.define('Admin.view.pv.views.forms.PvStudyInformationFrm', {
                         pageSize: 1000,
                         proxy: {
                             extraParams: {
-                                table_name: 'par_adr_study_types'
+                                table_name: 'par_clinical_phases'
                             }
                         }
                     },
@@ -81,29 +132,43 @@ Ext.define('Admin.view.pv.views.forms.PvStudyInformationFrm', {
         {
             xtype: 'textfield',
             columnWidth: 0.5,
-            fieldLabel: 'Study name',
-            name: 'study_name',
-            allowBlank: true,
+            fieldLabel: 'Study sponsor Name',
+            name: 'sponsor_name',
+            allowBlank: false,
         },
+       
         {
             xtype: 'textfield',
             columnWidth: 0.5,
+            hidden:true,
             fieldLabel: 'Study sponsor number',
             name: 'sponsor_number',
             allowBlank: true,
         },
-        {
-               xtype: 'fieldcontainer',
-                columnWidth: 1,
-                fieldLabel: ' ',
-                hideLabel: true,
-                layout: 'fit',
-                items:[{
-                xtype: 'pvstudydetailsGrid'
+        // {
+        //        xtype: 'fieldcontainer',
+        //         columnWidth: 1,
+        //         fieldLabel: ' ',
+        //         hideLabel: true,
+        //         layout: 'fit',
+        //         items:[{
+        //         xtype: 'pvstudydetailsGrid'
 
-             }
-          ]
-        },{
+        //      }
+        //   ]
+        // },
+
+        {
+            xtype: 'textfield',
+            columnWidth: 0.5,
+            // hideLabel: true,
+            // emptyText: 'Study registration number',
+            fieldLabel: 'Study registration number',
+            name: 'study_registration_number',
+            allowBlank: true,
+        },
+
+        {
             xtype: 'htmleditor',
             fieldLabel: 'Comments',
             columnWidth: 1,

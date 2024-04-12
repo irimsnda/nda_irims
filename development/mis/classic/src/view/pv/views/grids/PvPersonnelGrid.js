@@ -104,18 +104,19 @@ Ext.define('Admin.view.pv.views.grids.PvPersonnelGrid', {
         text: 'Family name',
         flex: 1,
         tdCls: 'wrap-text'
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'department',
-        text: 'Department',
-        flex: 1,
-        tdCls: 'wrap-text'
-    },
+    }, 
     {
         xtype: 'gridcolumn',
-        dataIndex: 'organisation',
-        text: 'Organisation',
+        dataIndex: 'organization_category',
+        text: 'Organization Category',
         flex: 1,
+        tdCls: 'wrap-text'
+    }, 
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'organisation_details',
+        text: 'Faclity/MAH/LTR/Other Entity Name',
+        flex: 2,
         tdCls: 'wrap-text'
     },{
         xtype: 'gridcolumn',
@@ -151,12 +152,6 @@ Ext.define('Admin.view.pv.views.grids.PvPersonnelGrid', {
         xtype: 'gridcolumn',
         dataIndex: 'email_address',
         text: 'Email address',
-        flex: 1,
-        tdCls: 'wrap-text'
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'postal_address',
-        text: 'Postcode',
         flex: 1,
         tdCls: 'wrap-text'
     },  {

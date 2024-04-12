@@ -1410,11 +1410,14 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             };
         filters = JSON.stringify(filters);
         dosageFormsStr.removeAll();
-        dosageFormsStr.load({params: {filters: filters}});
+        //dosageFormsStr.load({params: {filters: filters}});
+        dosageFormsStr.load();
         commonNamesStr.removeAll();
-        commonNamesStr.load({params: {filters: filters}});
+        //commonNamesStr.load({params: {filters: filters}});
+        commonNamesStr.load();
         manufacturersStr.removeAll();
-        manufacturersStr.load({params: {section_id: section_id}});
+       // manufacturersStr.load({params: {section_id: section_id}});
+       manufacturersStr.load();
         form.loadRecord(record);
 
         childObject.down('hiddenfield[name=table_name]').setValue(table_name);
@@ -1441,11 +1444,14 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             };
         filters = JSON.stringify(filters);
         dosageFormsStr.removeAll();
-        dosageFormsStr.load({params: {filters: filters}});
+        //dosageFormsStr.load({params: {filters: filters}});
+        dosageFormsStr.load();
         commonNamesStr.removeAll();
-        commonNamesStr.load({params: {filters: filters}});
+        //commonNamesStr.load({params: {filters: filters}});
+        commonNamesStr.load();
         manufacturersStr.removeAll();
-        manufacturersStr.load({params: {section_id: section_id}});
+        //manufacturersStr.load({params: {section_id: section_id}});
+        manufacturersStr.load();
         form.loadRecord(record);
 
         childObject.down('form').getViewModel().set('isReadOnly', isReadOnly);
@@ -1751,11 +1757,14 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
             };
         filters = JSON.stringify(filters);
         dosageFormsStr.removeAll();
-        dosageFormsStr.load({params: {filters: filters}});
+        //dosageFormsStr.load({params: {filters: filters}});
+        dosageFormsStr.load();
         commonNamesStr.removeAll();
-        commonNamesStr.load({params: {filters: filters}});
+        //commonNamesStr.load({params: {filters: filters}});
+        commonNamesStr.load();
         manufacturersStr.removeAll();
-        manufacturersStr.load({params: {section_id: section_id}});
+        //manufacturersStr.load({params: {section_id: section_id}});
+        manufacturersStr.load();
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
         funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },

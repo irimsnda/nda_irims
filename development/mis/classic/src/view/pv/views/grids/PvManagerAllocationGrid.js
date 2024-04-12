@@ -89,7 +89,7 @@ Ext.define('Admin.view.pv.views.grids.PvManagerAllocationGrid', {
                 metaData.tdStyle = 'color:white;background-color:green';
                 return report_category;
             }else if(report_category_id==3 || report_category_id===3){
-              metaData.tdStyle = 'color:white;background-color:red';
+              metaData.tdStyle = 'color:white;background-color:blue';
               return report_category;
           }else if(report_category_id==2 || report_category_id===2){
               metaData.tdStyle = 'color:white;background-color:orange';

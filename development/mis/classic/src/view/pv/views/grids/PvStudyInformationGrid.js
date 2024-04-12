@@ -84,6 +84,19 @@ Ext.define('Admin.view.pv.views.grids.PvStudyInformationGrid', {
         tdCls: 'wrap-text'
     },{
         xtype: 'gridcolumn',
+        dataIndex: 'sponsor_name',
+        text: 'Study sponsor Name',
+        flex: 1,
+        tdCls: 'wrap-text'
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'study_registration_number',
+        text: 'Study Registration Number',
+        flex: 1,
+        tdCls: 'wrap-text'
+    },{
+        xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'sponsor_number',
         text: 'Study sponsor number',
         flex: 1,

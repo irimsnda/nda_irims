@@ -748,12 +748,12 @@ class ClinicalTrialController extends Controller
                 ->join('wb_trader_account as t3', 't2.applicant_id', '=', 't3.id')
                 ->join('clinical_trial_personnel as t4', 't2.sponsor_id', '=', 't4.id')
                 ->join('clinical_trial_personnel as t5', 't2.investigator_id', '=', 't5.id')
-                ->join('tra_approval_recommendations as t6', 't2.permit_id', '=', 't6.id')
+                ->join('tra_approval_recommendations as t6', 't2.application_code', '=', 't6.application_code')
                 ->select(DB::raw("t1.id as registered_id,t2.*,t2.id as previous_id,t6.permit_no,t3.name as applicant_name,t4.name as sponsor,t5.name as investigator,
                     t3.id as applicant_id, t3.name as applicant_name, t3.contact_person, t3.tin_no,
                     t3.country_id as app_country_id, t3.region_id as app_region_id, t3.district_id as app_district_id,
                     t3.physical_address as app_physical_address, t3.postal_address as app_postal_address,
-                    t3.telephone_no as app_telephone,t3.fax as app_fax, t3.email as app_email, t3.website as app_website"));
+                    t3.telephone_no as app_telephone,t3.fax as app_fax, t3.email as app_email, t3.website as app_website,t6.certificate_no as  approval_certificate_no"));
             if ($filter_string != '') {
                 $qry->whereRAW($filter_string);
             }

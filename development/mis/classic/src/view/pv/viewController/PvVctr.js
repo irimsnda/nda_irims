@@ -86,6 +86,62 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
        }
     },
 
+
+     showLTRSelectionList: function (btn) {
+        var grid = Ext.widget('pvltrselectiongrid');
+        if(btn.up('pvpersonnelFrm')){
+           district_id = btn.up('pvpersonnelFrm').down('combo[name=district_id]').getValue();  
+        }
+
+        if(btn.up('pvpersonnelFrm')){
+           region_id = btn.up('pvpersonnelFrm').down('combo[name=region_id]').getValue();  
+        }
+       
+        if(district_id){
+          grid.down('hiddenfield[name=district_id]').setValue(district_id);
+       }else{
+         toastr.error('Kindly Select District first', 'Warning Response');
+         return false; 
+
+       }
+        if(region_id){
+          grid.down('hiddenfield[name=region_id]').setValue(region_id);
+       }else{
+         toastr.error('Kindly Select Region first', 'Warning Response');
+         return false; 
+        }
+        funcShowOnlineCustomizableWindow('LTR Selection List', '90%', grid, 'customizablewindow');
+    },
+
+
+    showFacilitySelectionList: function (btn) {
+
+        var grid = Ext.widget('facilitySelectionGrid');
+        if(btn.up('pvpersonnelFrm')){
+           district_id = btn.up('pvpersonnelFrm').down('combo[name=district_id]').getValue();  
+        }
+
+        if(btn.up('pvpersonnelFrm')){
+           region_id = btn.up('pvpersonnelFrm').down('combo[name=region_id]').getValue();  
+        }
+       
+        if(district_id){
+          grid.down('hiddenfield[name=district_id]').setValue(district_id);
+       }else{
+         toastr.error('Kindly Select District first', 'Warning Response');
+         return false; 
+
+       }
+        if(region_id){
+          grid.down('hiddenfield[name=region_id]').setValue(region_id);
+       }else{
+         toastr.error('Kindly Select Region first', 'Warning Response');
+         return false; 
+
+       }
+        funcShowOnlineCustomizableWindow('Facility Search', '90%', grid, 'customizablewindow');
+    },
+
     func_setStore: function(me,options){
         var config = options.config,
               isLoad = options.isLoad,
@@ -830,8 +886,11 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             pv_id = activeTab.down('hiddenfield[name=pv_id]').getValue(),
             adr_type = activeTab.down('combo[name=adr_type_id]'),
-            report_category_id = activeTab.down('combo[name=report_category_id]'),
-            is_other_drugs_used = btn.up('grid').is_other_drugs_used;//1 when called from other drug used grid
+            report_category_id = activeTab.down('combo[name=report_category_id]');
+
+            if(btn.up('grid')){
+               is_other_drugs_used = btn.up('grid').is_other_drugs_used;//1 when called from other drug used grid
+            }
 
         if(is_other_drugs_used){
             child.down('hiddenfield[name=is_other_drugs_used]').setValue(is_other_drugs_used);
@@ -853,6 +912,7 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
         funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
        
     },
+
 
      doCreateRelatedProblem: function (btn) {
         var me = this,

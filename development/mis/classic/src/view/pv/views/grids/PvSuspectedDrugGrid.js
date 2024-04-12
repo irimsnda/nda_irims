@@ -18,7 +18,7 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugGrid', {
         action: 'add',
         ui: 'soft-blue',
         childXtype: 'pvSuspectedDrugFrm',
-        winTitle: 'Suspected Medicine/Vaccine/Device',
+        winTitle: 'Drug',
         winWidth: '80%',
         bind: {
             hidden: '{isReadOnly}'

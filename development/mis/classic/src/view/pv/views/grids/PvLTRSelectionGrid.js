@@ -1,8 +1,8 @@
 
-Ext.define('Admin.view.productregistration.views.grids.GmpLTRSelectionGrid', {
+Ext.define('Admin.view.productregistration.views.grids.PvLTRSelectionGrid', {
     extend: 'Ext.grid.Panel',
-    controller: 'productregistrationvctr',
-    xtype: 'gmpltrselectiongrid',
+    controller: 'pvvctr',
+    xtype: 'pvltrselectiongrid',
     cls: 'dashboard-todo-list',
     autoScroll: true,
     autoHeight: true,

@@ -398,9 +398,7 @@ Ext.define('Admin.controller.ClinicalTrialCtr', {
             'newclinicaltrialreceivingwizard button[name=process_submission_btn]': {
                 click: 'showNewReceivingApplicationSubmissionWin'
             },
-            'newclinicaltrialreceivingwizard button[name=process_submission_btn]': {
-                click: 'showNewReceivingApplicationSubmissionWin'
-            },
+           
             'queryResponseclinicaltrialwizard button[name=process_submission_btn]': {
                 click: 'showQueryRespsonseReceivingApplicationSubmissionWin'
             },
@@ -1840,7 +1838,7 @@ Ext.getBody().unmask();
     showAddImpProduct: function (btn) {
         var winTitle = btn.winTitle,
             winWidth = btn.winWidth,
-            table_name = btn.table_name;
+            table_name = btn.table_name,
             childObject = Ext.widget(btn.childXtype),
             mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
@@ -1854,11 +1852,14 @@ Ext.getBody().unmask();
             };
         filters = JSON.stringify(filters);
         dosageFormsStr.removeAll();
-        dosageFormsStr.load({params: {filters: filters}});
+        //dosageFormsStr.load({params: {filters: filters}});
+        dosageFormsStr.load();
         commonNamesStr.removeAll();
-        commonNamesStr.load({params: {filters: filters}});
+       // commonNamesStr.load({params: {filters: filters}});
+        commonNamesStr.load();
         manufacturersStr.removeAll();
-        manufacturersStr.load({params: {section_id: section_id}});
+        //manufacturersStr.load({params: {section_id: section_id}});
+        manufacturersStr.load();
         childObject.down('hiddenfield[name=application_id]').setValue(application_id);
         childObject.down('hiddenfield[name=table_name]').setValue(table_name);
         
@@ -1885,9 +1886,11 @@ Ext.getBody().unmask();
             return false;
         }
         ingredientStr.removeAll();
-        ingredientStr.load({params: {filters: filters}});
+        //ingredientStr.load({params: {filters: filters}});
+        ingredientStr.load();
         inclusionStr.removeAll();
-        inclusionStr.load({params: {section_id: section_id}});
+        //inclusionStr.load({params: {section_id: section_id}});
+        inclusionStr.load();
         childObject.down('hiddenfield[name=product_id]').setValue(id);
         funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
@@ -1944,7 +1947,7 @@ Ext.getBody().unmask();
         var me = this,
             toaster = btn.toaster,
             mainTabPanel = me.getMainTabPanel(),
-            wizard_pnl = btn.up(btn.wizard);
+            wizard_pnl = btn.up(btn.wizard),
             process_id = wizard_pnl.down('hiddenfield[name=process_id]').getValue(),
             module_id = wizard_pnl.down('hiddenfield[name=module_id]').getValue(),
             sub_module_id = wizard_pnl.down('hiddenfield[name=sub_module_id]').getValue(),
@@ -6094,17 +6097,28 @@ Ext.getBody().unmask();
             mainTabPanel = me.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
             applicantForm = activeTab.down('applicantdetailsfrm'),
-            zone_id = record.get('zone_id'),
+            pvstudyinformationFrm = Ext.ComponentQuery.query("#pvstudyinformationfrm")[0];
+            var zone_id = record.get('zone_id'),
             previous_id = record.get('previous_id'),
             mask = new Ext.LoadMask({
                 msg: 'Please wait...',
                 target: win
             });
         mask.show();
-        applicantForm.loadRecord(record);
-        activeTab.down('combo[name=zone_id]').setValue(zone_id);
-        activeTab.down('hiddenfield[name=previous_id]').setValue(previous_id);
-        this.getApplicationClinicalTrialDetailsOnSelect(activeTab, previous_id);
+       
+        if(pvstudyinformationFrm){
+            pvstudyinformationFrm.down('hiddenfield[name=clinicaltrial_registry_id]').setValue(record.get('clinicaltrial_registry_id'));
+            pvstudyinformationFrm.down('hiddenfield[name=sponsor_id]').setValue(record.get('sponsor_id'));
+            pvstudyinformationFrm.down('textfield[name=study_name]').setValue(record.get('study_title'));
+            pvstudyinformationFrm.down('combo[name=study_type_id]').setValue(record.get('phase_id'));
+            pvstudyinformationFrm.down('textfield[name=sponsor_name]').setValue(record.get('sponsor'));
+            pvstudyinformationFrm.down('textfield[name=study_registration_number]').setValue(record.get('approval_certificate_no'));
+        }else{
+            applicantForm.loadRecord(record);
+            activeTab.down('combo[name=zone_id]').setValue(zone_id);
+            activeTab.down('hiddenfield[name=previous_id]').setValue(previous_id);
+            this.getApplicationClinicalTrialDetailsOnSelect(activeTab, previous_id);
+        }
         Ext.Function.defer(function () {
             mask.hide();
             win.close();

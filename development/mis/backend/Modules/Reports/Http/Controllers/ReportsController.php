@@ -31,7 +31,8 @@ use ReportsTrait;
         $this->base_url = url('/');
         $this->sign_file = getPermitSignatorySignature();
         $this->sign_url = $this->base_url . Config('constants.signs_path') . $this->sign_file;
-
+        //Carbon::setToStringFormat('Y-m-d H:i:s');
+        date_default_timezone_set('Africa/Nairobi');
        
     }
 
@@ -279,6 +280,244 @@ public function getModuleName($module_id)
         if(isset($invoice_details)){
             $app_description = $invoice_details['module_desc'];
         }
+
+
+        //check the paymetn Control Number 
+        $rec = DB::table('tra_application_invoices as t1')
+                    ->join('wb_trader_account as t2','t1.applicant_id', 't2.id')
+                    ->leftJoin('par_countries as t3', 't2.country_id','t3.id')
+                    ->leftJoin('par_regions as t4', 't2.region_id','t4.id')
+                    ->leftJoin('modules as t5', 't1.module_id','t5.id')
+                    ->leftJoin('sub_modules as t6', 't1.sub_module_id','t6.id')
+                    ->leftJoin('tra_premises_applications as t7', 't7.application_code','t1.application_code')
+                    ->leftJoin('tra_premises as t8', 't7.premise_id','t8.id')
+                    ->select('t1.*','t2.identification_no','t2.name as applicant_name','t2.postal_address', 't2.email','t3.name as country_name','t4.name as region_name', 't5.name as module_name', 't6.name as sub_module','t8.name as premise_name','t8.physical_address as premise_physical_address')
+                    ->where(array('t1.id'=>$invoice_id))->first();
+        if($rec){
+            $PayCntrNum = $rec->PayCntrNum;
+            
+                    $params = array(
+                        'invoice_id' => $invoice_id,
+                        'application_code'=>$application_code
+                    );
+                    
+                $org_info = $this->getOrganisationInfo();
+                $pdf = new PdfLettersProvider();
+                $pdf->AddPage();
+                $template_url = base_path('/');
+                $pdf->setSourceFile($template_url."resources/templates/certificate_template.pdf");
+                                                                        // import page 1
+                $tplId = $pdf->importPage(1);   
+                $pdf->useTemplate($tplId,0,0);
+                $pdf->setPageMark();
+                            
+                            
+                $pdf->SetFont('times','B',9);
+                $pdf->Cell(0,1,'',0,1);
+                $pdf->setPrintHeader(false);
+                $pdf->setPrintFooter(false);
+                
+                $org_rec = getSingleRecord('tra_organisation_information', array('id'=>1));
+                $logo = getcwd() . '/resources/images/org-logo.jpg';
+                $pdf->SetFont('times', 'B', 11);
+
+                $this->returnInvoiceReportHeader($pdf,$org_rec,$rec, 'PROFORMA INVOICE');
+            
+
+                $pdf->Cell(0,7,'To:',0,1);
+                $pdf->SetFont('times', '', 10);
+                $pdf->Cell(0,7,'Customer No:'. $rec->identification_no,0,1);
+                if($module_id==2 || $module_id===2 || $module_id==29 || $module_id===29){
+                    $pdf->Cell(0,7,'Applicant Name:'. $rec->applicant_name,0,1);
+                    $pdf->Cell(0,7,'Premise Name:'. $rec->premise_name,0,1);
+                     $pdf->Cell(0,7,'Physical Address:'. $rec->premise_physical_address,0,1);
+                }else{
+                    $pdf->Cell(0,7,$rec->applicant_name,0,1);
+                     $pdf->Cell(0,7,$rec->postal_address.', '.$rec->region_name.', '.$rec->country_name,0,1);
+                }
+                
+                $pdf->Cell(0,7,$rec->email,0,1);
+                $pdf->SetFont('times', 'B', 10);
+                
+                 $pdf->MultiCell(0, 7, 'Invoice Details for '.$rec->module_name.' ('.$rec->sub_module.') '.$app_description, 0, 'L');
+                $pdf->SetFont('times', 'B', 10);
+               
+                $pdf->SetLineWidth(0.1);
+                //invoice details 
+                $pdf->Cell(15,10,'QTY',1,0);
+                $pdf->Cell(100,10,'IN RESPECT OF',1,0,'C');
+                $pdf->Cell(40,10,'RATE',1,0,'C');
+                $pdf->Cell(0,10,'AMOUNT',1,1,'C');
+                $inv_rec = DB::table('tra_invoice_details as t1')
+                                ->leftJoin('par_currencies as t2','t1.paying_currency_id','t2.id')
+                                ->leftJoin('tra_element_costs as t3','t1.element_costs_id','t3.id')
+                                ->leftJoin('par_cost_elements as t4','t3.element_id','t4.id')
+                                ->leftJoin('par_fee_types as t5','t3.feetype_id','t5.id')
+                                ->leftJoin('par_cost_categories as t6','t3.cost_category_id','t6.id')
+                                ->select(DB::raw(" t4.name AS cost_element, t5.name AS fee_type, t6.name AS cost_category, t1.total_element_amount AS invoice_amount, t1.paying_currency_id,t2.name as currency_name"))
+                                ->where(array('t1.invoice_id'=>$invoice_id))
+                                ->get();
+
+                if($inv_rec){
+                    
+                    
+                    $i = 1;
+                    $total_amount = 0;
+                    $currency_name = '';
+                    $paying_currency_id = '';
+                    $pdf->SetFont('times', '', 10);
+                    foreach($inv_rec as $inv){
+                        $currency_name = $inv->currency_name;
+                        $cost_item = $inv->fee_type." ".$inv->cost_category." ".$inv->cost_element;
+                        $paying_currency_id = $inv->paying_currency_id;
+                            $rowcount = max($pdf->getNumLines($cost_item, 92),$pdf->getNumLines($inv->invoice_amount, 40));
+                        $pdf->MultiCell(15,7*$rowcount,$i,1,'',0,0);
+                        $pdf->MultiCell(100,7*$rowcount,$cost_item,1,'',0,0);
+                        $pdf->MultiCell(40,7*$rowcount,formatMoney($inv->invoice_amount),1,'R',0,0);
+                        $pdf->MultiCell(0,7*$rowcount,formatMoney($inv->invoice_amount),1,'R',0,1);
+                        $total_amount = $total_amount+$inv->invoice_amount;
+                        
+                        $i++;
+                    }
+                    
+                    $pdf->MultiCell(155,10,'Sub-Total('.$currency_name.')',1,'R',0,0);
+                    $pdf->MultiCell(0,10,formatMoney($total_amount),1,'R',0,1);
+                        
+                    $pdf->MultiCell(155,10,'Total('.$currency_name.')',1,'R',0,0);
+                    $pdf->MultiCell(0,10,formatMoney($total_amount),1,'R',0,1);
+                        
+                }
+
+                
+                //get the Bank Details based on the paying currency
+                if(!validateisNumeric($module_id)){
+                  $module_id=$rec->module_id;
+                }
+                if($module_id==2 || $module_id===2 || $module_id==29 || $module_id===29){
+
+                    $premise_id= getSingleRecordColValue('tra_premises_applications', array('application_code' => $application_code), 'premise_id');
+
+                    $region_id= getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'region_id');
+                     
+                    if(!validateisNumeric($region_id)){
+                      $region_id= getSingleRecordColValue('wb_premises_applications', array('application_code'=>$application_code), 'region_id', 'portal_db');
+                     }
+                     $bank_rec = DB::table('tra_orgbank_accounts as t1')
+                                ->leftJoin('par_banks as t2', 't1.bank_id', 't2.id')
+                                ->leftJoin('par_bankbranches as t3', 't1.branch_id', 't3.id')
+                                ->leftJoin('par_currencies as t4', 't1.currency_id', 't4.id')
+                                ->select(DB::raw("t4.name as currency_name, t1.account_name, t1.account_no, t1.swft_code, t2.name AS bank_name, t3.name AS branch_name"))
+                                ->where(array('t1.is_head_office'=>2,'t1.region_id'=>$region_id))
+                                ->get();
+
+                         if ($bank_rec->isEmpty()) {
+                            $bank_rec = DB::table('tra_orgbank_accounts as t1')
+                                ->leftJoin('par_banks as t2', 't1.bank_id', 't2.id')
+                                ->leftJoin('par_bankbranches as t3', 't1.branch_id', 't3.id')
+                                ->leftJoin('par_currencies as t4', 't1.currency_id', 't4.id')
+                                ->select(DB::raw("t4.name as currency_name, t1.account_name, t1.account_no, t1.swft_code, t2.name AS bank_name, t3.name AS branch_name"))
+                                ->where(array('t1.is_head_office'=>1))
+                                ->get();
+
+                        }
+
+                  }else{
+                      $bank_rec = DB::table('tra_orgbank_accounts as t1')
+                                ->leftJoin('par_banks as t2', 't1.bank_id', 't2.id')
+                                ->leftJoin('par_bankbranches as t3', 't1.branch_id', 't3.id')
+                                ->leftJoin('par_currencies as t4', 't1.currency_id', 't4.id')
+                                ->select(DB::raw("t4.name as currency_name, t1.account_name, t1.account_no, t1.swft_code, t2.name AS bank_name, t3.name AS branch_name"))
+                                ->where(array('t1.is_head_office'=>1))
+                                ->get();
+                    }
+                    if($bank_rec){
+                        $pdf->ln();
+                        $pdf->SetFont('times',' ',10); 
+                        $pdf->MultiCell(0,7,'Total Due in words ***'.ucwords(convert_number_to_words($total_amount)).'('.$currency_name.')'.' Only ***',0,'',0,1); 
+                        $pdf->SetFont('times','i',10); 
+                        $pdf->MultiCell(0,7,'The amount above is now due:',0,'',0,1);  
+                        $pdf->SetFont('times', 'B', 10);
+                        $i = 1;
+                    foreach($bank_rec as $bank){
+
+                    $pdf->MultiCell(0,7,$i.'.'.$bank->currency_name." "."A/C No.".$bank->account_no.'('.$bank->bank_name.')'.'-'.$bank->account_name,0,'',0,1);   
+                       $i++;        
+                    }
+                }  
+                //$pdf->ln();
+                $pdf->SetFont('times', '', 10);
+                $pdf->MultiCell(0,7,'Payments to National Drug Authority (NDA] must be net invoice figures',0,'',0,1); 
+                 $pdf->SetFont('times', 'B', 10);
+                $pdf->MultiCell(0,7,'All Bank Charges shall be met by the payer',0,'',0,1);   
+
+                $pdf->SetFont('','',11);
+                $print_date = date('F d\\, Y',strtotime(Carbon::now()));  
+                           
+                $pdf->ln();
+                                        
+                $startY = $pdf->GetY();
+                $startX = $pdf->GetX();
+
+                                                
+                // $signiture = getcwd() . '/backend/resources/templates/signatures_uploads/VK3SE1678341493.png';
+                // $pdf->Image($signiture,$startX+85,$startY-7,30,12);
+                // $pdf->SetFont('','',11);
+                // $pdf->Cell(0,8,'Signature ............................................',0,1,'C');
+                $pdf->SetFont('times', 'B', 10);
+                $pdf->Cell(0,8,'System Generated Report',0,1,'C');    
+                $pdf->SetFont('','',9);                                  
+                $pdf->Cell(0,8,'Printed On: '.$print_date,0,1,'C'); 
+
+                
+                if($module_id == 4 && $rec->sub_module == 12){
+                       $pdf->AddPage();
+                        $this->GetInmportExportProducts($pdf,$application_code,$rec->sub_module);
+                        
+                    }                    
+                                
+                $pdf->Output('Proforma Invoice.pdf');
+                
+                
+                
+        }
+        else{
+            echo "<h4>Invoice details Not Found</h4>";
+        }
+       
+    }
+
+
+      public function generateApplicationTaxInvoice(Request $request, $application_code)
+    { 
+
+        $invoice_id = $request->input('invoice_id');
+        $application_id = $request->input('application_id');
+        $module_id = $request->input('module_id');
+         $sub_module_id = $request->input('sub_module_id');
+         if(!validateIsNumeric($module_id)){
+             $module_details = getTableData('sub_modules', array('id' => $sub_module_id));
+             if($module_details){
+                  $module_id = $module_details->module_id;
+        
+             }
+         
+         }
+
+
+
+        if(!validateIsNumeric($invoice_id)){
+            $invoice_record = DB::table('tra_application_invoices')->where('application_code',$application_code)->first();
+            if($invoice_record){
+                    $invoice_id = $invoice_record->id;
+            }
+         }
+        
+          $invoice_details = getInvoiceDetails($module_id, $application_id,$application_code);
+         $app_description= '';
+
+        if(isset($invoice_details)){
+            $app_description = $invoice_details['module_desc'];
+        }
         //check the paymetn Control Number 
         $rec = DB::table('tra_application_invoices as t1')
                     ->join('wb_trader_account as t2','t1.applicant_id', 't2.id')
@@ -288,7 +527,6 @@ public function getModuleName($module_id)
                     ->leftJoin('sub_modules as t6', 't1.sub_module_id','t6.id')
                     ->select('t1.*','t2.identification_no','t2.name as applicant_name','t2.postal_address', 't2.email','t3.name as country_name','t4.name as region_name', 't5.name as module_name', 't6.name as sub_module')
                     ->where(array('t1.id'=>$invoice_id))->first();
-        if($rec){
             $PayCntrNum = $rec->PayCntrNum;
             
                     $params = array(
@@ -375,17 +613,46 @@ public function getModuleName($module_id)
                     $pdf->MultiCell(0,10,formatMoney($total_amount),1,'R',0,1);
                         
                 }
-
                 
                 //get the Bank Details based on the paying currency
                 
-                $bank_rec = DB::table('tra_orgbank_accounts as t1')
+                if($module_id==2 || $module_id===2 || $module_id==29 || $module_id===29){
+
+                    $premise_id= getSingleRecordColValue('tra_premises_applications', array('application_code' => $application_code), 'premise_id');
+
+                    $region_id= getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'region_id');
+                     
+                    if(!validateisNumeric($region_id)){
+                      $region_id= getSingleRecordColValue('wb_premises_applications', array('application_code'=>$application_code), 'region_id', 'portal_db');
+                     }
+                     $bank_rec = DB::table('tra_orgbank_accounts as t1')
                                 ->leftJoin('par_banks as t2', 't1.bank_id', 't2.id')
                                 ->leftJoin('par_bankbranches as t3', 't1.branch_id', 't3.id')
                                 ->leftJoin('par_currencies as t4', 't1.currency_id', 't4.id')
                                 ->select(DB::raw("t4.name as currency_name, t1.account_name, t1.account_no, t1.swft_code, t2.name AS bank_name, t3.name AS branch_name"))
-                                //->where(array('t1.currency_id'=>$paying_currency_id))
+                                ->where(array('t1.is_head_office'=>2,'t1.region_id'=>$region_id))
                                 ->get();
+
+                         if ($bank_rec->isEmpty()) {
+                            $bank_rec = DB::table('tra_orgbank_accounts as t1')
+                                ->leftJoin('par_banks as t2', 't1.bank_id', 't2.id')
+                                ->leftJoin('par_bankbranches as t3', 't1.branch_id', 't3.id')
+                                ->leftJoin('par_currencies as t4', 't1.currency_id', 't4.id')
+                                ->select(DB::raw("t4.name as currency_name, t1.account_name, t1.account_no, t1.swft_code, t2.name AS bank_name, t3.name AS branch_name"))
+                                ->where(array('t1.is_head_office'=>1))
+                                ->get();
+
+                        }
+
+                  }else{
+                      $bank_rec = DB::table('tra_orgbank_accounts as t1')
+                                ->leftJoin('par_banks as t2', 't1.bank_id', 't2.id')
+                                ->leftJoin('par_bankbranches as t3', 't1.branch_id', 't3.id')
+                                ->leftJoin('par_currencies as t4', 't1.currency_id', 't4.id')
+                                ->select(DB::raw("t4.name as currency_name, t1.account_name, t1.account_no, t1.swft_code, t2.name AS bank_name, t3.name AS branch_name"))
+                                ->where(array('t1.is_head_office'=>1))
+                                ->get();
+                    }
                     if($bank_rec){
                         $pdf->ln();
                         $pdf->SetFont('times',' ',11); 
@@ -396,14 +663,15 @@ public function getModuleName($module_id)
                         $i = 1;
                     foreach($bank_rec as $bank){
 
-                    $pdf->MultiCell(130,7,$i.'.'.$bank->currency_name." "."A/C No.".$bank->account_no. '-'.$bank->account_name,0,'',0,1);   
+                    $pdf->MultiCell(0,7,$i.'.'.$bank->currency_name." "."A/C No.".$bank->account_no.'('.$bank->bank_name.')'.'-'.$bank->account_name,0,'',0,1);   
                        $i++;        
                     }
                 }  
                 //$pdf->ln();
                 $pdf->SetFont('times', '', 11);
                 $pdf->MultiCell(0,7,'Payments to National Drug Authority (NDA] must be net invoice figures',0,'',0,1); 
-                $pdf->MultiCell(0,7,'All Bark Charges shall be met by the payee',0,'',0,1);   
+                $pdf->SetFont('times', 'B', 10);
+                $pdf->MultiCell(0,7,'All Bank Charges shall be met by the payer',0,'',0,1);    
 
                 $pdf->SetFont('','',11);
                 $print_date = date('F d\\, Y',strtotime(Carbon::now()));  
@@ -413,33 +681,22 @@ public function getModuleName($module_id)
                 $startY = $pdf->GetY();
                 $startX = $pdf->GetX();
 
-                                                
-                // $signiture = getcwd() . '/backend/resources/templates/signatures_uploads/VK3SE1678341493.png';
-                // $pdf->Image($signiture,$startX+85,$startY-7,30,12);
-                // $pdf->SetFont('','',11);
-                // $pdf->Cell(0,8,'Signature ............................................',0,1,'C');
+
                 $pdf->SetFont('times', 'B', 12);
                 $pdf->Cell(0,8,'System Generated Report',0,1,'C');    
                 $pdf->SetFont('','',11);                                  
                 $pdf->Cell(0,8,'Printed On: '.$print_date,0,1,'C');                  
-                                
-                $pdf->Output('Proforma Invoice.pdf');
-                
-                
-                
-        }
-        else{
-            echo "<h4>Invoice details Not Found</h4>";
-        }
+        
        
     }
 
     public function generateApplicationReceipt(Request $request)
     {
-         $table_name = $request->input('table_name');
+        $table_name = $request->input('table_name');
         $application_code = $request->input('application_code');
         $payment_id = $request->input('payment_id');
         $application_id = $request->input('application_id');
+        $invoice_id = $request->input('invoice_id');
         $module_id = $request->input('module_id');
         if(validateIsNumeric($module_id)){
             $module_details = getTableData('modules', array('id' => $module_id));
@@ -453,10 +710,15 @@ public function getModuleName($module_id)
         else{
             
             $reference_no = getSingleRecordColValue($table_name, array('id' => $application_id), 'reference_no');
+            $application_code = getSingleRecordColValue($table_name, array('id' => $application_id), 'application_code');
             
         }
         $payment_receivedby = '';
-        
+         $invoice_details = getInvoiceDetails($module_id, $application_id,$application_code);
+        $app_description= '';
+        if(isset($invoice_details)){
+                $app_description = $invoice_details['module_desc'];
+            }
         //check the paymetn Control Number 
         $rec = DB::table('tra_payments as t1')
                     ->join('wb_trader_account as t2','t1.applicant_id', 't2.id')
@@ -467,7 +729,9 @@ public function getModuleName($module_id)
                     ->leftJoin('par_currencies as t7', 't1.currency_id','t7.id')
                     ->leftJoin('par_payment_modes as t8', 't1.payment_mode_id','t8.id')
                     ->leftJoin('users as t9', 't1.usr_id','t9.id')
-                    ->select('t1.*','t2.name as applicant_name','t8.name as payment_mode', 't7.name as currency_name', 't2.postal_address', 't2.email','t3.name as country_name','t4.name as region_name', 't5.name as module_name', 't6.name as sub_module', DB::raw(" CONCAT_WS(' ',decrypt(t9.first_name),decrypt(t9.last_name)) as payment_receivedby"))
+                    ->leftJoin('tra_premises_applications as t10', 't10.application_code','t1.application_code')
+                    ->leftJoin('tra_premises as t11', 't10.premise_id','t11.id')
+                    ->select('t1.*','t11.name as premise_name','t11.physical_address as premise_physical_address','t2.name as applicant_name','t8.name as payment_mode', 't7.name as currency_name', 't2.postal_address', 't2.email','t3.name as country_name','t4.name as region_name', 't5.name as module_name', 't6.name as sub_module', DB::raw(" CONCAT_WS(' ',decrypt(t9.first_name),decrypt(t9.last_name)) as payment_receivedby"))
                     ->where(array('t1.id'=>$payment_id))->first();
         if($rec){
             $payment_type_id = $rec->payment_type_id;
@@ -492,38 +756,44 @@ public function getModuleName($module_id)
                 $logo = getcwd() . '/resources/images/zamra-logo.png';
                 $org_rec = getSingleRecord('tra_organisation_information', array('id'=>1));
                 $logo = getcwd() . '/resources/images/zamra-logo.png';
-                $pdf->SetFont('times', 'B', 12);
+                $pdf->SetFont('times', 'B', 11);
                 $this->returnReportHeader($pdf,$org_rec,$rec,'RECEIPT');
                 
                 
-                
-                $pdf->SetFont('times','B',11);
-                $pdf->Cell(70,7,strtoupper('Account Payee(From)'),0,0); 
+                $pdf->SetFont('times','B',10);
+                $pdf->Cell(70,7,strtoupper('Account Payer(From)'),0,0); 
                 $pdf->Cell(0,7,strtoupper('Receipt Details'),0,1,'R');
-                $pdf->SetFont('times', '', 11);
-                $pdf->Cell(70,7,strtoupper($rec->applicant_name),0,0);
-                $pdf->Cell(0,7,strtoupper('Payment Date:'.$rec->trans_date),0,1, 'R');
-                $pdf->Cell(70,7,strtoupper($rec->postal_address.', '.$rec->region_name.', '.$rec->country_name),0,0);
+                $pdf->SetFont('times', '', 10);
+               if($module_id==2 || $module_id===2 || $module_id==29 || $module_id===29){
+                    $pdf->Cell(0,7,'Applicant Name:'. $rec->applicant_name,0,1);
+                    $pdf->Cell(0,7,'Premise Name:'. $rec->premise_name,0,1);
+                    $pdf->Cell(0,7,strtoupper('Payment Date:'.$rec->trans_date),0,1, 'R');
+                    $pdf->Cell(0,7,'Physical Address:'. $rec->premise_physical_address,0,1);
+                }else{
+                    $pdf->Cell(70,7,strtoupper($rec->applicant_name),0,0);
+                    $pdf->Cell(0,7,strtoupper('Payment Date:'.$rec->trans_date),0,1, 'R');
+                    $pdf->Cell(70,7,strtoupper($rec->postal_address.', '.$rec->region_name.', '.$rec->country_name),0,0);
+                }
                 $pdf->Cell(0,7,strtoupper('Receipt Number: '.$rec->receipt_no),0,1,'R');
                 $pdf->Cell(70,7,strtoupper($rec->email),0,0);
                 $pdf->Cell(0,7,strtoupper('Payment Mode: '.$rec->payment_mode),0,1, 'R');
                 
-                $pdf->SetFont('times', 'b', 11);
+                $pdf->SetFont('times', 'b', 10);
                 
                 $pdf->Cell(0,7,strtoupper('Ref No:'. $rec->tracking_no .' '.$rec->reference_no),0,1, 'R');
                 
                 $pdf->ln();
                 
-                $pdf->SetFont('times', 'b', 11);
+                $pdf->SetFont('times', 'b', 10);
                 
-                $pdf->SetFont('times','',11);
+                $pdf->SetFont('times','',10);
                 
-                        $pdf->SetFont('times','B',11);
-                $pdf->Cell(0,7,'Receipt/Payments Details for '.$rec->module_name.' ('.$rec->sub_module.')',0,1,'');
-            
+                $pdf->SetFont('times','B',10);
+                //$pdf->Cell(0,7,'Receipt/Payments Details for '.$rec->module_name.' ('.$rec->sub_module.')',0,1,'');
+                $pdf->MultiCell(0, 7, 'Receipt/Payments Details for '.$rec->module_name.' ('.$rec->sub_module.') '.$app_description, 0, 'L');
                 //invoice details 
                 $pdf->SetLineWidth(0.1);
-                $pdf->SetFont('times','B',11);
+                $pdf->SetFont('times','B',10);
                 $pdf->Cell(15,10,'Sn',1,0);
                 $pdf->Cell(140,10,'Being Payment for: ',1,0,'C');
                 $pdf->Cell(0,10,'Total',1,1,'C');
@@ -545,7 +815,7 @@ public function getModuleName($module_id)
                     foreach($inv_rec as $inv){
                         $currency_name = $inv->currency_name;
                         $cost_item = $inv->fee_type." ".$inv->cost_category." ".$inv->cost_element;
-                        $pdf->SetFont('times','',11);
+                        $pdf->SetFont('times','',10);
                             $rowcount = max($pdf->getNumLines($cost_item, 92),$pdf->getNumLines($inv->amount_paid, 40));
                         $pdf->MultiCell(15,7*$rowcount,$i,1,'',0,0);
                         $pdf->MultiCell(140,7*$rowcount,$cost_item,1,'',0,0);
@@ -554,7 +824,7 @@ public function getModuleName($module_id)
                         
                         $i++;
                     }
-                    $pdf->SetFont('times','B',11);
+                    $pdf->SetFont('times','B',10);
                     $pdf->MultiCell(155,10,'Sub-Total('.$currency_name.')',1,'R',0,0);
                     $pdf->MultiCell(0,10,formatMoney($total_amount),1,'R',0,1);
                         
@@ -562,10 +832,217 @@ public function getModuleName($module_id)
                     $pdf->MultiCell(0,10,formatMoney($total_amount),1,'R',0,1);
                         
                 }
-                $pdf->SetFont('times','i',11);
+                $pdf->SetFont('times','i',10);
                 $pdf->MultiCell(0,7,'Amount in words '.ucwords(convert_number_to_words($rec->amount_paid)).'('.$currency_name.')'.' Only',1,'',0,1);
                 $pdf->MultiCell(100,7,'Received By: National Drug Authority',1,'',0,0);
                 $pdf->MultiCell(0,7,'Print Date: '.Carbon::now(),1,'',0,1);
+
+
+                //$pdf->AddPage();
+
+                 if(!validateIsNumeric($module_id)){
+                     $module_details = getTableData('sub_modules', array('id' => $sub_module_id));
+                     if($module_details){
+                          $module_id = $module_details->module_id;
+                
+                     }
+                 
+                 }
+
+
+
+            if(!validateIsNumeric($invoice_id)){
+                $invoice_record = DB::table('tra_application_invoices')->where('application_code',$application_code)->first();
+                if($invoice_record){
+                        $invoice_id = $invoice_record->id;
+                }
+             }
+            
+              $invoice_details = getInvoiceDetails($module_id, $application_id,$application_code);
+             $app_description= '';
+
+            if(isset($invoice_details)){
+                $app_description = $invoice_details['module_desc'];
+            }
+            //check the paymetn Control Number 
+           $rec = DB::table('tra_application_invoices as t1')
+                    ->join('wb_trader_account as t2','t1.applicant_id', 't2.id')
+                    ->leftJoin('par_countries as t3', 't2.country_id','t3.id')
+                    ->leftJoin('par_regions as t4', 't2.region_id','t4.id')
+                    ->leftJoin('modules as t5', 't1.module_id','t5.id')
+                    ->leftJoin('sub_modules as t6', 't1.sub_module_id','t6.id')
+                    ->leftJoin('tra_premises_applications as t7', 't7.application_code','t1.application_code')
+                    ->leftJoin('tra_premises as t8', 't7.premise_id','t8.id')
+                    ->select('t1.*','t2.identification_no','t2.name as applicant_name','t2.postal_address', 't2.email','t3.name as country_name','t4.name as region_name', 't5.name as module_name', 't6.name as sub_module','t8.name as premise_name','t8.physical_address as premise_physical_address')
+                    ->where(array('t1.id'=>$invoice_id))->first();
+                $PayCntrNum = $rec->PayCntrNum;
+                
+                        $params = array(
+                            'invoice_id' => $invoice_id,
+                            'application_code'=>$application_code
+                        );
+                        
+                    // $org_info = $this->getOrganisationInfo();
+                    // $pdf = new PdfLettersProvider();
+                    $pdf->AddPage();
+                    // $template_url = base_path('/');
+                    // $pdf->setSourceFile($template_url."resources/templates/certificate_template.pdf");
+                    //                                                         // import page 1
+                    // $tplId = $pdf->importPage(1);   
+                    // $pdf->useTemplate($tplId,0,0);
+                    // $pdf->setPageMark();
+                                
+                                
+                    $pdf->SetFont('times','B',9);
+                    $pdf->Cell(0,1,'',0,1);
+                    $pdf->setPrintHeader(false);
+                    $pdf->setPrintFooter(false);
+                    
+                    $org_rec = getSingleRecord('tra_organisation_information', array('id'=>1));
+                    $logo = getcwd() . '/resources/images/org-logo.jpg';
+                    $pdf->SetFont('times', 'B', 11);
+
+                    $this->returnInvoiceReportHeader($pdf,$org_rec,$rec, 'TAX INVOICE');
+                
+
+                    $pdf->Cell(0,7,'To:',0,1);
+                    $pdf->SetFont('times', '', 10);
+                    $pdf->Cell(0,7,'Customer No:'. $rec->identification_no,0,1);
+                    if($module_id==2 || $module_id===2 || $module_id==29 || $module_id===29){
+                        $pdf->Cell(0,7,'Applicant Name:'. $rec->applicant_name,0,1);
+                        $pdf->Cell(0,7,'Premise Name:'. $rec->premise_name,0,1);
+                         $pdf->Cell(0,7,'Physical Address:'. $rec->premise_physical_address,0,1);
+                    }else{
+                        $pdf->Cell(0,7,$rec->applicant_name,0,1);
+                         $pdf->Cell(0,7,$rec->postal_address.', '.$rec->region_name.', '.$rec->country_name,0,1);
+                    }
+                
+                    $pdf->Cell(0,7,$rec->email,0,1);
+                    $pdf->SetFont('times', 'B', 11);
+                    
+                     $pdf->MultiCell(0, 7, 'Invoice Details for '.$rec->module_name.' ('.$rec->sub_module.') '.$app_description, 0, 'L');
+                    $pdf->SetFont('times', 'B', 10);
+                   
+                    $pdf->SetLineWidth(0.1);
+                    //invoice details 
+                    $pdf->Cell(15,10,'QTY',1,0);
+                    $pdf->Cell(100,10,'IN RESPECT OF',1,0,'C');
+                    $pdf->Cell(40,10,'RATE',1,0,'C');
+                    $pdf->Cell(0,10,'AMOUNT',1,1,'C');
+                    $inv_rec = DB::table('tra_invoice_details as t1')
+                                    ->leftJoin('par_currencies as t2','t1.paying_currency_id','t2.id')
+                                    ->leftJoin('tra_element_costs as t3','t1.element_costs_id','t3.id')
+                                    ->leftJoin('par_cost_elements as t4','t3.element_id','t4.id')
+                                    ->leftJoin('par_fee_types as t5','t3.feetype_id','t5.id')
+                                    ->leftJoin('par_cost_categories as t6','t3.cost_category_id','t6.id')
+                                    ->select(DB::raw(" t4.name AS cost_element, t5.name AS fee_type, t6.name AS cost_category, t1.total_element_amount AS invoice_amount, t1.paying_currency_id,t2.name as currency_name"))
+                                    ->where(array('t1.invoice_id'=>$invoice_id))
+                                    ->get();
+
+
+                    if($inv_rec){
+                        
+                        
+                        $i = 1;
+                        $total_amount = 0;
+                        $currency_name = '';
+                        $paying_currency_id = '';
+                        $pdf->SetFont('times', '', 10);
+                        foreach($inv_rec as $inv){
+
+                            $currency_name = $inv->currency_name;
+                            $cost_item = $inv->fee_type." ".$inv->cost_category." ".$inv->cost_element;
+                            $paying_currency_id = $inv->paying_currency_id;
+                                $rowcount = max($pdf->getNumLines($cost_item, 92),$pdf->getNumLines($inv->invoice_amount, 40));
+                            $pdf->MultiCell(15,7*$rowcount,$i,1,'',0,0);
+                            $pdf->MultiCell(100,7*$rowcount,$cost_item,1,'',0,0);
+                            $pdf->MultiCell(40,7*$rowcount,formatMoney($inv->invoice_amount),1,'R',0,0);
+                            $pdf->MultiCell(0,7*$rowcount,formatMoney($inv->invoice_amount),1,'R',0,1);
+                            $total_amount = $total_amount+$inv->invoice_amount;
+                            
+                            $i++;
+                        }
+                        
+                        $pdf->MultiCell(155,10,'Sub-Total('.$currency_name.')',1,'R',0,0);
+                        $pdf->MultiCell(0,10,formatMoney($total_amount),1,'R',0,1);
+                            
+                        $pdf->MultiCell(155,10,'Total('.$currency_name.')',1,'R',0,0);
+                        $pdf->MultiCell(0,10,formatMoney($total_amount),1,'R',0,1);
+                            
+                    }
+                    
+                    //get the Bank Details based on the paying currency
+                    
+                    if($module_id==2 || $module_id===2 || $module_id==29 || $module_id===29){
+
+                    $premise_id= getSingleRecordColValue('tra_premises_applications', array('application_code' => $application_code), 'premise_id');
+
+                    $region_id= getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'region_id');
+                     
+                    if(!validateisNumeric($region_id)){
+                      $region_id= getSingleRecordColValue('wb_premises_applications', array('application_code'=>$application_code), 'region_id', 'portal_db');
+                     }
+                     $bank_rec = DB::table('tra_orgbank_accounts as t1')
+                                ->leftJoin('par_banks as t2', 't1.bank_id', 't2.id')
+                                ->leftJoin('par_bankbranches as t3', 't1.branch_id', 't3.id')
+                                ->leftJoin('par_currencies as t4', 't1.currency_id', 't4.id')
+                                ->select(DB::raw("t4.name as currency_name, t1.account_name, t1.account_no, t1.swft_code, t2.name AS bank_name, t3.name AS branch_name"))
+                                ->where(array('t1.is_head_office'=>2,'t1.region_id'=>$region_id))
+                                ->get();
+
+                         if ($bank_rec->isEmpty()) {
+                            $bank_rec = DB::table('tra_orgbank_accounts as t1')
+                                ->leftJoin('par_banks as t2', 't1.bank_id', 't2.id')
+                                ->leftJoin('par_bankbranches as t3', 't1.branch_id', 't3.id')
+                                ->leftJoin('par_currencies as t4', 't1.currency_id', 't4.id')
+                                ->select(DB::raw("t4.name as currency_name, t1.account_name, t1.account_no, t1.swft_code, t2.name AS bank_name, t3.name AS branch_name"))
+                                ->where(array('t1.is_head_office'=>1))
+                                ->get();
+
+                        }
+
+                  }else{
+                      $bank_rec = DB::table('tra_orgbank_accounts as t1')
+                                ->leftJoin('par_banks as t2', 't1.bank_id', 't2.id')
+                                ->leftJoin('par_bankbranches as t3', 't1.branch_id', 't3.id')
+                                ->leftJoin('par_currencies as t4', 't1.currency_id', 't4.id')
+                                ->select(DB::raw("t4.name as currency_name, t1.account_name, t1.account_no, t1.swft_code, t2.name AS bank_name, t3.name AS branch_name"))
+                                ->where(array('t1.is_head_office'=>1))
+                                ->get();
+                    }
+                        if($bank_rec){
+                            $pdf->ln();
+                            $pdf->SetFont('times',' ',10); 
+                            $pdf->MultiCell(0,7,'Total Due in words ***'.ucwords(convert_number_to_words($total_amount)).'('.$currency_name.')'.' Only ***',0,'',0,1); 
+                            $pdf->SetFont('times','i',10); 
+                            $pdf->MultiCell(0,7,'The amount above is now due:',0,'',0,1);  
+                            $pdf->SetFont('times', 'B', 10);
+                            $i = 1;
+                        foreach($bank_rec as $bank){
+
+                        $pdf->MultiCell(0,7,$i.'.'.$bank->currency_name." "."A/C No.".$bank->account_no.'('.$bank->bank_name.')'.'-'.$bank->account_name,0,'',0,1);   
+                           $i++;        
+                        }
+                    }  
+                    //$pdf->ln();
+                    $pdf->SetFont('times', '', 10);
+                    $pdf->MultiCell(0,7,'Payments to National Drug Authority (NDA] must be net invoice figures',0,'',0,1); 
+                     $pdf->SetFont('times', 'B', 10);
+                    $pdf->MultiCell(0,7,'All Bank Charges shall be met by the payer',0,'',0,1);   
+
+                    $pdf->SetFont('','',10);
+                    $print_date = date('F d\\, Y',strtotime(Carbon::now()));  
+                               
+                   // $pdf->ln();
+                                            
+                    $startY = $pdf->GetY();
+                    $startX = $pdf->GetX();
+
+
+                    $pdf->SetFont('times', 'B', 11);
+                    $pdf->Cell(0,8,'System Generated Report',0,1,'C');    
+                    $pdf->SetFont('','',11);                                  
+                    $pdf->Cell(0,8,'Printed On: '.$print_date,0,1,'C');   
                     
                 $pdf->Output('Receipt'); 
                 
@@ -759,10 +1236,34 @@ public function getModuleName($module_id)
 
     }
 
+        function generatePreviewWatermark(){
+             // Add watermarks
+            PDF::SetTextColor(128, 128, 128); //grey
+            // PDF::SetTextColor(135, 206, 235); //sky blue
+            PDF::StartTransform();
+            PDF::Rotate(30);
+            PDF::Text(10, 13, 'PREVIEW'); 
+            PDF::StopTransform();
+
+            PDF::StartTransform();
+            PDF::Rotate(-45);
+            PDF::Text(180, 13, 'PREVIEW'); 
+            PDF::StopTransform();
+
+            PDF::StartTransform();
+            PDF::SetFont('helvetica','B',35);
+            PDF::Rotate(90); 
+            PDF::Text(60, 13, 'PREVIEW'); 
+            PDF::StopTransform();
+            PDF::SetTextColor(0, 0, 0);
+        }
+
        public function generatePremisePermit(Request $request)
        {
 
         $application_code = $request->input('application_code');
+        $is_preview = $request->input('is_preview');
+        $is_preview = 1;
         if(validateIsNumeric($application_code)){
             //get the section id 
             $rec = DB::table('tra_premises_applications as t1')
@@ -775,7 +1276,7 @@ public function getModuleName($module_id)
         
          $approvalGrant = DB::table('tra_approval_recommendations')->where('application_code',$application_code)->first();
 
-        if(!empty($approvalGrant) && $approvalGrant->decision_id == 1){
+        if(!empty($approvalGrant) && $approvalGrant->decision_id == 1 || $is_preview ==1){
          
             PDF::setPrintHeader(false);
             PDF::setPrintFooter(false);
@@ -796,21 +1297,21 @@ public function getModuleName($module_id)
             
             $record = DB::table('tra_premises_applications as t1')
                                     ->join('tra_premises as t2', 't1.premise_id','t2.id')
+                                    ->leftJoin('registered_premises as t2b', 't1.reg_premise_id','t2b.id')
                                     ->join('par_countries as t3', 't2.country_id', 't3.id')
                                     ->leftJoin('par_premise_regions as t4', 't2.region_id','t4.id')
                                     ->leftJoin('par_premise_districts as t5', 't2.district_id', 't5.id')
                                     ->join('wb_trader_account as t6', 't1.applicant_id', 't6.id')
-                                    ->join('par_countries as t7', 't6.country_id', 't7.id')
+                                    ->leftJoin('par_countries as t7', 't6.country_id', 't7.id')
                                     ->leftJoin('par_regions as t8', 't6.region_id','t8.id')
                                     ->leftJoin('par_districts as t9', 't6.district_id', 't9.id')
                                     ->join('tra_approval_recommendations as t10','t1.application_code','t10.application_code')
-                                    ->join('tra_premise_incharge_personnel as t11','t2.nin_no','t11.nin_no')
-                                    ->select(DB::raw("t1.reference_no, t1.premise_id, t1.module_id,t1.sub_module_id,t2.business_type_id,t2.postal_address as premise_poastal_address,t2.physical_address as premise_physical_address, t4.name as premise_region_name,t5.name as premise_district_name,t7.name as premise_country, t10.expiry_date,t10.approval_date as permit_issue_date,t10.permit_no,t2.premise_reg_no,t2.name as premise_name,t2.tpin_no,t6.name as applicant_name,t6.physical_address,t6.postal_address,t6.telephone_no as telephone,t6.email,t9.name as districtName,t8.name as regionName,t7.name as countryName,t11.name as incharge_technician,t11.nin_no"))
+                                    ->leftJoin('tra_premise_incharge_personnel as t11','t2.nin_no','t11.nin_no')
+                                    ->leftJoin('par_personnel_qualifications as t12','t11.qualification_id','t12.id')
+                                    ->leftJoin('tra_pharmacist_personnel as t13','t2.psu_no','t13.psu_no')
+                                    ->select(DB::raw("t1.reference_no, t1.premise_id, t1.module_id,t1.sub_module_id,t2.business_type_id,t2.postal_address as premise_poastal_address,t2.physical_address as premise_physical_address, t4.name as premise_region_name,t5.name as premise_district_name,t7.name as premise_country, t10.expiry_date,t10.approval_date as permit_issue_date,t10.approved_by,t10.permit_no,t2b.registration_no as premise_reg_no,t2.name as premise_name,t2.tpin_no,t6.name as applicant_name,t6.physical_address,t6.postal_address,t6.telephone_no as telephone,t6.email,t9.name as districtName,t8.name as regionName,t7.name as countryName,t11.name as incharge_technician,t11.nin_no,t12.name as qualification,t11.saved_name,t13.psu_no,t13.name as pharmacist"))
                                     ->where(array('t1.application_code'=>$application_code))
                                     ->first();
-
-
-
 
                 if($record){
                     $row=$record;
@@ -830,6 +1331,8 @@ public function getModuleName($module_id)
                         $regionName=$row->regionName;
                         $countryName=$row->countryName;
                         $premise_id=$row->premise_id;
+
+                        $premise_id=$row->premise_id;
                         
                         //premise details
                         $premise_name = $row->premise_name;
@@ -845,18 +1348,25 @@ public function getModuleName($module_id)
                         $business_type_id = $row->business_type_id;
                         $module_id = $row->module_id;
                         $sub_module_id = $row->sub_module_id;
-                        
+                        $qualification = $row->qualification;
+                        $saved_name = $row->saved_name;
+                        $destination = getcwd() . '/resources/images/personnel-profile/';
                         $org_info = $this->getOrganisationInfo();
 
-                
-            
                         $logo = getcwd() . '/resources/images/cert_logo.png';
-                        $permit_no= $row->permit_no;
                         $premise_reg_no = $row->premise_reg_no;
+                        $approved_by = $row->approved_by;
+
+                        $psu_no = $row->psu_no;
+                        $pharmacist = $row->pharmacist;
+
+
                         //onother category 
                         //$business_category_name = $row->business_category_name;
                         $locationDesc = '';
-                        
+
+                     
+                    if($module_id==29 || $module_id===29){
                         PDF::SetFont('times','',13);
                         PDF::Cell(78);
                         PDF::SetMargins(14,10,14, true);
@@ -865,69 +1375,78 @@ public function getModuleName($module_id)
 
                         PDF::Image($logo,65,20,80,33);
                        
-                       PDF::SetFont('times','B',14);
+                       PDF::SetFont('times','B',17);
 
 
 
                         PDF::Cell(0,30,'',0,1);
-                        PDF::Cell(0,4,'License to Operate Retail /Wholesale Surgical Instrument and appliance Outlet',0,1,'C');
+                        PDF::Cell(0,4,'Limited Certificate of Suitability of ',0,1,'C');
+                        PDF::Cell(0,4,'Premises for Operating as a ',0,1,'C');
+                        PDF::Cell(0,4,'Licensed Seller',0,1,'C');
                         PDF::ln();
                         PDF::ln();
-                        PDF::SetFont('times','',12);
-                        PDF::Cell(0,4,'ssued under Regulation 13(3) of the National Drug Policy and Authority (Surgical',0,1,'C');
-                        PDF::Cell(0,4,'Instruments and appliances) Regulation 2019',0,1,'C');
+                        PDF::SetFont('times','',13);
+                        PDF::Cell(0,4,'Issued under Section 17 of the Act and Regulation 4(2) of the National Drug Policy and ',0,1,'C');
+                        PDF::Cell(0,4,'Authority (Certificate of Suitability of Premises) Regulations 2014',0,1,'C');
 
                         PDF::ln();
                         PDF::ln();
-                        PDF::SetFont('times','B',12);
-                        PDF::Cell(0,4,'This is to certify that the premises named:',0,1,'C');
+                        PDF::SetFont('times','B',13);
+                        PDF::Cell(0,4,'This is to certify that the premises named: ',0,1,'C');
                          
                         PDF::SetFont('times','B',14);
                         PDF::ln();
                         PDF::Cell(0,4,strtoupper($premise_name),0,1,'C');
                         PDF::ln();
-                        PDF::SetFont('times','',13);
-                        PDF::Cell(90, 4, 'TIN:', 0, 0, 'L');
-                        PDF::SetFont('times','B',13);
-                        PDF::MultiCell(0, 4, strtoupper($tpin_no), 0, 'L');
-                        PDF::ln();
+                        // PDF::SetFont('times','',13);
+                        // PDF::Cell(90, 4, 'TIN:', 0, 0, 'L');
+                        // PDF::SetFont('times','B',13);
+                        // PDF::MultiCell(0, 4, strtoupper($tpin_no), 0, 'L');
+                        // PDF::ln();
                         PDF::SetFont('times', ' ', 11);
-                        PDF::Cell(90, 4, 'at the Physical Location', 0, 0, 'L');
-                        PDF::SetFont('times','B',13);
+                        PDF::Cell(90, 4, 'at the Physical Address: ', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
                         PDF::MultiCell(0, 4, strtoupper($premise_physical_address), 0, 'L');
                         PDF::ln();
                         PDF::SetFont('times', ' ', 11);
-                        PDF::Cell(90, 4, 'Supervised by: (Qualified Technical Person)', 0, 0, 'L');
-                        PDF::SetFont('times','B',13);
+                        PDF::Cell(90, 4, 'and Supervised by Full-time In-charge:', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
                         PDF::MultiCell(0, 4, strtoupper($incharge_technician), 0, 'L');
                         PDF::ln();
                         PDF::SetFont('times', ' ', 11);
-                        PDF::Cell(90, 4, 'Registration number :', 0, 0, 'L');
-                        PDF::SetFont('times','B',13);
-                        PDF::MultiCell(0, 4, strtoupper($nin_no), 0, 'L');
+                        PDF::Cell(90, 4, 'having the Qualification:', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($qualification), 0, 'L');
                         PDF::ln();
+                        PDF::SetFont('times','',11);
+                        PDF::Cell(0,4,'are considered suitable for carrying on the business of a ',0,1,'C');
                         PDF::SetFont('times','B',13);
-                        PDF::Cell(0,4,'Is licensed to carry out business of Wholesale /Retail /Other Surgical',0,1,'C');
-                        PDF::Cell(0,4,'Instrument and Appliances',0,1,'C');
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::Cell(0,4,'LICENSED SELLER',0,1,'C');
 
 
                         PDF::ln();
                         PDF::SetFont('times', ' ', 11);
 
                         PDF::Cell(90, 4, 'Premise No :'.$premise_reg_no, 0, 0, 'L');
-
-                        PDF::SetFont('times',' ',11);
-                        PDF::WriteHTML('Valid up to <b>'.$expiry_date.'</b>', true, false, false, false, 'R');
-
-                       // PDF::MultiCell(0, 4, "Valid up to <b>".$expiry_date."</b>", 0, 'R');
-                        PDF::ln();
-                    
-                        //PDF::WriteHTML("Premise No.<b> ".$premise_reg_no."</b> Valid up to <b> ".$expiry_date, true, 0, true, true);
-                        PDF::Cell(20,5,'',0,1);
-                        PDF::Cell(30,5,'Issue Date',0,0);
-                        $permit_issue_date = date('F d\\, Y',strtotime($permit_issue_date));
+                        PDF::Cell(30,5,'Issue Date:',0,0);
+                        $permit_issue_date = date('d F\\, Y',strtotime($permit_issue_date));
                         PDF::SetFont('times', 'B', 11);
                         PDF::Cell(20,5,$permit_issue_date,0,1);
+                    
+                        PDF::ln();
+                    
+                       
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, '', 0, 0, 'L');
+                        PDF::Cell(30,5,'Valid up to:',0,0);
+                        $license_expiry_date = date('d F\\, Y',strtotime($expiry_date));
+                        PDF::SetFont('times', 'B', 11);
+                        PDF::Cell(20,5,$license_expiry_date,0,1);
+
+                       
 
 
             
@@ -938,11 +1457,172 @@ public function getModuleName($module_id)
                         //check for signitory
                         $permit_signitory = '';
                         $title= '';
-                        $approved_by= '';
+                        $signatory=$approved_by;
+                        $signature = getUserSignatureDetails($signatory);
                         $startY = PDF::GetY();
                         $startX = PDF::GetX();
-                        $signiture = getcwd() . '/resources/images/signatures/hi0kag.png';
-                        PDF::Image($signiture,$startX,$startY-7,30,12);
+                        $signiture = getcwd() . '/resources/images/signs/'.$signature;
+                        //PDF::Image($signiture,$startX+80,$startY-7,30,12);
+
+                        PDF::SetFont('times','B',12);
+                        PDF::Cell(0,8,'...................................................',0,1,'C');
+                                
+                        //  PDF::Cell(0,8, ucwords(strtolower('A. M. Fimbo')),0,1,'');
+                                    
+                        PDF::Cell(0,8,'FOR THE AUTHORITY',0,1,'C');
+
+
+                        $data = "Premises Registration: Premise No:".$premise_reg_no."; Premises Name:".$premise_name.";Issued Date:".$permit_issue_date.";Valid up to:".$expiry_date;
+                                $styleQR = array('border' => false, 'padding' => 0, 'fgcolor' => array(0, 0, 0), 'bgcolor' => false);
+                         // QRCODE,H : QR-CODE Best error correction
+                        $qrCodeX = 10; // X coordinate
+                        $qrCodeY = PDF::GetPageHeight() - 40; // Y coordinate
+
+                         // Add the QR code
+                        PDF::write2DBarcode($data, 'QRCODE,H', $qrCodeX, $qrCodeY, 16, 16);
+
+                        // Calculate the width of the QR code
+                        $qrCodeWidth = 16;
+
+                        // Calculate the position of the text
+                        $textX = $qrCodeX + $qrCodeWidth + 10; // Adjust the 5 based on your desired spacing
+                        $textY = $qrCodeY;
+
+                        // Add the text
+                        PDF::SetXY($textX, $textY);
+                        PDF::Cell(0, 8, 'This certificate must be prominently displayed in the', 0, 1, 'C');
+                        PDF::Cell(0, 8, 'premises to which it refers', 0, 1, 'C');
+
+                         PDF::AddPage();
+                      
+
+                       ///start
+
+                         PDF::SetFont('times','',13);
+                        PDF::Cell(78);
+                        PDF::SetMargins(14,10,14, true);
+        
+                       // PDF::Image($logo,86,32,39,16);
+
+                        PDF::Image($logo,65,20,80,33);
+                       
+                       PDF::SetFont('times','B',18);
+
+
+                        PDF::ln();
+                        PDF::Cell(0,30,'',0,1);
+                        PDF::Cell(0,4,'License to Operate as a Licensed Seller',0,1,'C');
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','',13);
+                        PDF::Cell(0,4,'Issued under Section 15 (1) of the Act and Regulation 5 of the National Drug Policy ',0,1,'C');
+                        PDF::Cell(0,4,'and Authority (Licensing) Regulations 2014',0,1,'C');
+
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','B',13);
+                        PDF::Cell(0,4,'This is to certify that the business trading under the name of',0,1,'C');
+                         
+                        PDF::SetFont('times','B',14);
+                        PDF::ln();
+                        PDF::Cell(0,4,strtoupper($premise_name),0,1,'C');
+                        PDF::ln();
+                        // PDF::SetFont('times','',13);
+                        // PDF::Cell(90, 4, 'TIN:', 0, 0, 'L');
+                        // PDF::SetFont('times','B',13);
+                        // PDF::MultiCell(0, 4, strtoupper($tpin_no), 0, 'L');
+                        // PDF::ln();
+                        PDF::Cell(0,4,'is licensed for the retail sale of Class C Drugs only and NOT Class A or B Drugs',0,1,'L');
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'at the Physical Address:', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($premise_physical_address), 0, 'L');
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'and Supervised by Full-time In-charge:', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($incharge_technician), 0, 'L');
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'having the Qualification:', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($qualification), 0, 'L');
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','B',13);
+        
+                        $passportphoto =  $destination.$saved_name;
+            
+                       $pageWidth = PDF::GetPageWidth();
+
+                        $imageWidth = 50; // Assuming the width of the image is 30 units
+
+                        // Calculate the X position to center the image
+                        $imageX = ($pageWidth - $imageWidth) / 2;
+
+                        // Set the Y position
+                        $imageY = PDF::GetY() - 7; // Adjust Y position as needed
+                        PDF::SetFont('times','',11);
+                        PDF::Cell(90, 4, 'Photograph of In-charge', 0, 0, 'L');
+                        // Place the image at the calculated position
+                        PDF::Image($passportphoto, $imageX, $imageY, 30, 30);
+                        PDF::SetFont('times','B',13);
+
+                        PDF::ln();
+                        PDF::ln();
+                         PDF::ln();
+                        PDF::ln();
+                         PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+
+                        // PDF::Cell(90, 4, 'Licence No :'.$permit_no, 0, 0, 'L');
+
+                        // PDF::SetFont('times',' ',11);
+                        // $permit_issue_date = date('d F\\, Y',strtotime($permit_issue_date));
+                        // PDF::WriteHTML('Issue Date:<b>'.$permit_issue_date.'</b>', true, false, false, false, 'R');
+                        // PDF::ln();
+
+
+                        // PDF::Cell(90, 4, '', 0, 0, 'L');
+
+                        // PDF::SetFont('times',' ',11);
+                        // $expiry_date = date('d F\\, Y',strtotime($expiry_date));
+                        // PDF::WriteHTML('Valid up to <b>'.$expiry_date.'</b>', true, false, false, false, 'R');
+
+                       PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+
+                        PDF::Cell(90, 4, 'Licence No :'.$premise_reg_no, 0, 0, 'L');
+                        PDF::Cell(30,5,'Issue Date:',0,0);
+                        $permit_issue_date = date('d F\\, Y',strtotime($permit_issue_date));
+                        PDF::SetFont('times', 'B', 11);
+                        PDF::Cell(20,5,$permit_issue_date,0,1);
+                    
+                        PDF::ln();
+                   
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, '', 0, 0, 'L');
+                        PDF::Cell(30,5,'Valid up to:',0,0);
+                        $license_expiry_date = date('d F\\, Y',strtotime($expiry_date));
+                        PDF::SetFont('times', 'B', 11);
+                        PDF::Cell(20,5,$license_expiry_date,0,1);
+
+            
+                         PDF::Cell(0,15,'',0,1);
+                                
+                        PDF::SetFont('times','B',10);
+                                
+                        //check for signitory
+                        $permit_signitory = '';
+                        $title= '';
+                        $signatory=$approved_by;
+                        $signature = getUserSignatureDetails($signatory);
+                        $startY = PDF::GetY();
+                        $startX = PDF::GetX();
+                        $signiture = getcwd() . '/resources/images/signs/'.$signature;
+                       // PDF::Image($signiture,$startX+80,$startY-7,30,12);
                         PDF::SetFont('times','B',11);
 
                         PDF::SetFont('times','B',12);
@@ -953,7 +1633,7 @@ public function getModuleName($module_id)
                         PDF::Cell(0,8,'FOR THE AUTHORITY',0,1,'C');
 
 
-                        $data = "Premises Registration: Permit No:".$permit_no."; Premises Name:".$premise_name.";Issued Date:".$permit_issue_date;
+                         $data = "Premises Registration: Premise No:".$premise_reg_no."; Premises Name:".$premise_name.";Issued Date:".$permit_issue_date.";Valid up to:".$expiry_date;
                                 $styleQR = array('border' => false, 'padding' => 0, 'fgcolor' => array(0, 0, 0), 'bgcolor' => false);
                          // QRCODE,H : QR-CODE Best error correction
                         $qrCodeX = 10; // X coordinate
@@ -973,9 +1653,585 @@ public function getModuleName($module_id)
                         PDF::SetXY($textX, $textY);
                         PDF::Cell(0, 8, 'This License must be prominently displayed in the', 0, 1, 'C');
                         PDF::Cell(0, 8, 'premises to which it refers', 0, 1, 'C');
+            
+                        PDF::Output($applicantName.date('Y').date('m').date('d').date('i').date('s').'.pdf','I');
 
 
-                        PDF::AddPage();
+                    }
+
+
+                    if($module_id==2 || $module_id===2){
+
+                        if($sub_module_id==89 || $sub_module_id==89){
+
+                           $res = $this->printPremisePreInspectionApprovalLetter($request);
+                          print_r($res);
+
+                        //new cert
+
+
+                        }
+                        if($is_preview==1  || $is_preview===1){
+                            $this->generatePreviewWatermark();
+
+                        }
+
+                       // PDF::Image($logo,86,32,39,16);
+
+                        PDF::Image($logo,65,20,80,33);
+                       
+                        PDF::SetFont('times','B',14);
+
+
+                        PDF::ln();
+                        PDF::Cell(0,30,'',0,1);
+
+                        if($business_type_id==2){
+                        PDF::Cell(0,4,'General Certificate of Suitability of Premises for Retail Pharmacy',0,1,'C');
+                        PDF::Cell(0,4,'Retail Pharmacy',0,1,'C');
+                         }
+
+                         if($business_type_id==1){
+                        PDF::Cell(0,4,'General Certificate of Suitability of Premises for',0,1,'C');
+                        PDF::Cell(0,4,'Wholesale Pharmacy',0,1,'C');
+                         }
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','',12);
+                        PDF::Cell(0,4,'Issued under Section 17 of the Act and Regulation 4(2) of the National Drug Policy and Authority ',0,1,'C');
+                        PDF::Cell(0,4,'(Certificate of Suitability of Premises) Regulations 2014 ',0,1,'C');
+
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','B',12);
+                        PDF::Cell(0,4,'This is to certify that the premises named',0,1,'C');
+                         
+                        PDF::SetFont('times','B',14);
+                        PDF::ln();
+                        PDF::Cell(0,4,strtoupper($premise_name),0,1,'C');
+                        PDF::ln();
+                        
+                       // PDF::Cell(0,4,'is licensed for the retail sale of Class C Drugs only and NOT Class A or B Drugs',0,1,'L');
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'at the Physical Address:', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($premise_physical_address), 0, 'L');
+                        PDF::ln();
+                        PDF::SetFont('times','',13);
+                        PDF::Cell(90, 4, 'TIN:', 0, 0, 'L');
+                        PDF::SetFont('times','B',13);
+                        PDF::MultiCell(0, 4, strtoupper($tpin_no), 0, 'L');
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'with Supervising Pharmacist', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($pharmacist), 0, 'L');
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'having Registration No', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($psu_no), 0, 'L');
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','B',13);
+        
+                      
+                        PDF::Cell(0,4,'are considered suitable for carrying on the business of',0,1,'C');
+                         if($business_type_id==2){
+                        PDF::Cell(0,4,'Retail Pharmacy',0,1,'C');
+                        }
+
+                        if($business_type_id==1){
+                        PDF::Cell(0,4,'Wholesale Pharmacy',0,1,'C');
+                        }
+                        PDF::ln();
+                        PDF::ln();
+
+                        PDF::Cell(90, 4, 'Premise No.'.$premise_reg_no, 0, 0, 'L');
+
+                        PDF::SetFont('times',' ',11);
+                        $expiry_date = date('d F\\, Y',strtotime($expiry_date));
+                        PDF::WriteHTML('Valid up to <b>'.$expiry_date.'</b>', true, false, false, false, 'R');
+                        PDF::ln();
+                        PDF::Cell(20,5,'',0,1);
+                        PDF::Cell(30,5,'Issue Date',0,0);
+                        $permit_issue_date = date('d F\\, Y',strtotime($permit_issue_date));
+                        PDF::SetFont('times', 'B', 11);
+                        PDF::Cell(20,5,$permit_issue_date,0,1);
+
+
+            
+                         PDF::Cell(0,15,'',0,1);
+                                
+                        PDF::SetFont('times','B',10);
+                                
+                        //check for signitory
+                        $permit_signitory = '';
+                        $title= '';
+                        $signatory=$approved_by;
+                        $signature = getUserSignatureDetails($signatory);
+                        $startY = PDF::GetY();
+                        $startX = PDF::GetX();
+                        $signiture = getcwd() . '/resources/images/signs/'.$signature;
+                        //PDF::Image($signiture,$startX+80,$startY-7,30,12);
+
+                        PDF::SetFont('times','B',12);
+                        PDF::Cell(0,8,'...................................................',0,1,'C');
+                                
+                        //  PDF::Cell(0,8, ucwords(strtolower('A. M. Fimbo')),0,1,'');
+                                    
+                        PDF::Cell(0,8,'FOR THE AUTHORITY',0,1,'C');
+
+
+                         $data = "Premises Registration: Premise No:".$premise_reg_no."; Premises Name:".$premise_name.";Issued Date:".$permit_issue_date.";Valid up to:".$expiry_date;
+                                $styleQR = array('border' => false, 'padding' => 0, 'fgcolor' => array(0, 0, 0), 'bgcolor' => false);
+                         // QRCODE,H : QR-CODE Best error correction
+                        $qrCodeX = 10; // X coordinate
+                        $qrCodeY = PDF::GetPageHeight() - 40; // Y coordinate
+
+                         // Add the QR code
+                        PDF::write2DBarcode($data, 'QRCODE,H', $qrCodeX, $qrCodeY, 16, 16);
+
+                        // Calculate the width of the QR code
+                        $qrCodeWidth = 16;
+
+                        // Calculate the position of the text
+                        $textX = $qrCodeX + $qrCodeWidth + 10; // Adjust the 5 based on your desired spacing
+                        $textY = $qrCodeY;
+
+                        // Add the text
+                        PDF::SetXY($textX, $textY);
+                        PDF::Cell(0, 8, 'This certificate must be prominently displayed in the', 0, 1, 'C');
+                        PDF::Cell(0, 8, 'premises to which it refers', 0, 1, 'C');
+
+                         PDF::AddPage();
+                      
+
+                       ///start
+                         // Add watermarks
+                        if($is_preview==1  || $is_preview===1){
+                            $this->generatePreviewWatermark();
+                        }
+
+                        //end watermarks
+
+                         PDF::SetFont('times','',13);
+                        PDF::Cell(78);
+                        PDF::SetMargins(14,10,14, true);
+        
+                       // PDF::Image($logo,86,32,39,16);
+
+                        PDF::Image($logo,65,20,80,33);
+                       
+                       PDF::SetFont('times','B',14);
+
+
+                        PDF::ln();
+                        PDF::Cell(0,30,'',0,1);
+
+                        if($business_type_id==2){
+                        PDF::Cell(0,4,'License to Operate Retail',0,1,'C');
+                        PDF::Cell(0,4,'Pharmacy',0,1,'C');
+                        }
+
+                        if($business_type_id==1){
+                        PDF::Cell(0,4,'License to Operate Wholesale',0,1,'C');
+                        PDF::Cell(0,4,'Pharmacy',0,1,'C');
+                        }
+
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','',12);
+                         if($business_type_id==2){
+                        PDF::Cell(0,4,'Issued under Section 14 of the Act and Regulation 11 of the National Drug ',0,1,'C');
+                        PDF::Cell(0,4,'Policy and Authority (Licensing) Regulations 2014',0,1,'C');
+                       }
+
+
+                        if($business_type_id==1){
+                        PDF::Cell(0,4,'Issued under Section 37(2) of the Act and Regulation 16(1) of the National ',0,1,'C');
+                        PDF::Cell(0,4,'Drug Policy and Authority (Licensing) Regulations 2014',0,1,'C');
+                       }
+
+
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','B',12);
+                          PDF::Cell(0,4,'This is to certify that the business trading under the name of',0,1,'C');
+                         
+                        PDF::SetFont('times','B',14);
+                        PDF::ln();
+                        PDF::Cell(0,4,strtoupper($premise_name),0,1,'C');
+                        PDF::ln();
+
+                        if($business_type_id==2){
+                        PDF::Cell(0,4,'is licensed to operate a Retail Pharmacy',0,1,'C');
+                         }
+
+                         if($business_type_id==1){
+                        PDF::Cell(0,4,'is licensed to operate a Wholesale Pharmacy',0,1,'C');
+                         }
+                        
+            
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'at the Physical Address:', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($premise_physical_address), 0, 'L');
+                        PDF::ln();
+                        PDF::SetFont('times','',13);
+                        PDF::Cell(90, 4, 'TIN:', 0, 0, 'L');
+                        PDF::SetFont('times','B',13);
+                        PDF::MultiCell(0, 4, strtoupper($tpin_no), 0, 'L');
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'with Supervising Pharmacist', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($pharmacist), 0, 'L');
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'having Registration No', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($psu_no), 0, 'L');
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','B',13);
+        
+                        PDF::SetFont('times', ' ', 11);
+
+                        PDF::Cell(90, 4, 'Premise No :'.$premise_reg_no, 0, 0, 'L');
+
+                        PDF::SetFont('times',' ',11);
+                        $expiry_date = date('d F\\, Y',strtotime($expiry_date));
+                        PDF::WriteHTML('Valid up to <b>'.$expiry_date.'</b>', true, false, false, false, 'R');
+                        PDF::ln();
+                        PDF::Cell(20,5,'',0,1);
+                        PDF::Cell(30,5,'Issue Date',0,0);
+                        $permit_issue_date = date('d F\\, Y',strtotime($permit_issue_date));
+                        PDF::SetFont('times', 'B', 11);
+                        PDF::Cell(20,5,$permit_issue_date,0,1);
+
+
+            
+                         PDF::Cell(0,15,'',0,1);
+                                
+                        PDF::SetFont('times','B',10);
+                                
+                        //check for signitory
+                        $permit_signitory = '';
+                        $title= '';
+                        $signatory=$approved_by;
+                        $signature = getUserSignatureDetails($signatory);
+                        $startY = PDF::GetY();
+                        $startX = PDF::GetX();
+                        $signiture = getcwd() . '/resources/images/signs/'.$signature;
+                        //PDF::Image($signiture,$startX+80,$startY-7,30,12);
+                        PDF::SetFont('times','B',11);
+
+                        PDF::SetFont('times','B',12);
+                        PDF::Cell(0,8,'...................................................',0,1,'C');
+                                
+                        //  PDF::Cell(0,8, ucwords(strtolower('A. M. Fimbo')),0,1,'');
+                                    
+                        PDF::Cell(0,8,'FOR THE AUTHORITY',0,1,'C');
+
+
+                         $data = "Premises Registration: Premise No:".$premise_reg_no."; Premises Name:".$premise_name.";Issued Date:".$permit_issue_date.";Valid up to:".$expiry_date;
+                                $styleQR = array('border' => false, 'padding' => 0, 'fgcolor' => array(0, 0, 0), 'bgcolor' => false);
+                         // QRCODE,H : QR-CODE Best error correction
+                        $qrCodeX = 10; // X coordinate
+                        $qrCodeY = PDF::GetPageHeight() - 40; // Y coordinate
+
+                         // Add the QR code
+                        PDF::write2DBarcode($data, 'QRCODE,H', $qrCodeX, $qrCodeY, 16, 16);
+
+                        // Calculate the width of the QR code
+                        $qrCodeWidth = 16;
+
+                        // Calculate the position of the text
+                        $textX = $qrCodeX + $qrCodeWidth + 10; // Adjust the 5 based on your desired spacing
+                        $textY = $qrCodeY;
+
+                        // Add the text
+                        PDF::SetXY($textX, $textY);
+                        PDF::Cell(0, 8, 'This License must be prominently displayed in the', 0, 1, 'C');
+                        PDF::Cell(0, 8, 'premises to which it refers', 0, 1, 'C');
+            
+                        PDF::Output($applicantName.date('Y').date('m').date('d').date('i').date('s').'.pdf','I');
+
+
+                    }
+
+
+
+                    //New SIA premise
+                    if($module_id==33 || $module_id===33){
+
+                        if($sub_module_id==89 || $sub_module_id==89){
+
+                       ///start
+
+                            //dd("Kindly note! Changes are been Made on the letter.Kindly we will review this after the session");
+
+                            PDF::SetFont('times','',10);
+                        PDF::Cell(78);
+                        PDF::Cell(20,0,'Kindly note! Changes are been Made on the letter.Kindly we will review this after the session',0,2,'C');
+                            PDF::Output(date('Y').date('m').date('d').date('i').date('s').'.pdf','I');
+                        
+                        exit();
+
+                         PDF::SetFont('times','',13);
+                        PDF::Cell(78);
+                        PDF::SetMargins(14,10,14, true);
+        
+                       // PDF::Image($logo,86,32,39,16);
+
+                        PDF::Image($logo,65,20,80,33);
+                       
+                       PDF::SetFont('times','B',14);
+
+
+                        PDF::ln();
+                        PDF::Cell(0,30,'',0,1);
+                        PDF::Cell(0,4,'Certificate of Suitability of Premises',0,1,'C');
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','',12);
+                        PDF::Cell(0,4,'Issued under Regulation 5(2) of the National Drug Policy and Authority (Surgical',0,1,'C');
+                        PDF::Cell(0,4,'Instruments and appliances) Regulation 2019',0,1,'C');
+
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','B',12);
+                        PDF::Cell(0,4,'This is to certify that the premises of:',0,1,'C');
+                         
+                        PDF::SetFont('times','B',14);
+                        PDF::ln();
+                        PDF::Cell(0,4,strtoupper($premise_name),0,1,'C');
+                        PDF::ln();
+                        
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'at the Physical Address:', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($premise_physical_address), 0, 'L');
+                        PDF::ln();
+                        PDF::SetFont('times','',13);
+                        PDF::Cell(90, 4, 'TIN:', 0, 0, 'L');
+                        PDF::SetFont('times','B',13);
+                        PDF::MultiCell(0, 4, strtoupper($tpin_no), 0, 'L');
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'with Supervising Pharmacist', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($incharge_technician), 0, 'L');
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'having Registration No', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($qualification), 0, 'L');
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','B',13);
+        
+                        PDF::Cell(0,4,'are considered suitable for carrying on the business of',0,1,'C');
+                        PDF::Cell(0,4,'Retail Pharmacy',0,1,'C');
+
+                        PDF::Cell(90, 4, 'Licence No :'.$premise_reg_no, 0, 0, 'L');
+
+                        PDF::SetFont('times',' ',11);
+                        $expiry_date = date('d F\\, Y',strtotime($expiry_date));
+                        PDF::WriteHTML('Valid up to <b>'.$expiry_date.'</b>', true, false, false, false, 'R');
+                        PDF::ln();
+                        PDF::Cell(20,5,'',0,1);
+                        PDF::Cell(30,5,'Issue Date',0,0);
+                        $permit_issue_date = date('d F\\, Y',strtotime($permit_issue_date));
+                        PDF::SetFont('times', 'B', 11);
+                        PDF::Cell(20,5,$permit_issue_date,0,1);
+
+
+            
+                         PDF::Cell(0,15,'',0,1);
+                                
+                        PDF::SetFont('times','B',10);
+                                
+                        //check for signitory
+                        $permit_signitory = '';
+                        $title= '';
+                        $signatory=$approved_by;
+                        $signature = getUserSignatureDetails($signatory);
+                        $startY = PDF::GetY();
+                        $startX = PDF::GetX();
+                        $signiture = getcwd() . '/resources/images/signs/'.$signature;
+                       // PDF::Image($signiture,$startX+80,$startY-7,30,12);
+                        PDF::SetFont('times','B',11);
+
+                        PDF::SetFont('times','B',12);
+                        PDF::Cell(0,8,'...................................................',0,1,'C');
+                                
+                        //  PDF::Cell(0,8, ucwords(strtolower('A. M. Fimbo')),0,1,'');
+                                    
+                        PDF::Cell(0,8,'FOR THE AUTHORITY',0,1,'C');
+
+
+                         $data = "Premises Registration: Premise No:".$premise_reg_no."; Premises Name:".$premise_name.";Issued Date:".$permit_issue_date.";Valid up to:".$expiry_date;
+                                $styleQR = array('border' => false, 'padding' => 0, 'fgcolor' => array(0, 0, 0), 'bgcolor' => false);
+                         // QRCODE,H : QR-CODE Best error correction
+                        $qrCodeX = 10; // X coordinate
+                        $qrCodeY = PDF::GetPageHeight() - 40; // Y coordinate
+
+                         // Add the QR code
+                        PDF::write2DBarcode($data, 'QRCODE,H', $qrCodeX, $qrCodeY, 16, 16);
+
+                        // Calculate the width of the QR code
+                        $qrCodeWidth = 16;
+
+                        // Calculate the position of the text
+                        $textX = $qrCodeX + $qrCodeWidth + 10; // Adjust the 5 based on your desired spacing
+                        $textY = $qrCodeY;
+
+                        // Add the text
+                        PDF::SetXY($textX, $textY);
+                        PDF::Cell(0, 8, 'This License must be prominently displayed in the', 0, 1, 'C');
+                        PDF::Cell(0, 8, 'premises to which it refers', 0, 1, 'C');
+            
+                        PDF::Output($applicantName.date('Y').date('m').date('d').date('i').date('s').'.pdf','I');
+
+
+
+
+
+
+
+
+
+
+
+                        //new cert
+
+
+                        }
+                       
+                         PDF::SetFont('times','',13);
+                        PDF::Cell(78);
+                        PDF::SetMargins(14,10,14, true);
+        
+                       // PDF::Image($logo,86,32,39,16);
+
+                        PDF::Image($logo,65,20,80,33);
+                       
+                       PDF::SetFont('times','B',14);
+
+
+                        PDF::ln();
+                        PDF::Cell(0,30,'',0,1);
+                        PDF::Cell(0,4,'Certificate of Suitability of Premises',0,1,'C');
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','',12);
+                        PDF::Cell(0,4,'Issued under Regulation 5(2) of the National Drug Policy and Authority (Surgical',0,1,'C');
+                        PDF::Cell(0,4,'Instruments and appliances) Regulation 2019',0,1,'C');
+
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','B',12);
+                        PDF::Cell(0,4,'This is to certify that the premises of',0,1,'C');
+                         
+                        PDF::SetFont('times','B',14);
+                        PDF::ln();
+                        PDF::Cell(0,4,strtoupper($premise_name),0,1,'C');
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'at the Physical Address:', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($premise_physical_address), 0, 'L');
+                        PDF::ln();
+                        // PDF::SetFont('times','',13);
+                        // PDF::Cell(90, 4, 'TIN:', 0, 0, 'L');
+                        // PDF::SetFont('times','B',13);
+                        // PDF::MultiCell(0, 4, strtoupper($tpin_no), 0, 'L');
+                        // PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'Supervised by : (Qualified Technical Person) :', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($incharge_technician), 0, 'L');
+                        PDF::ln();
+                        PDF::SetFont('times', ' ', 11);
+                        PDF::Cell(90, 4, 'Registration number :', 0, 0, 'L');
+                        PDF::SetFont('times','B',11);
+                        PDF::MultiCell(0, 4, strtoupper($nin_no), 0, 'L');
+                        PDF::ln();
+                        PDF::ln();
+                        PDF::SetFont('times','B',13);
+        
+                      
+                        PDF::Cell(0,4,'are considered suitable for carrying on the business of',0,1,'C');
+                   
+                        PDF::Cell(0,4,'Wholesale/Retail/Other Surgical Instrument and Appliances',0,1,'C');
+                    
+                        PDF::ln();
+                        PDF::ln();
+
+                        PDF::Cell(90, 4, 'Premise No.'.$premise_reg_no, 0, 0, 'L');
+
+                        PDF::SetFont('times',' ',11);
+                        $expiry_date = date('d F\\, Y',strtotime($expiry_date));
+                        PDF::WriteHTML('Valid up to <b>'.$expiry_date.'</b>', true, false, false, false, 'R');
+                        PDF::ln();
+                        PDF::Cell(20,5,'',0,1);
+                        PDF::Cell(30,5,'Issue Date',0,0);
+                        $permit_issue_date = date('d F\\, Y',strtotime($permit_issue_date));
+                        PDF::SetFont('times', 'B', 11);
+                        PDF::Cell(20,5,$permit_issue_date,0,1);
+
+
+            
+                         PDF::Cell(0,15,'',0,1);
+                                
+                        PDF::SetFont('times','B',10);
+                                
+                        //check for signitory
+                        $permit_signitory = '';
+                        $title= '';
+                        $signatory=$approved_by;
+                        $signature = getUserSignatureDetails($signatory);
+                        $startY = PDF::GetY();
+                        $startX = PDF::GetX();
+                        $signiture = getcwd() . '/resources/images/signs/'.$signature;
+                        //PDF::Image($signiture,$startX+80,$startY-7,30,12);
+
+                        PDF::SetFont('times','B',12);
+                        PDF::Cell(0,8,'...................................................',0,1,'C');
+                                
+                        //  PDF::Cell(0,8, ucwords(strtolower('A. M. Fimbo')),0,1,'');
+                                    
+                        PDF::Cell(0,8,'FOR THE AUTHORITY',0,1,'C');
+
+
+                         $data = "Premises Registration: Premise No:".$premise_reg_no."; Premises Name:".$premise_name.";Issued Date:".$permit_issue_date.";Valid up to:".$expiry_date;
+                                $styleQR = array('border' => false, 'padding' => 0, 'fgcolor' => array(0, 0, 0), 'bgcolor' => false);
+                         // QRCODE,H : QR-CODE Best error correction
+                        $qrCodeX = 10; // X coordinate
+                        $qrCodeY = PDF::GetPageHeight() - 40; // Y coordinate
+
+                         // Add the QR code
+                        PDF::write2DBarcode($data, 'QRCODE,H', $qrCodeX, $qrCodeY, 16, 16);
+
+                        // Calculate the width of the QR code
+                        $qrCodeWidth = 16;
+
+                        // Calculate the position of the text
+                        $textX = $qrCodeX + $qrCodeWidth + 10; // Adjust the 5 based on your desired spacing
+                        $textY = $qrCodeY;
+
+                        // Add the text
+                        PDF::SetXY($textX, $textY);
+                        PDF::Cell(0, 8, 'This certificate must be prominently displayed in the', 0, 1, 'C');
+                        PDF::Cell(0, 8, 'premises to which it refers', 0, 1, 'C');
+
+                         PDF::AddPage();
                       
 
                        ///start
@@ -991,19 +2247,22 @@ public function getModuleName($module_id)
                        PDF::SetFont('times','B',14);
 
 
-
+                        PDF::ln();
                         PDF::Cell(0,30,'',0,1);
-                        PDF::Cell(0,4,'License to Operate Retail /Wholesale Surgical Instrument and appliance Outlet',0,1,'C');
+
+                        PDF::Cell(0,4,'License to Operate Retail /Wholesale Surgical',0,1,'C');
+                        PDF::Cell(0,4,'Instrument and appliance Outlet',0,1,'C');
+
                         PDF::ln();
                         PDF::ln();
                         PDF::SetFont('times','',12);
-                        PDF::Cell(0,4,'ssued under Regulation 13(3) of the National Drug Policy and Authority (Surgical',0,1,'C');
+                        PDF::Cell(0,4,'Issued under Regulation 13(3) of the National Drug Policy and Authority (Surgical',0,1,'C');
                         PDF::Cell(0,4,'Instruments and appliances) Regulation 2019',0,1,'C');
-
+                       
                         PDF::ln();
                         PDF::ln();
                         PDF::SetFont('times','B',12);
-                        PDF::Cell(0,4,'This is to certify that the premises named:',0,1,'C');
+                          PDF::Cell(0,4,'This is to certify that the premises named:',0,1,'C');
                          
                         PDF::SetFont('times','B',14);
                         PDF::ln();
@@ -1016,39 +2275,33 @@ public function getModuleName($module_id)
                         PDF::ln();
                         PDF::SetFont('times', ' ', 11);
                         PDF::Cell(90, 4, 'at the Physical Location', 0, 0, 'L');
-                        PDF::SetFont('times','B',13);
+                        PDF::SetFont('times','B',11);
                         PDF::MultiCell(0, 4, strtoupper($premise_physical_address), 0, 'L');
                         PDF::ln();
                         PDF::SetFont('times', ' ', 11);
                         PDF::Cell(90, 4, 'Supervised by: (Qualified Technical Person)', 0, 0, 'L');
-                        PDF::SetFont('times','B',13);
+                        PDF::SetFont('times','B',11);
                         PDF::MultiCell(0, 4, strtoupper($incharge_technician), 0, 'L');
                         PDF::ln();
                         PDF::SetFont('times', ' ', 11);
                         PDF::Cell(90, 4, 'Registration number :', 0, 0, 'L');
-                        PDF::SetFont('times','B',13);
+                        PDF::SetFont('times','B',11);
                         PDF::MultiCell(0, 4, strtoupper($nin_no), 0, 'L');
                         PDF::ln();
-                        PDF::SetFont('times','B',13);
-                        PDF::Cell(0,4,'Is licensed to carry out business of Wholesale /Retail /Other Surgical',0,1,'C');
-                        PDF::Cell(0,4,'Instrument and Appliances',0,1,'C');
-
-
                         PDF::ln();
+                        PDF::SetFont('times','B',13);
+        
                         PDF::SetFont('times', ' ', 11);
 
                         PDF::Cell(90, 4, 'Premise No :'.$premise_reg_no, 0, 0, 'L');
 
                         PDF::SetFont('times',' ',11);
+                        $expiry_date = date('d F\\, Y',strtotime($expiry_date));
                         PDF::WriteHTML('Valid up to <b>'.$expiry_date.'</b>', true, false, false, false, 'R');
-
-                       // PDF::MultiCell(0, 4, "Valid up to <b>".$expiry_date."</b>", 0, 'R');
                         PDF::ln();
-                    
-                        //PDF::WriteHTML("Premise No.<b> ".$premise_reg_no."</b> Valid up to <b> ".$expiry_date, true, 0, true, true);
                         PDF::Cell(20,5,'',0,1);
                         PDF::Cell(30,5,'Issue Date',0,0);
-                        $permit_issue_date = date('F d\\, Y',strtotime($permit_issue_date));
+                        $permit_issue_date = date('d F\\, Y',strtotime($permit_issue_date));
                         PDF::SetFont('times', 'B', 11);
                         PDF::Cell(20,5,$permit_issue_date,0,1);
 
@@ -1061,11 +2314,12 @@ public function getModuleName($module_id)
                         //check for signitory
                         $permit_signitory = '';
                         $title= '';
-                        $approved_by= '';
+                        $signatory=$approved_by;
+                        $signature = getUserSignatureDetails($signatory);
                         $startY = PDF::GetY();
                         $startX = PDF::GetX();
-                        $signiture = getcwd() . '/resources/images/signatures/hi0kag.png';
-                        PDF::Image($signiture,$startX,$startY-7,30,12);
+                        $signiture = getcwd() . '/resources/images/signs/'.$signature;
+                       // PDF::Image($signiture,$startX+80,$startY-7,30,12);
                         PDF::SetFont('times','B',11);
 
                         PDF::SetFont('times','B',12);
@@ -1076,7 +2330,7 @@ public function getModuleName($module_id)
                         PDF::Cell(0,8,'FOR THE AUTHORITY',0,1,'C');
 
 
-                        $data = "Premises Registration: Permit No:".$permit_no."; Premises Name:".$premise_name.";Issued Date:".$permit_issue_date;
+                         $data = "Premises Registration: Premise No:".$premise_reg_no."; Premises Name:".$premise_name.";Issued Date:".$permit_issue_date.";Valid up to:".$expiry_date;
                                 $styleQR = array('border' => false, 'padding' => 0, 'fgcolor' => array(0, 0, 0), 'bgcolor' => false);
                          // QRCODE,H : QR-CODE Best error correction
                         $qrCodeX = 10; // X coordinate
@@ -1096,9 +2350,13 @@ public function getModuleName($module_id)
                         PDF::SetXY($textX, $textY);
                         PDF::Cell(0, 8, 'This License must be prominently displayed in the', 0, 1, 'C');
                         PDF::Cell(0, 8, 'premises to which it refers', 0, 1, 'C');
-
             
                         PDF::Output($applicantName.date('Y').date('m').date('d').date('i').date('s').'.pdf','I');
+
+
+                    }
+
+
                 
             }
             else{
@@ -1148,6 +2406,33 @@ public function getModuleName($module_id)
         
         
     }
+
+
+    public function generatePersonalUsePermit(Request $request)
+    {
+        
+        // $premise_id = $request->input('premise_id');
+        // $application_code = $request->input('application_code');
+        // if(validateIsNumeric($application_code)){
+        //     //get the section id 
+        //     $rec = DB::table('tra_premises_applications as t1')
+        //     ->select('t1.*')
+        //     ->where(array('t1.application_code'=>$application_code))
+        //     ->first();
+        //     $premise_id = $rec->premise_id;
+        //     $section_id = $rec->section_id;
+        // }
+        // $approvalGrant = DB::table('tra_approval_recommendations as t1')
+        //                 ->join('tra_premises_applications as t2', 't1.application_code', 't2.application_code')
+        //                 ->where('t2.application_code', $application_code)
+        //                 ->first();
+        //$this->printPremisesCertificateLetter($request,$approvalGrant);
+
+        $this->printImportPersonalUseLetter($request);
+        
+        
+    }
+
     public function genenerateImportExportPermit(Request $request)
     {
         $document_type_id = 25;
@@ -1394,6 +2679,7 @@ public function getModuleName($module_id)
         $application_id = $request->input('application_id');
         $application_code = $request->input('application_code');
         $section_id = $request->input('section_id');
+        $ref='';
        
         if(validateIsNumeric($application_code)){
 
@@ -1409,30 +2695,7 @@ public function getModuleName($module_id)
                         ->where('t2.application_id',$application_id)
                         ->first();
         if(!empty($approvalGrant) && $approvalGrant->decision_id == 1){
-            /* $details = $this->getGMPProductLineTableDetails($section_id);
-             if($section_id == 4){
-                
-                $title = 'CERTIFICATE OF COMPLIANCE TO QUALITY AUDIT';
-            }
-            else{
-                $title = 'CERTIFICATE OF COMPLIANCE TO GOOD MANUFACTURING PRACTICES (GMP)';
-            }
-            //PDF::Cell(0,4,'(For Medical Devices and Diagnostics Manufacturing Facilities)',0,1,'C');"repo:gmp_subReport.jrxml"
-            $params = array(
-                'application_id' => $application_id,
-                'certificate_name' => $title,
-                'document_type' => 'certificate',
-                'col1_name' => $details->col1_name,
-                'col2_name' => $details->col2_name,
-                'col3_name' => $details->col3_name,
-                'base_Url' => $this->base_url,
-                'sign_Url' => $this->sign_url,
-                'Authority' => ' UGANDA Medicines & Medical Devices Authority'
-            );
-            $report = generateJasperReport('gmpCertificateReport', 'permit_' . time(), 'pdf', $params);
-                        return $report;
-                        */
-                    $record =  $qry = DB::table('tra_gmp_applications as t1')
+                              $record =  $qry = DB::table('tra_gmp_applications as t1')
                                                     ->join('tra_manufacturing_sites as t2', 't1.manufacturing_site_id', '=', 't2.id')
                                                     ->join('par_countries as t3', 't2.country_id','t3.id')
                                                     ->leftJoin('par_regions as t4', 't2.region_id', 't4.id')
@@ -1440,16 +2703,19 @@ public function getModuleName($module_id)
                                                     ->join('wb_trader_account as t6', 't1.applicant_id','t6.id')
                                                     ->leftJoin('par_regions as t7', 't6.region_id', 't7.id')
                                                     ->leftJoin('par_districts as t8','t6.district_id', 't8.id')
-                                                    ->join('tra_approval_recommendations as t9', 't1.application_code','t9.application_code' )
-                                                    ->select(DB::raw("t1.section_id,t9.certificate_issue_date,t9.expiry_date,t1.manufacturing_site_id as premiseID,t2.premise_reg_no,t2.name as premiseName,t2.physical_address as premise_phy_addr,t2.postal_address as premise_postal_addr,t1.date_added as date_registered,t9.permit_no,t6.name as applicantName, t5.name as premDistrictName,t4.name as premRegionName, t3.name as premCountryName, t6.postal_address,t6.physical_address, t6.name as countryName , t7.name as regionName, t8.name as districtName "))
+                                                    ->Join('tra_approval_recommendations as t9', 't1.application_code','t9.application_code' )
+                                                    ->leftJoin('users as t10', 't9.approved_by', 't10.id')
+                                                    ->leftJoin('par_titles as t11', 't10.title_id', '=', 't11.id')
+                                                    ->select(DB::raw("t1.section_id,t9.certificate_issue_date,9.approved_by,t9.expiry_date,t1.manufacturing_site_id as premiseID,t9.certificate_no,t2.premise_reg_no,t1.inspection_type_id,t2.licence_no,t2.name as premiseName,t2.physical_address as premise_phy_addr,t2.postal_address as premise_postal_addr,t1.date_added as date_registered,t9.permit_no,t6.name as applicantName, t5.name as premDistrictName,t4.name as premRegionName, t3.name as premCountryName, t6.postal_address,t6.physical_address, t6.name as countryName , t7.name as regionName, t8.name as districtName, CONCAT_WS(' ',IF(t10.first_name <> '', decrypt(t10.first_name), ''),IF(t10.last_name <> '', decrypt(t10.last_name), ''),IF(t11.name <> '', CONCAT('( ', t11.name, ' )'), '')) as signatoryname,t9.created_on as issue_date"))
                                                     ->where('t1.application_code',$application_code)
                                                     ->first();
-                                                
+                                      
                     if($record){
                         $row=$record;
                         $applicantName=$row->applicantName;
                         $premise_name=$row->premiseName;
                         $permit_no=$row->permit_no;
+                        $certificate_no=$row->certificate_no;
                         $date_added=$row->date_registered;
                         $postal_address=$row->postal_address;
                         $physical_address=$row->physical_address;
@@ -1468,308 +2734,249 @@ public function getModuleName($module_id)
                         $premDistrictName=$row->premDistrictName;
                         $premCountryName=$row->premCountryName;
                         $premRegionName=$row->premRegionName;
+                        $approved_by=$row->approved_by;
+                        $licence_no=$row->licence_no;
+                        $inspection_type_id=$row->inspection_type_id;
+                        $signatoryname=$row->signatoryname;
+                        $issue_date=$row->issue_date;
                         //Get Premise Location
-                        
-                        $logo = getcwd() . '/resources/images/org-logo.jpg';
-                        $inspection_rec =  DB::table('assigned_gmpinspections as t1')
-                                                                        ->join('tra_gmp_applications as t2', 't1.application_code', '=', 't2.application_code')
-                                                                        ->leftJoin('inspectionteam_details as t3', 't1.inspection_id', '=', 't3.id')
-                                                                        ->where('t1.application_code', $application_code)
-                                                                        ->first();
-                    
+
+
+                        if(validateIsNumeric($inspection_type_id)){
+
+                        if($inspection_type_id==1 || $inspection_type_id===1){
+                          $inspection_rec =  DB::table('tra_gmp_inspection_dates as t1')
+                                            
+                            ->where('t1.application_code', $application_code)
+                            ->first();
+                
+
                         if($inspection_rec){
                             $row = $inspection_rec;
-                            $inspection_timeline = $row->inspection_timeline;
-                            $actual_start_date = $row->actual_start_date;
-                            $actual_end_date = $row->actual_end_date;
-
                             $inspection_start_date = $row->start_date;
-                            $inspection_end_date = $row->start_date;
-                            if($actual_start_date != '' && $actual_end_date !=''){
-                                $inspection_end_date = date('d<\s\u\p>S</\s\u\p> F\\, Y',strtotime($row->actual_end_date));
-                                $inspection_start_date = date('d<\s\u\p>S</\s\u\p>',strtotime($row->actual_start_date));
-                                $date_of_inspection = $inspection_start_date.' - '.$inspection_end_date;
-
-                            }
-                            else if($inspection_timeline != '' && $inspection_timeline != 0){
-                                $date_of_inspection = $inspection_timeline;
-                                $date_of_inspection = preg_replace('/<br\\s*?\\/?>\\s*$/', '', $date_of_inspection);
-                        
-                            }else if($inspection_start_date == $inspection_end_date){
+                            $inspection_end_date = $row->end_date;
+                           
+                            if($inspection_start_date == $inspection_end_date){
                                 
                                 $date_of_inspection = $inspection_start_date;
                                 
                             }
                             else{
-                                $inspection_end_date = date('d<\s\u\p>S</\s\u\p> F\\, Y',strtotime($row->inspection_end_date));
-                                $inspection_start_date = date('d<\s\u\p>S</\s\u\p>',strtotime($row->inspection_start_date));
+                                $inspection_end_date =  date('d-M-Y', strtotime($inspection_end_date));
+                                $inspection_start_date = date('d-M-Y', strtotime($inspection_start_date));
                                 $date_of_inspection = $inspection_start_date.' - '.$inspection_end_date;
                                 
                             }
                             
                         }
                         else{
-                            $date_of_inspection = 'N/A';
+                             $res = array(
+                                'success' => false,
+                                'message' => 'Inspection Details not found, contact system administrator or Ensure Application has Inspection Details!!'
+                                );
+                             print_r($res);
+                             exit();
                         }
+                        }else if($inspection_type_id==2 || $inspection_type_id===2){
+                            //desk review dates  from Manager recommendation date
+                         $approval_date = getSingleRecordColValue('tra_applications_comments', array('application_code' => $application_code, 'comment_type_id' =>5), 'created_on');
                         
-                        $data = " GMP Compliance: GMP Certificate No:".$premise_reg_no."; Manufacturing Site:".$premise_name.";Expiry Date:".$expiry_date;
+
+                        if (empty($approval_date) || $approval_date == ' ') {
+                            $res = array(
+                                    'success' => false,
+                                    'message' => 'Desk Review Manager Overal  Recommendation Missing , Kindly ruturn back the application to manager to add overal comment or contact system administrator!!'
+                                );
+                             return $res;
+                         
+                        }else{
+                             $date_of_inspection= date('d-M-Y', strtotime($approval_date));
+                             
+                         }
+
+                        }
+                        else{
+                            $res = array(
+                                    'success' => false,
+                                    'message' => 'Inspection Type Type  Details not set, contact system administrator!!'
+                                );
+                             return $res;
+                        }
+                       }else{
+                             $res = array(
+                                    'success' => false,
+                                    'message' => 'Inspection Categorization Details not found, Kindly return back the application to GMP Inspection Categorization and assign it to inspection type and proceed or Contact System Administrator!!'
+                                );
+                             return $res;
+                        }
+
+
+
+
+                        
+                        $data = " GMP Compliance: GMP Certificate No:".$certificate_no."; Manufacturing Site:".$premise_name.";Expiry Date:".$expiry_date;
                             
                             PDF::AddPage();
                             $styleQR = array('border' => false, 'padding' => 0, 'fgcolor' => array(0, 0, 0), 'bgcolor' => false);
-                        // QRCODE,H : QR-CODE Best error correction
-                        PDF::write2DBarcode($data, 'QRCODE,H', 178, 37, 16, 16);
+                           // QRCODE,H : QR-CODE Best error correction
+                           PDF::write2DBarcode($data, 'QRCODE,H', 178, 20, 16, 16);
                         
                         
                             PDF::SetMargins(13,5,13, true);
                             PDF::SetFont('','B',13);
-                        
-                            PDF::SetLineWidth(0.8);
-                            PDF::Rect(10,10,190,274);
-                            
-                            PDF::SetLineWidth(0.3);
-                            PDF::Rect(11,11,188,272);
-                            PDF::Cell(0,5,'',0,1);
-                            if($section_id == 1){
-                                PDF::SetFont('','I',10);
-                                
-                                PDF::Cell(0,4,$org_info->org_acynm.'/DFS/FRE/CF/001',0,1,'R');
-                                    
-                            }
-                            else if($section_id == 2){
-                                PDF::SetFont('','I',10);
-                                
-                                PDF::Cell(0,4,$org_info->org_acynm.'/DMC/MCIE/CF/004',0,1,'R');
-                                
-                            }
-                            else if($section_id == 3){
-                                PDF::SetFont('','I',10);
-                                
-                                PDF::Cell(0,4,$org_info->org_acynm.'/DMC/MDC/CF/004',0,1,'R');
-                                
-                            }
-                            else if($section_id == 4){
-                                PDF::SetFont('','I',10);
-                                
-                                PDF::Cell(0,4,$org_info->org_acynm.'/DMC/MDC/CF/004',0,1,'R');
-                                
-                            }
-                            PDF::SetFont('','B',14);
-                            
-                            PDF::Cell(0,7,$org_info->org_name,0,1,'C');
-                            
-                            PDF::Image($logo,85,30,43,19);
-                            PDF::Cell(0,25,'',0,1);
+
+
+                            $logo = getcwd() . '/resources/images/cert_logo.png';
+                            PDF::Image($logo,65,20,80,33);
+                            PDF::Cell(0,35,'',0,1);
                             PDF::SetFont('','B',12);
+                           
+                                PDF::Cell(0,7,'Certificate of Compliance with Good Manufacturing Practice Guidelines',0,1,'C');
+                          
+                                PDF::SetFont('','B',9);
                                 
-                            if($section_id == 4){
-                                PDF::Cell(0,7,'CERTIFICATE OF COMPLIANCE TO QUALITY AUDIT',0,1,'C');
-                            }
-                            else{
-                                PDF::Cell(0,7,'CERTIFICATE OF COMPLIANCE TO GOOD MANUFACTURING PRACTICES (GMP)',0,1,'C');
-                            }
+                                PDF::Cell(0,4,'The National Drug Policy and Authority Act, Cap 206',0,1,'C');
+                                
+                                
+                          
+                            PDF::SetFont('','',10);
                             
-                            
-                            if($section_id == 1){
-                                PDF::SetFont('','BI',9);
-                                
-                                PDF::Cell(0,4,'(For Infant Formulae, Complementary foods and Food Supplements Manufacturing Facilities)',0,1,'C');
-                                    
-                            }
-                            else if($section_id == 2){
-                                PDF::SetFont('','BI',9);
-                                
-                                PDF::Cell(0,4,'(For Medicines Manufacturing Facilities)',0,1,'C');
-                                
-                                
-                            }
-                            else if($section_id == 3){
-                                PDF::SetFont('','BI',9);
-                                
-                                PDF::Cell(0,4,'(For Cosmetics Manufacturing Facilities)',0,1,'C');
-                                
-                                
-                            }
-                            else if($section_id == 4){
-                                PDF::SetFont('','BI',9);
-                                
-                                PDF::Cell(0,4,'(For Medical Devices and Diagnostics Manufacturing Facilities)',0,1,'C');
-                                
-                                
-                            }
-                            PDF::SetFont('','BI',9);
-                            
-                            PDF::Cell(0,4,'(Made under Section 20 (2a) of  UGANDA DRUGS  AUTHORITY Act, Cap 219)',0,1,'C');
+                            PDF::Cell(0,4,'Issued under Regulation 19(5) of the National Drug Policy and Authority (Licensing) Regulations, 2014',0,1,'C');
                             PDF::Cell(10);
-                            PDF::SetFont('','B',11);
+                            PDF::SetFont('','B',10);
                             PDF::Cell(0,5,'',0,1);
-                            PDF::Cell(40,5,'GMP Certificate No.',0,0);
-                            PDF::Cell(50,5,$premise_reg_no,0,1);
+                            PDF::Cell(40,5,'Certificate No.',0,0);
+                            PDF::Cell(50, 5, ($permit_no ? $permit_no : $certificate_no), 0, 1);  
                             PDF::Cell(0,5,'',0,1);
-                            $complaince_statement = '';
-                         if($section_id == 2){
-                                $complaince_statement = 'current Good Manufacturing Practice requirements for dosage forms and categories of medicines listed below:';
-                            
-                            }
-                            
-                            else{
-                                $complaince_statement = ' ISO 13485 requirements and  UGANDA DRUGS  AUTHORITY (Control of Medical Devices) Regulations, 2015 for the following scope:';
-                            
-                            }PDF::SetFont('','',11);
-                            PDF::WriteHTML("This is to certify that M/S ".strtoupper($premise_name)." located at ".strtoupper($premise_phy_addr.", ".$premCountryName)." has been found to comply with ".$complaince_statement , true, 0, true, true,'');
-                                PDF::Cell(0,4,'',0,1);
+                           
+                            PDF::SetFont('','',10);
+
+                            PDF::WriteHTML("This is to certify that the drug manufacturing facility:" , true, 0, true, true,'');
+
+                           PDF::WriteHTML("Name of facility <b>".strtoupper($premise_name)." </b>" , true, 0, true, true,'');
+                           PDF::WriteHTML("Physical address of facility <b>".strtoupper($premise_phy_addr.", ".$premCountryName)."</b>" , true, 0, true, true,'');
+                            PDF::Cell(0, 4, '', 0, 1);
+                            PDF::WriteHTML("Licence number of the manufacturer <b>".$licence_no."</b> " , true, 0, true, true,'');
+                            PDF::Cell(0, 4, '', 0, 1);
+
+                            PDF::WriteHTML("Has been inspected by the Authority for compliance with the Good Manufacturing Practice Guidelines. " , true, 0, true, true,'');
+
+                            PDF::WriteHTML("On the basis of the inspection carried out <b>".$date_of_inspection."</b> It is certified that the facility indicated on this certificate complies with Good Manufacturing Practice for dosage forms listed in Table 1 below." , true, 0, true, true,'');
+                            PDF::ln();
+                                PDF::WriteHTML("Table 1: Approved lines" , true, 0, true, true,'');
+
+                                PDF::ln();
                                 //applicant details 
                                 $qry = DB::table('gmp_productline_details as t1')
                                 ->join('gmp_product_lines as t2', 't1.product_line_id', '=', 't2.id')
-                                ->join('gmp_product_categories as t3', 't1.category_id', '=', 't3.id')
-                                ->leftJoin('gmp_productlinestatus as t5', 't1.prodline_inspectionstatus_id', '=', 't5.id')
-                                ->leftJoin('gmp_prodlinerecommenddesc as t6', 't1.product_line_status_id', '=', 't6.id')
+                                ->leftJoin('gmp_product_categories as t3', 't1.category_id', '=', 't3.id')
+                                ->leftJoin('par_manufacturing_activities as t4', 't1.manufacturing_activity_id', '=', 't4.id')
+                                ->leftJoin('par_gmpproduct_types as t5', 't1.category_id', '=', 't5.id')
                                 ->where('t1.manufacturing_site_id', $manufacturing_site_id)
-                                ->where('prodline_inspectionstatus_id',8)
-                                ->select('t1.*', 't2.name as product_line', 't3.name as productline_categ', 't1.prodline_description as line_activity');
-                        $results = $qry->get();
-                            PDF::SetFont('','',11);
-                            if($section_id == 2){
-                                
-                                PDF::SetLineWidth(0.09);
-                                PDF::SetFont('','B',10);
-                                PDF::MultiCell(10,7,'S/N',1,'','',0);
-                                
-                                PDF::MultiCell(45,7,'Dosage Form(s)',1,'','',0);
-                                
-                                PDF::MultiCell(45,7,'Categories of Medicines',1,'','',0);
-                                
-                                PDF::MultiCell(70,7,'Manufacturing operations',1,'','',1);
-                                
-                                PDF::SetFont('','',11);
+                                ->where('prodline_dgstatus_id',8)
+                                ->select('t1.*', 't2.name as product_line', 't5.name as productline_categ', 't4.name as line_activity');
+                               $results = $qry->get();
 
-                                if($results){
+
+                                //dd($results);
+                              $html = '<table border="1" cellpadding="5" style="width: 100%;">
+                                    <tr style="font-weight:bold; font-size: 9px; text-align: center;">
+                                    <th style="width: 5%;">No</th>
+                                    <th style="width: 30%;">Dosage form</th>
+                                    <th style="width: 20%;">Category</th>
+                                    <th style="width: 45%;">Activities</th>
+                                    </tr>';
+
+                            PDF::SetFont('','',10);
+
+                            if($results){
                                 $i = 1;
-                                    $dimensions = PDF::getPageDimensions();
-                                        $hasborder = false;
-                                        foreach($results as $rows){
-                                            $rowcount = max(PDF::getNumLines($rows->product_line, 42),PDF::getNumLines($rows->productline_categ, 45),PDF::getNumLines($rows->line_activity, 68));
-                                            
-                                            PDF::MultiCell(10,$rowcount * 6,$i.'. ',1,'','',0);
-                                            PDF::MultiCell(45,$rowcount * 6,$rows->product_line,1,'','',0);
-                                            PDF::MultiCell(45,$rowcount * 6,$rows->productline_categ,1,'','',0);
-                                            PDF::MultiCell(70,$rowcount * 6,$rows->line_activity,1,'','',1);
-                                            $i++;
-                                        }
-                                    
+                                $dimensions = PDF::getPageDimensions();
+                                $hasborder = false;
+                                foreach($results as $rows){
+                                    $html .= '<tr style="font-size: 11px; font-size: 9px; margin-left: 2mm; margin-right: 4mm;">';
+                                    $html .= '<td style="width: 5%;">' . $i . '</td>';
+                                    $html .= '<td style="width: 30%;">' . $rows->product_line . '</td>';
+                                    $html .= '<td style="width: 20%;">' . $rows->productline_categ . '</td>';
+                                    $html .= '<td style="width: 45%;">' . ucwords(strtolower($rows->line_activity)) . '</td>';
+                                    $html .= '</tr>'; // Missing semicolon here
+                                    $i++;
                                 }
-                                
-                                
-                                
                             }
-                        
-                            else if($section_id == 4){
-                                
-                                $table = '<table style="border-collapse:collapse;border:1px solid black;width:630px;"><thead style="font-weight:bold"><tr>';
-                                
-                                $table .= '<td style="width:30px;border:1px solid black;font-weight:bold">S/N</td>';
-                                
-                                $table .= '<td style="border:1px solid black;font-weight:bold">Types of Medical Device(s)</td>';
-                                
-                                //PDF::MultiCell(45,9,'Class of Medical Devices',1,'','',0);
-                                $table .= '<td style="border:1px solid black;font-weight:bold">Class of Medical Devices</td>';
-                                
-                                //PDF::MultiCell(70,9,'Manufacturing operations',1,'','',1);
-                                $table .= '<td style="border:1px solid black;font-weight:bold">Manufacturing operations</td>';
-                                
-                                $table .= '</tr></thead><tbody>';
-                                
-                                if($results){
-                                    $i = 1;
-                                        $dimensions = PDF::getPageDimensions();
-                                            $hasborder = false;
-                                            foreach($results as $rows){
-                                            
-                                            $table .= '<tr><td style="width:30px;border:1px solid black;">'.$i.'.</td>';
-                                        
-                                            $table .= '<td style="border:1px solid black;">'.$rows->product_line.'</td>';
-                                    
-                                            $table .= '<td style="border:1px solid black;">'.ucfirst($rows->productline_categ).'</td>';
-                                        
-                                            $table .= '<td style="border:1px solid black;">'.$rows->line_activity.'</td></tr>';
-                                                                                
-                                            $i++;
-                                        }
-                                    
-                                }
-                                
+
+                            $html .= '</table>';
+
+                            PDF::WriteHTML($html);
                             
-                                $table .= '</tbody></table>';   
-                                PDF::WriteHTML($table, true, 0, true, true,'');
-                                
-                            }
                             PDF::Cell(0,4,'',0,1);
                             $gmpSection = '';
-                            switch($section_id){
-                                case 2: $gmpSection = "pharmaceutical";break;
-                                case 4: $gmpSection = "medical devices";break;
-                            }
-                                PDF::WriteHTML('The responsibility for the quality of the individual batches of '.$gmpSection.' products manufactured lies with the manufacturer and /or local agent.', true, 0, true, true,'');
+                           
+                                PDF::WriteHTML('The responsibility for the quality of the individual batches of the drugs manufactured through this process lies with the manufacturer.', true, 0, true, true,'');
                                 PDF::Cell(0,7,'',0,1);//expiry_date
                                 
-                        
-                            $expiry_date = date('F d\\, Y',strtotime($expiry_date));//$section,$reference_no,$brandName,$certificate_no,$expiry_date
-                            $registration_date = date('F d\\, Y',strtotime($registration_date));//$section,$reference_no,$brandName,$certificate_no,$expiry_date
+              
+                            $registration_date = date('F d\\, Y',strtotime($registration_date));//
+                            $expiry_date = date('d-M-Y', strtotime($expiry_date));
+
+                            PDF::SetFont('','',10);
                             
-                            PDF::SetFont('','',11);
-                            
-                            $signatory= '';
+                            $signatory= ''; 
                             $designation='';
-                            PDF::Cell(0,8,'Issued On: '.$registration_date,0,1);
-                            PDF::Cell(0,8,'Expires On: '.$expiry_date,0,1);
+                            // PDF::Cell(0,8,'Issued On: '.$registration_date,0,1);
+                            // PDF::Cell(0,8,'Expires On: '.$expiry_date,0,1);
+
+                           PDF::WriteHTML('This certificate remains valid until  <b> '.$expiry_date.' </b> It becomes invalid if the activities or the categories certified change or if the facility is no longer considered to be in compliance with GMP.', true, 0, true, true,'');
+
+                           // PDF::Cell(0,7,'',0,1);//expiry_date
                             $permit_signitory = '';
-                            $title= '';
-                            PDF::ln();
+                            $title = '';
+
+                            PDF::SetFont('', 'B', 9);
+                            $issue_date = ucwords(date('d-M-Y', strtotime($issue_date)));
+
+                            PDF::Cell(0, 8, 'Issue Date: ' . $issue_date, 0, 1, '');
                             
-                            PDF::SetFont('','B',12);
+                            PDF::SetFont('','B',10);
                             $permit_signitory = '';
                                                     $title= ''; PDF::ln();
-                                                    $approved_by= '';
+                                                    //$approved_by= '';
                                                     $startY = PDF::GetY();
                                                     $startX = PDF::GetX();
                                                 
-                                                    $signiture = getcwd() . '/resources/images/signatures/hi0kag.png';
-                                                    PDF::Image($signiture,$startX,$startY-7,30,12);
-                                                    PDF::SetFont('','B',11);
-                    
-                                                    PDF::SetFont('','B',12);
+                                                    // $signiture = getcwd() . '/resources/images/signatures/hi0kag.png';
+                                                    $signatory=$approved_by;
+                                                    $signature = getUserSignatureDetails($signatory);
+                                                    $startY = PDF::GetY();
+                                                    $startX = PDF::GetX();
+                                                    $signiture = getcwd() . '/resources/images/signs/'.$signature;
+                                                    // PDF::Image($signiture,$startX,$startY-7,30,12);  //temporary
+                                
+                                                    PDF::SetFont('','B',10);
                                                     PDF::Cell(0,8,'...................................................',0,1,'');
                                                     
                                                 
 
-//                                              PDF::Cell(0,8, ucwords(strtolower('A. M. Fimbo')),0,1,'');
+                                                    PDF::Cell(0,8, ucwords(strtolower($signatoryname)),0,1,'');
                                                         
-                                                        PDF::Cell(0,8,'DIRECTOR GENERAL',0,1,'');
+                                                    PDF::Cell(0,8,'FOR THE AUTHORITY',0,1,'');
                                                         
-                            PDF::SetFont('','B',12);
+                            PDF::SetFont('','B',10);
                             
-                            ($ref = "ZMR0020/GMP/D/D/0089")?'':PDF::Cell(0,10,'',0,1);
-                            PDF::Cell(15,5,'Note:  ',0,0);
-                            PDF::SetFont('','',12);
-                                
-                             if($section_id == 2){
-                                
-                                PDF::MultiCell(0,7,"This certificate shall be invalid if the forms and operations herewith are changed or if the site is no longer considered to be in compliance with current GMP requirements.\n",0,'J','',1);
-                                
-                                
-                            }
-                            else if($section_id == 4){
-                                
-                                PDF::MultiCell(0,7,"This certificate shall be invalid if the scope certified herewith has changed or if the site is no longer considered to be in complaince with applicable ISO standards and ZMR Medical Devices Regulations in-force.\n",0,'J','',1);
-                                
-                                
-                            }
                             PDF::setPrintHeader(false);
                             
                                 PDF::Output(date('Y').date('m').date('d').date('i').date('s').'.pdf','I');
                     }else{
-                        PDF::SetFont('','',10);
-                        PDF::MultiCell(0,5,'Premise Data for application with reference no:  {'.$ref.'} was not found. Please contact your System administrator if the problem persists.',0,'L');
-                            PDF::Output(date('Y').date('m').date('d').date('i').date('s').'.pdf','I');
+                        //dd(333);
+                        // PDF::SetFont('','',10);
+                        // //PDF::MultiCell(0,5,'Premise Data for application with reference no:  {'.$ref.'} was not found. Please contact your System administrator if the problem persists.',0,'L');
+                        //  PDF::MultiCell(0,5,'Please approve this application first to generate Certificate. Please contact your System administrator if the problem persists',0,'',0,1);
+                        //  PDF::Output(date('Y').date('m').date('d').date('i').date('s').'.pdf','I');
+
+                        $res = array(
+                                    'success' => false,
+                                    'message' => 'Please approve this application first to generate Certificate. Please contact your System administrator if the problem persists!!'
+                                );
+                             return $res;
                     }
         }else{
             return "Setup rejection letter";
@@ -1879,7 +3086,7 @@ public function getModuleName($module_id)
                             PDF::Cell(0,5,'',0,1);
                             PDF::SetFont('','',11);
                             
-                            $text1 = "Reference is made to the above captioned subject and the audit which was conducted at your pharmaceutical plant on ".$inspection_date." by the  UGANDA Medicines & Medical Devices Authority (ZMR). The audit was conducted as a result of your application(s) for registration of pharmaceutical products in  UGANDA.\n";
+                            $text1 = "Reference is made to the above captioned subject and the audit which was conducted at your pharmaceutical plant on ".$inspection_date." by the  NDA. The audit was conducted as a result of your application(s) for registration of pharmaceutical products in  UGANDA.\n";
                             $text2 = "Based on the audit findings, (production lines which were inspected and complied) have been found to comply with the minimum requirements of the  UGANDA Good Manufacturing Practice (GMP) Guidelines.\n ";
                             $text3 = "The basis for reaching this decision has also been enumerated in the summary of basis for classifying non conformances and the detailed audit report attached to this letter.\n";
                             
@@ -1912,10 +3119,10 @@ public function getModuleName($module_id)
                 PDF::MultiCell(0,5, $letter_title,0,'',0,1);
                 PDF::Cell(0,5,'',0,1);
                 PDF::SetFont('','',11);
-                $text1 = "Reference is made to the above captioned subject and the audit which was conducted at your pharmaceutical plant on ".$inspection_date." by the  UGANDA Medicines & Medical Devices Authority (ZMR). The audit was conducted as a result of your application(s) for registration of pharmaceutical products in  UGANDA.\n";
+                $text1 = "Reference is made to the above captioned subject and the audit which was conducted at your pharmaceutical plant on ".$inspection_date." by the  NDA. The audit was conducted as a result of your application(s) for registration of pharmaceutical products in  UGANDA.\n";
                 $text2 = "Based on the audit findings, your pharmaceutical plant did not comply with the minimum requirements of the  UGANDA Good Manufacturing Practice (GMP) Guidelines. \n";
                 $text3 = "The basis for reaching this decision has also been enumerated in the summary of basis for classifying non compliances and the detailed audit report attached to this letter.\n";
-                $text4 = "In view of the above, your products cannot be registered until such time when ZMR is satisfied with GMP status of your facility. If you wish to continue with the registration of your products in  UGANDA, you are required to rectify the non conformances stated in the report and pay GMP Inspection fee for re-auditing of the facility.\n";
+                $text4 = "In view of the above, your products cannot be registered until such time when NDA is satisfied with GMP status of your facility. If you wish to continue with the registration of your products in  UGANDA, you are required to rectify the non conformances stated in the report and pay GMP Inspection fee for re-auditing of the facility.\n";
                 
                 PDF::Cell(5,2,'1. ',0,0);
                 PDF::MultiCell(0,10,$text1,0,'J',0,1);
@@ -1949,7 +3156,7 @@ public function getModuleName($module_id)
                 PDF::Cell(0,5,  $letter_title,0,1);
                 PDF::Cell(0,5,'',0,1);
                 PDF::SetFont('','',11);
-                $text1 = "Reference is made to the above captioned subject and the audit which was conducted at your pharmaceutical plant on ".$inspection_date.", by the  UGANDA Medicines & Medical Devices Authority (ZMR). The audit was conducted as a result of your application(s) for registration of pharmaceutical products in  UGANDA.\n";
+                $text1 = "Reference is made to the above captioned subject and the audit which was conducted at your pharmaceutical plant on ".$inspection_date.", by the NDA. The audit was conducted as a result of your application(s) for registration of pharmaceutical products in  UGANDA.\n";
                 $text2 = "Based on the audit findings, a decision on the compliance of your pharmaceutical plant with the minimum requirements of the  UGANDA Good Manufacturing Practice (GMP) Guidelines will be made after the submission of a compliance report for major and minor non conformances enumerated in the GMP audit report. The compliance report shall be verified by the Authority for compliance with GMP.\n";
                 $text3 = "The basis for reaching this decision has also been enumerated in the summary of basis for classifying non conformances and the detailed audit report attached to this letter.\n";
                 
@@ -2964,7 +4171,7 @@ public function getModuleName($module_id)
                                 $startY = PDF::GetY();
                                 $startX = PDF::GetX();
                                 $signiture = getcwd() . '/resources/images/signatures/hi0kag.png';
-                                PDF::Image($signiture,$startX,$startY-7,30,12);
+                                //PDF::Image($signiture,$startX,$startY-7,30,12);
                                 PDF::SetFont('','B',11);
                                 PDF::Cell(30,7,'................................',0,1,'L'); 
                                 PDF::SetFont('','B',10);
@@ -5064,10 +6271,174 @@ public function generatePromotionalRegCertificate(Request $req){
 
 }
 // public function generatePromotionalRegCertificate(Request $req){
+//                     try{ 
 
-//     $res = $this->printPromotionalRegCertificate($req);
-                
+
+
+//                         $application_code = $req->application_code;
+//                                 $logo=getcwd().'/assets/images/logo.jpg';
+                                
+//                                 PDF::setPrintHeader(false);
+//                                 PDF::AddPage();
+                                
+//                                 PDF::setPrintHeader(false);
+//                                 PDF::setPrintFooter(false);
+                                
+//                                 PDF::SetFont('','',13);
+                                
+//                                 PDF::SetFont('','B',13);
+                                        
+//                                         PDF::SetFont('','B',14);
+//                                         PDF::setPrintHeader(false);
+//                                         PDF::setPrintFooter(false);
+//                                 $this->getReportsletterheader();
+
+                                
+//                                 $records = DB::table('tra_promotion_adverts_applications as t1')
+//                                                         ->leftJoin('par_system_statuses as q', 't1.application_status_id', '=', 'q.id')
+//                                                         ->leftJoin('tra_approval_recommendations as t2','t1.application_code', 't2.application_code')
+//                                                         ->join('wb_trader_account as t3', 't1.applicant_id', 't3.id')
+//                                                         ->leftJoin('par_countries as t4', 't3.country_id', 't4.id')
+//                                                         ->leftJoin('par_regions as t5', 't3.region_id', 't5.id')
+//                                                         ->leftJoin('par_sections as t6', 't1.section_id', 't6.id')
+//                                                         ->select(DB::raw("t2.decision_id as recommendation_id, t1.*, t3.name as applicant_name, t3.physical_address, t3.postal_address, t4.name as country_name, t5.name as region_name,t6.name as section_name, t1.id as application_id, t2.expiry_date "))
+//                                                         ->where('t1.application_code',$application_code)
+//                                                         ->first();
+
+//                                                                                        if($records){
+//                                     $row = $records;
+//                                     $recommendation_id = $row->recommendation_id;
+//                                     $ref = $row->reference_no;
+//                                     $applicant_name = $row->applicant_name;
+//                                     $physical_address = $row->physical_address;
+//                                     $postal_address = $row->postal_address;
+//                                     $region_name = $row->region_name;
+//                                     $country_name = $row->country_name;
+//                                     $section_id = $row->section_id;
+//                                     $section_name = $row->section_name;
+//                                     $expiry_date = $row->expiry_date;
+//                                     //$intended_user = $row->intended_user;
+//                                     $application_id = $row->application_id;
+
+
+                                
+//                                     PDF::SetFont('','',11);
+//                                         PDF::Cell(0,20,'',0,1);
+//                                         PDF::Cell(60,5,'Ref.:'.$ref,0,0);
+//                                         PDF::Cell(0,5,'Date.:'.date('Y-m-d'),0,1,'R');
+//                                             PDF::ln();
+//                                             PDF::Cell(0,5,$applicant_name,0,1);
+//                                             PDF::Cell(7,5,'',0,0);
+//                                             PDF::Cell(0,5,$physical_address,0,1);
+//                                             PDF::Cell(7,5,'',0,0);
+//                                             PDF::Cell(0,5,$postal_address,0,1);
+//                                             PDF::Cell(7,5,'',0,0);
+//                                             PDF::Cell(0,5,$row->region_name.','.$row->country_name,0,1);
+//                                         //local agent
+//                                         PDF::ln();
+//                                         if($section_id == 2){
+//                                             $section_name = 'medicines';
+//                                         }
+//                                         PDF::SetLineWidth(3);
+//                                             PDF::SetFont('','B',11);
+//                                             if($recommendation_id == 1){
+                                                
+//                                                 PDF::Cell(7,7,'RE: APPLICATION FOR APPROVAL OF PROMOTIONAL MATERIAL FOR '.strtoupper($section_name),0,0);
+//                                             }
+//                                             else{
+//                                                 PDF::Cell(7,7,'RE: REFUSAL OF APPLICATION FOR PROMOTIONAL MATERIAL FOR '.strtoupper($section_name),0,0);
+                                            
+//                                             }
+//                                             PDF::SetFont('','',11);
+//                                             PDF::ln();
+//                                             PDF::ln();
+//                                             PDF::MultiCell(0,5,'1. This is in reference to your application with reference number '.$ref.' for approval of promotional material for medicinal product(s)'.".\n" ,0, 'J', 0, 1, '', '', true);
+//                                             PDF::Cell(7,5,'',0,1);
+//                                         $material_rec = DB::table('tra_promotion_materials_details as t1')
+             
+//                                                 ->join('par_promotion_material_items  as t2','t1.material_id','=','t2.id')
+//                                                 ->select(DB::raw("group_concat(concat(t2.name) separator ' / ') as promotion_material")) 
+//                                                 ->where('t1.application_id',$application_id)
+//                                                 ->first();
+                                        
+//                                             $promotion_material = '';
+//                                             if($material_rec){
+//                                                 $promotion_material = $material_rec->promotion_material;
+                                                
+//                                             }
+                                           
+//                                             PDF::MultiCell(0,5,'2. We would like to inform you that information presented in the '.$promotion_material.' intended for promotion of  your product(s) as summarized in the table below has been assessed and found to comply with legal requirements for conducting medicines promotional  activities in the country as prescribed in the  UGANDA DRUGS  AUTHORITY (Control of Drugs and Herbal Drugs Promotion) Regulations, 2010'.".\n" ,0, 'J', 0, 1, '', '', true);
+//                                             PDF::Cell(7,5,'',0,1);
+                                            
+//                                             $adverttype_rec =DB::table('tra_promotion_prod_particulars as t1')
+//                                                     ->leftJoin('par_common_names as t2','t1.common_name','=','t2.id')
+//                                                     ->leftJoin('par_product_categories as t3','t1.product_category_id','=','t3.id')
+//                                                     ->leftJoin('par_subproduct_categories as t4','t1.product_subcategory_id','=','t4.id')
+//                                                     ->leftJoin('par_advertisement_types as t5','t1.type_of_advertisement_id','=','t5.id')
+//                                                     ->select(DB::raw('t1.*,t3.name as product_category_name,t4.name as product_subcategory_name,t5.name as type_of_advertisement, t2.name as common_name'))
+//                                                     ->where('t1.application_id',$application_id)
+//                                                     ->get();
+//                                                 $tbl = '
+//                                                 <table width="100%" cellspacing="0" cellpadding="1" border = "0.4" >
+//                                                     <tr style="font-weight:bold;" >
+//                                                         <td width="5%">S/n</td>
+//                                                         <td width="30%">Brand Name</td>
+//                                                         <td width="31%">Generic Name</td>
+//                                                         <td width="19%" >Advertisement Type</td>
+//                                                         <td width="14%">Registration Number</td>
+//                                                     </tr>';
+//                                                     $i= 1;
+//                                             if($adverttype_rec){
+//                                                 foreach($adverttype_rec as $rows1){
+//                                                     $tbl .= '<tr style="font-weight:normal;" >
+//                                                             <td width="5%">'.$i.'</td>
+//                                                             <td width="30%" stype="">'.$rows1->brand_name.'</td>
+//                                                             <td width="31%">'.$rows1->common_name.'</td>
+//                                                             <td width="19%">'.$rows1->type_of_advertisement.'</td>
+//                                                             <td width="14%">'.$rows1->registration_no.'</td>
+//                                                         </tr>';
+//                                                     $i++;
+//                                                 }
+                                                
+//                                             }
+//                                             $tbl .= "</table>
+//                                             ";
+//                                             PDF::writeHTML($tbl, true, false, false, false, '');
+                                            
+//                                     if($recommendation_id == 1){
+//                                         //the data 
+                                            
+//                                             PDF::MultiCell(0,5,'3. Approval is hereby granted for use of promotion of your product(s), as long as the product(s) continue to comply with registration requirements as prescribed in the  UGANDA DRUGS  AUTHORITY Act, Cap 219. Validity of this permit expires on '.date('d-m-Y', strtotime($expiry_date)).".\n" ,0, 'J', 0, 1, '', '', true);
+//                                             PDF::Cell(7,5,'',0,1);
+                                            
+//                                     }
+//                                     else{
+//                                             PDF::MultiCell(0,5,"3.  The advert has not been approved due to the following reason(s):-.\n" ,0, 'J', 0, 1, '', '', true);
+//                                             PDF::Cell(7,5,'',0,1);
+//                                             PDF::MultiCell(0,5,"4.  Note that the material should neither be imported nor used in the country for promotional purposes.\n" ,0, 'J', 0, 1, '', '', true);
+                                            
+//                                     }
+//                                     PDF::Cell(0,5,'We thank you for your cooperation',0,1);
+//                                     PDF::ln();
+//                                     $permit_signitory = '';
+//                                                         $title= ''; PDF::ln();
+//                                                         $approved_by= '';
+//                                                         $startY = PDF::GetY();
+//                                                         $startX = PDF::GetX();
+                                                    
+//                                                         $signiture = getcwd() . '/resources/images/signatures/hi0kag.png';
+//                                                         PDF::Image($signiture,$startX,$startY-7,30,12);
+//                                                         PDF::SetFont('','B',11);
                         
+//                                                         PDF::SetFont('','B',12);
+//                                                         PDF::Cell(0,8,'...................................................',0,1,'');
+                                                        
+//                                                             //PDF::Cell(0,8, ucwords(strtolower('A. M. Fimbo')),0,1,'');
+                                                            
+//                                                             PDF::Cell(0,8,'DIRECTOR GENERAL',0,1,'');
+                                                
+//                                 }
+//                                     PDF::Output("Promotional Advertisement.pdf");
     
 //                         return;
 //                         } catch (\Exception $exception) {
@@ -5084,193 +6455,10 @@ public function generatePromotionalRegCertificate(Request $req){
 //                                 );
 //                         }
 //                         print_r($res);
-                    // try{ 
 
 
 
-                    //     $application_code = $req->application_code;
-                    //             $logo=getcwd().'/assets/images/logo.jpg';
-                                
-                    //             PDF::setPrintHeader(false);
-                    //             PDF::AddPage();
-                                
-                    //             PDF::setPrintHeader(false);
-                    //             PDF::setPrintFooter(false);
-                                
-                    //             PDF::SetFont('','',13);
-                                
-                    //             PDF::SetFont('','B',13);
-                                        
-                    //                     PDF::SetFont('','B',14);
-                    //                     PDF::setPrintHeader(false);
-                    //                     PDF::setPrintFooter(false);
-                    //             $this->getReportsletterheader();
-
-                    //             $records = DB::table('tra_promotion_adverts_applications as t1')
-                    //                                     ->leftJoin('par_system_statuses as q', 't1.application_status_id', '=', 'q.id')
-                    //                                     ->leftJoin('tra_approval_recommendations as t2','t1.application_code', 't2.application_code')
-                    //                                     ->join('wb_trader_account as t3', 't1.applicant_id', 't3.id')
-                    //                                     ->leftJoin('par_countries as t4', 't3.country_id', 't4.id')
-                    //                                     ->leftJoin('par_regions as t5', 't3.region_id', 't5.id')
-                    //                                     ->leftJoin('par_sections as t6', 't1.section_id', 't6.id')
-                    //                                     ->select(DB::raw("t2.decision_id as recommendation_id, t1.*, t3.name as applicant_name, t3.physical_address, t3.postal_address, t4.name as country_name, t5.name as region_name,t6.name as section_name, t1.id as application_id, t2.expiry_date "))
-                    //                                     ->where('t1.application_code',$application_code)
-                    //                                     ->first();
-
-                    //                                                                    if($records){
-                    //                 $row = $records;
-                    //                 $recommendation_id = $row->recommendation_id;
-                    //                 $ref = $row->reference_no;
-                    //                 $applicant_name = $row->applicant_name;
-                    //                 $physical_address = $row->physical_address;
-                    //                 $postal_address = $row->postal_address;
-                    //                 $region_name = $row->region_name;
-                    //                 $country_name = $row->country_name;
-                    //                 $section_id = $row->section_id;
-                    //                 $section_name = $row->section_name;
-                    //                 $expiry_date = $row->expiry_date;
-                    //                 //$intended_user = $row->intended_user;
-                    //                 $application_id = $row->application_id;
-
-
-                                
-                    //                 PDF::SetFont('','',11);
-                    //                     PDF::Cell(0,20,'',0,1);
-                    //                     PDF::Cell(60,5,'Ref.:'.$ref,0,0);
-                    //                     PDF::Cell(0,5,'Date.:'.date('Y-m-d'),0,1,'R');
-                    //                         PDF::ln();
-                    //                         PDF::Cell(0,5,$applicant_name,0,1);
-                    //                         PDF::Cell(7,5,'',0,0);
-                    //                         PDF::Cell(0,5,$physical_address,0,1);
-                    //                         PDF::Cell(7,5,'',0,0);
-                    //                         PDF::Cell(0,5,$postal_address,0,1);
-                    //                         PDF::Cell(7,5,'',0,0);
-                    //                         PDF::Cell(0,5,$row->region_name.','.$row->country_name,0,1);
-                    //                     //local agent
-                    //                     PDF::ln();
-                    //                     if($section_id == 2){
-                    //                         $section_name = 'medicines';
-                    //                     }
-                    //                     PDF::SetLineWidth(3);
-                    //                         PDF::SetFont('','B',11);
-                    //                         if($recommendation_id == 1){
-                                                
-                    //                             PDF::Cell(7,7,'RE: APPLICATION FOR APPROVAL OF PROMOTIONAL MATERIAL FOR '.strtoupper($section_name),0,0);
-                    //                         }
-                    //                         else{
-                    //                             PDF::Cell(7,7,'RE: REFUSAL OF APPLICATION FOR PROMOTIONAL MATERIAL FOR '.strtoupper($section_name),0,0);
-                                            
-                    //                         }
-                    //                         PDF::SetFont('','',11);
-                    //                         PDF::ln();
-                    //                         PDF::ln();
-                    //                         PDF::MultiCell(0,5,'1. This is in reference to your application with reference number '.$ref.' for approval of promotional material for medicinal product(s)'.".\n" ,0, 'J', 0, 1, '', '', true);
-                    //                         PDF::Cell(7,5,'',0,1);
-                    //                     $material_rec = DB::table('tra_promotion_materials_details as t1')
-             
-                    //                             ->join('par_promotion_material_items  as t2','t1.promotions_material_id','=','t2.id')
-                    //                             ->select(DB::raw("group_concat(concat(t2.name) separator ' / ') as promotion_material")) 
-                    //                             ->where('t1.application_id',$application_id)
-                    //                             ->first();
-                                        
-                    //                         $promotion_material = '';
-                    //                         if($material_rec){
-                    //                             $promotion_material = $material_rec->promotion_material;
-                                                
-                    //                         }
-                                           
-                    //                         PDF::MultiCell(0,5,'2. We would like to inform you that information presented in the '.$promotion_material.' intended for promotion of  your product(s) as summarized in the table below has been assessed and found to comply with legal requirements for conducting medicines promotional  activities in the country as prescribed in the  UGANDA DRUGS  AUTHORITY (Control of Drugs and Herbal Drugs Promotion) Regulations, 2010'.".\n" ,0, 'J', 0, 1, '', '', true);
-                    //                         PDF::Cell(7,5,'',0,1);
-                                            
-                    //                         $adverttype_rec =DB::table('tra_promotion_prod_particulars as t1')
-                    //                                 ->leftJoin('par_common_names as t2','t1.common_name','=','t2.id')
-                    //                                 ->leftJoin('par_product_categories as t3','t1.product_category_id','=','t3.id')
-                    //                                 ->leftJoin('par_subproduct_categories as t4','t1.product_subcategory_id','=','t4.id')
-                    //                                 ->leftJoin('par_advertisement_types as t5','t1.type_of_advertisement_id','=','t5.id')
-                    //                                 ->select(DB::raw('t1.*,t3.name as product_category_name,t4.name as product_subcategory_name,t5.name as type_of_advertisement, t2.name as common_name'))
-                    //                                 ->where('t1.application_id',$application_id)
-                    //                                 ->get();
-                    //                             $tbl = '
-                    //                             <table width="100%" cellspacing="0" cellpadding="1" border = "0.4" >
-                    //                                 <tr style="font-weight:bold;" >
-                    //                                     <td width="5%">S/n</td>
-                    //                                     <td width="30%">Brand Name</td>
-                    //                                     <td width="31%">Generic Name</td>
-                    //                                     <td width="19%" >Advertisement Type</td>
-                    //                                     <td width="14%">Registration Number</td>
-                    //                                 </tr>';
-                    //                                 $i= 1;
-                    //                         if($adverttype_rec){
-                    //                             foreach($adverttype_rec as $rows1){
-                    //                                 $tbl .= '<tr style="font-weight:normal;" >
-                    //                                         <td width="5%">'.$i.'</td>
-                    //                                         <td width="30%" stype="">'.$rows1->brand_name.'</td>
-                    //                                         <td width="31%">'.$rows1->common_name.'</td>
-                    //                                         <td width="19%">'.$rows1->type_of_advertisement.'</td>
-                    //                                         <td width="14%">'.$rows1->registration_no.'</td>
-                    //                                     </tr>';
-                    //                                 $i++;
-                    //                             }
-                                                
-                    //                         }
-                    //                         $tbl .= "</table>
-                    //                         ";
-                    //                         PDF::writeHTML($tbl, true, false, false, false, '');
-                                            
-                    //                 if($recommendation_id == 1){
-                    //                     //the data 
-                                            
-                    //                         PDF::MultiCell(0,5,'3. Approval is hereby granted for use of promotion of your product(s), as long as the product(s) continue to comply with registration requirements as prescribed in the  UGANDA DRUGS  AUTHORITY Act, Cap 219. Validity of this permit expires on '.date('d-m-Y', strtotime($expiry_date)).".\n" ,0, 'J', 0, 1, '', '', true);
-                    //                         PDF::Cell(7,5,'',0,1);
-                                            
-                    //                 }
-                    //                 else{
-                    //                         PDF::MultiCell(0,5,"3.  The advert has not been approved due to the following reason(s):-.\n" ,0, 'J', 0, 1, '', '', true);
-                    //                         PDF::Cell(7,5,'',0,1);
-                    //                         PDF::MultiCell(0,5,"4.  Note that the material should neither be imported nor used in the country for promotional purposes.\n" ,0, 'J', 0, 1, '', '', true);
-                                            
-                    //                 }
-                    //                 PDF::Cell(0,5,'We thank you for your cooperation',0,1);
-                    //                 PDF::ln();
-                    //                 $permit_signitory = '';
-                    //                                     $title= ''; PDF::ln();
-                    //                                     $approved_by= '';
-                    //                                     $startY = PDF::GetY();
-                    //                                     $startX = PDF::GetX();
-                                                    
-                    //                                     $signiture = getcwd() . '/resources/images/signatures/hi0kag.png';
-                    //                                     PDF::Image($signiture,$startX,$startY-7,30,12);
-                    //                                     PDF::SetFont('','B',11);
-                        
-                    //                                     PDF::SetFont('','B',12);
-                    //                                     PDF::Cell(0,8,'...................................................',0,1,'');
-                                                        
-                    //                                         //PDF::Cell(0,8, ucwords(strtolower('A. M. Fimbo')),0,1,'');
-                                                            
-                    //                                         PDF::Cell(0,8,'DIRECTOR GENERAL',0,1,'');
-                                                
-                    //             }
-                    //                 PDF::Output("Promotional Advertisement.pdf");
-    
-                    //     return;
-                    //     } catch (\Exception $exception) {
-                    //             //PDF::rollBack();
-                    //             $res = array(
-                    //                 'success' => false,
-                    //                 'message' => $exception->getMessage()
-                    //             );
-                    //     } catch (\Throwable $throwable) {
-                    //             //PDF::rollBack();
-                    //             $res = array(
-                    //                 'success' => false,
-                    //                 'message' => $throwable->getMessage()
-                    //             );
-                    //     }
-                    //     print_r($res);
-
-
-
-//}
+// }
 public function getServiceCharterReportDetails(Request $req){
         try{
             $data = array();
@@ -6359,7 +7547,6 @@ function returnReportHeader($pdf,$org_rec,$rec,$title){
     }
 function returnInvoiceReportHeader($pdf,$org_rec,$rec,$title){
                $pdf->Cell(0,25,'',0,1);
-              
                $pdf->SetFont('times', 'B', 9);
                 // Left column content
                 $pdf->MultiCell(80, 10, "$org_rec->postal_address,\n$org_rec->physical_address,\n$org_rec->region_name , $org_rec->republic\nPhone No: $org_rec->telephone_nos\nHome Page: $org_rec->website\nTIN No: $org_rec->tin_no", 0, 'L', false, 0, '', '', true);
@@ -6373,11 +7560,24 @@ function returnInvoiceReportHeader($pdf,$org_rec,$rec,$title){
                 $pdf->SetX(150);
                 $pdf->SetFont('times', 'B', 9);
                 $date_of_invoicing = date('F d\\, Y',strtotime($rec->date_of_invoicing));
-                $invoice_no='Invoice No: INV'.$rec->invoice_no;
-                $ref_no='Premise No: '.$rec->tracking_no.' '.$rec->reference_no;
-                $ref_no='Application No: '.$rec->tracking_no.' '.$rec->reference_no;
-                $invoice_date='Invoice Date: '.$date_of_invoicing;
-                $invoice_expiry_date='Invoice Expiry Date: '.$date_of_invoicing;
+                $invoice_no='Invoice No: '.$rec->invoice_no;
+                if($rec->module_id==2 || $rec->module_id===2 || $rec->module_id==29 || $rec->module_id===29){
+
+                    $premise_ref_no= getSingleRecordColValue('tra_premises_applications', array('application_code' => $rec->application_code), 'premise_ref_no');
+                     
+                    if($premise_ref_no==''){
+                      $premise_ref_no= getSingleRecordColValue('wb_premises_applications', array('application_code'=>$rec->application_code), 'premise_ref_no', 'portal_db');
+                     }
+                    $ref_no='Premise Ref No: '.$premise_ref_no.' '.$rec->tracking_no;
+                }else{
+                 $ref_no='Application No: '.$rec->tracking_no.' '.$rec->reference_no;   
+                }
+                $invoice_date = 'Invoice Date: ' . $date_of_invoicing;
+              
+                // Calculate 3 months from the invoice date
+               // $expiry_date_timestamp = strtotime($date_of_invoicing . ' +3 months');
+                 $expiry_date_timestamp = strtotime($rec->due_date);
+                $invoice_expiry_date = 'Invoice Expiry Date: ' . date('F j, Y', $expiry_date_timestamp);
                 $pdf->MultiCell(60, 10,"\n\n\n$invoice_no\n$ref_no\n$invoice_date\n$invoice_expiry_date", 0, 'L', false, 1, '', '', true);
 
                $pdf->SetFont('times', 'B', 13);

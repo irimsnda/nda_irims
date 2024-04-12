@@ -71,7 +71,7 @@ Ext.define('Admin.view.pv.views.grids.PvExportImportGrid', {
     },
     tbar: [{
     	xtype: 'button',
-    	text: 'Export(Importable Excel Format)',
+    	text: 'Export(Exportable XML Format)',
     	ui: 'soft-blue',
     	iconCls: 'x-fa fa-file-download',
     	handler: 'exportADR'
@@ -79,7 +79,6 @@ Ext.define('Admin.view.pv.views.grids.PvExportImportGrid', {
     	xtype: 'button',
     	text: 'Import (Importable Excel Format)',
     	ui: 'soft-blue',
-    	hidden:true,
     	iconCls: 'x-fa fa-file-import',
     	winTitle: 'Import ADR list from Excel/CSV',
 		winWidth: '50%',
@@ -104,7 +103,7 @@ Ext.define('Admin.view.pv.views.grids.PvExportImportGrid', {
                 metaData.tdStyle = 'color:white;background-color:green';
                 return report_category;
             }else if(report_category_id==3 || report_category_id===3){
-              metaData.tdStyle = 'color:white;background-color:red';
+              metaData.tdStyle = 'color:white;background-color:blue';
               return report_category;
           }else if(report_category_id==2 || report_category_id===2){
               metaData.tdStyle = 'color:white;background-color:orange';

@@ -24,7 +24,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialStudySitesGrid', {
             text: 'Add Clinical Study Site',
             iconCls: 'x-fa fa-plus',
             ui: 'soft-green',
-            hidden:true,
+            //hidden:true,
             name: 'add_clinical_site',
             childXtype: 'clinicalstudysitesfrm',
             winTitle: 'Clinical Trial Study Sites ',
