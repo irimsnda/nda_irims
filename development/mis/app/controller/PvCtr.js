@@ -261,7 +261,6 @@ Ext.define('Admin.controller.PvCtr', {
             pvpersonnelFrm.down('combo[name=facility_level_id]').setValue(record.get('facility_level_id'))
             pvpersonnelFrm.down('combo[name=facility_ownership_id]').setValue(record.get('facility_ownership_id'))
             pvpersonnelFrm.down('combo[name=facility_hsd_id]').setValue(record.get('facility_hsd_id'))
-            pvpersonnelFrm.down('textfield[name=organisation]').setValue(record.get('organisation'))
 
         }  
         Ext.Function.defer(function () {

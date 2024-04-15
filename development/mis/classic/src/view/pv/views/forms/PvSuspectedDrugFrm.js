@@ -516,6 +516,76 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
             }
         },
 
+
+        {
+                xtype:'fieldcontainer',
+                fieldLabel: 'Start of administration',
+                columnWidth: 0.5,
+                hideLabel: true,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[ {
+                        xtype: 'datefield',
+                        fieldLabel: 'Start of administration',
+                        format: 'Y-m-d',
+                        allowBlank:
+                        altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+                        name: 'administration_start_date',
+                        maxValue: new Date()
+                    },
+                    {
+                        xtype: 'timefield',
+                        fieldLabel:'Time',
+                        labelAlign: 'top',
+                        name: 'onset_time',
+                        format: 'H:i',
+                        columnWidth: 0.4,
+                        altFormats:'H:i',
+                        increment: 1,
+                        // minValue: '08:00', 
+                        // maxValue: '17:00',
+                
+                    }]
+                },{
+                xtype:'fieldcontainer',
+                fieldLabel: 'End date ',
+                columnWidth: 0.5,
+                hideLabel: true,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[ {
+                        xtype: 'datefield',
+                        fieldLabel: 'End date ',
+                        format: 'Y-m-d',
+                        altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+                        name: 'end_date',
+                        maxValue: new Date()
+                    },
+                    {
+                        xtype: 'timefield',
+                        fieldLabel:'Time',
+                        labelAlign: 'top',
+                        name: 'end_time',
+                        format: 'H:i',
+                        columnWidth: 0.4,
+                        altFormats:'H:i',
+                        increment: 1,
+                        // minValue: '08:00', 
+                        // maxValue: '17:00',
+                
+                    }]
+            }, 
+
         {
             xtype: 'combo', anyMatch: true,
             fieldLabel: 'Action taken',
