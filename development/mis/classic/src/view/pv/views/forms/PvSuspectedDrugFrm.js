@@ -492,6 +492,97 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
             }
         },
 
+         {
+                xtype:'fieldcontainer',
+                fieldLabel: 'Dose',
+                columnWidth: 0.33,
+                //hideLabel: true,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[ {
+                        xtype: 'textfield',
+                        name: 'dose_no',
+                        hideLabel: true,
+                        fieldLabel: 'Dose'
+                    },
+                    {
+                    xtype: 'combo', anyMatch: true,
+                    fieldLabel: 'SI Units',
+                    name: 'dose_unit_id',
+                    hideLabel: true,
+                    forceSelection: true,
+                    queryMode: 'local',
+                    valueField: 'id',
+                    displayField: 'name',
+                    listeners: {
+                        beforerender: {
+                            fn: 'setCompStore',
+                            config: {
+                                pageSize: 1000,
+                                proxy: {
+                                    extraParams: {
+                                        table_name: 'par_si_units'
+                                    }
+                                }
+                            },
+                            isLoad: true
+                        }
+                    }
+                }]
+                },
+         {
+            xtype: 'textfield',
+            name: 'dose_interval',
+            fieldLabel: 'Doses in Interval'
+        },
+        {
+                xtype:'fieldcontainer',
+                fieldLabel: 'Dosing Interval',
+                columnWidth: 0.33,
+                //hideLabel: true,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[ {
+                        xtype: 'textfield',
+                        name: 'dose_unit_no',
+                        hideLabel: true,
+                        fieldLabel: 'Dose'
+                    },
+                    {
+                    xtype: 'combo', anyMatch: true,
+                    name: 'dose_interval_id',
+                    hideLabel: true,
+                    forceSelection: true,
+                    queryMode: 'local',
+                    valueField: 'id',
+                    displayField: 'name',
+                    listeners: {
+                        beforerender: {
+                            fn: 'setCompStore',
+                            config: {
+                                pageSize: 1000,
+                                proxy: {
+                                    extraParams: {
+                                        table_name: 'par_age_units'
+                                    }
+                                }
+                            },
+                            isLoad: true
+                        }
+                    }
+                }]
+                },
+
         {
             xtype: 'combo', anyMatch: true,
             fieldLabel: 'Route of administration (EDQM Standard Terms)',
@@ -734,7 +825,206 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
             fieldLabel: 'Additional information on drug',
             columnWidth: 1,
             name: 'remarks',
-        }
+        },
+        {
+            xtype:'fieldset',
+            columnWidth: 1,
+            title: 'Vaccine information',
+            collapsible: true,
+            defaults: {
+                labelAlign: 'top',
+                allowBlank: false,
+                labelAlign: 'top',
+                margin: 5,
+                xtype: 'textfield',
+                allowBlank: true,
+                columnWidth: 0.33,
+            },
+            layout: 'column',
+            items:[
+        {
+            xtype: 'combo', anyMatch: true,
+            name: 'vaccine_dose_no',
+            fieldLabel: 'Dose number',
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setCompStore',
+                        config: {
+                            pageSize: 1000,
+                            proxy: {
+                                extraParams: {
+                                    table_name: 'par_vaccine_doses'
+                                }
+                            }
+                        },
+                        isLoad: true
+                    }
+                }
+        },
+
+        {
+            xtype: 'textfield',
+            name: 'diluent_name',
+            fieldLabel: 'Diluent name'
+        },
+        {
+            xtype: 'textfield',
+            name: 'diluent_batch_number',
+            fieldLabel: 'Diluent batch number'
+        },
+         {
+            xtype: 'combo', anyMatch: true,
+            name: 'site_of_administration_id',
+            fieldLabel: 'Site of administration',
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setCompStore',
+                        config: {
+                            pageSize: 1000,
+                            proxy: {
+                                extraParams: {
+                                    table_name: 'par_site_of_administration'
+                                }
+                            }
+                        },
+                        isLoad: true
+                    }
+                }
+        },
+        {
+            xtype: 'combo', anyMatch: true,
+            name: 'vaccination_session_id',
+            fieldLabel: 'Vaccination session',
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setCompStore',
+                        config: {
+                            pageSize: 1000,
+                            proxy: {
+                                extraParams: {
+                                    table_name: 'par_vaccination_sessions'
+                                }
+                            }
+                        },
+                        isLoad: true
+                    }
+                }
+             }
+           ]
+         },
+         {
+            xtype:'fieldset',
+            columnWidth: 1,
+            title: 'Time interval between administration and reaction onset',
+            collapsible: true,
+            defaults: {
+                labelAlign: 'top',
+                allowBlank: false,
+                labelAlign: 'top',
+                margin: 5,
+                xtype: 'textfield',
+                allowBlank: true
+            },
+            layout: 'column',
+            items:[
+        {
+                xtype:'fieldcontainer',
+                fieldLabel: 'First dose',
+                columnWidth: 0.5,
+                //hideLabel: true,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[ {
+                        xtype: 'textfield',
+                        name: 'first_dose',
+                        hideLabel: true,
+                        fieldLabel: 'Dose'
+                    },
+                    {
+                    xtype: 'combo', anyMatch: true,
+                    name: 'first_dose_duration_id',
+                    hideLabel: true,
+                    forceSelection: true,
+                    queryMode: 'local',
+                    valueField: 'id',
+                    displayField: 'name',
+                    listeners: {
+                        beforerender: {
+                            fn: 'setCompStore',
+                            config: {
+                                pageSize: 1000,
+                                proxy: {
+                                    extraParams: {
+                                        table_name: 'par_age_units'
+                                    }
+                                }
+                            },
+                            isLoad: true
+                        }
+                    }
+                }]
+                },
+                {
+                xtype:'fieldcontainer',
+                fieldLabel: 'Last dose',
+                columnWidth: 0.5,
+                //hideLabel: true,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[ {
+                        xtype: 'textfield',
+                        name: 'last_dose',
+                        hideLabel: true,
+                        fieldLabel: 'Dose'
+                    },
+                    {
+                    xtype: 'combo', anyMatch: true,
+                    name: 'last_dose_duration_id',
+                    hideLabel: true,
+                    forceSelection: true,
+                    queryMode: 'local',
+                    valueField: 'id',
+                    displayField: 'name',
+                    listeners: {
+                        beforerender: {
+                            fn: 'setCompStore',
+                            config: {
+                                pageSize: 1000,
+                                proxy: {
+                                    extraParams: {
+                                        table_name: 'par_age_units'
+                                    }
+                                }
+                            },
+                            isLoad: true
+                        }
+                    }
+                }]
+                }
+                ]
+            }
     ],
     dockedItems:[
         {

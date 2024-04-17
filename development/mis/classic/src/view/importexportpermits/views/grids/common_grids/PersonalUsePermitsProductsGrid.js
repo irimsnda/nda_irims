@@ -23,13 +23,13 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PersonalUseP
     },
     tbar: [{
         xtype: 'button',
-        text: 'Add Permit Products Details',
+        text: 'Add Products Details',
         iconCls: 'x-fa fa-plus',
         action: 'add',
         ui: 'soft-green',
         childXtype: 'personalusepermitsproductsfrm',
-        winTitle: 'Add Permit Products Details',
-        winWidth: '40%',
+        winTitle: 'Add Products Details',
+        winWidth: '80%',
         handler: 'showPersonalPermitProductsWinFrm',
         stores: '[]',
         bind: {
@@ -108,7 +108,26 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PersonalUseP
         dataIndex: 'unit_price',
         text: 'Unit Price',
         flex: 1,
-    },   {
+    },{
+        
+        xtype: 'gridcolumn',
+        dataIndex: 'currency_name',
+        text: 'Currency',
+        flex: 1,
+    }, {
+        xtype: 'widgetcolumn',
+        width: 160,
+        widget:{
+            xtype: 'button',
+            text: 'View all Details',
+            childXtype: 'personalusepermitsproductsfrm',
+            winTitle: 'Permit Products details',
+            winWidth: '70%',
+            ui: 'soft-green',
+            iconCls: 'fa fa-eye',
+            handler: 'showPreviewProductOtherdetailWinFrm'
+            }
+        },  {
         text: 'Options',
         xtype: 'widgetcolumn',
         width: 90,

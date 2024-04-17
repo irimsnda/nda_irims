@@ -124,7 +124,7 @@ Ext.define('Admin.view.importexportpermits.viewcontrollers.ImportExportPermitsVc
             form.down('combo[name=dosage_form_id]').hide();
        
         }
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     },
     funcPermitsProductRecommendationWin:function(btn){
             var viewXtype = btn.viewXtype,
@@ -137,7 +137,7 @@ Ext.define('Admin.view.importexportpermits.viewcontrollers.ImportExportPermitsVc
                     toastr.warning('Please select at least one product!!', 'Warning Response');
                     return false;
                 }
-            funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     },
     onshowNewNarcoticsPermits: function (btn) {
         var application_type = btn.app_type;
@@ -217,7 +217,7 @@ Ext.define('Admin.view.importexportpermits.viewcontrollers.ImportExportPermitsVc
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     funcUploadTCMeetingtechnicalDocuments:function(btn){
         var me = this,
@@ -240,7 +240,7 @@ Ext.define('Admin.view.importexportpermits.viewcontrollers.ImportExportPermitsVc
             childXtype.down('hiddenfield[name=table_name]').setValue(table_name);
             childXtype.down('hiddenfield[name=reference_table_name]').setValue(reference_table_name);
 
-            funcShowCustomizableWindow(winTitle, winWidth, childXtype, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, childXtype, 'customizablewindow');
         }
         else{
             toastr.warning('Please save meeting details first!!', 'Warning Response');
@@ -305,7 +305,7 @@ Ext.define('Admin.view.importexportpermits.viewcontrollers.ImportExportPermitsVc
                         return;
                       } 
             }
-            funcShowCustomizableWindow(winTitle, '75%', childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, '75%', childObject, 'customizablewindow');
 
             childObject.down('hiddenfield[name=product_id]').setValue(product_id);
             childObject.down('hiddenfield[name=id]').setValue(0);
@@ -768,7 +768,7 @@ Ext.define('Admin.view.importexportpermits.viewcontrollers.ImportExportPermitsVc
             child.down('hiddenfield[name=active_application_code]').setValue(application_code);
             child.setHeight(450);
            
-            funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
     
 
     },
@@ -793,7 +793,7 @@ Ext.define('Admin.view.importexportpermits.viewcontrollers.ImportExportPermitsVc
             }
             
             containerPnl.getViewModel().set('isShowAddPermitProducts', true);
-            funcShowCustomizableWindow(title, '80%', form, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(title, '80%', form, 'customizablewindow');
             if (arrayLength > 0) {
                 me.fireEvent('refreshStores', storeArray);
             }
@@ -1470,7 +1470,7 @@ downloadPreviousDocupload: function (item) {
         grid.down('hiddenfield[name=module_id]').setValue(4);
         grid.down('combo[name=doc_type]').setValue(doc_type);
         
-        funcShowCustomizableWindow('Applications Receipts', '60%', grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Applications Receipts', '60%', grid, 'customizablewindow');
   
   
       },
@@ -1890,7 +1890,7 @@ downloadPreviousDocupload: function (item) {
             if(child.down('importexportproductsvalidationfrm')){
                 child.down('importexportproductsvalidationfrm').down('hiddenfield[name=application_code]').setValue(application_code);
             }
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
    
 },
     //
@@ -2052,13 +2052,13 @@ downloadPreviousDocupload: function (item) {
             childXtype = Ext.widget(childXtype);
             childXtype.down('hiddenfield[name=section_id]').setValue(section_id);
 
-        funcShowCustomizableWindow('Parameter', '55%', childXtype, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Parameter', '55%', childXtype, 'customizablewindow');
     },funcAddApplicationParamter:function(btn){
         var childXtype = btn.childXtype,
             table_name = btn.table_name,
             childXtype = Ext.widget(childXtype);
 
-        funcShowCustomizableWindow('Parameter', '75%', childXtype, 'customizablewindow');
+        funcShowOnlineCustomizableWindow('Parameter', '75%', childXtype, 'customizablewindow');
     },
 
     showPersonalPermitProductsWinFrm: function (btn) {
@@ -2078,7 +2078,7 @@ downloadPreviousDocupload: function (item) {
                 toastr.error('Save Application to proceed!!', 'Failure Response');
                 return;
             }
-        funcShowCustomizableWindow(title, '45%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, '80%', form, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -2115,7 +2115,7 @@ downloadPreviousDocupload: function (item) {
             form.down('hiddenfield[name=section_id]').setValue(section_id);
             form.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
             
-        funcShowCustomizableWindow(title, '80%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, '80%', form, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -2129,7 +2129,7 @@ downloadPreviousDocupload: function (item) {
             checklist_item = record.get('name'),
             item_resp_id = record.get('item_resp_id');
         grid.down('hiddenfield[name=item_resp_id]').setValue(item_resp_id);
-        funcShowCustomizableWindow(checklist_item + ' - Queries', '75%', grid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(checklist_item + ' - Queries', '75%', grid, 'customizablewindow');
     },
 
     showAddApplicationQueryForm: function (btn) {
@@ -2221,7 +2221,7 @@ downloadPreviousDocupload: function (item) {
             storeArray = eval(btn.stores),
             arrayLength = storeArray.length;
 
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -2252,7 +2252,7 @@ downloadPreviousDocupload: function (item) {
             arrayLength = storeArray.length;
             child.setHeight(600);
        
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -2270,7 +2270,7 @@ downloadPreviousDocupload: function (item) {
     showAddMeetingAttendeeFrm: function (btn) {
         var me = this,
             win = Ext.widget('meetingattendeefrm');
-        funcShowCustomizableWindow("Add Member", 400, win, 'customizablewindow');
+        funcShowOnlineCustomizableWindow("Add Member", 400, win, 'customizablewindow');
     },
     addMember: function (btn) {
         var me = this,
@@ -2534,7 +2534,7 @@ downloadPreviousDocupload: function (item) {
             arrayLength = storeArray.length;
 
 
-        funcShowCustomizableWindow(title, '80%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, '80%', form, 'customizablewindow');
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
         }
@@ -2549,7 +2549,7 @@ downloadPreviousDocupload: function (item) {
             arrayLength = storeArray.length;
 
 
-        funcShowCustomizableWindow(title, '60%', form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(title, '60%', form, 'customizablewindow');
         win.close();
         if (arrayLength > 0) {
             me.fireEvent('refreshStores', storeArray);
@@ -2569,7 +2569,7 @@ downloadPreviousDocupload: function (item) {
             form = Ext.widget(childXtype);
 
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
         
 
     },
@@ -2584,7 +2584,27 @@ downloadPreviousDocupload: function (item) {
             form = Ext.widget(childXtype);
 
         form.loadRecord(record);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        if(section_id == 4){
+            form.down('combo[name=device_type_id]').show();
+       
+        }
+        else{
+            form.down('combo[name=device_type_id]').hide();
+       
+        }
+    },
+     showPreviewProductOtherdetailWinFrm: function (btn) {
+
+        var me = this,
+            record = btn.getWidgetRecord(),
+            childXtype = btn.childXtype,
+            winTitle = btn.winTitle,
+            winWidth = btn.winWidth,
+            form = Ext.widget(childXtype);
+
+        form.loadRecord(record);
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
         if(section_id == 4){
             form.down('combo[name=device_type_id]').show();
        
@@ -2642,7 +2662,7 @@ downloadPreviousDocupload: function (item) {
         childObject.down('hiddenfield[name=id]').setValue(record.get('recomm_id'));
         childObject.down('combo[name=decision_id]').setValue(record.get('decision_id'));
         childObject.down('textarea[name=comments]').setValue(record.get('comments'));
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     previewUploadedProductImage:function(item){
         var btn = item.up('button'),
@@ -2687,7 +2707,7 @@ downloadPreviousDocupload: function (item) {
             queriesGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
         }
 
-        funcShowCustomizableWindow(ref_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
         win.close();
     },
     showOnlineApplicationRejections: function (btn) {
@@ -2698,7 +2718,7 @@ downloadPreviousDocupload: function (item) {
             childXtype = btn.childXtype,
             childObject = Ext.widget(childXtype);
         childObject.down('hiddenfield[name=application_code]').setValue(application_code);
-        funcShowCustomizableWindow(tracking_no + ' Rejections', winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(tracking_no + ' Rejections', winWidth, childObject, 'customizablewindow');
     },
     receiveOnlineApplicationDetailsFrmBtn: function (btn) {
         Ext.getBody().mask('Please wait...');
@@ -2804,7 +2824,7 @@ downloadPreviousDocupload: function (item) {
             childObject.down('hiddenfield[name=table_name]').setValue(table_name);
             childObject.down('hiddenfield[name=module_id]').setValue(module_id);
             childObject.down('button[name=submit_queriedapp]').action_url = action_url;
-            funcShowCustomizableWindow('Online Application Submission - Queried', '35%', childObject, 'customizablewindow');
+            funcShowOnlineCustomizableWindow('Online Application Submission - Queried', '35%', childObject, 'customizablewindow');
         });
     },
     submitRejectedOnlineApplication: function (item) {
@@ -2837,7 +2857,7 @@ downloadPreviousDocupload: function (item) {
             queriesGrid.down('button[action=submit_app]').setVisible(false);
             queriesGrid.down('hiddenfield[name=isReadOnly]').setValue(1);
         }
-        funcShowCustomizableWindow(ref_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(ref_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
     }, receiveOnlineApplicationDetails: function (item) {
         Ext.getBody().mask('Please wait...');
         var storeID = item.storeID,
@@ -2863,7 +2883,7 @@ downloadPreviousDocupload: function (item) {
                 winWidth = btn.winWidth,
                 grid = Ext.widget(childXtype);
                 grid.height= 550;
-            funcShowCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, grid, 'customizablewindow');
         }
         else {
             toastr.error('Alert: ', 'Application has already been saved, update the details to continue');
@@ -2898,7 +2918,7 @@ downloadPreviousDocupload: function (item) {
             } else {
                 childObject.applicantType = 'nonlocal';
             }
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     onPersonalPermitsPrevCardClick:function(btn){
         var wizard = btn.wizard,
@@ -3094,7 +3114,7 @@ downloadPreviousDocupload: function (item) {
                                         grid.down('hiddenfield[name=module_id]').setValue(4);
                                         grid.down('combo[name=doc_type]').setValue(doc_type);
                                         
-                                        funcShowCustomizableWindow('Applications Receipts', '60%', grid, 'customizablewindow');
+                                        funcShowOnlineCustomizableWindow('Applications Receipts', '60%', grid, 'customizablewindow');
                                    }
                                      
                                
@@ -3169,7 +3189,7 @@ downloadPreviousDocupload: function (item) {
     showAddFormWin: function (btn, evt, opts) {
        var form = Ext.widget(btn.form);
             form.setHeight('');
-            funcShowCustomizableWindow(btn.title, "40%", form, "customizablewindow");
+            funcShowOnlineCustomizableWindow(btn.title, "40%", form, "customizablewindow");
         
     },
     updateOnlineImporExportPermitReceivingBaseDetails: function (btn) {
@@ -3732,7 +3752,7 @@ downloadPreviousDocupload: function (item) {
             if(poe_application_id != ''){
                 
                 child.down('hiddenfield[name=poe_application_id]').setValue(poe_application_id);
-                funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+                funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
            
             }else{
                 toastr.error('Save POE Information to submit!!', 'Failure Response');
@@ -3756,7 +3776,7 @@ downloadPreviousDocupload: function (item) {
             if(active_application_code != ''){
                 child.down('hiddenfield[name=active_application_code]').setValue(active_application_code);
 
-                funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+                funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
            
             }else{
                 toastr.error('Search Permit Details to Processed.', 'Failure Response');
@@ -3843,7 +3863,7 @@ downloadPreviousDocupload: function (item) {
                 return;
             }
         childObject.down('hiddenfield[name=section_id]').setValue(section_id);
-        funcShowCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
     loadSelectedApplication :function(view, record) {
         var wrapper = Ext.ComponentQuery.query("#importexportedittingswizardId")[0],
@@ -4131,12 +4151,12 @@ downloadPreviousDocupload: function (item) {
                 toastr.error('Error: ' + errorThrown, 'Error Response');
             }
         });
-        funcShowCustomizableWindow("Inspection Preview", '60%', inspectionPreviewPnl, 'customizablewindow');
+        funcShowOnlineCustomizableWindow("Inspection Preview", '60%', inspectionPreviewPnl, 'customizablewindow');
     },
     showConsigneeDetails:function(){
             var consignee_win =  Ext.widget('consigneedetailsgrid');
             
-        funcShowCustomizableWindow("Consignee Details", '80%', consignee_win, 'customizablewindow');
+        funcShowOnlineCustomizableWindow("Consignee Details", '80%', consignee_win, 'customizablewindow');
     },  funcActiveImportOtherInformationTab: function (tab) {
 
         this.fireEvent('funcActiveImportOtherInformationTab', tab);

@@ -9,6 +9,8 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
     extend: 'Ext.form.Panel',
     xtype: 'personalusepermitsproductsfrm',
     itemId: 'personalusepermitsproductsfrm',
+    scrollable:true,
+    autoscroll:true,
     layout: {
         type: 'column',
         columns: 1
@@ -33,7 +35,45 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
     },{
         xtype: 'hiddenfield',
         name: 'table_name',
-        value: 'tra_personalusepermits_products'
+        value: 'tra_permits_products'
+    },{
+        xtype: 'hidden',
+        name: '_token',
+        value: token
+    },{
+        xtype: 'combo',
+        fieldLabel: 'Product Category',
+        allowBlank: false,
+        valueField: 'id',
+        displayField: 'name',
+        forceSelection: true,
+        name: 'product_category_id',
+        queryMode: 'local',bind: {
+            readOnly: '{isReadOnly}'
+        },
+        listeners: {
+            beforerender: {
+                fn: 'setConfigCombosSectionfilterStore',
+                config: {
+                    pageSize: 10000,
+                    proxy: {
+                        url: 'commonparam/getCommonParamFromTable',
+                        extraParams: {
+                            table_name: 'par_importexport_product_category',
+                            has_filter: 0
+                        }
+                    }
+                },
+                isLoad: false
+            },
+            afterrender: function (cmbo) {
+                var store = cmbo.getStore(),
+                filterObj = {is_personal_id: 1},
+                filterStr = JSON.stringify(filterObj);
+                store.removeAll();
+                store.load({params: {filters: filterStr}});
+            }
+        }
     },{
         xtype: 'textfield',
         name: 'permitbrand_name',
@@ -41,24 +81,17 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
     },{
         xtype: 'textfield',
         name: 'permitcommon_name',
+        hidden:true,
+         allowBlank: true,
         fieldLabel: 'Common Name',
-    }, {
-        xtype: 'numberfield',
-        name: 'quantity',bind: {
-            readOnly: '{isReadOnly}'
-        },
-        allowBlank: true,
-        fieldLabel: 'Quantity',
     },{
         xtype: 'combo',
-        fieldLabel: 'Packaging Unit',
-        labelWidth: 80,
-        width: 320,
+        fieldLabel: 'Generic/Common Name',
         allowBlank: true,
         valueField: 'id',
         displayField: 'name',
         forceSelection: true,
-        name: 'packaging_unit_id',
+        name: 'common_name_id',
         queryMode: 'local',bind: {
             readOnly: '{isReadOnly}'
         },
@@ -70,7 +103,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
                     proxy: {
                         url: 'configurations/getNonrefParameter',
                         extraParams: {
-                            table_name: 'par_packaging_units',
+                            table_name: 'par_common_names',
                             has_filter: 0
                         }
                     }
@@ -78,6 +111,13 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
                 isLoad: true
             }
         }
+    }, {
+        xtype: 'numberfield',
+        name: 'quantity',bind: {
+            readOnly: '{isReadOnly}'
+        },
+        allowBlank: true,
+        fieldLabel: 'Quantity',
     },{
         xtype: 'numberfield',
         name: 'unit_price',bind: {
@@ -88,8 +128,6 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
     },{
         xtype: 'combo',
         fieldLabel: ' Currency',
-        labelWidth: 80,
-        width: 320,
         valueField: 'id',
         displayField: 'name',bind: {
             readOnly: '{isReadOnly}'
@@ -118,7 +156,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
         xtype:'textarea',
         name:'batch_numbers',
         fieldLabel:'Batch Number',
-        allowBlank: false,
+        allowBlank: true,
         bind: {
             readOnly: '{isReadOnly}'
         }

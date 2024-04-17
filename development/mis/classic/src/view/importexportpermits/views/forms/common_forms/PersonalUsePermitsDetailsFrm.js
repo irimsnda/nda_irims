@@ -776,7 +776,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
                     xtype: 'combo',
                     fieldLabel: 'Country',
                     name: 'patientscountry_id',
-                    allowBlank: false,
+                    allowBlank: true,
                     hidden:true,
                     forceSelection: true,
                     queryMode: 'local',

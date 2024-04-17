@@ -20,7 +20,7 @@ class MigrationScriptsController extends Controller
     protected $user_id;
 
     function getTableColumnsDef($columns)
-    {
+    { 
         $column_defination = '';
         foreach ($columns as $col) {
             $column_defination .= $col . ',';
@@ -433,6 +433,129 @@ class MigrationScriptsController extends Controller
      print_r($res);
 
 }
+
+public function updateGMPContactPersons(Request $req){
+        try{
+        
+            $records_migrated =0;
+                $records = DB::table('tra_gmpapps_datamigration_Copy_22nd_conta as t1')
+                                ->select('t1.*')
+                                //->where('t1.applicant_id',47232)
+                                ->whereBetween('t1.id', [250, 500])
+                                ->get();
+                
+                if($records){
+                    foreach($records as $rec){
+
+                        $country_id = $this->saveProductDataEntry('par_countries',array('name'=>$rec->Country, 'description'=>$rec->Country),array('name'=>$rec->Country),'Country');
+                    
+                      
+                         $applicant_id='';
+                          $applicat_details = DB::table('tra_gmp_applications as t1')
+                            ->join('tra_manufacturing_sites as t2', 't1.manufacturing_site_id', '=', 't2.id')
+                            ->select('t1.applicant_id')
+                            ->where(array('t2.name'=> $rec->Site_Name,'t2.country_id'=> $country_id))
+                             ->first();
+                            if ($applicat_details) {
+                              $applicant_id = $applicat_details->applicant_id;
+                            }
+
+                         $data = (object)array('email_address'=> $rec->Email_Address,
+                                'country_id'=>$country_id,
+                                'name'=>$rec->Contact_Person,
+                                'trader_id'=>$applicant_id,
+                                'telephone_no'=>$rec->Telephone,
+                                'created_by'=>'Migration',
+                                'created_on'=>Carbon::now(),
+                            );
+
+
+                        // print_r($rec);
+                        // exit();
+                      
+                       $contact_person_id = $this->saveContactPersonInformationDetails($data);
+
+                          
+
+                            //$applicant_id = $rec->applicant_id;
+
+                         DB::table('tra_manufacturing_sites')
+                            ->where(array('name'=> $rec->Site_Name,'country_id'=> $country_id))
+                            ->update(array('contact_person_id'=>$contact_person_id));
+
+                        $res = 'Applications Have been mapped on the submission table successsfully Site Name'.$rec->Site_Name;
+                     
+                            $records_migrated++;
+                    }  
+            
+
+                }
+                else{
+
+                    $res = "No application found";
+                }
+                $this->saveMigrationLogsData('initiatemappingProductRegistrationSubmission',$records_migrated);
+
+
+
+
+        }
+        catch (\Exception $exception) {
+       
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+         print_r($res);
+}
+
+
+function saveContactPersonInformationDetails($rec){
+    $data_check = $rec;
+    if($rec->email_address != ''){
+        $check = DB::table('tra_personnel_information')->where('email_address',$rec->email_address)->first();
+
+    }
+    else{
+        $check = DB::table('tra_personnel_information')->where('name',$rec->name)->first();
+
+    }
+  
+    if(!$check){
+        
+                $rec = (array)$rec;
+                $resp =  insertRecord('tra_personnel_information', $rec, 'Migration');
+                if($resp['success']){
+                    $person_id = $resp['record_id'];
+                }
+                else{
+                    print_r($resp);
+                    exit();
+                }
+                // $rec['id'] =  $trader_id;
+
+                // DB::connection('portal_db')->table('wb_trader_account')->insert($rec);
+                //    if($data_check->email != ''){
+                //         DB::connection('portal_db')->table('wb_traderauthorised_users')->insert($user_data);
+
+                //    }
+               
+    }
+    else{
+      $person_id = $check->id;
+    }
+   
+    return $person_id;
+}
+
+
+
 function saveProductDataEntry($table_name, $data,$where,$title){
     $record_id = 0;
 
@@ -466,14 +589,15 @@ function saveProductDataEntry($table_name, $data,$where,$title){
 }
 function saveTraderInformationDetails($rec){
     $data_check = $rec;
-    if($rec->email != ''){
-        $check = DB::table('wb_trader_account')->where('email',$rec->email)->first();
+    // if($rec->email != ''){
+    //     $check = DB::table('wb_trader_account')->where('email',$rec->email)->first();
 
-    }
-    else{
-        $check = DB::table('wb_trader_account')->where('name',$rec->name)->first();
+    // }
+    // else{
+    //     $check = DB::table('wb_trader_account')->where('name',$rec->name)->first();
 
-    }
+    // }
+     $check = DB::table('wb_trader_account')->where(array('name'=>$rec->name,'email'=>$rec->email))->first();
   
     if(!$check){
         
@@ -504,7 +628,7 @@ function saveTraderInformationDetails($rec){
                     print_r($resp);
                     exit();
                 }
-                $rec['id'] =  $trader_id;
+                //$rec['id'] =  $trader_id;
 
                 DB::connection('portal_db')->table('wb_trader_account')->insert($rec);
                    if($data_check->email != ''){
@@ -521,16 +645,26 @@ function saveTraderInformationDetails($rec){
 }
 public function getProductApplicationReferenceCodes($application_details)
     {
-         
+        $gmp_region_code=''; 
         $section_code = getSingleRecordColValue('par_sections', array('id' => $application_details->section_id), 'code');
         $class_code = getSingleRecordColValue('par_classifications', array('id' => $application_details->classification_id), 'code');
+
+        $gmp_location = DB::table('par_countries as t1')
+            ->join('par_gmpcountries_regions as t2', 't1.gmpcountries_region_id', 't2.id')
+            ->select('t2.code')
+            ->where(array('t1.id'=>$application_details->country_id))
+             ->first();
+            if ($gmp_location) {
+              $gmp_region_code = $gmp_location->code;
+            }
        
-        $codes_array = array(
+           $codes_array = array(
             'section_code' => $section_code,
             'prod_type_code' => $section_code,
             'gmp_type' => 'O',
             'zone_code' => 00,
             'class_code' => $class_code,
+            'gmp_region_code' => $gmp_region_code
            
         );  
               
@@ -948,17 +1082,19 @@ public function initiateMedProductDatabaseMigration(Request $req){
         $records_migrated =0;
         $sub_module_id  =7;
         $module_id  =1;
-        $section_id  =1;
+        $section_id  =2;
         
-        $table_name = 'MAH';
+        $table_name = 'human_medicinal_productsjuly';
+        $table_name = 'herbal_medicinal_productsjuly';
         $record_id = $req->record_id;
          $records = DB::table($table_name)
-            ->where('license_no', 'LIKE', '%HDP%')
-            ->orderBy('No', 'desc')
-            ->get();
                 
+                ->orderBy('No', 'desc')
+                ->get();
+        //$records = DB::
+        
         foreach($records as $rec){
-            $ReferenceNo = $rec->Productlicenseno;
+            $ReferenceNo = $rec->Ref_Number;
               
              $app_record = DB::table('tra_product_applications')->where(array('reference_no'=>$ReferenceNo))->first();
              
@@ -971,108 +1107,69 @@ public function initiateMedProductDatabaseMigration(Request $req){
                       
                     }
                      
-                    // $RECEIVED = $rec->Submission_Date;
-                    // $app_id = $rec->id;
-                    $classification_id = 2;
+                    $RECEIVED = $rec->Submission_Date;
+                    $app_id = $rec->id;
+                    $classification_id = 1;
                     $prodclass_category_id = 1;
                     $product_category_id = 10;
                     $product_origin_id = 1;
                     $app_details = (object)array('section_id'=>$section_id, 'classification_id'=>$classification_id);
                     $codes_array = $this->getProductApplicationReferenceCodes($app_details);
-
-                    $dosage_form_id =getSingleRecordColValue('tra_productapps_datamigration_Dosage_route_Integer', array('productlicenseno'=>$ReferenceNo), 'dosage_form');
-
-                    $Product_Brand_Name =getSingleRecordColValue('tra_productapps_datamigration_Dosage_route_Integer', array('productlicenseno'=>$ReferenceNo), 'name_of_drug');
-
-
-                    $RECEIVED =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'Registrationdate');
-
-
-                    $packaging_material =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'packaging_material');
-
-                    $unit =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'unit');
-
-
-                    $size_a =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_a');
-
-                    $size_b =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_b');
-
-                    $size_c =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_c');
-
-                    $size_d =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_d');
-
-                    $size_e =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_e');
-                 
-
-                 $data = (object)array('name'=>$LicenseHolder, 
-                                'tpin_no'=>0, 
-                                'contact_person'=>$LicenseHolder,
-                                'country_id'=>'', 
-                                'region_id'=>'', 
-                                'physical_address'=>'', 
-                                'postal_address'=>'', 
-                                'telephone_no'=>'', 
-                                'email'=>'', 
-                                'created_by'=>'Migration',
-                                'created_on'=>Carbon::now(),
-                                'status_id'=>1
-                            );
-                    $applicant_id = $this->saveTraderInformationDetails($data);
- 
+    /*
                     $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, '', '');
                     if ($tracking_details['success'] == false) {
                         return \response()->json($tracking_details);
                     }
-                    
+                    */
                     //$ReferenceNo = $tracking_details['tracking_no'];
                 
-                    $Product_Brand_Name = $Product_Brand_Name;                 
-                    //$Product_Common_Name = mb_detect_encoding($rec->Product_Common_Name_INN);                   
-                    //$Product_Strength = $rec->Product_Strength;                 
-                    //$Product_Dosage_Form = $rec->Product_dosage_Form;                   
-                   // $ManufacturerName = mb_detect_encoding($rec->Manufacturer_Name);                    
-                    //$Manufacturer_Country = $rec->Country;                  
-                  //  $ManufacturesitePhysicalAddress = mb_detect_encoding($rec->Manufacturer_Name);                  
-                    $Applicant_Name = $rec->LicenseHolder;         
-                    //$product_pack_size = '';            
+                    $Product_Brand_Name = $rec->Product_Brand_Name;                 
+                    $Product_Common_Name = mb_detect_encoding($rec->Product_Common_Name_INN);                   
+                    $Product_Strength = $rec->Product_Strength;                 
+                    $Product_Dosage_Form = $rec->Product_dosage_Form;                   
+                    $ManufacturerName = mb_detect_encoding($rec->Manufacturer_Name);                    
+                    $Manufacturer_Country = $rec->Country;                  
+                    $ManufacturesitePhysicalAddress = mb_detect_encoding($rec->Manufacturer_Name);                  
+                    $Applicant_Name = $rec->Applicant_Name;         
+                    $product_pack_size = '';            
                         
-                    //$MAHs_Country = $rec->Country_1;                    
-                    //$Local_Technical_Representative = $rec->Local_Technical_Representative_LTR;     
+                    $MAHs_Country = $rec->Country_1;                    
+                    $Local_Technical_Representative = $rec->Local_Technical_Representative_LTR;     
 
-                    //$mancountry_id = $this->saveProductDataEntry('par_countries',array('name'=>$MANUFACTURER_COUNTRY, 'description'=>$MANUFACTURER_COUNTRY),array('name'=>$MANUFACTURER_COUNTRY),'Country');
+                    $mancountry_id = $this->saveProductDataEntry('par_countries',array('name'=>$MANUFACTURER_COUNTRY, 'description'=>$MANUFACTURER_COUNTRY),array('name'=>$MANUFACTURER_COUNTRY),'Country');
     
-                    //$manufacturer_data = array('name'=>$ManufacturerName, 
-                                            //     'physical_address'=>$ManufacturesitePhysicalAddress,
-                                            //     'country_id'=>$mancountry_id
-                                            // );
-                    //$manufacturer_id = $this->saveProductDataEntry('tra_manufacturers_information',$manufacturer_data,array('name'=>$ManufacturerName, 'country_id'=>$mancountry_id),'Manufacturer Id');       
+                    $manufacturer_data = array('name'=>$ManufacturerName, 
+                                                'physical_address'=>$ManufacturesitePhysicalAddress,
+                                                'country_id'=>$mancountry_id
+                                            );
+                    $manufacturer_id = $this->saveProductDataEntry('tra_manufacturers_information',$manufacturer_data,array('name'=>$ManufacturerName, 'country_id'=>$mancountry_id),'Manufacturer Id');       
 
-                    ///$manufacturersite_data = array('name'=>$ManufacturerName, 
-                                            //     'physical_address'=>$ManufacturesitePhysicalAddress,
-                                            //     'country_id'=>$mancountry_id,
-                                            //     'manufacturer_id'=>$manufacturer_id
-                                            // );
-                    //$man_site_id = $this->saveProductDataEntry('par_man_sites',$manufacturersite_data,array('name'=>$ManufacturerName, 'manufacturer_id'=>$manufacturer_id),'Manufacturer Id');            
+                    $manufacturersite_data = array('name'=>$ManufacturerName, 
+                                                'physical_address'=>$ManufacturesitePhysicalAddress,
+                                                'country_id'=>$mancountry_id,
+                                                'manufacturer_id'=>$manufacturer_id
+                                            );
+                    $man_site_id = $this->saveProductDataEntry('par_man_sites',$manufacturersite_data,array('name'=>$ManufacturerName, 'manufacturer_id'=>$manufacturer_id),'Manufacturer Id');            
                         
-                    //$common_name_id = $this->saveProductDataEntry('par_common_names',array('section_id'=>$section_id, 'name'=>$Product_Common_Name, 'description'=>$Product_Common_Name),array('name'=>$Product_Common_Name),'Common Names');   
-                    //$dosage_form_id = $this->saveProductDataEntry('par_dosage_forms',array('section_id'=>$section_id, 'name'=>$Product_Dosage_Form, 'description'=>$Product_Dosage_Form),array('name'=>$Product_Dosage_Form),'Dosage Forms');   
+                    $common_name_id = $this->saveProductDataEntry('par_common_names',array('section_id'=>$section_id, 'name'=>$Product_Common_Name, 'description'=>$Product_Common_Name),array('name'=>$Product_Common_Name),'Common Names');   
+                    $dosage_form_id = $this->saveProductDataEntry('par_dosage_forms',array('section_id'=>$section_id, 'name'=>$Product_Dosage_Form, 'description'=>$Product_Dosage_Form),array('name'=>$Product_Dosage_Form),'Dosage Forms');   
                     
-                    // $route_of_administration_id = $this->saveProductDataEntry('par_route_of_administration',array('section_id'=>$section_id, 'name'=>$Route_of_administration, 'description'=>$Route_of_administration),array('name'=>$Route_of_administration),'Route_of_administration'); 
+                    $route_of_administration_id = $this->saveProductDataEntry('par_route_of_administration',array('section_id'=>$section_id, 'name'=>$Route_of_administration, 'description'=>$Route_of_administration),array('name'=>$Route_of_administration),'Route_of_administration'); 
                     
                      $product_information = array('product_origin_id'=>$product_origin_id,
                                              'common_name_id'=>$common_name_id,
                                              'product_category_id'=>$product_category_id,
                                              'prodclass_category_id'=>$prodclass_category_id,
-                                             //'product_pack_size'=>$product_pack_size,
+                                             'product_pack_size'=>$product_pack_size,
                                              //'shelf_life'=>$SHELF_LIFE,
                                              'classification_id'=>$classification_id,
                                              'brand_name'=>$Product_Brand_Name,
                                              'physical_description'=>$Product_Common_Name,
                                              'dosage_form_id'=>$dosage_form_id,
-                                             //'route_of_administration_id'=>$route_of_administration_id,
-                                           //  'product_strength'=>$Product_Strength,
-                                             //'fpp_manufacturer'=>$Manufacturer,
-                                             //'fpp_manufacturer_country'=>$Manufacturer_Country,
+                                             'route_of_administration_id'=>$route_of_administration_id,
+                                             'product_strength'=>$Product_Strength,
+                                             'fpp_manufacturer'=>$Manufacturer,
+                                             'fpp_manufacturer_country'=>$Manufacturer_Country,
                                              'section_id'=>$section_id,
                                           
                                          );
@@ -1089,63 +1186,14 @@ public function initiateMedProductDatabaseMigration(Request $req){
                             print_r($resp);
                             exit();
                     }
-
-
-                    //primary start
-                    $product_packaging = array('product_id'=>$product_id, 
-                                                'container_material_id'=>$packaging_material, 
-                                                'no_of_units'=>$no_of_units, 
-                                                'no_of_packs'=>$no_of_packs,
-                                                'si_unit_id'=>$unit
-                                            );
-                    DB::table('tra_product_packaging')->insert($product_packaging);
                     
-                    //primary end
-
-                    //Secondary start
-
-                    $secondary_product_packaging = array('product_id'=>$product_id, 
-                                                'container_material_id'=>$packaging_material, 
-                                                'no_of_units'=>$no_of_units, 
-                                                'no_of_packs'=>$no_of_packs,
-                                                'si_unit_id'=>$unit
+                    $product_manufacturer = array('product_id'=>$product_id, 
+                                                'manufacturer_id'=>$manufacturer_id, 
+                                                'man_site_id'=>$man_site_id, 
+                                                'manufacturer_role_id'=>1,
+                                                'manufacturer_type_id'=>1
                                             );
-                    DB::table('tra_secondary_packaging')->insert($secondary_product_packaging);
-
-                  //secondary end
-
-                    //tertiary product start
-                    $tertiary_product_packaging = array('product_id'=>$product_id, 
-                                                'container_material_id'=>$packaging_material, 
-                                                'no_of_units'=>$no_of_units, 
-                                                'no_of_packs'=>$no_of_packs,
-                                                'si_unit_id'=>$unit
-                                            );
-                    DB::table('tra_tertiary_packaging')->insert($tertiary_product_packaging);
-
-                    //tertiary end
-
-                     //quaternary product start
-                    $quaternary_product_packaging = array('product_id'=>$product_id, 
-                                                'container_material_id'=>$packaging_material, 
-                                                'no_of_units'=>$no_of_units, 
-                                                'no_of_packs'=>$no_of_packs,
-                                                'si_unit_id'=>$unit
-                                            );
-                    DB::table('tra_quaternary_packaging')->insert($quaternary_product_packaging);
-                    //quaternary end
-
-                     //quinary product start
-                    $quinary_product_packaging = array('product_id'=>$product_id, 
-                                                'container_material_id'=>$packaging_material, 
-                                                'no_of_units'=>$no_of_units, 
-                                                'no_of_packs'=>$no_of_packs,
-                                                'si_unit_id'=>$unit
-                                            );
-                    DB::table('tra_quinary_packaging')->insert($quinary_product_packaging); 
-
-                      //quinary product send
-
+                    DB::table('tra_product_manufacturers')->insert($product_manufacturer);              
                      $view_id = generateApplicationViewID();
                      $application_code = $application_code = generateApplicationCode(7, 'tra_product_applications');
                      $product_data = array('product_type_id'=>$product_origin_id, 
@@ -1153,9 +1201,8 @@ public function initiateMedProductDatabaseMigration(Request $req){
                              'reference_no'=>$ReferenceNo, 
                              'view_id'=>$view_id, 
                              'mah_name'=>$Applicant_Name, 
-                             'applicant_id'=>$applicant_id,
-                            // 'mah_country'=>$MAHs_Country, 
-                             //'ltr_name'=>$Local_Technical_Representative, 
+                             'mah_country'=>$MAHs_Country, 
+                             'ltr_name'=>$Local_Technical_Representative, 
                              'sub_module_id'=>$sub_module_id, 
                              'assessmentprocedure_type_id'=>1, 
                              'section_id'=>$section_id, 
@@ -1219,23 +1266,22 @@ public function initiateMedProductAuthorisationMigration(Request $req){
         $module_id  =1;
         $section_id  =1;
         
-        $table_name = 'Productliscencenos';
+        $table_name = '4thCNFProductlicenseno';
         $record_id = $req->record_id;
          $records = DB::table($table_name)
-            ->where('Productlicenseno', 'LIKE', '%HDP%')
-           ->whereBetween('id', [1, 2])
+            ->where('productlicenseno', 'LIKE', '%HDP%')
+           ->whereBetween('id', [1, 200])
             ->get();
-                
-        foreach($records as $rec){
-            $ReferenceNo = $rec->Productlicenseno;
+           
 
-            $REGISTRATION_NO = $rec->Productlicenseno;
+        foreach($records as $rec){
+            $ReferenceNo = $rec->productlicenseno;
+
+            $REGISTRATION_NO = $rec->productlicenseno;
 
             $Product_Brand_Name = $rec->Brandname;
-
-
-
               
+             
              $app_record = DB::table('tra_product_applications')->where(array('reference_no'=>$ReferenceNo))->first();
              
             if(!$app_record){
@@ -1246,39 +1292,43 @@ public function initiateMedProductAuthorisationMigration(Request $req){
                             $process_id = $process_data->id;
                       
                     }
-                     
+                   
                     $classification_id = 2;
                     $prodclass_category_id = 1;
                     $product_category_id = 10;
                     $product_origin_id = 1;
-                    $app_details = (object)array('section_id'=>$section_id, 'classification_id'=>$classification_id);
-                    $codes_array = $this->getProductApplicationReferenceCodes($app_details);
 
-                    $dosage_form_id =getSingleRecordColValue('tra_productapps_datamigration_Dosage_route_Integer', array('productlicenseno'=>$ReferenceNo), 'dosage_form');
+                    // $app_details = (object)array('section_id'=>$section_id, 'classification_id'=>$classification_id, 'country_id'=>'');
+                    // $codes_array = $this->getProductApplicationReferenceCodes($app_details);
+                 
+
+
+
+                    //$dosage_form_id =getSingleRecordColValue('tra_productapps_datamigration_Dosage_route_Integer', array('productlicenseno'=>$ReferenceNo), 'dosage_form');
                    
+
 
                    $LicenseHolder=getSingleRecordColValue('mah', array('productlicenseno'=>$ReferenceNo), 'LicenseHolder');
                     
 
-                    $RECEIVED =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'Registrationdate');
+                    $RECEIVED =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'Registrationdate');
 
                     
-                    $packaging_material =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'packaging_material');
+                    $packaging_material =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'packaging_material');
                     
-                    $unit =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'unit');
+                    $unit =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'unit');
 
                    
-                    $size_a =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_a');
+                    $size_a =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_a');
                    
-                    $size_b =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_b');
+                    $size_b =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_b');
                      
-                    $size_c =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_c');
+                    $size_c =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_c');
                      
-                    $size_d =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_d');
+                    $size_d =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_d');
 
-
-
-                    $size_e =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_e');
+                   
+                    $size_e =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_e');
 
                    $applicant_id='';
                 
@@ -1301,10 +1351,13 @@ public function initiateMedProductAuthorisationMigration(Request $req){
                    }
 
 
-                    $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, '', '');
-                    if ($tracking_details['success'] == false) {
-                        return \response()->json($tracking_details);
-                    }
+
+
+                   
+                    // $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, '', '');
+                    // if ($tracking_details['success'] == false) {
+                    //     return \response()->json($tracking_details);
+                    // }
                     
               
                     $Product_Brand_Name = $Product_Brand_Name;                 
@@ -1316,7 +1369,7 @@ public function initiateMedProductAuthorisationMigration(Request $req){
                                              'prodclass_category_id'=>$prodclass_category_id,
                                              'classification_id'=>$classification_id,
                                              'brand_name'=>$Product_Brand_Name,
-                                             'dosage_form_id'=>$dosage_form_id,
+                                             //'dosage_form_id'=>$dosage_form_id,
                                              'section_id'=>$section_id,
                                           
                                          );
@@ -1338,14 +1391,13 @@ public function initiateMedProductAuthorisationMigration(Request $req){
                     $no_of_units='';
                     $no_of_packs='';
                     $secondary_no_of_packs='';
-                    $tertiarry_no_of_packs='';
-
+                    $tertiary_no_of_packs='';
                     
                     if(validateIsNumeric($size_e)){
                         $no_of_units=$size_e;
                         $no_of_packs=$size_d;
                         $secondary_no_of_packs=$size_b;
-                        $tertiarry_no_of_packs=$size_a;
+                        $tertiary_no_of_packs=$size_a;
 
                     }else if(!validateIsNumeric($size_e) && validateIsNumeric($size_d)){
                         $no_of_units=$size_d;
@@ -1365,6 +1417,7 @@ public function initiateMedProductAuthorisationMigration(Request $req){
                   
 
                     //primary start
+                    if(isset($no_of_units) && !empty($no_of_units)) {
                     $product_packaging = array('product_id'=>$product_id, 
                                                 'container_material_id'=>$packaging_material, 
                                                 'no_of_units'=>$no_of_units, 
@@ -1372,11 +1425,13 @@ public function initiateMedProductAuthorisationMigration(Request $req){
                                                 'si_unit_id'=>$unit
                                             );
                     DB::table('tra_product_packaging')->insert($product_packaging);
+
+                  }
                     
                     //primary end
 
                     //Secondary start
-                    if(validateIsNumeric($secondary_no_of_packs)){
+                    if(isset($secondary_no_of_packs) && !empty($secondary_no_of_packs)) {
                         $secondary_product_packaging = array('product_id'=>$product_id, 
                                                     'no_of_packs'=>$secondary_no_of_packs
                                                    
@@ -1387,7 +1442,7 @@ public function initiateMedProductAuthorisationMigration(Request $req){
                   //secondary end
 
                     //tertiary product start
-                    if(validateIsNumeric($tertiarry_no_of_packs)){
+                    if(isset($tertiary_no_of_packs) && !empty($tertiary_no_of_packs)) {
                         $tertiary_product_packaging = array('product_id'=>$product_id, 
                                                     'no_of_packs'=>$tertiary_no_of_packs
                                                 );
@@ -1401,7 +1456,7 @@ public function initiateMedProductAuthorisationMigration(Request $req){
                              'application_code'=>$application_code, 
                              'reference_no'=>$ReferenceNo, 
                              'view_id'=>$view_id, 
-                             'mah_name'=>$Applicant_Name, 
+                             //'mah_name'=>$Applicant_Name, 
                              'applicant_id'=>$applicant_id,
                             // 'mah_country'=>$MAHs_Country, 
                              //'ltr_name'=>$Local_Technical_Representative, 
@@ -1421,6 +1476,7 @@ public function initiateMedProductAuthorisationMigration(Request $req){
                              'created_by'=>'Migration', 
                              
                     );
+
                     $resp =  insertRecord('tra_product_applications', $product_data, 'Migration');
                     if($resp['success']){
                         $application_id = $resp['record_id'];
@@ -1567,17 +1623,16 @@ public function initiateHumanHerbalMedProductAuthorisationMigration(Request $req
         $sub_module_id  =7;
         $module_id  =1;
         $section_id  =6;
-        $table_name = 'Productliscencenos';
+        $table_name = '4thCNFProductlicenseno';
         $record_id = $req->record_id;
          $records = DB::table($table_name)
-            ->where('Productlicenseno', 'LIKE', '%HHP%')
-           ->whereBetween('id', [1, 2])
-            ->get();
-                
+            ->where('productlicenseno', 'LIKE', '%HHP%')
+           ->whereBetween('id', [1, 200])
+            ->get();   
         foreach($records as $rec){
-            $ReferenceNo = $rec->Productlicenseno;
+            $ReferenceNo = $rec->productlicenseno;
 
-            $REGISTRATION_NO = $rec->Productlicenseno;
+            $REGISTRATION_NO = $rec->productlicenseno;
 
             $Product_Brand_Name = $rec->Brandname;
 
@@ -1599,34 +1654,34 @@ public function initiateHumanHerbalMedProductAuthorisationMigration(Request $req
                     $prodclass_category_id = 2;
                     $product_category_id = 10;
                     $product_origin_id = 1;
-                    $app_details = (object)array('section_id'=>$section_id, 'classification_id'=>$classification_id);
-                    $codes_array = $this->getProductApplicationReferenceCodes($app_details);
+                    // $app_details = (object)array('section_id'=>$section_id, 'classification_id'=>$classification_id,'country_id'=>'');
+                    // $codes_array = $this->getProductApplicationReferenceCodes($app_details);
 
-                    $dosage_form_id =getSingleRecordColValue('tra_productapps_datamigration_Dosage_route_Integer', array('productlicenseno'=>$ReferenceNo), 'dosage_form');
+                    //$dosage_form_id =getSingleRecordColValue('tra_productapps_datamigration_Dosage_route_Integer', array('productlicenseno'=>$ReferenceNo), 'dosage_form');
                    
 
                    $LicenseHolder=getSingleRecordColValue('mah', array('productlicenseno'=>$ReferenceNo), 'LicenseHolder');
                     
 
-                    $RECEIVED =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'Registrationdate');
+                    $RECEIVED =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'Registrationdate');
 
                     
-                    $packaging_material =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'packaging_material');
+                    $packaging_material =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'packaging_material');
                     
-                    $unit =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'unit');
+                    $unit =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'unit');
 
                    
-                    $size_a =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_a');
+                    $size_a =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_a');
                    
-                    $size_b =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_b');
+                    $size_b =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_b');
                      
-                    $size_c =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_c');
+                    $size_c =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_c');
                      
-                    $size_d =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_d');
+                    $size_d =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_d');
 
 
 
-                    $size_e =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_e');
+                    $size_e =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_e');
 
                    $applicant_id='';
                 
@@ -1649,10 +1704,10 @@ public function initiateHumanHerbalMedProductAuthorisationMigration(Request $req
                    }
 
 
-                    $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, '', '');
-                    if ($tracking_details['success'] == false) {
-                        return \response()->json($tracking_details);
-                    }
+                    // $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, '', '');
+                    // if ($tracking_details['success'] == false) {
+                    //     return \response()->json($tracking_details);
+                    // }
                     
               
                     $Product_Brand_Name = $Product_Brand_Name;                 
@@ -1664,7 +1719,7 @@ public function initiateHumanHerbalMedProductAuthorisationMigration(Request $req
                                              'prodclass_category_id'=>$prodclass_category_id,
                                              'classification_id'=>$classification_id,
                                              'brand_name'=>$Product_Brand_Name,
-                                             'dosage_form_id'=>$dosage_form_id,
+                                             //'dosage_form_id'=>$dosage_form_id,
                                              'section_id'=>$section_id,
                                           
                                          );
@@ -1686,14 +1741,13 @@ public function initiateHumanHerbalMedProductAuthorisationMigration(Request $req
                     $no_of_units='';
                     $no_of_packs='';
                     $secondary_no_of_packs='';
-                    $tertiarry_no_of_packs='';
-
+                    $tertiary_no_of_packs='';
                     
                     if(validateIsNumeric($size_e)){
                         $no_of_units=$size_e;
                         $no_of_packs=$size_d;
                         $secondary_no_of_packs=$size_b;
-                        $tertiarry_no_of_packs=$size_a;
+                        $tertiary_no_of_packs=$size_a;
 
                     }else if(!validateIsNumeric($size_e) && validateIsNumeric($size_d)){
                         $no_of_units=$size_d;
@@ -1713,6 +1767,7 @@ public function initiateHumanHerbalMedProductAuthorisationMigration(Request $req
                   
 
                     //primary start
+                    if(isset($no_of_units) && !empty($no_of_units)) {
                     $product_packaging = array('product_id'=>$product_id, 
                                                 'container_material_id'=>$packaging_material, 
                                                 'no_of_units'=>$no_of_units, 
@@ -1720,11 +1775,13 @@ public function initiateHumanHerbalMedProductAuthorisationMigration(Request $req
                                                 'si_unit_id'=>$unit
                                             );
                     DB::table('tra_product_packaging')->insert($product_packaging);
+
+                  }
                     
                     //primary end
 
                     //Secondary start
-                    if(validateIsNumeric($secondary_no_of_packs)){
+                    if(isset($secondary_no_of_packs) && !empty($secondary_no_of_packs)) {
                         $secondary_product_packaging = array('product_id'=>$product_id, 
                                                     'no_of_packs'=>$secondary_no_of_packs
                                                    
@@ -1735,7 +1792,7 @@ public function initiateHumanHerbalMedProductAuthorisationMigration(Request $req
                   //secondary end
 
                     //tertiary product start
-                    if(validateIsNumeric($tertiarry_no_of_packs)){
+                    if(isset($tertiary_no_of_packs) && !empty($tertiary_no_of_packs)) {
                         $tertiary_product_packaging = array('product_id'=>$product_id, 
                                                     'no_of_packs'=>$tertiary_no_of_packs
                                                 );
@@ -1749,7 +1806,7 @@ public function initiateHumanHerbalMedProductAuthorisationMigration(Request $req
                              'application_code'=>$application_code, 
                              'reference_no'=>$ReferenceNo, 
                              'view_id'=>$view_id, 
-                             'mah_name'=>$Applicant_Name, 
+                             //'mah_name'=>$Applicant_Name, 
                              'applicant_id'=>$applicant_id,
                             // 'mah_country'=>$MAHs_Country, 
                              //'ltr_name'=>$Local_Technical_Representative, 
@@ -1915,17 +1972,17 @@ public function initiateVetHerbalMedProductAuthorisationMigration(Request $req){
         
         
 
-        $table_name = 'Productliscencenos';
+        $table_name = '4thCNFProductlicenseno';
         $record_id = $req->record_id;
          $records = DB::table($table_name)
-            ->where('Productlicenseno', 'LIKE', '%VHP%')
-           ->whereBetween('id', [1, 2])
+            ->where('productlicenseno', 'LIKE', '%VHP%')
+           ->whereBetween('id', [10500, 11000])
             ->get();
                 
         foreach($records as $rec){
-            $ReferenceNo = $rec->Productlicenseno;
+            $ReferenceNo = $rec->productlicenseno;
 
-            $REGISTRATION_NO = $rec->Productlicenseno;
+            $REGISTRATION_NO = $rec->productlicenseno;
 
             $Product_Brand_Name = $rec->Brandname;
 
@@ -1947,34 +2004,34 @@ public function initiateVetHerbalMedProductAuthorisationMigration(Request $req){
                     $prodclass_category_id = 6;
                     $product_category_id = 10;
                     $product_origin_id = 1;
-                    $app_details = (object)array('section_id'=>$section_id, 'classification_id'=>$classification_id);
-                    $codes_array = $this->getProductApplicationReferenceCodes($app_details);
+                    // $app_details = (object)array('section_id'=>$section_id, 'classification_id'=>$classification_id);
+                    // $codes_array = $this->getProductApplicationReferenceCodes($app_details);
 
-                    $dosage_form_id =getSingleRecordColValue('tra_productapps_datamigration_Dosage_route_Integer', array('productlicenseno'=>$ReferenceNo), 'dosage_form');
+                    //$dosage_form_id =getSingleRecordColValue('tra_productapps_datamigration_Dosage_route_Integer', array('productlicenseno'=>$ReferenceNo), 'dosage_form');
                    
 
                    $LicenseHolder=getSingleRecordColValue('mah', array('productlicenseno'=>$ReferenceNo), 'LicenseHolder');
                     
 
-                    $RECEIVED =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'Registrationdate');
+                    $RECEIVED =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'Registrationdate');
 
                     
-                    $packaging_material =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'packaging_material');
+                    $packaging_material =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'packaging_material');
                     
-                    $unit =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'unit');
+                    $unit =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'unit');
 
                    
-                    $size_a =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_a');
+                    $size_a =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_a');
                    
-                    $size_b =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_b');
+                    $size_b =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_b');
                      
-                    $size_c =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_c');
+                    $size_c =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_c');
                      
-                    $size_d =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_d');
+                    $size_d =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_d');
 
 
 
-                    $size_e =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_e');
+                    $size_e =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_e');
 
                    $applicant_id='';
                 
@@ -1997,10 +2054,10 @@ public function initiateVetHerbalMedProductAuthorisationMigration(Request $req){
                    }
 
 
-                    $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, '', '');
-                    if ($tracking_details['success'] == false) {
-                        return \response()->json($tracking_details);
-                    }
+                    // $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, '', '');
+                    // if ($tracking_details['success'] == false) {
+                    //     return \response()->json($tracking_details);
+                    // }
                     
               
                     $Product_Brand_Name = $Product_Brand_Name;                 
@@ -2012,7 +2069,7 @@ public function initiateVetHerbalMedProductAuthorisationMigration(Request $req){
                                              'prodclass_category_id'=>$prodclass_category_id,
                                              'classification_id'=>$classification_id,
                                              'brand_name'=>$Product_Brand_Name,
-                                             'dosage_form_id'=>$dosage_form_id,
+                                             //'dosage_form_id'=>$dosage_form_id,
                                              'section_id'=>$section_id,
                                           
                                          );
@@ -2034,14 +2091,13 @@ public function initiateVetHerbalMedProductAuthorisationMigration(Request $req){
                     $no_of_units='';
                     $no_of_packs='';
                     $secondary_no_of_packs='';
-                    $tertiarry_no_of_packs='';
-
+                    $tertiary_no_of_packs='';
                     
                     if(validateIsNumeric($size_e)){
                         $no_of_units=$size_e;
                         $no_of_packs=$size_d;
                         $secondary_no_of_packs=$size_b;
-                        $tertiarry_no_of_packs=$size_a;
+                        $tertiary_no_of_packs=$size_a;
 
                     }else if(!validateIsNumeric($size_e) && validateIsNumeric($size_d)){
                         $no_of_units=$size_d;
@@ -2061,6 +2117,7 @@ public function initiateVetHerbalMedProductAuthorisationMigration(Request $req){
                   
 
                     //primary start
+                    if(isset($no_of_units) && !empty($no_of_units)) {
                     $product_packaging = array('product_id'=>$product_id, 
                                                 'container_material_id'=>$packaging_material, 
                                                 'no_of_units'=>$no_of_units, 
@@ -2068,11 +2125,13 @@ public function initiateVetHerbalMedProductAuthorisationMigration(Request $req){
                                                 'si_unit_id'=>$unit
                                             );
                     DB::table('tra_product_packaging')->insert($product_packaging);
+
+                  }
                     
                     //primary end
 
                     //Secondary start
-                    if(validateIsNumeric($secondary_no_of_packs)){
+                    if(isset($secondary_no_of_packs) && !empty($secondary_no_of_packs)) {
                         $secondary_product_packaging = array('product_id'=>$product_id, 
                                                     'no_of_packs'=>$secondary_no_of_packs
                                                    
@@ -2083,7 +2142,7 @@ public function initiateVetHerbalMedProductAuthorisationMigration(Request $req){
                   //secondary end
 
                     //tertiary product start
-                    if(validateIsNumeric($tertiarry_no_of_packs)){
+                    if(isset($tertiary_no_of_packs) && !empty($tertiary_no_of_packs)) {
                         $tertiary_product_packaging = array('product_id'=>$product_id, 
                                                     'no_of_packs'=>$tertiary_no_of_packs
                                                 );
@@ -2097,7 +2156,7 @@ public function initiateVetHerbalMedProductAuthorisationMigration(Request $req){
                              'application_code'=>$application_code, 
                              'reference_no'=>$ReferenceNo, 
                              'view_id'=>$view_id, 
-                             'mah_name'=>$Applicant_Name, 
+                             //'mah_name'=>$Applicant_Name, 
                              'applicant_id'=>$applicant_id,
                             // 'mah_country'=>$MAHs_Country, 
                              //'ltr_name'=>$Local_Technical_Representative, 
@@ -2263,17 +2322,17 @@ public function initiateVetDrugMedProductAuthorisationMigration(Request $req){
         
         
 
-        $table_name = 'Productliscencenos';
+        $table_name = '4thCNFProductlicenseno';
         $record_id = $req->record_id;
          $records = DB::table($table_name)
-            ->where('Productlicenseno', 'LIKE', '%VDP%')
-           ->whereBetween('id', [1, 2])
+            ->where('productlicenseno', 'LIKE', '%VDP%')
+           ->whereBetween('id', [11001, 12000])
             ->get();
                 
         foreach($records as $rec){
-            $ReferenceNo = $rec->Productlicenseno;
+            $ReferenceNo = $rec->productlicenseno;
 
-            $REGISTRATION_NO = $rec->Productlicenseno;
+            $REGISTRATION_NO = $rec->productlicenseno;
 
             $Product_Brand_Name = $rec->Brandname;
 
@@ -2295,34 +2354,34 @@ public function initiateVetDrugMedProductAuthorisationMigration(Request $req){
                     $prodclass_category_id = 5;
                     $product_category_id = 10;
                     $product_origin_id = 1;
-                    $app_details = (object)array('section_id'=>$section_id, 'classification_id'=>$classification_id);
-                    $codes_array = $this->getProductApplicationReferenceCodes($app_details);
+                    //$app_details = (object)array('section_id'=>$section_id, 'classification_id'=>$classification_id);
+                    //$codes_array = $this->getProductApplicationReferenceCodes($app_details);
 
-                    $dosage_form_id =getSingleRecordColValue('tra_productapps_datamigration_Dosage_route_Integer', array('productlicenseno'=>$ReferenceNo), 'dosage_form');
+                    //$dosage_form_id =getSingleRecordColValue('tra_productapps_datamigration_Dosage_route_Integer', array('productlicenseno'=>$ReferenceNo), 'dosage_form');
                    
 
                    $LicenseHolder=getSingleRecordColValue('mah', array('productlicenseno'=>$ReferenceNo), 'LicenseHolder');
                     
 
-                    $RECEIVED =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'Registrationdate');
+                    $RECEIVED =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'Registrationdate');
 
                     
-                    $packaging_material =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'packaging_material');
+                    $packaging_material =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'packaging_material');
                     
-                    $unit =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'unit');
+                    $unit =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'unit');
 
                    
-                    $size_a =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_a');
+                    $size_a =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_a');
                    
-                    $size_b =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_b');
+                    $size_b =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_b');
                      
-                    $size_c =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_c');
+                    $size_c =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_c');
                      
-                    $size_d =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_d');
+                    $size_d =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_d');
 
 
 
-                    $size_e =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_Integer', array('productlicenseno'=>$ReferenceNo), 'size_e');
+                    $size_e =getSingleRecordColValue('tra_productapps_datamigration_Packsizes_4thCNF_', array('productlicenseno'=>$ReferenceNo), 'size_e');
 
                    $applicant_id='';
                 
@@ -2345,10 +2404,10 @@ public function initiateVetDrugMedProductAuthorisationMigration(Request $req){
                    }
 
 
-                    $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, '', '');
-                    if ($tracking_details['success'] == false) {
-                        return \response()->json($tracking_details);
-                    }
+                    // $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, '', '');
+                    // if ($tracking_details['success'] == false) {
+                    //     return \response()->json($tracking_details);
+                    // }
                     
               
                     $Product_Brand_Name = $Product_Brand_Name;                 
@@ -2360,7 +2419,7 @@ public function initiateVetDrugMedProductAuthorisationMigration(Request $req){
                                              'prodclass_category_id'=>$prodclass_category_id,
                                              'classification_id'=>$classification_id,
                                              'brand_name'=>$Product_Brand_Name,
-                                             'dosage_form_id'=>$dosage_form_id,
+                                             //'dosage_form_id'=>$dosage_form_id,
                                              'section_id'=>$section_id,
                                           
                                          );
@@ -2379,17 +2438,16 @@ public function initiateVetDrugMedProductAuthorisationMigration(Request $req){
                     }
 
 
-                    $no_of_units='';
+                     $no_of_units='';
                     $no_of_packs='';
                     $secondary_no_of_packs='';
-                    $tertiarry_no_of_packs='';
-
+                    $tertiary_no_of_packs='';
                     
                     if(validateIsNumeric($size_e)){
                         $no_of_units=$size_e;
                         $no_of_packs=$size_d;
                         $secondary_no_of_packs=$size_b;
-                        $tertiarry_no_of_packs=$size_a;
+                        $tertiary_no_of_packs=$size_a;
 
                     }else if(!validateIsNumeric($size_e) && validateIsNumeric($size_d)){
                         $no_of_units=$size_d;
@@ -2409,6 +2467,7 @@ public function initiateVetDrugMedProductAuthorisationMigration(Request $req){
                   
 
                     //primary start
+                    if(isset($no_of_units) && !empty($no_of_units)) {
                     $product_packaging = array('product_id'=>$product_id, 
                                                 'container_material_id'=>$packaging_material, 
                                                 'no_of_units'=>$no_of_units, 
@@ -2416,11 +2475,13 @@ public function initiateVetDrugMedProductAuthorisationMigration(Request $req){
                                                 'si_unit_id'=>$unit
                                             );
                     DB::table('tra_product_packaging')->insert($product_packaging);
+
+                  }
                     
                     //primary end
 
                     //Secondary start
-                    if(validateIsNumeric($secondary_no_of_packs)){
+                    if(isset($secondary_no_of_packs) && !empty($secondary_no_of_packs)) {
                         $secondary_product_packaging = array('product_id'=>$product_id, 
                                                     'no_of_packs'=>$secondary_no_of_packs
                                                    
@@ -2431,12 +2492,13 @@ public function initiateVetDrugMedProductAuthorisationMigration(Request $req){
                   //secondary end
 
                     //tertiary product start
-                    if(validateIsNumeric($tertiarry_no_of_packs)){
+                    if(isset($tertiary_no_of_packs) && !empty($tertiary_no_of_packs)) {
                         $tertiary_product_packaging = array('product_id'=>$product_id, 
                                                     'no_of_packs'=>$tertiary_no_of_packs
                                                 );
                         DB::table('tra_tertiary_packaging')->insert($tertiary_product_packaging);
                     }
+
 
                     //tertiary end
                      $view_id = generateApplicationViewID();
@@ -2445,7 +2507,7 @@ public function initiateVetDrugMedProductAuthorisationMigration(Request $req){
                              'application_code'=>$application_code, 
                              'reference_no'=>$ReferenceNo, 
                              'view_id'=>$view_id, 
-                             'mah_name'=>$Applicant_Name, 
+                             //'mah_name'=>$Applicant_Name, 
                              'applicant_id'=>$applicant_id,
                             // 'mah_country'=>$MAHs_Country, 
                              //'ltr_name'=>$Local_Technical_Representative, 
@@ -2600,7 +2662,6 @@ public function initiateVetDrugMedProductAuthorisationMigration(Request $req){
      print_r($res);
     
 }
-
 public function initiatNewFoodProductsemigrateDetails(Request $req){
     try{
         $res = 'Error occurred';
@@ -4712,30 +4773,1423 @@ public function initiatemappingPromotionsSubmission(Request $req){
         }
          print_r($res);
 }
+
+
+
+function initiatePremiseRegistrationMigration(){
+    
+    $month = date('m', strtotime('2024-01-24'));
+    $user_id = $this->user_id;
+  
+    try{
+        $records_migrated =0;
+        //$records = DB::table($table_name)->where('id',$record_id)->get();
+        $table_name = "tra_premisesapps_datamigration";
+        $records = DB::table($table_name)->whereBetween('id', [5501, 5800])->get();
+        foreach($records as $rec){
+            
+            // $section_id = $rec->section_id;
+            // $sub_module_id = $rec->sub_module_id;
+            $section_id = '';
+            $module_id = 2;
+            $sub_module_id = 1;
+       
+            $Application_No = $rec->premise_no;
+            $premise_reg_no = $rec->premise_no;
+            $Premise_reg_no = $rec->premise_no;
+            $permit_no = $rec->premise_no;
+            $Premise_registration_certificate_number = $rec->premise_no;
+            
+                    //all the columns 
+                    $Premises_name = $rec->premise_name;
+                    $psu_no = $rec->psu_no;
+                    $RECEIVED = Carbon::now();//$rec->RECEIVED; results
+                   
+                    $Region_name = $rec->region;
+                    $District_name = $rec->district;
+                    $county = $rec->county;
+                    $sub_county = $rec->sub_county;
+                    $postal_address = '';//$rec->Postal_address;
+                    
+                    $email = $rec->director_email;
+                    $physical_address = $rec->street;
+                    $Date_of_registration = $rec->date_of_issuance;
+                    $expiry_date = $rec->expiry_date;
+                 //$Applicant_Name = $rec->applicant;
+                    $Director_Name = $rec->director_full_names;
+                    
+                    $Director_Email = $rec->director_email;
+                    $Director_shares = $rec->director_shares;
+                    $director_country=$rec->director_country;
+                    
+                    $business_type = $rec->business_type;
+                    $product_classification =$rec->product_classification;
+
+                    $Pharmacist_district =$rec->pharmacist_district;
+                    $Pharmacist_region =$rec->pharmacist_region;
+                    $pharmacist_education_level =$rec->pharmacist_education_level;
+                    $staff_qualification=$rec->staff_qualification;
+                    $personnel_position=$rec->personnel_position;
+                    $store_region=$rec->external_store_region;
+                    $store_district=$rec->external_store_district;
+                    $status=$rec->status;
+
+                    $country_id = 37;
+                    $region_id='';
+                    $district_id='';
+                    $director_country_id='';
+                    $county_id='';
+                    $sub_county_id='';
+                    $business_type_id='';
+                    $product_classification_id='';
+
+                    $region_id='';
+                   if(isset($Region_name)){
+                    $region_id = DB::table('par_premise_regions')->where(function ($query) use ($Region_name) {
+                        $query->where('name', 'LIKE', $Region_name . '%');
+                    })->value('id');
+                   }
+                   $district_id='';
+                   if(isset($District_name)){
+                    $district_id = DB::table('par_premise_districts')->where(function ($query) use ($District_name) {
+                        $query->where('name', 'LIKE', '%' .$District_name . '%');
+                    })->value('id');
+                   }
+                   $Pharmacist_region_id='';
+                   if(isset($Pharmacist_region)){
+                    $Pharmacist_region_id = DB::table('par__regions')->where(function ($query) use ($Pharmacist_region) {
+                        $query->where('name', 'LIKE', $Pharmacist_region . '%');
+                    })->value('id');
+                   }
+                   $Pharmacist_district_id='';
+                   if(isset($Pharmacist_district)){
+                    $Pharmacist_district_id = DB::table('par_districts')->where(function ($query) use ($Pharmacist_district) {
+                        $query->where('name', 'LIKE', '%' .$Pharmacist_district . '%');
+                    })->value('id');
+                   }
+
+                    $store_region_id='';
+                   if(isset($store_region)){
+                    $store_region_id = DB::table('par__regions')->where(function ($query) use ($store_region) {
+                        $query->where('name', 'LIKE', $store_region . '%');
+                    })->value('id');
+                   }
+                   $store_district_id='';
+                   if(isset($store_district)){
+                    $store_district_id = DB::table('par_districts')->where(function ($query) use ($store_district) {
+                        $query->where('name', 'LIKE', '%' .$store_district . '%');
+                    })->value('id');
+                   }
+
+
+                    $director_country_id='';
+                    if(isset($director_country)){
+                    $director_country_id = DB::table('par_countries')->where(function ($query) use ($director_country) {
+                        $query->where('name', 'LIKE', '%' .$director_country . '%');
+                    })->value('id');
+
+                   }
+                   $county_id='';
+                   if(isset($county)){
+                   $county_id = DB::table('par_county')->where(function ($query) use ($county) {
+                        $query->where('name', 'LIKE', '%' .$county . '%');
+                    })->value('id');
+                  }
+                  $pharmacist_education_level_id='';
+                  if(isset($pharmacist_education_level)){
+                   $pharmacist_education_level_id= DB::table('par_personnel_qualifications')->where(function ($query) use ($pharmacist_education_level) {
+                        $query->where('name', 'LIKE', '%' .$pharmacist_education_level . '%');
+                    })->value('id');
+                  }
+                   $staff_qualification_level_id='';
+                   if(isset($staff_qualification)){
+                   $staff_qualification_level_id= DB::table('par_personnel_qualifications')->where(function ($query) use ($staff_qualification) {
+                        $query->where('name', 'LIKE', '%' .$staff_qualification . '%');
+                    })->value('id');
+                  }
+
+                   $staff_position_id='';
+                   if(isset($personnel_position)){
+                   $staff_position_id= DB::table('par_personnel_positions')->where(function ($query) use ($personnel_position) {
+                        $query->where('name', 'LIKE', '%' .$personnel_position . '%');
+                    })->value('id');
+                  }
+
+
+                   $sub_county_id='';
+                    if(isset($sub_county)){
+                   $sub_county_id = DB::table('par_sub_county')->where(function ($query) use ($sub_county) {
+                        $query->where('name', 'LIKE', '%' .$sub_county . '%');
+                    })->value('id');
+                     }
+                  $business_type_id='';
+                   if(isset($business_type)){
+                   $business_type_id = DB::table('par_business_types')->where(function ($query) use ($business_type) {
+                        $query->where('name', 'LIKE', '%' .$business_type . '%');
+                    })->value('id');
+                    }
+                  $product_classification_id='';
+                   if(isset($product_classification)){
+                   $product_classification_id = DB::table('par_premise_class')->where(function ($query) use ($product_classification) {
+                        $query->where('name', 'LIKE', '%' .$product_classification . '%');
+                    })->value('id');
+                   }
+
+
+                     $process_id = 0;
+
+                     $process_data = getSingleRecord('wf_tfdaprocesses', array('section_id'=>$section_id, 'sub_module_id'=>$sub_module_id));
+
+                     // if(isset($business_type_id) && $business_type_id==3){
+                     //    $process_data = getSingleRecord('wf_tfdaprocesses', array('section_id'=>$section_id, 'sub_module_id'=>108));
+                     // }
+
+
+                     if($process_data){
+                         
+                            $process_id = $process_data->id;
+                       
+                     }
+                $app_record = DB::table('tra_premises_applications as t1')
+                                            ->join('tra_premises as t2', 't1.premise_id', 't2.id')
+                                            ->select('t1.*')
+                                            ->where(array('t2.name'=>$Premises_name))
+                                            ->first();
+                                    $premapp_record =   $app_record;    
+                if(!$app_record){
+
+                    $sub_module_code = getSingleRecordColValue('sub_modules', array('id' => $sub_module_id), 'code');
+                    $business_code = getSingleRecordColValue('par_business_types', array('id' => $business_type_id), 'code');
+                    $district_code = getSingleRecordColValue('par_premise_districts', array('id' => $district_id), 'code');
+
+                    $product_category_code = getSingleRecordColValue('par_premise_class', array('id' => $product_classification_id), 'code');
+
+                
+                    $codes_array = array(
+                        'sub_module_code' => $sub_module_code,
+                        'business_type_code' => $business_code,
+                        'product_category_code' => $product_category_code,
+                        'district_code' => $district_code
+                    );
+
+                    
+
+                    $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, '', '');
+
+
+                   
+                    $premise_ref_details=generateApplicationTrackingNumber($sub_module_id, 6, $codes_array, $process_id, '', '');
+
+
+                      
+
+
+                    if ($premise_ref_details['success'] == false) {
+                        return \response()->json($premise_ref_details);
+                    }
+                    
+                     $premise_ref_no =$premise_ref_details['tracking_no'];
+
+                   
+                    if ($tracking_details['success'] == false) {
+                        return \response()->json($tracking_details);
+                    }
+                    
+                    $ReferenceNo = 'MGR/'.$tracking_details['tracking_no'];
+
+                    $pharmacist_id=' ';
+                    $pharmacist_record = DB::table('tra_pharmacist_personnel')
+                                            ->where(array('psu_no'=>$psu_no))
+                                            ->first();
+                    if(!$pharmacist_record){
+                       $pharmacist_details = array(
+                                                     'qualification_id'=>$pharmacist_education_level_id,
+                                                     'email'=>$rec->pharmacist_email_address,
+                                                     'psu_no'=>$rec->psu_no,
+                                                     'psu_date'=>$rec->psu_registration_date,
+                                                     'telephone'=>$rec->pharmacist_telephone_no,
+                                                     'district_id'=>$Pharmacist_district_id,
+                                                     'region_id'=>$Pharmacist_region_id,
+                                                     'country_id'=>$country_id,
+                                                     'is_enabled'=>0
+                                                     );
+                        $pharmacist_details['created_by'] = '0';
+                        $pharmacist_details['created_on'] = Carbon::now();
+
+                
+                        $pharmacist_resp =  insertRecord('tra_pharmacist_personnel', $pharmacist_details, 'Migration');
+
+                         $pharmacist_id=$pharmacist_resp["record_id"];
+                        
+                    }
+
+
+                             
+                    
+                            $premises_infor = array( 'name' => $Premises_name,
+                                                    'section_id' => $section_id,
+                                                    'country_id' => $country_id,
+                                                    'region_id' => $region_id,
+                                                    'district_id' => $district_id,
+                                                    'county_id' => $county_id,
+                                                    'sub_county_id' => $sub_county_id,
+                                                    'street' => $rec->street,
+                                                    'physical_address' => $physical_address,
+                                                    'business_type_id' => $business_type_id,
+                                                    'product_classification_id' => $product_classification_id,
+                                                    'longitude' => $rec->latitude,
+                                                    'latitude' => $rec->longititude,
+                                                    'psu_no' => $rec->psu_no,
+                                                    'registration_date' => $rec->business_registration_date,
+                                                    'had_offence' => $rec->applicant_convicted,
+                                                    'offence' => $rec->convicted_offense_reason,
+                                                    'village' => $rec->village,
+                                                    'had_cancelled_application' => $rec->previous_license_cancelled,
+                                                    'cancelling_reason' => $rec->cancellation_reason,
+                                                    'pharmacist_id' => $pharmacist_id,
+                                                 
+                                             );
+                                           
+                                             $premises_infor['created_by'] = '0';
+                                             $premises_infor['created_on'] = Carbon::now();
+
+
+
+                                             $resp =  insertRecord('tra_premises', $premises_infor, 'Migration');
+                                             
+                                             if($resp['success']){
+                                                 $premise_id = $resp['record_id'];
+                                             }
+                                             else{
+                                                    print_r($resp);
+                                                    exit();
+                                             }
+
+                                if(isset($Director_Name) && $Director_Name!= ''){
+                                        $director_record = DB::table('tra_premises_proprietors')
+                                            ->where(array('name'=>$Director_Name))
+                                            ->first();
+                                      if(!$director_record){
+                                         $director_details = array('directorfull_names'=>$Director_Name,
+                                                     'director_email_address'=>$rec->director_email,
+                                                     'director_telephone_no'=>$rec->director_telephone,
+                                                     'shares'=>$rec->director_shares,
+                                                     'country_id'=>$director_country_id,
+                                                     'premise_id'=>$premise_id,
+                                                     );
+                                                 $director_details['created_by'] = '0';
+                                                 $director_details['created_on'] = Carbon::now();
+                                                 $resp =  insertRecord('tra_premises_proprietors', $director_details, 'Migration');
+                                       }
+                                }
+
+
+                             
+                              if(isset($rec->nearest_paharmacy) && $rec->nearest_paharmacy!= ''){
+                             $nearest_pharmacy_record = DB::table('tra_premises_storelocation')
+                                            ->where(array('name'=>$rec->name_of_nearest_pharmacy))
+                                            ->first();
+                             if(!$nearest_pharmacy_record){                
+                              $nearestpremise_details = array(
+                                                     'name'=>$rec->nearest_paharmacy,
+                                                     'distance'=>$rec->distance,
+                                                     'country_id'=>37,
+                                                     'premise_id'=>$premise_id,
+                                                     );
+                              $nearestpremise_details['created_by'] = '0';
+                                                 $nearestpremise_details['created_on'] = Carbon::now();
+                                                 $resp =  insertRecord('tra_premises_storelocation', $nearestpremise_details, 'Migration');
+
+                               }
+                              }
+                           
+                             if(isset($rec->staff_full_name) && $rec->staff_full_name!= ''){
+                                        $personnel_record = DB::table('tra_premises_personnel')
+                                            ->where(array('name'=>$rec->staff_full_name))
+                                            ->first();
+                                      if(!$personnel_record){
+                                         $personnel_details = array('personnel_name'=>$rec->staff_full_name,
+                                                     'email_address'=>$rec->staff_email,
+                                                     'telephone_no'=>$rec->staff_telephone,
+                                                     'premise_id'=>$premise_id,
+                                                     'qualification_id'=>$staff_qualification_level_id,
+                                                     'designation_id'=>$staff_position_id,
+                                                     );
+                                                 $personnel_details['created_by'] = '0';
+                                                 $personnel_details['created_on'] = Carbon::now();
+                                                 $resp =  insertRecord('tra_premises_personnel', $personnel_details, 'Migration');
+                                       }
+                                }
+
+                             if(isset($store_district_id)){
+                                         $external_store_details = array('country_id'=>$county_id,
+                                                     'region_id'=>$rec->staff_email,
+                                                     'district_id'=>$rec->staff_telephone,
+                                                     'premise_id'=>$premise_id,
+                                                     'village'=>$rec->external_store_village,
+                                                     'street'=>$rec->external_store_street,
+                                                     'longitude'=>$rec->external_store_longititude,
+                                                     'latitude'=>$rec->external_store_longititude,
+                                                     );
+                                                 $external_store_details['created_by'] = '0';
+                                                 $external_store_details['created_on'] = Carbon::now();
+                                                 $resp =  insertRecord('tra_premises_externalstore', $external_store_details, 'Migration');
+                                }
+
+                   
+                                             
+                    $data = (object)array('name'=>$Director_Name, 
+                                'tpin_no'=>0, 
+                                'contact_person'=>$Director_Name,
+                                'country_id'=>$country_id, 
+                                'region_id'=>$region_id, 
+                                'physical_address'=>$physical_address, 
+                                'postal_address'=>$physical_address, 
+                                'telephone_no'=>$rec->director_telephone, 
+                                'email'=>$rec->director_email, 
+                                'created_by'=>'Migration',
+                                'created_on'=>Carbon::now(),
+                                'status_id'=>1
+                            );
+
+
+                    $applicant_id = $this->saveTraderInformationDetails($data);
+                     
+                     if($rec->status){
+                        $status=$rec->status;
+                     $application_status_id = DB::table('par_validity_statuses')->where(function ($query) use ($status) {
+                        $query->where('name', 'LIKE', '%' .$status . '%');
+                    })->value('id');
+                     }else{
+                        $application_status_id = 5;
+                       if($premise_reg_no != ''){
+                        $application_status_id = 6;
+                      }
+
+                    }
+                    
+                    //save product application details 
+                   
+                    $view_id = generateApplicationViewID();
+                     $application_code = $application_code = generateApplicationCode(1, 'tra_premises_applications');
+                     $premises_app = array(
+                             'application_code'=>$application_code, 
+                             'reference_no'=>$ReferenceNo, 
+                             'view_id'=>$view_id, 
+                             'premise_ref_no'=>$premise_ref_no, 
+                             'section_id'=>$section_id,
+                             'sub_module_id'=>$sub_module_id, 
+                             'section_id'=>$section_id, 
+                             'premise_id'=>$premise_id,  
+                             'process_id'=>$process_id, 
+                             'applicant_id'=>$applicant_id,   
+                             'module_id'=>$module_id, 
+                             'date_added'=>formatDate($RECEIVED), 
+                             'submission_date'=>formatDate($RECEIVED), 
+                             'application_status_id'=>$application_status_id, 
+                             'refno_generated'=>1, 
+                             'created_on'=>Carbon::now(), 
+                             'created_by'=>'Migration', 
+                             
+                    );
+                    $resp =  insertRecord('tra_premises_applications', $premises_app, 'Migration');
+                    if($resp['success']){
+                        $application_id = $resp['record_id'];
+                    }
+                    else{
+                           print_r($resp);
+                           exit();
+                    }
+                    //save product approval details 
+                    if($permit_no != ''){
+                        $app_record = DB::table('tra_approval_recommendations')->where(array('permit_no'=>$permit_no))->first();
+
+                        if(!$app_record){
+                            $approval_data = array('application_code'=>$application_code,
+                            'application_id'=>$application_id,
+                            'decision_id'=>1,
+                            'module_id'=>$module_id,
+                            'permit_no'=>$permit_no,
+                            'appvalidity_status_id'=>4,
+                            'appregistration_status_id'=>2,
+                            'comment'=>'Migration Approval Details',
+                            'approval_date'=>formatDate($Date_of_registration),
+                            'certificate_issue_date'=>formatDate($Date_of_registration),
+                            'expiry_date'=>formatDate($expiry_date),
+                            'approved_by'=>'Migration Data',
+                            'created_on'=>Carbon::now()
+                            );
+                            $resp =  insertRecord('tra_approval_recommendations', $approval_data, 'Migration');
+                            if($resp['success']){
+                                $application_id = $resp['record_id'];
+                            }
+                            else{
+                                   print_r($resp);
+                                   exit();
+                            }
+
+
+                        }
+                        
+                        //register
+                        $app_record = DB::table('registered_premises')->where(array('registration_no'=>$permit_no))->first();
+                        if(!$app_record){
+                            $regdata = array('tra_premise_id'=>$premise_id,
+                                    'validity_status_id'=>4,
+                                    'registration_status_id'=>2,
+                                    'registration_date'=>formatDate($Date_of_registration),
+                                    'registration_no'=>$premise_reg_no,
+                                    'active_app_referenceno'=>$Application_No,
+                                    'active_application_code'=>$application_code,
+                                    'approval_date'=>formatDate($Date_of_registration),
+                                    'created_on'=>Carbon::now()
+                            );
+                            $resp =  insertRecord('registered_premises', $regdata, 'Migration');
+                            if($resp['success']){
+                                $reg_id = $resp['record_id'];
+                            }
+                            else{
+                                    print_r($resp);
+                                    exit();
+                            }
+                            DB::table('tra_premises_applications')
+                            ->where(array('application_code'=>$application_code))
+                            ->update(array('reg_premise_id'=>$reg_id));
+                            
+                              DB::table('tra_premises')
+                            ->where(array('id'=>$premise_id))
+                            ->update(array('registered_id'=>$reg_id));
+                            
+                            
+                        }
+                        
+                    }else{
+                        $this->syncmappingPremisesRegistrationSubmission($application_code);
+                        
+                        
+                        
+                    }
+                   
+                    $res =array('success'=>true,'message'=> "Application Migration Successfully Application No: ".$Application_No.'</br>');
+                }
+                else{
+                   
+                    if($Premise_registration_certificate_number != ''){
+                        $app_record = DB::table('tra_approval_recommendations')->where(array('permit_no'=>$Premise_registration_certificate_number))->first();
+
+                        if(!$app_record){
+                            $approval_data = array('application_code'=>$premapp_record->application_code,
+                            'application_id'=>$premapp_record->id,
+                            'decision_id'=>1,
+                            'module_id'=>$premapp_record->module_id,
+                            'permit_no'=>$Premise_registration_certificate_number,
+                            'appvalidity_status_id'=>4,
+                            'appregistration_status_id'=>2,
+                            'comment'=>'Migration Approval Details',
+                            'approval_date'=>formatDate($Date_of_registration),
+                            'certificate_issue_date'=>formatDate($Date_of_registration),
+                            'expiry_date'=>formatDate($expiry_date),
+                            'approved_by'=>'Migration Data',
+                            'created_on'=>Carbon::now()
+                            );
+                            $resp =  insertRecord('tra_approval_recommendations', $approval_data, 'Migration');
+                            if($resp['success']){
+                                $application_id = $resp['record_id'];
+                            }
+                            else{
+                                   print_r($resp);
+                                   exit();
+                            }
+
+
+                        }
+                        
+                        //register
+                        $app_record = DB::table('registered_premises')->where(array('registration_no'=>$Premise_registration_certificate_number))->first();
+                        if(!$app_record){
+                            $regdata = array('tra_premise_id'=>$premapp_record->premise_id,
+                                    'validity_status_id'=>4,
+                                    'registration_status_id'=>2,
+                                    'registration_date'=>formatDate($Date_of_registration),
+                                    'registration_no'=>$Premise_registration_certificate_number,
+                                    'active_app_referenceno'=>$premapp_record->reference_no,
+                                    'active_application_code'=>$premapp_record->application_code,
+                                    'approval_date'=>formatDate($Date_of_registration),
+                                    'created_on'=>Carbon::now()
+                            );
+                            $resp =  insertRecord('registered_premises', $regdata, 'Migration');
+                            if($resp['success']){
+                                $reg_id = $resp['record_id'];
+                            }
+                            else{
+                                    print_r($resp);
+                                    exit();
+                            }
+                            DB::table('tra_premises_applications')
+                            ->where(array('application_code'=>$premapp_record->application_code))
+                            ->update(array('reg_premise_id'=>$reg_id));
+                            
+                              DB::table('tra_premises')
+                            ->where(array('id'=>$premapp_record->premise_id))
+                            ->update(array('registered_id'=>$reg_id));
+                            
+                            
+                        }
+                        
+                    }   
+            
+                       $res =array('success'=>true,'message'=> "Application Already Migrated and Updated Successfully Application No: ".$Application_No.'</br>');
+                
+                }
+                
+                $records_migrated ++;
+                
+            }  
+            $this->saveMigrationLogsData('initiatePremisesDataMapping',$records_migrated=0);
+    
+    }
+    catch (\Exception $exception) {
+   
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+   return $res;
+    
+    
+}
+
+function initiateDrugShopRegistrationMigration(){
+    
+    $month = date('m', strtotime('2024-04-17'));
+    $user_id = $this->user_id;
+
+
+    try{
+        $records_migrated =0;
+        //$records = DB::table($table_name)->where('id',$record_id)->get();
+        $table_name = "tra_drugshopapps_datamigration_April17th";
+        //$records = DB::table($table_name)->get();
+        $records = DB::table($table_name)->whereBetween('id', [1, 50])->get();
+        foreach($records as $rec){
+                    $section_id = $rec->section_id;
+                    $sub_module_id = $rec->sub_module_id;
+
+
+                    $section_id = '';
+                    $module_id = 29;
+                    $sub_module_id = 96;
+
+
+                    $Application_No = $rec->premise_registration_certificate_number;
+                    $premise_reg_no = $rec->premise_registration_certificate_number;
+                    $Premise_reg_no = $rec->premise_registration_certificate_number;
+                    $permit_no = $rec->premise_registration_certificate_number;
+                    $Premise_registration_certificate_number = $rec->premise_registration_certificate_number;
+                    //all the columns 
+                    $Premises_name = $rec->premise_name;
+                    $incharge_name = $rec->incharge_full_name;
+                    $RECEIVED = Carbon::now();//$rec->RECEIVED; results
+                   
+                    $Region_name = $rec->region;
+                    $District_name = $rec->district;
+                    $county = $rec->county;
+                    $sub_county = $rec->sub_county;
+                    $postal_address = '';//$rec->Postal_address;
+                    
+                    $email = $rec->director_email;
+                    $physical_address = $rec->street;
+                    $Date_of_registration = $rec->date_of_issuance;
+                    $expiry_date = $rec->expiry_date;
+                    
+                    $Applicant_Name = $rec->applicant;
+                    $Director_Name = $rec->director_name;
+                    $Director_Position = $rec->director_position;
+                    $Director_Email = $rec->director_email;
+                    $Director_Phone_Number = $rec->director_phone_number;
+                    $Director_shares = $rec->director_shares;
+                    $director_country=$rec->director_country;
+                    
+                    $business_type = $rec->business_type;
+                    $product_classification =$rec->product_classification;
+            
+                    $country_id = 37;
+                    $region_id='';
+                    $district_id='';
+                    $director_country_id='';
+                    $county_id='';
+                    $sub_county_id='';
+                    $business_type_id='';
+                    $product_classification_id='';
+
+
+                   if(isset($Region_name)){
+                    $region_id = DB::table('par_premise_regions')->where(function ($query) use ($Region_name) {
+                        $query->where('name', 'LIKE', $Region_name . '%');
+                    })->value('id');
+
+                    if(!validateIsNumeric($region_id)){
+                        $Region_name=strtolower(trim($Region_name));
+                        $region_id = DB::table('par_premise_regions')->where(function ($query) use ($Region_name) {
+                        $query->where('name', 'LIKE', $Region_name . '%');
+                        })->value('id');
+
+                        }
+
+                    if(!validateIsNumeric($region_id)){
+                        $Region_name=strtoupper(trim($Region_name));
+                        $region_id = DB::table('par_premise_regions')->where(function ($query) use ($Region_name) {
+                        $query->where('name', 'LIKE', $Region_name . '%');
+                        })->value('id');
+
+                    }
+                   }
+                   if(isset($District_name)){
+                    $district_id = DB::table('par_premise_districts')->where(function ($query) use ($District_name) {
+                        $query->where('name', 'LIKE', '%' .$District_name . '%');
+                    })->value('id');
+
+                    if(!validateIsNumeric($district_id)){
+                        $District_name=strtolower(trim($District_name));
+                        $district_id = DB::table('par_premise_districts')->where(function ($query) use ($District_name) {
+                        $query->where('name', 'LIKE', '%' .$District_name . '%');
+                         })->value('id');
+
+                        }
+
+                        if(!validateIsNumeric($district_id)){
+                        $District_name=strtoupper(trim($District_name));
+                        $district_id = DB::table('par_premise_districts')->where(function ($query) use ($District_name) {
+                        $query->where('name', 'LIKE', '%' .$District_name . '%');
+                         })->value('id');
+
+                        }
+                   }
+
+                    if(isset($director_country)){
+                    $director_country_id = DB::table('par_countries')->where(function ($query) use ($director_country) {
+                        $query->where('name', 'LIKE', '%' .$director_country . '%');
+                    })->value('id');
+
+                   }
+                   if(isset($county)){
+                   $county_id = DB::table('par_county')->where(function ($query) use ($county) {
+                        $query->where('name', 'LIKE', '%' .$county . '%');
+                    })->value('id');
+                  }
+
+
+                    if(isset($sub_county)){
+                   $sub_county_id = DB::table('par_sub_county')->where(function ($query) use ($sub_county) {
+                        $query->where('name', 'LIKE', '%' .$sub_county . '%');
+                    })->value('id');
+                     }
+
+                   if(isset($business_type)){
+                   $business_type_id = DB::table('par_business_types')->where(function ($query) use ($business_type) {
+                        $query->where('name', 'LIKE', '%' .$business_type . '%');
+                    })->value('id');
+                    }
+                   if(isset($product_classification)){
+                   $product_classification_id = DB::table('par_premise_class')->where(function ($query) use ($product_classification) {
+                        $query->where('name', 'LIKE', '%' .$product_classification . '%');
+                    })->value('id');
+                   }
+                     
+
+                    
+                
+                     $process_id = 0;
+
+                     $process_data = getSingleRecord('wf_tfdaprocesses', array('section_id'=>$section_id, 'sub_module_id'=>$sub_module_id));
+
+                   
+
+                     if($process_data){
+                         
+                            $process_id = $process_data->id;
+                       
+                     }
+                    $app_record = DB::table('tra_premises_applications as t1')
+                                            ->join('tra_premises as t2', 't1.premise_id', 't2.id')
+                                            ->select('t1.*')
+                                            ->where(array('t2.name'=>$Premises_name,'t2.district_id'=>$district_id,))
+                                            ->first();
+                    $premapp_record =   $app_record; 
+
+
+                  
+                    //if(!$app_record){  //check for drugshop with same name in same district
+                    if(isset($Premises_name)){ 
+                    //generate trader not
+                    $sub_module_code = getSingleRecordColValue('sub_modules', array('id' => $sub_module_id), 'code');
+                    $business_code = getSingleRecordColValue('par_business_types', array('id' => $business_type_id), 'code');
+                    $district_code = getSingleRecordColValue('par_premise_districts', array('id' => $district_id), 'code');
+
+                    $product_category_code = getSingleRecordColValue('par_premise_class', array('id' => $product_classification_id), 'code');
+
+                
+                    $codes_array = array(
+                        'sub_module_code' => $sub_module_code,
+                        'business_type_code' => $business_code,
+                        'product_category_code' => $product_category_code,
+                        'district_code' => $district_code
+                    );
+
+                    
+
+                    $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, '', '');
+
+
+                   
+                    $premise_ref_details=generateApplicationTrackingNumber($sub_module_id, 6, $codes_array, $process_id, '', '');
+
+
+
+
+
+                    if ($premise_ref_details['success'] == false) {
+                        return \response()->json($premise_ref_details);
+                    }
+                    
+                     $premise_ref_no =$premise_ref_details['tracking_no'];
+
+                    $permit_no = generatePremisePermitNo($district_id, ' ', 'tra_premises_applications', $user_id,60,$sub_module_id);
+
+
+                    if ($tracking_details['success'] == false) {
+                        return \response()->json($tracking_details);
+                    }
+                    
+                     $ReferenceNo = 'MGR/'.$tracking_details['tracking_no'];
+
+
+                    $incharge_id=' ';
+                    $incharge_record = DB::table('tra_premise_incharge_personnel')
+                                            ->where(array('name'=>$incharge_name))
+                                            ->first();
+                    if(!$incharge_record){
+                       $incharge_details = array('name'=>$incharge_name,
+                                                     'qualification_id'=>$rec->incharge_level_of_education,
+                                                     'email'=>$rec->email,
+                                                     'nin_no'=>$rec->nin,
+                                                     'telephone'=>$rec->telephone_no,
+                                                     'district_id'=>$district_id,
+                                                     'region_id'=>$region_id,
+                                                     'country_id'=>$country_id,
+                                                     'is_active'=>0
+                                                     );
+                        $incharge_details['created_by'] = '0';
+                        $incharge_details['created_on'] = Carbon::now();
+                        $incharge_resp =  insertRecord('tra_premise_incharge_personnel', $incharge_details, 'Migration');
+
+                         $incharge_id=$incharge_resp["record_id"];
+                        
+                    }
+
+                    //dd($rec->latitude);
+                    $premises_infor = array(
+                                                   'name' => $Premises_name,
+                                                    'section_id' => $section_id,
+                                                    'country_id' => $country_id,
+                                                    'region_id' => $region_id,
+                                                    'district_id' => $district_id,
+                                                    'county_id' => $county_id,
+                                                    'sub_county_id' => $sub_county_id,
+                                                    'street' => $rec->street,
+                                                    'physical_address' => $physical_address,
+                                                    'business_type_id' => $business_type_id,
+                                                    'product_classification_id' => $product_classification_id,
+                                                    'longitude' => $rec->latitude,
+                                                    'latitude' => $rec->longititude,
+                                                    'nin_no' => $rec->nin,
+                                                    'registration_date' => $rec->business_registration_date,
+                                                    'had_offence' => $rec->applicant_convicted,
+                                                    'offence' => $rec->offence_reason,
+                                                    'village' => $rec->village,
+                                                    'has_incharge' =>$rec->has_full_time_incharge,
+                                                    'had_cancelled_application' => $rec->previous_license_cancelled,
+                                                    'cancelling_reason' => $rec->reason_of_cancel,
+                                                    'is_workinotherinstitutions' => $rec->applicant_work_in_health_institution,
+                                                    'working_inotherinstitutions' => $rec->institution_name,
+                                                    'incharge_id' => $incharge_id,
+                                                   
+                                                 
+                                             );
+
+                                             $premises_infor['created_by'] = '0';
+                                             $premises_infor['created_on'] = Carbon::now();
+                                             $resp =  insertRecord('tra_premises', $premises_infor, 'Migration');
+                                             
+                                             if($resp['success']){
+                                                 $premise_id = $resp['record_id'];
+                                             }
+                                             else{
+                                                    print_r($resp);
+                                                    exit();
+                                             }
+                                
+                                if(isset($Director_Name) && $Director_Name!= ''){
+                                        $director_record = DB::table('tra_premises_proprietors')
+                                            ->where(array('name'=>$Director_Name))
+                                            ->first();
+                                      if(!$director_record){
+                                         $director_details = array('directorfull_names'=>$Director_Name,
+                                                     'director_email_address'=>$Director_Email,
+                                                     'director_telephone_no'=>$Director_Phone_Number,
+                                                     'designation_id'=>$Director_Position,
+                                                     'shares'=>$Director_shares,
+                                                     'country_id'=>$director_country_id,
+                                                     'premise_id'=>$premise_id,
+                                                     );
+                                                 $director_details['created_by'] = '0';
+                                                 $director_details['created_on'] = Carbon::now();
+                                                 $resp =  insertRecord('tra_premises_proprietors', $director_details, 'Migration');
+                                       }
+                                }
+
+
+                             
+                             if(isset($rec->name_of_nearest_pharmacy) && $rec->name_of_nearest_pharmacy!= ''){
+                             $nearest_pharmacy_record = DB::table('tra_premises_storelocation')
+                                            ->where(array('name'=>$rec->name_of_nearest_pharmacy))
+                                            ->first();
+                            if(!$nearest_pharmacy_record){                
+                              $nearestpremise_details = array(
+                                                     'name'=>$rec->name_of_nearest_pharmacy,
+                                                     'distance'=>$rec->nearest_pharmacy_distance,
+                                                     'country_id'=>37,
+                                                     'premise_id'=>$premise_id,
+                                                     );
+                              $nearestpremise_details['created_by'] = '0';
+                                                 $nearestpremise_details['created_on'] = Carbon::now();
+                                                 $resp =  insertRecord('tra_premises_storelocation', $nearestpremise_details, 'Migration');
+
+                               }
+                              }
+
+                           
+                            if(isset($rec->name_of_nearest_drugshop) && $rec->name_of_nearest_drugshop!= ''){
+                            $nearest_drugshop_record = DB::table('tra_drugshop_storelocation')
+                                            ->where(array('name'=>$rec->name_of_nearest_drugshop))
+                                            ->first();
+                            if(!$nearest_drugshop_record){                
+                              $nearestdrugshop_details = array(
+                                                     'name'=>$rec->name_of_nearest_drugshop,
+                                                     'distance'=>$rec->nearest_drugshop_distance,
+                                                     'premise_id'=>$premise_id,
+                                                     );
+                              $nearestdrugshop_details['created_by'] = '0';
+                                                 $nearestdrugshop_details['created_on'] = Carbon::now();
+                                                 $resp =  insertRecord('tra_drugshop_storelocation', $nearestdrugshop_details, 'Migration');
+                               }
+                           }
+                                                 
+                       $data = (object)array('name'=>$Premises_name, 
+                                    'tpin_no'=>0, 
+                                    'contact_person'=>$Premises_name,
+                                    'country_id'=>$country_id, 
+                                    'region_id'=>$region_id, 
+                                    'traderaccount_type_id'=>8, 
+                                    'physical_address'=>$physical_address, 
+                                    'postal_address'=>$physical_address, 
+                                    'telephone_no'=>$Director_Phone_Number, 
+                                    'email'=>$Director_Email, 
+                                    'created_by'=>'Migration',
+                                    'created_on'=>Carbon::now(),
+                                    'status_id'=>1
+                                );
+                        $applicant_id = $this->saveTraderInformationDetails($data);
+
+
+                        
+                     
+                     $application_status_id = 5;
+                     if($premise_reg_no != ''){
+                        $application_status_id = 6;
+                     }
+                    
+                    //save product application details 
+                   
+                    $view_id = generateApplicationViewID();
+                     $application_code = $application_code = generateApplicationCode(1, 'tra_premises_applications');
+                     $premises_app = array(
+                             'application_code'=>$application_code, 
+                             'reference_no'=>$ReferenceNo,
+                             'premise_ref_no'=>$premise_ref_no,
+                             'view_id'=>$view_id,  
+                             'section_id'=>$section_id,
+                             'sub_module_id'=>$sub_module_id, 
+                             'section_id'=>$section_id, 
+                             'premise_id'=>$premise_id,
+                             'applicant_id'=>$applicant_id,    
+                             'process_id'=>$process_id, 
+                             'module_id'=>$module_id, 
+                             'date_added'=>formatDate($RECEIVED), 
+                             'submission_date'=>formatDate($RECEIVED), 
+                             'application_status_id'=>$application_status_id, 
+                             'refno_generated'=>1, 
+                             'created_on'=>Carbon::now(), 
+                             'created_by'=>'Migration', 
+                             
+                    );
+
+                      
+                    $resp =  insertRecord('tra_premises_applications', $premises_app, 'Migration');
+
+
+                    if($resp['success']){
+                        $application_id = $resp['record_id'];
+                    }
+                    else{
+                           print_r($resp);
+                           exit();
+                    }
+                
+                    //done as we missed Premise_registration_certificate_number
+
+                    if(!isset($permit_no)){
+                        $approval_data = array('application_code'=>$application_code,
+                            'application_id'=>$application_id,
+                            'decision_id'=>1,
+                            'module_id'=>$module_id,
+                            'permit_no'=>$permit_no,
+                            'appvalidity_status_id'=>2,
+                            'appregistration_status_id'=>2,
+                            'comment'=>'Migration Approval Details',
+                            'approval_date'=>formatDate($Date_of_registration),
+                            'certificate_issue_date'=>formatDate($Date_of_registration),
+                            'expiry_date'=>formatDate($expiry_date),
+                            'approved_by'=>'Migration Data',
+                            'created_on'=>Carbon::now()
+                            );
+                            $resp =  insertRecord('tra_approval_recommendations', $approval_data, 'Migration');
+
+
+                            if($resp['success']){
+                                $application_id = $resp['record_id'];
+                            }
+                            else{
+                                   print_r($resp);
+                                   exit();
+                            }
+
+                           //register
+                             $regdata = array('tra_premise_id'=>$premise_id,
+                                    'validity_status_id'=>4,
+                                    'registration_status_id'=>2,
+                                    'registration_date'=>formatDate($Date_of_registration),
+                                    'registration_no'=>$permit_no,
+                                    'active_app_referenceno'=>$Application_No,
+                                    'active_application_code'=>$application_code,
+                                    'approval_date'=>formatDate($Date_of_registration),
+                                    'created_on'=>Carbon::now()
+                            );
+                            $resp =  insertRecord('registered_premises', $regdata, 'Migration');
+                            if($resp['success']){
+                                $reg_id = $resp['record_id'];
+                            }
+                            else{
+                                    print_r($resp);
+                                    exit();
+                            }
+                            DB::table('tra_premises_applications')
+                            ->where(array('application_code'=>$application_code))
+                            ->update(array('reg_premise_id'=>$reg_id));
+                            
+                              DB::table('tra_premises')
+                            ->where(array('id'=>$premise_id))
+                            ->update(array('registered_id'=>$reg_id));
+
+                    }
+                    //save product approval details 
+                    if($permit_no != ''){
+                        $app_record = DB::table('tra_approval_recommendations')->where(array('permit_no'=>$permit_no))->first();
+
+                        if(!$app_record){
+                            $approval_data = array('application_code'=>$application_code,
+                            'application_id'=>$application_id,
+                            'decision_id'=>1,
+                            'module_id'=>$module_id,
+                            'permit_no'=>$permit_no,
+                            'appvalidity_status_id'=>4,
+                            'appregistration_status_id'=>2,
+                            'comment'=>'Migration Approval Details',
+                            'approval_date'=>formatDate($Date_of_registration),
+                            'certificate_issue_date'=>formatDate($Date_of_registration),
+                            'expiry_date'=>formatDate($expiry_date),
+                            'approved_by'=>'Migration Data',
+                            'created_on'=>Carbon::now()
+                            );
+                            $resp =  insertRecord('tra_approval_recommendations', $approval_data, 'Migration');
+
+                            if($resp['success']){
+                                $application_id = $resp['record_id'];
+                            }
+                            else{
+                                   print_r($resp);
+                                   exit();
+                            }
+
+
+                        }
+                        
+                        //register
+                        $app_record = DB::table('registered_premises')->where(array('registration_no'=>$permit_no))->first();
+
+                        if(!$app_record){
+                            $regdata = array('tra_premise_id'=>$premise_id,
+                                    'validity_status_id'=>4,
+                                    'registration_status_id'=>2,
+                                    'registration_date'=>formatDate($Date_of_registration),
+                                    'registration_no'=>$permit_no,
+                                    'active_app_referenceno'=>$Application_No,
+                                    'active_application_code'=>$application_code,
+                                    'approval_date'=>formatDate($Date_of_registration),
+                                    'created_on'=>Carbon::now()
+                            );
+                            $resp =  insertRecord('registered_premises', $regdata, 'Migration');
+                            if($resp['success']){
+                                $reg_id = $resp['record_id'];
+                            }
+                            else{
+                                    print_r($resp);
+                                    exit();
+                            }
+                            DB::table('tra_premises_applications')
+                            ->where(array('application_code'=>$application_code))
+                            ->update(array('reg_premise_id'=>$reg_id));
+                            
+                              DB::table('tra_premises')
+                            ->where(array('id'=>$premise_id))
+                            ->update(array('registered_id'=>$reg_id));
+                            
+                            
+                        }
+                        
+                    }else{
+                        $this->syncmappingPremisesRegistrationSubmission($application_code);
+                        
+                        
+                        
+                    }
+                   
+                    $res =array('success'=>true,'message'=> "Application Migration Successfully Application No: ".$Application_No.'</br>');
+                }
+                else{
+
+                  //done as we missed Premise_registration_certificate_number
+                    if(!isset($Premise_registration_certificate_number)){
+                         $approval_data = array('application_code'=>$premapp_record->application_code,
+                            'application_id'=>$premapp_record->id,
+                            'decision_id'=>1,
+                            'module_id'=>$premapp_record->module_id,
+                            'permit_no'=>$permit_no,
+                            'appvalidity_status_id'=>2,
+                            'appregistration_status_id'=>2,
+                            'comment'=>'Migration Approval Details',
+                            'approval_date'=>formatDate($Date_of_registration),
+                            'certificate_issue_date'=>formatDate($Date_of_registration),
+                            'expiry_date'=>formatDate($expiry_date),
+                            'approved_by'=>'Migration Data',
+                            'created_on'=>Carbon::now()
+                            );
+                            $resp =  insertRecord('tra_approval_recommendations', $approval_data, 'Migration');
+
+
+
+                            if($resp['success']){
+                                $application_id = $resp['record_id'];
+                            }
+                            else{
+                                   print_r($resp);
+                                   exit();
+                            }
+
+
+                           $regdata = array('tra_premise_id'=>$premapp_record->premise_id,
+                                    'validity_status_id'=>2,
+                                    'registration_status_id'=>2,
+                                    'registration_date'=>formatDate($Date_of_registration),
+                                    'registration_no'=>$Premise_registration_certificate_number,
+                                    'active_app_referenceno'=>$premapp_record->reference_no,
+                                    'active_application_code'=>$premapp_record->application_code,
+                                    'approval_date'=>formatDate($Date_of_registration),
+                                    'created_on'=>Carbon::now()
+                            );
+                            $resp =  insertRecord('registered_premises', $regdata, 'Migration');
+                            if($resp['success']){
+                                $reg_id = $resp['record_id'];
+                            }
+                            else{
+                                    print_r($resp);
+                                    exit();
+                            }
+                            DB::table('tra_premises_applications')
+                            ->where(array('application_code'=>$premapp_record->application_code))
+                            ->update(array('reg_premise_id'=>$reg_id));
+                            
+                              DB::table('tra_premises')
+                            ->where(array('id'=>$premapp_record->premise_id))
+                            ->update(array('registered_id'=>$reg_id));
+                    }
+                      //done as we missed Premise_registration_certificate_number 
+
+
+                    if($Premise_registration_certificate_number != ''){
+                        $app_record = DB::table('tra_approval_recommendations')->where(array('permit_no'=>$Premise_registration_certificate_number))->first();
+
+                        if(!$app_record){
+                            $approval_data = array('application_code'=>$premapp_record->application_code,
+                            'application_id'=>$premapp_record->id,
+                            'decision_id'=>1,
+                            'module_id'=>$premapp_record->module_id,
+                            'permit_no'=>$permit_no,
+                            'appvalidity_status_id'=>2,
+                            'appregistration_status_id'=>2,
+                            'comment'=>'Migration Approval Details',
+                            'approval_date'=>formatDate($Date_of_registration),
+                            'certificate_issue_date'=>formatDate($Date_of_registration),
+                            'expiry_date'=>formatDate($expiry_date),
+                            'approved_by'=>'Migration Data',
+                            'created_on'=>Carbon::now()
+                            );
+                            $resp =  insertRecord('tra_approval_recommendations', $approval_data, 'Migration');
+                            if($resp['success']){
+                                $application_id = $resp['record_id'];
+                            }
+                            else{
+                                   print_r($resp);
+                                   exit();
+                            }
+
+
+                        }
+                        
+                        //register
+                        $app_record = DB::table('registered_premises')->where(array('registration_no'=>$Premise_registration_certificate_number))->first();
+                        if(!$app_record){
+                            $regdata = array('tra_premise_id'=>$premapp_record->premise_id,
+                                    'validity_status_id'=>2,
+                                    'registration_status_id'=>2,
+                                    'registration_date'=>formatDate($Date_of_registration),
+                                    'registration_no'=>$Premise_registration_certificate_number,
+                                    'active_app_referenceno'=>$premapp_record->reference_no,
+                                    'active_application_code'=>$premapp_record->application_code,
+                                    'approval_date'=>formatDate($Date_of_registration),
+                                    'created_on'=>Carbon::now()
+                            );
+                            $resp =  insertRecord('registered_premises', $regdata, 'Migration');
+                            if($resp['success']){
+                                $reg_id = $resp['record_id'];
+                            }
+                            else{
+                                    print_r($resp);
+                                    exit();
+                            }
+                            DB::table('tra_premises_applications')
+                            ->where(array('application_code'=>$premapp_record->application_code))
+                            ->update(array('reg_premise_id'=>$reg_id));
+                            
+                              DB::table('tra_premises')
+                            ->where(array('id'=>$premapp_record->premise_id))
+                            ->update(array('registered_id'=>$reg_id));
+                            
+                            
+                        }
+                        
+                    }   
+            
+                       $res =array('success'=>true,'message'=> "Application Already Migrated and Updated Successfully Application No: ".$Application_No.'</br>');
+                
+                }
+                
+                $records_migrated ++;
+                
+            }  
+            $this->saveMigrationLogsData('initiatePremisesDataMapping',$records_migrated=0);
+    
+    }
+    catch (\Exception $exception) {
+   
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+   return $res;
+    
+    
+}
+
+public function updateGMPApplicants(Request $req){
+       try {
+        $records = DB::table('tra_manufacturing_sites as t1')
+                        ->select('t1.id', 't1.applicant_id', 't1.name')
+                        ->get();
+
+        $records_migrated = 0;
+
+        foreach ($records as $rec) {
+            $wb_trader = DB::table('wb_trader_account')
+                            ->where('name', $rec->name)
+                            ->first();
+
+            if ($wb_trader) {
+                // If a matching record is found in wb_trader_account, update tra_manufacturing_sites
+                DB::table('tra_manufacturing_sites')
+                    ->where('id', $rec->id)
+                    ->update(['applicant_id' => $wb_trader->id]);
+
+                DB::table('tra_gmp_applications')
+                    ->where('manufacturing_site_id', $rec->id)
+                    ->update(['applicant_id' => $wb_trader->id]);
+
+                $res = 'Application has been mapped on the submission table successfully. Application No: ' . $rec->name;
+                print_r('Application has been mapped on the submission table successfully. Application No: ' . $rec->name);
+                $records_migrated++;
+            } else {
+                // Handle if no matching record is found
+                $res = 'No matching record found for ' . $rec->name;
+                print_r('No matching record found for ' . $rec->name);
+            }
+        }
+
+        // Save migration logs
+        $this->saveMigrationLogsData('initiatemappingProductRegistrationSubmission', $records_migrated);
+
+    } catch (\Exception $exception) {
+        $res = [
+            'success' => false,
+            'message' => $exception->getMessage()
+        ];
+    } catch (\Throwable $throwable) {
+        $res = [
+            'success' => false,
+            'message' => $throwable->getMessage()
+        ];
+    }
+
+    print_r($res);
+
+}
+
+
+
 public function initiatemappingGmpSubmission(Request $req){
         try{
             $section_id = $req->section_id;
             
+           //6278
             $records_migrated =0;
-                $records = DB::table('tra_premises_applications as t1')
+                $records = DB::table('tra_gmp_applications as t1')
                                 ->leftJoin('tra_approval_recommendations as t3', 't1.application_code', 't3.application_code')
                                 ->select('t1.*',  't1.id as application_id')
-                                ->whereNull('t3.id')
+                                 ->where('t1.date_added', 'LIKE', '2024-02-27%')
+                                 ->where('t1.reference_no', 'LIKE', 'MGR-24/New%')
+                                //->whereBetween('t1.id', [1, 1])
                                 ->get();
                 if($records){
                     foreach($records as $rec){
                        
-                         if($rec->section_id == 1){
-                            $destination_process = 8;
-                        }else if($rec->section_id == 2){
+                         if($rec->section_id == 1 && $rec->gmp_type_id == 1 && $rec->application_status_id == 6){
+                            $destination_process = 15;
+                            $destination_stage = 3668;
+                        }else if($rec->section_id == 1 && $rec->gmp_type_id == 1 && $rec->application_status_id == 5){
                             
-                            $destination_process = 25;
+                            $destination_process = 15;
+                            $destination_stage = 393;
                         }
-                        else if($rec->section_id == 3){
-                            $destination_process = 36;
+                        else if($rec->section_id == 1 && $rec->gmp_type_id == 1 && $rec->application_status_id == 26){
+                            
+                            $destination_process = 15;
+                            $destination_stage = 3676;
+                        }
+
+                        else if($rec->section_id == 1 && $rec->gmp_type_id == 1 && $rec->application_status_id == 7){
+                            
+                            $destination_process = 15;
+                            $destination_stage = 3675;
+                        }
+
+
+                        else if($rec->section_id == 2 && $rec->gmp_type_id == 1 && $rec->application_status_id == 6){
+                            
+                            $destination_process = 19;
+                            $destination_stage = 3668;
+                        }
+                        else if($rec->section_id == 2 && $rec->gmp_type_id == 1 && $rec->application_status_id == 5){
+                            
+                            $destination_process = 19;
+                            $destination_stage = 393;
+                        }
+
+                        else if($rec->section_id == 2 && $rec->gmp_type_id == 1 && $rec->application_status_id == 26){
+                            
+                            $destination_process = 19;
+                            $destination_stage = 3676;
+                        }
+
+                         else if($rec->section_id == 2 && $rec->gmp_type_id == 1 && $rec->application_status_id == 26){
+                            
+                            $destination_process = 19;
+                            $destination_stage = 3675;
+                        }
+
+
+
+                        else if($rec->section_id == 1 && $rec->gmp_type_id == 2 && $rec->application_status_id == 6){
+                            $destination_process = 315;
+                            $destination_stage = 3670;
+                        }
+                        else if($rec->section_id == 1 && $rec->gmp_type_id == 2 && $rec->application_status_id == 5){
+                            $destination_process = 315;
+                            $destination_stage = 393;
+                        }
+
+
+                        else if($rec->section_id == 1 && $rec->gmp_type_id == 2 && $rec->application_status_id == 26){
+                            $destination_process = 315;
+                            $destination_stage = 3673;
+                        }
+
+                         else if($rec->section_id == 1 && $rec->gmp_type_id == 2 && $rec->application_status_id == 7){
+                            $destination_process = 315;
+                            $destination_stage = 3674;
+                        }
+
+
+                        else if($rec->section_id == 2 && $rec->gmp_type_id == 2 && $rec->application_status_id == 6){
+                            $destination_process = 316;
+                            $destination_stage = 3670;
+                        } 
+                        else if($rec->section_id == 2 && $rec->gmp_type_id == 2 && $rec->application_status_id == 5){
+                            $destination_process = 316;
+                            $destination_stage = 393;
+                        }
+
+                         else if($rec->section_id == 2 && $rec->gmp_type_id == 2 && $rec->application_status_id == 26){
+                            $destination_process = 316;
+                            $destination_stage = 3673;
+                        }
+                        else if($rec->section_id == 2 && $rec->gmp_type_id == 2 && $rec->application_status_id == 7){
+                            $destination_process = 316;
+                            $destination_stage = 3674;
                         }
                         else{
-                             $destination_process = 25;
+                             $destination_process = 15;
+                             $destination_stage = 3668;
                         }
                         $sub_rec = DB::table('tra_submissions')->where(array('application_code'=>$rec->application_code,'current_stage'=>$destination_process,'isDone'=>0))->first();
 
@@ -4748,9 +6202,9 @@ public function initiatemappingGmpSubmission(Request $req){
                                 'reference_no'=>$rec->reference_no,
                                 'tracking_no'=>$rec->tracking_no,
                                 'view_id'=>$rec->view_id,
-                                'process_id'=>$rec->process_id,
-                                'previous_stage'=>$destination_process,
-                                'current_stage'=>$destination_process,
+                                'process_id'=>$destination_process,
+                                'previous_stage'=>$destination_stage,
+                                'current_stage'=>$destination_stage,
                                 'module_id'=>$rec->module_id,
                                 'sub_module_id'=>$rec->sub_module_id,
                                 'directive_id'=>1,
@@ -4902,8 +6356,7 @@ public function initiatemappingProductRegistrationSubmission(Request $req){
                                 ->join('tra_product_information as t2','t1.product_id', 't2.id')
                                // ->leftJoin('herbal_medicinal_productsjuly as t3', 't1.reference_no', 't3.Ref_Number')
                                 ->select('t1.*', 't2.*', 't1.id as application_id')
-                            
-                                ->get();
+                               ->whereBetween('t1.id', [11001, 12000])->get();
                 if($records){
                     foreach($records as $rec){
                         if($rec->section_id==1 || $rec->section_id==6){
@@ -4978,8 +6431,6 @@ public function initiatemappingProductRegistrationSubmission(Request $req){
 
 
 }
-
-
 
 public function initiatNewCosmeticsProductsemigrateDetails(Request $req){
     try{
@@ -6487,26 +7938,30 @@ public function initiateFoodPremisesDataMapping(Request $req){
 
 
 }
-
 public function initiateGmpRegistrationMigration(Request $req){
     
     
-    $month = date('m', strtotime('2024-01-16'));
+    $month = date('m', strtotime('2024-02-27'));
 
     
     try{
         $records_migrated =0;
-        $table_name = "tra_gmpapps_datamigration";
-        $records = DB::table($table_name)->get();
+        $table_name = "tra_gmpapps_datamigration_16Feb_2024";
+        //$records = DB::table($table_name)->get();
+        $records = DB::table($table_name)->whereBetween('id', [1, 84])->get();
+    
         foreach($records as $rec){
-           
-            $Application_No = $rec->License_Number;
+            $Application_No = $rec->application_number;
             $License_Number = $rec->License_Number;
             $reference_no = '';
             $SubmittedOn = Carbon::now();
          //   $AssessmentType = $rec->AssessmentType;
           //  $Premise_reg_no = $rec->Premise_registration_certificate_number;
             $GmpProductsection =$rec->Human_Vet;
+            $GmpltrDetails =$rec->LTR;
+
+            
+
            // $ProcessName = $rec->ProcessName;
             $ApplicantName = $rec->Site_Name;
             $ApplicantPhysicalAddress = $rec->Address;
@@ -6546,6 +8001,7 @@ public function initiateGmpRegistrationMigration(Request $req){
            // $LTREmailAddress_1 = $rec->EmailAddress_1;
            // $LTRTelephoneNo_1 = $rec->TelephoneNo_1;
           //  $LTRPhysicalAddress_1 = $rec->PhysicalAddress_1;
+        if(isset($ManName) && $ManName!= ''){
             if(isset($GmpProductsection)){
                     $section_id = DB::table('par_sections')->where(function ($query) use ($GmpProductsection) {
                         $query->where('name', 'LIKE', $GmpProductsection . '%');
@@ -6568,17 +8024,44 @@ public function initiateGmpRegistrationMigration(Request $req){
                     }
                    }
 
+                   
+
+               if(isset($GmpltrDetails)){
+                   $ltr_id = DB::table('tra_premises')->where(function ($query) use ($GmpltrDetails) {
+                        $query->where('name', 'LIKE', $GmpltrDetails . '%');
+                    })->value('id');
+
+                  
+              
+                    if(!validateIsNumeric($ltr_id)){
+                        $GmpltrDetails=strtolower(trim($GmpltrDetails));
+                        $ltr_id = DB::table('tra_premises')->where(function ($query) use ($GmpltrDetails) {
+                        $query->where('name', 'LIKE', $GmpltrDetails . '%');
+                        })->value('id');
+
+                        }
+
+                    if(!validateIsNumeric($ltr_id)){
+                        $GmpltrDetails=strtoupper(trim($GmpltrDetails));
+                        $ltr_id = DB::table('tra_premises')->where(function ($query) use ($GmpltrDetails) {
+                        $query->where('name', 'LIKE', $GmpltrDetails . '%');
+                        })->value('id');
+
+                    }
+                   }
+
+                
 
 
 
                if(isset($GMPStatus)){
-                    $status_id = DB::table('par_gmpinspection_recommendation')->where(function ($query) use ($GMPStatus) {
+                    $status_id = DB::table('par_gmpapproval_decisions')->where(function ($query) use ($GMPStatus) {
                         $query->where('name', 'LIKE', $GMPStatus . '%');
                     })->value('id');
 
                     if(!validateIsNumeric($status_id)){
                         $GMPStatus=strtolower(trim($GMPStatus));
-                        $status_id = DB::table('par_gmpinspection_recommendation')->where(function ($query) use ($GMPStatus) {
+                        $status_id = DB::table('par_gmpapproval_decisions')->where(function ($query) use ($GMPStatus) {
                         $query->where('name', 'LIKE', $GMPStatus . '%');
                         })->value('id');
 
@@ -6586,15 +8069,19 @@ public function initiateGmpRegistrationMigration(Request $req){
 
                     if(!validateIsNumeric($status_id)){
                         $GMPStatus=strtoupper(trim($GMPStatus));
-                        $status_id = DB::table('par_gmpinspection_recommendation')->where(function ($query) use ($GMPStatus) {
+                        $status_id = DB::table('par_gmpapproval_decisions')->where(function ($query) use ($GMPStatus) {
                         $query->where('name', 'LIKE', $GMPStatus . '%');
                         })->value('id');
 
                     }
                    }
-                
 
-            $sub_module_id = 5;
+                    $country_id = $this->saveProductDataEntry('par_countries',array('name'=>$ApplicantCountry, 'description'=>$ApplicantCountry),array('name'=>$ApplicantCountry),'Country');
+                    $manregion_id = $this->saveProductDataEntry('par_regions',array('name'=>$RegionName, 'description'=>$RegionName, 'country_id'=>$country_id),array('name'=>$RegionName),'Region');
+                    $mandistrict_id = $this->saveProductDataEntry('par_districts',array('name'=>$District, 'description'=>$District, 'region_id'=>$manregion_id),array('name'=>$District),'Region');
+       
+                  
+                 $sub_module_id = 5;
                     $module_id = 3;
                     $section_id = $section_id;
             if($reference_no == '' || $reference_no == 'null' ||  $reference_no == 0 || $reference_no == 'N/A (migrated)'  || $reference_no == 'Not specified'){
@@ -6610,9 +8097,12 @@ public function initiateGmpRegistrationMigration(Request $req){
                             $process_id = $process_data->id;
                        
                      }
-                     $app_details = (object)array('section_id'=>$section_id, 'classification_id'=>'');
+                     $app_details = (object)array('section_id'=>$section_id, 'classification_id'=>'','country_id'=>$country_id,);
                     $codes_array = $this->getProductApplicationReferenceCodes($app_details);
+
+
                     $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, '', '');
+                       
                     if ($tracking_details['success'] == false) {
                         return \response()->json($tracking_details);
                     }
@@ -6620,10 +8110,13 @@ public function initiateGmpRegistrationMigration(Request $req){
                    
                 }
 
-      
-                $country_id = $this->saveProductDataEntry('par_countries',array('name'=>$ApplicantCountry, 'description'=>$ApplicantCountry),array('name'=>$ApplicantCountry),'Country');
-                 $manregion_id = $this->saveProductDataEntry('par_regions',array('name'=>$RegionName, 'description'=>$RegionName, 'country_id'=>$country_id),array('name'=>$RegionName),'Region');
-                 $mandistrict_id = $this->saveProductDataEntry('par_districts',array('name'=>$District, 'description'=>$District, 'region_id'=>$manregion_id),array('name'=>$District),'Region');
+                 $site_ref_details=generateApplicationTrackingNumber($sub_module_id, 6, $codes_array, $process_id, '', '');
+
+                    if ($site_ref_details['success'] == false) {
+                        return \response()->json($site_ref_details);
+                    }
+                    
+                     $site_ref_no =$site_ref_details['tracking_no'];
 
                  $data = (object)array('name'=>$ApplicantName, 
                                 'tpin_no'=>0, 
@@ -6640,10 +8133,7 @@ public function initiateGmpRegistrationMigration(Request $req){
                                 'status_id'=>$status_id
                             );
                     $applicant_id = $this->saveTraderInformationDetails($data);
-                    // $application_status_id = 5;
-                    // if($Current_Status == 'Compliant'){
-                        $application_status_id = 6;
-                   //  }
+                   
                      
                     
                     //all the columns 
@@ -6652,11 +8142,12 @@ public function initiateGmpRegistrationMigration(Request $req){
                     
                     $country_id = $this->saveProductDataEntry('par_countries',array('name'=>$Country, 'description'=>$Country),array('name'=>$Country),'Country');
                     $gmp_type_id = 1;
-                    if($country ==36){
+
+                    if($country_id ==37 || $country_id ===37){
                             $gmp_type_id = 2;
                         
                     }
-                    
+                
                      $manufacturer_data = array('name'=>$ManName, 
                                                 'physical_address'=>$PhysicalAddress, 
                                             //    'postal_address'=>$MANUFACTURESMAILING_ADDRESS, 
@@ -6667,14 +8158,28 @@ public function initiateGmpRegistrationMigration(Request $req){
                                                 'country_id'=>$country_id
                                             );
                     $manufacturer_id = $this->saveProductDataEntry('tra_manufacturers_information',$manufacturer_data,array('name'=>$ManName, 'country_id'=>$country_id),'Manufacturer Id');  
-                    
+
+
+                     $cantact_data = (object)array('email_address'=> $rec->Email_Address,
+                                'country_id'=>$country_id,
+                                'name'=>$rec->Contact_Person,
+                                'trader_id'=>$applicant_id,
+                                'telephone_no'=>$rec->Telephone,
+                                'created_by'=>'Migration',
+                                'created_on'=>Carbon::now(),
+                            );
+                      
+                    $contact_person_id = $this->saveContactPersonInformationDetails($cantact_data);
+            
                     $premises_infor = array(
                                     'name'=>$ManName,
                                     'licence_no'=>$License_Number,
                                     'applicant_id'=>$applicant_id,
+                                    'contact_person_id'=>$contact_person_id,
                                     'business_type_id'=>5,
                                     'country_id'=>$country_id,
                                     'region_id'=>$manregion_id, 
+                                    'ltr_id'=>$ltr_id,
                                     'district_id'=>$mandistrict_id, 
                                     'section_id'=>$section_id,
                                     'email'=>$EmailAddress,
@@ -6685,6 +8190,8 @@ public function initiateGmpRegistrationMigration(Request $req){
                                     'physical_address'=>$PhysicalAddress,
                                     'gmp_type_id'=>$gmp_type_id
                         );
+
+              
                                            
                        $premises_infor['created_by'] = '0';
                         $premises_infor['created_on'] = Carbon::now();
@@ -6701,14 +8208,30 @@ public function initiateGmpRegistrationMigration(Request $req){
                                              }
                             
                    
-                    
-                    $applicant_id = $this->saveTraderInformationDetails($data);
                      
                      $application_status_id = 5;
-                    if($Current_Status == 'Compliant'){
+                    if($status_id == 1 || $status_id ===1){
                         $application_status_id = 6;
                      }
-                     $process_id = 0;
+
+                     if($status_id == 5 || $status_id ===5){
+                        $application_status_id = 26;
+                     }
+
+                     if($status_id == 2 || $status_id ===2){
+                        $application_status_id = 7;
+                     }
+
+
+                     if($status_id == 6 || $status_id ===6){
+                        $application_status_id = 26;
+                     }
+
+
+                     // if($status_id == 3 || $status_id ===3){
+                     //    $application_status_id = 6;
+                     // }
+
                      $process_data = getSingleRecord('wf_tfdaprocesses', array('section_id'=>$section_id, 'sub_module_id'=>$sub_module_id));
                      if($process_data){
                          
@@ -6730,6 +8253,7 @@ public function initiateGmpRegistrationMigration(Request $req){
                             $app_data['application_code']=$application_code;
                             $app_data['tracking_no']=$reference_no;
                             $app_data['reference_no']=$reference_no;
+                             $app_data['site_ref_no']=$site_ref_no;
                             $app_data['date_added']=formatDate($SubmittedOn);
                             $app_data['application_status_id']=$application_status_id;
                             $app_data['created_by']='';
@@ -6747,8 +8271,12 @@ public function initiateGmpRegistrationMigration(Request $req){
                     //save product approval details 
                    // if($Current_Status == 'Compliant'){
                         $app_record = DB::table('tra_approval_recommendations')->where(array('certificate_no'=>$GMPCertificateNo))->first();
+                       
 
-                        if($application_status_id==6 || $application_status_id===6){
+                       if($status_id == 1 || $status_id == 1){
+
+                           // print_r(7777);
+                           // exit();
                             $approval_data = array('application_code'=>$application_code,
                             'application_id'=>$application_id,
                             'decision_id'=>1,
@@ -6778,7 +8306,7 @@ public function initiateGmpRegistrationMigration(Request $req){
                         
                         //register SubmittedOn
                         $app_record = DB::table('registered_manufacturing_sites')->where(array('registration_no'=>$reference_no))->first();
-                        if($application_status_id==6 || $application_status_id===6){
+                       if($status_id == 1 || $status_id == 1){
                             $regdata = array('tra_site_id'=>$manufacturing_site_id,
                                     'validity_status_id'=>2,
                                     'registration_status_id'=>2,
@@ -6786,7 +8314,7 @@ public function initiateGmpRegistrationMigration(Request $req){
                                     'registration_no'=>$reference_no,
                                     'active_app_referenceno'=>$reference_no,
                                     'active_application_code'=>$application_code,
-                                    'approval_date'=>formatDate($Date_of_registration),
+                                    'approval_date'=>formatDate($ApprovalDate),
                                     'created_on'=>Carbon::now()
                             );
                             $resp =  insertRecord('registered_manufacturing_sites', $regdata, 'Migration');
@@ -6801,12 +8329,13 @@ public function initiateGmpRegistrationMigration(Request $req){
                             ->where(array('application_code'=>$application_code))
                             ->update(array('reg_site_id'=>$reg_id));
                         
-                            
                         }
-                        
-                 //   }
+                      $res = "Application Migration Successfully Application No: ".$Application_No.'</br>';  
+                     }else{
+                         $res = "No Data to Migrate";
+                     }
                    
-                    $res = "Application Migration Successfully Application No: ".$Application_No.'</br>';
+                   
                    /*
                 }
                 else{
@@ -6836,7 +8365,6 @@ public function initiateGmpRegistrationMigration(Request $req){
         );
     }
      print_r($res);
-
 
 }
 public function initiateGmpRegistrationMigrationArchive(Request $req){
@@ -8938,10 +10466,12 @@ function premisesLicensesDataMigration($table_name,$migration_request_id,$module
     
     
 }
+
+
 function DrugshopLicensesDataMigration($table_name,$migration_request_id,$module_id,$record_id){
     
     $month = date('m', strtotime('2021-12-30'));
-    
+    $user_id = $this->user_id;
     try{
         $records_migrated =0;
         $records = DB::table($table_name)->where('id',$record_id)->get();
@@ -8995,11 +10525,43 @@ function DrugshopLicensesDataMigration($table_name,$migration_request_id,$module
                     $region_id = DB::table('par_premise_regions')->where(function ($query) use ($Region_name) {
                         $query->where('name', 'LIKE', $Region_name . '%');
                     })->value('id');
+
+                    if(!validateIsNumeric($region_id)){
+                        $Region_name=strtolower(trim($Region_name));
+                        $region_id = DB::table('par_premise_regions')->where(function ($query) use ($Region_name) {
+                        $query->where('name', 'LIKE', $Region_name . '%');
+                        })->value('id');
+
+                        }
+
+                    if(!validateIsNumeric($region_id)){
+                        $Region_name=strtoupper(trim($Region_name));
+                        $region_id = DB::table('par_premise_regions')->where(function ($query) use ($Region_name) {
+                        $query->where('name', 'LIKE', $Region_name . '%');
+                        })->value('id');
+
+                    }
                    }
                    if(isset($District_name)){
                     $district_id = DB::table('par_premise_districts')->where(function ($query) use ($District_name) {
                         $query->where('name', 'LIKE', '%' .$District_name . '%');
                     })->value('id');
+
+                    if(!validateIsNumeric($district_id)){
+                        $District_name=strtolower(trim($District_name));
+                        $district_id = DB::table('par_premise_districts')->where(function ($query) use ($District_name) {
+                        $query->where('name', 'LIKE', '%' .$District_name . '%');
+                         })->value('id');
+
+                        }
+
+                        if(!validateIsNumeric($district_id)){
+                        $District_name=strtoupper(trim($District_name));
+                        $district_id = DB::table('par_premise_districts')->where(function ($query) use ($District_name) {
+                        $query->where('name', 'LIKE', '%' .$District_name . '%');
+                         })->value('id');
+
+                        }
                    }
 
                     if(isset($director_country)){
@@ -9049,13 +10611,14 @@ function DrugshopLicensesDataMigration($table_name,$migration_request_id,$module
                     $app_record = DB::table('tra_premises_applications as t1')
                                             ->join('tra_premises as t2', 't1.premise_id', 't2.id')
                                             ->select('t1.*')
-                                            ->where(array('t2.name'=>$Premises_name))
+                                            ->where(array('t2.name'=>$Premises_name,'t2.district_id'=>$district_id,))
                                             ->first();
                     $premapp_record =   $app_record; 
 
 
                   
-                if(!$app_record){  
+                    //if(!$app_record){  //check for drugshop with same name in same district
+                    if(isset($Premises_name)){ 
                     //generate trader not
                     $sub_module_code = getSingleRecordColValue('sub_modules', array('id' => $sub_module_id), 'code');
                     $business_code = getSingleRecordColValue('par_business_types', array('id' => $business_type_id), 'code');
@@ -9068,12 +10631,17 @@ function DrugshopLicensesDataMigration($table_name,$migration_request_id,$module
                     );  
                     $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, '', '');
 
-                    $premise_ref_no=generateApplicationTrackingNumber($sub_module_id, 6, $codes_array, $process_id, '', '');
+                    $premise_ref_details=generateApplicationTrackingNumber($sub_module_id, 6, $codes_array, $process_id, '', '');
+
+                    if ($premise_ref_details['success'] == false) {
+                        return \response()->json($premise_ref_details);
+                    }
+                    
+                     $premise_ref_no =$premise_ref_details['tracking_no'];
+
+                    $permit_no = generatePremisePermitNo($district_id, ' ', 'tra_premises_applications', $user_id,60,$sub_module_id);
 
 
-                    $permit_no = generatePremisePermitNo($district_id, ' ', 'tra_premises_applications', $user_id, $ref_id ,$sub_module_id);
-                            
-                
                     if ($tracking_details['success'] == false) {
                         return \response()->json($tracking_details);
                     }
@@ -9202,11 +10770,12 @@ function DrugshopLicensesDataMigration($table_name,$migration_request_id,$module
                                }
                            }
                                                  
-                       $data = (object)array('name'=>$Applicant_Name, 
+                       $data = (object)array('name'=>$Premises_name, 
                                     'tpin_no'=>0, 
-                                    'contact_person'=>$Applicant_Name,
+                                    'contact_person'=>$Premises_name,
                                     'country_id'=>$country_id, 
                                     'region_id'=>$region_id, 
+                                    'traderaccount_type_id'=>8, 
                                     'physical_address'=>$physical_address, 
                                     'postal_address'=>$physical_address, 
                                     'telephone_no'=>$Director_Phone_Number, 
@@ -9252,6 +10821,7 @@ function DrugshopLicensesDataMigration($table_name,$migration_request_id,$module
 
                       
                     $resp =  insertRecord('tra_premises_applications', $premises_app, 'Migration');
+
                     if($resp['success']){
                         $application_id = $resp['record_id'];
                     }
@@ -9346,6 +10916,7 @@ function DrugshopLicensesDataMigration($table_name,$migration_request_id,$module
                         
                         //register
                         $app_record = DB::table('registered_premises')->where(array('registration_no'=>$permit_no))->first();
+
                         if(!$app_record){
                             $regdata = array('tra_premise_id'=>$premise_id,
                                     'validity_status_id'=>2,
@@ -10146,27 +11717,24 @@ public function getParameterFormColumnsConfig(Request $req)
     return $res;
 
    }
-   function syncmappingClinicaltrialsSubmission($application_code){
+   function syncmappingClinicaltrialsSubmission(){
         
         try{
-            $section_id = $req->section_id;
-            
             $records_migrated =0;
-                $records = DB::table('tra_clinical_trial_applications as t1')
-                                ->leftJoin('tra_approval_recommendations as t3', 't1.application_code', 't3.application_code')
-                                ->select('t1.*',  't1.id as application_id')
-                                ->where('t1.application_code',$application_code)
+            $process_id=21;
+            $records = DB::table('tra_clinical_trial_applications as t1')
+                                 ->whereBetween('t1.id', [3, 260])
                                 ->get();
                 if($records){
                     foreach($records as $rec){
                        
                            $destination_process = 149;
                         
-                        $sub_rec = DB::table('tra_submissions')->where(array('application_code'=>$rec->application_code,'current_stage'=>$destination_process,'isDone'=>0))->first();
+                        // $sub_rec = DB::table('tra_submissions')->where(array('application_code'=>$rec->application_code,'current_stage'=>$destination_process,'isDone'=>0))->first();
 
-                        if(!$sub_rec){
+                        if($rec){
                             $submission_data = array(
-                                'application_id'=>$rec->application_id,
+                                'application_id'=>$rec->id,
                                 'applicant_id'=>$rec->applicant_id,
                                 'application_code'=>$rec->application_code,
                                 'reference_no'=>$rec->reference_no,
@@ -10181,7 +11749,7 @@ public function getParameterFormColumnsConfig(Request $req)
                                 'application_status_id'=>$rec->application_status_id,
                                 'section_id'=>$rec->section_id,
                                 'urgency'=>1,
-                                'remarks'=>'Migrated Renewal Applications',
+                                'remarks'=>'Migrated old Applications',
                                 'isRead'=>0,
                                 'isDone'=>0,
                                 'isComplete'=>0,
@@ -10383,5 +11951,80 @@ public function remapImportApplicationsToPortal(){
     
     
 }
+
+
+function mapClinicaltrialsApplicationCodes(){
+        
+        try{
+
+            $records_migrated =0;
+            $process_id=21;
+                $records = DB::table('tra_clinical_trial_applications as t1')
+                                 ->whereBetween('t1.id', [4, 260])
+                                ->get();
+
+                if($records){
+                    foreach($records as $rec){
+                           $id=$rec->id;
+                           $view_id = generateApplicationViewID();
+                           $application_code = $application_code = generateApplicationCode(10, 'tra_clinical_trial_applications');
+
+                        if($rec){
+                            $map_data = array(
+                                'application_code'=>$application_code,
+                                'view_id'=>$view_id,
+                                'process_id'=>$process_id
+                            
+                        );
+                        
+                        DB::table('tra_clinical_trial_applications')
+                        ->where(array('id'=>$id))
+                        ->update($map_data);
+
+
+                        // print_r($ss);
+                        // exit();
+                      
+                        $message = 'Applications Have been mapped on the submission table successsfully Application No'.$rec->reference_no;
+                       $res = array(
+                            'success' => true,
+                            'message' => $message
+                        );
+                        } else{
+
+                      //print_r($rec);
+                           $message = 'Applications already been mapped on the submission table successsfully Application No'.$rec->reference_no;
+                            $res = array(
+                                'success' => true,
+                                'message' => $message
+                            );
+                            $records_migrated++;
+                    }  
+                    }
+
+
+                }
+                else{
+
+                    $res = "No application found";
+                }
+                $this->saveMigrationLogsData('initiatemappingProductRegistrationSubmission',$records_migrated);
+        }
+        catch (\Exception $exception) {
+       
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return $res;
+       
+      
+   }
 
 }

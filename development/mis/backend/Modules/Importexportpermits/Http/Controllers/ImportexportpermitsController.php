@@ -6027,7 +6027,8 @@ public function getNarcoticspermitsproductsDetails(Request $req){
                                     'unitpack_size'=>$req->unitpack_size,
                                     'unitpack_unit_id'=>$req->unitpack_unit_id,
                                     'application_code'=>$req->application_code,
-                                    'dosage_form_id'=>$req->dosage_form_id
+                                    'dosage_form_id'=>$req->dosage_form_id,
+                                     'batch_numbers'=>$req->batch_numbers
                             );
                 if(validateIsNumeric($record_id)){
                     $where = array('id'=>$record_id);
