@@ -1,0 +1,14 @@
+.vscode/launch.json
+development/mis/bootstrap.js
+development/mis/classic.json
+development/mis/classic.jsonp
+development/mis/modern.json
+development/mis/modern.jsonp
+development/mis/build/temp/development/Admin/sencha-compiler/app/full-page-master-bundle.js
+development/mis/build/temp/production/Admin/slicer-temp/bootstrap.json
+development/mis/build/temp/production/Admin/slicer-temp/bootstrap.jsonp
+development/mis/build/temp/production/Admin/slicer-temp/theme-capture.png
+development/production/mis/classic.json
+development/production/mis/classic.jsonp
+development/production/mis/modern.json
+development/production/mis/modern.jsonp
