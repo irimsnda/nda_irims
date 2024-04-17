@@ -1277,7 +1277,7 @@ quickNavigationReview: function (btn) {
 
             }
             
-            application_id = motherPnl.down('hiddenfield[name=active_application_code]').getValue(),
+            var application_id = motherPnl.down('hiddenfield[name=active_application_code]').getValue(),
             progress = wizardPnl.down('#progress_tbar'),
             progressItems = progress.items.items;
 
@@ -1397,6 +1397,16 @@ quickNavigationReview: function (btn) {
             module_id = containerPnl.down('hiddenfield[name=module_id]').getValue(),
             application_code = containerPnl.down('hiddenfield[name=application_code]').getValue();
             this.fireEvent('generateImportExportpermit', application_code,module_id,'Print Review Import/Export Permit');
+    },
+
+     doPrintPersonalUsePermit:function(btn){
+        var me = this,
+            mainTabPnl = btn.up('#contentPanel'),
+            containerPnl = mainTabPnl.getActiveTab(),
+
+            module_id = containerPnl.down('hiddenfield[name=module_id]').getValue(),
+            application_code = containerPnl.down('hiddenfield[name=application_code]').getValue();
+            this.fireEvent('generatePersonalUsePermit', application_code,module_id,'Print Personal Use Permit');
     },
     /*
     var rec = grid.getStore().getAt(rowIndex),
@@ -3225,9 +3235,11 @@ downloadPreviousDocupload: function (item) {
        containerPnl = mainTabPnl.getActiveTab();
        console.log(containerPnl);
        var process_id = containerPnl.down('hiddenfield[name=process_id]').getValue(),
-       module_id = 4,
-       sub_module_id = 15,
-          zone_id = containerPnl.down('combo[name=zone_id]').getValue(),
+       module_id = containerPnl.down('hiddenfield[name=module_id]').getValue(),
+      sub_module_id = containerPnl.down('hiddenfield[name=sub_module_id]').getValu
+       // module_id = 4,
+       // sub_module_id = 15,
+        //zone_id = containerPnl.down('combo[name=zone_id]').getValue(),
        active_application_id = containerPnl.down('hiddenfield[name=active_application_id]').getValue(),
        checkapplication_id= containerPnl.down('hiddenfield[name=active_application_id]').getValue(),
        importexportdetailsfrm = containerPnl.down(form_panel),
@@ -3241,7 +3253,6 @@ downloadPreviousDocupload: function (item) {
                active_application_id: active_application_id,
                module_id: module_id,
                sub_module_id: sub_module_id,
-               zone_id: zone_id,
                '_token': token
            },
            headers: {

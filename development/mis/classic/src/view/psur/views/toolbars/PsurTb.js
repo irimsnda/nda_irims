@@ -23,10 +23,22 @@ Ext.define('Admin.view.productregistration.views.toolbars.PsurTb', {
             name: 'psurHomeBtn'
         },
         {
-            text: 'New Application',
+            text: 'New Report(PSUR/PBRER)',
             iconCls: 'x-fa fa-plus',
             handler: 'showNewPsur',
             app_type: 116
+        },
+        {
+            text: 'New Report(RMP/REMS)',
+            iconCls: 'x-fa fa-plus',
+            handler: 'showNewPsur',
+            app_type: 128
+        },
+        {
+            text: 'New Report(LINE LISTING)',
+            iconCls: 'x-fa fa-plus',
+            handler: 'showNewPsur',
+            app_type: 129
         }
     ]
 });

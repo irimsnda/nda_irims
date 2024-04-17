@@ -103,6 +103,7 @@ Ext.define('Admin.controller.ReportsCtr', {
                 generateGmpApprovalLetter: 'generateGmpApprovalLetter',
                 generateClinicalCertificate: 'generateClinicalTrialCertificate',
                 generateImportExportpermit: 'generateImportExportpermit',
+                generatePersonalUsePermit: 'generatePersonalUsePermit',
                 generateNarcoticImportPermit:'generateNarcoticImportPermit',
                 printHospitalNarcoticsPermit:'printHospitalNarcoticsPermit',
                 generateOnlineApplicationInvoice: 'printOnlineApplicationInvoice',
@@ -144,6 +145,13 @@ Ext.define('Admin.controller.ReportsCtr', {
     generateImportExportpermit:function(application_code,module_id,permit_watermark ){
 
         var action_url = 'reports/genenerateImportExportPermit?application_code=' + application_code + '&&module_id=' + module_id+'&permit_watermark='+permit_watermark;
+            print_report(action_url);
+
+    },
+
+    generatePersonalUsePermit:function(application_code){
+
+        var action_url = 'reports/generatePersonalUsePermit?application_code=' + application_code;
             print_report(action_url);
 
     },

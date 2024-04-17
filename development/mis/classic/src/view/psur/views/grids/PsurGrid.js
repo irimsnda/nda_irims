@@ -106,7 +106,7 @@ Ext.define('Admin.view.psur.views.grids.PsurGrid', {
             ptype: 'gridexporter'
         }
     ],
-    export_title: 'psur/pbrer applications',
+    export_title: 'Reports',
 
     listeners: {
         beforerender: {
@@ -189,7 +189,7 @@ Ext.define('Admin.view.psur.views.grids.PsurGrid', {
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
-        text: 'Application Status',
+        text: 'Report Status',
         flex: 1,
         tdCls: 'wrap'
     }, {

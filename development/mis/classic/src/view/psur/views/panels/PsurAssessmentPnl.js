@@ -46,7 +46,7 @@ Ext.define('Admin.view.psur.views.panels.PsurAssessmentPnl', {
                 }, {
                     xtype: 'displayfield',
                     name: 'application_status',
-                    fieldLabel: 'App Status',
+                    fieldLabel: 'Report Status',
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
@@ -162,7 +162,7 @@ Ext.define('Admin.view.psur.views.panels.PsurAssessmentPnl', {
                 handler: 'previewPreviousPsurDetails'
             },
             {
-                text: 'Application Documents',
+                text: 'Report Documents',
                 iconCls: 'fa fa-file-download',
                 tooltip: 'Application Documents',
                 action: 'edit',
@@ -185,7 +185,7 @@ Ext.define('Admin.view.psur.views.panels.PsurAssessmentPnl', {
                     comment_type_id: 2,
                     stores: '[]'
             },'->',{
-                text: 'Submit Application',
+                text: 'Submit Report',
                 ui: 'soft-purple',
                 iconCls: 'fa fa-check',
                 name: 'process_submission_btn',

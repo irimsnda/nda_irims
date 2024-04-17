@@ -87,37 +87,22 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PersonalUseP
       xtype:'rownumberer'  
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'permitbrand_name', tdCls:'wrap-text',
+        dataIndex: 'product_category', 
+        tdCls:'wrap-text',
+        text: 'Product Category',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'permitbrand_name', 
+        tdCls:'wrap-text',
         text: 'Brand Name/Device Name',
         flex: 1
     },{
-        xtype: 'gridcolumn', tdCls:'wrap-text',
-        dataIndex: 'permitcommon_name',
-        text: 'Common Name',
-        tdCls:'wrap-text',
-        flex: 1,
-    }, {
-        
-        xtype: 'gridcolumn',
-        dataIndex: 'batch_numbers',
-        text: 'Batch Numbers',
-        flex: 1,
-    }, {
         xtype: 'gridcolumn',
         dataIndex: 'quantity',
         text: 'Quantity',
-        flex: 1,
+        flex: 1
     }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'packaging_units',
-        text: 'Packaging Units',
-        flex: 1,
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'currency_name',
-        text: 'Currency Name',
-        flex: 1,
-    },{
         
         xtype: 'gridcolumn',
         dataIndex: 'unit_price',

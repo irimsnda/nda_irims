@@ -1240,16 +1240,22 @@ function returnAuthenticationKeys(){
 return $data;
 }
 
-public function getWHODrugAPIConfigurations(){
-        $whodrugapi_configs = DB::table('tra_whodrugapi_configurations')->first();
-        return $whodrugapi_configs;
+public function getWHODrugAPIConfigurations($environment){
+    if($environment=='production'){
+      $whodrugapi_configs = DB::table('tra_whodrugproductionapi_configurations')->first();
+    }else{
+       $whodrugapi_configs = DB::table('tra_whodrugapi_configurations')->first();  
+    }
+     return $whodrugapi_configs;
 
     }
 
 
 public function whoDrugDownloadApi (Request $req){
+        $environment='sandbox';
+        //$environment='production';
         $whodrug_level_id = $req->input('whodrug_level_id');
-        $whodrugapi_configs = $this->getWHODrugAPIConfigurations();
+        $whodrugapi_configs = $this->getWHODrugAPIConfigurations($environment);
         $queryParams = http_build_query([
             'MedProdLevel' =>  ($whodrug_level_id == 1) ? 0 : (($whodrug_level_id == 2) ? 1 : (($whodrug_level_id == 3) ? 2 : 0)),  
             'IncludeAtc' => 'true',  
@@ -1284,8 +1290,6 @@ public function whoDrugDownloadApi (Request $req){
 
         // Handle the response
 
-        echo json_encode($response);
-                exit();
 
         if ($response) {
             $decodedResponse = json_decode($response, true);

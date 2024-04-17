@@ -512,52 +512,52 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
           //                       },
           //                       isLoad: true
           //                   },
-          //                   change: function(combo, newVal, oldValue, eopts) {
-          //                       if(newVal == 1){
-          //                           var form = combo.up('form'),
-          //                           nin_container= form.down('fieldcontainer[name=nin_container]');
-          //                           nin_no = form.down('textfield[name=nin_no]');
-          //                           nin_container.setVisible(false);
-          //                           nin_no.allowBlank = true;
-          //                           nin_no.validate();
-          //                           incharge_name= form.down('textfield[name=incharge_name]');
-          //                           incharge_name.setVisible(false);
-          //                           incharge_qualification_id= form.down('combo[name=incharge_qualification_id]');
-          //                           incharge_qualification_id.setVisible(false);
-          //                           incharge_telephone_no= form.down('textfield[name=incharge_telephone_no]');
-          //                           incharge_telephone_no.setVisible(false);
-          //                           incharge_email_address= form.down('textfield[name=incharge_email_address]');
-          //                           incharge_email_address.setVisible(false);
-          //                           incharge_country_id= form.down('combo[name=incharge_country_id]');
-          //                           incharge_country_id.setVisible(false);
-          //                           incharge_district_id= form.down('combo[name=incharge_district_id]');
-          //                           incharge_district_id.setVisible(false);
-          //                           incharge_region_id= form.down('combo[name=incharge_region_id]');
-          //                           incharge_region_id.setVisible(false);
-          //                       }else{
-          //                           var form = combo.up('form'),
-          //                           nin_container= form.down('fieldcontainer[name=nin_container]');
-          //                           nin_no = form.down('textfield[name=nin_no]');
-          //                           nin_container.setVisible(true);
-          //                           nin_no.allowBlank = false;
-          //                           nin_no.validate();
-          //                           incharge_name= form.down('textfield[name=incharge_name]');
-          //                           incharge_name.setVisible(true);
-          //                           incharge_qualification_id= form.down('combo[name=incharge_qualification_id]');
-          //                           incharge_qualification_id.setVisible(true);
-          //                           incharge_telephone_no= form.down('textfield[name=incharge_telephone_no]');
-          //                           incharge_telephone_no.setVisible(true);
-          //                           incharge_email_address= form.down('textfield[name=incharge_email_address]');
-          //                           incharge_email_address.setVisible(true);
-          //                           incharge_country_id= form.down('combo[name=incharge_country_id]');
-          //                           incharge_country_id.setVisible(true);
-          //                           incharge_district_id= form.down('combo[name=incharge_district_id]');
-          //                           incharge_district_id.setVisible(true);
-          //                           incharge_region_id= form.down('combo[name=incharge_region_id]');
-          //                           incharge_region_id.setVisible(true);
-          //                       }
+                            // change: function(combo, newVal, oldValue, eopts) {
+                            //     if(newVal == 1){
+                            //         var form = combo.up('form'),
+                            //         nin_container= form.down('fieldcontainer[name=nin_container]');
+                            //         nin_no = form.down('textfield[name=nin_no]');
+                            //         nin_container.setVisible(false);
+                            //         nin_no.allowBlank = true;
+                            //         nin_no.validate();
+                            //         incharge_name= form.down('textfield[name=incharge_name]');
+                            //         incharge_name.setVisible(false);
+                            //         incharge_qualification_id= form.down('combo[name=incharge_qualification_id]');
+                            //         incharge_qualification_id.setVisible(false);
+                            //         incharge_telephone_no= form.down('textfield[name=incharge_telephone_no]');
+                            //         incharge_telephone_no.setVisible(false);
+                            //         incharge_email_address= form.down('textfield[name=incharge_email_address]');
+                            //         incharge_email_address.setVisible(false);
+                            //         incharge_country_id= form.down('combo[name=incharge_country_id]');
+                            //         incharge_country_id.setVisible(false);
+                            //         incharge_district_id= form.down('combo[name=incharge_district_id]');
+                            //         incharge_district_id.setVisible(false);
+                            //         incharge_region_id= form.down('combo[name=incharge_region_id]');
+                            //         incharge_region_id.setVisible(false);
+                            //     }else{
+                            //         var form = combo.up('form'),
+                            //         nin_container= form.down('fieldcontainer[name=nin_container]');
+                            //         nin_no = form.down('textfield[name=nin_no]');
+                            //         nin_container.setVisible(true);
+                            //         nin_no.allowBlank = false;
+                            //         nin_no.validate();
+                            //         incharge_name= form.down('textfield[name=incharge_name]');
+                            //         incharge_name.setVisible(true);
+                            //         incharge_qualification_id= form.down('combo[name=incharge_qualification_id]');
+                            //         incharge_qualification_id.setVisible(true);
+                            //         incharge_telephone_no= form.down('textfield[name=incharge_telephone_no]');
+                            //         incharge_telephone_no.setVisible(true);
+                            //         incharge_email_address= form.down('textfield[name=incharge_email_address]');
+                            //         incharge_email_address.setVisible(true);
+                            //         incharge_country_id= form.down('combo[name=incharge_country_id]');
+                            //         incharge_country_id.setVisible(true);
+                            //         incharge_district_id= form.down('combo[name=incharge_district_id]');
+                            //         incharge_district_id.setVisible(true);
+                            //         incharge_region_id= form.down('combo[name=incharge_region_id]');
+                            //         incharge_region_id.setVisible(true);
+                            //     }
                                 
-          //                   }
+                            // }
                            
           //               }
           //           },
@@ -1135,7 +1135,7 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
                 xtype: 'textarea',
                 fieldLabel: 'Physical Address',
                 columnWidth: 1,
-                readOnly:true,
+                //readOnly:true,
                 allowBlank:false,
                 name: 'physical_address'
             },

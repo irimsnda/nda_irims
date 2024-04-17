@@ -177,7 +177,7 @@ Ext.define('Admin.view.workflowmanagement.views.grids.WorkflowsGrid', {
                     tooltip: 'Edit Workflow',
                     action: 'edit',
                     form: 'tfdaworkflowsfrm',
-                    winTitle: 'TFDA WorkFlow',
+                    winTitle: 'WorkFlow',
                     winWidth: '35%',
                     handler: 'showWorkflowEditWin',
                     stores: '[]'

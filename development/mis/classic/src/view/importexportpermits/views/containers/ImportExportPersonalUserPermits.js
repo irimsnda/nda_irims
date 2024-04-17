@@ -12,12 +12,12 @@ Ext.define('Admin.view.importexportpermits.views.containers.ImportExportPersonal
         {
             xtype: 'hiddenfield',
             name: 'module_id',
-            value: 4
+            value: 25
         },
         {
             xtype: 'hiddenfield',
             name: 'section_id',
-            value: 2
+            //value: 1
         },
         {
             xtype: 'importexportpersonaluserpermitsdashwrapper',

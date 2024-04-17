@@ -114,47 +114,8 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Persona
     items: [
         {
             xtype: 'personalusepermitsdetailspnl',//onlinefoodproductsdetailspnl
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    ui: 'footer',
-                    dock: 'top',
-                    margin: 3,
-                    items: [
-                        {
-                            xtype: 'tbseparator',
-                            width: 2
-                        },
-                        {
-                            xtype: 'combo',
-                            fieldLabel: 'Zone',
-                            labelWidth: 50,
-                            width: 400,
-                            name: 'zone_id',
-                            valueField: 'id',
-                            displayField: 'name',
-                            queryMode: 'local',
-                            forceSelection: true,
-                            listeners: {
-                                beforerender: {
-                                    fn: 'setOrgConfigCombosStore',
-                                    config: {
-                                        pageSize: 1000,
-                                        proxy: {
-                                            extraParams: {
-                                                model_name: 'Zone'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            },
-                            labelStyle: 'font-weight:bold'
-                        }
-                    ]
-                }
-            ],
-        }, {
+        },
+          {
             
                 xtype: 'importexportdocuploadsgrid',
                 title: 'Documents Submission'
@@ -187,16 +148,19 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Persona
                     step: 0,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
+                    iconAlign: 'left',
                     text: 'Import/Export Permit Details',
-                    action: 'quickNav', wizard: 'personaluserpermitsreceivingwizard',
+                    action: 'quickNav', 
+                    wizard: 'personaluserpermitsreceivingwizard',
                     handler: 'quickPersonalUseNavigation'
                 },{
                     step: 1,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
                     text: 'Import/Export permit Documents Submission',
-                    action: 'quickNav', iconAlign: 'top',
-                    wizard: 'importexportreceivingpermitswizard',
+                    action: 'quickNav', 
+                    iconAlign: 'left',
+                    wizard: 'personaluserpermitsreceivingwizard',
                     handler: 'quickPersonalUseNavigation'
                 }, 
             ]
@@ -233,6 +197,21 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Persona
                     action_url: 'savePersonalUsePermitReceivingBaseDetails',
                     wizard: 'personaluserpermitsreceivingwizard',
                     handler: 'savePersonalUsePermitReceivingBaseDetails'
+                },{
+                    xtype: 'button',
+                    text: "Raise/View Query & Responses",
+                    tooltip: 'Raise Query/View Query(Request for Information) and query Responses',
+                    ui: 'soft-green',
+                    handler: 'showAddApplicationUnstrcuturedQueries',
+                },
+                {
+                    text: 'Print Approval Letter',
+                    ui: 'soft-green',
+                    iconCls: 'fa fa-print',
+                    name: 'save_btn', 
+                    form_panel:'#importexportdetailsfrm',
+                    wizard: 'personaluserpermitsreceivingwizard',
+                    handler: 'doPrintPersonalUsePermit'
                 },
                 
                 {

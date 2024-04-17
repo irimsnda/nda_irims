@@ -75,6 +75,7 @@ use Modules\Configurations\Http\Controllers\ConfigurationsController;
 
     Route::get('getApplicationAmmendment', [ConfigurationsController::class, 'getApplicationAmmendment']);
     Route::get('getConfigDirectors', [ConfigurationsController::class, 'getConfigDirectors']);
+    Route::get('getPortOfEntry', [ConfigurationsController::class, 'getPortOfEntry']);
 
 
     Route::get('getProductInvoiceChargesConfig', [ConfigurationsController::class, 'getProductInvoiceChargesConfig']);

@@ -11,7 +11,7 @@ Ext.define('Admin.view.psur.views.grids.RegisteredProductsListGrid', {
     width: '100%',
     viewConfig: {
         deferEmptyText: false,
-        emptyText: 'No Applications Found'
+        emptyText: 'No Reports Found'
     },
     
     bbar: [{

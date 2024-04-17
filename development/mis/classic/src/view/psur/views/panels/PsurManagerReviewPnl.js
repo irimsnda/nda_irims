@@ -42,7 +42,7 @@ Ext.define('Admin.view.psur.views.panels.PsurManagerReviewPnl', {
             }, {
                 xtype: 'displayfield',
                 name: 'application_status',
-                fieldLabel: 'App Status',
+                fieldLabel: 'Report Status',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
@@ -122,7 +122,7 @@ Ext.define('Admin.view.psur.views.panels.PsurManagerReviewPnl', {
             ui: 'footer',
             items: ['->',
                 {
-                    text: 'Submit Application',
+                    text: 'Submit Report',
                     ui: 'soft-blue',
                     iconCls: 'fa fa-check',
                     name: 'process_submission_btn',

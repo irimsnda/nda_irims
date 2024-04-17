@@ -53,7 +53,7 @@ Ext.define('Admin.view.parameters.views.forms.RevenueTypesFrm', {
         name: 'code'
     },{
         xtype: 'textfield',
-        fieldLabel: 'TFDA Code',
+        fieldLabel: 'NDA Code',
         allowBlank: true,
         margin: '0 20 20 0',
         name: 'tfda_code'

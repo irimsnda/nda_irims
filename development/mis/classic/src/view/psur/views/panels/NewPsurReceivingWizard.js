@@ -53,7 +53,7 @@ Ext.define('Admin.view.psur.views.panels.NewPsurReceivingWizard', {
                 }, {
                     xtype: 'displayfield',
                     name: 'application_status',
-                    fieldLabel: 'App Status',
+                    fieldLabel: 'Report Status',
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
@@ -201,7 +201,7 @@ Ext.define('Admin.view.psur.views.panels.NewPsurReceivingWizard', {
                     handler: 'savePsurReceivingBaseDetails'
                 },
                 {
-                    text: 'Submit Application',
+                    text: 'Submit Report',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-check',
                     name: 'process_submission_btn',

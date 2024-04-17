@@ -25,7 +25,7 @@ Ext.define('Admin.view.importexportpermits.views.toolbars.ImportExportPersonalUs
             text: 'Personal User permit Declaration',
             iconCls: 'x-fa fa-plus-square',
             handler: 'onshowPersonalUsePermitsDeclaration',
-            app_type: 60
+            app_type: 87
             
         },
         '->',

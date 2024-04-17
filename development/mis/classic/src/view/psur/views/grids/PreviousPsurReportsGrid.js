@@ -10,7 +10,7 @@ Ext.define('Admin.view.psur.views.grids.PreviousPsurReportsGrid', {
     width: '100%',
     viewConfig: {
         deferEmptyText: false,
-        emptyText: 'No Applications Found',
+        emptyText: 'No Report Found',
     },
     
     bbar: [{
@@ -122,7 +122,7 @@ Ext.define('Admin.view.psur.views.grids.PreviousPsurReportsGrid', {
 	            menu: {
 	                xtype: 'menu',
 	                items: [{
-		                text: 'View Application Details',
+		                text: 'View ReportDetails',
 		                iconCls: 'fa fa-eye',
 		                name: 'more_app_details',
 		                ui: 'soft-blue',

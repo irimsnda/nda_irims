@@ -304,7 +304,7 @@ Ext.define('Admin.view.commoninterfaces.PaymentVerificationPnl', {
                     text: 'Return Back Application',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-check',
-                    hidden: true,
+                    //hidden: true,
                     name: 'returnback_submission_btn',
                     storeID: 'commonuseregistrationstr',
                     table_name: '',

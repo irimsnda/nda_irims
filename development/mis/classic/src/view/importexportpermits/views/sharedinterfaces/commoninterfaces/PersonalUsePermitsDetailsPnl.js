@@ -5,9 +5,9 @@
 Ext.define('Admin.view.importexportpermits.views.commoninterfaces.PersonalUsePermitsDetailsPnl', {
     extend: 'Ext.tab.Panel',
     xtype: 'personalusepermitsdetailspnl',
-    layout: {//
-        type: 'fit'
-    },
+    // layout: {//
+    //     type: 'fit'
+    // },
     defaults:{
         margin: 3
     },viewModel: {

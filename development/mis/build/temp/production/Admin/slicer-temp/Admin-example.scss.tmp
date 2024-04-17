@@ -3730,6 +3730,7 @@ $include-admin-view-productregistration-views-grids-productmanagerevalauditrevie
 $include-admin-view-productregistration-views-grids-productqueryapprovalgrid: dynamic(true);;
 $include-admin-view-productregistration-views-grids-productsnotificationsgrid: dynamic(true);;
 $include-admin-view-productregistration-views-grids-psurdocuploadsgrid: dynamic(true);;
+$include-admin-view-productregistration-views-grids-pvltrselectiongrid: dynamic(true);;
 $include-admin-view-productregistration-views-grids-qualitysummaryfrm: dynamic(true);;
 $include-admin-view-productregistration-views-grids-common_grids-allmedicaldeviceappdetailsgrid: dynamic(true);;
 $include-admin-view-productregistration-views-grids-common_grids-allproductsappdetailsgrid: dynamic(true);;
@@ -4122,6 +4123,7 @@ $include-admin-view-pv-views-forms-pvsuspecteddrugfrm: dynamic(true);;
 $include-admin-view-pv-views-forms-pvtestfrm: dynamic(true);;
 $include-admin-view-pv-views-grids-casualityevaluationgrid: dynamic(true);;
 $include-admin-view-pv-views-grids-causalityreportabstractgrid: dynamic(true);;
+$include-admin-view-pv-views-grids-facilityselectiongrid: dynamic(true);;
 $include-admin-view-pv-views-grids-pvadditionalproblemsgrid: dynamic(true);;
 $include-admin-view-pv-views-grids-pvdrughistorygrid: dynamic(true);;
 $include-admin-view-pv-views-grids-pvexportimportgrid: dynamic(true);;

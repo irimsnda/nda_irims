@@ -2324,30 +2324,65 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
     onlinePanel.getViewModel().set('isReadOnly', true);
 
 },
-    onshowPersonalUsePermitsDeclaration:function(sub_module_id){
+    // onshowPersonalUsePermitsDeclaration:function(sub_module_id){
+    //     Ext.getBody().mask('Please wait...');
+    //     var me = this,
+    //         mainTabPanel = me.getMainTabPanel(),
+    //         activeTab = mainTabPanel.getActiveTab(),
+    //         dashboardWrapper = activeTab.down('#permitsdashwrapper'),
+    //         module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+    //         section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+            
+    //     dashboardWrapper.removeAll();
+    //     var workflowContainer = Ext.widget('personaluserpermitsreceiving');
+    //     workflowContainer.down('displayfield[name=process_name]').setValue('Personal Use Permits Declaration');
+    //     workflowContainer.down('displayfield[name=workflow_stage]').setValue('Permit Declaration');
+      
+    //     workflowContainer.down('hiddenfield[name=module_id]').setValue(4);
+        
+    //     dashboardWrapper.add(workflowContainer);
+    //     workflowContainer.getViewModel().set('isReadOnly', false);
+                       
+    //     Ext.Function.defer(function () {
+    //         Ext.getBody().unmask();
+    //     }, 300);
+
+    // },
+
+    onshowPersonalUsePermitsDeclaration: function (sub_module_id) {
         Ext.getBody().mask('Please wait...');
         var me = this,
             mainTabPanel = me.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
             dashboardWrapper = activeTab.down('#permitsdashwrapper'),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
-            section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
-            
+           section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+        workflow_details = getInitialWorkflowDetails(module_id, section_id, sub_module_id);
+
+        if (!workflow_details) {
+            Ext.getBody().unmask();
+            toastr.warning('Problem encountered while fetching workflow details-->Possibly workflow not set!!', 'Warning Response');
+            return false;
+        }
         dashboardWrapper.removeAll();
-        var workflowContainer = Ext.widget('personaluserpermitsreceiving');
-        workflowContainer.down('displayfield[name=process_name]').setValue('Personal Use Permits Declaration');
-        workflowContainer.down('displayfield[name=workflow_stage]').setValue('Permit Declaration');
-      
-        workflowContainer.down('hiddenfield[name=module_id]').setValue(4);
-        
+        var workflowContainer = Ext.widget(workflow_details.viewtype);
+        workflowContainer.down('displayfield[name=process_name]').setValue(workflow_details.processName);
+        workflowContainer.down('displayfield[name=workflow_stage]').setValue(workflow_details.initialStageName);
+        workflowContainer.down('displayfield[name=application_status]').setValue(workflow_details.applicationStatus);
+        workflowContainer.down('hiddenfield[name=process_id]').setValue(workflow_details.processId);
+        workflowContainer.down('hiddenfield[name=workflow_stage_id]').setValue(workflow_details.initialStageId);
+        workflowContainer.down('hiddenfield[name=module_id]').setValue(module_id);
+        workflowContainer.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+        workflowContainer.down('hiddenfield[name=section_id]').setValue(section_id);
+          
         dashboardWrapper.add(workflowContainer);
-        workflowContainer.getViewModel().set('isReadOnly', false);
+       workflowContainer.getViewModel().set('isReadOnly', true);
                        
         Ext.Function.defer(function () {
             Ext.getBody().unmask();
         }, 300);
-
     },
+
     onshowNewNarcoticsPermits: function (sub_module_id) {
         Ext.getBody().mask('Please wait...');
         var me = this,

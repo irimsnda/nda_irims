@@ -2072,6 +2072,47 @@ public function getProductInvoiceChargesConfig(Request $req){
         return response()->json($res);
     }
 
+     public function getPortOfEntry(Request $req)
+    {
+        try {
+
+          $filters = $req->input('filter');
+            $qry = DB::table('par_ports_information as t1')
+            ->join('par_portsinformation as t2', 't2.port_id', '=', 't1.id')
+            ->select('t1.id', 't1.name');
+
+            $results = $qry->get();
+
+
+            if ($filters != '') {
+                $filters = (array)json_decode($filters);
+                $mode_oftransport_id = $filters['mode_oftransport_id'];
+
+               // dd($filters['mode_oftransport_id']);
+               $results->where($filters)->where('t2.mode_oftransport_id',$mode_oftransport_id);
+            }
+
+
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
+
     public function getPremiseInvoiceChargesConfig(Request $req){
        $filters = (array)json_decode($req->filters);
         $filters=array_filter($filters);

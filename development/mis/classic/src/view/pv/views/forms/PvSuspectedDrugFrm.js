@@ -520,7 +520,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
         {
                 xtype:'fieldcontainer',
                 fieldLabel: 'Start of administration',
-                columnWidth: 0.5,
+                columnWidth: 0.33,
                 hideLabel: true,
                 layout: {
                     type: 'column'
@@ -533,7 +533,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                         xtype: 'datefield',
                         fieldLabel: 'Start of administration',
                         format: 'Y-m-d',
-                        allowBlank:
+                        allowBlank:true,
                         altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
                         name: 'administration_start_date',
                         maxValue: new Date()
@@ -544,6 +544,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                         labelAlign: 'top',
                         name: 'onset_time',
                         format: 'H:i',
+                        allowBlank:true,
                         columnWidth: 0.4,
                         altFormats:'H:i',
                         increment: 1,
@@ -554,7 +555,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                 },{
                 xtype:'fieldcontainer',
                 fieldLabel: 'End date ',
-                columnWidth: 0.5,
+                columnWidth: 0.33,
                 hideLabel: true,
                 layout: {
                     type: 'column'
