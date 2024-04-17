@@ -6380,13 +6380,13 @@ showPermitApplicationMoreDetails: function (btn) {
         Ext.getBody().mask('Please wait...');
         var me = this,
             activeTab = pnl;
-            application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
+            var application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
             importexportdetailsfrm = activeTab.down('#importexportdetailsfrm'),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
-            zone_cbo = activeTab.down('combo[name=zone_id]');
+            //zone_cbo = activeTab.down('combo[name=zone_id]');
             filter = { section_id: section_id },
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
        
@@ -6413,7 +6413,7 @@ showPermitApplicationMoreDetails: function (btn) {
                         
                         importexportdetailsfrm.loadRecord(model);
 
-                        zone_cbo.setValue(zone_id);
+                       // zone_cbo.setValue(zone_id);
 
                         activeTab.down('displayfield[name=application_status]').setValue(results.application_status);
 

@@ -1406,6 +1406,7 @@ quickNavigationReview: function (btn) {
 
             module_id = containerPnl.down('hiddenfield[name=module_id]').getValue(),
             application_code = containerPnl.down('hiddenfield[name=application_code]').getValue();
+            console.log(application_code);
             this.fireEvent('generatePersonalUsePermit', application_code,module_id,'Print Personal Use Permit');
     },
     /*
@@ -3236,7 +3237,7 @@ downloadPreviousDocupload: function (item) {
        console.log(containerPnl);
        var process_id = containerPnl.down('hiddenfield[name=process_id]').getValue(),
        module_id = containerPnl.down('hiddenfield[name=module_id]').getValue(),
-      sub_module_id = containerPnl.down('hiddenfield[name=sub_module_id]').getValu
+      sub_module_id = containerPnl.down('hiddenfield[name=sub_module_id]').getValue(),
        // module_id = 4,
        // sub_module_id = 15,
         //zone_id = containerPnl.down('combo[name=zone_id]').getValue(),

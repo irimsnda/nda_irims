@@ -5908,7 +5908,6 @@ public function getNarcoticspermitsproductsDetails(Request $req){
                         
                         $apptype_code = getSingleRecordColValue('sub_modules', array('id' => $sub_module_id), 'code');
                       
-                     
                                  $codes_array = array(
                                      'section_code' => $section_code,
                                      'zone_code' => $zone_code,
@@ -5918,8 +5917,6 @@ public function getNarcoticspermitsproductsDetails(Request $req){
                         $application_code = generateApplicationCode($sub_module_id, $applications_table);
     
                         $application_status = getApplicationInitialStatus($module_id, $sub_module_id);
-    
- 
                         $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, $zone_id, $user_id);
  
                          if ($tracking_details['success'] == false) {
