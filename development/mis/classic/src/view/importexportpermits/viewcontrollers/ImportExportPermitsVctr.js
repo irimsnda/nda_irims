@@ -1405,8 +1405,7 @@ quickNavigationReview: function (btn) {
             containerPnl = mainTabPnl.getActiveTab(),
 
             module_id = containerPnl.down('hiddenfield[name=module_id]').getValue(),
-            application_code = containerPnl.down('hiddenfield[name=application_code]').getValue();
-            console.log(application_code);
+            application_code = containerPnl.down('hiddenfield[name=active_application_code]').getValue();
             this.fireEvent('generatePersonalUsePermit', application_code,module_id,'Print Personal Use Permit');
     },
     /*

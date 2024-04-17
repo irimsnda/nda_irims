@@ -5824,7 +5824,7 @@ public function getNarcoticspermitsproductsDetails(Request $req){
                
                 
                 $user_id = $this->user_id;
-                
+                $view_id = generateApplicationViewID();
                 
                 $app_data = array(
                              "module_id" => $request->input('module_id'),
@@ -5842,7 +5842,7 @@ public function getNarcoticspermitsproductsDetails(Request $req){
                              "village" => $request->input('village'),
                              "tpin_no" => $request->input('tpin_no'),
                              "telephone_no" => $request->input('telephone_no'),
-                             
+                             "view_id" => $view_id,
                             "inspected_by" => $user_id,
                              "street" => $request->input('street'),
                              "physical_address" => $request->input('physical_address'),
