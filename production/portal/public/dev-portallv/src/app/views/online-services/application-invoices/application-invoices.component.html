@@ -19,7 +19,7 @@
 </dx-data-grid>
 </div>
 
-<dx-popup class="popup"  [width]="funcpopWidth(60)" [height]="600" [showTitle]="true" title="{{printReportTitle}}"
+<dx-popup class="popup"  [width]="funcpopWidth(60)" [height]="auto" [showTitle]="true" title="{{printReportTitle}}"
   [dragEnabled]="false" [closeOnOutsideClick]="true" [(visible)]="isPrintReportVisible">
   <div *dxTemplate="let data of 'content'">
     <dx-scroll-view>

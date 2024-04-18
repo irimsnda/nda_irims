@@ -44,22 +44,29 @@ class TraderManagementController extends Controller
                      'postal_address'=>$trader_data->postal_address,
                      'telephone_no'=>$trader_data->telephone_no,
                      'mobile_no'=>$trader_data->mobile_no
-                 );  
+                 ); 
+
                  $where_app = array('id'=>$record_id);
+
                  $count = DB::connection('mis_db')->table('wb_trader_account')
                      ->where($where_app)
                      ->count();
+
                  if($count){
+
                     $previous_data = getPreviousRecords('wb_trader_account', $where_app,'mis_db');
+
                     $trader_no = $previous_data['results'][0]['identification_no']; 
                     $email_address = $previous_data['results'][0]['email']; 
                     $resp=   updateRecord('wb_trader_account', $previous_data, $where_app, $data, '','mis_db');
+
                     if(!$resp['success']){
                          return \response()->json(array('success'=>false,'message'=>$resp['message'])); 
                     }
 
                     $previous_data = getPreviousRecords('wb_trader_account', $where_app);
                     $resp=   updateRecord('wb_trader_account', $previous_data, $where_app, $data, '');
+
                     if(!$resp['success']){
                          return \response()->json(array('success'=>false,'message'=>$resp['message'])); 
                     }
@@ -127,6 +134,7 @@ class TraderManagementController extends Controller
                
                 $trader_no = generateTraderNo('wb_trader_account');
                 $data = array('name'=>$trader_data->name,
+                    'traderaccount_type_id'=>$trader_data->traderaccount_type_id,
                     'contact_person'=>$trader_data->contact_person,
                     'contact_person_email'=>$trader_data->contact_person_email,
                     'country_id'=>$trader_data->country_id,
@@ -152,7 +160,6 @@ class TraderManagementController extends Controller
                 if($count == 0){
                    $email_address = $trader_data->email_address;
                    $resp = insertRecord('wb_trader_account', $data, 'Create Account');
-                   
                    $user_passwordData = str_random(8);
                    //had code for test
                   
@@ -160,7 +167,7 @@ class TraderManagementController extends Controller
                    $uuid = generateUniqID();//unique user ID
                    $user_password = hashPwd($email_address, $uuid, $user_passwordData);
                    $trader_id = $resp['record_id'];
-                   
+
                    $user_data = array('email'=> $email_address,
                                  'trader_id'=>$trader_id,
                                  'password'=>$user_password,
@@ -177,7 +184,7 @@ class TraderManagementController extends Controller
                     //the details //tin_no
                     
                     $resp = insertRecord('wb_traderauthorised_users', $user_data, 'Create Trader Users');
-                  
+
                     $usr_id = $resp['record_id'];
                     $verification_code = str_random(30);
                     DB::table('wb_user_verifications')->insert(['user_id'=>$usr_id,'token'=>$verification_code]);
@@ -360,6 +367,7 @@ class TraderManagementController extends Controller
         return response()->json($resp);
 
     }
+  
 	public function onSaveTradersApplicationInformation(Request $req){
         try{
             $mistrader_id = $req->mistrader_id;
@@ -620,7 +628,34 @@ class TraderManagementController extends Controller
     return response()->json($resp);
 
    }
-   
+   public function getSupervisingPharmacist(Request $req){
+  
+    try{
+        $data = array();
+        $psuNo = $req->psuNo;
+
+        $records =DB::connection('mis_db')->table('tra_pharmacist_personnel as t1')
+                ->where(array('psu_no'=>$psuNo))
+                ->get();
+       
+              $resp =array('success'=>true,'data'=> $records);
+
+    
+    } catch (\Exception $e) {
+        $resp = array(
+            'success' => false,
+            'message' => $e->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $resp = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($resp);
+
+
+}
    public function getTraderInformation(Request $req){
     try{
         $data = array();
@@ -678,5 +713,6 @@ class TraderManagementController extends Controller
     return response()->json($res);
 
 }
+   
 
 }

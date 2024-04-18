@@ -1,7 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 
 import { FormGroup } from '@angular/forms';
-
 import { SharedProductregistrationclassComponent } from '../../shared-productregistrationclass/shared-productregistrationclass.component';
 
 @Component({
@@ -21,7 +20,7 @@ export class InitiateNewproductApplicationComponent extends SharedProductregistr
   terms_conditions: any;
 
   ngOnInit() {
-    this.onLoadGuidelines(this.sub_module_id, this.section_id);
+    this.onLoadGuidelines(this.sub_module_id);
     this.productapp_details = this.appService.getProductApplicationDetail();
     if (!this.productapp_details) {
       this.router.navigate(['./../online-services/newprodreg-dashboard']);
@@ -50,8 +49,8 @@ export class InitiateNewproductApplicationComponent extends SharedProductregistr
     this.autoLoadedParameters(this.section_id);
 
 
-  }onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+  }onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {

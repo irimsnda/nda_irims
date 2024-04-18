@@ -18,7 +18,7 @@ export class ClinicalPlacabolproductsComponent  extends ClinicalImpproductsCompo
   @Input() siUnitsData: any;
   @Input() marketlocationData: any;
   @Input() manufacturersData: any;
-
+    auto:any;
   ngOnInit() {
     this.iMPProductDetailsFrm = new FormGroup({
       product_category_id: new FormControl(3, Validators.compose([])),
@@ -40,7 +40,7 @@ export class ClinicalPlacabolproductsComponent  extends ClinicalImpproductsCompo
       classification_id: new FormControl('', Validators.compose([])),
       gmdn_term: new FormControl('', Validators.compose([])),
       gmdn_category: new FormControl('', Validators.compose([])),
-      manufacturer_name: new FormControl('', Validators.compose([])),
+      manufacturer_name: new FormControl('', Validators.compose([Validators.required])),
       investigationproduct_section_id: new FormControl('', Validators.compose([Validators.required]))
       
     });

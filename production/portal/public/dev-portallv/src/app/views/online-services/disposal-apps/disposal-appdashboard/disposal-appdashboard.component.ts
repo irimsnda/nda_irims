@@ -1,15 +1,18 @@
 
-
-
-
 import { Component, OnInit, ViewContainerRef, ViewChild } from '@angular/core';
 import { ModalDialogService } from 'ngx-modal-dialog';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { ConfigurationsService } from 'src/app/services/shared/configurations.service';
+import { AnimationStyleNormalizer } from '@angular/animations/browser/src/dsl/style_normalization/animation_style_normalizer';
+import { DataTableResource } from 'angular5-data-table';
 import { ImportexportService } from 'src/app/services/importexp-applications/importexport.service';
-import { DxDataGridComponent, DxActionSheetModule } from 'devextreme-angular';
+import {
+  DxDataGridModule,
+  DxDataGridComponent,
+  DxTemplateModule
+} from 'devextreme-angular';
 import { Utilities } from 'src/app/services/common/utilities.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AppSettings } from 'src/app/app-settings';
@@ -66,7 +69,7 @@ export class DisposalAppdashboardComponent implements OnInit {
 
     this.FilterDetailsFrm = new FormGroup({
       sub_module_id: new FormControl('', Validators.compose([])),
-      section_id: new FormControl('', Validators.compose([])),
+      disposal_class_id: new FormControl('', Validators.compose([])),
       application_status_id: new FormControl('', Validators.compose([]))
     });
 
@@ -145,7 +148,7 @@ export class DisposalAppdashboardComponent implements OnInit {
   
   onLoadSections() {
     var data = {
-      table_name: 'par_sections',
+      table_name: 'par_disposalprodclass_category',
     };
     this.configService.onLoadConfigurationData(data)
       .subscribe(
@@ -218,19 +221,21 @@ export class DisposalAppdashboardComponent implements OnInit {
   }
   applicationActionColClick(e,data){
     var action_btn = e.itemData;
-    this.functActionColumnClick(action_btn,data);
-  }    onCellPrepared(e) {
+    this.functActionColumnClick(action_btn,data.data);
+  }    
+  onCellPrepared(e) {
     this.utilityService.onCellPrepared(e);
     
 }
   singleApplicationActionColClick(data){
-      
-    this.functActionColumnClick(data.data,data);
+  this.functActionColumnClick(data.data, data);
   
   }
+
   functActionColumnClick(action_btn, data) {
       
     if(action_btn.action === 'edit'){
+
       this.funcApplicationPreveditDetails(data.data);
     }
     else if(action_btn.action === 'preview'){
@@ -275,6 +280,13 @@ export class DisposalAppdashboardComponent implements OnInit {
       this.funcPrintDisposalegistrationCertificate(data.data);
 
     }
+    else if(action_btn.action == 'delete_application'){
+      this.funcDeletePermitApplication(data);
+    }
+
+  }
+  funcDeletePermitApplication(data) { 
+    this.utilityService.funcApplicationDeleteCall(this.viewRef,data,'wb_disposal_applications', this.reloadPermitApplicationsApplications);
   }
   funcApplicationRejection(app_data){
     
@@ -357,10 +369,10 @@ export class DisposalAppdashboardComponent implements OnInit {
   }
   onSelectProdutFilters(e) {
     let sub_module_id = this.FilterDetailsFrm.get('sub_module_id').value;
-    let section_id = this.FilterDetailsFrm.get('section_id').value;
+    let disposal_class_id = this.FilterDetailsFrm.get('disposal_class_id').value;
     let application_status_id = this.FilterDetailsFrm.get('application_status_id').value;
      
-    this.reloadPermitApplicationsApplications({sub_module_id:sub_module_id,section_id:section_id,application_status_id:application_status_id});
+    this.reloadPermitApplicationsApplications({sub_module_id:sub_module_id,disposal_class_id:disposal_class_id,application_status_id:application_status_id});
 
   }
   onClearProdutFilters(){

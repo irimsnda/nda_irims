@@ -65,6 +65,11 @@ export class AuthService {
     let userDetails = JSON.parse(localStorage.getItem('user'));
     return userDetails;
   }
+  getPharmistsDetails() {
+    let pharmacistDetails = JSON.parse(localStorage.getItem('user'));
+    return pharmacistDetails;
+  }
+
   isLoggednIn() {
     return this.getAccessToken() !== null;
   }

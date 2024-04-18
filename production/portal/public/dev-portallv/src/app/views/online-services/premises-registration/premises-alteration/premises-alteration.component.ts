@@ -33,6 +33,7 @@ export class PremisesAlterationComponent extends SharedPremisesregistrationclass
   //@Inject(WizardState) public wizard: WizardState,
   premisesrenGeneraldetailsfrm: FormGroup;
   premisesAmmendmentsrequestFrm: FormGroup;
+  supervisingPharmacistsdetailsfrm:FormGroup;
   premAmmendementsRequestData:any ={};
   ammendementSectionData:any;
   isPremisesAmmendementPopup:boolean = false;
@@ -83,7 +84,8 @@ export class PremisesAlterationComponent extends SharedPremisesregistrationclass
     this.onLoadbusinessCategories();
     this.onLoadPersonnerDetails();
     this.onLoadPersonnelPositionDetails();
-this.onLoadVariationCategories();
+    this.onLoadVariationCategories();
+
     this.premisesrenGeneraldetailsfrm = new FormGroup({
       premises_name: new FormControl('', Validators.compose([Validators.required])),
       section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
@@ -107,8 +109,10 @@ this.onLoadVariationCategories();
       premise_type_id: new FormControl('', Validators.compose([])),//Validators.required
       vehicle_reg_no: new FormControl('', Validators.compose([])),//
     });
-    
-this.premisesAmmendmentsrequestFrm = new FormGroup({
+
+
+
+      this.premisesAmmendmentsrequestFrm = new FormGroup({
       part_id: new FormControl('', Validators.compose([Validators.required])),
       remarks: new FormControl('', Validators.compose([Validators.required])),
       id: new FormControl('', Validators.compose([]))
@@ -116,41 +120,26 @@ this.premisesAmmendmentsrequestFrm = new FormGroup({
 
     this.premisesrenGeneraldetailsfrm.patchValue(this.premisesapp_details);
 
+
+  this.appService.onLoadPremisesPharmacistDetails(this.premise_id).subscribe(
+  data => {
+    const pharmacistDetails = data.data;
+    if (pharmacistDetails) {
+      this.supervisingPharmacistsdetailsfrm.patchValue(pharmacistDetails);
+
+    } else {
+      console.error('No Pharmacists details found.');
+    }
+  },
+  error => {
+    console.error('Error loading Pharmacists details:', error);
+  }
+);
+
+
+
   }
 
-  onSavePremisesApplication() {
-    if(this.premise_id > 0){
-      this.wizard.model.navigationMode.goToStep(1);
-      return;
-    }
-    if (this.premisesrenGeneraldetailsfrm.invalid) {
-     // return;
-    }
-    if(this.premisesrenGeneraldetailsfrm.get('zone_id').value < 1){
-      this.toastr.error('Select Premises Certificate/Permit Issue Place', 'Alert');
-      return;
-    }
-    this.spinner.show();
-    this.appService.onSaveRenPremisesApplication(this.premise_id, this.premisesrenGeneraldetailsfrm.value, this.tracking_no)
-      .subscribe(
-        response => {
-          this.premises_resp = response.json();
-          //the details 
-          this.spinner.hide();
-          this.tracking_no = this.premises_resp.tracking_no;
-          this.premise_id = this.premises_resp.premise_id;
-          this.application_code = this.application_code;
-          if (this.premises_resp.success) {
-            this.toastr.success(this.premises_resp.message, 'Response');
-            this.wizard.model.navigationMode.goToStep(1);
-          } else {
-            this.toastr.error(this.premises_resp.message, 'Alert');
-          }
-        },
-        error => {
-          this.loading = false;
-        });
-  }
   onLoadVariationCategories() {
     var data = {
       module_id:this.module_id,

@@ -1,23 +1,23 @@
 import { Component, OnInit, ViewChild, NgModule, ViewContainerRef } from '@angular/core';
 import { DataTableResource } from 'angular5-data-table';
 import { PremisesApplicationsService } from '../../../../services/premises-applications/premises-applications.service';
-import { ConfigurationsService } from '../../../../services/shared/configurations.service';
-import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+ import { ConfigurationsService } from '../../../../services/shared/configurations.service';
+  import { Router } from '@angular/router';
+  import { Subject } from 'rxjs';
 
-import { AnimationStyleNormalizer } from '@angular/animations/browser/src/dsl/style_normalization/animation_style_normalizer';
-import { ToastrService } from 'ngx-toastr';
+  import { AnimationStyleNormalizer } from '@angular/animations/browser/src/dsl/style_normalization/animation_style_normalizer';
+  import { ToastrService } from 'ngx-toastr';
 
-import {
-  DxDataGridModule,
-  DxDataGridComponent,
-  DxTemplateModule
-} from 'devextreme-angular';
-import { SpinnerVisibilityService } from 'ng-http-loader';
-import { ModalDialogService } from 'ngx-modal-dialog';
-import { Utilities } from 'src/app/services/common/utilities.service';
-import { AppSettings } from 'src/app/app-settings';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+  import {
+    DxDataGridModule,
+    DxDataGridComponent,
+    DxTemplateModule
+  } from 'devextreme-angular';
+  import { SpinnerVisibilityService } from 'ng-http-loader';
+  import { ModalDialogService } from 'ngx-modal-dialog';
+  import { Utilities } from 'src/app/services/common/utilities.service';
+  import { AppSettings } from 'src/app/app-settings';
+  import { FormGroup, FormControl, Validators } from '@angular/forms';
 @Component({
   selector: 'app-premises-reg-dashboard',
   templateUrl: './premises-reg-dashboard.component.html',
@@ -69,6 +69,7 @@ export class PremisesRegDashboardComponent implements OnInit {
   premisessapp_details:any;
   module_id:number = 2;
   businessTypeDetailsData:any;
+  businessDetailsData:any;
   sectionsData:number;
    applicationStatusData:number;
    FilterDetailsFrm:FormGroup;
@@ -82,11 +83,14 @@ export class PremisesRegDashboardComponent implements OnInit {
    sub_module_id:number;
    business_typecategory_id:number;
    businessTypesData:any;
+   premisesTypesData:any;
    prodProductTypeData:any;
    regulatedSectionsData:any;
    isPremisesApplicationInitialisation:boolean;
    premisesAppSelectionfrm:FormGroup;
    section_id:number;
+   premise_type_id:number;
+   report_type_id:number;
    business_type_id:number;
   constructor(private utilityService:Utilities,private viewRef: ViewContainerRef,private modalServ: ModalDialogService, private spinner: SpinnerVisibilityService,public toastr: ToastrService, private router: Router, private configService: ConfigurationsService, private appService: PremisesApplicationsService) {
 
@@ -96,11 +100,13 @@ export class PremisesRegDashboardComponent implements OnInit {
       premises_name: new FormControl('', Validators.compose([Validators.required])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
       application_type: new FormControl('', Validators.compose([Validators.required])),
-      status: new FormControl('', Validators.compose([Validators.required]))
+      status: new FormControl('', Validators.compose([Validators.required])),
+      status_name:new FormControl('', Validators.compose([Validators.required]))
     });
     this.FilterDetailsFrm = new FormGroup({
       sub_module_id: new FormControl('', Validators.compose([])),
       section_id: new FormControl('', Validators.compose([])),
+      business_type_id:new FormControl('', Validators.compose([])),
       application_status_id: new FormControl('', Validators.compose([]))
     });
 
@@ -115,8 +121,7 @@ export class PremisesRegDashboardComponent implements OnInit {
       section_id: new FormControl(this.sectionsData, Validators.compose([])),
       sub_module_id: new FormControl(this.sub_module_id, Validators.compose([])),
       regulated_producttype_id: new FormControl('', Validators.compose([])),
-      business_type_id: new FormControl('', Validators.compose([Validators.required])),
-      business_typecategory_id:new FormControl('',  Validators.compose([]))
+      business_type_id: new FormControl('', Validators.compose([Validators.required]))
     });
     this.onBusinessTypesLoad();
     this.onLoadApplicationstatuses();
@@ -124,7 +129,8 @@ export class PremisesRegDashboardComponent implements OnInit {
     this.onLoadreasonForDismissalData();
     this.onLoadApplicationCounterDueforRenewal();
     this.onLoadprodProductTypeData();
-    this.onBusinessTypesDetailsLoad()
+    this.onBusinessTypesDetailsLoad();
+    this.onLoadPremiseTypesLoad();
    }
   
   ngOnInit() {
@@ -175,10 +181,10 @@ export class PremisesRegDashboardComponent implements OnInit {
   }
   onSelectPremisesFilters(e) {
     
-    let section_id = this.FilterDetailsFrm.get('section_id').value;
+    let business_type_id = this.FilterDetailsFrm.get('business_type_id').value;
     let application_status_id = this.FilterDetailsFrm.get('application_status_id').value;
      
-    this.reloadPremisesApplications({sub_module_id:this.sub_module_id,section_id:section_id,application_status_id:application_status_id});
+    this.reloadPremisesApplications({sub_module_id:this.sub_module_id,business_type_id:business_type_id,application_status_id:application_status_id});
 
   }
   onClearPremisesFilters(){
@@ -271,7 +277,6 @@ export class PremisesRegDashboardComponent implements OnInit {
     this.configService.onLoadConfigurationData(data)
       .subscribe(
         data => {
-          console.log(data);
           this.businessTypeDetailsData = data;
         },
         error => {
@@ -323,7 +328,7 @@ export class PremisesRegDashboardComponent implements OnInit {
   }
   onLoadPremisesCounterDetails(sub_module_id) {
 
-    this.utilityService.onLoadApplicationCounterDetails('tra_premises_applications',sub_module_id)
+    this.utilityService.onLoadApplicationCounterDetails('wb_premises_applications',sub_module_id)
       .subscribe(
         data => {
           if (data.success) {
@@ -331,7 +336,7 @@ export class PremisesRegDashboardComponent implements OnInit {
              // this.dtPremisesApplicationData = data.data;
              for(let rec of records){
              
-                  if(rec.status_id == 1){
+                  if(rec.status_id == 1 || rec.status_id == 79){
                   
                     this.pending_submission = rec.application_counter;
                   }if(rec.status_id == 6 || rec.status_id == 8 || rec.status_id == 17){
@@ -520,21 +525,21 @@ export class PremisesRegDashboardComponent implements OnInit {
 */
   }
   funcPrintPremisesRegistrationCertificate(app_data){
-
-    let report_url = this.mis_url+'reports/generatePremiseCertificate?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
-    this.funcGenerateRrp(report_url,"Application Certificate")
-    
-  }
+      const report_type_id = 3;
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&report_type_id="+report_type_id+"&table_name=tra_premises_applications";
+      this.funcGenerateRrp(report_url,"Application Certificate")
+    }
   funcPrintPremisesBusinessPermit(app_data){
-
-    let report_url = this.mis_url+'reports/generatePremisePermit?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
-    this.funcGenerateRrp(report_url,"Business Permits")
+        const report_type_id = 3; 
+        let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&report_type_id="+report_type_id+"&table_name=tra_premises_applications";
+        this.funcGenerateRrp(report_url,"Business Permits")
+      
   }
   
   funcPrintApplicationInvoice(app_data){
-
-    let report_url = this.mis_url+'reports/generateApplicationInvoice?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
-    this.funcGenerateRrp(report_url,"Application Invoice")
+      const report_type_id = 1 
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&report_type_id="+report_type_id+"&table_name=tra_premises_applications";
+      this.funcGenerateRrp(report_url,"Application Invoice")
     
   }
   funcPrintApplicationReceipts(app_data){
@@ -547,16 +552,17 @@ export class PremisesRegDashboardComponent implements OnInit {
 }
   funcPrintLetterofRejection(app_data){
       //print details
-      let report_url = this.mis_url+'reports/generatePremisesRejectionLetter?application_code='+app_data.application_code;
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code;
       this.funcGenerateRrp(report_url,"Application Details");
 
   }
   funcPrintApplicationDetails(app_data){
     //print details
-
-      let report_url = this.mis_url+'reports/generatePremisesApplicationRpt?application_code='+app_data.application_code;
+  
+       const report_type_id = 4; 
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&report_type_id="+report_type_id;
       this.funcGenerateRrp(report_url,"Application Details");
-     
+   
   }
   funcGenerateRrp(report_url,title){
     
@@ -635,7 +641,6 @@ export class PremisesRegDashboardComponent implements OnInit {
           
                     if(this.router_link != ''){
                       this.app_route = ['./online-services/' + this.router_link];
-          
                       this.router.navigate(this.app_route);
                     }
                     else{
@@ -667,11 +672,14 @@ export class PremisesRegDashboardComponent implements OnInit {
   //  // this. OnLoadBusinesstypeCategories($event.value);
 
   // }
-  
+
+
+
   onBusinessTypesLoad() {
 
     var data = {
       table_name: 'par_business_types',
+      is_online:1
     };
     this.configService.onLoadConfigurationData(data)
       .subscribe(
@@ -682,7 +690,45 @@ export class PremisesRegDashboardComponent implements OnInit {
           return false
         });
   }
-   
+    onLoadPremiseTypesLoad() {
+
+    var data = {
+      table_name: 'par_premises_types',
+    };
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.premisesTypesData = data;
+        },
+        error => {
+          return false
+        });
+  }
+      onPremiseCboSelect($event) {
+
+    this.premise_type_id = $event.selectedItem.id;
+
+    this.onLoadBusinessDetails(this.premise_type_id);
+
+  } 
+
+
+  onLoadBusinessDetails(premise_type_id) {
+
+    var data = {
+      table_name: 'par_business_types',
+      premise_type_id: premise_type_id
+    };
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.businessDetailsData = data;
+        },
+        error => {
+          return false
+        });
+  }  
+
   onLoadprodProductTypeData() {
     var data = {
       table_name: 'par_regulated_productstypes'

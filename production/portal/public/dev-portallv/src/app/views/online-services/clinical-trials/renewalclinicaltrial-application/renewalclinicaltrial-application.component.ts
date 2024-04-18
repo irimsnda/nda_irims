@@ -21,7 +21,8 @@ SharedClinicaltrialComponent implements OnInit {
     this.appmodule_id = this.module_id;
     
     this.clinicaltrialGeneraldetailsfrm.patchValue(this.application_details);
-
+    this.clinicaltrialReportingdetailsfrm.patchValue(this.application_details);
+    this.ClinicaltrialRenewalSummaryfrm.patchValue(this.application_details);
   }
 
   onSaveClincialTrialApplication() {
@@ -42,6 +43,8 @@ SharedClinicaltrialComponent implements OnInit {
             this.application_id = this.app_resp.application_id;
             this.application_code = this.app_resp.application_code;
             this.toastr.success(this.app_resp.message, 'Response');
+            this.wizard.model.navigationMode.goToStep(1);
+
           } else {
             this.toastr.error(this.app_resp.message, 'Alert');
           }
@@ -50,6 +53,53 @@ SharedClinicaltrialComponent implements OnInit {
           this.loading = false;
         });
   }
+    onSaveClincialTrialSummaryApplication() {
+    if (this.ClinicaltrialRenewalSummaryfrm.invalid) {
+      return;
+    }
+    this.spinner.show();
+    this.appService.onSavePermitApplication(this.application_id, this.ClinicaltrialRenewalSummaryfrm.value, this.tracking_no, 'clinicaltrials/onSaveClincialTrialSummaryApplication')
+      .subscribe(
+        response => {
+          this.app_resp = response.json();
+          //the details 
+          this.spinner.hide();
+
+          if (this.app_resp.success) {
+            this.application_id = this.app_resp.application_id;
+            this.toastr.success(this.app_resp.message, 'Response');
+          } else {
+            this.toastr.error(this.app_resp.message, 'Alert');
+          }
+        },
+        error => {
+          this.loading = false;
+        });
+  } 
+    onSaveClincialTrialProgressReportApplication() {
+    if (this.clinicaltrialReportingdetailsfrm.invalid) {
+      return;
+    }
+    this.spinner.show();
+    this.appService.onSavePermitApplication(this.application_id, this.clinicaltrialReportingdetailsfrm.value, this.tracking_no, 'clinicaltrials/onSaveClincialTrialProgressReportApplication')
+      .subscribe(
+        response => {
+          this.app_resp = response.json();
+          //the details 
+          this.spinner.hide();
+
+          if (this.app_resp.success) {
+            this.application_id = this.app_resp.application_id;
+            this.toastr.success(this.app_resp.message, 'Response');
+          } else {
+            this.toastr.error(this.app_resp.message, 'Alert');
+          }
+        },
+        error => {
+          this.loading = false;
+        });
+  }    
+
   onClinicalDashboard() {
     this.app_route = ['./online-services/renewalclinical-trialsdashboard'];
 

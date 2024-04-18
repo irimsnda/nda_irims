@@ -24,10 +24,12 @@ Route::group(['middleware' => 'api', 'prefix' => 'tradermanagement'], function()
     Route::get('onLoadTradersApplicationInformation', 'TraderManagementController@onLoadTradersApplicationInformation');
     Route::get('onValidateAccountEmail', 'TraderManagementController@onValidateAccountEmail');
     Route::get('getTraderInformation', 'TraderManagementController@getTraderInformation');
+    Route::get('getSupervisingPharmacist', 'TraderManagementController@getSupervisingPharmacist');
 
     Route::get('gettraderUsersAccountsManagementDetails', 'TraderManagementController@gettraderUsersAccountsManagementDetails');
     Route::post('onAccountRegistration', 'TraderManagementController@onAccountRegistration');
     Route::post('onAccountUsersRegistration', 'TraderManagementController@onAccountUsersRegistration');
+
 
     Route::get('onValidateAdminAccess', 'TraderManagementController@onValidateAdminAccess');
    

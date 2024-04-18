@@ -19,7 +19,8 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { AppSettings } from 'src/app/app-settings';
 import { ConfigurationsService } from 'src/app/services/shared/configurations.service';
 import { AuthService } from 'src/app/services/auth.service';
-
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-perimport-generaldetails',
@@ -38,7 +39,7 @@ export class PerimportGeneraldetailsComponent implements OnInit {
   @Input() portOfEntryExitData: any; 
   @Input() payingCurrencyData: any;  
   @Input() modeOfTransportData: any; 
-  
+  @Input() prescriptionDataParam:any;
   @Input() currencyData: any;
   @Input() consigneeOptionsData: any; 
   @Input() consignee_options_check: any; 
@@ -57,6 +58,7 @@ export class PerimportGeneraldetailsComponent implements OnInit {
   @Input() regions: any; 
   @Input() districts: any; 
   @Input() section_id: number; 
+  @Input() application_type_id:number;
   @Input() deviceTypeData: any; 
   @Input() permitProductsCategoryData: any; 
 
@@ -74,9 +76,12 @@ export class PerimportGeneraldetailsComponent implements OnInit {
   app_resp:any;
   isReadOnly:boolean;
   hide_visalicensedetails:boolean = false;
+  isReadOnlyTraderConsigneePerson:boolean = false;
   invoice_title:string;
   has_registred_outlet:boolean= false;
   showreason_fornonregister_outlet:boolean= false;
+  is_ugandan_residence:boolean= false;
+  is_foreign_residence:boolean= false;
   confirmDataParam:any;
   is_licensepermit: boolean =false;
   consignor_title:string = 'Consignor(Supplier/Receiver)';
@@ -86,14 +91,28 @@ export class PerimportGeneraldetailsComponent implements OnInit {
   showsupporting_document:boolean;
   has_submittedpremisesapp:boolean;
   processData:any;
+  subCountyData:any;
+  countyData:any;
+  perishData:any;
   title:string;
   router_link:string;
   premisesapp_details:any;
+  county_id:number
+  district_id:number;
+  parish_id:number;
+  sub_county_id:number;
+  mode_oftransport_id:number;
+  country_id:number;
+  villageData:any;
   app_route:any;
   maxDate:any;
   premise_title:string = 'Premises(Licensed Outlet(s))';
   premises_title:string=  'Premises(Licensed Outlet(s))';
   is_prescription_medicines: boolean =false;
+  is_personnel_medicines: boolean =false;
+    private isFetchingData = false;
+
+  private destroy$ = new Subject<void>();
 
   constructor(public utilityService:Utilities, public premappService: PremisesApplicationsService, public dmsService: DocumentManagementService, public fb: FormBuilder, public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: ImportexportService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public httpClient: HttpClient, private premService: PremisesApplicationsService) {
   
@@ -106,7 +125,10 @@ export class PerimportGeneraldetailsComponent implements OnInit {
     this.onLoadCountries();
     this.onLoadEligibleImportersData(this.section_id);
     this.onLoadeligibleImportersDocTypes();
-    
+    this.onLoadApplicantDetails();
+    this.onLoadprescriptionDataParam();
+    this.onLoadportOfEntryExitData(this.mode_oftransport_id);
+
     this.onLoadconfirmDataParm() ;
     if(this.section_id == 4){
       this.device_type_visible = true;
@@ -116,7 +138,50 @@ export class PerimportGeneraldetailsComponent implements OnInit {
        // this.import_typecategory_visible = true;
     }
     this.consignor_title = 'Consignor(Supplier)';
+    this.setupSearchByTinNoHandler();
 
+  }
+ private setupSearchByTinNoHandler(): void {
+    this.applicationGeneraldetailsfrm
+      .get('patient_tpin_no')
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((TinNo) => {
+        if (!this.isFetchingData) {
+          this.isFetchingData = true;
+          this.searchByTinNo(TinNo);
+        }
+      });
+  } 
+    searchByTinNo(TinNo){
+    this.appService.onLoadApplicantIncharge(TinNo).subscribe(
+      (response: any) => {
+        if (response && Array.isArray(response.data) && response.data.length > 0) {
+          const dataItem = response.data[0];
+           this.applicationGeneraldetailsfrm.get('tpin_id').setValue(dataItem.id);
+
+
+        } else {
+          
+          this.toastr.error('No data found');
+        }
+
+        this.isFetchingData = false;
+      },
+      (error) => {
+        this.isFetchingData = false;
+      }
+    );
+  }
+    onLoadprescriptionDataParam() {
+    var data = {
+      table_name: 'par_prescription_options',
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.prescriptionDataParam = data;
+        });
   }
   onApplicationCategorySelection($event){
     let permit_category_id = $event.selectedItem.id;
@@ -151,6 +216,8 @@ export class PerimportGeneraldetailsComponent implements OnInit {
         });
 
   }
+
+
   
   onconsigneeOptionsChange($event) {
     this.consignee_options_id = $event.selectedItem.id;
@@ -201,6 +268,143 @@ export class PerimportGeneraldetailsComponent implements OnInit {
     }
 
   }
+
+    onTraderasConsigneeChange($event) {
+    
+    if($event.value == 1){
+        this.isReadOnlyTraderConsigneePerson = false;
+        this.applicationGeneraldetailsfrm.get('patients_fullnames').clearValidators();
+        this.applicationGeneraldetailsfrm.get('patients_fullnames').updateValueAndValidity();
+        this.applicationGeneraldetailsfrm.get('patients_physical_address').clearValidators();
+        this.applicationGeneraldetailsfrm.get('patients_physical_address').updateValueAndValidity();
+         this.applicationGeneraldetailsfrm.get('patient_tpin_no').clearValidators();
+        this.applicationGeneraldetailsfrm.get('patient_tpin_no').updateValueAndValidity();
+
+    }else{
+      this.isReadOnlyTraderConsigneePerson = true;
+        this.applicationGeneraldetailsfrm.get('patients_fullnames').setValidators([Validators.required]);
+        this.applicationGeneraldetailsfrm.get('patients_fullnames').updateValueAndValidity();
+        this.applicationGeneraldetailsfrm.get('patients_physical_address').setValidators([Validators.required]);
+        this.applicationGeneraldetailsfrm.get('patients_physical_address').updateValueAndValidity();
+        this.applicationGeneraldetailsfrm.get('patient_tpin_no').setValidators([Validators.required]);
+        this.applicationGeneraldetailsfrm.get('patient_tpin_no').updateValueAndValidity();
+    }
+    
+
+  }
+
+
+  oDistrictsCboSelect($event) {
+    this.district_id = $event.selectedItem.id;
+
+    this.onLoadCounty(this.district_id);
+
+  }
+
+onLoadCounty(district_id) {
+    var data = {
+      table_name: 'par_county',
+      district_id: district_id
+    };
+    this.config.onLoadConfigurationData(data)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.countyData = data
+        },
+        error => {
+          return false;
+        });
+}
+
+ oCountyCboSelect($event) {
+    this.county_id = $event.selectedItem.id;
+
+    this.onLoadSubCounty(this.county_id);
+
+  }
+
+  onLoadSubCounty(county_id) {
+    var data = {
+      table_name: 'par_sub_county',
+      county_id: county_id
+    };
+    this.config.onLoadConfigurationData(data)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.subCountyData = data
+        },
+        error => {
+          return false;
+        });
+  }
+
+    onSubCountyCboSelect($event) {
+    this.sub_county_id = $event.selectedItem.id;
+
+    this.onLoadParishes(this.sub_county_id);
+
+  }
+
+  onLoadVillages(parish_id) {
+    var data = {
+      table_name: 'par_villages',
+      parish_id: parish_id
+    };
+    this.config.onLoadConfigurationData(data)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.villageData = data
+        },
+        error => {
+          return false;
+        });
+  }
+    onParishesCboSelect($event) {
+    this.parish_id = $event.selectedItem.id;
+
+    this.onLoadVillages(this.parish_id);
+
+  }
+  onLoadParishes(sub_county_id) {
+    var data = {
+      table_name: 'par_parishes',
+      sub_county_id: sub_county_id
+    };
+    this.config.onLoadConfigurationData(data)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.perishData = data
+        },
+        error => {
+          return false;
+        });
+  }
+
+  onLoadApplicantDetails() {
+    this.premappService.onLoadApplicant().subscribe(
+      (response: any) => {
+      if (response && Array.isArray(response.data) && response.data.length > 0) {
+          const dataItem = response.data[0];
+          this.applicationGeneraldetailsfrm.get('name').setValue(dataItem.name);
+          this.applicationGeneraldetailsfrm.get('email').setValue(dataItem.email);
+          this.applicationGeneraldetailsfrm.get('country_id').setValue(dataItem.country_id);
+          this.applicationGeneraldetailsfrm.get('region_id').setValue(dataItem.region_id);
+          this.applicationGeneraldetailsfrm.get('district_id').setValue(dataItem.district_id);
+          this.applicationGeneraldetailsfrm.get('telephone_no').setValue(dataItem.telephone_no);
+          this.applicationGeneraldetailsfrm.get('physical_address').setValue(dataItem.physical_address);
+      } 
+
+    },
+      error => {
+        return false
+      });
+
+  }
+
   onPremisesAppSelection() {
 
     this.spinner.show();
@@ -375,10 +579,10 @@ onLoadconfirmDataParm() {
     this.isconsigneeSearchWinVisible = false;
   }
   
-  onLoadDistricts(region_id) {
+  onLoadDistricts(country_id) {
     var data = {
-      table_name: 'par_districts',
-      region_id: region_id
+      table_name: 'par_premise_districts',
+      country_id: country_id
     };
     this.config.onLoadConfigurationData(data)
       //.pipe(first())
@@ -414,9 +618,31 @@ onLoadconfirmDataParm() {
   }
 
   onCoutryCboSelect($event) {
+    
+    if($event.selectedItem.id == 37){
+      this.is_ugandan_residence = true;
+      this.is_foreign_residence= false;
+      this.applicationGeneraldetailsfrm.get('district_id').setValidators([Validators.required]);
+      this.applicationGeneraldetailsfrm.get('county_id').setValidators([Validators.required]);
+      this.applicationGeneraldetailsfrm.get('sub_county_id').setValidators([]);
+      this.applicationGeneraldetailsfrm.get('parish_id').setValidators([]);
+      this.applicationGeneraldetailsfrm.get('village').setValidators([]);
 
+      this.applicationGeneraldetailsfrm.get('region_id').setValidators([]);
+    }else{
+      this.is_ugandan_residence = false;
+       this.is_foreign_residence = true;
+      this.applicationGeneraldetailsfrm.get('region_id').setValidators([Validators.required]);
+      this.applicationGeneraldetailsfrm.get('district_id').setValidators([]);
+      this.applicationGeneraldetailsfrm.get('county_id').setValidators([]);
+      this.applicationGeneraldetailsfrm.get('sub_county_id').setValidators([]);
+      this.applicationGeneraldetailsfrm.get('parish_id').setValidators([]);
+      this.applicationGeneraldetailsfrm.get('village').setValidators([]);
+    }
+    this.country_id = $event.selectedItem.id;
 
-    this.onLoadRegions($event.selectedItem.id);
+   this.onLoadRegions($event.selectedItem.id);
+   this.onLoadDistricts(this.country_id);
 
   }
   onLoadCountries() {
@@ -435,7 +661,24 @@ onLoadconfirmDataParm() {
           return false;
         });
   }
-  
+    onShipmentSelect($event) {
+    this.mode_oftransport_id = $event.selectedItem.id;
+
+    this.onLoadportOfEntryExitData(this.mode_oftransport_id);
+
+  }
+    onLoadportOfEntryExitData(mode_oftransport_id) {
+        this.configService.onLoaPortOfEntryDetails(mode_oftransport_id,this.sub_module_id)
+          //.pipe(first())
+          .subscribe(
+            data => {
+              this.portOfEntryExitData = data.data;
+            },
+            error => {
+              return false;
+            });
+
+      }
   onsavePermitReceiverSender() {
     this.spinner.show();
     let table_name;
@@ -494,7 +737,7 @@ onLoadconfirmDataParm() {
       this.applicationGeneraldetailsfrm.get('prescribling_hospital').setValidators([Validators.required]);
       this.applicationGeneraldetailsfrm.get('hospital_address').setValidators([Validators.required]);
       this.applicationGeneraldetailsfrm.get('prescribing_doctor').setValidators([Validators.required]);
-      this.applicationGeneraldetailsfrm.get('prescription_no').setValidators([Validators.required]);
+      this.applicationGeneraldetailsfrm.get('prescription_no').setValidators([]);
     }else{
       this.is_prescription_medicines = false;
       this.applicationGeneraldetailsfrm.get('prescribling_hospital').setValidators([]);
@@ -504,4 +747,19 @@ onLoadconfirmDataParm() {
 
     }
   }
+
+
+  onApplicationDataSelect($event) {
+    
+    if($event.selectedItem.id == 2){
+      this.is_personnel_medicines = true;
+      this.applicationGeneraldetailsfrm.get('has_medical_prescription').setValidators([Validators.required]);
+
+    }else{
+      this.is_personnel_medicines = false;
+      this.applicationGeneraldetailsfrm.get('has_medical_prescription').setValidators([]);
+
+    }
+  }
+
 }

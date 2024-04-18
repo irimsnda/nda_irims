@@ -11,6 +11,7 @@ body {
   background-color: #efefef !important;
   padding-bottom: 50px; 
   overflow-x: hidden !important;
+  
 }
 
 a {
@@ -307,22 +308,15 @@ a {
   top: 50px;
   width: 250px;
   z-index: 10;
-  background: #262D33;
+  background: #344154;font-family: Roboto,sans-serif;
+  background-color:rgb(52, 65, 84);
   bottom: 70px;
   margin-bottom: -70px;
   margin-top: 0;
   padding-bottom: 70px;
   position: absolute; }
 
-.content-page {
-  margin-left: 250px;
-  overflow: hidden  !important; 
-  -webkit-box-flex: 0;
-      -ms-flex: 0 0 100%;
-      flex: 0 0 100%;
-      max-width: 100%;
-}
-  
+
 .content-page .content {
     padding: 0 5px;
     margin-top: 50px; 
@@ -330,12 +324,30 @@ a {
 
 .main-sidebar.left {
   position: absolute; }
-
+  .content-page {
+    margin-left: 250px;
+    overflow: hidden  !important; 
+    -webkit-box-flex: 0;
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 200%;
+        min-height: 125%;
+  }
+    
 body.adminbody .main-sidebar.left {
   bottom: 0px;
   margin-bottom: 0px;
   margin-top: 0;
-  padding-bottom: 0px; }
+  padding-bottom: 0px;
+
+  overflow: hidden  !important; 
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 100%;
+      flex: 0 0 100%;
+      max-width: 200%;
+      min-height: 125%;
+
+}
 
 .button-menu-mobile {
   background: transparent;
@@ -355,7 +367,8 @@ body.adminbody .main-sidebar.left {
     color: #a2cff7; }
 
 .sidebar-inner {
-  height: 100%; }
+  min-height: 100%; 
+}
 
 #sidebar-menu, #sidebar-menu ul, #sidebar-menu li, #sidebar-menu a {
   border: 0;
@@ -402,9 +415,11 @@ body.adminbody .main-sidebar.left {
     #sidebar-menu ul ul li {
       border-top: 0; }
     #sidebar-menu ul ul li.active a {
-      color: #f3f3f3; }
+      color: #f3f3f3; 
+    
+    }
     #sidebar-menu ul ul a {
-      color: #b5b5b5;
+      color: #ffffff;
       -webkit-transition: all 0.3s ease-out;
       -moz-transition: all 0.3s ease-out;
       -o-transition: all 0.3s ease-out;
@@ -429,7 +444,7 @@ body.adminbody .main-sidebar.left {
     top: 10px !important; }
 
 #sidebar-menu > ul > li > a {
-  color: #b5b5b5;
+  color: #fff;
   display: block;
   padding: 12px 12px 15px 12px;
   font-weight: 400;
@@ -525,7 +540,7 @@ body.adminbody .main-sidebar.left {
         position: relative;
         width: 190px;
         z-index: 6;
-        color: rgba(43, 61, 81, 0.8); }
+        color: #fff; }
         #main.enlarged .left.main-sidebar #sidebar-menu ul > li:hover > ul a:hover {
           color: #64b0f2; }
     #main.enlarged .left.main-sidebar #sidebar-menu ul > li:hover a span {
@@ -806,7 +821,7 @@ body.adminbody .main-sidebar.left {
 
 
 body.adminbody-void {
-  min-height: 1170px; }
+  min-height: 1470px; }
 
 .mobile.smallscreen .sidebar-inner.leftscroll {
 	overflow: scroll !important;

@@ -17,6 +17,7 @@ export class PromotionalGeneralInfoComponent extends SharedpromotionalAdvertComp
   @Input() section_id: number;
   @Input() module_id: number;
   @Input() status_id: number;
+  @Input() countries:any;
   @Input() sub_module_id: number;
   @Input() application_code: number;
   isReadOnly:boolean;

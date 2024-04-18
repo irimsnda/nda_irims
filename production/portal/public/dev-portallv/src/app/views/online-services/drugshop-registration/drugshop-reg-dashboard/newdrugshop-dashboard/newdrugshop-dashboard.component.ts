@@ -9,7 +9,7 @@ import { DrugshopRegDashboardComponent } from '../drugshop-reg-dashboard.compone
 export class NewdrugshopDashboardComponent extends DrugshopRegDashboardComponent implements OnInit {
 
   ngOnInit() {
-    this.premises_dashboardtitle = "New Drug Shop Application Dashboard"
+    this.premises_dashboardtitle = "New Licensed Seller Application Dashboard"
     this.sub_module_id = 96;
     this.onLoadDrugshopAppType(this.sub_module_id);
     this.reloadPremisesApplications({sub_module_id:this.sub_module_id});
@@ -17,6 +17,6 @@ export class NewdrugshopDashboardComponent extends DrugshopRegDashboardComponent
      
     this.onLoadPremisesCounterDetails(this.sub_module_id);
    
-  }
+  }  
 
 }

@@ -1,7 +1,6 @@
 
-<div class="row wizard-content">
-  <div class="col-lg-12" *ngIf="sub_module_id == 12">
-    <dx-data-grid [dataSource]="permitProductsData" [wordWrapEnabled]="true"  (onToolbarPreparing)="onPermitProductGridToolbar($event)"  [allowColumnResizing]="true" [columnHidingEnabled]="false" 
+<div class="row wizard-content"*ngIf="is_registered == 1 && sub_module_id == 12">
+  <dx-data-grid [dataSource]="permitProductsData" (onToolbarPreparing)="onPermitProductGridToolbar($event)"  [allowColumnResizing]="true" [columnHidingEnabled]="false" 
     [showBorders]="true">
     <dxo-filter-row [visible]="false"></dxo-filter-row>
     <dxo-search-panel [visible]="true">
@@ -9,33 +8,32 @@
     <dxo-paging [enabled]="true">
     </dxo-paging>
     <dxo-selection mode="single"></dxo-selection>
-    <dxi-column [width]="150" caption="Action(Edit/Delete)" name="command-editing" [allowFiltering]="false"
+    <dxi-column [width]="160" caption="Action" name="command-editing" [allowFiltering]="false"
       [allowSorting]="false" cellTemplate="cellTemplate">
       <div *dxTemplate="let data of 'cellTemplate'">
-       
+
         <dx-menu (onItemClick)="permitProductsActionColClick($event,data)" [items]="permitProductMenuItems">
 
         </dx-menu>
+
       </div>
     </dxi-column>
-    <dxi-column [width]="200" caption="Action" name="command-editing" [allowFiltering]="false"
-      [allowSorting]="false" cellTemplate="cellTemplate2">
-      <div *dxTemplate="let data of 'cellTemplate2'">
-        <dx-button text="Uploads(Certificates)"  (click)="funcDownloadUploadedDocuments(data.data)" 
-        type="success" icon="download" [elementAttr]="{ class: 'btn btn-primary' }">
-        </dx-button>
-      </div>
-    </dxi-column>
-    <dxi-column dataField="brand_name" caption="Brand Name"></dxi-column>
-    <dxi-column dataField="quantity"></dxi-column>
-    <dxi-column dataField="packaging_units"></dxi-column>
-    <dxi-column dataField="unitpack_size" caption="Pack Size"></dxi-column>
+    <dxi-column dataField="brand_name" caption="Proprietary Name"></dxi-column>
+    <dxi-column dataField="common_name"caption="Generic Name"></dxi-column>
+    <dxi-column dataField="dosage_form"caption="Dosage Name"></dxi-column>
+    <dxi-column dataField="product_strength"caption="Product Strength"></dxi-column>
+    <dxi-column dataField="specification_type"caption="Standard"></dxi-column>
+    <dxi-column dataField="no_of_packs"caption="No of Primary pack per Secondary pack"></dxi-column>
+    <dxi-column dataField="no_of_packs_secondary"caption="No of secondary pack per Tertiary pack"></dxi-column>
+    <dxi-column dataField="pack_size"></dxi-column>
     <dxi-column dataField="currency_name"></dxi-column>
     <dxi-column dataField="unit_price"></dxi-column>
     <dxi-column dataField="total_value" caption="FOB Value"></dxi-column>
     <dxo-paging [enabled]="true">
     </dxo-paging>
+
     <dxo-summary>
+      
       <dxi-total-item
           column="total_value"
           summaryType="sum">
@@ -45,13 +43,10 @@
     </dxo-pager>
     <dxo-export [enabled]="true" fileName="permitProducts" [allowExportSelectedData]="true"></dxo-export>
   </dx-data-grid>
+</div>
 
-  </div>
-
-
-  
-  <div class="col-lg-12" *ngIf="sub_module_id == 78  || sub_module_id == 81">
-    <dx-data-grid [dataSource]="permitProductsData"  [wordWrapEnabled]="true"  (onToolbarPreparing)="onPermitProductGridToolbar($event)"  [allowColumnResizing]="true" [columnHidingEnabled]="false" 
+<div class="row wizard-content"*ngIf="sub_module_id == 115">
+  <dx-data-grid [dataSource]="permitProductsData" (onToolbarPreparing)="onPermitProductGridToolbar($event)"  [allowColumnResizing]="true" [columnHidingEnabled]="false" 
     [showBorders]="true">
     <dxo-filter-row [visible]="false"></dxo-filter-row>
     <dxo-search-panel [visible]="true">
@@ -59,36 +54,34 @@
     <dxo-paging [enabled]="true">
     </dxo-paging>
     <dxo-selection mode="single"></dxo-selection>
-    <dxi-column [width]="150" caption="Action" name="command-editing" [allowFiltering]="false"
+    <dxi-column [width]="160" caption="Action" name="command-editing" [allowFiltering]="false"
       [allowSorting]="false" cellTemplate="cellTemplate">
       <div *dxTemplate="let data of 'cellTemplate'">
-            <dx-menu (onItemClick)="permitProductsActionColClick($event,data)" [items]="permitProductMenuItems">
+
+        <dx-menu (onItemClick)="permitProductsActionColClick($event,data)" [items]="permitProductMenuItems">
 
         </dx-menu>
+
       </div>
     </dxi-column>
-    <dxi-column [width]="200" caption="Action" name="command-editing" [allowFiltering]="false"
-    [allowSorting]="false" cellTemplate="cellTemplate2">
-    <div *dxTemplate="let data of 'cellTemplate2'">
-      <dx-button text="Uploads(Certificates)"  (click)="funcDownloadUploadedDocuments(data.data)" 
-      type="success" icon="download" [elementAttr]="{ class: 'btn btn-primary' }">
-      </dx-button>
-    </div>
-  </dxi-column>
-    <dxi-column dataField="brand_name" caption="Brand Name"></dxi-column>
-    <dxi-column dataField="quantity"></dxi-column>
-    <dxi-column dataField="packaging_units"></dxi-column>
-    <dxi-column dataField="pack_size" caption="Pack Size"></dxi-column>
-    
-    <dxi-column dataField="product_batch_no" caption="Product Batch #(License Permit)"></dxi-column>
+    <dxi-column dataField="brand_name" caption="Proprietary Name"></dxi-column>
+    <dxi-column dataField="common_name"caption="Generic Name"></dxi-column>
+    <dxi-column dataField="dosage_form"caption="Dosage Name"></dxi-column>
+    <dxi-column dataField="product_strength"caption="Product Strength"></dxi-column>
+    <dxi-column dataField="si_unit"caption="Units (strength)"></dxi-column>
+    <dxi-column dataField="batch_qty"caption="Batch Qty"></dxi-column>
+    <dxi-column dataField="product_batch_no"caption="Batch No"></dxi-column>
     <dxi-column dataField="product_manufacturing_date" caption="Mgf Date"></dxi-column>
-    <dxi-column dataField="product_expiry_date" caption="Product Expiry Date"></dxi-column>
+    <dxi-column dataField="product_expiry_date" caption="Product Expiry Date"></dxi-column>  
+    <dxi-column dataField="currency_name" caption="Units for Quantity"></dxi-column>  
+    <dxi-column dataField="unit_price"caption="Unit Cost Per Unit"></dxi-column>
     <dxi-column dataField="currency_name"></dxi-column>
-    <dxi-column dataField="unit_price"></dxi-column>
     <dxi-column dataField="total_value" caption="FOB Value"></dxi-column>
     <dxo-paging [enabled]="true">
     </dxo-paging>
+
     <dxo-summary>
+      
       <dxi-total-item
           column="total_value"
           summaryType="sum">
@@ -98,8 +91,141 @@
     </dxo-pager>
     <dxo-export [enabled]="true" fileName="permitProducts" [allowExportSelectedData]="true"></dxo-export>
   </dx-data-grid>
+</div>
+
+<div class="row wizard-content"*ngIf="is_registered !== 1 && sub_module_id == 12">
+  <dx-data-grid [dataSource]="permitProductsData" (onToolbarPreparing)="onPermitProductGridToolbar($event)"  [allowColumnResizing]="true" [columnHidingEnabled]="false" 
+    [showBorders]="true">
+    <dxo-filter-row [visible]="false"></dxo-filter-row>
+    <dxo-search-panel [visible]="true">
+    </dxo-search-panel>
+    <dxo-paging [enabled]="true">
+    </dxo-paging>
+    <dxo-selection mode="single"></dxo-selection>
+    <dxi-column [width]="160" caption="Action" name="command-editing" [allowFiltering]="false"
+      [allowSorting]="false" cellTemplate="cellTemplate">
+      <div *dxTemplate="let data of 'cellTemplate'">
+
+        <dx-menu (onItemClick)="permitProductsActionColClick($event,data)" [items]="permitProductMenuItems">
+
+        </dx-menu>
+
+      </div>
+    </dxi-column>
+    <dxi-column dataField="brand_name" caption="Proprietary Name"></dxi-column>
+    <dxi-column dataField="common_name"caption="Generic Name"></dxi-column>
+    <dxi-column dataField="dosage_form"caption="Dosage Name"></dxi-column>
+    <dxi-column dataField="product_strength"caption="Product Strength"></dxi-column>
+    <dxi-column dataField="specification_type"caption="Standard"></dxi-column>
+    <dxi-column dataField="no_of_packs"caption="No of Primary pack per Secondary pack"></dxi-column>
+    <dxi-column dataField="no_of_packs"caption="No of secondary pack per Tertiary pack"></dxi-column>
+    <dxi-column dataField="pack_size"></dxi-column>
+    <dxi-column dataField="currency_name"></dxi-column>
+    <dxi-column dataField="unit_price"></dxi-column>
+    <dxi-column dataField="total_value" caption="FOB Value"></dxi-column>
+    <dxo-paging [enabled]="true">
+    </dxo-paging>
+
+    <dxo-summary>
+      
+      <dxi-total-item
+          column="total_value"
+          summaryType="sum">
+      </dxi-total-item>
+  </dxo-summary>
+    <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
+    </dxo-pager>
+    <dxo-export [enabled]="true" fileName="permitProducts" [allowExportSelectedData]="true"></dxo-export>
+  </dx-data-grid>
+</div>
+
+<div class="row wizard-content">
+  <div class="col-lg-12" *ngIf="sub_module_id == 49">
+    <dx-data-grid [dataSource]="declaredProductsData" [wordWrapEnabled]="true" [allowColumnResizing]="true" [columnHidingEnabled]="false"
+                  [showBorders]="true">
+      <dxo-filter-row [visible]="false"></dxo-filter-row>
+      <dxo-search-panel [visible]="true">
+      </dxo-search-panel>
+      <dxo-paging [enabled]="true">
+      </dxo-paging>
+      <dxo-selection mode="single"></dxo-selection>
+      <dxi-column [width]="80" caption="Action" name="command-editing" [allowFiltering]="false"
+                  [allowSorting]="false" cellTemplate="cellTemplate">
+        <div *dxTemplate="let data of 'cellTemplate'">
+          <dx-menu (onItemClick)="permitProductsActionColClick($event,data)" [items]="permitProductMenuItems">
+
+          </dx-menu>
+        </div>
+      </dxi-column>
+      <!-- <dxi-column [width]="80" caption="Action" name="command-editing" [allowFiltering]="false"
+                  [allowSorting]="false" cellTemplate="cellTemplate2">
+        <div *dxTemplate="let data of 'cellTemplate2'">
+          <dx-button text="Uploads(Certificates)" (click)="funcDownloadUploadedDocuments(data.data)"
+                     type="success" icon="download" [elementAttr]="{ class: 'btn btn-primary' }">
+          </dx-button>
+        </div>
+      </dxi-column> -->
+      <dxi-column *ngIf="sub_module_id == 115 || sub_module_id == 49 " dataField="vc_no" caption="VC. No."></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 8 && is_registered == 1) || (product_category_id == 9 && is_registered == 1 ) || product_category_id == 1 || product_category_id == 2 || (product_category_id == 10 && is_registered == 1) || product_category_id == 11 || product_category_id == 3 || product_category_id == 4 || product_category_id == 5) && sub_module_id == 12" dataField="product_registration_no"  caption="Registration Number"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 9 && is_registered == 1) || (product_category_id == 9 && is_registered == 2)) && sub_module_id == 12" dataField="gmdn_code" caption="GMDN Code"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 9 && is_registered == 1) || (product_category_id == 9 && is_registered == 2)) && sub_module_id == 12" dataField="gmdn_descriptor" caption="GMDN Descriptor"></dxi-column>
+      <dxi-column *ngIf = "((product_category_id == 8 && is_registered == 1) || (product_category_id == 8 && is_registered == 2) || product_category_id == 1 || product_category_id == 2 || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2) || product_category_id == 11 || product_category_id == 3 || product_category_id == 4 || product_category_id == 5 ) && sub_module_id == 12 || sub_module_id == 115 || sub_module_id == 49" dataField="common_name" caption="Generic Name"></dxi-column>
+      <dxi-column *ngIf="product_category_id == 4 && sub_module_id == 12" dataField="name_of_material" caption="Name of Primary Material"></dxi-column>
+      <dxi-column *ngIf="product_category_id == 5 && sub_module_id == 12 " dataField="name_of_material" caption="Name of Secondary Material"></dxi-column>
+      <dxi-column *ngIf="(product_category_id == 4 || product_category_id == 5) && sub_module_id == 12" dataField="material_category" caption="Category of Material"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 8 && is_registered == 1) || product_category_id == 1 || product_category_id == 2 || product_category_id == 3 || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2)) && sub_module_id == 12" dataField="ingredient_id" caption="Active Ingredient"></dxi-column>
+      <dxi-column *ngIf="(product_category_id == 8 && is_registered == 2) && sub_module_id == 12" dataField="proprietary_name" caption="Proprietary Name"></dxi-column>
+      <dxi-column *ngIf="(product_category_id == 10 || product_category_id == 11) && sub_module_id == 12" dataField="name_chemical_reference" caption="Name of Chemical Reference Standards"></dxi-column>
+      <dxi-column *ngIf="(product_category_id == 7 || product_category_id == 6) && sub_module_id == 12" dataField="name_of_material" caption="Equipment Name"></dxi-column>
+      <dxi-column *ngIf="(product_category_id == 7 || product_category_id == 6) && sub_module_id == 12" dataField="equipment_purpose" caption="Equipment Purpose"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 8 && is_registered == 1) || (product_category_id == 9 && is_registered == 1) || (product_category_id == 9 && is_registered == 2) || product_category_id == 3 || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2)) && sub_module_id == 12 || sub_module_id == 115 || sub_module_id == 49" dataField="brand_name" caption="Brand Name"></dxi-column>
+      <dxi-column *ngIf="(product_category_id == 8 && is_registered == 2) && sub_module_id == 12" dataField="copack" caption="Is Co-Pack"></dxi-column>
+      <dxi-column *ngIf="sub_module_id == 115 || sub_module_id == 49" dataField="total_units" caption="Pack Size"></dxi-column>
+      <dxi-column *ngIf="sub_module_id == 115 || sub_module_id == 49" dataField="approved_qty" caption="Approved Quantity"></dxi-column>
+       <dxi-column *ngIf="sub_module_id == 115 || sub_module_id == 49" dataField="qty_shipped" caption="Quantity Shipped"></dxi-column>
+      <dxi-column *ngIf="sub_module_id == 115 || sub_module_id == 49" dataField="no_of_batches" caption="No. of Batches"></dxi-column>
+      <dxi-column *ngIf="sub_module_id == 115 || sub_module_id == 49" dataField="batch_qty" caption="Batch Qty"></dxi-column>
+      <dxi-column *ngIf="sub_module_id == 115 || sub_module_id == 49" dataField="product_batch_no" caption="Batch No."></dxi-column>
+      <dxi-column *ngIf="sub_module_id == 115 || sub_module_id == 49" dataField="product_expiry_date" caption="Expiry Date"></dxi-column>
+      <dxi-column *ngIf="sub_module_id == 115 || sub_module_id == 49" dataField="manufacturer_name" caption="manufacturer"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 9 && is_registered == 1 ) || (product_category_id == 9 && is_registered == 1)) && sub_module_id == 12" dataField="medical_device_class_type" caption="Medical Device Class Type"></dxi-column>
+      <dxi-column  *ngIf="((product_category_id == 8 && is_registered == 1) || product_category_id == 3 || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2)) && sub_module_id == 12" dataField="dosage_form" caption="Dosage Name"></dxi-column>
+        <dxi-column  *ngIf="(product_category_id == 8 && is_registered == 2) && sub_module_id == 12" dataField="atc_code" caption="ATC Code"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 8 && is_registered == 1) || (product_category_id == 8 && is_registered == 2) || product_category_id == 1 || product_category_id == 2 || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2) || product_category_id == 11 || product_category_id == 3) && sub_module_id == 12" dataField="product_strength" caption="Strength"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 8 && is_registered == 1) || product_category_id == 1 || product_category_id == 2 || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2) || product_category_id == 11 || product_category_id == 3) && sub_module_id == 12" dataField="si_unit" caption="Units For Strength"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 8 && is_registered == 1) || (product_category_id == 9 && is_registered == 1) || (product_category_id == 9 && is_registered == 2) || product_category_id == 1 || product_category_id == 2 || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2) || product_category_id == 11 || product_category_id == 3) && sub_module_id == 12" dataField="specification_type_id" caption="Standard"></dxi-column>
+      <dxi-column *ngIf="(product_category_id == 8 && is_registered == 2) && sub_module_id == 12" dataField="si_unit" caption="SI Unit"></dxi-column>
+      <dxi-column *ngIf="(product_category_id == 1 || product_category_id == 2 || product_category_id == 11 || product_category_id == 4 || product_category_id == 5 || product_category_id == 7 || product_category_id == 6) && sub_module_id == 12" dataField="quantity" caption="Total Quantity"></dxi-column>
+      <dxi-column *ngIf="(product_category_id == 1 || product_category_id == 2 || product_category_id == 11 || product_category_id == 4 || product_category_id == 5) && sub_module_id == 12" dataField="units_for_quantity" caption="Units For Quantity"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 8 && is_registered == 1) || (product_category_id == 8 && is_registered == 2) || (product_category_id == 9 && is_registered == 1)  || (product_category_id == 9 && is_registered == 2) || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2) || product_category_id == 3) && sub_module_id == 12" dataField="no_of_packs_tertiary" caption="Number of Tertiary Packs"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 8 && is_registered == 1) || (product_category_id == 8 && is_registered == 2) || (product_category_id == 9 && is_registered == 1)|| (product_category_id == 9 && is_registered == 2) || product_category_id == 3 || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2)) && sub_module_id == 12" dataField="no_of_packs_secondary" caption="Number of Secondary Packs"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 8 && is_registered == 1) || (product_category_id == 8 && is_registered == 2) || (product_category_id == 9 && is_registered == 1) || (product_category_id == 9 && is_registered == 2) || product_category_id == 3 || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2)) && sub_module_id == 12" dataField="no_of_packs" caption="Number of Primary Packs"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 8 && is_registered == 1) || (product_category_id == 8 && is_registered == 2) || (product_category_id == 9 && is_registered == 1) || (product_category_id == 9 && is_registered == 2) || product_category_id == 3 || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2)) && sub_module_id == 12" dataField="no_of_units" caption="Number Of Units Packs / Pri Packs"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 8 && is_registered == 1) || (product_category_id == 8 && is_registered == 2) || (product_category_id == 9 && is_registered == 1) || (product_category_id == 9 && is_registered == 2) || product_category_id == 3 || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2)) && sub_module_id == 12" dataField="container_type" caption="Type of Primary Pack"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 8 && is_registered == 1) || (product_category_id == 8 && is_registered == 2) || (product_category_id == 9 && is_registered == 1) || (product_category_id == 9 && is_registered == 2) || product_category_id == 3 || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2)) && sub_module_id == 12" dataField="total_units" caption="Total Unit"></dxi-column>
+      <dxi-column *ngIf="((product_category_id == 8 && is_registered == 1) || (product_category_id == 8 && is_registered == 2) || (product_category_id == 9 && is_registered == 1) || (product_category_id == 9 && is_registered == 2) || product_category_id == 1 || product_category_id == 2 || (product_category_id == 10 && is_registered == 1) || (product_category_id == 10 && is_registered == 2) || product_category_id == 11 || product_category_id == 3 || product_category_id == 4 || product_category_id == 5 || product_category_id == 7 || product_category_id == 6) && sub_module_id == 12" dataField="unit_price" caption="Unit Cost Per Unit"></dxi-column>
+      <dxi-column *ngIf="sub_module_id == 12" dataField="currency_name" caption="Currency Type"></dxi-column>
+      <dxi-column *ngIf="sub_module_id == 12" dataField="verification_fee_percent" caption="Verification Fee %"></dxi-column>
+      <dxi-column *ngIf="sub_module_id == 12" dataField="total_value" caption="Total VC fee 
+       per product"></dxi-column>
+      
+      <dxo-paging [enabled]="true">
+      </dxo-paging>
+      <dxo-summary>
+        <dxi-total-item *ngIf="sub_module_id == 12" column="total_value" 
+                        summaryType="sum" class="custom-total" [customizeText]="customizeTotalText">
+
+        </dxi-total-item>
+      </dxo-summary>
+      <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
+      </dxo-pager>
+      <dxo-export [enabled]="true" fileName="permitProducts" [allowExportSelectedData]="true"></dxo-export>
+    </dx-data-grid>
 
   </div>
+
+  
+
   <div class="col-lg-12" *ngIf="sub_module_id == 82">
     <dx-data-grid [dataSource]="permitProductsData" (onToolbarPreparing)="onPermitVisaLicenseProductGridToolbar($event)"  [allowColumnResizing]="true" [columnHidingEnabled]="false"  [wordWrapEnabled]="true" 
     [showBorders]="true">
@@ -211,13 +337,13 @@
 </dx-popup>
 
 
-<dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="550" [showTitle]="true" title="Permits Products" [dragEnabled]="false"
-  [closeOnOutsideClick]="false" [(visible)]="isPermitproductsPopupVisible">
+<dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="550" [showTitle]="true" title="Batch Details" [dragEnabled]="false"
+  [closeOnOutsideClick]="false" [(visible)]="isBatchPopupVisible">
   <div *dxTemplate="let data of 'content'">
     <dx-scroll-view>
     <div class="row no-padding">
       <div class="col-lg-12 ">
-        <dx-data-grid [dataSource]="registeredProductsData"  [height]="500" [remoteOperations]='true' 
+        <dx-data-grid [dataSource]="permitProductsData"  [height]="500" [remoteOperations]='true' 
           (onToolbarPreparing)="onRegisteredProductGridToolbar($event)"  [wordWrapEnabled]="true"  [columnHidingEnabled]="false"  [showBorders]="true">
           <dxo-filter-row [visible]="false"></dxo-filter-row>
           <dxo-search-panel [visible]="true">
@@ -228,19 +354,17 @@
           </dxo-pager>
           
           <dxo-selection mode="single"></dxo-selection>
-          <dxi-column [width]="150" caption="Action" name="command-editing" [allowFiltering]="false"
+          <!--<dxi-column [width]="150" caption="Action" name="command-editing" [allowFiltering]="false"
           [allowSorting]="false" cellTemplate="cellTemplate">
-          <div *dxTemplate="let data of 'cellTemplate'">
+           <div *dxTemplate="let data of 'cellTemplate'">
             <dx-button text="Select Product Details" (click)="funcSelectRegisteredProduct(data)"
             type="success" icon="edit" [elementAttr]="{ class: 'btn btn-primary' }">
           </dx-button>
-          </div>
-        </dxi-column>
-          <dxi-column dataField="brand_name" caption="Brand Name"></dxi-column>
-          <dxi-column dataField="certificate_no"></dxi-column>
-          <dxi-column dataField="common_name" caption="Common Name/INN Name/API"></dxi-column>
-          <dxi-column dataField="retention_status"></dxi-column>
-          <dxi-column dataField="validity_status"></dxi-column>
+          </div> 
+        </dxi-column>-->
+        <dxi-column dataField="batch_qty" caption="Batch Qty"></dxi-column>
+          <dxi-column dataField="product_batch_no" caption="Product Batch No."></dxi-column>
+          <dxi-column dataField="product_expiry_date"></dxi-column>
         <dxo-paging [pageSize]="25"></dxo-paging> 
           <dxo-export [enabled]="true" fileName="permitProducts" [allowExportSelectedData]="true"></dxo-export>
 
@@ -251,110 +375,379 @@
   </div>
 </dx-popup>
 
-<dx-popup class="popup"  [width]="funcpopWidth(80)" height="funcpopHeight(60)" [showTitle]="true" title="Permit Products Details"
+<dx-popup class="popup"  [width]="funcpopWidth(80)" height="600" [showTitle]="true" title=" Products Details"
   [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isPermitproductsAddPopupVisible">
   <div *dxTemplate="let data of 'content'">
-
     <dx-scroll-view>
-      
-        <dx-tab-panel (onItemClick)="onPermitsProductsTabCLick($event)">
-            <dxi-item title="Products Details" icon="rowfield">
-                <div *dxTemplate>
-                    <div class="row col-lg-12">
-          <form role="form" class="row" enctype="multipart/form-data" role="form" [formGroup]="permitProductsFrm"
-          (ngSubmit)="onsavePermitProductdetails()">
+      <dx-tab-panel (onItemClick)="onPermitsProductsTabCLick($event)">
+        <dxi-item title="Products Details" icon="rowfield">
+          <div *dxTemplate>
+            <div class="row col-lg-12">
+              <form role="form" class="row" enctype="multipart/form-data" role="form" 
+                [formGroup]="permitProductsFrm"(ngSubmit)="onsavePermitProductdetails()">
                 <div class="col-lg-12 row row-no-margin ">
-                  <div class="col-lg-3 ">
-                    <label>Product Name</label>
-                    <dx-text-box placeholder="Brand Name/Devices Name" [readOnly]="is_brandreadonly" formControlName="brand_name">
-                    </dx-text-box>
-                  </div>
-                  <div class=" col-xs-12 col-md-6 col-lg-6 col-xl-6 input-group">
-                    <div class="col-lg-8">
-                        <label class="control-label">{{common_name_title}}</label>
-                        <dx-select-box [dataSource]="commonNameData" valueExpr="id" displayExpr="name" 
-                        [searchEnabled]="true" formControlName="common_name_id">
-                        </dx-select-box>
+                  <div class="col-lg-4 input-group" *ngIf =" is_registered == 1 && sub_module_id == 12">
+                    <div class="col-lg-10  ">
+                      <label class="control-label">Registration Number</label>
+                      <dx-text-box placeholder="registration number" [readOnly]="true"  formControlName="product_registration_no">
+                      </dx-text-box>
                     </div>
-                    <div class="col-lg-4">
-                        
-                        <dx-button
-                            text="Add"
-                            type="success"
-                            icon="fa fa-plus"
-                            [disabled] ="is_brandreadonly"
-                            [elementAttr]="{  class: 'pull-left' }"
-                            (onClick)="onAddNewGenericDetails()">
-                        </dx-button>
-                  </div>
+                    <div class="col-lg-2">
+                      <dx-button [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:32px!important;" type="default" (click)="onSearchRegisteredProductApplication()" >
+                        <i class="fa fa-search"></i>Search
+                      </dx-button>
+                    </div>
                 </div>
-
-                
-                <div class="col-lg-6" >
-                  <label>Product Classification</label>
-                  <dx-select-box [dataSource]="classificationData" valueExpr="id" [readOnly]="is_brandreadonly" placeholder="Select Category" 
-                    displayExpr="name" formControlName="productclassification_id" [searchEnabled]="true">
-                  </dx-select-box>
-                </div>
-                
-                  <div class="col-lg-6"  *ngIf="isFoodPermitProducts">
-                    <label>Product Category</label>
-                    <dx-select-box [dataSource]="productCategoryData" valueExpr="id" [readOnly]="is_brandreadonly" placeholder="Select Category" 
-                      displayExpr="name" formControlName="product_category_id" [searchEnabled]="true">
-                    </dx-select-box>
-                  </div>
-                  <div class="col-lg-6"  *ngIf="requireUnitPackData">
-                    <label>Product Strength</label>
-                    <dx-text-box placeholder="Product Stength"   formControlName="product_strength">
+                <div class="col-lg-4 input-group" *ngIf = "sub_module_id == 115 || sub_module_id == 49">
+                  <div class="col-lg-10  ">
+                    <label class="control-label">VC No.</label>
+                    <dx-text-box placeholder="vc no" formControlName="vc_no" [readOnly]="true">
                     </dx-text-box>
                   </div>
-                
-                  <div class="col-lg-6"  *ngIf="isFoodPermitProducts">
-
-                    <label>Product Sub-Category</label>
-                    <dx-select-box [dataSource]="productSubCategoryData"  (onSelectionChanged)="onProductCategoryCboSelect($event)" valueExpr="id" displayExpr="name" [searchEnabled]="true"
-                    placeholder=" Sub-Product Category" formControlName="product_subcategory_id">
+                  <div class="col-lg-2" >
+                    <dx-button [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:32px  !important;" type="default" (click)="onSearchApprovedProductDetails()" ><i class="fa fa-plus"></i>ADD
+                    </dx-button>
+                  </div>
+                </div> 
+                <div class="col-lg-4 input-group">
+                  <div class="col-lg-10  ">
+                    <label class="control-label">Brand Name</label>
+                    <dx-text-box formControlName="brand_name" [showClearButton]="true" readOnly="true">
+                    </dx-text-box>
+                  </div>
+                  <div class="col-lg-2">
+                    <dx-button [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:32px  !important;" type="default"[disabled]="is_registered ==1 || sub_module_id ==115" (click)="onSearchUnRegisteredRegisteredProductApplication()" ><i class="fa fa-search"></i>Search
+                    </dx-button>
+                  </div>
+                </div>
+                <div class="col-lg-4" *ngIf = "product_category_id == 9 && sub_module_id == 12">
+                  <label class="control-label">GMDN Code</label>
+                  <dx-text-box formControlName="gmdn_code" [readOnly]="true" placeholder="GMDN Code" [showClearButton]="true">
+                  </dx-text-box>
+                </div>
+                <div class="col-lg-4" *ngIf = "product_category_id == 9   && sub_module_id == 12">
+                  <label class="control-label">GMDN Descriptor</label>
+                  <dx-text-box formControlName="gmdn_descriptor"[readOnly]="true"  placeholder="GMDN Descriptor" [showClearButton]="true">
+                  </dx-text-box>
+                </div>
+                <div class="col-lg-4">
+                  <label class="control-label">Generic Name</label>
+                  <dx-select-box [dataSource]="commonNameData" valueExpr="id" displayExpr="name" [searchEnabled]="true" formControlName="common_name_id"[readOnly]="true"
+                    (onValueChanged)="onGetNarcoticPopUp($event)">
                   </dx-select-box>
-                  </div>
-
-                  <div class="col-lg-6 " *ngIf="device_type_visible">
-                    <label>Device Type</label>
-                    <dx-select-box [dataSource]="deviceTypeData" valueExpr="id" placeholder="Select device Type"
-                      displayExpr="name" formControlName="device_type_id" [searchEnabled]="true">
+                </div>
+                <div class="col-lg-4" *ngIf = "(product_category_id == 4 || product_category_id == 5) 
+                  && sub_module_id == 12">
+                  <label class="control-label" *ngIf = "product_category_id == 4 && sub_module_id == 12">Name of Primary Material</label>
+                  <label class="control-label" *ngIf = "product_category_id == 5 && sub_module_id == 12">Name of Secondary Material</label>
+                  <dx-text-box formControlName="name_of_material"  placeholder="Material" [showClearButton]="true">
+                  </dx-text-box>
+                </div>
+                <div class="col-lg-4" *ngIf = "(product_category_id == 4 || product_category_id == 5 ) 
+                  && sub_module_id == 12">
+                  <label class="control-label">Category of Material</label>
+                    <dx-select-box [dataSource]="deviceTypeData" valueExpr="id" displayExpr="name" 
+                      [searchEnabled]="true"  
+                      placeholder="Category of Material" formControlName="material_category">
                     </dx-select-box>
-                  </div>
-                  
-                  <div class="col-lg-6">
-                    <label>Pack Size</label>
-                    <dx-text-box placeholder="Unit Pack Size"   formControlName="unitpack_size">
+                </div>
+                <div class="col-lg-4" *ngIf = "(product_category_id == 8 && is_registered == 2)  
+                  && sub_module_id == 12">
+                  <label class="control-label">Product Type</label>
+                  <dx-select-box [dataSource]="productTypeDta"   [readOnly]= "true"  valueExpr="id" displayExpr="name" [searchEnabled]="true" 
+                   placeholder="Select Product Type"  formControlName="product_type_id">
+                 </dx-select-box>
+                </div>
+                <div class="col-lg-4" *ngIf = "(product_category_id == 8 && is_registered == 2)  
+                  && sub_module_id == 12">
+                  <label class="control-label">Product FDC</label>
+                  <dx-select-box [dataSource]="doseData" valueExpr="id" displayExpr="name" [searchEnabled]="true"  
+                    placeholder="dose" [readOnly]="true" formControlName="single_fixed_dose">
+                  </dx-select-box>
+                </div>
+                <div class="col-lg-4" *ngIf = "(product_category_id == 8 && is_registered == 2)  && sub_module_id == 12">
+                  <label class="control-label">Classification</label>
+                  <dx-select-box [dataSource]="classificationData" valueExpr="id" displayExpr="name" 
+                    [searchEnabled]="true"[readOnly]="true"
+                    placeholder="classification" [readOnly]="true" formControlName="classification">
+                  </dx-select-box>
+                </div> 
+                <div class="col-lg-4" *ngIf = "(product_category_id == 8 && is_registered == 2)  
+                  && sub_module_id == 12">
+                  <label class="control-label">Class Category</label>
+                  <dx-select-box [dataSource]="classcategoryData" valueExpr="id" displayExpr="name" [searchEnabled]="true" [readOnly]="true" formControlName="class_category">
+                  </dx-select-box>
+                </div>
+                <div class="col-lg-4" *ngIf = "(product_category_id == 8 && is_registered == 2)  && sub_module_id == 12">
+                  <label class="control-label">ATC Code</label>
+                  <dx-select-box [dataSource]="atcCodeData" valueExpr="id" displayExpr="name" [searchEnabled]="true" [readOnly]="true" formControlName="atc_code_id">
+                  </dx-select-box>
+
+                </div>
+                <div class="col-lg-4" *ngIf = "(product_category_id == 8 && is_registered == 2)  && sub_module_id == 12">
+                  <label class="control-label">ATC Description</label>
+                  <dx-text-box formControlName="atc_desciption" [showClearButton]="true" [readOnly]="true">
+                  </dx-text-box>
+                </div>
+                <div class="col-lg-4" *ngIf = "(product_category_id == 8 && is_registered == 2)  && sub_module_id == 12">
+                  <label class="control-label">Therapeutic Group</label>
+                  <dx-select-box [dataSource]="therapeuticGroupData" valueExpr="id" displayExpr="name" [searchEnabled]="true" [readOnly]="true" formControlName="therapeutic_group">
+                  </dx-select-box>
+                </div>
+                <div class="col-lg-4" *ngIf = "(product_category_id == 8 && is_registered == 2)  && sub_module_id == 12">
+                  <label class="control-label">Distribution Category Class</label>
+                  <dx-select-box [dataSource]="distributionCateoryData" valueExpr="id" displayExpr="name" [searchEnabled]="true" [readOnly]="true" formControlName="distribution_category">
+                  </dx-select-box>
+
+                </div>
+                <div class="col-lg-4" *ngIf = "(product_category_id == 8 && is_registered == 2)  && sub_module_id == 12">
+                  <label class="control-label">Route of Administration</label>
+                  <dx-select-box [dataSource]="routeOfAdministrationData" valueExpr="id" displayExpr="name" [searchEnabled]="true" [readOnly]="true" formControlName="route_of_administarion">
+                  </dx-select-box>
+                </div>
+                <div class="col-lg-4" >
+                  <label class="control-label">Active Ingredient</label>
+                  <dx-select-box [dataSource]="ingredientsData" valueExpr="id" displayExpr="name" [searchEnabled]="true"  
+                  placeholder="Ingredients" [readOnly]="true" formControlName="ingredient_id">
+                  </dx-select-box>
+                </div>
+                <div class="col-lg-4" *ngIf = " product_category_id == 11 && sub_module_id == 12">
+                  <label >Name of Chemical Reference Standards</label>
+                  <dx-text-box formControlName="name_chemical_reference" [readOnly]='isRegisteredLevel' placeholder="Name of Chemical Reference">
+                  </dx-text-box>
+                </div> 
+                <div class="col-lg-4" *ngIf = "(product_category_id == 7 || product_category_id == 6) && sub_module_id == 12">
+                  <label class="control-label">Equipment Name</label>
+                  <dx-text-box formControlName="name_of_material" placeholder="Equipment Name">
+                  </dx-text-box>
+                </div>
+                <div class="col-lg-4" *ngIf = "(product_category_id == 7 || product_category_id == 6) && sub_module_id == 12">
+                  <label class="control-label">Equipment Purpose (For Manufacture of for Analytical Testing</label>
+                  <dx-text-box formControlName="equipment_purpose" placeholder="Equipment Purpose">
+                  </dx-text-box>
+                </div>
+
+             <!--    <div class="col-lg-4" *ngIf = "sub_module_id == 115 || sub_module_id == 49">
+                  <label class="control-label">Pack Size</label>
+                  <dx-text-box formControlName="total_units" placeholder="Pack Size" [showClearButton]="true">
+                  </dx-text-box>
+                </div> -->
+
+                <div class="col-lg-4" *ngIf = "sub_module_id == 115 || sub_module_id == 49">
+                  <label class="control-label">Approved Qty</label>
+                  <dx-text-box formControlName="approved_qty" placeholder="Approved Qty" [readOnly]="true" [showClearButton]="true">
+                  </dx-text-box>
+                </div>
+                <div class="col-lg-4" *ngIf = "sub_module_id == 115 || sub_module_id == 49">
+                  <label class="control-label">Qty Shipped</label>
+                  <dx-text-box [readOnly]="true" formControlName="qty_shipped" placeholder="Qty Shipped" [showClearButton]="true">
+                  </dx-text-box>
+                </div>
+                <div class="col-lg-4 input-group" *ngIf = "sub_module_id == 115 || sub_module_id == 49">
+                  <div class="col-lg-8">
+                    <label class="control-label">No. of Batches</label>
+                    <dx-text-box  [readOnly]="true" formControlName="no_of_batches" (ngModelChange)="generateBatchQtyFields()">
                     </dx-text-box>
                   </div>
                   
-                  <div class=" col-xs-12 col-md-4 col-lg-6 col-xl-6 input-group">
-                    <div class="col-lg-10">
+                  <div class="col-lg-4">
+                    <dx-button [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:32px  !important;" type="default" (click)="onAddBatches()" ><i class="fa fa-plus"></i>Add Batch 
+                    </dx-button>
+                  </div>
+                </div> 
+
+                <div class="col-lg-4 input-group" *ngIf ="(sub_module_id == 115 || sub_module_id == 49) || (sub_module_id == 12 && is_registered == 2)">
+                  <div class="col-lg-10">
+                    <label class="control-label">Manufacturer</label>
+                    <dx-text-box  formControlName="manufacturer_name" [readOnly]=true [showClearButton]="true">
+            
+                    </dx-text-box>
+                  </div>   
+                  <div class="col-lg-2" *ngIf ="sub_module_id == 115 || sub_module_id == 49 || (product_category_id == 8 && is_registered == 2)">
+                    <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:32px !important;"  text="Search Manufacturing Details"  type="default" (onClick)="funcSearchManufacturingSite()">
+                          <i class="fa fa-search"></i>Search Details
+                    </dx-button>
+                  </div>
+                </div> 
+                      
+                  <!-- <div class="col-lg-4 ">
+                    <label>Generic Name</label>
+                    <dx-text-box placeholder="Brand Name/Devices Name" [readOnly] = 'isRegisteredLevel' formControlName="generic_name_id">
+                    </dx-text-box>
+                  </div> -->
+   
+
+                
+               <!--  <div class="col-lg-4" >
+                  <label>Active Ingredient</label>
+                  <dx-text-box [readOnly]="isRegisteredLevel" placeholder="active ingredient" 
+                     formControlName="active_ingredient" >
+                  </dx-text-box>
+                </div> -->
+                <div class="col-lg-4" *ngIf = "product_category_id == 9 &&  sub_module_id == 12">
+                  <label>Medical Device Class Type</label>
+                  <dx-text-box placeholder="Medical Device Class Type" [readOnly]="isRegisteredLevel"  formControlName="medical_device_class_type">
+                  </dx-text-box>
+                </div> 
+                
+                <div class="col-lg-4" >
+                  <label>Dosage Name</label>
+                  <dx-select-box [dataSource]="dosageFormData" [readOnly]="true" valueExpr="id" placeholder="dosage form"
+                  displayExpr="name" formControlName="dosage_form_id" [searchEnabled]="true">
+                  </dx-select-box>
+                </div>
+                <div class="col-lg-4" >
+                  <label>Product Strength</label>
+                  <dx-text-box placeholder="product strength" [readOnly]="true"  formControlName="product_strength">
+                  </dx-text-box>
+                </div>                  
+                <div class="col-lg-4">
+                  <label>Units of Strength</label>
+                  <dx-select-box [dataSource]="packagingUnitsData" valueExpr="id" placeholder="units of strength"
+                    displayExpr="name" formControlName="si_unit_id" [searchEnabled]="true">
+                  </dx-select-box>
+                      
+                </div>
+                <div class="col-lg-4" *ngIf="sub_module_id == 12">
+                  <label>Country of Origin</label>
+                  <dx-select-box [dataSource]="countries"  valueExpr="id" placeholder="Select Country" [readOnly]="isRegisteredLevel" displayExpr="name" (onSelectionChanged)="onCountriesSelectionChange($event)" 
+                  [searchEnabled]="true" formControlName="product_origin_id">
+                  </dx-select-box>
+                </div> 
+
+                <div class="col-lg-4">
+                  <label>Standard</label>
+                  <dx-select-box [dataSource]="specificationData" valueExpr="id" displayExpr="name" 
+                    [readOnly]="true" [searchEnabled]="true"
+                    placeholder="Quality Standard" formControlName="specification_type_id">
+                  </dx-select-box>
+                </div> 
+
+                <div class="col-lg-4" *ngIf = "sub_module_id == 12">
+                  <label>Number of Tertiary Packs</label>
+                  <dx-number-box placeholder="number of tertiary packs"   formControlName="no_of_packs_tertiary">
+                  </dx-number-box>
+                </div>
+                <div class="col-lg-4" *ngIf = "sub_module_id == 12" >
+                  <label>Number of Secondary Packs per Tertiary pack </label>
+                    <dx-text-box placeholder="number of secondary packs "   formControlName="no_of_packs_secondary" >
+                    </dx-text-box>
+                  </div>
+
+                    <div class="col-lg-4" *ngIf = "sub_module_id == 12">
+                    <label>Number of Primary Packs per secondary pack</label>
+                    <dx-text-box placeholder="number of primary packs"   formControlName="no_of_packs">
+                    </dx-text-box>
+                  </div> 
+                  <div class="col-lg-4" *ngIf = " sub_module_id == 12">
+                    <label>Number of Units Per Primary Packs </label>
+                    <dx-text-box placeholder="Number of units per primary pack" formControlName="no_of_units" >
+                    </dx-text-box>
+                  </div>
+
+                  <div class="col-lg-4 " *ngIf = "sub_module_id == 12">
+                    <label>Type of Primary Pack</label>
+                    <dx-select-box [dataSource]="deviceTypeData" valueExpr="id" placeholder="type of primary pack"
+                      displayExpr="name" formControlName="container_type_id" [searchEnabled]="true">
+                    </dx-select-box>
+                  </div>
+                  <div class="col-lg-4"*ngIf = "sub_module_id == 12">
+                    <label>Total Quantity</label>
+                        <dx-text-box placeholder="Total Quantity " [readOnly]="true"formControlName="quantity">
+                    </dx-text-box>
+                  </div> 
+                  <div class="col-lg-4"*ngIf = "sub_module_id == 15">
+                    <label>Total Quantity</label>
+                        <dx-text-box placeholder="Total Quantity "   formControlName="declaration_quantity" (ngModelChange)="updateTotalUnits()">
+                    </dx-text-box>
+                  </div> 
+
+                  <div class="col-lg-4">
+                    <label>Units for Quantity</label>
+                    <dx-select-box [dataSource]="packagingUnitsData" valueExpr="id" displayExpr="name" [searchEnabled]="true"
+                          placeholder="Units for Quantity" formControlName="units_for_quantity">
+                        </dx-select-box>
+                  </div> 
+
+                   <div class="col-lg-4" *ngIf = "sub_module_id == 12">
+                    <label>Unit Cost Per Unit</label>
+                    <dx-text-box placeholder="Unit cost"   formControlName="unit_price" (ngModelChange)="updateTotalUnits()">
+                    </dx-text-box>
+                  </div>
+                    
+                  <!-- <div class="col-lg-4" *ngIf = "product_category_id == 8 && is_registered == 1"> 
+                    <label>Number of Secondary Packs</label>
+                    <dx-number-box placeholder="number of secondary packs" formControlName="unit_price">
+                    </dx-number-box>
+                  </div> -->
+                  <div class="col-lg-4" *ngIf="sub_module_id == 12">
+                      <label>Currency Type</label>
+                      <dx-select-box [dataSource]="currencyData" valueExpr="id" placeholder="select currency" displayExpr="name"
+                        [searchEnabled]="true" formControlName="currency_id">
+                      </dx-select-box> 
+                    </div>
+                
+                  <div class="col-lg-4" *ngIf = " sub_module_id == 12">
+                    <label hidden="true">Total Units </label>
+                    <dx-text-box placeholder="Total Units "  [value]="formattedProduct" hidden="true" [readOnly]="true" formControlName="total_units">
+                    </dx-text-box>
+                  </div>
+              
+                 
+                  <div class="col-lg-4" *ngIf="sub_module_id == 12">
+                    <label hidden="true">Total Value </label>
+                    <dx-text-box placeholder="Total Units " [readOnly]="true" [value]="totalValue" hidden="true" formControlName="total_value">
+                    </dx-text-box>
+                  </div>
+
+                  <div class="col-lg-4" *ngIf="sub_module_id == 12">
+                    <label hidden="true">VC Quantity </label>
+                    <dx-text-box placeholder="Total Units " [readOnly]="true" [value]="VCQuantity" hidden="true" formControlName="vc_quantity">
+                    </dx-text-box>
+                  </div>
+
+                  <div class="col-lg-4" *ngIf="shouldDisplaySelectBox()">
+                    <label>Are All The Products Coming?</label>
+                    <dx-select-box  [dataSource]="confirmDataParam" displayExpr="name" valueExpr="name"  [searchEnabled]="true" formControlName="declare_product_id">
+                    </dx-select-box>
+                  </div> 
+
+                  <!-- <div class="col-lg-4" *ngIf="sub_module_id == 115">
+                    <label>Quantity </label>
+                    <dx-text-box placeholder="Declaration Quantity" formControlName="declaration_quantity">
+                    </dx-text-box>
+                  </div> -->
+
+                   <div class="col-lg-4" *ngIf="sub_module_id == 115 || sub_module_id == 49"> 
+                    <label class="control-label">Total Weight</label>
+                    <dx-text-box formControlName="total_weight"  
+                                placeholder="total weight" 
+                                [showClearButton]="true">
+                    </dx-text-box>
+                    </div>
+
+
+                  
+                  <!-- <div class="col-lg-4 input-group" *ngIf="!isRegisteredLevel">
+                    <div class="col-lg-8">
                         <label class="control-label">Manufacturer</label>
                         <dx-text-box  formControlName="manufacturer_name" readOnly=true [showClearButton]="true">
             
                         </dx-text-box>
-                    </div>    
-                    <div class="col-lg-2">
-                      <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:25px  !important;"  text="Search Manufacturing Details"  type="default" (onClick)="funcSearchManufacturingSite()">
+                    </div>  -->   
+                    <!-- <div class="col-lg-4" *ngIf = "product_category_id == 8 && is_registered == 1">
+                      <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:32px  !important;"  text="Search Manufacturing Details"  type="default" (onClick)="funcSearchManufacturingSite()">
                           <i class="fa fa-search"></i>Search Details
                       </dx-button>
                     </div>
-                  </div> 
-                  <div class="col-lg-6 ">
-                    <label>Country of Origin</label>
-                    <dx-select-box [dataSource]="countries" readOnly=true valueExpr="id" placeholder="Select Country" displayExpr="name"
-                      [searchEnabled]="true" formControlName="country_oforigin_id">
-                    </dx-select-box>
-                  </div>
-                  <div class="col-lg-12 " *ngIf="!is_visaapplication">
+                  </div>  -->
+                 
+                   <!--<div class="col-lg-12 " *ngIf="!is_visaapplication">
                     <label>Product Batch No(s)</label>
                     <dx-text-box placeholder="Batch Nos" formControlName="product_batch_no">
                     </dx-text-box>
                   </div>
-                  <div class="col-lg-6 input-group" *ngIf="!is_visaapplication">
+                  <div class="col-lg-6 input-group">
                     <div class="col-lg-6"> 
                       <label>Manufacturing Date</label>
                       <dx-date-box  dateSerializationFormat = "yyyy-MM-dd" placeholder="Manufacturing Date" formControlName="product_manufacturing_date">
@@ -367,19 +760,18 @@
                     </div>
 
                   </div>
-                  <div class="col-lg-6 input-group">
-                    <div class="col-lg-6">
-                      <label>Item Quantity</label>
-                      <dx-number-box placeholder="Item Quantity"  [value]="quantity"   formControlName="quantity">
-                      </dx-number-box>
-                    </div>
-                    <div class="col-lg-6">
-                      <label>Packaging Unit</label>
-                      <dx-select-box [dataSource]="packagingUnitsData" valueExpr="id" placeholder="Select Packaging Units"
-                        displayExpr="name" formControlName="packaging_unit_id" [searchEnabled]="true">
-                      </dx-select-box>
+
+                  <div class="col-lg-6"  *ngIf="isFoodPermitProducts">
+
+                    <label>Product Sub-Category</label>
+                    <dx-select-box [dataSource]="productSubCategoryData"  (onSelectionChanged)="onProductCategoryCboSelect($event)" valueExpr="id" displayExpr="name" [searchEnabled]="true"
+                    placeholder=" Sub-Product Category" formControlName="product_subcategory_id">
+                  </dx-select-box>
                   </div>
-                </div>
+
+                  
+                    
+                  </div>
                 <div class="col-lg-6 input-group"  *ngIf="isFoodPermitProducts">
                   <div class="col-lg-6">
                     <label>Total Weight</label>
@@ -393,150 +785,326 @@
                     </dx-select-box>
                 </div>
               </div>
-                  <div class="col-lg-6 input-group">
-                    <div class="col-lg-6"> 
-                      <label>Unit Price</label>
-                      <dx-number-box placeholder="Unit Price" formControlName="unit_price">
-                      </dx-number-box>
-                    </div>
-                    <div class="col-lg-6 ">
-                      <label>Currency</label>
-                      <dx-select-box [dataSource]="currencyData" valueExpr="id" placeholder="Select Currency" displayExpr="name"
-                        [searchEnabled]="true" formControlName="currency_id">
-                      </dx-select-box>
-                    </div>
-                  </div>
-                  <div class="col-lg-12">
+                 
+                <div class="col-lg-12">
                           <label class="control-label">Product Physical Description</label>
                           <dx-text-area [height]="60" formControlName="productphysical_description" [readOnly]= "isReadOnly" placeholder="Physical description"
                             >
                           </dx-text-area>
                   </div>
-
+ -->
                   <div class="col-lg-12 ">
                     <input type="hidden" formControlName="id" />
                     <input type="hidden" formControlName="product_id" />
-                    <input type="hidden" formControlName="visa_quantity" />
-                    <input type="hidden" formControlName="prodcertificate_no" />
+                    <input type="hidden" formControlName="is_registered" />
+                    <input type="hidden" formControlName="product_category_id" />
+                    <input type="hidden" formControlName="port_id" />
+                    <input type="hidden" formControlName="vc_quantity" />
+                    <!-- <input type="hidden" formControlName="prodcertificate_no" />  -->
                   </div>
+                  <div>
                   <dx-button text="Save Products Details" [disabled]="!permitProductsFrm.valid"
                     (onClick)="onsavePermitProductdetails()" type="success" icon="save"
                     [elementAttr]="{ class: 'btn btn-primary; pull-right' }">
                   </dx-button>
                 </div>
+</div>
               </form>
-            </div>
+              </div>
                 </div>
             </dxi-item>
         
-            <dxi-item title="Supporting Documents(Certificate of Analysis/ Certificate of Conformity/ Health Certificate/ Sanitary certificate )(Optional)" icon="rowfield">
+            <!-- <dxi-item title="Supporting Documents(Certificate of Analysis/ Certificate of Conformity/ Health Certificate/ Sanitary certificate )(Optional)" icon="rowfield">
               <div *dxTemplate>
                 <app-application-documents  [document_type_id] ="document_type_id"  [permit_product_id] ="permit_product_id"  [section_id] ="section_id"  [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-application-documents>
               </div>
-          </dxi-item>
+          </dxi-item> -->
         
         </dx-tab-panel>
 
     </dx-scroll-view>
     </div>
     </dx-popup>
+
+    <dx-popup class="popup"  [width]="funcpopWidth(80)" height="600" [showTitle]="true" title="Narcotic, Psychotropic and Precursors"
+  [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isNarcoticproductsAddPopupVisible">
+  <div *dxTemplate="let data of 'content'">
+
+    <dx-scroll-view>
+      
+        <dx-tab-panel (onItemClick)="onPermitsProductsTabCLick($event)">
+            <dxi-item title="Narcotic and 
+Psychotropic Permit application" icon="rowfield">
+                <div *dxTemplate>
+                    <div class="row col-lg-12">
+          <form role="form" class="row" enctype="multipart/form-data" role="form" [formGroup]="narcoticProductsFrm"
+          (ngSubmit)="onsaveNarcoticPermitProductdetails()">
+                <div class="col-lg-12 row row-no-margin ">
+
+                  <div class="col-lg-4">
+                      <label class="control-label">Brand Name</label>
+                        <dx-text-box formControlName="brand_name" [readOnly]='isRegisteredLevel' placeholder="Enter Brand Name" [showClearButton]="true">
+                        </dx-text-box>
+                    </div>
+                  <div class="col-lg-4">
+                            <label class="control-label">Controlled Substance</label>
+                            <dx-select-box [dataSource]="controlledSubstanceData" valueExpr="id" displayExpr="name" [searchEnabled]="true" formControlName="controlled_substance_id">
+                            </dx-select-box>
+                        </div>
+                          <div class="col-lg-4">
+                            <label class="control-label">Generic Name</label>
+                            <dx-select-box [dataSource]="commonNameData" valueExpr="id" displayExpr="name" [searchEnabled]="true" formControlName="common_name_id">
+                            </dx-select-box>
+                        </div>
+
+                    <div class="col-lg-4">
+                      <label class="control-label">Scheduled Number</label>
+                        <dx-text-box formControlName="scheduled_number" [readOnly]='true' [showClearButton]="true">
+                        </dx-text-box>
+                    </div>
+
+                    <div class="col-lg-4">
+                      <label class="control-label">Conversion Factor</label>
+                        <dx-text-box formControlName="convertion_factor" [readOnly]='true'  [showClearButton]="true">
+                        </dx-text-box>
+                    </div>
+
+                     <div class="col-lg-4">
+                      <label class="control-label">Controlled Substance Schedule</label>
+                        <dx-text-box formControlName="controlled_substance_schedule" [readOnly]='true'  [showClearButton]="true">
+                        </dx-text-box>
+                    </div>
+                    <div class="col-lg-4">
+                      <label class="control-label">Strength/Unit Dosage Form</label>
+                        <dx-text-box formControlName="product_strength" [readOnly]='isRegisteredLevel' [showClearButton]="true">
+                        </dx-text-box>
+                    </div>
+
+                    <div class="col-lg-4">
+                    <label class="control-label">Batch Number</label>
+                    <dx-text-box  formControlName="product_batch_no">
+                    </dx-text-box>
+                  </div>
+
+                   <div class="col-lg-4">
+                      <label>Manufacturing Date</label>
+                      <dx-date-box  dateSerializationFormat = "yyyy-MM-dd" placeholder="Manufacturing Date" formControlName="product_manufacturing_date">
+                      </dx-date-box>
+                    </div>
+
+                    <!-- <div class="col-lg-3" *ngIf ="sub_module_id == 115">
+                      <label class="control-label">No. of Batches</label>
+                        <dx-text-box formControlName="no_of_batches" placeholder="No. of Batches" [showClearButton]="true" >
+                        </dx-text-box>
+                         (ngModelChange)="generateBatchQtyFields()"
+                    </div> -->
+
+                    <!-- <div class="col-lg-3" *ngIf ="sub_module_id == 115" formArrayName="batch_qty">
+                      <div *ngFor="let control of batchQtyArray.controls; let i = index">
+                        <label>Batch Qty {{ i + 1 }}</label>
+                        <dx-text-box [formControl]="control"></dx-text-box>
+                      </div>
+                    </div> -->
+                      
+                  <!-- <div class="col-lg-4 ">
+                    <label>Generic Name</label>
+                    <dx-text-box placeholder="Brand Name/Devices Name" [readOnly] = 'isRegisteredLevel' formControlName="generic_name_id">
+                    </dx-text-box>
+                  </div> -->
    
-<dx-popup class="popup"  [width]="funcpopWidth(80)" height="funcpopHeight(60)" [showTitle]="true" title="Permit Products Details"
-[dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isPermitVisaLicProductsAddPopupVisible">
+
+                
+               <!--  <div class="col-lg-4" >
+                  <label>Active Ingredient</label>
+                  <dx-text-box [readOnly]="isRegisteredLevel" placeholder="active ingredient" 
+                     formControlName="active_ingredient" >
+                  </dx-text-box>
+                </div> -->
+                
+                  <div class="col-lg-4">
+                    <label>Dosage Type</label>
+                    <dx-select-box [dataSource]="dosageFormData" [readOnly]="isRegisteredLevel" valueExpr="id" placeholder="dosage form"
+                        displayExpr="name" formControlName="dosage_form_id" [searchEnabled]="true">
+                      </dx-select-box>
+                  </div>
+
+                  <div class="col-lg-4">
+                      <label>Number of Tertiary Packs</label>
+                      <dx-number-box placeholder="number of tertiary packs"  (ngModelChange)="updateNarcoticUnits()" formControlName="no_of_packs_tertiary">
+                      </dx-number-box>
+                    </div>
+
+                   <div class="col-lg-4">
+                    <label>Number of Secondary Packs </label>
+                    <dx-text-box placeholder="number of secondary packs "  (ngModelChange)="updateNarcoticUnits()" formControlName="no_of_packs_secondary">
+                    </dx-text-box>
+                  </div>
+
+                   <div class="col-lg-4">
+                    <label>Packs Per Tertiary Packs </label>
+                    <dx-text-box placeholder="pack type " formControlName="packs_per_tertiary_pack" (ngModelChange)="updateNarcoticUnits()" >
+                    </dx-text-box>
+                  </div>
+                    <div class="col-lg-4">
+                    <label>Number of Primary Packs per secondary pack</label>
+                    <dx-text-box placeholder="number of primary packs"  (ngModelChange)="updateNarcoticUnits()" formControlName="no_of_packs">
+                    </dx-text-box>
+                  </div>
+
+                  <div class="col-lg-4">
+                    <label>Number of Units Per Primary Packs </label>
+                    <dx-text-box placeholder="pack type " formControlName="no_of_units" (ngModelChange)="updateNarcoticUnits()">
+                    </dx-text-box>
+                  </div>
+
+                  <div class="col-lg-4">
+                    <label>Type of Primary Pack</label>
+                    <dx-select-box [dataSource]="deviceTypeData" valueExpr="id" placeholder="type of primary pack"
+                      displayExpr="name" formControlName="container_type_id" [searchEnabled]="true">
+                    </dx-select-box>
+                  </div> 
+                  <div class="col-lg-4">
+                    <label>Total Salt Quantity per Dosage Form</label>
+                    <dx-text-box placeholder="Total Salt Quantity "  (ngModelChange)="updateNarcoticUnits()" formControlName="total_salt_quantity">
+                    </dx-text-box>
+                  </div>
+
+                  <div class="col-lg-4">
+                    <label>Total Units </label>
+                    <dx-text-box placeholder="Total Units "  [value]="totalUnits" [readOnly]="true" formControlName="total_narcotic_units" (ngModelChange)="updateNarcoticUnits()">
+                    </dx-text-box>
+                  </div>
+                  <div class="col-lg-4">
+                    <label>Total Base </label>
+                    <dx-text-box  [value]="totalSalt" [readOnly]="true" formControlName="total_narcotic_base" (ngModelChange)="updateNarcoticUnits()">
+                    </dx-text-box>
+                  </div>
+              
+                    
+                  <div class="col-lg-12 ">
+                    <input type="hidden" formControlName="id" />
+                    <input type="hidden" formControlName="product_id" />
+                    <input type="hidden" formControlName="is_registered" />
+                    <input type="hidden" formControlName="product_category_id" />
+                    <input type="hidden" formControlName="port_id" />
+                    <input type="hidden" formControlName="vc_quantity" />
+                    <!-- <input type="hidden" formControlName="prodcertificate_no" />  -->
+                  </div>
+                  <div>
+                  <dx-button text="Save Products Details" [disabled]="!narcoticProductsFrm.valid"
+                    (onClick)="onsaveNarcoticPermitProductdetails()" type="success" icon="save"
+                    [elementAttr]="{ class: 'btn btn-primary; pull-right' }">
+                  </dx-button>
+                </div>
+</div>
+              </form>
+              </div>
+                </div>
+            </dxi-item>
+        
+            <!-- <dxi-item title="Supporting Documents(Certificate of Analysis/ Certificate of Conformity/ Health Certificate/ Sanitary certificate )(Optional)" icon="rowfield">
+              <div *dxTemplate>
+                <app-application-documents  [document_type_id] ="document_type_id"  [permit_product_id] ="permit_product_id"  [section_id] ="section_id"  [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-application-documents>
+              </div>
+          </dxi-item> -->
+        
+        </dx-tab-panel>
+
+    </dx-scroll-view>
+    </div>
+    </dx-popup>
+
+
+
+    <dx-popup class="popup" [width]="1050" [height]="450" 
+  [showTitle]="true" title="Registered Product Applications" [dragEnabled]="false"
+  [closeOnOutsideClick]="false" [(visible)]="isRegisteredProductsWinshow">
+  <div *dxTemplate="let data of 'content'" class="row">
+    <dx-data-grid class="table row-border hover" [remoteOperations]='true' 
+      [dataSource]="registeredProductsDetails" keyExpr="id" >
+        <dxo-filter-row [visible]="false"></dxo-filter-row>
+        <dxo-search-panel [visible]="true">
+        </dxo-search-panel>
+        <dxo-paging [enabled]="true">
+        </dxo-paging>
+        <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
+        </dxo-pager>
+        <dxo-export [enabled]="true" fileName="registeredProducts" 
+          [allowExportSelectedData]="true"></dxo-export>
+        <dxo-selection mode="single"></dxo-selection>
+        <dxi-column caption="Actions" name="command-editing" 
+        [allowFiltering]="false" [allowSorting]="false"
+        cellTemplate="cellTemplate">
+        <div *dxTemplate="let data of 'cellTemplate'">
+          <a (click)="funSelectRegisteredProdcustsApp(data)" class="action-btn"><i class="fa fa-edit"></i>Select</a>&nbsp;
+        </div>
+      </dxi-column>
+        <dxi-column dataField="" caption="BUBU"></dxi-column>
+          <dxi-column dataField="" caption="NON-BUBU"></dxi-column>
+          <dxi-column dataField="country_oforigin_id" caption="Country of Origin"></dxi-column>
+          <dxi-column dataField="brand_name" caption="Specific Products"></dxi-column>
+        <!-- <dxi-column dataField="classification_name"></dxi-column>
+        <dxi-column dataField="certificate_no"></dxi-column>
+        <dxi-column dataField="expiry_date"></dxi-column>
+        <dxi-column dataField="applicant_name" caption="Registrant"></dxi-column>
+        <dxi-column dataField="local_agent"></dxi-column> -->
+       
+        <dxo-paging [pageSize]="50"></dxo-paging>
+    </dx-data-grid>
+
+  </div>
+</dx-popup>
+   
+<dx-popup class="popup"  [width]="funcpopWidth(80)" height="funcpopHeight(60)" [showTitle]="true" title="Batch Details"
+[dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isAddBatchPopupVisible">
 <div *dxTemplate="let data of 'content'">
 
   <dx-scroll-view>
     <dx-tab-panel  (onItemClick)="onPermitsProductsTabCLick($event)">
-      <dxi-item title="Products Details" icon="rowfield">
+      <dxi-item title="Batch Details" icon="rowfield">
           <div *dxTemplate>
             <div class="row col-lg-12">
-              <form role="form" class="row" enctype="multipart/form-data" role="form" [formGroup]="permitProductsFrm"
+              <form role="form" class="row" enctype="multipart/form-data" role="form" [formGroup]="productBatchdetailsfrm"
               (ngSubmit)="onsavePermitProductdetails()">
               <div class="col-lg-12 row row-no-margin ">
-                <div class="col-lg-6 ">
-                  <label>Product Name</label>
-                  <dx-text-box placeholder="Brand Name/Devices Name" [readOnly]="true" formControlName="brand_name">
-                  </dx-text-box>
-                </div>
-                <div class="col-lg-6">
-                    <label class="control-label">{{common_name_title}}</label>
-                    <dx-select-box [dataSource]="commonNameData" valueExpr="id" [readOnly]="true" displayExpr="name" 
-                    [searchEnabled]="true" formControlName="common_name_id">
-                    </dx-select-box>
-                </div>
-                
-                <div class="col-lg-6">
-                  <label>Product Unit Pack Size</label>
-                  <dx-text-box placeholder="Unit Pack Size"   formControlName="unitpack_size">
-                  </dx-text-box>
-                </div>
-                
-                <div class="col-lg-12 ">
-                  <label>Product Batch No(s)</label>
-                  <dx-text-box placeholder="Batch Nos" formControlName="product_batch_no">
-                  </dx-text-box>
-                </div>
-                <div class="col-lg-6 input-group" >
-                  <div class="col-lg-6"> 
-                    <label>Manufacturing Date</label>
-                    <dx-date-box dateSerializationFormat = "yyyy-MM-dd"  placeholder="Manufacturing Date" formControlName="product_manufacturing_date">
-                    </dx-date-box>
-                  </div>
-                  <div class="col-lg-6"> 
-                    <label>Expiry Date</label>
-                    <dx-date-box dateSerializationFormat = "yyyy-MM-dd"  placeholder="Expiry Date" formControlName="product_expiry_date">
-                    </dx-date-box>
-                  </div>
-      
-                </div>
-                <div class="col-lg-6 input-group">
-                  <div class="col-lg-6">
-                    <label>Item Quantity</label>
-                    <dx-number-box placeholder="Item Quantity"  [value]="quantity"   formControlName="quantity">
-                    </dx-number-box>
-                  </div>
-                  <div class="col-lg-6">
-                    <label>Packaging Unit</label>
-                    <dx-select-box [dataSource]="packagingUnitsData" valueExpr="id" placeholder="Select Packaging Units"
-                      displayExpr="name" formControlName="packaging_unit_id" [searchEnabled]="true">
-                    </dx-select-box>
-                </div>
-              </div>
-              <div class="col-lg-6 input-group"  *ngIf="isFoodPermitProducts">
-                <div class="col-lg-6">
-                  <label>Total Weight</label>
-                  <dx-number-box placeholder="Total weight"  [value]="total_weight"  formControlName="total_weight">
-                  </dx-number-box>
-                </div>
-                <div class="col-lg-6">
-                  <label>Weights Unit</label>
-                  <dx-select-box [dataSource]="weightsUnitData" valueExpr="id" placeholder="Select Weights Units"
-                    displayExpr="name" formControlName="weights_units_id" [searchEnabled]="true">
-                  </dx-select-box>
-              </div>
-            </div>
-                <div class="col-lg-6 input-group">
-                  <div class="col-lg-6"> 
-                    <label>Unit Price</label>
-                    <dx-number-box placeholder="Unit Price" formControlName="unit_price">
-                    </dx-number-box>
-                  </div>
-                  <div class="col-lg-6 ">
-                    <label>Currency</label>
-                    <dx-select-box [dataSource]="currencyData" valueExpr="id" placeholder="Select Currency" displayExpr="name"
-                      [searchEnabled]="true" formControlName="currency_id">
-                    </dx-select-box>
-                  </div>
-                </div>
+                <div class="col-lg-4" *ngIf ="sub_module_id == 115 || sub_module_id == 49">
+                      <label class="control-label">Batch Qty</label>
+                        <dx-text-box formControlName="batch_qty" placeholder="Batch Qty" [showClearButton]="true" >
+                        </dx-text-box>
+                    </div>
+
+                    <!-- <div class="col-lg-3" *ngIf ="sub_module_id == 115" formArrayName="product_batch_no">
+                      <div *ngFor="let control of batchNoArray.controls; let i = index">
+                        <label>Batch No. {{ i + 1 }}</label>
+                        <dx-text-box [formControl]="control"></dx-text-box>
+                      </div>
+                    </div> -->
+
+                    <div class="col-lg-4" *ngIf ="sub_module_id == 115 || sub_module_id == 49">
+                      <label class="control-label">Batch No.</label>
+                        <dx-text-box formControlName="product_batch_no" placeholder="Batch No" [showClearButton]="true">
+                        </dx-text-box>
+                    </div>
+                    
+                    <!-- <div class="col-lg-3" *ngIf="sub_module_id == 115" formArrayName="product_expiry_date">
+                      <div *ngFor="let control of ExpiryDateArray.controls; let i = index">
+                        <label>Expiry Date {{ i + 1 }}</label>
+                        <dx-date-box [formControl]="control"></dx-date-box>
+                      </div>
+                    </div> -->
+                   <div class="col-lg-4" *ngIf ="sub_module_id == 115 || sub_module_id == 49"> 
+                      <label>Expiry Date</label>
+                      <dx-date-box  dateSerializationFormat = "yyyy-MM-dd" placeholder="Expiry Date" formControlName="product_expiry_date">
+                      </dx-date-box>
+                    </div>
                 <div class="col-lg-12 ">
                   
-                  <input type="hidden" formControlName="id" />
-                  <input type="hidden" formControlName="product_id" />
-                  <input type="hidden" formControlName="visa_quantity" />
-                  <input type="hidden" formControlName="prodcertificate_no" />
+                  <input type="hidden" formControlName="id"/>
+                  <input type="hidden" formControlName="product_id"/>
+                  <!-- <input type="hidden" formControlName="prodcertificate_no" /> -->
                 </div>
-                <dx-button text="Save Products Details" [disabled]="!permitProductsFrm.valid"
-                  (onClick)="onsavePermitProductdetails()" type="success" icon="save"
+                <dx-button text="Save Batch Details" [disabled]="!productBatchdetailsfrm.valid"
+                  (onClick)="onsaveBatchProductdetails()" type="success" icon="save"
                   [elementAttr]="{ class: 'btn btn-primary; pull-right' }">
                 </dx-button>
               </div>
@@ -544,12 +1112,12 @@
           </div>
           </div>
       </dxi-item>
-  
+  <!-- 
       <dxi-item title="Supporting Documents(Certificate of Analysis/ Certificate of Conformity/ Health Certificate/ Sanitary certificate )(Optional)" icon="rowfield">
         <div *dxTemplate>
           <app-application-documents  [document_type_id] ="document_type_id"  [permit_product_id] ="permit_product_id"  [section_id] ="section_id"  [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-application-documents>
         </div>
-    </dxi-item>
+    </dxi-item> -->
   
   </dx-tab-panel>
 
@@ -571,7 +1139,7 @@
               <dx-text-area formControlName="description" placeholder="description" >
               </dx-text-area>
             </div>
-            <input type='hidden' value='{{section_id}}' formControlName="section_id"/>
+            <!-- <input type='hidden' value='{{section_id}}' formControlName="section_id"/> -->
             <input type='hidden' value = 'par_common_names' formControlName="tablename"/>
 
             <div class="col-lg-12">
@@ -741,6 +1309,121 @@
 </dx-scroll-view>
 </div>
 </dx-popup>
+
+<dx-popup class="popup" [width]="funcpopWidth(80)" height="600" [showTitle]="true" title="Unregistered Products Details"
+  [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isUnRegisteredProductsDetails">
+  <div *dxTemplate="let data of 'content'">
+        <dx-data-grid class="table row-border hover"  [allowColumnResizing]="true"  [columnHidingEnabled]="true" height="500"  [remoteOperations]='true' 
+        [remoteOperations]="true"
+                  [dataSource]="UnRegisteredProductsData" keyExpr="id">
+                  <dxo-filter-row [visible]="false"></dxo-filter-row>
+                  <dxo-search-panel [visible]="true">
+                  </dxo-search-panel>
+                  <dxo-paging [enabled]="true">
+                  </dxo-paging>
+                  <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
+                  </dxo-pager>
+                  <dxo-export [enabled]="true" fileName="manufacturingFile" [allowExportSelectedData]="true"></dxo-export>
+                  <dxo-selection mode="single"></dxo-selection>
+                  <dxo-group-panel [visible]="true"></dxo-group-panel>
+                  <dxi-column [width]="140" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+                    cellTemplate="cellTemplate">
+                    <div *dxTemplate="let data of 'cellTemplate'">
+                      <a class="action-btn" (click)="funcSelectUnRegisteredProductDetails(data)"><i class="fa fa-edit"></i>Select Product Details</a>&nbsp;
+                    </div>
+                    <dxo-paging [pageSize]="50"></dxo-paging> 
+                  </dxi-column>
+                  <dxi-column  dataField="product_type" caption="Product Type"></dxi-column>
+                  <dxi-column  dataField="dosage_form"></dxi-column>
+                  <dxi-column  dataField="proprietary_name"></dxi-column>
+                  <dxi-column  dataField="product_strength"></dxi-column>
+                  <dxi-column  dataField="siunit"></dxi-column>
+                  <!-- <dxi-column dataField="applicant_name"></dxi-column>
+                  <dxi-column dataField="physical_address"></dxi-column>
+                  <dxi-column dataField="dosage_form"></dxi-column>
+                  <dxi-column dataField="product_type"></dxi-column>
+                  <dxi-column dataField="manufacturer_name"></dxi-column> -->
+                
+        </dx-data-grid>
+    </div>
+</dx-popup>
+
+<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="600" [showTitle]="true" title="Registered Products Details"
+  [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isManufacturingSiteProductsDetails">
+  <div *dxTemplate="let data of 'content'">
+        <dx-data-grid class="table row-border hover"  [allowColumnResizing]="true"  [columnHidingEnabled]="true" [height]="500"  [remoteOperations]='true' 
+        [remoteOperations]="true"
+                  [dataSource]="manSiteRegisteredProductsData" keyExpr="id">
+                  <dxo-filter-row [visible]="false"></dxo-filter-row>
+                  <dxo-search-panel [visible]="true">
+                  </dxo-search-panel>
+                  <dxo-paging [enabled]="true">
+                  </dxo-paging>
+                  <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
+                  </dxo-pager>
+                  <dxo-export [enabled]="true" fileName="manufacturingFile" [allowExportSelectedData]="true"></dxo-export>
+                  <dxo-selection mode="single"></dxo-selection>
+                  <dxo-group-panel [visible]="true"></dxo-group-panel>
+                  <dxi-column [width]="140" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+                    cellTemplate="cellTemplate">
+                    <div *dxTemplate="let data of 'cellTemplate'">
+                      <a class="action-btn" (click)="funcSelectProductDetails(data)"><i class="fa fa-edit"></i>Select Product Details</a>&nbsp;
+                    </div>
+                    <dxo-paging [pageSize]="50"></dxo-paging> 
+                  </dxi-column>
+                  <dxi-column [width]="140" dataField="product_registration_no" caption="Reference Number"></dxi-column>
+                  <dxi-column  dataField="brand_name"></dxi-column>
+                  <dxi-column  dataField="product_origin"></dxi-column>
+                  <dxi-column   dataField="common_name"></dxi-column>
+                 <dxi-column dataField="applicant_name"></dxi-column>
+                  <dxi-column dataField="physical_address"></dxi-column>
+                  <dxi-column dataField="dosage_form"></dxi-column>
+                  <dxi-column dataField="product_type"></dxi-column>
+                  <dxi-column dataField="manufacturing_site"></dxi-column> 
+                
+            </dx-data-grid>
+    </div>
+</dx-popup>
+
+<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="600" [showTitle]="true" title="Approved Products Details"
+  [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isApprovedProductsDetails">
+  <div *dxTemplate="let data of 'content'">
+        <dx-data-grid class="table row-border hover"  [allowColumnResizing]="true"  [columnHidingEnabled]="true" [height]="500"  [remoteOperations]='true' 
+        [remoteOperations]="true"
+                  [dataSource]="approvedProductsData" keyExpr="id">
+                  <dxo-filter-row [visible]="false"></dxo-filter-row>
+                  <dxo-search-panel [visible]="true">
+                  </dxo-search-panel>
+                  <dxo-paging [enabled]="true">
+                  </dxo-paging>
+                  <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
+                  </dxo-pager>
+                  <dxo-export [enabled]="true" fileName="manufacturingFile" [allowExportSelectedData]="true"></dxo-export>
+                  <dxo-selection mode="single"></dxo-selection>
+                  <dxo-group-panel [visible]="true"></dxo-group-panel>
+                  <dxi-column [width]="140" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+                    cellTemplate="cellTemplate">
+                    <div *dxTemplate="let data of 'cellTemplate'">
+                      <a class="action-btn" (click)="funcSelectApprovedProductDetails(data)"><i class="fa fa-edit"></i>Select Product Details</a>&nbsp;
+                    </div>
+                    <dxo-paging [pageSize]="50"></dxo-paging> 
+                  </dxi-column>
+                  <dxi-column [width]="270" dataField="vc_no" caption="VC No."></dxi-column>
+                  <dxi-column [width]="140" dataField="brand_name"></dxi-column>
+                  <dxi-column [width]="140" dataField="port_name" caption="Port Name"></dxi-column>
+                  <dxi-column [width]="140" dataField="common_name" caption="Common Name"></dxi-column>
+                  <!-- <dxi-column dataField="applicant_name"></dxi-column>
+                  <dxi-column dataField="physical_address"></dxi-column>
+                  <dxi-column dataField="dosage_form"></dxi-column>
+                  <dxi-column dataField="product_type"></dxi-column>
+                  <dxi-column dataField="manufacturing_site"></dxi-column> -->
+                
+        </dx-data-grid>
+    </div>
+</dx-popup>
+
+
+
 
 
 <dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="700" [showTitle]="true" title="{{printReportTitle}}"

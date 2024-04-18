@@ -29,9 +29,6 @@ export class NewGmpApplicationComponent extends SharedGmpapplicationclassCompone
   }
   ngOnInit() {
 
-
-
-
     this.gmpapp_details = this.appService.getGmpApplicationDetail();
 
     if (!this.gmpapp_details) {
@@ -98,6 +95,8 @@ export class NewGmpApplicationComponent extends SharedGmpapplicationclassCompone
           this.application_code =  this.gmp_resp.application_code;
           if (this.gmp_resp.success) {
             this.toastr.success(this.gmp_resp.message, 'Response');
+            this.wizard.model.navigationMode.goToStep(2);
+
           } else {
             this.toastr.error(this.gmp_resp.message, 'Alert');
           }

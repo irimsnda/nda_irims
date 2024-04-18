@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { ToastrService } from 'ngx-toastr';
 import { DataTableDirective } from 'angular-datatables';
-import { Subject } from 'rxjs';
+import { Subject, combineLatest  } from 'rxjs';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { DxDataGridComponent } from 'devextreme-angular';
 import { ModalDialogService, SimpleModalComponent } from 'ngx-modal-dialog';
@@ -31,19 +31,63 @@ export class RenewalGmpApplicationComponent extends SharedGmpapplicationclassCom
 
 }
 
-ngOnInit() {
+// ngOnInit() {
 
+//   this.gmpapp_details = this.appService.getGmpApplicationDetail();
+
+//   if (!this.gmpapp_details) {
+//     this.router.navigate(['./../online-services/renewalgmpapplications-dashboard']);
+//     return;
+//   }
+
+//  this.appService.onLoadInspectionHistoryDetails(this.manufacturing_site_id).subscribe(
+//     data => {
+//       this.gmpinspection_details = data;
+//       console.log(this.gmpinspection_details);
+//         this.inspectionHistorydetailsfrm.patchValue(this.gmpinspection_details);
+
+//     },
+//     error => {
+//       console.error('Error loading inspection history details:', error);
+
+//     }
+//   );
+//   this.gmpapplicationGeneraldetailsfrm.patchValue(this.gmpapp_details);
+// }
+
+// ...
+
+ngOnInit() {
   this.gmpapp_details = this.appService.getGmpApplicationDetail();
 
   if (!this.gmpapp_details) {
-    this.router.navigate(['./../online-services/gmpapplications-dashboard']);
+    this.router.navigate(['./../online-services/renewalgmpapplications-dashboard']);
     return;
   }
- console.log(this.gmpapp_details);
+
+this.appService.onLoadInspectionHistoryDetails(this.manufacturing_site_id).subscribe(
+  data => {
+    const inspectionDetails = data.data && data.data.length > 0 ? data.data[0] : null;
+
+    if (inspectionDetails) {
+      this.inspectionHistorydetailsfrm.patchValue(inspectionDetails);
+
+    } else {
+      console.error('No inspection details found.');
+    }
+  },
+  error => {
+    console.error('Error loading inspection history details:', error);
+  }
+);
+
   this.gmpapplicationGeneraldetailsfrm.patchValue(this.gmpapp_details);
-  
 
 }
+
+
+
+
 onSaveGMPApplication() {
     if (this.gmpapplicationGeneraldetailsfrm.invalid) {
     //  return;
@@ -67,6 +111,7 @@ onSaveGMPApplication() {
             this.onLoadPremisesPersonnelDetails(this.manufacturing_site_id);
             this.onLoadgmpManufacturingBlocksData(this.manufacturing_site_id);
             this.onLoadgmpproductDetailsInformationData(this.manufacturing_site_id);
+            this.wizard.model.navigationMode.goToStep(1);
 
           } else {
             this.toastr.error(this.gmp_resp.message, 'Alert');
@@ -76,6 +121,37 @@ onSaveGMPApplication() {
           this.loading = false;
         });
   }
+
+onSaveGMPHistoryApplication() {
+    if (this.inspectionHistorydetailsfrm.invalid) {
+    }
+    
+    this.spinner.show();
+    this.appService.onSaveGmpHistoryInformation(this.manufacturing_site_id, this.inspectionHistorydetailsfrm.value)
+      .subscribe(
+        response => {
+          this.gmp_resp = response.json();
+          //the details 
+          this.spinner.hide();
+          this.manufacturing_site_id = this.gmp_resp.manufacturing_site_id;
+          if (this.gmp_resp.success) {
+            this.toastr.success(this.gmp_resp.message, 'Response');
+            this.wizard.model.navigationMode.goToStep(2);
+
+          } else {
+            this.toastr.error(this.gmp_resp.message, 'Alert');
+          }
+        },
+        error => {
+          this.loading = false;
+        });
+  }
+
+
+
+
+
+
   funcSelectTraderDetails(data) {
     let record = data.data;
     this.gmpapplicationGeneraldetailsfrm.get('local_agent_name').setValue(record.trader_name);

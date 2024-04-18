@@ -8,6 +8,9 @@ import { ToastrService } from 'ngx-toastr';
 
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { ModalDialogService } from 'ngx-modal-dialog';
+import { takeUntil } from 'rxjs/operators';
+import { HttpParams } from '@angular/common/http';
+import { Subject } from 'rxjs';
 
 import { DocumentManagementService } from 'src/app/services/document-management/document-management.service';
 import { ImportexportService } from 'src/app/services/importexp-applications/importexport.service';
@@ -20,7 +23,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { AppSettings } from 'src/app/app-settings';
 import { ConfigurationsService } from 'src/app/services/shared/configurations.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { SharedImportexportclassComponent } from '../../shared-importexportclass/shared-importexportclass.component';
+import { SharedImportexportclassComponent } from '../../shared-importexportclass/SharedImportexportclassComponent';
 
 @Component({
   selector: 'app-importexport-gendetails',
@@ -29,56 +32,112 @@ import { SharedImportexportclassComponent } from '../../shared-importexportclass
 })
 export class ImportexportGendetailsComponent implements OnInit {
   @Input() applicationGeneraldetailsfrm: FormGroup;
-
+  @Input() manufacturerFrm: FormGroup;
+  @Input() newPremisesPersonnelDetailsFrm: FormGroup;
   @Input() sectionsData: any;
-  @Input() applicationTypeData: any; 
+  @Input() businessTypeData: any;
   @Input() applicationCategoryData: any; 
   @Input() sub_module_id: any; 
+  @Input() is_sub_module:any;
+  @Input() premiseClassData:any;
   @Input() applicationTypeCategoryData: any; 
   @Input() permitReasonData: any; 
   @Input() portOfEntryExitData: any; 
   @Input() payingCurrencyData: any;  
   @Input() modeOfTransportData: any; 
+  @Input() selectedPremiseId: any;
+  @Input() productTypeData:any;
+  @Input() premiseTypeData: any; 
+  @Input() is_registered_premise : boolean = false;
+  @Input() is_clinical: boolean = false;
+  @Input() is_grant: boolean = false;
+  @Input() is_govement: boolean = false;
+  @Input() is_importation: boolean =false;
+  @Input() licenceTypeData: any;
+  @Input() productClassData: any;
+  @Input() isProductCategoryId: number;
   
   @Input() currencyData: any;
   @Input() consigneeOptionsData: any; 
   @Input() consignee_options_check: any; 
   @Input() zoneData: any; 
   @Input() module_id: any; 
-  
+  @Input() licence_type_id:any;
+  @Input() importation_reason_id:any;
+  @Input() product_category_id:any;
+  @Input() business_type_id:any;
+  @Input() importationReasonData: any;
+  @Input() vcApplicationTypeData: any;
+  @Input() registrationLevelData: any;
+  @Input() productImportationCategoryData: any;
+  @Input() applicationTypeData: any; 
+  @Input() LicencedproductRangeData: any;
   @Input() application_code: any; 
   @Input() ispremisesSearchWinVisible: any; 
- 
+  @Input() isclinicalTrialSearchWinVisible: any;
+  @Input() product_classification_id: any;
+  @Input() product_type_id: any;
+  @Input() importexport_product_range_id: number[];
+  @Input() isManufacturerPopupVisible: boolean;
+  @Input() port_id:number;
+  @Input() has_registered_premises:number;
   @Input() registered_premisesData:any ={};
+  @Input() registered_clinicalTrialData:any={};
   @Input() issenderreceiverSearchWinVisible: any; 
   @Input() consignee_sendertitle: any; 
   @Input() issenderreceiverAddWinVisible: any; 
   @Input() permitReceiverSenderFrm: FormGroup; 
   @Input() countries: any; 
-  @Input() regions: any; 
+  @Input() regions: any;
   @Input() districts: any; 
   @Input() section_id: number; 
   @Input() deviceTypeData: any; 
   @Input() permitProductsCategoryData: any; 
+  @Input() manufacturersSiteData: any = {};
 
+mode_oftransport_id:number;
   proforma_currency_id:number;
   @Output() onProformaInvoiceEvent = new EventEmitter();
-  
   device_type_visible:boolean= false;
   import_typecategory_visible:boolean= false;
+  isproductManufacturerModalShow:boolean=false;
   consignee_options_id:number;
   senderReceiverData:any ={};
   checkifsenderreceiver:boolean;
+  isPersonnelPopupVisible:boolean;
+  isReadOnlyTraderasBillingPerson: boolean;
+  isReadOnlyTraderasContactPerson: boolean;
+  isReadOnlyTraderasConsigneePerson:boolean=false;
   isconsigneeSearchWinVisible:boolean;
+  isaddNewBillingPremisesPersonnelDetails: boolean;
   consigneeReceiverData:any ={};
   dataGrid: DxDataGridComponent;
   app_resp:any;
   isReadOnly:boolean;
+  traderAccountsDetailsData:any = {};
+  is_local_agent:boolean;
+  trader_title:string;
+  personnel_informationData: any;
+  productClassificationData:any;
+  qualificationsData: any;
+  isRegistrantDetailsWinshow:boolean=false;
+  is_other_classification:boolean=false;
   hide_visalicensedetails:boolean = false;
+  show_visalicensedetails:boolean;
+  is_not_registered_premise:boolean = false;
+  is_readOnly:boolean = false;
   invoice_title:string;
+  personnel_type_id: number;
   has_registred_outlet:boolean= false;
+  has_registered_outlets:boolean= false;
   showreason_fornonregister_outlet:boolean= false;
+  is_technical_declaration:boolean= false;
   confirmDataParam:any;
+  portOfEntryData:any
+  productappTypeDta:any;
+  applicantTypesData:any;
+  governmentGrantDate:any;
+  isAddNewManufacturingSite:boolean = false;
   is_licensepermit: boolean =false;
   consignor_title:string = 'Consignor(Supplier/Receiver)';
   eligibleImportersData:any;
@@ -86,6 +145,9 @@ export class ImportexportGendetailsComponent implements OnInit {
   filesToUpload: Array<File> = [];  
   showsupporting_document:boolean;
   has_submittedpremisesapp:boolean;
+  private isFetchingData = false;
+
+  private destroy$ = new Subject<void>();
   processData:any;
   title:string;
   router_link:string;
@@ -94,14 +156,61 @@ export class ImportexportGendetailsComponent implements OnInit {
   maxDate:any;
   premise_title:string = 'Premises(Licensed Outlet(s))';
   constructor(public utilityService:Utilities, public premappService: PremisesApplicationsService, public dmsService: DocumentManagementService, public fb: FormBuilder, public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: ImportexportService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public httpClient: HttpClient, private premService: PremisesApplicationsService) {
-  
-    
+
+this.manufacturerFrm = new FormGroup({
+      name: new FormControl('', Validators.compose([Validators.required])),
+      country_id: new FormControl('', Validators.compose([Validators.required])),
+      region_id: new FormControl('', Validators.compose([])),
+      email_address: new FormControl('', Validators.compose([Validators.required])),
+      physical_address: new FormControl('', Validators.compose([Validators.required])),
+      telephone: new FormControl('', Validators.compose([Validators.required])),
+      mansite_name: new FormControl('', Validators.compose([])),
+      mansitecountry_id: new FormControl('', Validators.compose([])),
+      mansiteregion_id: new FormControl('', Validators.compose([])),
+      mansiteemail_address: new FormControl('', Validators.compose([])),
+      mansitepostal_address: new FormControl('', Validators.compose([])),
+      mansitetelephone_no: new FormControl('', Validators.compose([])),
+      mansitephysical_address: new FormControl('', Validators.compose([])),
+      contact_person: new FormControl('', Validators.compose([])),
+      manufacturer_id: new FormControl('', Validators.compose([])),
+
+
+      
+    });
+
+    this.newPremisesPersonnelDetailsFrm = new FormGroup({
+      name: new FormControl('', Validators.compose([Validators.required])),
+      email_address: new FormControl('', Validators.compose([Validators.required])),
+      postal_address: new FormControl('', Validators.compose([Validators.required])),
+      telephone_no: new FormControl('', Validators.compose([]))
+    });
+
+
+// console.log(this.licence_type_id, this.business_type_id);
   }
+
+
+
+  // export class YourComponent {
+  //   maxDate: Date;
+  
+  //   constructor() {
+  //     // Calculate the max date as today's date plus 3 months
+  //     const currentDate = new Date();
+  //     currentDate.setMonth(currentDate.getMonth() + 3);
+  //     this.maxDate = currentDate;
   ngOnInit(){
     this.maxDate = new Date();
+    this.maxDate.setMonth(this.maxDate.getMonth() + 3);
     if(this.sub_module_id == 78 || this.sub_module_id == 81){
           this.is_licensepermit = true; 
           this.invoice_title = "Commercial Invoice";
+    }else if(this.sub_module_id == 12){
+      this.is_licensepermit = false;
+      this.show_visalicensedetails = true; 
+      this.is_readOnly = true
+      
+      
     }else if(this.sub_module_id == 82){
       this.is_licensepermit = true; 
       this.invoice_title = "Commercial Invoice";
@@ -109,14 +218,28 @@ export class ImportexportGendetailsComponent implements OnInit {
       this.has_registred_outlet =false;
       this.showreason_fornonregister_outlet=false;
       
+    }else if(this.sub_module_id == 115){
+      this.is_technical_declaration = false; 
+      this.applicationGeneraldetailsfrm.get('sub_module_id').setValue(this.sub_module_id); 
+
+      
     }else{
       this.is_licensepermit = false;
       this.invoice_title = "Proforma Invoice";
     }
     this.onLoadCountries();
+    this.onLoadapplicantTypesLoad();
+    this.onLoadQualificationDetails();
+    this.onLoadPremiseTypeDataChange();
+    this.onLoadbusinessTypeData();
     this.onLoadEligibleImportersData(this.section_id);
+    this.onLoadportOfEntryExitData(this.mode_oftransport_id);
+    this.onLoadProductAppType(this.sub_module_id);
+    this.onLoadclarationportofentry();
     this.onLoadeligibleImportersDocTypes();
-    
+    this.onLoadImportExportNonRegProductClassifiction();
+    this.onLoadGovernmentGrants();
+   // this.onLoadImportReasons(this.business_type_id, this.licence_type_id);
     this.onLoadconfirmDataParm() ;
     if(this.section_id == 4){
       this.device_type_visible = true;
@@ -136,11 +259,318 @@ export class ImportexportGendetailsComponent implements OnInit {
       this.consignor_title = 'Consignor(Receiver)';
       
     }
+
+    this.setupSearchByTinNoHandler();
+  }
+  private setupSearchByTinNoHandler(): void {
+    this.applicationGeneraldetailsfrm
+      .get('tpin_no')
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((TinNo) => {
+        if (!this.isFetchingData) {
+          this.isFetchingData = true;
+          this.searchByTinNo(TinNo);
+        }
+      });
+  } 
+    searchByTinNo(TinNo){
+    this.appService.onLoadApplicantIncharge(TinNo).subscribe(
+      (response: any) => {
+        if (response && Array.isArray(response.data) && response.data.length > 0) {
+          const dataItem = response.data[0];
+           this.applicationGeneraldetailsfrm.get('tpin_id').setValue(dataItem.id);
+           this.applicationGeneraldetailsfrm.get('name').setValue(dataItem.name);
+           this.applicationGeneraldetailsfrm.get('physical_address').setValue(dataItem.physical_address);
+           this.applicationGeneraldetailsfrm.get('email').setValue(dataItem.email);
+           this.applicationGeneraldetailsfrm.get('company_registration_no').setValue(dataItem.company_registration_no);
+
+
+        } else {
+          
+          this.toastr.error('No data found');
+        }
+
+        this.isFetchingData = false;
+      },
+      (error) => {
+        this.isFetchingData = false;
+      }
+    );
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
   onApplicationCategorySelection($event){
     let permit_category_id = $event.selectedItem.id;
     this.onLoadpermitProductsCategoryData(permit_category_id);
 
+  }
+   onSaveNewBillingPremisesPersonnelDetails() {
+        let table_name;
+        table_name = 'tra_personnel_information';
+        let name = this.newPremisesPersonnelDetailsFrm.get('name').value;
+        let email_address = this.newPremisesPersonnelDetailsFrm.get('email_address').value;
+        let telephone_no = this.newPremisesPersonnelDetailsFrm.get('telephone_no').value;
+        let postal_address = this.newPremisesPersonnelDetailsFrm.get('postal_address').value;
+
+        this.utilityService.onAddPersonnDetails(table_name, this.newPremisesPersonnelDetailsFrm.value)
+          .subscribe(
+            response => {
+              let app_resp = response.json();
+              //the details 
+              if (app_resp.success) {
+                
+                  this.toastr.success(app_resp.message, 'Response');
+      
+                  this.applicationGeneraldetailsfrm.patchValue({ billing_person_id: app_resp.record_id, billing_person: name})
+               
+                this.isaddNewBillingPremisesPersonnelDetails = false;
+                this.isPersonnelPopupVisible = false;
+              } else {
+                this.toastr.error(app_resp.message, 'Alert');
+              }
+              this.spinner.hide();
+            },
+            error => {
+              this.toastr.error('Error Occurred', 'Alert');
+            });
+      }
+
+  // onLoadImportReasons(business_type_id, licence_type_id) {
+  //    this.configService.onLoadImportationReasonsDetails(business_type_id, licence_type_id)
+  //     //.pipe(first())
+  //     .subscribe(
+  //       data => {
+  //         this.importationReasonData = data.data;
+  //       },
+  //       error => {
+  //         return false;
+  //       });
+  // }
+
+  onSelectBusinessType($event) {
+    this.business_type_id = $event.selectedItem.id;
+    this.onLoadLicenceProductRangeData(this.business_type_id, this.licence_type_id, this.product_classification_id);
+
+  }
+
+  onLoadImportExportNonRegProductClassifiction() {
+    var data = {
+      table_name: 'par_premise_class',
+      importexport_product_classification:1
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.productClassificationData = data;
+        });
+  }
+
+    onLoadportOfEntryExitData(mode_oftransport_id) {
+        this.configService.onLoaPortOfEntryDetails(mode_oftransport_id,this.sub_module_id)
+          //.pipe(first())
+          .subscribe(
+            data => {
+              this.portOfEntryExitData = data.data;
+            },
+            error => {
+              return false;
+            });
+
+      }
+
+    onLoadImportCategoryData(importexport_product_range_id: number[]) {
+        this.appService.onLoaProductImportRangeDetails(importexport_product_range_id)
+          //.pipe(first())
+          .subscribe(
+            data => {
+              this.productImportationCategoryData = data.data;
+            },
+            error => {
+              return false;
+            });
+
+      }
+
+onSelectProduct(selectedItems: any): void {
+    if (Array.isArray(selectedItems.addedItems)) {
+        const selectedIds = selectedItems.addedItems.map(item => item.id);
+        this.onLoadImportCategoryData(selectedIds);
+        this.importexport_product_range_id = selectedIds;
+    } 
+}
+
+
+onSelectImportationReasons($event){
+   if ($event.value == 7) {
+          this.is_clinical = true;
+          this.is_grant = false;
+        } else if($event.value == 10){
+          this.is_grant = true;
+          this.is_clinical = false;
+        }
+    else{
+      this.is_clinical = false;
+      this.is_grant = false
+    }
+
+}
+
+  onShipmentSelect($event) {
+    this.mode_oftransport_id = $event.selectedItem.id;
+
+    this.onLoadportOfEntryExitData(this.mode_oftransport_id);
+
+  }
+
+
+  onLoadclarationportofentry() {
+
+    var data = {
+      table_name: 'par_ports_information',
+      is_declaration:1
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.portOfEntryData = data;
+        });
+
+  }
+  onLoadGovernmentGrants() {
+    
+    var data = {
+      table_name: 'par_government_grants'
+    };
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+         this.governmentGrantDate =  data;
+        });
+  }
+  onLoadProductAppType(sub_module_id) {
+    
+    var data = {
+      table_name: 'sub_modules',
+      module_id: 4,
+      sub_module_id:sub_module_id
+    };
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+         this.productappTypeDta =  data;
+        });
+  }
+  onPersonnelSearchDetails() {
+    this.appService.onLoadPersonnelInformations()
+    .subscribe(
+      data_response => {
+        this.personnel_informationData = data_response.data;
+        
+           this.isPersonnelPopupVisible = true;
+      },
+      error => {
+        return false
+      });
+
+  }
+  // onApplicationDataSelect($event) {
+    
+  //   if($event.selectedItem.id == 2){
+  //     this.is_personnel_medicines = true;
+  //     this.applicationGeneraldetailsfrm.get('has_medical_prescription').setValidators([Validators.required]);
+
+  //   }else{
+  //     this.is_personnel_medicines = false;
+  //     this.applicationGeneraldetailsfrm.get('has_medical_prescription').setValidators([]);
+
+  //   }
+  // }
+
+
+
+
+
+  onSelectPremiseType($event){
+    if ($event.selectedItem.id == 1) {
+      this.is_registered_premise = true;
+      this.is_not_registered_premise = false;
+      this.applicationGeneraldetailsfrm.get('tpin_no').setValidators([]);
+      this.applicationGeneraldetailsfrm.get('name').setValidators([]);
+      this.applicationGeneraldetailsfrm.get('physical_address').setValidators([]);
+      this.applicationGeneraldetailsfrm.get('email').setValidators([]);
+
+        } 
+    else{
+      this.is_registered_premise = false;
+      this.is_not_registered_premise = true;
+      this.applicationGeneraldetailsfrm.get('tpin_no').setValidators([Validators.required]);
+      this.applicationGeneraldetailsfrm.get('name').setValidators([Validators.required]);
+      this.applicationGeneraldetailsfrm.get('physical_address').setValidators([Validators.required]);
+      this.applicationGeneraldetailsfrm.get('email').setValidators([]);
+
+    }
+    
+  }
+
+  // onSelectBusinessType($event){
+
+  //   if ($event.value == 12 || 14) {
+  //       this.is_govement = true;
+
+  //       } 
+  //   else{
+  //     this.is_govement = false;
+
+  //   }
+    
+  // }
+
+  onSelectVcType($event){
+
+    if ($event.value == 2) {
+          this.is_importation = true;
+        } 
+    else{
+      this.is_importation = false;
+    }
+    
+  }
+
+  onBillingPerGridToolbar(e) {
+    this.functDataGridToolbar(e, this.funAddNewBillingPremisesPersonnelDetails, 'Add Billing Person');
+  }
+  funAddNewBillingPremisesPersonnelDetails() {
+    this.isaddNewBillingPremisesPersonnelDetails = true;
+  }
+
+  funcSelectPremisePersonnel(data) {
+      this.applicationGeneraldetailsfrm.patchValue({ contact_person_id: data.data.id, contact_person: data.data.name})
+    this.isPersonnelPopupVisible = false;
+    
+  }
+  //  onBillingPersonnelSearchDetails(personnel_type_id) {
+  //   this.personnel_type_id = personnel_type_id;
+  //   this.appService.onLoadPersonnelInformations()
+  //   .subscribe(
+  //     data_response => {
+  //       this.billingpersonnel_informationData = data_response.data;
+        
+  //          this.isBillingPersonnelPopupVisible = true;
+  //     },
+  //     error => {
+  //       return false
+  //     });
+
+  // }
+
+  funcSelectManData(data){
+    this.manufacturerFrm.patchValue(data.data);
+    this.manufacturerFrm.patchValue({manufacturer_id:data.data.id});
+    this.isproductManufacturerModalShow = false;
   }
   onLoadpermitProductsCategoryData(permit_category_id) {
 
@@ -157,6 +587,39 @@ export class ImportexportGendetailsComponent implements OnInit {
         });
 
   }
+
+  onTraderasContactpersnChange($event) {
+    
+    if($event.value == 1){
+        this.isReadOnlyTraderasContactPerson = true;
+      this.applicationGeneraldetailsfrm.get('contact_person').setValidators([]);
+
+
+    }else{
+      this.isReadOnlyTraderasContactPerson = false;
+      this.applicationGeneraldetailsfrm.get('contact_person').setValidators([Validators.required]);
+
+    }
+    
+
+  }
+  onApplicantConsigneeChange($event) {
+    
+    if($event.value == 1){
+        this.isReadOnlyTraderasConsigneePerson = true;
+      this.applicationGeneraldetailsfrm.get('consignee_name').setValidators([]);
+
+
+    }else{
+      this.isReadOnlyTraderasConsigneePerson = false;
+      this.applicationGeneraldetailsfrm.get('consignee_name').setValidators([Validators.required]);
+
+    }
+    
+
+  }
+
+
   onLoadeligibleImportersDocTypes() {
 
     var data = {
@@ -168,6 +631,61 @@ export class ImportexportGendetailsComponent implements OnInit {
         data => {
           this.eligibleImportersDocTypes = data;
         });
+
+  }
+
+  onLoadQualificationDetails() {
+    var data = {
+      table_name: 'par_personnel_qualifications',
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.qualificationsData = data;
+        });
+  }
+
+    // onLoadSections(sub_module_id:any) {
+  //   var data = {
+  //     table_name: 'par_importexport_productcategory',
+  //     is_import_export: sub_module_id,
+  //   };
+  //   this.config.onLoadConfigurationData(data)
+  //     .subscribe(
+  //       data => {
+  //         this.sectionsData = data;
+  //       });
+  // }
+// Use the correct property
+    
+
+
+ //
+ // onAssessmentCboSelect($event) {
+    
+ //    if($event.selectedItem.id){
+ //      this.assessment_procedure_id = $event.selectedItem.id;
+
+ //      if(this.assessment_procedure_id == 2 || this.assessment_procedure_id == 5){
+ //          this.hasCountriesSelection = false;
+ //          this.onLoadCountriesLists(this.assessment_procedure_id) 
+
+ //      }else{
+ //        this.hasCountriesSelection = false;
+ //        this.gmpapplicationGeneraldetailsfrm.get('gmpassessment_countries_ids').setValue("");
+ //      }
+ //    }
+ //  }
+
+  onOtherClassificationChange($event) {
+    if($event.value == 3){
+        this.is_other_classification = true;
+
+    }else{
+      this.is_other_classification = false;
+    }
+    
 
   }
   
@@ -187,8 +705,8 @@ export class ImportexportGendetailsComponent implements OnInit {
     if (has_submitted_outlets == 1) {
        this.has_registred_outlet = true;
        this.showreason_fornonregister_outlet = false;
-       this.applicationGeneraldetailsfrm.get('premises_name').setValidators([Validators.required]);
-        this.applicationGeneraldetailsfrm.get('premise_id').setValidators([Validators.required]);
+       this.applicationGeneraldetailsfrm.get('premises_name').setValidators([]);
+        this.applicationGeneraldetailsfrm.get('premise_id').setValidators([]);
      
 
     }
@@ -261,8 +779,8 @@ export class ImportexportGendetailsComponent implements OnInit {
       this.showsupporting_document = false;
       this.showreason_fornonregister_outlet = false;
       this.has_submittedpremisesapp = false;
-       this.applicationGeneraldetailsfrm.get('premises_name').setValidators([Validators.required]);
-        this.applicationGeneraldetailsfrm.get('premise_id').setValidators([Validators.required]);
+       this.applicationGeneraldetailsfrm.get('premises_name').setValidators([]);
+        this.applicationGeneraldetailsfrm.get('premise_id').setValidators([]);
      
        this.applicationGeneraldetailsfrm.get('eligible_importerscategory_id').setValidators([]);
        this.applicationGeneraldetailsfrm.get('eligible_importersdoctype_id').setValidators([]);
@@ -291,8 +809,8 @@ export class ImportexportGendetailsComponent implements OnInit {
       this.showsupporting_document = false;
       
       this.has_submittedpremisesapp = true;
-      this.applicationGeneraldetailsfrm.get('premises_name').setValidators([Validators.required]);
-      this.applicationGeneraldetailsfrm.get('premise_id').setValidators([Validators.required]);
+      this.applicationGeneraldetailsfrm.get('premises_name').setValidators([]);
+      this.applicationGeneraldetailsfrm.get('premise_id').setValidators([]);
       this.toastr.error('The selected Importer Category is required to submit Premises Application before the Import Process.','Warning -Requirement');
 
     }else{
@@ -318,6 +836,133 @@ onLoadconfirmDataParm() {
           this.confirmDataParam = data;
         });
   }
+
+  
+  //  funcSearchRegistrantDetails(is_local_agent) {
+
+  //   //  this.spinner.show();
+
+  //       this.isRegistrantDetailsWinshow = true;
+  //       if (is_local_agent == 1) {
+  //         this.is_local_agent = is_local_agent;
+  //         this.trader_title = 'Local Representative';
+  //       }
+  //       else {
+  //         this.is_local_agent = is_local_agent;
+  //         this.trader_title = 'Product Registrant';
+  //       }
+  //       let me = this;
+  //       this.traderAccountsDetailsData.store = new CustomStore({
+  //         load: function (loadOptions: any) {
+  //             var params = '?';
+  //             params += 'skip=' + loadOptions.skip;
+  //             params += '&take=' + loadOptions.take;//searchValue
+  //             var headers = new HttpHeaders({
+  //               "Accept": "application/json",
+  //               "Authorization": "Bearer " + me.authService.getAccessToken(),
+  //             });
+            
+  //             this.configData = {
+  //               headers: headers,
+  //               params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter,is_local_agent:is_local_agent }
+  //             };
+  //             return me.httpClient.get(AppSettings.base_url + 'productregistration/getTraderInformationDetails',this.configData)
+  //                 .toPromise()
+  //                 .then((data: any) => {
+  //                     return {
+  //                         data: data.data,
+  //                         totalCount: data.totalCount
+  //                     }
+  //                 })
+  //                 .catch(error => { throw 'Data Loading Error' });
+
+  //         }
+  //     });
+    
+  //    // this.traderAccountsDetailsData.load();
+
+  // }
+  // funcSelectTraderDetails(data) {
+  //   let record = data.data;
+  //   this.applicationGeneraldetailsfrm.get('local_agent_name').setValue(record.local_agent_name);
+  //   this.applicationGeneraldetailsfrm.get('local_agent_id').setValue(record.local_agent_id);
+    
+  //   this.isRegistrantDetailsWinshow = false;
+  // }
+  
+  onLoadPremiseTypeDataChange() {
+    var data = {
+      table_name: 'par_business_types',
+      is_non_licenced: 1
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.premiseTypeData = data;
+        });
+  }
+  onLoadbusinessTypeData() {
+    var data = {
+      table_name: 'par_business_types',
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.businessTypeData = data;
+        });
+  }
+
+
+
+   onLoadLicenceProductRangeData(business_type_id , licence_type_id, product_classification_id) {
+    this.configService.onLoadProductRangeDetails(business_type_id, licence_type_id, product_classification_id)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.LicencedproductRangeData = data.data;
+        },
+        error => {
+          return false;
+        });
+  }
+
+
+  onSelectProductClassification($event) {
+    this.product_classification_id = $event.selectedItem.id;
+
+      this.onLoadLicenceProductRangeData(this.business_type_id, this.licence_type_id, this.product_classification_id);
+
+  }
+
+
+//}
+  // onSelectLicenceType($event) {
+  //   this.licence_type_id = $event.selectedItem.id;
+  //   this.onLoadProductRangeData(this.business_type_id, this.licence_type_id, this.product_classification_id);
+  //   this.onLoadImportReasons(this.business_type_id, this.licence_type_id);
+  // }
+  // onSelectBusinessType($event) {
+  //   this.business_type_id = $event.selectedItem.id;
+  //   this.onLoadLicenceProductRangeData(this.business_type_id , this.licence_type_id, this.product_classification_id)
+  //   //this.onLoadImportReasons(this.business_type_id, this.licence_type_id);
+  // }
+  
+  onLoadapplicantTypesLoad() {
+    var data = {
+      table_name: 'par_premiseapplications_types',
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.applicantTypesData = data;
+        },
+        error => {
+          return false
+        });
+  }
+  
 
   onLoadEligibleImportersData(section_id) {
     var data = {
@@ -360,7 +1005,7 @@ onLoadconfirmDataParm() {
             
               this.configData = {
                 headers: headers,
-                params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter,table_name:'tra_premises_applica'}
+                params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter,table_name:'tra_permitsenderreceiver_data'}
               };
               return me.httpClient.get(AppSettings.base_url + 'importexportapp/getSenderreceiversDetails',this.configData)
                   .toPromise()
@@ -409,7 +1054,7 @@ onLoadconfirmDataParm() {
           }
       });
   }
-  
+
   onRegisteredPremisesSearch1() {
 
     this.premappService.onLoadRegisteredPremises({})
@@ -423,37 +1068,70 @@ onLoadconfirmDataParm() {
         });
   }//23000
   onRegisteredPremisesSearch() {
-        this.ispremisesSearchWinVisible = true;
-        let me = this;
-        this.registered_premisesData.store = new CustomStore({
-          load: function (loadOptions: any) {
-            console.log(loadOptions)
-              var params = '?';
-              params += 'skip=' + loadOptions.skip;
-              params += '&take=' + loadOptions.take;//searchValue
-              var headers = new HttpHeaders({
-                "Accept": "application/json",
-                "Authorization": "Bearer " + me.authService.getAccessToken(),
-              });
+    this.ispremisesSearchWinVisible = true;
+    let me = this;
+    this.registered_premisesData.store = new CustomStore({
+      load: function (loadOptions: any) {
+        console.log(loadOptions)
+          var params = '?';
+          params += 'skip=' + loadOptions.skip;
+          params += '&take=' + loadOptions.take;//searchValue
+          var headers = new HttpHeaders({
+            "Accept": "application/json",
+            "Authorization": "Bearer " + me.authService.getAccessToken(),
+          });
 
-              this.configData = {
-                  headers: headers,
-                  params: {skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter,table_name:'tra_premises_applications'}
-              };
+          this.configData = {
+              headers: headers,
+              params: {skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter,table_name:'tra_premises_applications'}
+          };
 
-              return me.httpClient.get(AppSettings.base_url + 'premisesregistration/getTradersRegisteredPremises',this.configData)
-                  .toPromise()
-                  .then((data: any) => {
-                      return {
-                          data: data.data,
-                          totalCount: data.totalCount
-                      }
-                  })
-                  .catch(error => { throw 'Data Loading Error' });
-          }
-      });
+          return me.httpClient.get(AppSettings.base_url + 'premisesregistration/getTradersRegisteredPremises',this.configData)
+              .toPromise()
+              .then((data: any) => {
+                  return {
+                      data: data.data,
+                      totalCount: data.totalCount
+                  }
+              })
+              .catch(error => { throw 'Data Loading Error' });
+      }
+  });
 
+}
+
+  onRegisteredClinicalTrialSearch() {
+      this.isclinicalTrialSearchWinVisible = true;
+    let me = this;
+    this.registered_clinicalTrialData.store = new CustomStore({
+      load: function (loadOptions: any) {
+        console.log(loadOptions)
+          var params = '?';
+          params += 'skip=' + loadOptions.skip;
+          params += '&take=' + loadOptions.take;//searchValue
+          var headers = new HttpHeaders({
+            "Accept": "application/json",
+            "Authorization": "Bearer " + me.authService.getAccessToken(),
+          });
+
+          this.configData = {
+              headers: headers,
+              params: {skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter,table_name:'tra_premises_applications'}
+          };
+
+          return me.httpClient.get(AppSettings.base_url + 'premisesregistration/getTradersRegisteredPremises',this.configData)
+              .toPromise()
+              .then((data: any) => {
+                  return {
+                      data: data.data,
+                      totalCount: data.totalCount
+                  }
+              })
+              .catch(error => { throw 'Data Loading Error' });
+      }
+  });
   }
+  
 
   nullFunc() {
 
@@ -501,7 +1179,19 @@ onLoadconfirmDataParm() {
 
    // if (status_id == 2 || has_registered_outlets == 2) {
       this.applicationGeneraldetailsfrm.get('premise_id').setValue(data.data.premise_id);
+      this.applicationGeneraldetailsfrm.get('pharmacist_id').setValue(data.data.id);
       this.applicationGeneraldetailsfrm.get('premises_name').setValue(data.data.premises_name);
+      this.applicationGeneraldetailsfrm.get('full_names').setValue(data.data.full_names);
+      this.applicationGeneraldetailsfrm.get('product_classification_id').setValue(data.data.product_classification_id);
+      this.applicationGeneraldetailsfrm.get('business_type_id').setValue(data.data.business_type_id); 
+      this.applicationGeneraldetailsfrm.get('psu_date').setValue(data.data.psu_date);
+      this.applicationGeneraldetailsfrm.get('psu_no').setValue(data.data.psu_no);
+      this.applicationGeneraldetailsfrm.get('pharmacist_telephone').setValue(data.data.pharmacist_telephone);
+      this.applicationGeneraldetailsfrm.get('pharmacist_email').setValue(data.data.pharmacist_email);
+      this.applicationGeneraldetailsfrm.get('pharmacist_qualification').setValue(data.data.pharmacist_qualification);
+      this.applicationGeneraldetailsfrm.get('pharmacist_country_id').setValue(data.data.pharmacist_country_id);
+      this.applicationGeneraldetailsfrm.get('pharmacist_district_id').setValue(data.data.pharmacist_district_id);
+      this.applicationGeneraldetailsfrm.get('pharmacist_region_id').setValue(data.data.pharmacist_region_id);
       this.ispremisesSearchWinVisible = false;
     /*
     }
@@ -511,7 +1201,7 @@ onLoadconfirmDataParm() {
 
     */
   }
-  funcSelectReceiverSender(data) {
+   funcSelectReceiverSender(data) {
     if (this.checkifsenderreceiver) {
       this.applicationGeneraldetailsfrm.get('sender_receiver_id').setValue(data.data.id);
       this.applicationGeneraldetailsfrm.get('sender_receiver').setValue(data.data.name);
@@ -521,6 +1211,18 @@ onLoadconfirmDataParm() {
     }
     this.issenderreceiverSearchWinVisible = false;
     this.isconsigneeSearchWinVisible = false;
+  }
+
+  onTraderasBillingpersnChange($event) {
+    
+    if($event.value == 1){
+        this.isReadOnlyTraderasBillingPerson = true;
+
+    }else{
+      this.isReadOnlyTraderasBillingPerson = false;
+    }
+    
+
   }
   
   onLoadDistricts(region_id) {
@@ -553,7 +1255,6 @@ onLoadconfirmDataParm() {
       //.pipe(first())
       .subscribe(
         data => {
-          console.log(data);
           this.regions = data;
         },
         error => {
@@ -563,7 +1264,7 @@ onLoadconfirmDataParm() {
 
   onCoutryCboSelect($event) {
 
-
+    this.onLoadDistricts($event.selectedItem.id);
     this.onLoadRegions($event.selectedItem.id);
 
   }

@@ -224,6 +224,14 @@ if (!function_exists('deleteRecordNoTransaction')) {
     }
 }
 
+if (!function_exists('deleteRecordNoMisTransaction')) {
+    function deleteRecordNoMisTransaction($table_name, $previous_data, $where_data, $user_id,$con='mysql')
+    {
+        return DbHelper::deleteRecordNoMisTransaction($table_name, $previous_data, $where_data, $user_id,$con);
+    }
+}
+
+
 if (!function_exists('softDeleteRecord')) {
     function softDeleteRecord($table_name, $previous_data, $where_data, $user_id)
     {

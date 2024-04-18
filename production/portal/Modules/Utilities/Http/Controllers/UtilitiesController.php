@@ -2,13 +2,15 @@
 
 namespace Modules\Utilities\Http\Controllers;
 
-////use Modules\ImportExportApp\Traits\ImportexportpermitsTraits;
-//use Modules\PremisesRegistration\Traits\PremisesRegistrationTraits;
+use Modules\ImportExportApp\Traits\ImportexportpermitsTraits;
+use Modules\PremisesRegistration\Traits\PremisesRegistrationTraits;
+use Modules\Promotionadverts\Traits\PromotionadvertsTraits;
+use Modules\ClinicalTrials\Traits\ClinicalTrialAppTraits;
+use Modules\ProductRegistration\Traits\ProductRegistrationTraits;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
-
 use Illuminate\Support\Facades\Auth;
  
 use Validator;
@@ -18,8 +20,12 @@ use Carbon\Carbon;
 
 class UtilitiesController extends Controller
 {
-    //use ImportexportpermitsTraits;
-    //use PremisesRegistrationTraits;
+    use ImportexportpermitsTraits;
+    use PremisesRegistrationTraits;
+    use ClinicalTrialAppTraits;
+    use PromotionadvertsTraits;
+    use ProductRegistrationTraits;
+
     public function __construct(){
        /* if (!Auth::guard('api')->check()) {
                 $res = array(
@@ -62,177 +68,62 @@ class UtilitiesController extends Controller
 
         
     }
-    function onMisApplicationIntraySubmit($req){
-       try{
-            $tracking_no = $req->tracking_no;
+
+    public function onSaveInspectionDetails(Request $req){
+        try {
             $application_code = $req->application_code;
-            $status_id = $req->status_id;
             $trader_id = $req->trader_id;
-            $remarks = $req->submission_comments;
-
-            $is_fast_track = $req->is_fast_track;
-            $paying_currency_id = $req->paying_currency_id;
-
-            $traderemail_address = $req->traderemail_address;
-            $data = array();
-            //get the records 
-            $table_name = $req->table_name;;
-            $resp = false;
-            $mansite_emails = '';
-            if(validateIsNumeric($application_code)){
-                $where_state = array('application_code' => $application_code);
-            }
-            else{
-                $where_state = array('tracking_no' => $tracking_no);
-
-            }
-           $cc= '';
-            $records = DB::table($table_name)
-                        ->where($where_state)
-                        ->first();
-                      $prodclass_category_id = 0;
-            if($records){
-                
-                    //delete functionality
-                    $previous_status_id = $records->application_status_id;
-                    $application_code = $records->application_code;
-                    $last_query_ref_id = $records->last_query_ref_id;
-                    $section_id = $records->section_id;
-                    //$applicant_id = $records->applicant_id;
-                    $section_id = $records->section_id;
-                    if($previous_status_id < 1){
-                        $previous_status_id = 1;
-                    }
-                    $module_id = $records->module_id;
-                    $current_status_id = getSingleRecordColValue('wb_processstatus_transitions', array('module_id' => $module_id,'current_status_id' => $previous_status_id ), 'next_status_id');
-                    
-                   if(validateisNumeric($current_status_id)){
-                       
-                        $status_type_id = getSingleRecordColValue('wb_statuses', array('id' => $current_status_id), 'status_type_id');
-
-                            $app_data = array('application_status_id'=>$current_status_id,
-                                                 'clinical_registrystatus_id'=>2,
-                                                'altered_by'=>$traderemail_address,
-                                                'dola'=>Carbon::now()
-                                            );
+            $email_address = $req->email_address;
+            $table_name = 'tra_gmp_inspection_dates';
+            $premises_otherinfor = array(
+                'customer_confirmation_id'=>$req->customer_confirmation_id,
+                'client_rejection_reason'=>$req->client_rejection_reason,
+                'client_preferred_start_date'=>$req->client_preferred_start_date,
+                    ); 
                           
-                           $where = array(
-                                't1.module_id' => $records->module_id,
-                                't1.sub_module_id' => $records->sub_module_id,
-                                't1.section_id' => $records->section_id
-                            );
-
-                            $rec = DB::connection('mis_db')->table('wf_tfdaprocesses as t1')
-                                            ->join('wf_workflow_stages as t2', 't1.workflow_id','=','t2.workflow_id')
-                                            ->where($where)
-                                            ->select('t2.id as current_stage','t1.id as process_id')
-                                            ->where('is_portalapp_initialstage',1)
-                                            ->first();
-                            
-                            $applicant_id = $trader_id;
-                            
-                            
-                            $view_id = $this->generateApplicationViewID(); 
-                            $tracking_no = $records->tracking_no;
-                            $zone_id = 2;
-                            if(isset($record->zone_id)){
-                                $zone_id = $record->zone_id;
-                            }
-                            
-                            $onlinesubmission_data  = array('application_code'=>$records->application_code,
-                                    'reference_no'=>$records->reference_no,
-                                    'tracking_no'=>$records->tracking_no,
-                                    'application_id'=>$records->id,
-                                    'prodclass_category_id'=>$prodclass_category_id,
-                                    'view_id'=>$view_id,
-                                    'process_id'=>$rec->process_id,
-                                    'current_stage'=>$rec->current_stage,
-                                    'module_id'=>$records->module_id,
-                                    'sub_module_id'=>$records->sub_module_id,
-                                    'section_id'=>$records->section_id,
-                                    'application_status_id'=>$records->application_status_id,
-                                    'remarks'=>$remarks,
-                                    'applicant_id'=>$applicant_id,
-                                    'is_notified'=>0,
-                                    'status_type_id'=>$status_type_id,
-                                    'onlinesubmission_status_id'=>1,
+                    $where = array('application_code'=>$application_code);
+                     if (recordExists($table_name, $where,'mis_db')) {
                                     
-                                    'zone_id'=>$zone_id,
-                                    'date_submitted'=>Carbon::now(),
-                                    'created_on'=>Carbon::now(),
-                                    'created_by'=>$trader_id
-                            );
-                               
-                            $previous_data = getPreviousRecords($table_name, $where_state,'mis_db');
-                            
-                            $resp = updateRecord($table_name, $previous_data, $where_state, $app_data, $traderemail_address,'mis_db');
-                            $resp =  insertRecord('tra_onlinesubmissions', $onlinesubmission_data, $traderemail_address,'mis_db');
-                            $sub_module_id = $records->sub_module_id;
-                            $module_id = $records->module_id;
-                            //insert in the tra_submission too 
-                              $onlinesubmission_data  = array('application_code'=>$records->application_code,
-                                    'reference_no'=>$records->reference_no,
-                                    'tracking_no'=>$records->tracking_no,
-                                    'view_id'=>$view_id,
-                                    'process_id'=>$rec->process_id,
-                                    'current_stage'=>$rec->current_stage,
-                                    'module_id'=>$records->module_id,
-                                    'sub_module_id'=>$records->sub_module_id,
-                                    'section_id'=>$records->section_id,
-                                    'application_status_id'=>1,
-                                    'remarks'=>'Online Submission: '.$remarks,
-                                    'applicant_id'=>$applicant_id,
-                                    'isDone'=>0,
-                                    'isRead'=>0,
-                                    'zone_id'=>$zone_id,
-                                    'created_on'=>Carbon::now(),
-                                    'created_by'=>$trader_id
-                            );
-                            $next_stage = $rec->current_stage;
-                            $resp = insertRecord('tra_submissions', $onlinesubmission_data, $traderemail_address,'mis_db');
-                            
-                            
-                           if($previous_status_id == 8 || $previous_status_id == 6){
-                                 //update the query tracker table 
-                                    $data = array('responded_on'=>Carbon::now(),                'responded_by'=>$traderemail_address,
-                                        'queryref_status_id'=>2,
-                                        'dola'=>Carbon::now()
-                                        );
-                              
+                        $premises_otherinfor['dola'] = Carbon::now();
+                        $premises_otherinfor['altered_by'] = $email_address;
+                         $previous_data = getPreviousRecords($table_name, $where,'mis_db');
+                                    
+                        $resp =updateRecord($table_name, $previous_data, $where, $premises_otherinfor, $email_address,'mis_db');
 
-                                        $where = array('application_code'=>$application_code,       'id'=>$last_query_ref_id);
-                                        $previous_data = getPreviousRecords('tra_application_query_reftracker', $where,'mis_db');
-                    
-                                        $resp = updateRecord('tra_application_query_reftracker', $previous_data, $where, $data, $traderemail_address,'mis_db');
-                           }
+                    }
+                    $res = returnFuncResponses($resp,'Inspection','application_code',$application_code);
                            
-                           //
-                           if($module_id ==4 || $module_id == 12){
-                                $this->funcImpApplicationSubmission($application_code,$sub_module_id,$module_id,$req,$view_id);
-                           
-                           }
-                           else if($module_id == 2){
-                                $this->funcpremisesApplicationSubmission($application_code,$sub_module_id,$module_id,$req,$view_id,$next_stage);
-                           
-                               
-                           }
-                           
-                         
-                           $res = array('success'=>true, 'message'=>'Application has been submitted successfully.');
-                   }else{
-                        if($previous_status_id == 2){
-                             $res = array('success'=>false, 'message'=>'Application has been submitted successfully.');
-                       }
-                       else{
-                            $res = array('success'=>false, 'message'=>'Application status has not been set, contact the Authority for further guidance..');
-                       }
+  
+
                         
-                   }
-                   
-            }   
-      
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
         
+        return response()->json($res);
     }
+
+    public function getApplicationInspectionDetails(Request $req){
+        try{
+            $table_name = $req->table_name;
+            $application_code = $req->application_code;
+            //tra_online_queries
+            $records = DB::connection('mis_db')->table($table_name.' as t1')
+                          ->select('t1.start_date','t1.end_date', 't1.id' )
+                          ->where(array('t1.application_code'=>$application_code))
+                          ->get();
+              $res = array('success'=>true, 
+                          'data'=>$records
+                          );
+      }
       catch (\Exception $e) {
           $res = array(
               'success' => false,
@@ -244,292 +135,615 @@ class UtilitiesController extends Controller
               'message' => $throwable->getMessage()
           );
       }
-     return $res;
+      return response()->json($res);
+
+        
     }
-    public function onMisPermitApplicationSubmit(Request $req){
+
+
+    function onMisApplicationIntraySubmit($req){
         try{
-            $tracking_no = $req->tracking_no;
-            $application_code = $req->application_code;
-            $status_id = $req->status_id;
+             $tracking_no = $req->tracking_no;
+             $application_code = $req->application_code;
+             $status_id = $req->status_id;
+             $trader_id = $req->trader_id;
+             $remarks = $req->submission_comments;
+ 
+             $is_fast_track = $req->is_fast_track;
+             $paying_currency_id = $req->paying_currency_id;
+ 
+             $traderemail_address = $req->traderemail_address;
+             
+             $data = array();
+             //get the records 
+             $table_name = $req->table_name;
+        
+             $resp = false;
+             $mansite_emails = '';
+             if(validateIsNumeric($application_code)){
+                 $where_state = array('application_code' => $application_code);
+             }
+             else{
+                 $where_state = array('tracking_no' => $tracking_no);
+ 
+             }
+            $cc= '';
+             $records = DB::table($table_name)
+                         ->where($where_state)
+                         ->first();
+            
+                       $prodclass_category_id = 0;
+             if($records){
+                 
+                     //delete functionality
+                     $previous_status_id = $records->application_status_id;
+                     $application_code = $records->application_code;
+                     $last_query_ref_id = $records->last_query_ref_id;
+                     $section_id = $records->section_id;
+                     //$applicant_id = $records->applicant_id;
+                     $section_id = $records->section_id;
+                     if($previous_status_id < 1){
+                         $previous_status_id = 1;
+                     }
+                     $module_id = $records->module_id;
+                    
+                     $current_status_id = getSingleRecordColValue('wb_processstatus_transitions', array('module_id' => $module_id,'current_status_id' => $previous_status_id ), 'next_status_id');
+                  
+            
+                    if(validateisNumeric($current_status_id)){
+                        
+                         $status_type_id = getSingleRecordColValue('wb_statuses', array('id' => $current_status_id), 'status_type_id');
+ 
+                             $app_data = array('application_status_id'=>$current_status_id,
+                                                  'clinical_registrystatus_id'=>2,
+                                                 'altered_by'=>$traderemail_address,
+                                                 'dola'=>Carbon::now()
+                                             );
+ 
+                                             if($records->module_id==4 && $records->sub_module_id ==81 || $records->module_id===4 && $records->sub_module_id ===81){
+                                                $has_registered_premises= $records->has_registered_premises;
+                                                 $where = array(
+                                                     't1.module_id' => $records->module_id,  
+                                                      't1.sub_module_id' => $records->sub_module_id,
+                                                      't1.importexport_permittype_id' => $records->licence_type_id,
+                                                      't1.importexport_applicationtype_id' => $records->has_registered_premises
+                                                      );
+                         
+                                              }
+                                              else if($records->module_id==4 && $records->sub_module_id==12 || $records->module_id===4 && $records->sub_module_id===12){
+                                                     $where = array(
+                                                         't1.module_id' => $records->module_id,  
+                                                          't1.sub_module_id' => $records->sub_module_id,
+                                                          't1.port_id' => $records->port_id,
+                                                          't1.importexport_permittype_id' => $records->licence_type_id,
+                                                          't1.importexport_applicationtype_id' => $records->has_registered_premises
+                                                          );
+
+                                              }else{
+                                              
+                                            $where = array(
+                                                    't1.module_id' => $records->module_id,
+                                                     't1.sub_module_id' => $records->sub_module_id
+                                                    //'t1.section_id' => $records->section_id
+                                                    );
+                        
+                                        }      
+ 
+ 
+                                    $rec = DB::connection('mis_db')->table('wf_tfdaprocesses as t1')
+                                             ->join('wf_workflow_stages as t2', 't1.workflow_id','=','t2.workflow_id')
+                                             ->where($where)
+                                             ->select('t2.id as current_stage','t1.id as process_id')
+                                             ->where('is_portalapp_initialstage',1)
+                                             ->first();
+                    
+                        
+                             
+                             $applicant_id = $trader_id;
+                              
+                             
+                             $view_id = $this->generateApplicationViewID(); 
+                             $tracking_no = $records->tracking_no;
+                             $zone_id = 1;
+                             if(isset($record->zone_id)){
+                                 $zone_id = $record->zone_id;
+                             }
+                             
+                             $onlinesubmission_data  = array('application_code'=>$records->application_code,
+                                     'reference_no'=>$records->reference_no,
+                                     'tracking_no'=>$records->tracking_no,
+                                     'application_id'=>$records->id,
+                                     'prodclass_category_id'=>$prodclass_category_id,
+                                     'view_id'=>$view_id,
+                                     'process_id'=>$rec->process_id,
+                                     'current_stage'=>$rec->current_stage,
+                                     'module_id'=>$records->module_id,
+                                     'sub_module_id'=>$records->sub_module_id,
+                                     'section_id'=>$records->section_id,
+                                     'application_status_id'=>$records->application_status_id,
+                                     'remarks'=>$remarks,
+                                     'applicant_id'=>$applicant_id,
+                                     'is_notified'=>0,
+                                     'status_type_id'=>$status_type_id,
+                                     'onlinesubmission_status_id'=>1,
+                                     
+                                     'zone_id'=>$zone_id,
+                                     'date_submitted'=>Carbon::now(),
+                                     'created_on'=>Carbon::now(),
+                                     'created_by'=>$trader_id
+                             );
+                               
+                             $previous_data = getPreviousRecords($table_name, $where_state,'mis_db');
+                             
+                             $resp = updateRecord($table_name, $previous_data, $where_state, $app_data, $traderemail_address,'mis_db');
+                             $resp =  insertRecord('tra_onlinesubmissions', $onlinesubmission_data, $traderemail_address,'mis_db');
+                             $sub_module_id = $records->sub_module_id;
+                             $module_id = $records->module_id;
+                             //insert in the tra_submission too 
+                               $onlinesubmission_data  = array('application_code'=>$records->application_code,
+                                     'reference_no'=>$records->reference_no,
+                                     'tracking_no'=>$records->tracking_no,
+                                     'view_id'=>$view_id,
+                                     'process_id'=>$rec->process_id,
+                                     'current_stage'=>$rec->current_stage,
+                                     'module_id'=>$records->module_id,
+                                     'sub_module_id'=>$records->sub_module_id,
+                                     'section_id'=>$records->section_id,
+                                     'application_status_id'=>1,
+                                     'remarks'=>'Online Submission: '.$remarks,
+                                     'applicant_id'=>$applicant_id,
+                                     'isDone'=>0,
+                                     'isRead'=>0,
+                                     'zone_id'=>$zone_id,
+                                     'created_on'=>Carbon::now(),
+                                     'created_by'=>$trader_id
+                             );
+ 
+ 
+                             $next_stage = $rec->current_stage;
+                             $resp = insertRecord('tra_submissions', $onlinesubmission_data, $traderemail_address,'mis_db');
+                             
+                            if($previous_status_id == 8 || $previous_status_id == 6){
+                                  //update the query tracker table 
+                                     $data = array('responded_on'=>Carbon::now(),'responded_by'=>$traderemail_address,
+                                         'queryref_status_id'=>2,
+                                         'dola'=>Carbon::now()
+                                         );
+                               
+ 
+                                         $where = array('application_code'=>$application_code,  'id'=>$last_query_ref_id);
+                                         $previous_data = getPreviousRecords('tra_application_query_reftracker', $where,'mis_db');
+                     
+                                         $resp = updateRecord('tra_application_query_reftracker', $previous_data, $where, $data, $traderemail_address,'mis_db');
+                            }
+                            if($module_id ==4  || $module_id == 12){
+                             $this->funcImpApplicationSubmission($application_code,$sub_module_id,$module_id,$req,$view_id);
+                                 
+                           
+                            }else if($module_id == 2){
+                                 $this->funcpremisesApplicationSubmission($application_code,$sub_module_id,$module_id,$req,$view_id,$next_stage);
+                                    
+                                
+                            }else if($module_id == 14){
+                                 $this->funcPromotionaApplicationSubmission($application_code,$sub_module_id,$module_id,$req,$view_id,$next_stage);
+                                    
+                                
+                            }else if($module_id == 1){
+                                 $this->funcProductsApplicationSubmission($application_code,$sub_module_id,$module_id,$req,$view_id,$next_stage);
+                                    
+                                
+                            }
+                            
+                 
+                            $res = array('success'=>true, 'message'=>'Application has been submitted successfully.');
+                    }else{
+                         if($previous_status_id == 2){
+                              $res = array('success'=>false, 'message'=>'Application has been submitted successfully.');
+                        }
+                        else{
+                             $res = array('success'=>false, 'message'=>'Application status has not been set, contact the Authority for further guidance..');
+                        }
+                         
+                    }
+                    
+             }   
+       
+         
+     }
+       catch (\Exception $e) {
+           $res = array(
+               'success' => false,
+               'message' => $e->getMessage()
+           );
+       } catch (\Throwable $throwable) {
+           $res = array(
+               'success' => false,
+               'message' => $throwable->getMessage()
+           );
+       }
+      return $res;
+     }
+     public function onMisPermitApplicationSubmit(Request $req){
+         try{
+             $tracking_no = $req->tracking_no;
+             $application_code = $req->application_code;
+             $status_id = $req->status_id;
+             $trader_id = $req->trader_id;
+             $remarks = $req->submission_comments;
+ 
+             $is_fast_track = $req->is_fast_track;
+             $paying_currency_id = $req->paying_currency_id;
+ 
+             $traderemail_address = $req->traderemail_address;
+             $data = array();
+             //get the records module
+             $table_name = $req->table_name;;
+             $resp = false;
+             $mansite_emails = '';
+             if(validateIsNumeric($application_code)){
+                 $where_state = array('application_code' => $application_code);
+             }
+             else{
+                 $where_state = array('tracking_no' => $tracking_no);
+ 
+             }
+            $cc= '';
+             $records = DB::connection('mis_db')->table($table_name)
+                         ->where($where_state)
+                         ->first();
+                       $prodclass_category_id = 0;
+             if($records){
+                     //delete functionality
+                     $previous_status_id = $records->application_status_id;
+                     $application_code = $records->application_code;
+                     $last_query_ref_id = $records->last_query_ref_id;
+                     $section_id = $records->section_id;
+                     $applicant_id = $records->applicant_id;
+  $section_id = $records->section_id;
+                     if($previous_status_id < 1){
+                         $previous_status_id = 1;
+                     }
+                     $module_id = $records->module_id;
+                     $current_status_id = getSingleRecordColValue('wb_processstatus_transitions', array('module_id' => $module_id,'current_status_id' => $previous_status_id ), 'next_status_id');
+                     
+                    if($current_status_id > 0){
+                         $status_type_id = getSingleRecordColValue('wb_statuses', array('id' => $current_status_id), 'status_type_id');
+ 
+                             $app_data = array('application_status_id'=>$current_status_id,
+                                                  'clinical_registrystatus_id'=>2,
+                                                 'altered_by'=>$traderemail_address,
+                                                 'dola'=>Carbon::now()
+                                             );
+ 
+                                             if($records->module_id==4 && $records->sub_module_id==81 || $records->module_id===4 && $records->sub_module_id=== 81){
+                                                 $where = array(
+                                                     't1.module_id' => $records->module_id,  
+                                                      't1.sub_module_id' => $records->sub_module_id,
+                                                      't1.importexport_permittype_id' => $records->licence_type_id,
+                                                      't1.importexport_applicationtype_id' => $records->has_registered_premises
+                                                      );
+                         
+                                              }else if($records->module_id==4 && $records->sub_module_id==12 || $records->module_id===4 && $records->sub_module_id===12){
+                                                     $where = array(
+                                                         't1.module_id' => $records->module_id,  
+                                                          't1.sub_module_id' => $records->sub_module_id,
+                                                          't1.port_id' => $records->port_id,
+                                                          't1.importexport_permittype_id' => $records->licence_type_id,
+                              't1.importexport_applicationtype_id' => $records->has_registered_premises
+                                                          );
+ 
+ 
+                                                  }
+ 
+                                              else{
+                                                 $where = array(
+                                                      't1.module_id' => $records->module_id,
+                                                      't1.sub_module_id' => $records->sub_module_id
+                                                      //'t1.section_id' => $records->section_id
+                                                      );
+                                              }
+                                              $rec = DB::connection('mis_db')->table('wf_tfdaprocesses as t1')
+                                              ->join('wf_workflow_stages as t2', 't1.workflow_id','=','t2.workflow_id')
+                                              ->where($where)
+                                              ->select('t2.id as current_stage','t1.id as process_id')
+                                              ->where('is_portalapp_initialstage',1)
+                                              ->first();
+                             //get the process_id 
+                             if(validateIsNumeric($trader_id)){
+                                 $applicant_data = getTableData('wb_trader_account', array('id'=>$trader_id));
+                                             $applicantidentification_no = $applicant_data->identification_no;
+                                             $applicant  = getTableData('wb_trader_account', array('identification_no'=>$applicantidentification_no),'mis_db');
+                                           
+                                 $applicant_id = $applicant->id;
+                             }else{
+                                 $applicant_data  = getTableData('wb_trader_account', array('id'=>$applicant_id),'mis_db');
+                                           
+                             }
+                             
+                             $view_id = $this->generateApplicationViewID(); 
+                             $tracking_no = $records->tracking_no;
+                             $zone_id = 2;
+                             if(isset($record->zone_id)){
+                                 //$zone_id = $record->zone_id;
+                             }
+                             
+                             $onlinesubmission_data  = array('application_code'=>$records->application_code,
+                                     'reference_no'=>$records->reference_no,
+                                     'tracking_no'=>$records->tracking_no,
+                                     'application_id'=>$records->id,
+                                     'prodclass_category_id'=>$prodclass_category_id,
+                                     'view_id'=>$view_id,
+                                     'process_id'=>$rec->process_id,
+                                     'current_stage'=>$rec->current_stage,
+                                     'previous_stage'=>$rec->current_stage,
+                                     'module_id'=>$records->module_id,
+                                     'sub_module_id'=>$records->sub_module_id,
+                                     'section_id'=>$records->section_id,
+                                     'application_status_id'=>$records->application_status_id,
+                                     'remarks'=>$remarks,
+                                     'applicant_id'=>$applicant_id,
+                                     'is_notified'=>0,
+                                     'status_type_id'=>$status_type_id,
+                                     'onlinesubmission_status_id'=>1,
+                                     
+                                     'zone_id'=>$zone_id,
+                                     'date_submitted'=>Carbon::now(),
+                                     'created_on'=>Carbon::now(),
+                                     'created_by'=>$trader_id
+                             );
+                                
+                             $previous_data = getPreviousRecords($table_name, $where_state,'mis_db');
+                             
+                             $resp = updateRecord($table_name, $previous_data, $where_state, $app_data, $traderemail_address,'mis_db');
+                             $resp =  insertRecord('tra_onlinesubmissions', $onlinesubmission_data, $traderemail_address,'mis_db');
+                             
+                             //insert in the tra_submission too 
+                               $onlinesubmission_data  = array('application_code'=>$records->application_code,
+                                     'reference_no'=>$records->reference_no,
+                                     'tracking_no'=>$records->tracking_no,
+                                     'view_id'=>$view_id,
+                                     'process_id'=>$rec->process_id,
+                                     'current_stage'=>$rec->current_stage,
+                                     'previous_stage'=>$rec->current_stage,
+                                     'module_id'=>$records->module_id,
+                                     'sub_module_id'=>$records->sub_module_id,
+                                     'section_id'=>$records->section_id,
+                                     'application_status_id'=>1,
+                                     'remarks'=>'Online Submission: '.$remarks,
+                                     'applicant_id'=>$applicant_id,
+                                     'isDone'=>1,
+                                     'isRead'=>1,
+                                     'zone_id'=>$zone_id,
+                                     'created_on'=>Carbon::now(),
+                                     'created_by'=>$trader_id
+                             );
+                             insertRecord('tra_submissions', $onlinesubmission_data, $traderemail_address,'mis_db');
+                             
+                             
+                            if($previous_status_id == 8 || $previous_status_id == 6){
+                                  //update the query tracker table 
+                                     $data = array('responded_on'=>Carbon::now(),                'responded_by'=>$traderemail_address,
+                                         'queryref_status_id'=>2,
+                                         'dola'=>Carbon::now()
+                                         );
+                               
+ 
+                                         $where = array('application_code'=>$application_code,       'id'=>$last_query_ref_id);
+                                         $previous_data = getPreviousRecords('tra_application_query_reftracker', $where,'mis_db');
+                     
+                                         $resp = updateRecord('tra_application_query_reftracker', $previous_data, $where, $data, $traderemail_address,'mis_db');
+                            }
+                            
+                    }else{
+                         if($previous_status_id == 2){
+                              $res = array('success'=>false, 'message'=>'Application has been submitted successfully.');
+                        }
+                        else{
+                             $res = array('success'=>false, 'message'=>'Application status has not been set, contact the Authority for further guidance..');
+                        }
+                         
+                    }
+             }
+         
+             if($resp['success']){
+                 //send emails 
+                 $bcc = array();
+                 $app_description = "";
+                 $local_agent_id = '';
+                 $trader = 'Trader';
+                 
+                 $trader_emails =  $applicant_data->email;
+                 $registrant =  $applicant_data->name;
+                 $physical_address = $applicant_data->physical_address;
+                 if($module_id == 1){
+                     $local_agent_id = $records->local_agent_id;
+                     //get manufacturers details
+                     $product_id = $records->product_id;
+                     $products = getSingleRecord('wb_product_information', array('id'=>$product_id));
+                      $manufacturers_id =  getRecordValFromWhere('wb_product_manufacturers', array('product_id'=>$product_id), 'man_site_id');
+                      $manufacturers_id =  convertAssArrayToSimpleArray($manufacturers_id, 'man_site_id','mis_db');
+                      //email addresses for manufacturer 
+                      $mansite_records = (array)getRecordsWithIds('par_man_sites',$manufacturers_id,'email_address','mis_db');
+                      $mansite_emails =  convertAssArrayToSimpleArray($mansite_records, 'email_address');
+                      $bcc = array_merge($bcc,$mansite_emails);
+                      $app_description = "Application details: Brand Name: ".$products->brand_name.", Registrant: ".$registrant.", Physical Address: ".$physical_address;
+                      
+ 
+                 }
+                 else if($module_id == 2){
+                     $cc = array();
+                     $premise_id = $records->premise_id;
+                     $premises_email =   getSingleRecordColValue('wb_premises', array('id'=>$premise_id),'email');
+                      $cc[] = $premises_email;
+                 }
+                 else if($module_id == 3){
+                     $local_agent_id = $records->local_agent_id;
+                     $manufacturing_site_id = $records->manufacturing_site_id;
+                     $site_name =   getSingleRecordColValue('wb_manufacturing_sites', array('id'=>$manufacturing_site_id),'name');
+                     $app_description = "Manufacturing Site Name: ".$site_name;
+                 }
+                 if(validateIsNumeric($local_agent_id)){
+                     $cc = array();
+                     $local_agent_email = getSingleRecordColValue('wb_trader_account', array('id' => $local_agent_id), 'email');
+                     $cc[] = $local_agent_email;
+ 
+                 }
+                // $cc = '';
+                 if($previous_status_id == 1){
+                     //send email to 
+                     $template_id = 9;
+                   //  $subject  = "NOTIFICATION FOR ONLINE APPLICATION SUBMISSION FOR TRACKING NO ".$tracking_no;
+                     //send to manufacturers 
+                     if(is_array($mansite_emails)){
+                         $mansite_emails = implode(';',$mansite_emails);
+                         $vars = array(
+                             '{tracking_no}' => $tracking_no,
+                             '{app_description}' => $app_description
+                         );
+                         $email_template = getEmailTemplateInfo(11, $vars);
+                         $email_content = $email_template->body;
+                         $subject = $email_template->subject;
+                         $response=  sendMailNotification($trader, $trader_emails,$subject,$email_content,$mansite_emails);   
+                     }
+                 } else if($previous_status_id == 6 || $previous_status_id == 7 || $previous_status_id == 8 || $previous_status_id == 9){
+                     $template_id = 10;
+                    // $subject  = "NOTIFICATION FOR ONLINE APPLICATION QUERY RESPONSE FOR TRACKING NO ".$tracking_no;
+ 
+                 }
+                 else{
+                     $template_id = 9;
+                  
+                 }
+                
+                 $vars = array(
+                     '{tracking_no}' => $tracking_no,
+                     '{app_description}' => $app_description
+                 );
+                 $attachement = '';
+                 $subject = ' SELF SERVICE PORTAL APPLICATION SUBMISSION';
+                 $email_template = getEmailTemplateInfo($template_id, $vars);
+                 $email_content = $email_template->body;
+                 $subject = $email_template->subject;
+                 //$bcc = implode(';',$bcc);
+                 if(is_array($bcc)){
+                     $bcc = implode(';',$bcc);
+                 }
+                 if(is_array($cc)){
+                     $cc = implode(';',$cc);
+                 }
+                 //get the other notifications 
+                 $department_emails = $this->getDepartmentalUsersEmails($module_id,$section_id, 1);
+                 
+                 if($department_emails != ''){
+                   
+                    $department_emails = implode(';',$department_emails);
+                    //concatenate 
+                    $cc = $cc.';'.$department_emails;
+                    
+                    
+         
+                 }
+                 
+                 $response=  sendMailNotification($trader, $trader_emails,$subject,$email_content,$cc,$bcc);
+                 $res = array('success'=>true, 
+                              'message'=>'Application has been submitted Successfully for processing.');
+ 
+             }   
+             else{
+                 $res = array('success'=>false ,'message1'=>$resp ,'message'=>$resp['message']);
+             }    
+         }
+         catch (\Exception $e) {
+             $res = array(
+                 'success' => false,
+                 'message' => $e->getMessage()
+             );
+         } catch (\Throwable $throwable) {
+             $res = array(
+                 'success' => false,
+                 'message' => $throwable->getMessage()
+             );
+         }
+         return response()->json($res);
+         
+     
+     }
+    public function onsaveClinicalVariationsrequests(Request $req){
+        try{
+            $resp ="";
             $trader_id = $req->trader_id;
-            $remarks = $req->submission_comments;
+            $trader_email = $req->trader_email;
+            $study_site_id = $req->study_site_id;
+            $application_id = $req->application_id;
+            $record_id = $req->id;
+            $error_message = 'Error occurred, data not saved successfully';
+    
+            $table_name = 'wb_application_variationsdata';
+    
+             $data = array( 
+                            'rationale_ammendment'=>$req->rationale_ammendment,
+                            'amendment_applied'=>$req->amendment_applied,
+                            'specify_site'=>$req->specify_site,
+                            'present_details'=>$req->present_details,
+                            'proposed_ammendment'=>$req->proposed_ammendment,
+                            'status_id'=>1,
+                            'application_code'=>$req->application_code);
 
-            $is_fast_track = $req->is_fast_track;
-            $paying_currency_id = $req->paying_currency_id;
 
-            $traderemail_address = $req->traderemail_address;
-            $data = array();
-            //get the records module
-            $table_name = $req->table_name;;
-            $resp = false;
-            $mansite_emails = '';
-            if(validateIsNumeric($application_code)){
-                $where_state = array('application_code' => $application_code);
+            if(validateIsNumeric($record_id)){
+                $where = array('id'=>$record_id);
+                if (recordExists($table_name, $where)) {
+                                
+                    $data['dola'] = Carbon::now();
+                    $data['altered_by'] = $trader_email;
+    
+                    $previous_data = getPreviousRecords($table_name, $where);
+                    
+                    $resp = updateRecord($table_name, $previous_data, $where, $data, $trader_email);
+                    
+                }
             }
             else{
-                $where_state = array('tracking_no' => $tracking_no);
-
-            }
-           $cc= '';
-            $records = DB::connection('mis_db')->table($table_name)
-                        ->where($where_state)
-                        ->first();
-                      $prodclass_category_id = 0;
-            if($records){
-                    //delete functionality
-                    $previous_status_id = $records->application_status_id;
-                    $application_code = $records->application_code;
-                    $last_query_ref_id = $records->last_query_ref_id;
-                    $section_id = $records->section_id;
-                    $applicant_id = $records->applicant_id;
- $section_id = $records->section_id;
-                    if($previous_status_id < 1){
-                        $previous_status_id = 1;
-                    }
-                    $module_id = $records->module_id;
-                    $current_status_id = getSingleRecordColValue('wb_processstatus_transitions', array('module_id' => $module_id,'current_status_id' => $previous_status_id ), 'next_status_id');
-                    
-                   if($current_status_id > 0){
-                        $status_type_id = getSingleRecordColValue('wb_statuses', array('id' => $current_status_id), 'status_type_id');
-
-                            $app_data = array('application_status_id'=>$current_status_id,
-                                                 'clinical_registrystatus_id'=>2,
-                                                'altered_by'=>$traderemail_address,
-                                                'dola'=>Carbon::now()
-                                            );
-                          
-                           $where = array(
-                                't1.module_id' => $records->module_id,
-                                't1.sub_module_id' => $records->sub_module_id,
-                                't1.section_id' => $records->section_id
-                            );
-
-                            $rec = DB::connection('mis_db')->table('wf_tfdaprocesses as t1')
-                                            ->join('wf_workflow_stages as t2', 't1.workflow_id','=','t2.workflow_id')
-                                            ->where($where)
-                                            ->select('t2.id as current_stage','t1.id as process_id')
-                                            ->where('stage_status',1)
-                                            ->first();
-                            //get the process_id 
-                            if(validateIsNumeric($trader_id)){
-                                $applicant_data = getTableData('wb_trader_account', array('id'=>$trader_id));
-                                            $applicantidentification_no = $applicant_data->identification_no;
-                                            $applicant  = getTableData('wb_trader_account', array('identification_no'=>$applicantidentification_no),'mis_db');
-                                          
-                                $applicant_id = $applicant->id;
-                            }else{
-                                $applicant_data  = getTableData('wb_trader_account', array('id'=>$applicant_id),'mis_db');
-                                          
-                            }
-                            
-                            $view_id = $this->generateApplicationViewID(); 
-                            $tracking_no = $records->tracking_no;
-                            $zone_id = 2;
-                            if(isset($record->zone_id)){
-                                //$zone_id = $record->zone_id;
-                            }
-                            
-                            $onlinesubmission_data  = array('application_code'=>$records->application_code,
-                                    'reference_no'=>$records->reference_no,
-                                    'tracking_no'=>$records->tracking_no,
-                                    'application_id'=>$records->id,
-                                    'prodclass_category_id'=>$prodclass_category_id,
-                                    'view_id'=>$view_id,
-                                    'process_id'=>$rec->process_id,
-                                    'current_stage'=>$rec->current_stage,
-                                    'previous_stage'=>$rec->current_stage,
-                                    'module_id'=>$records->module_id,
-                                    'sub_module_id'=>$records->sub_module_id,
-                                    'section_id'=>$records->section_id,
-                                    'application_status_id'=>$records->application_status_id,
-                                    'remarks'=>$remarks,
-                                    'applicant_id'=>$applicant_id,
-                                    'is_notified'=>0,
-                                    'status_type_id'=>$status_type_id,
-                                    'onlinesubmission_status_id'=>1,
-                                    
-                                    'zone_id'=>$zone_id,
-                                    'date_submitted'=>Carbon::now(),
-                                    'created_on'=>Carbon::now(),
-                                    'created_by'=>$trader_id
-                            );
-                               
-                            $previous_data = getPreviousRecords($table_name, $where_state,'mis_db');
-                            
-                            $resp = updateRecord($table_name, $previous_data, $where_state, $app_data, $traderemail_address,'mis_db');
-                            $resp =  insertRecord('tra_onlinesubmissions', $onlinesubmission_data, $traderemail_address,'mis_db');
-                            
-                            //insert in the tra_submission too 
-                              $onlinesubmission_data  = array('application_code'=>$records->application_code,
-                                    'reference_no'=>$records->reference_no,
-                                    'tracking_no'=>$records->tracking_no,
-                                    'view_id'=>$view_id,
-                                    'process_id'=>$rec->process_id,
-                                    'current_stage'=>$rec->current_stage,
-                                    'previous_stage'=>$rec->current_stage,
-                                    'module_id'=>$records->module_id,
-                                    'sub_module_id'=>$records->sub_module_id,
-                                    'section_id'=>$records->section_id,
-                                    'application_status_id'=>1,
-                                    'remarks'=>'Online Submission: '.$remarks,
-                                    'applicant_id'=>$applicant_id,
-                                    'isDone'=>1,
-                                    'isRead'=>1,
-                                    'zone_id'=>$zone_id,
-                                    'created_on'=>Carbon::now(),
-                                    'created_by'=>$trader_id
-                            );
-                            insertRecord('tra_submissions', $onlinesubmission_data, $traderemail_address,'mis_db');
-                            
-                            
-                           if($previous_status_id == 8 || $previous_status_id == 6){
-                                 //update the query tracker table 
-                                    $data = array('responded_on'=>Carbon::now(),                'responded_by'=>$traderemail_address,
-                                        'queryref_status_id'=>2,
-                                        'dola'=>Carbon::now()
-                                        );
-                              
-
-                                        $where = array('application_code'=>$application_code,       'id'=>$last_query_ref_id);
-                                        $previous_data = getPreviousRecords('tra_application_query_reftracker', $where,'mis_db');
-                    
-                                        $resp = updateRecord('tra_application_query_reftracker', $previous_data, $where, $data, $traderemail_address,'mis_db');
-                           }
-                           
-                   }else{
-                        if($previous_status_id == 2){
-                             $res = array('success'=>false, 'message'=>'Application has been submitted successfully.');
-                       }
-                       else{
-                            $res = array('success'=>false, 'message'=>'Application status has not been set, contact the Authority for further guidance..');
-                       }
-                        
-                   }
-            }
-        
-            if($resp['success']){
-                //send emails 
-                $bcc = array();
-                $app_description = "";
-                $local_agent_id = '';
-                $trader = 'Trader';
-                
-                $trader_emails =  $applicant_data->email;
-                $registrant =  $applicant_data->name;
-                $physical_address = $applicant_data->physical_address;
-                if($module_id == 1){
-                    $local_agent_id = $records->local_agent_id;
-                    //get manufacturers details
-                    $product_id = $records->product_id;
-                    $products = getSingleRecord('wb_product_information', array('id'=>$product_id));
-                     $manufacturers_id =  getRecordValFromWhere('wb_product_manufacturers', array('product_id'=>$product_id), 'man_site_id');
-                     $manufacturers_id =  convertAssArrayToSimpleArray($manufacturers_id, 'man_site_id','mis_db');
-                     //email addresses for manufacturer 
-                     $mansite_records = (array)getRecordsWithIds('par_man_sites',$manufacturers_id,'email_address','mis_db');
-                     $mansite_emails =  convertAssArrayToSimpleArray($mansite_records, 'email_address');
-                     $bcc = array_merge($bcc,$mansite_emails);
-                     $app_description = "Application details: Brand Name: ".$products->brand_name.", Registrant: ".$registrant.", Physical Address: ".$physical_address;
-                     
-
-                }
-                else if($module_id == 2){
-                    $cc = array();
-                    $premise_id = $records->premise_id;
-                    $premises_email =   getSingleRecordColValue('wb_premises', array('id'=>$premise_id),'email');
-                     $cc[] = $premises_email;
-                }
-                else if($module_id == 3){
-                    $local_agent_id = $records->local_agent_id;
-                    $manufacturing_site_id = $records->manufacturing_site_id;
-                    $site_name =   getSingleRecordColValue('wb_manufacturing_sites', array('id'=>$manufacturing_site_id),'name');
-                    $app_description = "Manufacturing Site Name: ".$site_name;
-                }
-                if(validateIsNumeric($local_agent_id)){
-                    $cc = array();
-                    $local_agent_email = getSingleRecordColValue('wb_trader_account', array('id' => $local_agent_id), 'email');
-                    $cc[] = $local_agent_email;
-
-                }
-               // $cc = '';
-                if($previous_status_id == 1){
-                    //send email to 
-                    $template_id = 9;
-                  //  $subject  = "NOTIFICATION FOR ONLINE APPLICATION SUBMISSION FOR TRACKING NO ".$tracking_no;
-                    //send to manufacturers 
-                    if(is_array($mansite_emails)){
-                        $mansite_emails = implode(';',$mansite_emails);
-                        $vars = array(
-                            '{tracking_no}' => $tracking_no,
-                            '{app_description}' => $app_description
-                        );
-                        $email_template = getEmailTemplateInfo(11, $vars);
-                        $email_content = $email_template->body;
-                        $subject = $email_template->subject;
-                        $response=  sendMailNotification($trader, $trader_emails,$subject,$email_content,$mansite_emails);   
-                    }
-                } else if($previous_status_id == 6 || $previous_status_id == 7 || $previous_status_id == 8 || $previous_status_id == 9){
-                    $template_id = 10;
-                   // $subject  = "NOTIFICATION FOR ONLINE APPLICATION QUERY RESPONSE FOR TRACKING NO ".$tracking_no;
-
+                //insert 
+                $where = $data;
+                $data['created_by'] = $trader_email;
+                $data['created_on'] = Carbon::now();
+                $data['date_added'] = Carbon::now();
+                if (!recordExists($table_name, $where)) {
+                    $resp = insertRecord($table_name, $data, $trader_email);
+                  
+                    $record_id = $resp['record_id'];           
                 }
                 else{
-                    $template_id = 9;
-                 
+                    $error_message = "The Clinical Trial Variation Request has already been added!!";
+                    
                 }
-               
-                $vars = array(
-                    '{tracking_no}' => $tracking_no,
-                    '{app_description}' => $app_description
-                );
-                $attachement = '';
-                $subject = ' SELF SERVICE PORTAL APPLICATION SUBMISSION';
-                $email_template = getEmailTemplateInfo($template_id, $vars);
-                $email_content = $email_template->body;
-                $subject = $email_template->subject;
-                //$bcc = implode(';',$bcc);
-                if(is_array($bcc)){
-                    $bcc = implode(';',$bcc);
-                }
-                if(is_array($cc)){
-                    $cc = implode(';',$cc);
-                }
-                //get the other notifications 
-                $department_emails = $this->getDepartmentalUsersEmails($module_id,$section_id, 1);
-                
-                if($department_emails != ''){
-                  
-                   $department_emails = implode(';',$department_emails);
-                   //concatenate 
-                   $cc = $cc.';'.$department_emails;
-                   
-                   
-        
-                }
-                
-                $response=  sendMailNotification($trader, $trader_emails,$subject,$email_content,$cc,$bcc);
-                $res = array('success'=>true, 
-                             'message'=>'Application has been submitted Successfully for processing.');
-
-            }   
+            } 
+            if($resp){
+                $res =  array('success'=>true,
+                'record_id'=>$record_id,
+                'message'=>'Saved Successfully');
+    
+            }
             else{
-                $res = array('success'=>false ,'message1'=>$resp ,'message'=>$resp['message']);
-            }    
-        }
-        catch (\Exception $e) {
+                $res =  array('success'=>false,
+                'message'=>$error_message);
+            }
+        } catch (\Exception $exception) {
             $res = array(
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $exception->getMessage()
             );
         } catch (\Throwable $throwable) {
             $res = array(
                 'success' => false,
                 'message' => $throwable->getMessage()
             );
-        }
+        } 
         return response()->json($res);
-        
     
-    }
+    
+       }
     public function getApplicationPreQueriesDetails(Request $req){
         try{
             $table_name = $req->table_name;
@@ -576,6 +790,46 @@ class UtilitiesController extends Controller
 
         
     }
+
+public function validateClinicalTrialDetails(Request $req){
+        try{
+            $application_id = $req->application_id;
+            $status_id = $req->status_id;
+            $id = $req->id;
+            $trader_email = $req->trader_email;
+            $data = array();
+            //get the records 
+            $table_name =  $req->table_name;
+            $resp = false;
+            $where_state = array('application_id' => $application_id);
+            $records = DB::connection('mis_db')->table($table_name)
+                        ->where($where_state)
+                        ->get();
+            if(count($records) > 0){
+                  
+                $res = array('success'=>true, 'message'=>'All is well.');
+         
+            }
+            else{
+
+                $res = array('success'=>false, 'message'=>'Enter application details to proceed.');
+
+            }
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+    }
+
     public function onsaveProductConfigData(Request $req){
         $name = $req->input('name');
         $description = $req->input('description');
@@ -1074,7 +1328,8 @@ $res = array('success'=>false,
             $trader_email = $req->trader_email;
             $data = array();
             //get the records 
-           $res = array('success'=>true, 'message'=>'Upload Application Documents to Proceed.'); 
+           $res = array('success'=>true, 'message'=>'The required documets have been upload, click next to proceed');//'message'=>'Upload Application Documents to Proceed.'
+       
           
          
             //  $table_name = $req->table_name;
@@ -1160,6 +1415,48 @@ $res = array('success'=>false,
         return response()->json($res);
     }
     
+
+
+    public function validateOthetPremiseDetails(Request $req){
+        try{
+            $premise_id = $req->premise_id;
+            $status_id = $req->status_id;
+            $id = $req->id;
+            $trader_email = $req->trader_email;
+            $data = array();
+            //get the records 
+            $table_name =  $req->table_name;
+            $resp = false;
+
+            $where_state = array('premise_id' => $premise_id);
+            $records = DB::table($table_name)
+                        ->where($where_state)
+                        ->get();
+            if(count($records) > 0){
+                  
+                $res = array('success'=>true, 'message'=>'All is well.');
+         
+            }
+            else{
+
+                $res = array('success'=>false, 'message'=>'Enter application details to proceed.');
+
+            }
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+    }
+
     public function validateClinicalTrialOtherDetails(Request $req){
         try{
             $application_id = $req->application_id;
@@ -1199,6 +1496,49 @@ $res = array('success'=>false,
         }
         return response()->json($res);
     }
+
+
+    public function validateClinicalTrialSaeOtherDetails(Request $req){
+        try{
+            $application_id = $req->application_id;
+            $status_id = $req->status_id;
+            $id = $req->id;
+            $trader_email = $req->trader_email;
+            $data = array();
+            //get the records 
+            $table_name =  $req->table_name;
+            $resp = false;
+
+            $where_state = array('application_id' => $application_id);
+            $records = DB::connection('mis_db')->table($table_name)
+                        ->where($where_state)
+                        ->get();
+            if(count($records) > 0){
+                  
+                $res = array('success'=>true, 'message'=>'All is well.');
+         
+            }
+            else{
+
+                $res = array('success'=>false, 'message'=>'Enter application details to proceed.');
+
+            }
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+    }
+
+
     public function validateApplicationotherDetails(Request $req){
         try{
             $application_code = $req->application_code;
@@ -1318,21 +1658,20 @@ $res = array('success'=>false,
                         ->where(array('application_code'=>$application_code))
                         ->get();
                         foreach ($records as $rec) {
-                            $type_of_variation = getSingleRecordColValue('par_typeof_variations', array('id' => $rec->variation_type_id), 'name','mis_db');
-                            $variation_category = getSingleRecordColValue('par_variations_categories', array('id' => $rec->variation_category_id), 'name','mis_db');
+                          
                             //documents Upload 
                             $appuploaded_document_id = $rec->appuploaded_document_id;
 
                             $variation_data = array('id'=>$rec->id,
                                         'application_code'=>$rec->application_code,
-                                        'variation_type_id'=>$rec->variation_type_id,
-                                        'variation_category_id'=>$rec->variation_category_id,
+                    'rationale_ammendment'=>$rec->rationale_ammendment,
+                    
                                         'present_details'=>$rec->present_details,
                                         'proposed_variation'=>$rec->proposed_variation,
-                                        'variation_background_information'=>$rec->variation_background_information,
-                                        'name'=>$variation_category,
-                                        'variation_category'=>$variation_category,
-                                        'type_of_variation'=>$type_of_variation);
+                    'variation_background_information'=>$rec->variation_background_information
+             
+                                        );
+                                     
                             $document_records = DB::connection('mis_db')->table('tra_application_uploadeddocuments')
                                     ->where(array('application_code'=>$application_code, 'id'=>$appuploaded_document_id))
                                     ->first();
@@ -1419,8 +1758,7 @@ $res = array('success'=>false,
     
             $table_name = 'wb_application_variationsdata';
     
-             $data = array('variation_type_id'=>$req->variation_type_id, 
-                            'variation_category_id'=>$req->variation_category_id,
+             $data = array(  
                             'present_details'=>$req->present_details,
                             'proposed_variation'=>$req->proposed_variation,
                             'variation_background_information'=>$req->variation_background_information,
@@ -1446,6 +1784,7 @@ $res = array('success'=>false,
                 $data['created_by'] = $trader_email;
                 $data['created_on'] = Carbon::now();
                 $data['date_added'] = Carbon::now();
+ 
                 if (!recordExists($table_name, $where)) {
                     $resp = insertRecord($table_name, $data, $trader_email);
                   
@@ -1781,14 +2120,14 @@ $res = array('success'=>false,
         $view_id = 'tfda' . str_random(10) . date('s');
         return $view_id;
     }
-    public function onPermitApplicationSubmit(Request $req){
+ public function onPermitApplicationSubmit(Request $req){
         try{
             $tracking_no = $req->tracking_no;
             $application_code = $req->application_code;
             $status_id = $req->status_id;
             $trader_id = $req->trader_id;
+            $traderaccount_type_id = $req->traderaccount_type_id;
             $remarks = $req->submission_comments;
-
             $is_fast_track = $req->is_fast_track;
             $paying_currency_id = $req->paying_currency_id;
 
@@ -1811,24 +2150,66 @@ $res = array('success'=>false,
             $records = DB::table($table_name)
                         ->where($where_state)
                         ->first();
-
+            
             $prodclass_category_id = 0;
-
+    
             if($records){
+
+                if ($records->module_id == 2) {
+                    $trader_account = DB::table('wb_trader_account as t1')
+                                ->select('t1.*')
+                                ->where('t1.id', $trader_id)
+                                ->first();
+                
+                    $traderaccount_type_id = $trader_account->traderaccount_type_id; 
+                   if($traderaccount_type_id != 9){
+                        $pharmacistSelected = DB::table('wb_premises as t1')
+                                ->join('wb_premises_applications as t2', 't2.premise_id', '=', 't1.id')
+                                ->select('t1.*')
+                                ->where('t2.premise_id', $records->premise_id)
+                                ->first();
+
+                            $selectedPharmacists = $pharmacistSelected->psu_no;
+                            if ($selectedPharmacists) {
+                                $params = array(
+                                    'application_status_id' => 79,
+                                );
+                                $previous_data = getPreviousRecords('wb_premises_applications', ['premise_id' => $records->premise_id]);
+                               updateRecord('wb_premises_applications', $previous_data, $where_state,$params, $traderemail_address);
+                                $pharmacistApprovalData = [
+                                    'application_code' => $records->application_code,
+                                    'pharmacist_id' => $selectedPharmacists,
+                                    'premise_id' => $records->premise_id
+                                ];
+
+                                insertRecord('wb_pharmacists_approval', $pharmacistApprovalData, $traderemail_address);
+
+                                $res = array(
+                                    'success' => true,
+                                    'message' => 'Application submitted for pharmacist approval.'
+                                );
+                                 return response()->json($res);
+
+                            }
+                        
+                    } 
+                } 
+
                 $status_id=$records->application_status_id;
                 $module_id=$records->module_id;
                 //will change
                 $sub_module_id =$records->sub_module_id;
+        
                 $has_invoice_generation = getSingleRecordColValue('sub_modules', array('id' => $sub_module_id ), 'has_invoice_generation','mis_db');
                 
                 $mis_table_name = getSingleRecordColValue('modules', array('id' => $module_id ), 'table_name','mis_db');
                      //validate is invoice generated  zone_id
-                     if($status_id == 1 && $module_id ==4){
+                     if($status_id == 1 ){
                          if($has_invoice_generation == 1){
                             $invoice_records = DB::connection('mis_db')->table('tra_application_invoices')
                                     ->where($where_state)
                                     ->get();
-                            if($invoice_records->count() ==0){ 
+                            if($invoice_records->count() !==0){ 
                                 $res = array('success'=>false, 'message'=>'Proforma Invoice has not been Generated, kindly generate and submit!!');
                                 return response()->json($res);
                             }
@@ -1851,18 +2232,21 @@ $res = array('success'=>false,
 
                 //delete functionality
                 $previous_status_id = $records->application_status_id;
-
+        
                 $application_code = $records->application_code;
                 $last_query_ref_id = $records->last_query_ref_id;
                 $section_id = $records->section_id;
 
+
                 if($previous_status_id < 1){
                     $previous_status_id = 1;
                 }
-                $module_id = $records->module_id;
-
                 $current_status_id = getSingleRecordColValue('wb_processstatus_transitions', array('module_id' => $module_id,'current_status_id' => $previous_status_id ), 'next_status_id');
-
+                
+                  if(!validateIsNumeric($current_status_id)){
+                      $res = array('success'=>false, 'message'=>'Application Transition  has not been set, contact the NDA Authority for further guidance..');
+                      return $res;
+                  }
                 if($current_status_id > 0){
                     $status_type_id = getSingleRecordColValue('wb_statuses', 
                      array('id' => $current_status_id), 'status_type_id');   
@@ -1878,7 +2262,8 @@ $res = array('success'=>false,
                         'submission_date'=>Carbon::now(),
                                             );
 
-
+            
+                 
                     if(validateIsNumeric($paying_currency_id)){
                         $app_data['paying_currency_id'] = $paying_currency_id;
                     }
@@ -1895,26 +2280,27 @@ $res = array('success'=>false,
                         'created_by'=>$traderemail_address,
                         'created_on'=>Carbon::now(),
                         );
-
+            
                     $previous_data = getPreviousRecords($table_name, $where_state);
                             
-                    
-                 
+                     
                     insertRecord('wb_application_submissions', $submission_data, $traderemail_address,'mysql');
                      //insert into the other tab;e
                     $where = array(
-                       // 't1.module_id' => $records->module_id,
+                       //'t1.region_id' => $records->region_id,
                         't1.sub_module_id' => $records->sub_module_id,
                         't1.section_id' => $records->section_id
                         );
+            
 
                     $rec = DB::connection('mis_db')->table('wf_tfdaprocesses as t1')
                         ->join('wf_workflow_stages as t2', 't1.workflow_id','=','t2.workflow_id')
                         ->where($where)
-                        ->select('t2.id as current_stage','t1.id as process_id')
+                        ->select('t2.id as current_stage','t1.name','t1.id as process_id')
                         ->where('stage_status',1)
                         ->first();
-                    
+                        
+                
                     //get the process_id 
                             
                     $applicant_data = getTableData('wb_trader_account', array('id'=>$trader_id));
@@ -1949,18 +2335,40 @@ $res = array('success'=>false,
                         'created_on'=>Carbon::now(),
                         'created_by'=>$trader_id
                         );//
-                        if($records->module_id == 4 || $records->module_id == 12 || $module_id ==2){
+
+                        if($records->module_id == 4 || $records->module_id == 12 || $module_id == 7 || $module_id == 14 || $module_id == 1){
                             
                             $res = $this->onMisApplicationIntraySubmit($req);
                             
                         
                         
-                        }else{
-                              $res = insertRecord('tra_onlinesubmissions', $onlinesubmission_data, $traderemail_address,'mis_db');
+                        }else if($module_id ==2 || $module_id == 29){
+                            $rec = DB::connection('mis_db')->table('wf_tfdaprocesses as t1')
+                                            ->join('wf_workflow_stages as t2', 't1.workflow_id','=','t2.workflow_id')
+                                            ->where($where)
+                                            ->select('t2.id as current_stage','t1.name','t1.id as process_id')
+                                             ->where('is_portalapp_initialstage',1)
+                                            ->first();
+                
+                            if(is_null($rec)){
+                                $res = array('success'=>false, 'message'=>'Application process not set or Initial stage not defined');
+                                return response()->json($res);
 
+                            }else{
+                
+                              $res = $this->onMisApplicationIntraySubmit($req); 
+                 
+                            }
+
+                           
+
+                        }
+                     else{
+                              $res = insertRecord('tra_onlinesubmissions', $onlinesubmission_data, $traderemail_address,'mis_db');
+                
 
                                  
-                        }
+                       }
                     
                     
                     $resp = updateRecord($table_name, $previous_data, $where_state, $app_data, $traderemail_address,'mysql');
@@ -2128,8 +2536,8 @@ $res = array('success'=>false,
         return response()->json($res);
         
     
-    }
-    function getDepartmentalUsersEmails($module_id,$section_id, $notification_category_id = null){
+    }    
+function getDepartmentalUsersEmails($module_id,$section_id, $notification_category_id = null){
         $emails = '';
         $records = DB::connection('mis_db')->table('tra_departmental_notifications')
                             ->select('*')
@@ -2162,7 +2570,28 @@ $res = array('success'=>false,
     public function getTraderApplicationProcessing(Request $request)
     {
         $mistrader_id = $request->mistrader_id;
+        $table_name = $request->table_name;
         try {
+        if($table_name){
+            $qry = DB::connection('mis_db')->table($table_name.' as t1')
+                ->join('wf_tfdaprocesses as t2', 't1.process_id', '=', 't2.id')
+                ->leftjoin('tra_submissions as t3', 't1.application_code', '=', 't3.application_code')
+                ->join('wf_workflow_stages as t4', 't3.previous_stage', '=', 't4.id')
+                ->join('wf_workflow_stages as t5', 't3.current_stage', '=', 't5.id')
+                ->join('par_system_statuses as t6', 't1.application_status_id', '=', 't6.id')
+                ->join('par_submission_urgencies as t7', 't3.urgency', '=', 't7.id')
+                ->join('users as t8', 't3.usr_from', '=', 't8.id')
+                ->join('users as t9', 't3.usr_to', '=', 't9.id')
+                ->leftJoin('wb_trader_account as t10', 't1.applicant_id', '=', 't10.id')
+                ->leftJoin('modules as t11', 't1.module_id', '=', 't11.id')
+                ->leftJoin('sub_modules as t12', 't1.sub_module_id', '=', 't12.id')
+                ->leftJoin('par_sections as t13', 't1.section_id', '=', 't13.id')
+                ->select(DB::raw(" DISTINCT t1.application_code,t2.name as process_name,t1.reference_no,t1.tracking_no, t11.name as module_name, t12.name as application_type,t13.name as section,t1.id as ID,
+                    t4.name as previous_process, t5.name as current_process, t3.date_received as processing_date"))
+                ->where(array('t3.applicant_id'=> $mistrader_id, 't3.isDone'=>0));
+                $qry->groupBy('t1.application_code');
+            $qry->orderBy('t1.id', 'DESC');
+        }else{
             $qry = DB::connection('mis_db')->table('tra_submissions as t1')
                 ->join('wf_tfdaprocesses as t2', 't1.process_id', '=', 't2.id')
                 ->join('wf_workflow_stages as t3', 't1.previous_stage', '=', 't3.id')
@@ -2181,6 +2610,7 @@ $res = array('success'=>false,
                 $qry->groupBy('t1.application_code');
             $qry->orderBy('t1.id', 'DESC');
             
+        }
             $results = $qry->get();
             $res = array(
                 'success' => true,
@@ -2386,19 +2816,30 @@ $res = array('success'=>false,
 
                $table_name = $req->table_name;
                $premise_id = $req->premise_id;
+               $sub_module_id = $req->sub_module_id;
                $title = $req->title;
-                $res = $this->validatPremisesOtherDetails($table_name,$premise_id,$title);
-                
+
+                $res =  $this->validatPremisesOtherDetails('wb_drugshop_storelocation',$premise_id,'Add Drug Shop Nearest Details to proceed');
+                if($res == ''){
+                    $this->validatPremisesOtherDetails('wb_premises_storelocation',$premise_id,'Add nearest Pharmacy Details to proceed');
+                 }
+                if($res == ''){
+                    $res =  $this->validatPremisesOtherDetails('wb_other_premises',$premise_id,'Add Other Details to proceed');
+                }                      
+                if($res == ''){
+                    $res =  $this->validatPremisesOtherDetails('wb_premises_proprietors',$premise_id,'Add Directors Details to proceed');
+                }
+                if($res == ''){
+                    $res =    $this->validatPremisesOtherDetails('wb_product_nutrients',$premise_id,'Add Product Nutrients Details to proceed');
+                 }
+
+
                 if($res == ''){
                     $res = array(
                         'success' => true,
                         'message' => 'Data entry validated'
                     );
                 }
-        $res = array(
-                        'success' => true,
-                        'message' => 'Data entry validated'
-                    );
              } catch (\Exception $e) {
                  $res = array(
                      'success' => true,
@@ -2415,7 +2856,6 @@ $res = array('success'=>false,
         function validatPremisesOtherDetails($table_name,$premise_id,$title){
             $res = '';
             $sql = DB::table($table_name)->where(array('premise_id'=>$premise_id))->get();
-
             if(count($sql) == 0){
                     $res = array('success'=>false, 'message'=>$title);
                  
@@ -2508,11 +2948,10 @@ public function onfuncValidatePermitDetails(Request $req){
         $application_code = $req->application_code;
         $title = $req->title;
         $sql = DB::table($table_name)->where(array('application_code'=>$application_code))->get();
-
+        $res=array();
         if(count($sql) == 0){
                 
                 $res = array('success'=>false, 'message'=>$validation_title);
-             
         }else{
             //check the sub_module_id
             $record = DB::table('wb_importexport_applications')->where('application_code',$application_code)->first();
@@ -2537,9 +2976,12 @@ public function onfuncValidatePermitDetails(Request $req){
                                  })
                                 ->count();
                     if($counter >0){
+                        // $res = array(
+                        //     'success' => true,
+                        //     'message' => 'Update the Batch No/# for all the products before you proceed'
                         $res = array(
-                            'success' => true,
-                            'message' => 'Update the Batch No/# for all the products before you proceed'
+                        'success' => true,
+                        'message' => 'Data entry validated'
                         );
                     }
                     else{
@@ -2556,11 +2998,16 @@ public function onfuncValidatePermitDetails(Request $req){
             
                 
             }
-            
+            $res = array(
+                        'success' => true,
+                        'message' => 'Data entry validated'
+                    );
+                    
             
 
         }
-       
+             
+
  
       } catch (\Exception $e) {
           $res = array(
@@ -2573,8 +3020,7 @@ public function onfuncValidatePermitDetails(Request $req){
               'message' => $throwable->getMessage()
           );
       }
-      return response()->json($res);
-
+ return response()->json($res);
 }
 
     public function onValidateGMPOtherdetails(Request $req){
@@ -2583,7 +3029,16 @@ public function onfuncValidatePermitDetails(Request $req){
            $table_name = $req->table_name;
            $manufacturing_site_id = $req->manufacturing_site_id;
            $title = $req->title;
+           if($table_name=='wb_contractmanufacturing_details' || $table_name==='wb_contractmanufacturing_details' || $table_name=='wb_manufacturing_sites_personnel' || $table_name==='wb_manufacturing_sites_personnel' || $table_name=='wb_manufacturing_sites_personnel' || $table_name==='wb_manufacturing_sites_personnel'){
+            $res = array(
+                    'success' => true,
+                    'message' => 'Data entry validated'
+                );
+
+           }else{
             $res = $this->validatGmpOtherDetails($table_name,$manufacturing_site_id,$title);
+
+           }
             
             if($res == ''){
                 $res = array(
@@ -2699,7 +3154,7 @@ public function onfuncValidatePermitDetails(Request $req){
                     $res =  $this->validateGMPOtherDetails('wb_gmp_productline_details',$manufacturing_site_id,'Add Manufacturing Product Line to proceed');
                 }
                 if($res == ''){
-                   // $res =  $this->validateGMPOtherDetails('wb_product_gmpinspectiondetails',$manufacturing_site_id,'Add Manufacturing Site Product Applications to proceed');
+                    $res =  $this->validateGMPOtherDetails('wb_intended_manufacturing',$manufacturing_site_id,'Add Manufacturing Site Product Applications to proceed');
                 }
                 if($res == ''){
                     $res = array(
@@ -2707,7 +3162,10 @@ public function onfuncValidatePermitDetails(Request $req){
                         'message' => 'Data entry validated'
                     );
                 }
-        
+          $res = array(
+                        'success' => true,
+                        'message' => 'Data entry validated'
+                    );
              } catch (\Exception $e) {
                  $res = array(
                      'success' => false,
@@ -2823,6 +3281,8 @@ public function onfuncValidatePermitDetails(Request $req){
                 $data['trader_id']  = $mistrader_id;
             }else if($table_name == 'tra_billingpersonnel_information'){
                 $data['trader_id']  = $mistrader_id;
+            }else if($table_name =='tra_telephone_details'){
+                $data['trader_id']=$mistrader_id;
             }
             
             if(validateIsNumeric($record_id)){
@@ -2929,7 +3389,7 @@ public function onfuncValidatePermitDetails(Request $req){
                                       ->where('t2.registration_status_id',2)
                                       ->where(array('t5.applicant_id'=>$trader_id));
             if(validateIsNumeric($section_id)){
-                $records = $records->where('t4.section_id',$section_id);   
+                $records = $records->where('t3.section_id',$section_id);   
             }
             if(validateIsNumeric($retentionyear_from)){
                 $records = $records->whereRaw("DATE_FORMAT(t1.retention_year,'%Y') >= ".$retentionyear_from);   
@@ -3798,22 +4258,26 @@ $application_code = $request->application_code;
                             }
                             $records = $records->get();
                             $now = Carbon::now();
-             foreach($records as $row){
-                    $table_name = $row->table_name;
-                    $days_span = $row->days_span;
-                    if(!validateIsNumeric($days_span)){
-                            $days_span = 30;
-                    }
-                    DB::enableQueryLog();
-                    $counter = DB::connection('mis_db')->table($table_name .' as t1')
-                                                        ->join('tra_approval_recommendations as t2','t1.application_code', '=','t2.application_code')
-                                                        ->whereRAW("DATEDIFF(t2.expiry_date,'$now') <= $days_span")
-                                                        ->where(array('applicant_id'=>$mistrader_id))
-                                                        ->count();
- 
-                $app_renewalduenotifications += $counter;
+                            foreach ($records as $row) {
+                              $table_name = $row->table_name;
+                              $days_span = $row->days_span;
+    
+                             if (!validateIsNumeric($days_span)) {
+                               $days_span = 30;
+                             }
 
-            }
+                             DB::enableQueryLog();
+
+                            $counter = DB::connection('mis_db')
+                                      ->table("tra_product_applications as t1")  // Use double quotes to wrap the table name
+                                      ->join('tra_approval_recommendations as t2', 't1.application_code', '=', 't2.application_code')
+                                      ->whereRaw("DATEDIFF(t2.expiry_date, '$now') <= $days_span")  // Use double quotes around $now
+                                      ->where(['applicant_id' => $mistrader_id])
+                                      ->count();
+    
+                                    $app_renewalduenotifications += $counter;
+                     }
+ 
             
             $res = array(
                 'success' => true,
@@ -3916,31 +4380,29 @@ $application_code = $request->application_code;
                 $man_data = array('name'=>$req->name,
                             'country_id'=>$req->country_id,
                             'region_id'=>$req->region_id,
+                            'district_id'=>$req->district_id,
                             'email_address'=>$req->email_address,
-                            'postal_address'=>$req->postal_address,
-                            'telephone_no'=>$req->telephone_no,
+                            'telephone'=>$req->telephone,
                             'physical_address'=>$req->physical_address);
                     $man_data['created_on'] = Carbon::now();
                     $man_data['created_by'] = $trader_email;
                     
                     $resp = insertRecord('tra_manufacturers_information', $man_data, $trader_email,'mis_db');
-                  
+
                     $manufacturer_id = $resp['record_id']; 
+
             }
             //save the other details 
-            $man_data = array('name'=>$req->mansite_name,
-                    'country_id'=>$req->mansitecountry_id,
-                    'region_id'=>$req->mansiteregion_id,
-                    'email_address'=>$req->mansiteemail_address,
-                    'postal_address'=>$req->mansitepostal_address,
-                    'telephone_no'=>$req->mansitetelephone_no,
+            $man_data = array('name'=>$req->name,
+                    'country_id'=>$req->country_id,
+                    'region_id'=>$req->region_id,
+                    'email_address'=>$req->email_address,
+                    'telephone'=>$req->telephone,
                     'manufacturer_id'=>$manufacturer_id,
-                    'physical_address'=>$req->mansitephysical_address,
-                    'contact_person'=>$req->contact_person);
+                    'physical_address'=>$req->physical_address);
+
 
             $resp = insertRecord('par_man_sites', $man_data, $trader_email,'mis_db');
-        
-           
             if($resp['success']){
                 $man_site_id = $resp['record_id']; 
                 $record =  $this->getManufacturingSite($man_site_id);
@@ -4037,9 +4499,14 @@ $application_code = $request->application_code;
                 
                 $module_data = getTableData('wb_applicationinvoicedata_queries', $data_check,'mis_db');
                 $data_query = $module_data->data_query;
+
+                $query_data = DB::raw($data_query.' where t1.application_code= '.$application_code)->getValue(DB::connection()->getQueryGrammar());
+ 
+           
+                $invoice_feessql = DB::select($query_data);
                 
 
-                $invoice_feessql = DB::select(DB::raw($data_query.' where t1.application_code= '.$application_code));
+               // $invoice_feessql = DB::select(DB::raw($data_query.' where t1.application_code= '.$application_code));
                 if(is_array($invoice_feessql) && count($invoice_feessql) >0){
                     $invoice_appfeearray = (array)$invoice_feessql[0];
                     $quantity = 1;
@@ -4153,6 +4620,8 @@ function generateRandomString($length = 5) {
                                 ->select('t1.*','t2.id as trader_id', 't2.name as applicant_name', 't2.identification_no','t2.email')
                                 ->where('application_code',$application_code)
                                 ->first();
+
+
                 if($rec){
 
                       $applicant_id =  $rec->trader_id;
@@ -4169,9 +4638,13 @@ function generateRandomString($length = 5) {
                     
                     $module_data = getTableData('wb_applicationinvoicedata_queries', $data_check,'mis_db');
                     $data_query = $module_data->data_query;
-                    
 
-                    $invoice_feessql = DB::select(DB::raw($data_query.' where t1.application_code= '.$application_code));
+                   $query_data = DB::raw($data_query.' where t1.application_code= '.$application_code)->getValue(DB::connection()->getQueryGrammar());
+ 
+           
+                  $invoice_feessql = DB::select($query_data);
+            
+                    //$invoice_feessql = DB::select(DB::raw($data_query.' where t1.application_code= '.$application_code));
                     if(is_array($invoice_feessql) && count($invoice_feessql) >0){
                         //$paying_currencydefination = 'costs_in_usd' or costs_in_zmw
                         $invoice_appfeearray = (array)$invoice_feessql[0];
@@ -4181,12 +4654,14 @@ function generateRandomString($length = 5) {
                             $quantity = 2;
 
                         }
+
                         $invoice_appfeearray['t1.application_feetype_id'] = $application_feetype_id;
                         $fees_data = DB::connection('mis_db')->table('tra_appmodules_feesconfigurations as t1')
                                             ->join('tra_element_costs as t2', 't1.element_costs_id', 't2.id')
                                             ->select(DB::raw("t1.element_costs_id,t2.id, t2.*,(cost *$quantity)  as costs") )
                                             ->where($invoice_appfeearray)
                                             ->get();
+
                       if($module_id ==4 && $sub_module_id != 81){
                                
                                $import_data =  $this->getImportInvoiceElementFeesData($module_id,$application_code,6);
@@ -4214,6 +4689,8 @@ function generateRandomString($length = 5) {
                             );
                             return response()->json($res);
                         }
+
+                        
 
                        $res = $this->saveNormalApplicationInvoice($portaltable_name,$rec,$paying_currency_id,$invoice_type_id,$fasttrack_option_id,$fees_datasave);
                     }
@@ -4274,7 +4751,7 @@ function generateRandomString($length = 5) {
             if(!validateIsNumeric($fob_value)){
                 $fob_value = 0;
             }
-            $exchange_ratedata = getSingleRecordColValue('par_exchange_rates', array('currency_id' => $currency_id), 'exchange_rate', 'mis_db');
+            //$exchange_ratedata = getSingleRecordColValue('par_exchange_rates', array('currency_id' => $currency_id), 'exchange_rate', 'mis_db');
             
             if(!validateIsNumeric($exchange_ratedata)){
 
@@ -4285,8 +4762,14 @@ function generateRandomString($length = 5) {
                 echo json_encode($res);
                 exit();
             }
+
+                  $query_data = DB::raw($data_query.' where t1.application_code= '.$application_code)->getValue(DB::connection()->getQueryGrammar());
+ 
+           
+                  $invoice_feessql = DB::select($query_data);
             
-                $invoice_feessql = DB::select(DB::raw($data_query.' where t1.application_code= '.$application_code));
+            
+                //$invoice_feessql = DB::select(DB::raw($data_query.' where t1.application_code= '.$application_code));
                 
                 
                 if(is_array($invoice_feessql) && count((array)$invoice_feessql) >0){
@@ -4393,8 +4876,13 @@ function getGoupedInvoiceElementFeesData($module_id,$group_application_code,$pay
                 
                 if($module_data){
                     $data_query = $module_data->data_query;
+
+                        $query_data = DB::raw($data_query.' where t1.application_code= '.$application_code)->getValue(DB::connection()->getQueryGrammar());
+ 
+           
+                        $invoice_feessql = DB::select($query_data);
                
-                        $invoice_feessql = DB::select(DB::raw($data_query.' where t1.application_code= '.$application_code));
+                        //$invoice_feessql = DB::select(DB::raw($data_query.' where t1.application_code= '.$application_code));
                        
                         if(is_array($invoice_feessql) && count($invoice_feessql) >0){
                             $invoice_appfeearray = (array)$invoice_feessql[0];
@@ -4451,32 +4939,53 @@ function getGoupedInvoiceElementFeesData($module_id,$group_application_code,$pay
             }
     return $res;
   }
-  function getInvoiceElementFeesData($module_id,$application_code,$paying_currency_id,$application_feetype_id,$fasttrack_option_id){
+  function getInvoiceElementFeesData($module_id,$sub_module_id,$application_code,$paying_currency_id,$application_feetype_id,$fasttrack_option_id){
     $module_data = getTableData('modules', array('id'=>$module_id),'mis_db');
     $portaltable_name = $module_data->portaltable_name;
 
-    $rec = DB::table($portaltable_name.' as t1')
+   if(validateIsNumeric($application_code)){
+      $rec = DB::table($portaltable_name.' as t1')
     ->select('t1.*')
     ->where('application_code',$application_code)
     ->first();
 
-    $sub_module_id = $rec->sub_module_id;
+   }else{
+    $res = array(
+        'success' => false,
+        'message' => 'Missing Application code !!! Please contact System admin!!'
+         );
+     return $res;
 
+   }
+
+  if(is_null($rec)){
+    $res = array(
+        'success' => false,
+        'message' => 'Application details Missing!! Please contact System admin!!'
+         );
+     return $res;
+  }
+    
    if($rec->module_id == 1){
-                             $data_check = array('module_id'=>$rec->module_id,'section_id'=>$rec->section_id,
+     $data_check = array('module_id'=>$rec->module_id,'section_id'=>$rec->section_id,
                              'sub_module_id'=>$rec->sub_module_id);
-                        }else{
-                             $data_check = array('module_id'=>$rec->module_id,
+    }else{
+        $data_check = array('module_id'=>$rec->module_id,
                              'sub_module_id'=>$rec->sub_module_id);
-                        }
+    }
                      
     $module_data = getTableData('wb_applicationinvoicedata_queries', $data_check,'mis_db');
-                    
+         
     
     if($module_data){
         $data_query = $module_data->data_query;
+
+             $query_data = DB::raw($data_query.' where t1.application_code= '.$application_code)->getValue(DB::connection()->getQueryGrammar());
+ 
+           
+            $invoice_feessql = DB::select($query_data);
    
-            $invoice_feessql = DB::select(DB::raw($data_query.' where t1.application_code= '.$application_code));
+            //$invoice_feessql = DB::select(DB::raw($data_query.' where t1.application_code= '.$application_code));
            
             if(is_array($invoice_feessql) && count($invoice_feessql) >0){
                 $invoice_appfeearray = (array)$invoice_feessql[0];
@@ -4487,16 +4996,30 @@ function getGoupedInvoiceElementFeesData($module_id,$group_application_code,$pay
                   //  $quantity = 2;
 
                 }
+
                 
                 $fees_data = DB::connection('mis_db')->table('tra_appmodules_feesconfigurations as t1')
-                                    ->join('tra_element_costs as t2', 't1.element_costs_id', 't2.id')
-                                    ->join('par_fee_types as t5', 't2.feetype_id', 't5.id')
-                                    ->leftJoin('par_cost_categories as t6', 't2.cost_category_id', 't6.id')
-                                    ->leftJoin('par_cost_elements as t7', 't2.element_id', 't7.id')
-                                    ->join('par_currencies as t8', 't2.currency_id', 't8.id')
-                                    ->select(DB::raw("t1.id,'Quotation' as invoice_description,now() as date_of_invoicing, '' as invoice_number, concat(t5.name,'-', t6.name, '-', t7.name) as element_costs, sum(t2.cost*$quantity) as total_invoice_amount,t8.name as currency"))
-                                    ->where($invoice_appfeearray)
-                                    ->get();
+                    ->join('tra_element_costs as t2', 't1.element_costs_id', 't2.id')
+                    ->join('par_fee_types as t5', 't2.feetype_id', 't5.id')
+                    ->join('par_cost_categories as t6', 't2.cost_category_id', 't6.id')
+                    ->join('par_cost_elements as t7', 't2.element_id', 't7.id')
+                    ->join('par_currencies as t8', 't2.currency_id', 't8.id')
+                    ->select(DB::raw("CASE WHEN t1.id IS NOT NULL THEN t1.id END as id,
+                                      CASE WHEN t1.id IS NOT NULL THEN 'Quotation' ELSE NULL END as invoice_description,
+                                      CASE WHEN t1.id IS NOT NULL THEN now() ELSE NULL END as date_of_invoicing,
+                                      '' as invoice_number,
+                                      CASE WHEN t1.id IS NOT NULL THEN concat(t5.name, '-', t6.name, '-', t7.name) ELSE NULL END as element_costs,
+                                      CASE WHEN t1.id IS NOT NULL THEN sum(t2.cost * $quantity) ELSE NULL END as total_invoice_amount,
+                                      CASE WHEN t1.id IS NOT NULL THEN t8.name ELSE NULL END as currency"))
+                    ->where($invoice_appfeearray)
+                    ->whereNotNull('t1.id')
+                    ->groupBy('t1.id')
+                    ->get();
+
+
+                    
+
+                            //dd($fees_data);
                             if($module_id ==4  && $sub_module_id != 81){
                                $fees_data = array();
                                $import_data =  $this->getImportInvoiceElementFeesData($module_id,$application_code,6);
@@ -4509,6 +5032,9 @@ function getGoupedInvoiceElementFeesData($module_id,$group_application_code,$pay
                                     $fees_data = $importfees_data;//$fees_datas->all();
 
                                }
+
+                               
+                
                                 if (count($fees_data) ==0) {
                                     $res = array(
                                         'success' => false,
@@ -4575,6 +5101,8 @@ function getGoupedInvoiceElementFeesData($module_id,$group_application_code,$pay
         ->select(DB::raw("t1.id,t1.application_code, t1.id as invoice_id, t1.tracking_no, 'Proforma Invoice' as invoice_description,  t1.invoice_no as invoice_number,t1.tracking_no, t1.date_of_invoicing,concat(t5.name,'-', t6.name, '-', t7.name) as element_costs, (t2.total_element_amount) as total_invoice_amount,t3.name as currency,if(t8.id >0, 'Paid', 'Not Paid') as payment_status,880223050476 as iremboInvoiceNumber, t8.amount_paid"))
         ->where(array('t1.application_code'=>$application_code))
         ->get();
+
+
         return $invoice_data;
   }
   public function  onLoadGeneratedApplicationInvoice(Request $req){
@@ -4653,15 +5181,19 @@ function getGoupedInvoiceElementFeesData($module_id,$group_application_code,$pay
             $application_feetype_id = $req->application_feetype_id;
             $fasttrack_option_id = $req->fasttrack_option_id;
             //check if Invoice exists 
+
+
            $invoice_data = $this->getGeneratedInvoices($application_code);
             $res = array('success'=>true, 'invoice_data'=>$invoice_data);
-               
+                
             if($invoice_data->count() ==0){
                 $application_feetype_id = 1;
-                    $res = $this->getInvoiceElementFeesData($module_id,$application_code,$paying_currency_id,$application_feetype_id,$fasttrack_option_id);
+                   
+                    $res = $this->getInvoiceElementFeesData($module_id,$sub_module_id,$application_code,$paying_currency_id,$application_feetype_id,$fasttrack_option_id);
 
 
             }
+
             $res['publicKey'] = 'sk_live_5458ce3079a64816a3c04cf439130f53';// Config('constants.irembopay.irembopay_secretkey');
            
         }
@@ -4732,7 +5264,7 @@ function getGoupedInvoiceElementFeesData($module_id,$group_application_code,$pay
             
             $invoice_params['prepared_by'] = $applicant_name;
             $invoice_params['due_date'] = $due_date;
-         
+               $exchange_rate =1;
                 $invoice_no = generateInvoiceNo($user_id);
                 $invoice_params['invoice_no'] = $invoice_no;
 
@@ -4746,8 +5278,8 @@ function getGoupedInvoiceElementFeesData($module_id,$group_application_code,$pay
                 $invoice_id = $res['record_id'];
                 $params = array();
                 foreach ($fees_data as $fee) {
-                    $exchange_ratedata = getTableData('par_exchange_rates', array('currency_id' => $fee->currency_id),'mis_db');
-                    $exchange_rate = $exchange_ratedata->exchange_rate;
+                    //$exchange_ratedata = getTableData('par_exchange_rates', array('currency_id' => $fee->currency_id),'mis_db');
+                   // $exchange_rate = $exchange_ratedata->exchange_rate;
                     $quantity = 1;
                     if($fasttrack_option_id == 1){
                         $quantity = 2;
@@ -5094,6 +5626,8 @@ public function getapplicationCAPARequestsData(Request $request)
 }public function onCustomerAccountRegistrationSubmission(Request $req){
        
     $trader_id = $req->trader_id;
+    $trader_email=$req->traderemail_address;
+
    // DB::beginTransaction();
      try{
             $db_name = DB::connection('mis_db')->getDatabaseName();
@@ -5104,12 +5638,27 @@ public function getapplicationCAPARequestsData(Request $request)
              $where_app = array('id'=>$record_id);
              $count = DB::connection('mis_db')->table('wb_trader_account')
                  ->where($where_app)
+                 ->orWhere('email', $trader_email)
                  ->count();
+
+
              if($count){
-                $previous_data = getPreviousRecords('wb_trader_account', $where_app,'mis_db');
-                $trader_no = $previous_data['results'][0]['identification_no']; 
-                $email_address = $previous_data['results'][0]['email']; 
-                $resp=   updateRecord('wb_trader_account', $previous_data, $where_app, $data, '','mis_db');
+                //$previous_data = getPreviousRecords('wb_trader_account', $where_app,'mis_db');
+                // $trader_no = $previous_data['results'][0]['identification_no']; 
+                // $email_address = $previous_data['results'][0]['email']; 
+                $previous_data = DB::connection('mis_db')
+                        ->table('wb_trader_account')
+                        ->where($where_app)
+                        ->orWhere('email', $trader_email)
+                        ->get();
+                   
+                $previous_data=json_decode($previous_data,true);
+                $trader_no = $previous_data[0]['identification_no']; 
+                $email_address = $previous_data[0]['email'];
+                $trader_name = $previous_data[0]['name'];  
+
+                $resp=updateRecord('wb_trader_account', $previous_data, $where_app, $data, '','mis_db');
+ 
                 if(!$resp['success']){
                      return \response()->json(array('success'=>false,'message'=>$resp['message'])); 
                 }
@@ -5128,10 +5677,9 @@ public function getapplicationCAPARequestsData(Request $request)
                              $email_content .= " - Trader Account No: ".$trader_no .".<br/>";
                              $email_content .= " - Account Email Address: ".$email_address .".<br/>";
                            
-                             
-              //   $res = sendMailNotification($trader_data->name, $email_address,$subject,$email_content);
-                 
-                 
+                            
+                $res = sendMailNotification($trader_name, $email_address,$subject,$email_content);
+
                  $res = array('success'=>true,'trader_no'=> $trader_no,'message'=>'Account registration process has been completed successfully');
                  
              }
@@ -5144,6 +5692,30 @@ public function getapplicationCAPARequestsData(Request $request)
         }
          return response()->json($res, 200);
  }
+public function getApplicationReportTypes(Request $req){
+    try{
+        $trader_id = $req->trader_id;
+        $table_name = $req->table_name;
+        // Get the records
+        $resp = false; 
+        $records = DB::connection('mis_db')->table($table_name)
+                 ->select('id', 'name', 'description')
+                 ->get();
 
+        $res = array('success' => true, 'records' => $records);
+    }
+    catch (\Exception $e) {
+        $res = array(
+            'success' => false,
+            'message' => $e->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($res);
+}
 
 }

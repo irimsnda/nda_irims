@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\File;
 use Dilab\Network\SimpleRequest;
 use Dilab\Network\SimpleResponse;
 use Dilab\Resumable;
-
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Excel as ExcelClass;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Pion\Laravel\ChunkUpload\Receiver\FileReceiver;
 use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
 class DocumentManagementController extends Controller
@@ -772,154 +775,397 @@ public function iterateDirectories($uncompressedpath, $parent_id, $application_d
 
 
 	}
-	public function getApplicationDocploads(Request $req){
+
+	// public function getApplicationDocploads(Request $req){
 	   
-				try{
-					$premise_id = $req->premise_id;
-					$application_code = $req->application_code;
-					$section_id = $req->section_id;
-					$sub_module_id = $req->sub_module_id;
+	// 			try{
+	// 				$premise_id = $req->premise_id;
+	// 				$application_code = $req->application_code;
+	// 				$section_id = $req->section_id;
+	// 				$sub_module_id = $req->sub_module_id;
 				
-					$document_type_id = $req->document_type_id;
-					$query_ref_id = $req->query_ref_id;
-					$prodclass_category_id = $req->prodclass_category_id;
+	// 				$document_type_id = $req->document_type_id;
+	// 				$query_ref_id = $req->query_ref_id;
+	// 				$prodclass_category_id = $req->prodclass_category_id;
 					
-					$portalapp_variationsdata_id = $req->portalapp_variationsdata_id;
-					$status_id = $req->status_id;
-				$parent_id = $req->parent_id;
+	// 				$portalapp_variationsdata_id = $req->portalapp_variationsdata_id;
+	// 				$status_id = $req->status_id;
+	// 			$parent_id = $req->parent_id;
 
-					$document_typedata = getApplicationApplicableDocuments(	$section_id,$sub_module_id,	$status_id);
+	// 				$document_typedata = getApplicationApplicableDocuments(	$section_id,$sub_module_id,	$status_id);
 					
-					$where_doctype = array();
-					if(validateIsNumeric($document_type_id)){
-						$where_doctype = array('document_type_id'=>$document_type_id);
+	// 				$where_doctype = array();
+	// 				if(validateIsNumeric($document_type_id)){
+	// 					$where_doctype = array('document_type_id'=>$document_type_id);
 						
-					}
-					$where_prodclass = array();
-					if(validateIsNumeric($prodclass_category_id)){
-						$where_prodclass = array('prodclass_category_id'=>$prodclass_category_id);
+	// 				}
+	// 				$where_prodclass = array();
+	// 				if(validateIsNumeric($prodclass_category_id)){
+	// 					$where_prodclass = array('prodclass_category_id'=>$prodclass_category_id);
 						
-					}
-					$where_variationdoc = array();
-					if(validateIsNumeric($portalapp_variationsdata_id)){
-						$where_variationdoc = array('portalapp_variationsdata_id'=>$portalapp_variationsdata_id);
+	// 				}
+	// 				$where_variationdoc = array();
+	// 				if(validateIsNumeric($portalapp_variationsdata_id)){
+	// 					$where_variationdoc = array('portalapp_variationsdata_id'=>$portalapp_variationsdata_id);
 						
-					}
-					$documentreg_serialno = $req->documentreg_serialno;
-					$sections_id = explode(',',$section_id);
+	// 				}
+	// 				$documentreg_serialno = $req->documentreg_serialno;
+	// 				$sections_id = explode(',',$section_id);
 
-					$doc_data = array();
-					$i = 1;
-					//get the requirements 
-						if(validateIsNumeric($parent_id)){
-								$qry = DB::connection('mis_db')->table('tra_application_uploadeddocuments as t1')
-										->leftJoin('tra_application_documents as t2', 't1.application_document_id', 't2.id')
-										->leftJoin('tra_documentupload_requirements as t4', 't2.document_requirement_id', 't4.id')
-										->leftJoin('par_document_types as t3', 't4.document_type_id', 't3.id')
-										->leftJoin('users as t5', 't2.uploaded_by', '=', 't5.id')
-										->select(DB::raw("t1.*,t1.file_name as initial_file_name, t2.remarks, t4.module_id, t4.sub_module_id,t4.section_id,t1.file_type, t2.uploaded_on, '' as uploaded_by,t4.is_mandatory, t2.document_type_id,t3.name as document_type, t4.name as document_requirement, case when (select count(id) from tra_application_uploadeddocuments q where q.parent_id = t1.id) = 0 then true else false end leaf"))
-										->where('t1.parent_id', $parent_id)
-										->where('t4.is_enabled', 1);
-								$results = $qry->get();
-						}else{
+	// 				$doc_data = array();
+	// 				$i = 1;
+	// 				//get the requirements 
+	// 					if(validateIsNumeric($parent_id)){
+	// 							$qry = DB::connection('mis_db')->table('tra_application_uploadeddocuments as t1')
+	// 									->leftJoin('tra_application_documents as t2', 't1.application_document_id', 't2.id')
+	// 									->leftJoin('tra_documentupload_requirements as t4', 't2.document_requirement_id', 't4.id')
+	// 									->leftJoin('par_document_types as t3', 't4.document_type_id', 't3.id')
+	// 									->leftJoin('users as t5', 't2.uploaded_by', '=', 't5.id')
+	// 									->select(DB::raw("t1.*,t1.file_name as initial_file_name, t2.remarks, t4.module_id, t4.sub_module_id,t4.section_id,t1.file_type, t2.uploaded_on, '' as uploaded_by,t4.is_mandatory, t2.document_type_id,t3.name as document_type, t4.name as document_requirement, case when (select count(id) from tra_application_uploadeddocuments q where q.parent_id = t1.id) = 0 then true else false end leaf"))
+	// 									->where('t1.parent_id', $parent_id)
+	// 									->where('t4.is_enabled', 1);
+	// 							$results = $qry->get();
+	// 					}else{
 
-							$doc_req = DB::connection('mis_db')->table('tra_documentupload_requirements as t1')
-							->leftJoin('par_document_types as t2','t1.document_type_id','=','t2.id')
-							->leftJoin('sub_modules as t4','t1.sub_module_id','=','t4.id')
-							->leftJoin('modules as t3','t4.module_id','=','t3.id')
-							->leftJoin('par_sections as t5','t1.section_id','=','t5.id')
-							->select(DB::raw("t1.*,t2.name as document_type, (select group_concat(concat(`j`.`name`, '.',`j`.`extension`) separator ' ,') FROM tra_docupload_reqextensions t INNER JOIN par_document_extensionstypes j ON t.document_extensionstype_id = j.id WHERE t.documentupload_requirement_id = t1.id order by j.extension) as allowed_extensions"))
-							->where(array('sub_module_id'=>$sub_module_id))
-							//->where($where_doctype)
-							->where($where_prodclass)
-							->whereIn('document_type_id',$document_typedata)
-							->whereIn('section_id',$sections_id);
+	// 						$doc_req = DB::connection('mis_db')->table('tra_documentupload_requirements as t1')
+	// 						->leftJoin('par_document_types as t2','t1.document_type_id','=','t2.id')
+	// 						->leftJoin('sub_modules as t4','t1.sub_module_id','=','t4.id')
+	// 						->leftJoin('modules as t3','t4.module_id','=','t3.id')
+	// 						->leftJoin('par_sections as t5','t1.section_id','=','t5.id')
+	// 						->select(DB::raw("t1.*,t2.name as document_type, (select group_concat(concat(`j`.`name`, '.',`j`.`extension`) separator ' ,') FROM tra_docupload_reqextensions t INNER JOIN par_document_extensionstypes j ON t.document_extensionstype_id = j.id WHERE t.documentupload_requirement_id = t1.id order by j.extension) as allowed_extensions"))
+	// 						->where(array('sub_module_id'=>$sub_module_id))
+	// 						//->where($where_doctype)
+	// 						->where($where_prodclass)
+	// 						->whereIn('document_type_id',$document_typedata)
+	// 						->whereIn('section_id',$sections_id);
 				
-							$doc_req = $doc_req->get();
-							foreach ($doc_req as $rec) {
+	// 						$doc_req = $doc_req->get();
+	// 						foreach ($doc_req as $rec) {
 
-									//load the uploaded documents 
-									$document_requirement_id = $rec->id;
-									$document_type_id = $rec->document_type_id;
-									$document_type = $rec->document_type;
-									$document_requirement = $rec->name;
-									$is_mandatory = $rec->is_mandatory;
-									$allowed_extensions =$rec->allowed_extensions;
-									if($is_mandatory == 1){
-										$is_mandatory = 'Mandatory';
-									}
-									else{
-										$is_mandatory = 'Not Mandatory';
-									}
-									// wb_uploaded_documents
-									$where_queryref = array();
-									if(validateIsNumeric($query_ref_id)){
-										$where_queryref = array('query_ref_id'=>$query_ref_id);
+	// 								//load the uploaded documents 
+	// 								$document_requirement_id = $rec->id;
+	// 								$document_type_id = $rec->document_type_id;
+	// 								$document_type = $rec->document_type;
+	// 								$document_requirement = $rec->name;
+	// 								$is_mandatory = $rec->is_mandatory;
+	// 								$allowed_extensions =$rec->allowed_extensions;
+	// 								if($is_mandatory == 1){
+	// 									$is_mandatory = 'Mandatory';
+	// 								}
+	// 								else{
+	// 									$is_mandatory = 'Not Mandatory';
+	// 								}
+	// 								// wb_uploaded_documents
+	// 								$where_queryref = array();
+	// 								if(validateIsNumeric($query_ref_id)){
+	// 									$where_queryref = array('query_ref_id'=>$query_ref_id);
 										
-									}
-									$document_records = DB::connection('mis_db')->table('tra_application_uploadeddocuments')
-											->where(array('application_code'=>$application_code, 'document_requirement_id'=>$document_requirement_id))
-											->where($where_queryref)
-											->where($where_variationdoc)
-											->get();
+	// 								}
+	// 								$document_records = DB::connection('mis_db')->table('tra_application_uploadeddocuments')
+	// 										->where(array('application_code'=>$application_code, 'document_requirement_id'=>$document_requirement_id))
+	// 										->where($where_queryref)
+	// 										->where($where_variationdoc)
+	// 										->get();
 
-										$qry = DB::connection('mis_db')->table('tra_application_documents as t1')
-											->join('tra_documentupload_requirements as t2', 't1.document_requirement_id', 't2.id')
-											->join('par_document_types as t3', 't2.document_type_id', 't3.id')
-											->leftJoin('tra_application_uploadeddocuments as t4', function ($join) use ($application_code, $documentreg_serialno) {
-													if(validateIsNumeric($documentreg_serialno)){
-															$join->on("t1.id", "=", "t4.application_document_id")
-															 ->where("t4.documentreg_serialno", $documentreg_serialno);
-													}else{
-															$join->on("t1.id", "=", "t4.application_document_id");
-													}
+	// 									$qry = DB::connection('mis_db')->table('tra_application_documents as t1')
+	// 										->join('tra_documentupload_requirements as t2', 't1.document_requirement_id', 't2.id')
+	// 										->join('par_document_types as t3', 't2.document_type_id', 't3.id')
+	// 										->leftJoin('tra_application_uploadeddocuments as t4', function ($join) use ($application_code, $documentreg_serialno) {
+	// 												if(validateIsNumeric($documentreg_serialno)){
+	// 														$join->on("t1.id", "=", "t4.application_document_id")
+	// 														 ->where("t4.documentreg_serialno", $documentreg_serialno);
+	// 												}else{
+	// 														$join->on("t1.id", "=", "t4.application_document_id");
+	// 												}
 
-											})
-											->leftJoin('users as t5', 't1.uploaded_by', '=', 't5.id')
-											->select(DB::raw("t1.*,t4.remarks,
-											t4.node_ref,t4.initial_file_name,t4.file_name,t4.initial_file_name as file_name, t2.module_id,t2.sub_module_id,t2.section_id,t4.file_type,t1.uploaded_on,'' as uploaded_by,t2.is_mandatory,
-											 t2.document_type_id,t3.name as document_type, t2.name as document_requirement, t4.id, case when (select count(id) from tra_application_uploadeddocuments q where q.parent_id = t4.id) = 0 then true else false end leaf"))
-											->where(['t1.document_requirement_id'=> $rec->id, 't1.application_code'=>$application_code])
-											->where('t4.parent_id', 0);
+	// 										})
+	// 										->leftJoin('users as t5', 't1.uploaded_by', '=', 't5.id')
+	// 										->select(DB::raw("t1.*,t4.remarks,
+	// 										t4.node_ref,t4.initial_file_name,t4.file_name,t4.initial_file_name as file_name, t2.module_id,t2.sub_module_id,t2.section_id,t4.file_type,t1.uploaded_on,'' as uploaded_by,t2.is_mandatory,
+	// 										 t2.document_type_id,t3.name as document_type, t2.name as document_requirement, t4.id, case when (select count(id) from tra_application_uploadeddocuments q where q.parent_id = t4.id) = 0 then true else false end leaf"))
+	// 										->where(['t1.document_requirement_id'=> $rec->id, 't1.application_code'=>$application_code])
+	// 										->where('t4.parent_id', 0);
 
-									$document_records = $qry->get();
+	// 								$document_records = $qry->get();
 								
-									if(count($document_records) >0) {
+	// 								if(count($document_records) >0) {
 
-										foreach ($document_records as $doc_rec) {
+	// 									foreach ($document_records as $doc_rec) {
 
-											$doc_data[] = array('document_type'=>$document_type,
-																'document_requirement'=>$document_requirement,
-																'document_requirement_id'=>$document_requirement_id,
-																'uploaded_on'=>$doc_rec->uploaded_on,
-																'uploaded_by'=>$doc_rec->uploaded_by,
-																'initial_file_name'=>$doc_rec->initial_file_name,
-																'file_name'=>$doc_rec->file_name,
-																'file_type'=>$doc_rec->file_type,
-																'id'=>$doc_rec->id,
-																'sn'=>$i,
-																'is_mandatory'=>$is_mandatory,
-																'allowed_extensions'=>$allowed_extensions,
-																'node_ref'=>$doc_rec->node_ref
-											);
+	// 										$doc_data[] = array('document_type'=>$document_type,
+	// 															'document_requirement'=>$document_requirement,
+	// 															'document_requirement_id'=>$document_requirement_id,
+	// 															'uploaded_on'=>$doc_rec->uploaded_on,
+	// 															'uploaded_by'=>$doc_rec->uploaded_by,
+	// 															'initial_file_name'=>$doc_rec->initial_file_name,
+	// 															'file_name'=>$doc_rec->file_name,
+	// 															'file_type'=>$doc_rec->file_type,
+	// 															'id'=>$doc_rec->id,
+	// 															'sn'=>$i,
+	// 															'is_mandatory'=>$is_mandatory,
+	// 															'allowed_extensions'=>$allowed_extensions,
+	// 															'node_ref'=>$doc_rec->node_ref
+	// 										);
 			
-										}
-									}
-									else{
+	// 									}
+	// 								}
+	// 								else{
 
-										$doc_data[] = array('document_type'=>$document_type,
-															'document_requirement'=>$document_requirement,
-															'document_requirement_id'=>$document_requirement_id,
-															'uploaded_on'=>'',
-															'uploaded_by'=>'',
-															'id'=>$rec->id,
-															'sn'=>$i,
-															'is_mandatory'=>$is_mandatory,
-															'initial_file_name'=>'',
-															'file_type'=>'',
-															'dms_node_id'=>'',
-															'allowed_extensions'=>$allowed_extensions,
-															'version_no'=>'',
+	// 									$doc_data[] = array('document_type'=>$document_type,
+	// 														'document_requirement'=>$document_requirement,
+	// 														'document_requirement_id'=>$document_requirement_id,
+	// 														'uploaded_on'=>'',
+	// 														'uploaded_by'=>'',
+	// 														'id'=>$rec->id,
+	// 														'sn'=>$i,
+	// 														'is_mandatory'=>$is_mandatory,
+	// 														'initial_file_name'=>'',
+	// 														'file_type'=>'',
+	// 														'dms_node_id'=>'',
+	// 														'allowed_extensions'=>$allowed_extensions,
+	// 														'version_no'=>'',
+	// 											);
+	// 								}
+	// 							$i++;
+	// 						}
+						
+	// 					$res = array('success'=>true, 'data'=>$doc_data);
+
+
+	// 					}
+									
+	// 			}
+	// 			catch (\Exception $e) {
+	// 				$res = array(
+	// 					'success' => false,
+	// 					'message' => $e->getMessage()
+	// 				);
+	// 			} catch (\Throwable $throwable) {
+	// 				$res = array(
+	// 					'success' => false,
+	// 					'message' => $throwable->getMessage()
+	// 				);
+	// 			}
+	// 			return response()->json($res);
+	// }
+
+
+
+
+public function getApplicationDocploads(Request $req){
+	   
+	try{
+		$premise_id = $req->premise_id;
+		$application_code = $req->application_code;
+		$business_type_id = $req->business_type_id;
+		$section_id = $req->section_id;
+		$has_registered_premises= $req->has_registered_premises;
+		$sub_module_id = $req->sub_module_id;
+		$customer_account_id = $req->customer_account_id;
+					
+		if($sub_module_id){
+			$module_id = getSingleRecordColValue('sub_modules', array('id' => $sub_module_id), 'module_id','mis_db');							
+		}
+		$record = array();
+
+		if($module_id == 33){
+
+				$record = DB::table('wb_premises_applications')->where('application_code', $application_code)->first();
+			if($record){
+				$section_id = $record->section_id;
+			}	
+
+		}else if(validateIsNumeric($module_id)){
+		$app_table =  getSingleRecordColValue('modules', array('id'=>$module_id), 'portaltable_name','mis_db');
+			$record = DB::table($app_table)->where('application_code', $application_code)->first();
+			if($record){
+				$section_id = $record->section_id;
+				if($sub_module_id == 81){
+					$has_registered_premises =$record->has_registered_premises;
+
+				}
+			}	
+		}
+			
+			//set all retention to the section retention 
+		if($sub_module_id == 67){
+			$section_id  = 2;
+						
+		}
+		$document_type_id = $req->document_type_id;	
+
+		$is_quality_summary =$req->is_quality_summary;
+		$query_ref_id = $req->query_ref_id;
+		$prodclass_category_id = $req->prodclass_category_id;
+		$status_id = $req->status_id;	
+		if(!validateIsNumeric($section_id) && $sub_module_id != 88 ){
+			$section_id = 1;
+			}if(!validateIsNumeric($status_id)){
+				$status_id = 1;
+			}
+			$portalapp_variationsdata_id = $req->portalapp_variationsdata_id;	
+			$parent_id = $req->parent_id;
+
+			$document_typedata = getApplicationApplicableDocuments($section_id,$sub_module_id,$status_id);
+			$where_doctype = array();
+			if(validateIsNumeric($document_type_id)){
+				$where_doctype = array('document_type_id'=>$document_type_id);
+				if($document_type_id == 25){
+					$document_typedata = array();
+				}	
+						
+			}
+			$where_prodclass = array();
+			if(validateIsNumeric($prodclass_category_id)){
+				$where_prodclass = array('prodclass_category_id'=>$prodclass_category_id);	
+			}
+			$where_variationdoc = array();
+			if(validateIsNumeric($portalapp_variationsdata_id)){
+				$where_variationdoc = array('portalapp_variationsdata_id'=>$portalapp_variationsdata_id);
+						
+			}
+			$documentreg_serialno = $req->documentreg_serialno;
+			$sections_id = explode(',',$section_id);
+			$doc_data = array();
+			$i = 1;
+			//get the requirements 
+					
+			if(validateIsNumeric($parent_id)){
+				$qry = DB::connection('mis_db')->table('tra_application_uploadeddocuments as t1')
+						->leftJoin('tra_application_documents as t2', 't1.application_document_id', 't2.id')
+						->leftJoin('tra_documentupload_requirements as t4', 't2.document_requirement_id', 't4.id')
+						->leftJoin('par_document_types as t3', 't4.document_type_id', 't3.id')
+						->leftJoin('users as t5', 't2.uploaded_by', '=', 't5.id')
+						->select(DB::raw("t1.*,t1.file_name as initial_file_name, t2.remarks, t4.module_id, t4.sub_module_id,t4.section_id,t1.file_type, t2.uploaded_on, '' as uploaded_by,t4.is_mandatory,  t2.document_type_id,t3.name as document_type, t4.name as document_requirement, case when (select count(id) from tra_application_uploadeddocuments q where q.parent_id = t1.id) = 0 then true else false end leaf"))
+							->where('t1.parent_id', $parent_id)
+							->where('t4.is_enabled', 1);
+				$results = $qry->get();
+								
+			}else{
+						
+				$doc_req = DB::connection('mis_db')->table('tra_documentupload_requirements as t1')
+						->leftJoin('par_document_types as t2','t1.document_type_id','=','t2.id')
+						->leftJoin('sub_modules as t4','t1.sub_module_id','=','t4.id')
+						->leftJoin('modules as t3','t4.module_id','=','t3.id')
+						->leftJoin('par_sections as t5','t1.section_id','=','t5.id')
+						->select(DB::raw("t1.*,t2.name as document_type, (select group_concat(concat(`j`.`name`, '.',`j`.`extension`) separator ' ,') FROM tra_docupload_reqextensions t INNER JOIN par_document_extensionstypes j ON t.document_extensionstype_id = j.id WHERE t.documentupload_requirement_id = t1.id order by j.extension) as allowed_extensions"))
+						->where(array('t1.sub_module_id'=>$sub_module_id))
+						//->where($where_doctype)
+						->whereIn('document_type_id',$document_typedata);
+						//->where($where_prodclass);
+										//$doc_req = $doc_req->get();
+
+
+				if($document_typedata){
+					$doc_req->whereIn('document_type_id',$document_typedata);
+				}
+				if(validateIsNumeric($document_type_id)){
+					if($document_type_id != 25){
+						$doc_req->whereIn('document_type_id',$document_typedata);
+					}
+				}
+				if(validateIsNumeric($is_quality_summary)){
+					if($document_type_id == 35){
+						$doc_req->whereIn('document_type_id',[35]);
+					}
+				
+				}
+				if (validateIsNumeric($business_type_id) && $sub_module_id != 3) {
+					//$doc_req->where('t1.business_type_id', $business_type_id);
+				}	
+				if($module_id != 2 && $module_id != 29 && $module_id != 4 && $module_id != 12 && $sub_module_id != 88 ){
+					$doc_req->whereIn('section_id',$sections_id);
+				}
+				if(validateIsNumeric($has_registered_premises == 1)){
+					$doc_req->whereIn('document_type_id',[36]);
+				}
+				$doc_req = $doc_req->get();
+				//dd($doc_req);
+
+				foreach ($doc_req as $rec) {
+					//load the uploaded documents 
+					$document_requirement_id = $rec->id;
+					$document_type_id = $rec->document_type_id;
+					$document_type = $rec->document_type;
+					$document_requirement = $rec->name;
+					$is_mandatory = $rec->is_mandatory;
+					$allowed_extensions =$rec->allowed_extensions;
+					if($is_mandatory == 1){
+						$is_mandatory = 'Mandatory';
+					}
+					else{
+						$is_mandatory = 'Not Mandatory';
+					}
+						// wb_uploaded_documents
+					$where_queryref = array();
+					if(validateIsNumeric($query_ref_id)){
+						$where_queryref = array('query_ref_id'=>$query_ref_id);
+										
+					}
+					/*
+					$document_records = DB::connection('mis_db')->table('tra_application_uploadeddocuments')
+										->where(array('application_code'=>$application_code, 'document_requirement_id'=>$document_requirement_id))
+										->where($where_queryref)
+										->where($where_variationdoc)
+										->get();
+*/
+					$qry = DB::connection('mis_db')->table('tra_application_documents as t1')
+							->leftJoin('tra_documentupload_requirements as t2', 't1.document_requirement_id', 't2.id')
+							->leftJoin('par_document_types as t3', 't2.document_type_id', 't3.id')
+							->leftJoin('tra_application_uploadeddocuments as t4', function ($join) use ($application_code, $documentreg_serialno) {
+								if(validateIsNumeric($documentreg_serialno)){
+									$join->on("t1.id", "=", "t4.application_document_id")
+											->where("t4.documentreg_serialno", $documentreg_serialno);
+								}else{
+									$join->on("t1.id", "=", "t4.application_document_id");
+								}
+
+							})
+							->leftJoin('users as t5', 't1.uploaded_by', '=', 't5.id')
+							->select(DB::raw("t1.*,t4.remarks,
+								t4.node_ref,t4.initial_file_name,t4.file_name,t4.initial_file_name as file_name, t2.module_id,t2.sub_module_id,t2.section_id,t4.file_type,t1.uploaded_on,'' as uploaded_by,t2.is_mandatory,
+								 t2.document_type_id,t3.name as document_type, t2.name as document_requirement, t4.id, case when (select count(id) from tra_application_uploadeddocuments q where q.parent_id = t4.id) = 0 then true else false end leaf"));
+							//if(validateIsNumeric($application_code)){
+							$qry->where(['t1.document_requirement_id'=> $rec->id, 't1.application_code'=>$application_code]);
+											
+							//}
+							//else{
+							//	$qry->where(['t1.document_requirement_id'=> $rec->id, 't1.customer_account_id'=>$customer_account_id]);		
+							//}
+							$document_records = $qry->get();	
+							if(count($document_records) >0) {
+								foreach ($document_records as $doc_rec) {
+									$doc_data[] = array('document_type'=>$document_type,
+													'document_requirement'=>$document_requirement,
+													'document_requirement_id'=>$document_requirement_id,
+													'uploaded_on'=>$doc_rec->uploaded_on,
+													'uploaded_by'=>$doc_rec->uploaded_by,
+													'initial_file_name1'=>$doc_rec->initial_file_name,
+													'file_name'=>$doc_rec->file_name,
+													'file_type'=>$doc_rec->file_type,
+													'id'=>$doc_rec->id,
+													'sn'=>$i,
+													'is_mandatory'=>$is_mandatory,
+													'allowed_extensions'=>$allowed_extensions,
+													'node_ref'=>$doc_rec->node_ref
+												);
+			
+									}
+							}
+							else{
+								$doc_data[] = array('document_type'=>$document_type,
+												'document_requirement'=>$document_requirement,
+												'document_requirement_id'=>$document_requirement_id,
+												'uploaded_on'=>'',
+												'uploaded_by'=>'',
+												'id'=>$rec->id,
+												'sn'=>$i,
+												'is_mandatory'=>$is_mandatory,
+												'initial_file_name'=>'',
+												'file_type'=>'',
+												'dms_node_id'=>'',
+												'allowed_extensions'=>$allowed_extensions,
+												'version_no'=>'',
 												);
 									}
 								$i++;
@@ -955,6 +1201,7 @@ public function iterateDirectories($uncompressedpath, $parent_id, $application_d
 		
 			$prodclass_category_id =  $req->prodclass_category_id;
 			$document_type_id =  $req->document_type_id;
+			$is_quality_summary =$req->is_quality_summary;
 			$status_id = $req->status_id;
 			$where_prodclass = array();
 			if(validateIsNumeric($prodclass_category_id)){
@@ -1208,7 +1455,7 @@ public function iterateDirectories($uncompressedpath, $parent_id, $application_d
 						else{
 									
 										
-										$file_size =		$file->getClientSize();
+										$file_size =		$file->getSize();
 										$file_size = number_format($file_size / 1048576,2);
 
 										if($file_size > 350){
@@ -1362,6 +1609,7 @@ public function iterateDirectories($uncompressedpath, $parent_id, $application_d
 	}
 	return response()->json($res);
 	}
+
 	public function onDeleteProductImages(Request $req)
     {
         try {
@@ -1468,6 +1716,9 @@ public function iterateDirectories($uncompressedpath, $parent_id, $application_d
 		}
 		return response()->json($res);
 	}
+
+
+
 	public function uploadProductImages(Request $req){
 		try {
 			$application_code = $req->input('application_code');
@@ -1494,7 +1745,7 @@ public function iterateDirectories($uncompressedpath, $parent_id, $application_d
 						if ($req->hasFile('file')) {
 								$origFileName = $file->getClientOriginalName();
 								$extension = $file->getClientOriginalExtension();
-								$fileSize = $file->getClientSize();
+								$fileSize = $file->getSize();
 								$file = $req->file('file');
 
 								$origFileName = $file->getClientOriginalName();
@@ -1785,29 +2036,32 @@ public function iterateDirectories($uncompressedpath, $parent_id, $application_d
 	}
 
 	public function onunfitProductsUpload(Request $req){
-				try{
-					$data = array();
-						$res = array();
-						$trader_id = $req->trader_id;
-						$file = $req->file('file');
-						$application_code = $req->application_code;
-						if ($req->hasFile('file')) {
-								$path = $req->file('file')->getRealPath();
-								$data = \Excel::load($path)->get();
+   		 try {
+        			$data = array();
+        			$res = array();
+        			$trader_id = $req->trader_id;
+        			$file = $req->file('file');
+        			$application_code = $req->application_code;
+        				if ($req->hasFile('file')) {
+            				$path = $req->file('file')->getRealPath();
+            					$data = Excel::toArray([], $path)[0];
 
-								if($data->count()){
+								if (count($data)) {
 										$i = 0;
 										foreach ($data as $key => $value) {
+											   $value = str_replace(' ', '_', $value);
+											  
+
 												if($i !== 0){
 													$arr[] = array('brand_name'=>$value->Brand_Name,
-															'common_name'=>$value->Generic_Name,
+															'gener_name'=>$value->Generic_Name,
 															'product_strength'=>$value->Product_Strength,
 															'dosage_form'=>$value->Dosage_Form,
 															'pack_size'=>$value->Pack_Size,
 															'quantity'=>$value->Quantity,
 															'batch_no'=>$value->Batch_Nos,
 															'estimated_value'=>$value->Estimated_Value,
-															'reason_for_disposal'=>$value->Reason_for_unfitness,
+															'reason_for_disposal'=>$value->Reason_for_Disposal,
 															'currency_name'=>$value->currency_name,
 															'application_code'=>$application_code
 														);

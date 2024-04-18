@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SharedImportexportclassComponent } from '../../shared-importexportclass/shared-importexportclass.component';
+import { SharedImportexportclassComponent } from '../../shared-importexportclass/SharedImportexportclassComponent';
 
 @Component({
   selector: 'app-import-visaapp',
@@ -9,6 +9,8 @@ import { SharedImportexportclassComponent } from '../../shared-importexportclass
 export class ImportVisaappComponent extends SharedImportexportclassComponent implements OnInit {
 
   ngOnInit() {
+    
+
     if (!this.application_details) {
       this.router.navigate(['./../online-services/importvc-dashboard']);
        return

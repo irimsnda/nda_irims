@@ -1,4 +1,4 @@
-import { NgModule, OnInit } from '@angular/core';
+import { NgModule,OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
@@ -17,6 +17,8 @@ import { ArchwizardModule } from 'ng2-archwizard';
 import { AdministrationService } from '../../services/public/administration.service';
 import { ConfigurationsService } from '../../services/shared/configurations.service';
 
+
+
 import { PublicLayoutComponent } from '../../views/public/public-layout/public-layout.component';
 import { CenterPageComponent } from '../../views/public/center-page/center-page.component';
 import { HomeComponent } from './../../views/public/home/home.component';
@@ -33,11 +35,16 @@ import { PublicRouteModule } from './../../routes/public/public-route.module';
 import { Countriesmdl } from '../../models/countriesmdl.model';
 import { HttpModule } from '@angular/http';
 import { NgHttpLoaderModule } from 'ng-http-loader';
-import { DxActionSheetModule,DxFileUploaderModule,DxDataGridModule,DxPopupModule, DxButtonModule, DxDateBoxModule, DxTextBoxModule, DxSelectBoxModule, DxTextAreaModule, DxContextMenuModule, DxMenuModule, DxCheckBoxModule, DxNumberBoxModule, DxTagBoxModule, DxTabPanelModule, DxFormModule, DxScrollViewModule } from 'devextreme-angular';
+import { DxActionSheetModule,DxFileUploaderModule,DxDataGridModule,DxPopupModule,DxHtmlEditorModule,DxProgressBarModule, DxButtonModule, DxDateBoxModule, DxTextBoxModule, DxSelectBoxModule, DxTextAreaModule, DxContextMenuModule, DxMenuModule, DxCheckBoxModule, DxNumberBoxModule, DxTagBoxModule, DxTabPanelModule, DxFormModule, DxScrollViewModule } from 'devextreme-angular';
 import { RegisteredProductsComponent } from '../../views/public/registered-products/registered-products.component';
 import { RegisteredPremisesComponent } from '../../views/public/registered-premises/registered-premises.component';
 import { GmpComplaintFacilitiesComponent } from '../../views/public/gmp-complaint-facilities/gmp-complaint-facilities.component';
 import { ClinicalTrialsComponent } from '../../views/public/clinical-trials/clinical-trials.component';
+import { AdrReportingRequestComponent } from '../../views/public/adr-registration-request/adr-reporting-request/adr-reporting-request.component';
+import { AdverseDrugDetailsComponent } from '../../views/public/adr-registration-request/adverse-drug-details/adverse-drug-details.component';
+import { AdverseDrugOtherdetailsComponent } from '../../views/public/adr-registration-request/adverse-drug-otherdetails/adverse-drug-otherdetails.component';
+
+
 import { UserManualComponent } from '../../views/public/user-manual/user-manual.component';
 import { FeesChargesComponent } from '../../views/public/fees-charges/fees-charges.component';
 import { RegistrationRegulationsComponent } from '../../views/public/registration-regulations/registration-regulations.component';
@@ -94,6 +101,9 @@ import { SafedisposalinspectionFeesComponent } from 'src/app/views/public/servic
     RegisteredPremisesComponent,
     GmpComplaintFacilitiesComponent,
     ClinicalTrialsComponent,
+    AdrReportingRequestComponent,
+    AdverseDrugDetailsComponent,
+    AdverseDrugOtherdetailsComponent,
     UserManualComponent,
     FeesChargesComponent,
     RegistrationRegulationsComponent,
@@ -140,7 +150,9 @@ import { SafedisposalinspectionFeesComponent } from 'src/app/views/public/servic
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgSelectModule,    
+    NgSelectModule,  
+    DxHtmlEditorModule, 
+    DxProgressBarModule, 
     NgxSmartModalModule.forRoot(),
     NgHttpLoaderModule,
     BrowserAnimationsModule,

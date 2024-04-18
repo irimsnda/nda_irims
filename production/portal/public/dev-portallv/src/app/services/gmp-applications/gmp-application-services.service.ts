@@ -119,7 +119,7 @@ export class GmpApplicationServicesService {
     });
 
     this.config = {
-      params: data,
+      params:data,
       headers: headers
     };
     return this.httpClient.get(AppSettings.base_url + path, this.config)
@@ -162,6 +162,19 @@ export class GmpApplicationServicesService {
       }));
 
   }
+  onDeleteMisTablePermitdetails(record_id,table_name,application_code,title){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'gmpinspection/onDeleteMisTablePermitdetails', '', { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,record_id:record_id,application_code:application_code,table_name:table_name,title:title}, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+
   onDeleteGMPDetails(record_id,table_name,apppremises_id,title){
     var headers = new Headers({
       "Accept": "application/json",
@@ -201,7 +214,7 @@ export class GmpApplicationServicesService {
       "Authorization": "Bearer " + this.authService.getAccessToken(),
     });
     let user = this.authService.getUserDetails();
-    return this.http.post(AppSettings.base_url + 'gmpinspection/onSaveGmpContractDetails', premisesOtherData, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,table_name:table_name }, headers: headers })
+    return this.http.post(AppSettings.base_url + 'gmpinspection/onSaveGmpContractDetails', premisesOtherData, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,manufacturing_site_id:manufacturing_site_id,table_name:table_name }, headers: headers })
       .pipe(map(data => {
         return data;
       }));
@@ -218,6 +231,19 @@ export class GmpApplicationServicesService {
         return data;
       }));
   }
+  onSaveIntededmanufatcuringActivity(manufacturing_site_id,premisesOtherData){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'gmpinspection/onSaveIntededmanufatcuringActivity', premisesOtherData, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,manufacturing_site_id:manufacturing_site_id }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  
   onSavemanufatcuringContractDetails(premisesOtherData){
     var headers = new Headers({
       "Accept": "application/json",
@@ -231,7 +257,6 @@ export class GmpApplicationServicesService {
   }
   
   
-  
   onSaveGmpProductLineDetails(manufacturing_site_id,premisesOtherData){
     var headers = new Headers({
       "Accept": "application/json",
@@ -239,6 +264,32 @@ export class GmpApplicationServicesService {
     });
     let user = this.authService.getUserDetails();
     return this.http.post(AppSettings.base_url + 'gmpinspection/onSaveGmpProductLinedetails', premisesOtherData, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,manufacturing_site_id:manufacturing_site_id }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  onSaveInspectionDetails(application_code,premisesOtherData){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'gmpinspection/onSaveInspectionDetails', premisesOtherData, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,application_code:application_code }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+
+
+    onSaveGmpSurgicalProductlineDetails(manufacturing_site_id,premisesOtherData){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'gmpinspection/onSaveGmpSurgicalProductlineDetails', premisesOtherData, { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,manufacturing_site_id:manufacturing_site_id }, headers: headers })
       .pipe(map(data => {
         return data;
       }));
@@ -297,6 +348,20 @@ export class GmpApplicationServicesService {
         return data;
       }));
   }
+  onSaveGmpHistoryInformation(manufacturing_site_id,premisesData) {
+    
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'gmpinspection/onSaveGmpHistoryInformation', premisesData, { params: {manufacturing_site_id:manufacturing_site_id, 'trader_id': this.trader_id, 'trader_email': this.email_address}, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+
   onLoadGmpOtherDetails(manufacturing_site_id){
     var headers = new HttpHeaders({
       "Accept": "application/json",
@@ -329,6 +394,23 @@ export class GmpApplicationServicesService {
       }));
   }
 
+  onLoadInspectionHistoryDetails(manufacturing_site_id){
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+
+    this.config = {
+      params: { manufacturing_site_id: manufacturing_site_id },
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'gmpinspection/getGmpInspectionHistoryDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
+
   onGmpApplicationSubmit(manufacturing_site_id,tracking_no){
     var headers = new Headers({
       "Accept": "application/json",
@@ -351,6 +433,8 @@ export class GmpApplicationServicesService {
         return data;
       }));
   }
+
+
   onLoadRegisteredPremises(params) {
     var headers = new HttpHeaders({
       "Accept": "application/json",

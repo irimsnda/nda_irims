@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SharedImportexportclassComponent } from '../shared-importexportclass/shared-importexportclass.component';
+import { SharedImportexportclassComponent } from '../shared-importexportclass/SharedImportexportclassComponent';
 
 @Component({
   selector: 'app-inspection-booking',

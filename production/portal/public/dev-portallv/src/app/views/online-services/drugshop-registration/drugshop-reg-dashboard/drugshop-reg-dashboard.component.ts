@@ -3,7 +3,7 @@ import { DataTableResource } from 'angular5-data-table';
 import { PremisesApplicationsService } from '../../../../services/premises-applications/premises-applications.service';
 import { ConfigurationsService } from '../../../../services/shared/configurations.service';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject} from 'rxjs';
 
 import { AnimationStyleNormalizer } from '@angular/animations/browser/src/dsl/style_normalization/animation_style_normalizer';
 import { ToastrService } from 'ngx-toastr';
@@ -18,6 +18,7 @@ import { ModalDialogService } from 'ngx-modal-dialog';
 import { Utilities } from 'src/app/services/common/utilities.service';
 import { AppSettings } from 'src/app/app-settings';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+
 @Component({
   selector: 'app-drugshop-reg-dashboard',
   templateUrl: './drugshop-reg-dashboard.component.html',
@@ -62,6 +63,7 @@ export class DrugshopRegDashboardComponent implements OnInit {
   module_id:number = 29;
   businessTypeDetailsData:any;
   sectionsData:number;
+  
    applicationStatusData:number;
    FilterDetailsFrm:FormGroup;
    applicationDismissalFrm:FormGroup;
@@ -75,10 +77,12 @@ export class DrugshopRegDashboardComponent implements OnInit {
    business_typecategory_id:number;
    businessTypesData:any;
    prodProductTypeData:any;
+   premiseClassData:any;
    regulatedSectionsData:any;
    isPremisesApplicationInitialisation:boolean;
    premisesAppSelectionfrm:FormGroup;
    section_id:number;
+   report_type_id:number;
    business_type_id:7;
   constructor(private utilityService:Utilities,private viewRef: ViewContainerRef,private modalServ: ModalDialogService, private spinner: SpinnerVisibilityService,public toastr: ToastrService, private router: Router, private configService: ConfigurationsService, private appService: PremisesApplicationsService) {
 
@@ -88,11 +92,12 @@ export class DrugshopRegDashboardComponent implements OnInit {
       premises_name: new FormControl('', Validators.compose([Validators.required])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
       application_type: new FormControl('', Validators.compose([Validators.required])),
-      status: new FormControl('', Validators.compose([Validators.required]))
+      status_name: new FormControl('', Validators.compose([Validators.required]))
     });
     this.FilterDetailsFrm = new FormGroup({
       sub_module_id: new FormControl('', Validators.compose([])),
       section_id: new FormControl('', Validators.compose([])),
+      product_classification_id: new FormControl('', Validators.compose([])),
       application_status_id: new FormControl('', Validators.compose([]))
     });
 
@@ -110,14 +115,13 @@ export class DrugshopRegDashboardComponent implements OnInit {
       business_type_id: new FormControl('', Validators.compose([Validators.required])),
       business_typecategory_id:new FormControl('',  Validators.compose([]))
     });
-    this.onBusinessTypesLoad(this.business_type_id);
+    this.onLoadBusinessTypesLoad();
     this.onLoadApplicationstatuses();
     this.onLoadSections();
     this.onLoadreasonForDismissalData();
     this.onLoadApplicationCounterDueforRenewal();
     this.onLoadprodProductTypeData();
     this.onBusinessTypesDetailsLoad();
-
    }
   
   ngOnInit() {
@@ -167,10 +171,10 @@ export class DrugshopRegDashboardComponent implements OnInit {
   }
   onSelectPremisesFilters(e) {
     
-    let section_id = this.FilterDetailsFrm.get('section_id').value;
+    let product_classification_id = this.FilterDetailsFrm.get('product_classification_id').value;
     let application_status_id = this.FilterDetailsFrm.get('application_status_id').value;
      
-    this.reloadPremisesApplications({sub_module_id:this.sub_module_id,section_id:section_id,application_status_id:application_status_id});
+    this.reloadPremisesApplications({sub_module_id:this.sub_module_id,product_classification_id:product_classification_id,application_status_id:application_status_id});
 
   }
   onClearPremisesFilters(){
@@ -264,7 +268,6 @@ export class DrugshopRegDashboardComponent implements OnInit {
     this.configService.onLoadConfigurationData(data)
       .subscribe(
         data => {
-          console.log(data);
           this.businessTypeDetailsData = data;
         },
         error => {
@@ -274,15 +277,17 @@ export class DrugshopRegDashboardComponent implements OnInit {
   
   onLoadSections() {
     var data = {
-      table_name: 'par_sections',
+      table_name: 'par_premise_class',
     };
 
     this.configService.onLoadConfigurationData(data)
-      .subscribe( 
+      .subscribe(
         data => {
-          this.sectionsData = data;
+          this.premiseClassData = data;
         });
   }
+
+
   onLoadDrugshopAppType(sub_module_id) {
     var data = {
       table_name: 'sub_modules',
@@ -309,7 +314,7 @@ export class DrugshopRegDashboardComponent implements OnInit {
       this.premisessapp_details = {module_id: this.module_id, process_title: sub_module_name, sub_module_id: sub_module_id};
       this.appService.setPremisesApplicationDetail(this.premisessapp_details);
 
-      this.app_route = ['./online-services/registered-premises-selection'];
+      this.app_route = ['./online-services/registered-application-selection'];
 
       this.router.navigate(this.app_route);
     }
@@ -317,7 +322,7 @@ export class DrugshopRegDashboardComponent implements OnInit {
   }
   onLoadPremisesCounterDetails(sub_module_id) {
 
-    this.utilityService.onLoadApplicationCounterDetails('tra_premises_applications',sub_module_id)
+    this.utilityService.onLoadApplicationCounterDetails('wb_premises_applications',sub_module_id)
       .subscribe(
         data => {
           if (data.success) {
@@ -343,6 +348,26 @@ export class DrugshopRegDashboardComponent implements OnInit {
           
         });
   }
+
+// onLoadApplicationSystemReportsType() {
+//   this.utilityService.onLoadApplicationSystemReportsType('par_systemreport_types')
+//     .subscribe(data => {
+//       if (data.success) {
+//         if (Array.isArray(data.records)) {
+//           let records = data.records;
+//           this.reportTypeIds = records.map(record => record.id);
+//         } else {
+//           console.error('Data is not in the expected format.');
+//         }
+//       } else {
+//         console.error('Data retrieval was not successful.');
+//       }
+//     });
+// }
+
+
+
+
   onLoadApplicationProcessingData(data) {
 
     this.utilityService.onLoadApplicationProcessingData(data.application_code)
@@ -358,11 +383,9 @@ export class DrugshopRegDashboardComponent implements OnInit {
           }
         });
   }
-  singleApplicationActionColClick(data){
-    
-    this.funcActionsProcess(data.action,data);
-
-  }
+singleApplicationActionColClick(data) {
+  this.funcActionsProcess(data.action, data);
+}
   
   premActionColClick(e,data){
     
@@ -376,6 +399,7 @@ export class DrugshopRegDashboardComponent implements OnInit {
     }
     else if(action_btn === 'preview'){
       this.funcPremisePreviewDetails(data);
+
     }
     
     else if(action_btn == 'print_applications'){
@@ -388,31 +412,24 @@ export class DrugshopRegDashboardComponent implements OnInit {
       this.funcApplicationRejection(data);
     }
     else if(action_btn == 'query_response'){
-      
       this.funcPremisePreveditDetails(data);
     }  else if(action_btn == 'processing_details'){
       
-      this.onLoadApplicationProcessingData(data);
 
     }
     else if(action_btn == 'print_invoice'){
-      
       this.funcPrintApplicationInvoice(data);
 
     } else if(action_btn == 'print_rejectionletter'){
-      
       this.funcPrintLetterofRejection(data);
 
     }else if(action_btn == 'reg_certificate'){
-      
       this.funcPrintPremisesRegistrationCertificate(data);
 
     }else if(action_btn == 'business_permit'){
-      
       this.funcPrintPremisesBusinessPermit(data);
 
     }else if(action_btn == 'dismiss_applications'){
-      
       this.funcDismissApplication(data);
 
     }else if(action_btn == 'print_receipt'){
@@ -420,7 +437,6 @@ export class DrugshopRegDashboardComponent implements OnInit {
       this.funcPrintApplicationReceipts(data);
     }
     else if(action_btn.action == 'uploadsub_paymentdetails' || action_btn.action == 'uploadsub_paymentdetails'){
-      
       this.funcUploadPaymentDetails(data);
 
     }else if(action_btn == 'reinspectionreq'){
@@ -513,23 +529,68 @@ export class DrugshopRegDashboardComponent implements OnInit {
       this.router.navigate(this.app_route);
 */
   }
+
   funcPrintPremisesRegistrationCertificate(app_data){
+      const report_type_id = 3;
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&report_type_id="+report_type_id+"&table_name=tra_premises_applications";
+      let documentUrl;
+      fetch(report_url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+           documentUrl = data.document_url;
+          this.funcGenerateRrp(documentUrl,"Application Certificate")
 
-    let report_url = this.mis_url+'reports/generatePremiseCertificate?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
-    this.funcGenerateRrp(report_url,"Application Certificate")
-    
-  }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+
+    }
   funcPrintPremisesBusinessPermit(app_data){
+        const report_type_id = 3; 
+        let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&report_type_id="+report_type_id+"&table_name=tra_premises_applications";
+        let documentUrl;
+        fetch(report_url)
+          .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+         })
+          .then(data => {
+             documentUrl = data.document_url;
+            this.funcGenerateRrp(documentUrl,"Business Permits")
 
-    let report_url = this.mis_url+'reports/generatePremisePermit?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
-    this.funcGenerateRrp(report_url,"Business Permits")
+          })
+          .catch(error => {
+              console.error('There was a problem with the fetch operation:', error);
+          });
   }
   
   funcPrintApplicationInvoice(app_data){
+      const report_type_id = 1 
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&report_type_id="+report_type_id+"&table_name=tra_premises_applications";
+      let documentUrl;
+        fetch(report_url)
+          .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+          .then(data => {
+             documentUrl = data.document_url;
+            this.funcGenerateRrp(documentUrl,"Application Invoice")
 
-    let report_url = this.mis_url+'reports/generateApplicationInvoice?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
-    this.funcGenerateRrp(report_url,"Application Invoice")
-    
+          })
+          .catch(error => {
+              console.error('There was a problem with the fetch operation:', error);
+          });    
   }
   funcPrintApplicationReceipts(app_data){
     this.utilityService.setApplicationDetail(app_data);
@@ -540,25 +601,40 @@ export class DrugshopRegDashboardComponent implements OnInit {
   
 }
   funcPrintLetterofRejection(app_data){
-      //print details
-      let report_url = this.mis_url+'reports/generatePremisesRejectionLetter?application_code='+app_data.application_code;
-      this.funcGenerateRrp(report_url,"Application Details");
+      const report_type_id = 3
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&report_type_id="+report_type_id+"&table_name=tra_premises_applications";
+      let documentUrl;
+        fetch(report_url)
+          .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+          .then(data => {
+             documentUrl = data.document_url;
+            this.funcGenerateRrp(documentUrl,"Application Details")
 
+          })
+          .catch(error => {
+              console.error('There was a problem with the fetch operation:', error);
+          }); 
   }
   funcPrintApplicationDetails(app_data){
     //print details
-
-      let report_url = this.mis_url+'reports/generatePremisesApplicationRpt?application_code='+app_data.application_code;
+  
+       const report_type_id = 4; 
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&report_type_id="+report_type_id;
       this.funcGenerateRrp(report_url,"Application Details");
-     
+   
   }
-  funcGenerateRrp(report_url,title){
-    
-    this.printiframeUrl =  this.configService.returnReportIframe(report_url);
+  funcGenerateRrp(documentUrl,title){
+    this.printiframeUrl =  this.configService.returnReportIframe(documentUrl);
     this.printReportTitle= title;
     this.isPrintReportVisible = true;
 
 }
+
   funcPremisesApplicationSelectcion() {
 
     this.app_route = ['./online-services/premisesapplication-sel'];
@@ -661,22 +737,32 @@ export class DrugshopRegDashboardComponent implements OnInit {
   //  // this. OnLoadBusinesstypeCategories($event.value);
 
   // }
-  
-  onBusinessTypesLoad(business_type_id) {
-
-    var data = {
-      table_name: 'par_business_types',
-       business_type_id:business_type_id
-    };
-    this.configService.onLoadConfigurationData(data)
+    onLoadBusinessTypesLoad() {
+    this.appService.onLoadBusinessTypesLoad()
       .subscribe(
-        data => {
-          this.businessTypesData = data;
+        data_response => {
+          this.businessTypesData = data_response.data;
         },
         error => {
           return false
         });
+
   }
+  // onBusinessTypesLoad(business_type_id) {
+
+  //   var data = {
+  //     table_name: 'par_business_types',
+  //      business_type_id:business_type_id
+  //   };
+  //   this.configService.onLoadConfigurationData(data)
+  //     .subscribe(
+  //       data => {
+  //         this.businessTypesData = data;
+  //       },
+  //       error => {
+  //         return false
+  //       });
+  // }
    
   onLoadprodProductTypeData() {
     var data = {

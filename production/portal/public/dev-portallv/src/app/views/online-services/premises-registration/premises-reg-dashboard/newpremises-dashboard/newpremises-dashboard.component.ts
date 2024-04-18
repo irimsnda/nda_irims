@@ -21,3 +21,5 @@ export class NewpremisesDashboardComponent extends PremisesRegDashboardComponent
   }
 
 }
+
+ 

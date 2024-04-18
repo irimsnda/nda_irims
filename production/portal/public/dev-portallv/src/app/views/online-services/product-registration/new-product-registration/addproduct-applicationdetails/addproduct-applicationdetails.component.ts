@@ -108,7 +108,7 @@ export class AddproductApplicationdetailsComponent extends SharedProductregistra
 
 
   ngOnInit() {
-    this.onLoadGuidelines(this.sub_module_id, this.section_id);
+    this.onLoadGuidelines(this.sub_module_id);
     this.productapp_details = this.appService.getProductApplicationDetail();
     if (!this.productapp_details) {
       this.router.navigate(['./../online-services/newprodreg-dashboard']);
@@ -144,8 +144,8 @@ export class AddproductApplicationdetailsComponent extends SharedProductregistra
     this.wizardPanel.model.navigationMode.goToStep(0);
   }
   
-  onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+  onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {

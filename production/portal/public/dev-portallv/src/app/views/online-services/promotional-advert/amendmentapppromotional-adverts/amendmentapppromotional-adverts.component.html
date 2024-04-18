@@ -107,10 +107,7 @@
           </div>
         </wizard-step>
         <wizard-step stepTitle="Query Response Submission"  navigationSymbol="Submission"  >
-          <div class="col-lg-12">
-            <label>Submission Comments(Optional)</label>
-            <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-          </div>
+
           <div class="col-lg-12">
             <dx-check-box text="Agree to the Terms & Conditions" 
               [value]="undefined" (onValueChanged)="newProductTermscheckbox($event)">
@@ -210,12 +207,6 @@
               valueExpr="id" displayExpr="name"
               placeholder="Select Paying Currency" [searchEnabled]="true" formControlName="paying_currency_id">
             </dx-select-box>
-            <div class="col-lg-12">
-              <b> <label>Submission Comments(Optional)</label></b>
-              <dx-text-area formControlName="submission_comments" 
-                placeholder="Enter Comments(optional)">
-              </dx-text-area>
-            </div>
             <div class="col-lg-12">
               <dx-check-box text="Agree to the Declaration" [value]="undefined" 
                 (onValueChanged)="newProductTermscheckbox($event)">

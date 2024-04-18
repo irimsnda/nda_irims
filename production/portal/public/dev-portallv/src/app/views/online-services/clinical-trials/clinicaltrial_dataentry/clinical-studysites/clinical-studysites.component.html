@@ -19,8 +19,6 @@
                 [elementAttr]="{  class: 'pull-left' }"
                 (onClick)="funcDeleteClinicalSiteDetails(data)">
                 </dx-button>
-              
-                
               </div>
             </dxi-column>
             <dxi-column dataField="site_name"></dxi-column>
@@ -36,6 +34,7 @@
 <dx-popup class="popup" [width]="funcpopWidth(80)" [height]="450" [showTitle]="true" title="Study Sites"
 [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isClinicalSitesDetailsVisible">
 <div *dxTemplate="let data of 'content'">
+  <dx-scroll-view >
   <dx-data-grid class="table row-border hover"  [allowColumnResizing]="false"  [columnHidingEnabled]="false" (onToolbarPreparing)="onStudysitePreparing($event)"
     [dataSource]="studySitesData" keyExpr="id">
     <dxo-filter-row [visible]="false"></dxo-filter-row>
@@ -62,6 +61,8 @@
     <dxi-column dataField="physical_address"></dxi-column>
   
   </dx-data-grid>
+</dx-scroll-view >
+
 </div>
 </dx-popup>
 
@@ -95,7 +96,7 @@
   </div>
 </dx-popup>
 
-<dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="530" [showTitle]="true" title="New Study Site"
+<dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="550" [showTitle]="true" title="Study Site"
 [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isStudySiteAddWinVisible">
 <div *dxTemplate="let data of 'content'">
   <dx-scroll-view >
@@ -119,19 +120,19 @@
         </div>
         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
           <label for="ti" class="control-label">Region/City</label>
-
-          <dx-select-box [dataSource]="regions" valueExpr="id" displayExpr="name"
-            (onSelectionChanged)="onRegionsCboSelect($event)" [searchEnabled]="true" formControlName="region_id">
+          <dx-select-box [dataSource]="regions"(onSelectionChanged)="onRegionsCboSelect($event)" valueExpr="id" displayExpr="name"
+            [searchEnabled]="true" formControlName="region_id">
           </dx-select-box>
-
         </div>
+
         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
-          <label for="ti" class="control-label">District(Optional)</label>
+          <label for="ti" class="control-label">District</label>
 
           <dx-select-box [dataSource]="districts" valueExpr="id" placeholder="Select District" displayExpr="name"
-            [searchEnabled]="true" formControlName="district_id">
+            [searchEnabled]="true" (onSelectionChanged)="oDistrictsCboSelect($event)" formControlName="district_id">
           </dx-select-box>
         </div>
+
         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
           <label for="ti" class="control-label">Email Address</label>
           <dx-text-box formControlName="email_address" placeholder="Email Address">
@@ -149,45 +150,44 @@
         </div>
         <div class="col-lg-12">
           <label class="control-label">Description Clinic and counselling rooms</label>
-
-          <dx-text-area [height]="60"  formControlName="clinical_council" placeholder="Counselling">
-          </dx-text-area>
+          <textarea (input)="adjustTextAreaHeight($event)" class="custom-textarea"  formControlName="clinical_council" placeholder="Counselling">
+          </textarea >
         </div>       
          <div class="col-lg-12">
           <label class="control-label">Description Emergency facilities</label>
 
-          <dx-text-area [height]="60"  formControlName="emergency" placeholder="Emergency Facilities">
-          </dx-text-area>
+          <textarea (input)="adjustTextAreaHeight($event)" class="custom-textarea"  formControlName="emergency" placeholder="Emergency Facilities">
+          </textarea >
         </div>       
          <div class="col-lg-12">
           <label class="control-label">Description Facilities for special examinations (if required)</label>
 
-          <dx-text-area [height]="60"  formControlName="special_examination_facility" placeholder="Special Examination">
-          </dx-text-area>
+          <textarea (input)="adjustTextAreaHeight($event)" class="custom-textarea" formControlName="special_examination_facility" placeholder="Special Examination">
+          </textarea >
         </div>       
          <div class="col-lg-12">
           <label class="control-label">Capacity to collect, prepare, store and transport clinical samples</label>
 
-          <dx-text-area [height]="60"  formControlName="capacity" placeholder="Capacity">
-          </dx-text-area>
+          <textarea (input)="adjustTextAreaHeight($event)" class="custom-textarea" formControlName="capacity" placeholder="Capacity">
+          </textarea >
         </div>       
          <div class="col-lg-12">
           <label class="control-label">Storage and handling facilities for medicines</label>
 
-          <dx-text-area [height]="60" formControlName="storage_facility" placeholder="Storage facilities">
-          </dx-text-area>
+          <textarea (input)="adjustTextAreaHeight($event)" class="custom-textarea" formControlName="storage_facility" placeholder="Storage facilities">
+          </textarea >
         </div>
         <div class="col-lg-12">
           <label class="control-label">Name and qualifications of person with responsibility for dispensing medicines</label>
 
-          <dx-text-area [height]="60" formControlName="staff_qualification" placeholder="Qualification">
-          </dx-text-area>
+          <textarea (input)="adjustTextAreaHeight($event)" class="custom-textarea" formControlName="staff_qualification" placeholder="Qualification">
+          </textarea>
         </div>
         <div class="col-lg-12">
           <label class="control-label">Physical Address</label>
 
-          <dx-text-area [height]="60" formControlName="physical_address" placeholder="Physical Address">
-          </dx-text-area>
+          <textarea (input)="adjustTextAreaHeight($event)" class="custom-textarea" formControlName="physical_address" placeholder="Physical Address">
+          </textarea>
         </div>
          <div class="col-lg-8 row form-group">
           <label class="control-label col-lg-12">Geo-Location</label>

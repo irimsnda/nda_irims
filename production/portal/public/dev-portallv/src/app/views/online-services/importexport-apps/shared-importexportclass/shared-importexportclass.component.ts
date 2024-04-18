@@ -135,6 +135,7 @@ export class SharedImportexportclassComponent implements OnInit {
   permitProductsData: any;
   permitUploadedProductsData: any;
   registeredProductsData: any = {};
+  permitDrugDetailsData: any = {};
   commonNamesData:any;
   productCategoryData: any;
   devicesTypeData: any;
@@ -307,6 +308,7 @@ this.applicationGeneraldetailsfrm = new FormGroup({
 
           this.permitProductsFrm = this.fb.group({
             brand_name: new FormControl('', Validators.compose([Validators.required])),
+            reference_no: new FormControl('', Validators.compose([Validators.required])),
             product_category_id: new FormControl('', Validators.compose([])),
             product_batch_no: new FormControl('', Validators.compose([])),
             product_strength: new FormControl('', Validators.compose([])),
@@ -403,7 +405,10 @@ this.applicationGeneraldetailsfrm = new FormGroup({
           */
 
           if(this.sub_module_id == 78 || this.sub_module_id == 82  || this.sub_module_id == 81){
-
+                if(this.sub_module_id == 81){
+                const test = this.has_invoicegeneration = true;
+                console.log(test);
+                }
                 this.applicationGeneraldetailsfrm.get('port_id').setValidators([Validators.required]);
                 this.applicationGeneraldetailsfrm.get('mode_oftransport_id').setValidators([Validators.required]);
                 this.has_invoicegeneration = true;
@@ -431,7 +436,7 @@ this.applicationGeneraldetailsfrm = new FormGroup({
           this.onLoadpermitProductsCategoryData(0);
           this.onLoadconfirmDataParm();
           this.onLoadCommonNames(this.section_id);
-          this.onLoadGuidelines(this.sub_module_id, this.section_id);
+         this.onLoadGuidelines(this.sub_module_id);
       
           this.onLoadproductCategoryData(this.section_id)
           this.onLoaddevicesTypeData(this.section_id)
@@ -520,8 +525,8 @@ this.applicationGeneraldetailsfrm = new FormGroup({
         });
   }
 
-  onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+  onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {

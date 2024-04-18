@@ -5,7 +5,7 @@
     
           <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#clinical_investigators"
             aria-expanded="false" aria-controls="clinical_investigators">
-            Clinical Trial Investigators Co-/Sub Investigators 
+             CO Investigator
           </button>
         </div>
         <div id="clinical_investigators" class="collapse show" aria-labelledby="headingTwo" data-parent="#clinicalInfo">
@@ -24,10 +24,16 @@
                   <dxo-export [enabled]="true" fileName="Investigators" [allowExportSelectedData]="true"></dxo-export>
                   <dxo-selection mode="single"></dxo-selection>
                   <dxo-group-panel [visible]="true"></dxo-group-panel>
-                  <dxi-column [width]="100" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+                  <dxi-column [width]="200" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
                     cellTemplate="cellTemplate">
                     <div *dxTemplate="let data of 'cellTemplate'">
-                       
+                        <dx-button
+                          text="Edit"
+                          type="success"
+                          icon="fa fa-edit"  [disabled]="isReadOnly"
+                          [elementAttr]="{  class: 'pull-left' }"
+                          (onClick)="funcEditInvestigatorDetails(data)">
+                        </dx-button>
                         <dx-button
                         text="Delete"
                         type="danger"
@@ -35,9 +41,6 @@
                         [elementAttr]="{  class: 'pull-left' }"
                         (onClick)="funcDeleteInvestigatorDetails(data)">
                         </dx-button>
-                      
-                        
-
                       </div>
                   </dxi-column>
                   <dxi-column dataField="study_site"></dxi-column>
@@ -78,10 +81,23 @@
                     <dxo-export [enabled]="true" fileName="Monitors" [allowExportSelectedData]="true"></dxo-export>
                     <dxo-selection mode="single"></dxo-selection>
                     <dxo-group-panel [visible]="true"></dxo-group-panel>
-                    <dxi-column [width]="100" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+                    <dxi-column [width]="200" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
                     cellTemplate="cellTemplate">
                     <div *dxTemplate="let data of 'cellTemplate'">
-                        <a (click)="funcDeleteMonitorsDetails(data)" class="action-btn" ><i class="fa fa-trash"></i>Delete</a>
+                        <dx-button
+                          text="Edit"
+                          type="success"
+                          icon="fa fa-edit"  [disabled]="isReadOnly"
+                          [elementAttr]="{  class: 'pull-left' }"
+                          (onClick)="funcEditMonitorrDetails(data)">
+                        </dx-button>
+                        <dx-button
+                        text="Delete"
+                        type="danger"
+                        icon="fa fa-trash"  [disabled]="isReadOnly"
+                        [elementAttr]="{  class: 'pull-left' }"
+                        (onClick)="funcDeleteMonitorsDetails(data)">
+                        </dx-button>
                       </div>
                   </dxi-column>
                     <dxi-column dataField="monitor" caption="Monitors"></dxi-column>
@@ -89,7 +105,6 @@
                     <dxi-column dataField="region"></dxi-column>
                     <dxi-column dataField="district"></dxi-column>
                     <dxi-column dataField="physical_address"></dxi-column>
-                    <dxi-column dataField="postal_address"></dxi-column>
                    
                   </dx-data-grid>
       
@@ -101,9 +116,11 @@
 
 </div>
     
-<dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="450" [showTitle]="true" title="{{sponsor_investigatortitle}}"
+
+<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="450" [showTitle]="true" title="{{sponsor_investigatortitle}}"
 [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isSponsorInvestigatorSearchWinVisible">
 <div *dxTemplate="let data of 'content'">
+  <dx-scroll-view >
   <dx-data-grid class="table row-border hover"  [allowColumnResizing]="true"  [columnHidingEnabled]="false" (onToolbarPreparing)="onSponsorInvestigatorPreparing($event)"
     [dataSource]="sponsorInvestigatorData" keyExpr="id">
     <dxo-filter-row [visible]="false"></dxo-filter-row>
@@ -113,30 +130,77 @@
     </dxo-paging>
     <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
     </dxo-pager>
-    <dxo-export [enabled]="true" fileName="CLincial Trial" [allowExportSelectedData]="true"></dxo-export>
+    <dxo-export [enabled]="true" fileName="manufacturingFile" [allowExportSelectedData]="true"></dxo-export>
     <dxo-group-panel [visible]="true"></dxo-group-panel>
     <dxi-column [width]="140" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
-    cellTemplate="cellTemplate">
-    <div *dxTemplate="let data of 'cellTemplate'">
-      <a (click)="funcSelectSponsorInvestigator(data)" class="action-btn" ><i class="fa fa-edit"></i>Select</a>&nbsp;
-    </div>
-  </dxi-column>
-    <dxi-column dataField="name"></dxi-column>
-    <dxi-column dataField="contact_person"></dxi-column>
+      cellTemplate="cellTemplate">
+      <div *dxTemplate="let data of 'cellTemplate'">
+               <dx-button
+        text="Select"
+        type="success"
+        icon="fa fa-edit"  [disabled]="isReadOnly"
+        [elementAttr]="{  class: 'pull-left' }"
+        (onClick)="funcSelectSponsorInvestigator(data)">
+    </dx-button>
+      </div>
+    </dxi-column>
+    <dxi-column dataField="name"></dxi-column><dxi-column dataField="contact_person"></dxi-column>
     <dxi-column dataField="country"></dxi-column>
     <dxi-column dataField="region"></dxi-column>
     <dxi-column dataField="district"></dxi-column>
     <dxi-column dataField="physical_address"></dxi-column>
     <dxi-column dataField="postal_address"></dxi-column>
-    <dxi-column dataField="email_address"></dxi-column>
-   
+    <dxi-column dataField="email"></dxi-column>
+  </dx-data-grid>
+  </dx-scroll-view >
+
+</div>
+</dx-popup>
+
+
+
+<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="450" [showTitle]="true" title="{{sponsor_investigatortitle}}"
+[dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isInvestigatorSearchWinVisible">
+<div *dxTemplate="let data of 'content'">
+  <dx-data-grid class="table row-border hover"  [allowColumnResizing]="true"  [columnHidingEnabled]="false" (onToolbarPreparing)="onInvestigatorPreparing($event)"
+    [dataSource]="sponsorInvestigatorData" keyExpr="id">
+    <dxo-filter-row [visible]="false"></dxo-filter-row>
+    <dxo-search-panel [visible]="true">
+    </dxo-search-panel>
+    <dxo-paging [enabled]="true">
+    </dxo-paging>
+    <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
+    </dxo-pager>
+    <dxo-export [enabled]="true" fileName="manufacturingFile" [allowExportSelectedData]="true"></dxo-export>
+    <dxo-group-panel [visible]="true"></dxo-group-panel>
+    <dxi-column [width]="140" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+      cellTemplate="cellTemplate">
+      <div *dxTemplate="let data of 'cellTemplate'">
+               <dx-button
+        text="Select"
+        type="success"
+        icon="fa fa-edit"  [disabled]="isReadOnly"
+        [elementAttr]="{  class: 'pull-left' }"
+        (onClick)="funcSelectInvestigator(data)">
+    </dx-button>
+      </div>
+    </dxi-column>
+    <dxi-column dataField="name"></dxi-column><dxi-column dataField="contact_person"></dxi-column>
+    <dxi-column dataField="country"></dxi-column>
+    <dxi-column dataField="region"></dxi-column>
+    <dxi-column dataField="district"></dxi-column>
+    <dxi-column dataField="physical_address"></dxi-column>
+    <dxi-column dataField="postal_address"></dxi-column>
+    <dxi-column dataField="email"></dxi-column>
+    
   </dx-data-grid>
 </div>
 </dx-popup>
 
-<dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="700" [showTitle]="true" title="{{sponsor_investigatortitle}}"
+<dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="550" [showTitle]="true" title="{{sponsor_investigatortitle}}"
 [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="issponsorInvestigatorAddWinVisible">
 <div *dxTemplate="let data of 'content'">
+  <dx-scroll-view>
   <div class="col-lg-12">
     <form enctype="multipart/form-data" role="form" [formGroup]="sponsorInvestigatorFrm"
       (ngSubmit)="onsaveSponsorInvestigator()">
@@ -150,7 +214,7 @@
           </dx-text-box>
 
         </div>
-        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6"[hidden]="true">
 
             <label class="control-label">Contact Person</label>
             <dx-text-box formControlName="contact_person">
@@ -165,6 +229,13 @@
           </dx-select-box>
         </div>
         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+          <label for="ti" class="control-label">District</label>
+          <dx-select-box [dataSource]="districts" valueExpr="id" placeholder="Select District" displayExpr="name"
+            [searchEnabled]="true"(onSelectionChanged)="oDistrictsCboSelect($event)" formControlName="district_id">
+          </dx-select-box>
+        </div>
+
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
           <label for="ti" class="control-label">Region/City</label>
 
           <dx-select-box [dataSource]="regions" valueExpr="id" displayExpr="name"
@@ -173,18 +244,11 @@
 
         </div>
         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
-          <label for="ti" class="control-label">District(Optional)</label>
-
-          <dx-select-box [dataSource]="districts" valueExpr="id" placeholder="Select District" displayExpr="name"
-            [searchEnabled]="true" formControlName="district_id">
-          </dx-select-box>
-        </div>
-        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
           <label for="ti" class="control-label">Email Address</label>
           <dx-text-box formControlName="email" placeholder="Email Address">
           </dx-text-box>
         </div>
-        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6"[hidden]="true">
           <label for="ti" class="control-label">Postal Address</label>
           <dx-text-box formControlName="postal_address" placeholder="Postal Address">
           </dx-text-box>
@@ -216,6 +280,7 @@
       </div>
     </form>
   </div>
+</dx-scroll-view>
 </div>
 </dx-popup>
 
@@ -237,7 +302,7 @@
           </div>
           <div class="col-md-12 col-lg-12 col-xl-12">
                
-              <button (click)="onClinicalTrialAllinvestigators()" class="btn btn-success" type="button"><i
+              <button (click)="onClinicalTrialInvestigator()" class="btn btn-success" type="button"><i
                     class="fa fa-search"></i></button>
               
           </div>
@@ -263,4 +328,88 @@
       </form>
     </div>
   </div>
+</dx-popup>
+
+<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="550" [showTitle]="true" title="Clinical Trial Investigator"
+[dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isInvestigatorAddWinVisible">
+<div *dxTemplate="let data of 'content'">
+ <dx-scroll-view> 
+  <div class="col-lg-12">
+    <form enctype="multipart/form-data" role="form" [formGroup]="investigatorFrm"
+      (ngSubmit)="onsaveInvestigator()">
+
+      <div class="row">
+
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+
+          <label class="control-label">Name</label>
+          <dx-text-box formControlName="name">
+          </dx-text-box>
+
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6" [hidden]="true">
+
+            <label class="control-label">Contact Person</label>
+            <dx-text-box formControlName="contact_person">
+            </dx-text-box>
+  
+          </div>
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+          <label class="control-label">Country</label>
+
+          <dx-select-box [dataSource]="countries" valueExpr="id" displayExpr="name" placeholder="Select Country"
+            (onSelectionChanged)="onCoutryCboSelect($event)" [searchEnabled]="true" formControlName="country_id">
+          </dx-select-box>
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+          <label for="ti" class="control-label">Region/City</label>
+
+          <dx-select-box [dataSource]="regions" valueExpr="id" displayExpr="name"
+            (onSelectionChanged)="onRegionsCboSelect($event)" [searchEnabled]="true" formControlName="region_id">
+          </dx-select-box>
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+          <label for="ti" class="control-label">District</label>
+          <dx-select-box [dataSource]="districts" valueExpr="id" placeholder="Select District" displayExpr="name"
+            [searchEnabled]="true"(onSelectionChanged)="oDistrictsCboSelect($event)" formControlName="district_id">
+          </dx-select-box>
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+          <label for="ti" class="control-label">Email Address</label>
+          <dx-text-box formControlName="email" placeholder="Email Address">
+          </dx-text-box>
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6" [hidden]="true">
+          <label for="ti" class="control-label">Postal Address</label>
+          <dx-text-box formControlName="postal_address" placeholder="Postal Address">
+          </dx-text-box>
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+          <label for="ti" class="control-label">Telephone No</label>
+
+          <dx-text-box formControlName="telephone" placeholder="Telephone No">
+          </dx-text-box>
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+          <label class="control-label col-lg-12">Mobile No</label>
+
+          <dx-text-box formControlName="mobile_no" placeholder="Mobile No">
+          </dx-text-box>
+        </div>
+        <div class="col-lg-12">
+          <label class="control-label">Physical Address</label>
+
+          <dx-text-area [height]="60" formControlName="physical_address" placeholder="Physical Address">
+          </dx-text-area>
+        </div>
+        <div class="col-lg-12 btn-margin-5">
+          <br />
+          <button type="submit" (submit)="onsaveInvestigator()" [disabled]="!investigatorFrm.valid"
+            class="btn btn-primary"><i class="fa fa-user"></i> Save {{consignee_sendertitle}} Details</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</dx-scroll-view>
+</div>
 </dx-popup>
