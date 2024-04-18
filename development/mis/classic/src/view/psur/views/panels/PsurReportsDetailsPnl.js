@@ -4,13 +4,12 @@
 Ext.define('Admin.view.psur.views.panels.PsurReportsDetailsPnl', {
     extend: 'Ext.panel.Panel',
     xtype: 'psurreportsdetailspnl',
-    height: Ext.Element.getViewportHeight() - 118,
-    autoScroll: true,
-    scrollable: true,
+    layout: 'fit',
+   // autoScroll: true,
+    //scrollable: true,
     items: [
         {
-            xtype: 'psurdetailsFrm',
-            title:'Reports Details'
+            xtype: 'psurDetailsPnl'
         }
     ]
 });

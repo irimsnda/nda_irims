@@ -56,6 +56,8 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::get('validateDocumentsSubmissonRecRecommendation', [commonController::class, 'validateDocumentsSubmissonRecRecommendation']);
 
+    Route::get('validateApplicationDetails', [commonController::class, 'validateApplicationDetails']);
+
     Route::get('validateInspectionReportSubmission', [commonController::class, 'validateInspectionReportSubmission']);
      Route::get('validateIsPopupSubmission', [commonController::class, 'validateIsPopupSubmission']);
 

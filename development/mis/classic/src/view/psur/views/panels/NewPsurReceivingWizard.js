@@ -208,8 +208,8 @@ Ext.define('Admin.view.psur.views.panels.NewPsurReceivingWizard', {
                     storeID: 'psurapplicationstr',
                     table_name: 'tra_psur_pbrer_applications',
                     winWidth: '50%',
-                    wizard:'newpsurreceivingwizard',
-                    handler: 'showReceivingApplicationSubmissionWin'
+                    wizard:'newpsurreceivingwizard'
+                    //handler: 'showReceivingApplicationSubmissionWin'
                 },
                 {
                     text: 'Next',

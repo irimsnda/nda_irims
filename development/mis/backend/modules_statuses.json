@@ -39,5 +39,6 @@
     "UserManagement": true,
     "Workflow": true,
     "Enforcement": true,
+    "Psur": true,
     "PersonnelManagement": true
 }

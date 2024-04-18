@@ -1973,6 +1973,78 @@ class CommonController extends Controller
         return \response()->json($res);
     }
 
+     public function validateApplicationDetails(Request $req){
+        try {
+                $application_code = $req->application_code;
+                $module_id = $req->module_id;
+                if($module_id==24 || $module_id===24){
+
+                    $reaction = DB::table('tra_pv_reaction')->where('application_code',$application_code)->first();
+                    if(!$reaction){
+                       $res = array('success'=>false, 'message'=>'Reaction details not capture!!. Please capture atleast one reaction');
+                       echo json_encode($res);
+                       exit();
+                    }
+                    
+                    $suspect_drug = DB::table('tra_pv_suspected_drugs')->where('application_code',$application_code)->where('drug_role_id',1)->first();
+                    if(!$suspect_drug){
+                        $res = array('success'=>false, 'message'=>'Suspected Drug not capture!!. Please capture atleast one suspect Drug');
+                        echo json_encode($res);
+                         exit();
+                    }
+
+                    $reporter= DB::table('tra_pv_personnel')->where('application_code',$application_code)->first();
+                  
+                    if (!$reporter || empty($reporter->email_address)) {
+                        $res = array('success'=>false, 'message'=>'Initial Reporter details or email of the reporter not capture!!. Please capture atleast one reaction');
+                        echo json_encode($res);
+                         exit();
+                    }
+
+                   
+
+               
+                     
+                    if (!recordExists('tra_pv_reporter_initial_notification_logs', array('application_code' => $application_code))) {
+                        
+                        $email_address = $reporter->email_address;
+                         $title = getSingleRecordColValue('par_titles', array('id' => $reporter->title_id), 'name');
+                         $tracking_no = getSingleRecordColValue('tra_pv_applications', array('application_code' => $application_code), 'tracking_no');
+                         $vars = array(
+                            '{reporter_name}' => $reporter->first_name.' '. $reporter->last_name.'('.$title.')',
+                            '{application_no}' => $tracking_no
+                        );
+
+                        $email_res = sendTemplatedApplicationNotificationEmail(40, $email_address, $vars);
+                        $data = array(
+                            'application_code' => $application_code
+                        );
+                        insertRecord('tra_pv_reporter_initial_notification_logs', $data);
+                     }
+
+
+                     $res = array('success'=>true, 'message'=>'Application details validated sucessfully and Notification send to Initial Reporter ');
+                  
+
+                }else{
+                      $res = array('success'=>false, 'message'=>'Module not defined!!');
+                }
+
+
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
        public function validateInspectionReportSubmission(Request $req){
         try {
                 $application_code = $req->application_code;

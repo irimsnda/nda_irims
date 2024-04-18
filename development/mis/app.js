@@ -1361,6 +1361,9 @@ function getApplicationStore(module_id, section_id,sub_module_id) {
         pv_stores = {
             medicine: 'pvStr'
         },
+        psur_stores = {
+            medicine: 'psurapplicationstr'
+        },
         productnotificationapplicationstr = {
             medicine: 'medicaldevicenotificationdashstr'
         },disposalapplicationsdashgridstr = {
@@ -1383,6 +1386,7 @@ function getApplicationStore(module_id, section_id,sub_module_id) {
             impexp_stores: impexp_stores,
             enforcement_stores:enforcement_stores,
             pv_stores:pv_stores,
+            psur_stores:psur_stores,
             promotionmaterialapplicationstr: promotionmaterialapplicationstr,
             productnotificationapplicationstr: productnotificationapplicationstr,
             disposalapplicationsdashgridstr:disposalapplicationsdashgridstr,
@@ -1431,6 +1435,8 @@ function getApplicationStore(module_id, section_id,sub_module_id) {
             module_name = 'enforcement_stores';
     }else if (module_id ==24 || module_id ===24) {
             module_name = 'enforcement_stores';
+    }else if (module_id ==32 || module_id ===32) {
+            module_name = 'psur_stores';
     }   else {
         //unknown module
     } 
@@ -1845,6 +1851,7 @@ function validateApplicationDetails(application_code, module_id){
                 success = resp.success;
                 message = resp.message;
             if (success || success == true || success === true) {
+                toastr.warning(message, 'Warning Response');
                 is_valid = true;
             }
             else{

@@ -17,7 +17,7 @@ Ext.define('Admin.controller.PvCtr', {
             'pvgrid': {
                 refresh: 'refreshPvMainGrids'
             },
-            'pvSuspectedDrugGrid': {
+            'psurproductgrid': {
                 refresh: 'refreshGridsWithAppDetails'
             },
             'pvtestGrid': {
@@ -591,7 +591,7 @@ Ext.define('Admin.controller.PvCtr', {
             activeTab = mainTabPanel.getActiveTab(),
             applicantFrm = activeTab.down('productapplicantdetailsfrm'),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
-            module_id = activeTab.down('hiddenfield[name=active_module_id]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
             application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
 
             // pvreactionGrid = activeTab.down('pvreactionGrid'),

@@ -2687,30 +2687,36 @@ functDownloadUnstructuredDocument:function(node_ref,download,record_id=null,refe
                 dms_url = resp.dms_url;
                 filename = resp.filename;
                 if (success == true || success === true) {
+                     grid.unmask();
+                    // window.open(document_url,'_blank', 'resizable=yes,scrollbars=yes,directories=no, titlebar=no, toolbar=no,menubar=no,location=no,directories=no, status=no');
 
-                    if (canViewInWindow(filename)) {
-                        grid.unmask();
-                        print_report(dms_url);
+                    var newWindow = window.open(document_url, '_blank', 'resizable=yes,scrollbars=yes,directories=no,titlebar=no,toolbar=no,menubar=no,location=no,status=no');
+
+                    // Check if the new window was successfully opened
+                    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                          Ext.MessageBox.confirm('Preview Confirmation', 'Do you want to open  this document?', function (button) {
+                            if (button === 'yes') {
+                                window.open(document_url, '_blank', 'resizable=yes,scrollbars=yes,directories=no,titlebar=no,toolbar=no,menubar=no,location=no,status=no');
+                            }
+                        })
                     }
-                    // else if (canViewInGoogleViewer(filename)) {
-                    //      grid.unmask();
-                    //      console.log('in doc');
-                    //     print_doc_report(dms_url);
-                    // } 
-                    else {
-                        var a = document.createElement("a");
-                        a.href = document_url;
-                        a.download = filename;
-                        document.body.appendChild(a);
-                        a.click();
-                        a.remove();
-                        grid.unmask();
-                    }
+                    // if (canViewInWindow(filename)) {
+                    //     grid.unmask();
+                    //     print_report(dms_url);
+                    // }
+                    // else {
+                    //     var a = document.createElement("a");
+                    //     a.href = document_url;
+                    //     a.download = filename;
+                    //     document.body.appendChild(a);
+                    //     a.click();
+                    //     a.remove();
+                    //     grid.unmask();
+                    // }
                  } else {
                     grid.unmask();
                     toastr.error(resp.message, 'Failure Response');
-                }
-                   
+                }     
                     
             },
             failure: function (response) {

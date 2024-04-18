@@ -20,6 +20,9 @@ Ext.define('Admin.controller.PsurCtr', {
             // 'newPvReceivingWizard': {
             //     afterrender: 'preparePvReceiving'
             // },
+            'pvSuspectedDrugGrid': {
+                refresh: 'refreshGridsWithAppDetails'
+            },
 
             'newpsurreceivingwizard button[name=process_submission_btn]': {
                 click: 'showReceivingApplicationSubmissionWin'
@@ -49,10 +52,89 @@ Ext.define('Admin.controller.PsurCtr', {
             '*': {
                 onNewPsurApplication: 'onNewPsurApplication',
                 loadPsurWizardFromRecord: 'loadPsurWizardFromRecord',
+                showPsurApplicationMoreDetails: 'showPsurApplicationMoreDetails',
                 //showPreviousNonGridPanelUploadedDocs:'showPreviousNonGridPanelUploadedDocs',
                 funcActivePsurProductsOtherInformationTab: 'funcActivePsurProductsOtherInformationTab',
             }
         }
+    },
+
+    showPsurApplicationMoreDetails: function (btn) {
+        var isReadOnly = btn.isReadOnly,
+            is_temporal = btn.is_temporal,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            ref_no = activeTab.down('displayfield[name=reference_no]').getValue(),
+             tracking_no=activeTab.down('displayfield[name=tracking_no]');
+            if(!ref_no && !tracking_no){
+                ref_no = activeTab.down('displayfield[name=tracking_no]').getValue();
+            }
+        //this.showPsurApplicationMoreDetailsGeneric(application_code, 'psurDetailsPnl', isReadOnly);
+      this.showPsurApplicationMoreDetailsGeneric(application_code,'psurDetailsPnl',isReadOnly,ref_no);
+    },
+
+    showPsurApplicationMoreDetailsGeneric: function (application_code, details_panel, isReadOnly, ref_no) {
+        Ext.getBody().mask('Please wait...');
+        var mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab();
+        if (!ref_no) {
+            ref_no = activeTab.down('displayfield[name=tracking_no]').getValue();
+        }
+        is_dataammendment_request = 0;
+        var me = this,
+            details_panel = Ext.widget(details_panel);
+        details_panel.height = Ext.Element.getViewportHeight() - 118;
+        Ext.Ajax.request({
+            method: 'GET',
+            url: 'psur/getPsurApplicationMoreDetails',
+            params: {
+                application_code: application_code
+            },
+            success: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    success = resp.success,
+                    message = resp.message,
+                    psur_details = resp.psur_details;
+                ltrDetails = resp.ltrDetails;
+                if (success == true || success === true) {
+                    var psurdetailsFrm = details_panel.down('psurdetailsFrm');
+                        // productapplicantdetailsfrm = details_panel.down('productapplicantdetailsfrm'),
+                        // productlocalapplicantdetailsfrm = details_panel.down('productlocalapplicantdetailsfrm'),
+                        funcShowOnlineCustomizableWindow(ref_no, '85%', details_panel, 'customizablewindow');
+                    if (psur_details) {
+                        var model2 = Ext.create('Ext.data.Model', psur_details);
+                        psurdetailsFrm.loadRecord(model2);
+                        // productapplicantdetailsfrm.loadRecord(model2);
+                        // details_panel.getViewModel().set('model', model2);
+                    }
+                    
+
+                    if (isReadOnly == 1) {
+
+                        details_panel.getViewModel().set('isReadOnly', true);
+
+                    } else {
+                        details_panel.getViewModel().set('isReadOnly', false);
+
+                    }
+
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
     },
     onNewPsurApplication: function (sub_module_id, btn, section_id) {
         Ext.getBody().mask('Please wait...');
@@ -95,6 +177,37 @@ Ext.define('Admin.controller.PsurCtr', {
             dashboardWrapper.removeAll();
             dashboardWrapper.add({xtype: sec_dashboard});
         }
+    },
+
+    refreshGridsWithAppDetails: function (me) {
+
+        var store = me.store,
+            grid = me.up('grid'),
+            reaction_id='',
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            is_other_drugs_used = grid.is_other_drugs_used;
+
+            if(grid.down('hiddenfield[name=reaction_id]')){
+              reaction_id = grid.down('hiddenfield[name=reaction_id]').getValue();   
+            }
+           
+
+            store.getProxy().extraParams = {
+                module_id: module_id,
+                sub_module_id: sub_module_id,
+                section_id: section_id,
+                workflow_stage_id: workflow_stage_id,
+                application_code: application_code,
+                is_other_drugs_used: is_other_drugs_used,
+                reaction_id: reaction_id
+            };
+
     },
     loadPsurWizardFromRecord: function (view, record) {
         Ext.getBody().mask('Please wait...');

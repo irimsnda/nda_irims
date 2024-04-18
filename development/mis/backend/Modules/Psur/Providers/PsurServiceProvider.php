@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Factory;
 
 class PsurServiceProvider extends ServiceProvider
 {
-    /**
+
+     /**
      * @var string $moduleName
      */
     protected $moduleName = 'Psur';
@@ -15,6 +16,8 @@ class PsurServiceProvider extends ServiceProvider
     /**
      * @var string $moduleNameLower
      */
+    protected $moduleNameLower = 'psur';
+
     /**
      * Boot the application events.
      *

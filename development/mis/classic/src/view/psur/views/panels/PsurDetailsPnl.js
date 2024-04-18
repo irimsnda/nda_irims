@@ -12,34 +12,22 @@ Ext.define('Admin.view.mir.views.panels.PsurDetailsPnl', {
     viewModel: {
         type: 'psurVm'
     },
-    // listeners: {
-    //     tabchange: 'funcActiveOtherInformationTab'
-    // },
-    items: [
-        {
+
+    items: [{
         xtype: 'panel',
-        itemId:'detailspanel',
-        title: 'Product Details',
+        scrollable: true,
         autoScroll: true,
+        itemId:'detailspanel',
+        title: 'Report Details',
         items:[{
-           xtype: 'drugsProductsDetailsFrm',
-            autoScroll: true,
+            xtype: 'psurdetailsFrm',
+            scrollable: true,
         }]
     },
-     {
-        xtype: 'drugsProductsDetailsPnl',
-        title: 'Product Other Details',
-    },
     {
-        xtype: 'psurdetailsFrm',
-        title: 'PSUR/PBRER Details',
+        xtype: 'psurproductgrid',
+        title: 'Product Details',
     },{
-        xtype: 'hiddenfield',
-        name: 'section_id'
-    },{
-        xtype: 'hiddenfield',
-        name: 'prodclass_category_id'
-    }, {
         xtype: 'hiddenfield',
         name: '_token',
         value: token

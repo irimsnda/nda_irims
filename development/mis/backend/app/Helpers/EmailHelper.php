@@ -269,10 +269,10 @@ class EmailHelper
         $message = $template_info->body;
 //dd($message);
         //email notofications job creation
+
+
          $emailJob = (new GenericSendEmailJob($email, $subject, $message))->delay(Carbon::now()->addSeconds(2));
          dispatch($emailJob);
-
-
     }
 //mails for expiry notification
     static function applicationExpiryNotificationMail($template_id, $email, $vars,$applicant_id)

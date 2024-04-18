@@ -503,7 +503,9 @@ Ext.define('Admin.controller.WorkflowManagementCtr', {
                         message = response.message;
                     if (success == true || success === true) {
                         toastr.success(message, "Success Response");
-                        store.load();
+                        if(store){
+                          store.load();
+                        }
                         intrayStore.load();
                         outtrayStore.load();
                         externaluserintraystr = Ext.getStore('externaluserintraystr');

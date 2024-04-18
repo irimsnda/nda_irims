@@ -9,5 +9,5 @@ Route::get('/preparenewPsurAssessment', [PsurController::class, 'preparenewPsurA
 Route::post('/onSavePsurAssessmentDetails', [PsurController::class, 'onSavePsurAssessmentDetails']);
 Route::get('/getStagePsurApplications', [PsurController::class, 'getStagePsurApplications']);
 Route::get('/getPsurApplicationMoreDetails', [PsurController::class, 'getPsurApplicationMoreDetails']);
-Route::get('/getPreviousPsurReportApplications', [PsurController::class, 'getPreviousPsurReportApplications']);
+Route::get('/onPsurProductDetails', [PsurController::class, 'onPsurProductDetails']);
 });

@@ -29,6 +29,109 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
        
     }, 
 
+     viewPsurWinFrm:function(btn) {
+           var me = this,
+            record = btn.getWidgetRecord(),
+            grid = btn.up('grid'),
+            activeTab = grid.up('panel'),
+            childObject = Ext.widget(btn.childXtype),
+            winTitle = btn.winTitle,
+            winWidth = btn.winWidth;
+            childObject.loadRecord(record);
+            if(childObject.down('hiddenfield[name=isReadOnly]')){
+               childObject.down('hiddenfield[name=isReadOnly]').setValue(1); 
+            }
+            
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+    },
+    showEditPsurWinFrm: function (item) {
+        var me = this,
+            btn = item.up('button'),
+            record = btn.getWidgetRecord(),
+            childXtype = item.childXtype,
+            winTitle=item.winTitle,
+            winWidth=item.winWidth,
+            form = Ext.widget(childXtype);
+      
+        form.loadRecord(record);
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+       
+    },
+    doDeleteConfigWidgetParam: function (item) {
+        var me = this,
+            btn = item.up('button'),
+            record = btn.getWidgetRecord(),
+            id = record.get('id'),
+            storeID = item.storeID,
+            table_name = item.table_name,
+            url = item.action_url;
+        this.fireEvent('deleteRecord', id, table_name, storeID, url);
+    },
+
+    showAddPsurWinFrm: function (btn) {
+        var me = this,
+            mainTabPnl = Ext.ComponentQuery.query("#contentPanel")[0],
+            activeTab = mainTabPnl.getActiveTab(),
+            childXtype = btn.childXtype,
+            winTitle=btn.winTitle,
+            winWidth=btn.winWidth,
+            child = Ext.widget(childXtype),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+           
+           
+       //pass parameters
+       if(child.down('hiddenfield[name=application_code]')){
+            child.down('hiddenfield[name=application_code]').setValue(application_code);
+       }
+      
+       
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+       
+    },
+    doCreatePsurWin: function (btn) {
+        var me = this,
+            url = btn.action_url,
+            table = btn.table_name,
+            form_xtype = btn.up('form'),
+            win = form_xtype.up('window'),
+            storeID = btn.storeID,
+            store = Ext.getStore(storeID);
+
+        //for variations calls add flag
+        var frm = form_xtype.getForm();
+            
+        if (frm.isValid()) {
+            frm.submit({
+                url: url,
+                params: {
+                    table_name: table,
+                    _token: token
+                },
+                waitMsg: 'Please wait...',
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (form, action) {
+                    var response = Ext.decode(action.response.responseText),
+                        success = response.success,
+                        message = response.message;
+                    if (success == true || success === true) {
+                        toastr.success(message, "Success Response");
+                            store.removeAll();
+                            store.load();
+                        win.close();
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (form, action) {
+                    var resp = action.result;
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        }
+    },
+
     showRegistererdProductSelectionList: function (btn) {
     
         var grid = Ext.widget('psurregisteredproductsdetailsgrid'),
@@ -458,7 +561,7 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
             record = button.getWidgetRecord(),
             application_code = record.get('application_code');
         container.down('hiddenfield[name=active_application_code]').setValue(application_code);
-        this.fireEvent('showApplicationMoreDetails', btn);
+        this.fireEvent('showPsurApplicationMoreDetails', btn);
     },
  
     viewApplicationRecommendationLogs:function(btn) {

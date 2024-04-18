@@ -624,6 +624,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
 
+            'psurManagerAllocationPnl button[name=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
             'otherreportmanagerevaluationgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },

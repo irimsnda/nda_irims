@@ -35,7 +35,7 @@ class PsurController extends Controller
     //                     ->on('t1.workflow_stage_id', '=', 't7.current_stage');
     //             })
     //             ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
-    //             ->join('wf_processes as t4', 't7.process_id', '=', 't4.id')
+    //             ->join('wf_tfdaprocesses as t4', 't7.process_id', '=', 't4.id')
     //             ->leftJoin('wf_workflow_stages as t5', 't7.current_stage', '=', 't5.id')
     //             ->leftJoin('par_system_statuses as t6', 't1.application_status_id', '=', 't6.id')
     //             ->leftJoin('users as t8', 't7.usr_from', '=', 't8.id')
@@ -59,7 +59,7 @@ class PsurController extends Controller
     //         }else{
     //             $qry->where('stage_status', 1);
     //         }
-    //         //$qry->where('t7.is_done', 0);
+    //         //$qry->where('t7.isDone', 0);
     //         $results = $qry->get();
 
     //         $res = array(
@@ -78,7 +78,7 @@ class PsurController extends Controller
     // }
     public function saveNewPsurReceivingBaseDetails(Request $request, $inCall=0)
     {
-                $active_application_id = $request->input('active_application_id');
+                $active_application_id = $request->input('application_id');
                 $applicant_id = $request->input('applicant_id');
                 $process_id = $request->input('process_id');
                 $workflow_stage_id = $request->input('workflow_stage_id');
@@ -104,12 +104,25 @@ class PsurController extends Controller
              if (isset($active_application_id) && $active_application_id != "") {
                  
                  $application_params = array(
-                     'applicant_id' => $applicant_id,
-                     'psur_type_id' => $psur_type_id,
-                     'product_id'=>$request->tra_product_id,
-                     'remarks'=>$remarks,
-                     'from_date'=>$from_date,
-                     'to_date'=>$to_date,
+                    'applicant_id' => $applicant_id,
+                    'sourceofsafety_alert_id' => $request->sourceofsafety_alert_id,
+                    'psur_type_id' => $request->psur_type_id,
+                    'remarks'=> $request->remarks,
+                    'from_date'=>$request->from_date,
+                    'to_date' => $to_date,
+                    'version_no'=>$request->version_no,
+                    'version_no'=>$request->version_no,
+                    'data_log_point' => $request->data_log_point,
+                    'is_registered_product' => $request->is_registered_product,
+                    'product_registration_no' => $request->product_registration_no,
+                    'brand_name' => $request->brand_name,
+                    'generic_name' => $request->generic_name,
+                    'dosage_form_id' => $request->dosage_form_id,
+                    'product_strength' => $request->product_strength,
+                    'marketing_authorisation_holder' => $request->marketing_authorisation_holder,
+                    'marketing_authorisation_address' => $request->marketing_authorisation_address, 
+                    'local_technical_representative' => $request->local_technical_representative,
+                    'manufacturer_id' => $request->manufacturer_id
                  );
                  $where_app = array(
                      'id' => $active_application_id
@@ -125,7 +138,7 @@ class PsurController extends Controller
                      }
                      $app_details = $app_details['results'];
                      
-                     $app_res = updateRecord($applications_table, $where_app, $application_params, $user_id);
+                     $app_res = updateRecord($applications_table, $app_details, $where_app, $application_params, $user_id);
                      if ($app_res['success'] == false) {
                          DB::rollBack();
                          return $app_res;
@@ -161,7 +174,10 @@ class PsurController extends Controller
                  $application_params = array(
                     'applicant_id' => $applicant_id,
                     'module_id' => $module_id,
+                    'tracking_no' => $tracking_no,
+                    'reference_no' => $reference_no,
                     'sub_module_id' => $sub_module_id,
+                    'application_code' => $application_code,
                     'section_id' => $section_id,
                     'process_id' => $process_id,
                     'workflow_stage_id' => $workflow_stage_id,
@@ -169,8 +185,10 @@ class PsurController extends Controller
                     'psur_type_id' => $request->psur_type_id,
                     'remarks'=> $request->remarks,
                     'from_date'=>$request->from_date,
+                    'to_date' => $to_date,
                     'version_no'=>$request->version_no,
                     'international_birth_date' => $request->international_birth_date,
+                    'data_log_point' => $request->data_log_point,
                     'is_registered_product' => $request->is_registered_product,
                     'product_registration_no' => $request->product_registration_no,
                     'brand_name' => $request->brand_name,
@@ -261,7 +279,7 @@ public function preparenewPsurReceiving(Request $req)
     {
         $application_id = $req->input('application_id');
         try {
-            $qry = DB::table('tra_pharmacovigilance_reporting as t1')
+            $qry = DB::table('tra_psur_pbrer_applications as t1')
 
                 ->select('t1.*', 't1.id as active_application_id')
                 ->where('t1.id', $application_id);
@@ -407,33 +425,34 @@ public function preparenewPsurReceiving(Request $req)
         $module_id = $request->input('module_id');
         $workflow_stage = $request->input('workflow_stage_id');
         $table_name = getTableName($module_id);
-        try {
+        try {  
             $qry = DB::table('tra_psur_pbrer_applications as t1')
-                ->join('tra_product_information as t2', 't1.product_id', '=', 't2.id')
+                ->leftJoin('tra_product_information as t2', 't1.product_id', '=', 't2.id')
                 ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
                 ->leftJoin('par_system_statuses as t4', 't1.application_status_id', 't4.id')
                 ->leftJoin('tra_approval_recommendations as t5', 't5.application_code', '=', 't1.application_code')
                 ->leftJoin('par_common_names as t8', 't2.common_name_id', '=', 't8.id')
                 ->leftJoin('tra_submissions as t9', 't9.application_code', '=', 't1.application_code')
                 ->leftJoin('users as t10', 't9.usr_from', '=', 't10.id')
-                ->leftJoin('tra_product_screening_approvals as t11', 't1.application_code', 't11.application_code')
-                ->leftJoin('tra_listing_approvals as t15', 't1.application_code', 't15.application_code')
+                //->leftJoin('tra_product_screening_approvals as t11', 't1.application_code', 't11.application_code')
+                //->leftJoin('tra_listing_approvals as t15', 't1.application_code', 't15.application_code')
                 ->leftJoin('wf_workflow_stages as t12', 't9.current_stage', 't12.id')
-                ->leftJoin('tra_evaluation_recommendations as t13', function ($join) use($workflow_stage) {
-                    $join->on('t1.application_code', '=', 't13.application_code')
-                        ->on('t12.stage_category_id', '=', 't13.stage_category_id')
-                        ->where('t9.current_stage', $workflow_stage);
-                })
+                // ->leftJoin('tra_evaluation_recommendations as t13', function ($join) use($workflow_stage) {
+                //     $join->on('t1.application_code', '=', 't13.application_code')
+                //         ->on('t12.stage_category_id', '=', 't13.stage_category_id')
+                //         ->where('t9.current_stage', $workflow_stage);
+                // })
                 ->leftJoin('tra_approval_recommendations as t14', 't1.application_code', 't14.application_code')
                 ->leftJoin('tra_psur_evaluation_details as t25', 't1.application_code', 't25.application_code')
-                ->select('t1.*','t2.product_origin_id', 't2.brand_name as product_name','t2.device_brand_name',DB::raw("CONCAT(decryptval(t10.first_name,".getDecryptFunParams()."),' ',decryptval(t10.last_name,".getDecryptFunParams().")) as submitted_by"), 't9.date_received as submitted_on', 't8.name as common_name', 't3.name as applicant_name', 't4.name as application_status',
-                     't1.id as active_application_id', 't11.decision_id','t15.listing_decision_id','t11.approval_date','t11.expiry_date', 't11.id as approval_id', 't12.stage_category_id','t13.id as recommendation_record_id','t13.recommendation_id','t13.remarks','t14.decision_id as approval_decision_id'
+                ->leftJoin('par_psur_type as t26', 't1.psur_type_id', 't26.id')
+                ->select('t1.*','t1.from_date as reporting_from','t1.to_date as reporting_to','t2.product_origin_id', 't2.brand_name as product_name', DB::raw("CONCAT_WS(' ',decrypt(t10.first_name),decrypt(t10.last_name)) as submitted_by"), 't9.date_received as submitted_on', 't8.name as common_name', 't3.name as applicant_name', 't4.name as application_status',
+                     't1.id as active_application_id', 't5.decision_id','t5.approval_date','t5.expiry_date', 't5.id as approval_id', 't12.stage_category_id','t14.decision_id as approval_decision_id'
                     ,'t25.introduction','t25.marketing_approval_status','t25.actions_reporting_interval','t25.reference_safety_information','t25.cumulative_exposure_clinical','t25.cumulative_exposure_marketing','t25.cumulative_summary_clinical','t25.cumulative_summary_marketing','t25.completed_clinical_trials','t25.ongoing_clinical_trials','t25.long_time_followup','t25.other_therapeutic_product_use'
                     ,'t25.safety_data_related_to_fixed_combination_therapies','t25.other_clinical_trials','t25.medication_errors','t25.findings_non_interventional_studies','t25.non_clinical_data','t25.literature','t25.other_periodic_reports','t25.Lack_of_efficacy_in_controlled_ct','t25.late_breaking_information','t25.overview_of_signals','t25.summary_of_safety_concerns','t25.signal_evaluation','t25.evaluation_risks_and_new_information'
-                    ,'t25.characterization_of_risks','t25.effectiveness_of_risk_minimization','t25.important_baseline_efficacy','t25.newly_identified_information','t25.characterization_of_benefits','t25.benefit_risk_context','t25.benefit_risk_analysis','t25.questions_comments','t25.overall_conclusion','t25.draft_response','t25.recommendations')
-                ->where(array('t9.current_stage'=>$workflow_stage,'is_done'=>0) );
+                    ,'t25.characterization_of_risks','t25.effectiveness_of_risk_minimization','t25.important_baseline_efficacy','t25.newly_identified_information','t25.characterization_of_benefits','t25.benefit_risk_context','t25.benefit_risk_analysis','t25.questions_comments','t25.overall_conclusion','t25.draft_response','t25.recommendations','t26.name as report_type');
+                //->where(array('t9.current_stage'=>$workflow_stage,'isDone'=>0) );
 
-            $results = $qry->orderBy('t9.id','desc')->get();
+            $results = $qry->orderBy('t9.id','desc')->groupBy('t1.id')->get();
             $res = array(
                 'success' => true,
                 'results' => $results,
@@ -446,6 +465,34 @@ public function preparenewPsurReceiving(Request $req)
         }
         return \response()->json($res);
     }
+
+    public function onPsurProductDetails (Request $req){
+        try{
+            $application_code = $req->application_code;
+   
+
+            $qry = DB::table('tra_product_notification_details as t1')
+                   ->leftJoin('par_sections as t2', 't1.product_type_id', '=', 't2.id')
+                    ->leftJoin('par_dosage_forms as t3', 't1.dosage_form_id', '=', 't3.id')
+                    ->leftJoin('tra_manufacturers_information as t4', 't1.manufacturer_id', '=', 't4.id')
+                   ->select('t1.*','t2.name as product_type','t3.name as dosage_form','t4.name as manufacturer_name')
+                    ->where('t1.application_code', $application_code);
+            $results = $qry->get();
+            $res = array(
+                'success' => true,
+                'results' => $results,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+           $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        }
+        return \response()->json($res);
+    }
+
 
     public function getPsurApplicationMoreDetails(Request $request)
     {
@@ -490,18 +537,22 @@ public function preparenewPsurReceiving(Request $req)
                         ->on('t1.workflow_stage_id', '=', 't7.current_stage');
                 })
                 ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
-                ->join('wf_processes as t4', 't7.process_id', '=', 't4.id')
+                ->join('wf_tfdaprocesses as t4', 't7.process_id', '=', 't4.id')
                 ->leftJoin('wf_workflow_stages as t5', 't7.current_stage', '=', 't5.id')
                 ->leftJoin('par_system_statuses as t6', 't1.application_status_id', '=', 't6.id')
                 ->leftJoin('users as t8', 't7.usr_from', '=', 't8.id')
                 ->leftJoin('users as t9', 't7.usr_to', '=', 't9.id')
-                ->select(DB::raw("t7.date_received, CONCAT(decryptval(t8.first_name,".getDecryptFunParams()."),' ',decryptval(t8.last_name,".getDecryptFunParams().")) as from_user,CONCAT(decryptval(t9.first_name,".getDecryptFunParams()."),' ',decryptval(t9.last_name,".getDecryptFunParams().")) as to_user,  t1.id as active_application_id, t1.application_code, t4.module_id, t4.sub_module_id, t4.section_id,
+                ->select(DB::raw("t7.date_received, CONCAT_WS(' ',decrypt(t8.first_name),decrypt(t8.last_name)) as from_user,CONCAT_WS(' ',decrypt(t9.first_name),decrypt(t9.last_name)) as to_user,  t1.id as active_application_id, t1.application_code, t4.module_id, t4.sub_module_id, t4.section_id,
                     t6.name as application_status, t3.name as applicant_name, t4.name as process_name, t5.name as workflow_stage, t5.is_general, t3.contact_person,
                     t3.tpin_no, t3.country_id as app_country_id, t3.region_id as app_region_id, t3.district_id as app_district_id, t3.physical_address as app_physical_address,
                     t3.postal_address as app_postal_address, t3.telephone_no as app_telephone, t3.fax as app_fax, t3.email as app_email, t3.website as app_website,
                     t1.*"))
                 ->where('t5.stage_status','<>',3)
-                ->where('is_done', 0);
+                ->where('isDone', 0);
+
+
+              
+
 
             // if(!$is_super){
             //     $qry->whereIn('t1.workflow_stage_id', $assigned_stages);
@@ -518,7 +569,7 @@ public function preparenewPsurReceiving(Request $req)
                 $qry->where('t7.current_stage', $workflow_stage_id);
             }
 
-            $qry->where('t7.is_done', 0);
+            $qry->where('t7.isDone', 0);
             $results = $qry->get();
 
             $res = array(
@@ -549,11 +600,13 @@ public function preparenewPsurReceiving(Request $req)
                 ->leftJoin('tra_submissions as t9', 't9.application_code', '=', 't1.application_code')
                 ->leftJoin('users as t10', 't9.usr_from', '=', 't10.id')
                 ->leftJoin('tra_psur_evaluation_details as t25', 't1.application_code', 't25.application_code')
-                ->select('t1.*','t2.product_origin_id', 't2.brand_name as product_name','t2.device_brand_name',DB::raw("CONCAT(decryptval(t10.first_name,".getDecryptFunParams()."),' ',decryptval(t10.last_name,".getDecryptFunParams().")) as submitted_by"), 't9.date_received as submitted_on', 't8.name as common_name', 't3.name as applicant_name', 't4.name as application_status',
+                ->select('t1.*','t2.product_origin_id', 't2.brand_name as product_name','t2.device_brand_name',DB::raw("CONCAT_WS(' ',decrypt(t10.first_name),decrypt(t10.last_name)) as submitted_by"), 't9.date_received as submitted_on', 't8.name as common_name', 't3.name as applicant_name', 't4.name as application_status',
                      't1.id as active_application_id','t25.introduction','t25.marketing_approval_status','t25.actions_reporting_interval','t25.reference_safety_information','t25.cumulative_exposure_clinical','t25.cumulative_exposure_marketing','t25.cumulative_summary_clinical','t25.cumulative_summary_marketing','t25.completed_clinical_trials','t25.ongoing_clinical_trials','t25.long_time_followup','t25.other_therapeutic_product_use'
                     ,'t25.safety_data_related_to_fixed_combination_therapies','t25.other_clinical_trials','t25.medication_errors','t25.findings_non_interventional_studies','t25.non_clinical_data','t25.literature','t25.other_periodic_reports','t25.Lack_of_efficacy_in_controlled_ct','t25.late_breaking_information','t25.overview_of_signals','t25.summary_of_safety_concerns','t25.signal_evaluation','t25.evaluation_risks_and_new_information'
                     ,'t25.characterization_of_risks','t25.effectiveness_of_risk_minimization','t25.important_baseline_efficacy','t25.newly_identified_information','t25.characterization_of_benefits','t25.benefit_risk_context','t25.benefit_risk_analysis','t25.questions_comments','t25.overall_conclusion','t25.draft_response','t25.recommendations')
                     ->where('t1.product_id',$product_id);
+
+
 
             $results = $qry->get();
             $res = array(

@@ -911,11 +911,13 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
                 value: new Date(),
                 labelAlign: 'top',
                 maxValue: new Date(),
-                readOnly:true,
+                //readOnly:true,
                 format: 'd/m/Y',
                 altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
                 name: 'inspected_on'
-            } ,{
+            } ,
+
+            {
                 xtype: 'combo',
                 queryMode: 'local',
                 forceSelection: true,

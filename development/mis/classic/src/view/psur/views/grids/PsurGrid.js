@@ -116,7 +116,7 @@ Ext.define('Admin.view.psur.views.grids.PsurGrid', {
                 autoLoad: false,
                 defaultRootId: 'root',
                 enablePaging: true, 
-                storeId: 'productpsurStr',
+                storeId: 'psurapplicationstr',
                 grouper: {
                     groupFn: function (item) {
                         return item.get('process_id') + item.get('workflow_stage_id');
