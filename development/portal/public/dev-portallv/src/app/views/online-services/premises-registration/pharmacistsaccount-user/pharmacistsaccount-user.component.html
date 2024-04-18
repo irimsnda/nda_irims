@@ -26,7 +26,7 @@
       <h1 class="m-b-20 text-white counter">{{pending_submission}}</h1>
     </div>
     <div class="card-box noradius noborder bg-warning">
-      <a class="reg_routerlink"  (click) ="reloadPremisesApplications({application_status_id:'1', sub_module_id: 1})"><span>View Applications</span></a>
+      <a class="reg_routerlink"  (click) ="reloadPremisesApplicationsPharmacist({application_status_id:'79', sub_module_id: '1,89'})"><span>View Applications</span></a>
 
     </div>
   </div>
@@ -38,7 +38,7 @@
       <h1 class="m-b-20 text-white counter">{{submitted_application}}</h1>
     </div>
     <div class="card-box noradius noborder bg-success">
-      <a class="reg_routerlink"  (click) ="reloadPremisesApplications({application_status_id:'2,3', sub_module_id: 1})"><span>View Applications</span></a>
+      <a class="reg_routerlink"  (click) ="reloadPremisesApplicationsPharmacist({application_status_id:'2,3', sub_module_id: '1,89'})"><span>View Applications</span></a>
     </div>
   </div>
 
@@ -49,7 +49,7 @@
       <h1 class="m-b-20 text-white counter">{{queried_premises}}</h1>
         </div>
     <div class="card-box noradius noborder bg-info ">
-      <a class="reg_routerlink" (click) ="reloadPremisesApplications({application_status_id:'17,6,7,8, 13,14,15', sub_module_id:1})"><span>View Queried Premises</span></a>
+      <a class="reg_routerlink" (click) ="reloadPremisesApplicationsPharmacist({application_status_id:'17,6,7,8, 13,14,15', sub_module_id:1})"><span>View Queried Premises</span></a>
  
       </div>
   </div>
@@ -60,7 +60,7 @@
         <h1 class="m-b-20 text-white counter">{{approved_premises}}</h1>
          </div>
       <div class="card-box noradius noborder bg-default">
-        <a class="reg_routerlink" (click) ="reloadPremisesApplications({application_status_id:10,sub_module_id: 1})"><span>View Approved Premises</span></a>
+        <a class="reg_routerlink" (click) ="reloadPremisesApplicationsPharmacist({application_status_id:10,sub_module_id: 1})"><span>View Approved Premises</span></a>
     
       </div>
     </div>
@@ -72,7 +72,7 @@
         <h1 class="m-b-20 text-white counter">{{rejected_premises}}</h1>
           </div>
       <div class="card-box noradius noborder bg-danger">
-        <a class="reg_routerlink" (click) ="reloadPremisesApplications({application_status_id:11, sub_module_id:1})"><span>View Rejected Premises</span></a>
+        <a class="reg_routerlink" (click) ="reloadPremisesApplicationsPharmacist({application_status_id:11, sub_module_id:1})"><span>View Rejected Premises</span></a>
    
       </div>
     </div>
@@ -120,13 +120,6 @@
       <dxo-export [enabled]="true" fileName="PremisesApplications" [allowExportSelectedData]="true"></dxo-export>
 
       <dxo-selection mode="single"></dxo-selection>
-      <dxi-column [width]="200" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false" cellTemplate="cellTemplate">
-            <div *dxTemplate="let data of 'cellTemplate'">
-              <dx-button text="Approve Application" (click)="funcApproveDetails(data)" 
-                    type="success" icon="edit">
-                    </dx-button> 
-            </div>
-      </dxi-column>
       <dxi-column [width]=200 caption="Actions" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
       cellTemplate="cellTemplateSingle">
       <div *dxTemplate="let d of 'cellTemplateSingle'">
@@ -135,8 +128,14 @@
       </dx-button>
       </div>
     </dxi-column>
-      <dxi-column  dataField="reference_no"></dxi-column>
-
+      <dxi-column [width]=110  caption="Actions" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+        cellTemplate="cellTemplate">
+        <div *dxTemplate="let d of 'cellTemplate'">
+          <dx-menu [items] = "d.data.contextMenu"  displayExpr="text"
+            (onItemClick)="premActionColClick($event,d)" >
+          </dx-menu>
+        </div>
+      </dxi-column>
       <dxi-column dataField="premise_category" ></dxi-column>
       <dxi-column  [groupIndex]="0" dataField="application_type"></dxi-column>
       <dxi-column  dataField="premises_name"></dxi-column>
@@ -145,7 +144,7 @@
       <dxi-column [allowFiltering]="false" dataField="date_added"></dxi-column>
       <dxi-column [allowFiltering]="false" dataField="submission_date"></dxi-column>
       <dxi-column  [groupIndex]="1" dataField="status"></dxi-column>
-      <dxi-column  dataField="status"></dxi-column>
+      <dxi-column  dataField="status_name"></dxi-column>
   
       <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
     </dx-data-grid>
@@ -223,7 +222,7 @@
     </form>
   </div>
 </dx-popup>
-<dx-popup class="popup"  [width]="funcpopWidth(40)" [showTitle]="true" title="Approval Recommendation" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isApprovalPopupVisible">
+<!-- <dx-popup class="popup"  [width]="funcpopWidth(40)" [showTitle]="true" title="Approval Recommendation" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isApprovalPopupVisible">
     <div *dxTemplate="let data of 'content'" class="row">
         <dx-scroll-view></dx-scroll-view>
         <div class="col-lg-12">
@@ -252,4 +251,4 @@
             </wizard>
         </div>
     </div>
-</dx-popup>
+</dx-popup> -->

@@ -22,18 +22,24 @@ class ConfigurationsController extends Controller
     /**
         Get Navigation Items
     */
-    public function getNavigationItems(Request $req){
+
+public function getNavigationItems(Request $req){
 
         $navigation_type_id = $req->navigation_type_id;
         $trader_id = $req->trader_id;
         $is_local = $req->is_local;
-        
-        $navData = array();
-        $record = DB::table('wb_trader_account')
+        if(validateIsNumeric($navigation_type_id) && $navigation_type_id ==1){
+         $data = DB::table('wb_navigation_items')
+                    ->where(array('navigation_type_id'=>$navigation_type_id, 'is_online'=>1, 'is_disabled'=>0,'level'=>0))
+                    ->orderBy('order_no');
+        }
+        else{
+            $navData = array();
+            $record = DB::table('wb_trader_account')
                 ->where('id',$trader_id)
                 ->first();
-        $traderaccount_type_id=$record->traderaccount_type_id;
-        if($traderaccount_type_id == 9){
+            $traderaccount_type_id=$record->traderaccount_type_id;
+            if($traderaccount_type_id == 9){
                     $data = DB::table('wb_navigation_items')
                   //  ->join('wb_navigation_menu_account_type as t2', 't1.id','=','t2.navigation_menu_id')
                    // ->select('t1.*')
@@ -41,7 +47,7 @@ class ConfigurationsController extends Controller
                     ->where(array('navigation_type_id'=>$navigation_type_id, 'is_online'=>1, 'is_disabled'=>0,'level'=>0))
                     ->orderBy('order_no');
                     
-                }else if($traderaccount_type_id == 8){
+            }else if($traderaccount_type_id == 8){
                     $data = DB::table('wb_navigation_items')
                     ->where(array('navigation_type_id'=>$navigation_type_id, 'is_online'=>1, 'is_disabled'=>0,'level'=>0))
                     ->whereIn('id',[230,231,232,233,235])
@@ -55,7 +61,7 @@ class ConfigurationsController extends Controller
 
             }
 
-        
+        }
         $data = $data->get();
                     $res = array($data);
         foreach ($data as $rec) {
@@ -68,7 +74,8 @@ class ConfigurationsController extends Controller
         //loop to get the second level
         return response()->json($navData);
     }
-    public function getOrganisationServices(Request $req){
+
+public function getOrganisationServices(Request $req){
         try {
 //concat(t3.name,' ',service_description)
             $upload_url =  Config('constants.dms.system_uploadurl');
@@ -77,7 +84,7 @@ class ConfigurationsController extends Controller
                     $sql = DB::connection('mis_db')->table('tra_online_portalservices as t1')
                     ->join('modules as t2', 't1.module_id','=','t2.id')
                     ->leftJoin('sub_modules as t3', 't1.sub_module_id','=','t3.id')
-                    ->select(DB::raw("t1.*,t2.description, t2.name as module_name,t2.icons, concat(document_folder,'/',file_name ) as servicedocuments,  t3.name as service_description"))
+                    ->select(DB::raw("t1.*, t2.name as module_name,t2.icons, concat(document_folder,'/',file_name ) as servicedocuments,  t3.name as service_description"))
                     ->where(array('is_online'=>1));
                     
             if(validateIsNumeric($module_id)){
@@ -99,7 +106,349 @@ class ConfigurationsController extends Controller
 			 return response()->json($res, 200);
 
     }
+public function getOrganisationOnlineServices(Request $req)
+{
+    try {
+        $upload_url = Config('constants.dms.system_uploadurl');
+        $data = array();
+        $menuId = $req->menuId;
+
+        if (validateIsNumeric($menuId)) {
+            $res = DB::table('wb_navigation_items as t1')
+                ->select(DB::raw("t1.*, concat(t1.document_folder,'/',t1.file_name) as servicedocuments"))
+                ->where('t1.is_online', 1)
+                ->where(function ($query) use ($menuId) {
+                    $query->where('t1.parent_id', '<>', 0) // Exclude items with parent_id = 0
+                    ->where('t1.id', $menuId)
+                        ->orWhere('t1.parent_id', $menuId);
+                })
+                ->orWhereExists(function ($query) use ($menuId) {
+                    $query->select(DB::raw(1))
+                        ->from('wb_navigation_items as t2')
+                        ->whereRaw('t1.id = t2.parent_id')
+                        ->where(function ($query) use ($menuId) {
+                            $query->where('t2.id', $menuId)
+                                ->orWhere('t2.parent_id', $menuId);
+                        });
+                })
+                ->where('t1.parent_id', '!=', 0) // Exclude items with parent_id 0
+                ->get();
+        } else {
+            $res = DB::table('wb_navigation_items as t1')
+                ->select(DB::raw("t1.*, concat(t1.document_folder,'/',t1.file_name) as servicedocuments"))
+                ->where('t1.is_online', 1)
+                ->where('t1.parent_id', '!=', 0) // Exclude items with parent_id 0
+                ->groupBy('t1.id')
+                ->get();
+        }
+    } catch (\Exception $exception) {
+        $res = sys_error_handler(
+            $exception->getMessage(),
+            2,
+            debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),
+            explode('\\', __CLASS__),
+            ''
+        );
+    } catch (\Throwable $throwable) {
+        $res = sys_error_handler(
+            $throwable->getMessage(),
+            2,
+            debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),
+            explode('\\', __CLASS__),
+            ''
+        );
+    }
+
+    return response()->json($res, 200);
+}
+public function getPortOfEntry(Request $req) {
+    try {
+        $mode_oftransport_id = $req->input('mode_oftransport_id');
+
+        $records = DB::connection('mis_db')
+            ->table('par_ports_information as t1')
+            ->join('par_portsinformation as t2', 't2.port_id', '=', 't1.id')
+            ->where(
+                't2.mode_oftransport_id', $mode_oftransport_id
+            )
+            ->select('t1.id', 't1.name')
+            ->get();
+
+        $res = [
+            'success' => true,
+            'data' => $records
+        ];
+    } catch (\Exception $e) {
+        $res = [
+            'success' => false,
+            'message' => $e->getMessage()
+        ];
+    } catch (\Throwable $throwable) {
+        $res = [
+            'success' => false,
+            'message' => $throwable->getMessage()
+        ];
+    }
+
+    return response()->json($res);
+}
+
+   
+public function getRegionsDetails(Request $req)
+{
+    try {
+        $data = array();
+        $district_id = $req->district_id;
+
+        $sql = DB::connection('mis_db')
+            ->table('par_premise_regions as t1')
+            ->join('par_premise_district_region as t2', 't1.id', '=', 't2.region_id')
+            ->select(DB::raw("t1.*"));
+
+        if (validateIsNumeric($district_id)) {
+            $sql->where('t2.district_id', $district_id);
+            $regions = $sql->get();
+            
+            if ($regions->isNotEmpty()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Regions retrieved successfully',
+                    'data' => $regions
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No regions found for the provided district ID',
+                    'data' => []
+                ], 404); 
+            }
+        }
+    } catch (\Exception $exception) {
+        return response()->json([
+            'success' => false,
+            'message' => $exception->getMessage(),
+            'data' => []
+        ], 500); // Internal Server Error
+    } catch (\Throwable $throwable) {
+        return response()->json([
+            'success' => false,
+            'message' => $throwable->getMessage(),
+            'data' => []
+        ], 500); // Internal Server Error
+    }
+}
+ public function getProductRange(Request $req) {
+        try {
+            $business_type_id = $req->input('business_type_id');
+            $licence_type_id = $req->input('licence_type_id');
+            $product_classification_id = $req->input('product_classification_id');
     
+            $records = DB::connection('mis_db')
+                ->table('par_importexport_product_range as t1')
+                ->join('par_importexport_productrange as t2', 't2.product_range_id', '=', 't1.id')
+                ->where([
+                    't2.business_type_id' => $business_type_id,
+                    't2.licence_type_id' => $licence_type_id,
+                    't2.product_classification_id' => $product_classification_id
+                ])
+                ->select('t1.id', 't1.name')
+                ->get();
+    
+            $res = [
+                'success' => true,
+                'data' => $records
+            ];
+        } catch (\Exception $e) {
+            $res = [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        } catch (\Throwable $throwable) {
+            $res = [
+                'success' => false,
+                'message' => $throwable->getMessage()
+            ];
+        }
+    
+        return response()->json($res);
+    }
+
+public function getCountyDetails(Request $req)
+{
+    try {
+        $data = array();
+        $district_id = $req->district_id;
+
+        $sql = DB::connection('mis_db')
+            ->table('par_county as t1')
+            ->join('par_premise_districts as t2', 't1.id', '=', 't2.county_id')
+            ->select(DB::raw("t1.*"));
+
+        if (validateIsNumeric($district_id)) {
+            $sql->where('t2.district_id', $district_id);
+            $regions = $sql->get();
+            
+            if ($regions->isNotEmpty()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'county retrieved successfully',
+                    'data' => $regions
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No county found for the provided district ID',
+                    'data' => []
+                ], 404); 
+            }
+        }
+    } catch (\Exception $exception) {
+        return response()->json([
+            'success' => false,
+            'message' => $exception->getMessage(),
+            'data' => []
+        ], 500); // Internal Server Error
+    } catch (\Throwable $throwable) {
+        return response()->json([
+            'success' => false,
+            'message' => $throwable->getMessage(),
+            'data' => []
+        ], 500); // Internal Server Error
+    }
+}
+
+public function getProductsQualitySummaryDetails(Request $req){
+        try{
+            $table_name = $req->table_name;
+            $product_id = $req->product_id;
+            $table_name = base64_decode($table_name);
+            $records = DB::connection('mis_db')->table($table_name .' as t1')
+                        ->select('t1.*')
+                        ->where(array('t1.product_id' => $product_id))
+                        ->get();
+                     $res =array('success'=>true,'data'=> $records);
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+
+
+    }
+
+// public function getGMDNDetails(Request $req){
+//     try {
+//         $take = $req->has('take') ? (int)$req->take : 50;
+//         $skip = $req->has('skip') ? (int)$req->skip : 0;
+//         $searchValue = $req->input('searchValue', null);
+
+//         $query = DB::connection('mis_db')->table('par_gmdn_codes');
+
+//         if (!is_null($searchValue) && $searchValue !== 'undefined') {
+//             $query->where(function ($subQuery) use ($searchValue) {
+//                 $subQuery->where('name', 'LIKE', '%' . $searchValue . '%')
+//                          ->orWhere('code', 'LIKE', '%' . $searchValue . '%')
+//                          ->orWhere('description', 'LIKE', '%' . $searchValue . '%');
+//             });
+//         }
+
+//         $totalCount = $query->count(); // Get total count before pagination
+
+//         // Apply pagination
+//         $records = $query->skip($skip)->take($take)->get(['id', 'name', 'code', 'description']);
+
+//         $data = $records->map(function ($item) {
+//             return [
+//                 'id' => $item->id,
+//                 'name' => $item->name,
+//                 'code' => $item->code,
+//                 'description' => $item->description,
+//             ];
+//         })->toArray();
+
+//         return response()->json([
+//             'success' => true,
+//             'data' => $data,
+//             'totalCount' => $totalCount,
+//         ]);
+
+//     } catch (\Exception $e) {
+//         return response()->json([
+//             'success' => false,
+//             'message' => $e->getMessage(),
+//         ]);
+//     }
+// }
+
+
+   public function getGMDNDetails(Request $req){
+                    //the details 
+            try{
+                $search_value  = '';
+                $take = $req->has('take') ? (int)$req->take : 50;
+                $skip = $req->has('skip') ? (int)$req->skip : 0;
+                $searchValue = $req->searchValue;
+                $data = array();
+
+               $query = DB::connection('mis_db')->table('par_gmdn_codes as t1');
+
+                    if($req->searchValue != 'undefined'){
+                        
+                        $searchValue = explode(',',$searchValue);
+                        $search_value = '';
+                        if(isset($searchValue[2])){
+                            $search_value =  $searchValue[2];
+                        }
+                        
+                        
+                    }
+                    if($search_value != ''){
+                        $whereClauses = array();
+                        $whereClauses[] = "t1.name like '%" . ($search_value) . "%'";
+                        $whereClauses[] = "t1.code like '%" . ($search_value) . "%'";
+                        $whereClauses[] = "t1.description  like '%" . ($search_value) . "%'";
+
+                        $filter_string = implode(' OR ', $whereClauses);
+                        $query->whereRAW($filter_string);
+                    }
+                    $totalCount = $query->count(); // Get total count before pagination
+
+            // Apply pagination
+            $records = $query->skip($skip)->take($take)->get(['id', 'name', 'code', 'description']);
+
+            $data = $records->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'code' => $item->code,
+                    'description' => $item->description,
+                ];
+            })->toArray();
+
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+                'totalCount' => $totalCount,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+}
+
+
+
     function returnNavigationChilds($navigation_type_id,$parent_id){
         $nav_children = array();
         $data = DB::table('wb_navigation_items')
@@ -130,6 +479,7 @@ class ConfigurationsController extends Controller
                     'navigation_type_id'=>$rec->navigation_type_id,
                     'router_link'=>$rec->router_link,
                     'iconCls'=>$rec->iconCls,
+                    'backgroundColor'=>$rec->backgroundColor,
                     'level'=>$rec->level,
                     'parent_id'=>$rec->parent_id,
                     'is_disabled'=>$rec->is_disabled,
@@ -170,14 +520,12 @@ class ConfigurationsController extends Controller
 					}
              
 			  //
-        
             if($table_name == 'sub_modules'){
                     //check the current allow services 
                     //filter for sub_module
                     $module_id = $req->module_id;
                     unset($requestData['module_id']);
                     $sql =  $sql->join('tra_online_portalservices as t2', 't1.id', '=', 't2.sub_module_id')->where(array('is_online'=>1,'t1.module_id'=>$module_id));
-
             }
             if($table_name == 'par_sections'){
                 $sql =  $sql->whereNotIn('id',[3,4]);
@@ -188,7 +536,12 @@ class ConfigurationsController extends Controller
                   
                 }
             }
-            if($table_name == 'par_business_types'){
+            if($table_name == 'par_system_statuses'){
+                    $sql =  $sql->whereIn('id',[29,30]);
+
+                
+ 
+            } if($table_name == 'par_business_types'){
                     $sql =  $sql->whereNotIn('id',[3,5,7]);
 
                 
@@ -197,7 +550,16 @@ class ConfigurationsController extends Controller
             if($table_name == 'par_classifications'){
                 $prodclass_category_id = $req->prodclass_category_id;
                 $sql->join('par_prodcat_classifications as t2', 't1.id', '=', 't2.classification_id')->where(array('t2.prodclass_category_id'=>$prodclass_category_id));
-            }if($table_name == 'par_eligible_importerscategories'){
+            }
+
+          if($table_name == 'par_licence_type' && isset($requestData['business_type_id']) ){
+                $business_type_id = $req->business_type_id;
+                
+                    unset($requestData['business_type_id']);
+                $sql->join('par_importlicence_applications as t2', 't2.licence_type_id', '=', 't1.id')->where(array('t2.business_type_id'=>$business_type_id));
+            }
+
+            if($table_name == 'par_eligible_importerscategories'){
                 $section_id = $req->section_id;
 				
                     unset($requestData['section_id']);
@@ -246,6 +608,7 @@ class ConfigurationsController extends Controller
 				}
 			}
 			
+    
             if($table_name == 'wb_formfields_definations'){
                     
                 $module_id = $req->module_id;
@@ -253,8 +616,24 @@ class ConfigurationsController extends Controller
                 $sql->join('wb_form_fields as t2', 't1.form_field_id', '=', 't2.id')
                 ->join('wb_app_formsdefination as t3', 't1.app_formsdefination_id', '=', 't3.id')
                   ->where(array('t3.module_id'=>$module_id));
-				$sql = $sql->where($requestData);
-			}
+                $sql = $sql->where($requestData);
+
+            } 
+
+            if($table_name == 'par_variation_reportingtypes'){
+                    
+                $module_id = $req->module_id;
+                unset($requestData['module_id']);
+                $sql
+                    ->join('wb_form_fields as t2', 't1.form_field_id', '=', 't2.id')
+                    ->join('wb_app_formsdefination as t3', 't1.app_formsdefination_id', '=', 't3.id')
+                  ->where(array('t3.module_id'=>$module_id));
+                $sql = $sql->where($requestData);
+
+            } 
+
+
+
 			else if($table_name == 'par_zones'){
 				
 				 if($zone_notin != ''){
@@ -274,12 +653,14 @@ class ConfigurationsController extends Controller
                 $sql =  $sql->leftJoin('par_atc_codes as t2', 't1.atc_code_id', '=', 't2.id');
                 $res = $sql->select('t1.*', 't2.name as atc_code', 't2.description as atc_code_description');
             
-            }else  if($table_name == 'par_product_classificationrules'){
+            }
+            // else  if($table_name == 'par_product_classificationrules'){
                 
-                $sql =  $sql->leftJoin('par_classification_rules as t2', 't1.class_rule_id', '=', 't2.id');
-                $res = $sql->select('t1.*', 't2.name as classification_rule', 't2.description as rule_description');
+            //     $sql =  $sql->leftJoin('par_classification_rules as t2', 't1.class_rule_id', '=', 't2.id');
+            //     $res = $sql->select('t1.*', 't2.name as classification_rule', 't2.description as rule_description');
             
-            }else if($table_name == 'wb_formfields_definations'){
+            // }
+            else if($table_name == 'wb_formfields_definations'){
                 $res = $sql->select('t1.*', 't2.field_name');
                 
             }else{
@@ -545,9 +926,8 @@ class ConfigurationsController extends Controller
     public function getAppSubmissionGuidelines(Request $req){
         
             $sub_module_id = $req->sub_module_id;
-            $section_id = $req->section_id;
-           // ->where(array('sub_module_id'=>$sub_module_id,'section_id'=>$section_id))
             $data = DB::table('wb_appsubmission_termscondition')
+            ->where('sub_module_id',$sub_module_id)
             ->orderBy('order_no')
             ->get();  
 

@@ -15,7 +15,7 @@
                 <dx-button text="Edit" (click)="funcEditPersonnelDetails(data)" 
                     type="danger" icon="edit">
                     </dx-button> 
-                <dx-button text="Delete" (click)="funcDeletePersonnelDetails(data)" 
+                <dx-button text="Delete" [disabled]= "is_readonly" (click)="funcDeletePersonnelDetails(data)" 
                     type="danger" icon="delete">
                 </dx-button> 
             </div>
@@ -28,14 +28,12 @@
 </div>
 
 
-<dx-popup class="popup"  [width]="funcpopWidth(80)" [showTitle]="true" title="Directors Details" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isBusinessPersonnelPopupVisible">
+<dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="auto" [showTitle]="true" title="Directors Details" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isBusinessPersonnelPopupVisible">
     <div *dxTemplate="let data of 'content'" class="row">
         <dx-scroll-view></dx-scroll-view>
         <div class="col-lg-12">
-            <wizard style="background: #fff !important; height: 100% !important;">
-                <wizard-step stepTitle=" Directors Details" class="wizardStep-height">
                     <form role="form" enctype="multipart/form-data" role="form" [formGroup]="premisesPersonnelDetailsfrm" class="col-lg-12" (ngSubmit)="onSavePremisesPersonnelDetails()">
-                        <div class="row wizard-contentwin">
+                        <div class=" col-lg-12 row">
                         <div class="col-lg-4 row input-group ">
                             <div class="col-lg-8">
                                 <label class="control-label">Initial Name</label>
@@ -104,8 +102,6 @@
                             </dx-button>
                         </div>
                     </form>
-                </wizard-step>
-            </wizard>
         </div>
     </div>
 </dx-popup>

@@ -30,27 +30,31 @@ export class ClinicalStudysitesComponent implements OnInit {
   isStudySiteAddWinVisible:boolean;
   region:any;
   districts:any;
+  auto:any;
   app_resp:any;
-regions:any;
-sponsor_investigatortitle:string;
-isclinicalSTudySiteDetailsWin:boolean =false;
-clinicalSTudySiteDetailsFrm:FormGroup;
+  district_id:number;
+  region_id:number;
+  country_id:number;
+  regions:any;
+  sponsor_investigatortitle:string;
+  isclinicalSTudySiteDetailsWin:boolean =false;
+  clinicalSTudySiteDetailsFrm:FormGroup;
   constructor(public utilityService: Utilities, public premappService: PremisesApplicationsService, public dmsService: DocumentManagementService, public fb: FormBuilder, public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: ImportexportService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public httpClient: HttpClient) {
     this.studySiteFrm = new FormGroup({
       name: new FormControl('', Validators.compose([Validators.required])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
-      region_id: new FormControl('', Validators.compose([Validators.required])),
-      district_id: new FormControl('', Validators.compose([])),
+      region_id: new FormControl('', Validators.compose([])),
+      district_id: new FormControl('', Validators.compose([Validators.required])),
       postal_address: new FormControl('', Validators.compose([Validators.required])),
-      telephone: new FormControl('', Validators.compose([])),
-      latitude: new FormControl('', Validators.compose([])),
-      longitude:new FormControl('', Validators.compose([])),
-      clinical_council:new FormControl('', Validators.compose([])),
-      emergency:new FormControl('', Validators.compose([])),
-      special_examination_facility:new FormControl('', Validators.compose([])),
-      capacity:new FormControl('', Validators.compose([])),
-      storage_facility:new FormControl('', Validators.compose([])),
-      staff_qualification:new FormControl('', Validators.compose([])),
+      telephone: new FormControl('', Validators.compose([Validators.required])),
+      latitude: new FormControl('', Validators.compose([Validators.required])),
+      longitude:new FormControl('', Validators.compose([Validators.required])),
+      clinical_council:new FormControl('', Validators.compose([Validators.required])),
+      emergency:new FormControl('', Validators.compose([Validators.required])),
+      special_examination_facility:new FormControl('', Validators.compose([Validators.required])),
+      capacity:new FormControl('', Validators.compose([Validators.required])),
+      storage_facility:new FormControl('', Validators.compose([Validators.required])),
+      staff_qualification:new FormControl('', Validators.compose([Validators.required])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
       email_address: new FormControl('', Validators.compose([Validators.required]))
     });
@@ -65,12 +69,18 @@ clinicalSTudySiteDetailsFrm:FormGroup;
   }
   ngOnInit() {
     this.onLoadClinicalSiteDetails(this.application_id);
+    //this.clinicalSTudySiteDetailsFrm.get('country_id').setValue(37);
 
   }
   funcDeleteClinicalSiteDetails(site_data) {
     this.funcClinicalTrialDeletehelper(site_data, 'wb_clinical_trial_sites', 'study_site', 'Clinical Trial Site');
   }
-  
+  adjustTextAreaHeight(event: any): void {
+  const textarea = event.target;
+  textarea.style.overflow = 'hidden'; // Hide any overflow content
+  textarea.style.height = 'auto'; // Reset height to auto
+  textarea.style.height = textarea.scrollHeight + 'px'; // Set height to match content
+  }
   funcClinicalTrialDeletehelper(record_data, table_name, reload_funccheck, delete_title) {
     let app_data = record_data.data;
     let record_id = app_data.id;
@@ -251,18 +261,22 @@ clinicalSTudySiteDetailsFrm:FormGroup;
 
   onRegionsCboSelect($event) {
 
-    this.onLoadDistricts($event.selectedItem.id);
-
+    this.region_id = $event.selectedItem.id;
+    this.onLoadDistricts(this.region_id);
   }
   onCoutryCboSelect($event) {
 
-
-    this.onLoadRegions($event.selectedItem.id);
+    this.country_id = $event.selectedItem.id;
+    //this.onLoadDistricts(this.country_id);
+    this.onLoadRegions(this.country_id);
+  }
+  oDistrictsCboSelect($event) {
+    this.district_id = $event.selectedItem.id;
+   // this.onLoadRegions(this.district_id);
 
   }
-  
-  onLoadRegions(country_id) {
 
+  onLoadRegions(country_id) {
     var data = {
       table_name: 'par_regions',
       country_id: country_id
@@ -271,11 +285,10 @@ clinicalSTudySiteDetailsFrm:FormGroup;
       //.pipe(first())
       .subscribe(
         data => {
-          console.log(data);
-          this.regions = data;
+          this.regions = data
         },
         error => {
-          return false
+          return false;
         });
   }
   

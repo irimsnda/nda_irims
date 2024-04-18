@@ -9,7 +9,7 @@ export class PremiserelocationDashboardComponent extends PremisesRegDashboardCom
 
   ngOnInit() {
     this.premises_dashboardtitle = "Premise Relocation Application Dashboard"
-    this.sub_module_id = 110;
+    this.sub_module_id = 109;
     this.onLoadPremisesAppType(this.sub_module_id);
     this.reloadPremisesApplications({sub_module_id:this.sub_module_id});
 

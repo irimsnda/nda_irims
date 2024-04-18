@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewContainerRef, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, FormArray ,Validators,AbstractControl, FormBuilder } from '@angular/forms';
 import { DocumentManagementService } from 'src/app/services/document-management/document-management.service';
 import { ModalDialogService } from 'ngx-modal-dialog';
 import { SpinnerVisibilityService } from 'ng-http-loader';
@@ -51,10 +51,22 @@ export class SharedClinicaltrialComponent implements OnInit {
   appDocumentsUploadData: any = {};
 
   clinicaltrialGeneraldetailsfrm: FormGroup;
+  clinicaltrialObjectiveGeneraldetailsfrm:FormGroup;
+  clinicaltrialDescriptionGeneraldetailsfrm:FormGroup;
+  clinicaltrialStudyGeneraldetailsfrm:FormGroup;
+  clinicaltrialEndpointGeneraldetailsfrm:FormGroup;
+  clinicaltrialGeneralExclusiondetailsfrm:FormGroup;
+  clinicalTrialControl: FormControl;
+  clinicaltrialMonitoringReportdetailsfrm:FormGroup;
+  nonClinicaltrialPharmacologyfrm:FormGroup;
+  nonClinicaltrialtoxicologyfrm:FormGroup;
+  ClinicaltrialRenewalSummaryfrm:FormGroup;
   preSubmissionGeneraldetailsfrm:FormGroup;
   clinicaltrialReportingdetailsfrm:FormGroup;
   clinicaltrialSaeReportingdetailsfrm:FormGroup;
   clinicaltrialOtherReportingdetailsfrm:FormGroup;
+  clinicaltrialConcomitantdetailsfrm:FormGroup;
+
   documentUploadfrm: FormGroup;
 
   app_resp: any;
@@ -66,7 +78,7 @@ export class SharedClinicaltrialComponent implements OnInit {
   tracking_no: string;
   loading: boolean;
   app_route: any;
-
+  initWizardPanel:number = 0;
   zoneData: any;
   durationDescData: any;
   isSponsorInvestigatorSearchWinVisible: boolean = false;
@@ -141,10 +153,12 @@ export class SharedClinicaltrialComponent implements OnInit {
   ctrethicsCommitteesData:any;
    clinicalTrialRegistryData:any;
   onApplicationSubmissionFrm:FormGroup;
+
   constructor(public utilityService: Utilities, public premappService: PremisesApplicationsService, public dmsService: DocumentManagementService, public fb: FormBuilder, public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: ImportexportService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public httpClient: HttpClient) {
 
 
     this.application_details = this.appService.getApplicationDetail();
+
 
     if (!this.application_details) {
       //this.router.navigate(['./../online-services/clinical-trialsdashboard']);
@@ -164,32 +178,175 @@ export class SharedClinicaltrialComponent implements OnInit {
       this.sub_module_id = this.application_details.sub_module_id;
       this.reg_clinical_trial_id = this.application_details.reg_clinical_trial_id;
       
-    }
+    }  
+    this.clinicaltrialMonitoringReportdetailsfrm = new FormGroup({
+        safety_monitoring_plan: new FormControl('', Validators.compose([Validators.required])),
+        application_code: new FormControl(this.application_code, Validators.compose([])),
+        sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+        section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+        reg_clinical_trial_id: new FormControl('', Validators.compose([])),
+        system_used: new FormControl('', Validators.compose([Validators.required])),
+        action_seriousadverse_event: new FormControl('', Validators.compose([Validators.required])),
+        safety_monitoring_board: new FormControl('', Validators.compose([Validators.required])),
+        interim_report_date: new FormControl('', Validators.compose([Validators.required])),
+        data_management_process:new FormControl('', Validators.compose([Validators.required])),
+        estimated_due_report_date: new FormControl('', Validators.compose([Validators.required])),
+        appmodule_id: new FormControl(this.module_id, Validators.compose([Validators.required]))
 
+       }); 
 
+       this.nonClinicaltrialPharmacologyfrm = new FormGroup({
+        primary_pharmacodynamics: new FormControl('', Validators.compose([Validators.required])),
+        application_code: new FormControl(this.application_code, Validators.compose([])),
+        sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+        section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+        reg_clinical_trial_id: new FormControl('', Validators.compose([])),
+        secondary_pharmacodynamics: new FormControl('', Validators.compose([Validators.required])),
+        pharmacodynamic_drug_interactions: new FormControl('', Validators.compose([Validators.required])),
+        pharmacokinetics: new FormControl('', Validators.compose([Validators.required])),
+        appmodule_id: new FormControl(this.module_id, Validators.compose([Validators.required]))
+
+       });
+
+       this.clinicaltrialConcomitantdetailsfrm = new FormGroup({
+        concomitant_drugs: new FormControl('', Validators.compose([Validators.required])),
+        application_code: new FormControl(this.application_code, Validators.compose([])),
+        sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+        section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+        reg_clinical_trial_id: new FormControl('', Validators.compose([])),
+        dateof_administration: new FormControl('', Validators.compose([Validators.required])),
+        relevant_history: new FormControl('', Validators.compose([Validators.required])),
+        appmodule_id: new FormControl(this.module_id, Validators.compose([Validators.required]))
+
+       });
+
+        this.nonClinicaltrialtoxicologyfrm = new FormGroup({
+        primary_pharmacodynamics: new FormControl('', Validators.compose([Validators.required])),
+        secondary_pharmacodynamics: new FormControl('', Validators.compose([Validators.required])),
+        pharmacodynamic_drug_interactions: new FormControl('', Validators.compose([Validators.required])),
+        pharmacokinetics: new FormControl('', Validators.compose([Validators.required])),
+        toxicology: new FormControl('', Validators.compose([Validators.required])),
+        First_in_human_trials: new FormControl('', Validators.compose([Validators.required])),
+        glp_aspects: new FormControl('', Validators.compose([Validators.required])),
+        application_code: new FormControl(this.application_code, Validators.compose([])),
+        sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+        section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+        reg_clinical_trial_id: new FormControl('', Validators.compose([])),
+        appmodule_id: new FormControl(this.module_id, Validators.compose([Validators.required]))
+
+       });   
+
+        this.ClinicaltrialRenewalSummaryfrm = new FormGroup({
+        date_of_approved_research: new FormControl('', Validators.compose([Validators.required])),
+        date_of_approved_uncst: new FormControl('', Validators.compose([Validators.required])),
+        date_of_approval: new FormControl('', Validators.compose([Validators.required])),
+        application_code: new FormControl(this.application_code, Validators.compose([])),
+        sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+        section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+        reg_clinical_trial_id: new FormControl('', Validators.compose([])),
+        appmodule_id: new FormControl(this.module_id, Validators.compose([Validators.required]))
+
+       }); 
+    this.clinicalTrialControl = new FormControl('', Validators.compose([]));
+   //this.adverseReactionIds = new FormControl('', Validators.compose([]));
+
+    this.clinicaltrialGeneralExclusiondetailsfrm = new FormGroup({
+        is_clinicaltrialin_uganda: new FormControl('', Validators.compose([Validators.required])),
+        application_code: new FormControl(this.application_code, Validators.compose([])),
+        sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+        section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+        reg_clinical_trial_id: new FormControl('', Validators.compose([])),
+        clinicalin_othercountries_sites:this.clinicalTrialControl,
+        clinicalin_otheruganda_sites:this.clinicalTrialControl,
+        prevclinicalin_othercountries_sites:this.clinicalTrialControl,
+        is_clinicaltrialin_othercountry: new FormControl('', Validators.compose([Validators.required])),
+        is_prevclinicaltrialin_othercountry: new FormControl('', Validators.compose([Validators.required])),
+        appmodule_id: new FormControl(this.module_id, Validators.compose([Validators.required])),
+
+       });
+
+    this.clinicaltrialEndpointGeneraldetailsfrm = new FormGroup({
+        application_code: new FormControl(this.application_code, Validators.compose([])),
+        sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+        section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+        reg_clinical_trial_id: new FormControl('', Validators.compose([])),
+        participant_no:new FormControl('', Validators.compose([])),
+        enrolled_worldwide_no:new FormControl('', Validators.compose([Validators.required])),
+        enrolled_uganda_no:new FormControl('', Validators.compose([Validators.required])),
+        sites_no:new FormControl('', Validators.compose([Validators.required])),
+        intended_no:new FormControl('', Validators.compose([Validators.required])),
+        study_start_date: new FormControl('', Validators.compose([Validators.required])),
+        first_final_duration:new FormControl('', Validators.compose([Validators.required])),
+        study_duration: new FormControl('', Validators.compose([Validators.required])),
+        duration_desc: new FormControl('', Validators.compose([Validators.required])),
+        screening_period:new FormControl('', Validators.compose([Validators.required])),
+        screening_duration:new FormControl('', Validators.compose([])),
+        follow_up_period:new FormControl('', Validators.compose([Validators.required])),
+        follow_up_duration:new FormControl('', Validators.compose([Validators.required])),
+        intervention_period:new FormControl('', Validators.compose([Validators.required])),
+        intervention_duration:new FormControl('', Validators.compose([Validators.required])),
+        appmodule_id: new FormControl(this.module_id, Validators.compose([Validators.required]))
+        });
+
+    this.clinicaltrialStudyGeneraldetailsfrm = new FormGroup({
+        clearance_no: new FormControl('', Validators.compose([Validators.required])),
+        ctrethics_committee_id: new FormControl('', Validators.compose([Validators.required])),
+        uncst_no: new FormControl('', Validators.compose([])),
+        application_code: new FormControl(this.application_code, Validators.compose([])),
+        section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+        sub_module_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+        reg_clinical_trial_id: new FormControl('', Validators.compose([])),
+        appmodule_id: new FormControl(this.module_id, Validators.compose([Validators.required])),
+
+    });
+    this.clinicaltrialObjectiveGeneraldetailsfrm = new FormGroup({
+        clinicaltrial_description: new FormControl('', Validators.compose([Validators.required])),
+        explorator_objective: new FormControl('', Validators.compose([Validators.required])),
+        trial_design: new FormControl('', Validators.compose([Validators.required])),
+        purpose_of_trial: new FormControl('', Validators.compose([Validators.required])),
+        other_objective: new FormControl('', Validators.compose([])),
+        application_code: new FormControl(this.application_code, Validators.compose([])),
+        sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+        section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+        reg_clinical_trial_id: new FormControl('', Validators.compose([])),
+        clinicaltrialsecondary_objective: new FormControl('', Validators.compose([Validators.required])),
+        clinicaltrialprimary_objective: new FormControl('', Validators.compose([Validators.required])),
+        tertiary_objectives: new FormControl('', Validators.compose([])),
+        appmodule_id: new FormControl(this.module_id, Validators.compose([Validators.required]))
+
+       });
+
+    this.clinicaltrialDescriptionGeneraldetailsfrm = new FormGroup({
+        primary_endpoints: new FormControl('', Validators.compose([Validators.required])),
+        sample_size:new FormControl('', Validators.compose([Validators.required])),
+        planned_analyses: new FormControl('', Validators.compose([Validators.required])),
+        analysis_sets: new FormControl('', Validators.compose([Validators.required])),
+        secondary_endpoints: new FormControl('', Validators.compose([Validators.required])),
+        inclusion_criteria: new FormControl('', Validators.compose([Validators.required])),
+        exclusion_criteria: new FormControl('', Validators.compose([Validators.required])),
+        application_code: new FormControl(this.application_code, Validators.compose([])),
+        sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+        section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+        reg_clinical_trial_id: new FormControl('', Validators.compose([])),
+        appmodule_id: new FormControl(this.module_id, Validators.compose([Validators.required])),
+        tertiary_endpoints:new FormControl('', Validators.compose([Validators.required]))
+       });
+    
+    
     this.onApplicationSubmissionFrm = new FormGroup({
       paying_currency_id: new FormControl('', Validators.compose([])),
       is_fast_track: new FormControl('', Validators.compose([])),
       submission_comments:new FormControl('', Validators.compose([]))
     });
-    if(this.sub_module_id == 23){
-          this.clinicaltrialReportingdetailsfrm = new FormGroup({
-            study_title: new FormControl('', Validators.compose([Validators.required])),
-            protocol_no: new FormControl('', Validators.compose([Validators.required])),
-            version_no: new FormControl('', Validators.compose([Validators.required])),
-            date_of_protocol: new FormControl('', Validators.compose([Validators.required])),
-            
-            phase_id: new FormControl('', Validators.compose([])),
-            
-            zone_id: new FormControl('', Validators.compose([Validators.required])),
-            sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+
+     this.clinicaltrialReportingdetailsfrm = new FormGroup({
             application_code: new FormControl(this.application_code, Validators.compose([])),
+            sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+            section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+            reg_clinical_trial_id: new FormControl('', Validators.compose([])),
             appmodule_id: new FormControl(this.module_id, Validators.compose([Validators.required])),
-            section_id: new FormControl('', Validators.compose([Validators.required])),
-            reg_clinical_trial_id: new FormControl('', Validators.compose([Validators.required])),
             clinicalreport_type_id: new FormControl('', Validators.compose([Validators.required])),
             clinicalstudy_status_id: new FormControl('', Validators.compose([Validators.required])),
-            study_site_id: new FormControl('', Validators.compose([Validators.required])),
             reporting_start_date: new FormControl('', Validators.compose([Validators.required])),
             reporting_end_date: new FormControl('', Validators.compose([Validators.required])),
             screen_participants: new FormControl('', Validators.compose([Validators.required])),
@@ -198,62 +355,53 @@ export class SharedClinicaltrialComponent implements OnInit {
             enrolled_participants: new FormControl('', Validators.compose([Validators.required])),
             dateof_first_enrollment: new FormControl('', Validators.compose([Validators.required])),
             number_of_dropouts: new FormControl('', Validators.compose([Validators.required])),
-            number_lost_tofollow_ups: new FormControl('', Validators.compose([Validators.required])),
-            inclusion_criteria: new FormControl('', Validators.compose([Validators.required])),
-            exclusion_criteria: new FormControl('', Validators.compose([Validators.required])),            
+            number_lost_tofollow_ups: new FormControl('', Validators.compose([Validators.required])),            
             number_of_saes: new FormControl('', Validators.compose([])),
             events_of_medialimportance: new FormControl('', Validators.compose([Validators.required])),
             protocol_deviations: new FormControl('', Validators.compose([Validators.required])),
-            clincialtrialfunding_source_id: new FormControl('', Validators.compose([]))
-            ,
-              clincialtrialfields_type_id: new FormControl('', Validators.compose([])),
-              clinicalin_othercountries_sites: new FormControl('', Validators.compose([])), 
-            clinicalin_otheruganda_sites : new FormControl('', Validators.compose([])),
-              is_clinicaltrialin_othercountry: new FormControl('', Validators.compose([])),
-              is_clinicaltrialin_uganda:new FormControl('', Validators.compose([]))
-            
           });
 
-    }else if(this.sub_module_id == 102){
+         if (this.sub_module_id == 102){
             this.clinicaltrialSaeReportingdetailsfrm = new FormGroup({
-            study_title: new FormControl('', Validators.compose([Validators.required])),
-            protocol_no: new FormControl('', Validators.compose([Validators.required])),
-            version_no: new FormControl('', Validators.compose([Validators.required])),
-            date_of_protocol: new FormControl('', Validators.compose([Validators.required])),
-            
-            phase_id: new FormControl('', Validators.compose([])),
-            
-            zone_id: new FormControl('', Validators.compose([Validators.required])),
+            sourceofpsur_id: new FormControl('', Validators.compose([])),
+            report_category_id: new FormControl('', Validators.compose([Validators.required])),
+            report_type_id: new FormControl('', Validators.compose([Validators.required])),
+            adr_reporter_category_id: new FormControl('', Validators.compose([Validators.required])),
+            adr_type_id: new FormControl('', Validators.compose([Validators.required])),
+            species: new FormControl('', Validators.compose([])),
+            breed: new FormControl('', Validators.compose([])),
+            animal_status_id: new FormControl('', Validators.compose([])),
+            humanvet_contact_id: new FormControl('', Validators.compose([])),
             sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
             application_code: new FormControl(this.application_code, Validators.compose([])),
             appmodule_id: new FormControl(this.module_id, Validators.compose([Validators.required])),
             section_id: new FormControl('', Validators.compose([Validators.required])),
-            reg_clinical_trial_id: new FormControl('', Validators.compose([Validators.required])),
-            clinicalreport_type_id: new FormControl('', Validators.compose([Validators.required])),
-            clinicalstudy_status_id: new FormControl('', Validators.compose([Validators.required])),
-            study_site_id: new FormControl('', Validators.compose([Validators.required])),
-            reporting_start_date: new FormControl('', Validators.compose([Validators.required])),
-            reporting_end_date: new FormControl('', Validators.compose([Validators.required])),
-            screen_participants: new FormControl('', Validators.compose([Validators.required])),
-            dateof_first_screening: new FormControl('', Validators.compose([Validators.required])),
-            target_sample_size: new FormControl('', Validators.compose([Validators.required])),
-            enrolled_participants: new FormControl('', Validators.compose([Validators.required])),
-            dateof_first_enrollment: new FormControl('', Validators.compose([Validators.required])),
-            number_of_dropouts: new FormControl('', Validators.compose([Validators.required])),
-            number_lost_tofollow_ups: new FormControl('', Validators.compose([Validators.required])),
-            inclusion_criteria: new FormControl('', Validators.compose([Validators.required])),
-            exclusion_criteria: new FormControl('', Validators.compose([Validators.required])),            
-            number_of_saes: new FormControl('', Validators.compose([Validators.required])),
-            events_of_medialimportance: new FormControl('', Validators.compose([Validators.required])),
-            protocol_deviations: new FormControl('', Validators.compose([Validators.required])),
-            clincialtrialfunding_source_id: new FormControl('', Validators.compose([]))
-            ,
-              clincialtrialfields_type_id: new FormControl('', Validators.compose([])),
-              clinicalin_othercountries_sites: new FormControl('', Validators.compose([])), 
-            clinicalin_otheruganda_sites : new FormControl('', Validators.compose([])),
-              is_clinicaltrialin_othercountry: new FormControl('', Validators.compose([])),
-              is_clinicaltrialin_uganda:new FormControl('', Validators.compose([]))
-            
+            reg_clinical_trial_id: new FormControl('', Validators.compose([])),
+            patient_name: new FormControl('', Validators.compose([])),
+            study_arm: new FormControl('', Validators.compose([])),
+            gender_id: new FormControl('', Validators.compose([])),
+            device_operator_id: new FormControl('', Validators.compose([])),
+            local_supplier: new FormControl('', Validators.compose([])),
+            software_version: new FormControl('', Validators.compose([])),
+            catalogue_number: new FormControl('', Validators.compose([])),
+            serial_number: new FormControl('', Validators.compose([])),
+            model_number: new FormControl('', Validators.compose([])),
+            device_location_id: new FormControl('', Validators.compose([])),
+            last_menstruation_date: new FormControl('', Validators.compose([])),
+            is_pregnant: new FormControl('', Validators.compose([])),
+            is_lactating: new FormControl('', Validators.compose([])),
+            sae_narative: new FormControl('', Validators.compose([Validators.required])),
+            sae_onset_date: new FormControl('', Validators.compose([Validators.required])),
+            stop_date: new FormControl('', Validators.compose([Validators.required])),
+            ongoing_id: new FormControl('', Validators.compose([Validators.required])),
+            medra_term_id: new FormControl('', Validators.compose([Validators.required])),
+            date_of_birth: new FormControl('', Validators.compose([Validators.required])),
+            patient_age: new FormControl('', Validators.compose([Validators.required])),
+            age_group_id: new FormControl('', Validators.compose([Validators.required])),
+            patient_weight: new FormControl('', Validators.compose([Validators.required])),
+            patient_height: new FormControl('', Validators.compose([Validators.required])),
+            site_awareness_date: new FormControl('', Validators.compose([Validators.required])),
+            bmi: new FormControl('', Validators.compose([Validators.required])) 
           });
     }else if(this.sub_module_id == 103){
             this.clinicaltrialOtherReportingdetailsfrm = new FormGroup({
@@ -299,7 +447,6 @@ export class SharedClinicaltrialComponent implements OnInit {
     }else if(this.sub_module_id == 69){
             this.preSubmissionGeneraldetailsfrm = new FormGroup({
               study_title: new FormControl('', Validators.compose([Validators.required])),
-              clinicaltrial_registry_id: new FormControl('', Validators.compose([])),
               zone_id: new FormControl('', Validators.compose([])),
               meeting_type_id: new FormControl('', Validators.compose([Validators.required])),
               brief_description: new FormControl('', Validators.compose([Validators.required])),
@@ -310,7 +457,6 @@ export class SharedClinicaltrialComponent implements OnInit {
               section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
               reg_clinical_trial_id: new FormControl('', Validators.compose([])),
               clinical_prodsection_id: new FormControl('', Validators.compose([])),
-              meeting_venue: new FormControl('', Validators.compose([])),
               meeting_date: new FormControl('', Validators.compose([Validators.required])),
               meeting_invitation_details: new FormControl('', Validators.compose([]))
 
@@ -319,77 +465,53 @@ export class SharedClinicaltrialComponent implements OnInit {
     }else{
             this.clinicaltrialGeneraldetailsfrm = new FormGroup({
               study_title: new FormControl('', Validators.compose([Validators.required])),
-              short_study_title: new FormControl('', Validators.compose([])),
+              short_study_title: new FormControl('', Validators.compose([Validators.required])),
               other_study:new FormControl('', Validators.compose([])),
-              purpose_of_trial: new FormControl('', Validators.compose([Validators.required])),
-              clinicaltrial_description: new FormControl('', Validators.compose([Validators.required])),
               clinicaltrial_identification_no: new FormControl('', Validators.compose([Validators.required])),
               clinicaltrial_registry_id: new FormControl('', Validators.compose([Validators.required])),
               publication_url: new FormControl('', Validators.compose([])),
-              trial_design: new FormControl('', Validators.compose([Validators.required])), 
-              ctrethics_committee_id: new FormControl('', Validators.compose([])),
-              explorator_objective: new FormControl('', Validators.compose([])),
-              other_objective: new FormControl('', Validators.compose([])),
-              uncst_no: new FormControl('', Validators.compose([])),
-              first_final_duration:new FormControl('', Validators.compose([Validators.required])),
-              protocol_no: new FormControl('', Validators.compose([Validators.required])),
+              protocol_no: new FormControl('', Validators.compose([])),
               version_no: new FormControl('', Validators.compose([Validators.required])),
               date_of_protocol: new FormControl('', Validators.compose([Validators.required])),
-              study_duration: new FormControl('', Validators.compose([Validators.required])),
-              duration_desc: new FormControl('', Validators.compose([Validators.required])),
-              clearance_no: new FormControl('', Validators.compose([])),
               rec_no:new FormControl('', Validators.compose([])),
+              other_registry: this.clinicalTrialControl,
               clinical_trial_sponsor: new FormControl('', Validators.compose([Validators.required])),
               principal_investigator: new FormControl('', Validators.compose([Validators.required])),
               investigator_id: new FormControl('', Validators.compose([Validators.required])),
              // paying_currency_id: new FormControl('', Validators.compose([Validators.required])),
               sponsor_id: new FormControl('', Validators.compose([Validators.required])),
-              zone_id: new FormControl('', Validators.compose([Validators.required])),
-             duration_stimate:new FormControl('', Validators.compose([])),
-              application_code: new FormControl(this.application_code, Validators.compose([])),study_start_date: new FormControl('', Validators.compose([Validators.required])),
-           
+              zone_id: new FormControl('', Validators.compose([])),
+              duration_stimate:new FormControl('', Validators.compose([])),
+              application_code: new FormControl(this.application_code, Validators.compose([])),           
               sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+              variation_type_id:new FormControl('', Validators.compose([])),
               appmodule_id: new FormControl(this.module_id, Validators.compose([Validators.required])),
               section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
-              
               reg_clinical_trial_id: new FormControl('', Validators.compose([])),
-              clinical_prodsection_id: new FormControl('', Validators.compose([])),
-              phase_id: new FormControl('', Validators.compose([])),
-              clincialtrialfunding_source_id: new FormControl('', Validators.compose([Validators.required])),
+              clinical_prodsection_id: new FormControl('', Validators.compose([Validators.required])),
+              phase_id: new FormControl('', Validators.compose([Validators.required])),
               clincialtrialfields_type_id: new FormControl('', Validators.compose([Validators.required])),
-              inclusion_criteria: new FormControl('', Validators.compose([Validators.required])),
-              exclusion_criteria: new FormControl('', Validators.compose([Validators.required])),
-              
-              secondary_endpoints: new FormControl('', Validators.compose([Validators.required])),
-              primary_endpoints: new FormControl('', Validators.compose([Validators.required])),  
-              
-              clinicaltrialsecondary_objective: new FormControl('', Validators.compose([Validators.required])),
-              clinicaltrialprimary_objective: new FormControl('', Validators.compose([Validators.required])),
-              
-              clinicalin_othercountries_sites: new FormControl('', Validators.compose([])), 
-              clinicalin_otheruganda_sites:new FormControl('', Validators.compose([])),
-              is_clinicaltrialin_othercountry: new FormControl('', Validators.compose([Validators.required])),
-              is_clinicaltrialin_uganda:new FormControl('', Validators.compose([Validators.required])),
-              participant_no:new FormControl('', Validators.compose([Validators.required])),
-              enrolled_worldwide_no:new FormControl('', Validators.compose([Validators.required])),
-              enrolled_uganda_no:new FormControl('', Validators.compose([Validators.required])),
-              sites_no:new FormControl('', Validators.compose([Validators.required])),
-              intended_no:new FormControl('', Validators.compose([Validators.required])),
-              screening_period:new FormControl('', Validators.compose([])),
-              screening_duration:new FormControl('', Validators.compose([])),
-              follow_up_period:new FormControl('', Validators.compose([])),
-              follow_up_duration:new FormControl('', Validators.compose([])),
-              intervention_period:new FormControl('', Validators.compose([])),
-              intervention_duration:new FormControl('', Validators.compose([]))
+              primary_pharmacodynamics:this.clinicalTrialControl,
+              secondary_pharmacodynamics:this.clinicalTrialControl,
+              pharmacodynamic_drug_interactions:this.clinicalTrialControl,
+              pharmacokinetics:this.clinicalTrialControl,
+              toxicology:this.clinicalTrialControl,
+              First_in_human_trials:this.clinicalTrialControl,
+              glp_aspects:this.clinicalTrialControl,
+              safety_pharmacology:this.clinicalTrialControl,
+              sites_no:new FormControl('', Validators.compose([])),
+              enrolled_uganda_no:new FormControl('', Validators.compose([]))
             });
              
     }
-    
+
+ 
+
     if(this.sub_module_id == 10){
        this.is_readonly = false;
      }
      else{
-      this.is_readonly = true;
+      this.is_readonly = false;
        
      }
     this.documentUploadfrm = this.fb.group({
@@ -434,10 +556,13 @@ export class SharedClinicaltrialComponent implements OnInit {
     this.OnloadclinicalTrialRegistryData() ;
     this.onLoadctrethicsCommitteesData();
     this.onLoadclinicalStudySitesData();
-    this.onLoadGuidelines(this.sub_module_id, this.section_id);
+    this.onLoadGuidelines(this.sub_module_id);
       
-  }onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+  }   
+
+
+  onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {
@@ -461,7 +586,11 @@ export class SharedClinicaltrialComponent implements OnInit {
   }
   ngOnInit() {
 
-  }  onLoadSections() {
+  } 
+
+
+
+   onLoadSections() {
     var data = {
       table_name: 'par_sections',
     };
@@ -604,7 +733,6 @@ export class SharedClinicaltrialComponent implements OnInit {
   onLoadcommonNameData() {
     var data = {
       table_name: 'par_common_names',
-      section_id: 2
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
@@ -625,7 +753,6 @@ export class SharedClinicaltrialComponent implements OnInit {
   onLoadrouteOfAdminData() {
     var data = {
       table_name: 'par_route_of_administration',
-      section_id: 2
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
@@ -638,7 +765,6 @@ export class SharedClinicaltrialComponent implements OnInit {
   onLoadsiUnitsData() {
     var data = {
       table_name: 'par_si_units',
-      section_id: 2
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
@@ -651,7 +777,6 @@ export class SharedClinicaltrialComponent implements OnInit {
   onLoadDosagFormData() {
     var data = {
       table_name: 'par_dosage_forms',
-      section_id: 2
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
@@ -848,6 +973,11 @@ export class SharedClinicaltrialComponent implements OnInit {
 
 
   }
+   //funcValidateOtherClinicalDetails(nextStep) {
+
+   // this.funcValidateStepDetails('Add Other Clinical Trial Details', 'wb_clinical_trial_applications', nextStep);
+
+  //}
   funcValidateClinicalInvestDetails(nextStep) {
    // this.funcValidateStepDetails('Add Clinical trial Investigators to proceed', this.clinicaltrailinvestigatorsData, nextStep);
 
@@ -890,7 +1020,7 @@ onLoadclinicalStudySitesData(){
         if (response_data.success) {
           
            this.wizard.model.navigationMode.goToStep(nextStep);
-           if(nextStep ==4){
+           if(nextStep ==8){
 
             documentComponent.onLoadAppDocRequirements();
             documentComponent.onLoadApplicationDocUploads();
@@ -904,6 +1034,60 @@ onLoadclinicalStudySitesData(){
       });
       
   }
+
+  funcValidateClinicalSaeDetails(table_name,nextStep,title,documentComponent) {
+  
+    this.utilityService.validateClinicalTrialSaeOtherDetails(this.application_id,table_name)
+    .subscribe(
+      response => {
+        this.spinner.hide();
+        let response_data = response;
+        if (response_data.success) {
+          
+           this.wizard.model.navigationMode.goToStep(nextStep);
+           if(nextStep ==8){
+
+            documentComponent.onLoadAppDocRequirements();
+            documentComponent.onLoadApplicationDocUploads();
+           }
+        }
+        else{
+          this.toastr.error(title, 'Response');
+        }
+
+        this.spinner.hide();
+      });
+      
+  }
+
+    funcValidateClinicalSummaryDetails(table_name,nextStep,title,documentComponent) {
+  
+    this.utilityService.validateClinicalTrialDetails(this.application_id,table_name)
+    .subscribe(
+      response => {
+        this.spinner.hide();
+        let response_data = response;
+        if (response_data.success) {
+          
+           this.wizard.model.navigationMode.goToStep(nextStep);
+           if(nextStep ==8){
+
+            documentComponent.onLoadAppDocRequirements();
+            documentComponent.onLoadApplicationDocUploads();
+           }
+        }
+        else{
+          this.toastr.error(title, 'Response');
+        }
+
+        this.spinner.hide();
+      });
+      
+  }
+
+
+
+
 
   funcValidateDocumentsDetails(nextStep) {
     this.utilityService.validateApplicationDocumentsQuerySubmission(this.application_code,this.status_id,'wb_clinical_trial_applications')

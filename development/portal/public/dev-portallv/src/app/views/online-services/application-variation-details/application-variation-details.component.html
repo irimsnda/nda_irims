@@ -25,7 +25,7 @@
 </dxi-column>
 </dx-data-grid>
 
-<dx-popup class="popup" [width]="funcpopWidth(50)" [height]="750" [showTitle]="true" title="Application Variation Request"
+<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="600" [showTitle]="true" title="Application Variation Request"
 [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isApplicationVariationsDetailsWin">
 <div *dxTemplate="let data of 'content'">
 <dx-scroll-view>
@@ -34,36 +34,19 @@
       (ngSubmit)="onsaveApplicationVariationRequests()">
 
       <div class="row">
-       
-        <div class=" col-md-6 col-lg-6 col-xl-6">
-          <label class="control-label">Type of Variation</label>
-
-          <dx-select-box [dataSource]="typeofVariationData" valueExpr="id" displayExpr="name"  (onSelectionChanged)="onTypeofVariationSelect($event)" 
-           [searchEnabled]="true" formControlName="variation_type_id">
-          </dx-select-box>
-        </div>
-      <!-- <div class=" col-md-6 col-lg-6 col-xl-6">
-            <label class="control-label">Variation Categories</label>
-
-            <dx-select-box [dataSource]="variationCategoriesData" valueExpr="id" displayExpr="name" 
-             [searchEnabled]="true" formControlName="variation_category_id">
-            </dx-select-box>
-          </div>
-        -->
-        <div class="col-md-6 col-lg-6 col-xl-6">
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
             <label class="control-label">Present Details(Optional)</label>
               <dx-text-area [height]="60" formControlName="present_details"  placeholder="Present Details"
               >
             </dx-text-area>
           </div>
-          
-            <div class="col-md-6 col-lg-6 col-xl-6">
+            <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
                 <label class="control-label">Proposed Variations Details(Mandatory)</label>
                   <dx-text-area [height]="60" formControlName="proposed_variation"  placeholder="Proposed Variations"
                  >
                 </dx-text-area>
               </div>
-              <div class="col-md-6 col-lg-6 col-xl-6">
+              <div class="col-lg-12">
                   <label class="control-label">Background for change & Justification for Consequential change(Optional)</label>
                     <dx-text-area [height]="60" formControlName="variation_background_information"  placeholder="Background Information"
                     >
@@ -102,15 +85,9 @@
             </div>
         </dxi-column>
           <dxi-column [groupIndex]="0"   dataField="document_requirement"></dxi-column>
-        
           <dxi-column dataField="file_name"></dxi-column>
-          
           <dxi-column dataField="initial_file_name"></dxi-column>
-          
           <dxi-column width=130 dataField="uploaded_on"></dxi-column>
-        
-          
-          
           <dxo-group-panel [visible]="true"></dxo-group-panel>
           <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
         </dx-data-grid>

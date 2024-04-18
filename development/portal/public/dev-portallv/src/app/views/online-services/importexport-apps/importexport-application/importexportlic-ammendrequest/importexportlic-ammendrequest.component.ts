@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SharedImportexportclassComponent } from '../../shared-importexportclass/shared-importexportclass.component';
+import { SharedImportexportclassComponent } from '../../shared-importexportclass/SharedImportexportclassComponent';
 
 @Component({
   selector: 'app-importexportlic-ammendrequest',
@@ -10,7 +10,7 @@ export class ImportexportlicAmmendrequestComponent extends SharedImportexportcla
 
   ngOnInit() {
     if (!this.application_details) {
-      this.router.navigate(['./../online-services/importexportlic-ammendrequest']);
+      this.router.navigate(['./../online-services/declaration-dashboard']);
        return
      }
   }

@@ -552,4 +552,152 @@ class AuthenticationController extends Controller
         ]);
       
     }
+
+
+public function getCompanyDetails(Request $req){
+ try {
+    $trader_id = $req->trader_id;
+    $company_registration_no = $req->company_registration_no;
+    $where = array(
+            'company_registration_no' => $company_registration_no
+    );
+    $res = array();
+    $table_name = 'tra_premise_company_details';
+     if (isset($company_registration_no) && $company_registration_no != "") {
+        if (recordExists($table_name, $where,'mis_db')) {
+            $previous_data = getPreviousRecords($table_name, $where,'mis_db');
+            if ($previous_data['success'] == false) {
+                return $previous_data;
+            }
+            return $previous_data;
+        }else{
+          $token = $this->generateAccessToken();
+          $obrs_configs = $this->getObrsConfigurations();
+          $company_details=$this->curl_post($token,$obrs_configs->companydetails_url,array(
+          'brn'=> trim($company_registration_no)
+            //'brn'=> '80034506867656'
+          ));
+          $company_details = json_decode($company_details,true);
+          if (!isset($company_details['company'])) {
+            $res = array(
+                    'success' => false,
+                    'message' => $company_details['error']
+            );
+            echo json_encode($res);
+            exit();
+          }
+
+           $company_data = array(
+               'company_registration_no' =>$company_details['company']['business_reg_no'],
+                'name' => $company_details['company']['entity_name'],  
+                'registration_date' => $company_details['company']['incorporation_date'],
+                'type' => $company_details['company']['type'],
+                'subtype' => $company_details['company']['subtype'],
+                'reg_status' => $company_details['company']['reg_status']
+            );
+            $res = insertRecord($table_name, $company_data, $trader_id,'mis_db');
+            if ($res['success'] == true) {
+              $res=getPreviousRecords($table_name, $where,'mis_db');
+            }
+           }
+         }
+       } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+    }
+
+    public function getCompanyShareholders(Request $req)
+    {
+      $token = $this->generateAccessToken();
+      $obrs_configs = $this->getObrsConfigurations();
+      $company_shareholder=$this->curl_post($token,$obrs_configs->shareholders_url,array(
+      'brn'=> '80034506867656'
+      ));
+      return $company_shareholder;
+    }
+
+    public function getObrsConfigurations(){
+        $obrs_configs = DB::connection('mis_db')->table('tra_obrs_configurations')->first();
+        return $obrs_configs;
+
+    }
+
+    public function generateAccessToken()
+    {
+        $obrs_configs = $this->getObrsConfigurations();
+        $baseurl = $obrs_configs->baseurl; 
+        $endpoint = $obrs_configs->authenticate_url;
+        $payload = array(
+            'appKey' => $obrs_configs->consumer_key,
+            'appSecret' => $obrs_configs->consumer_secret, 
+        );
+
+    $headers = array(
+        'Content-Type: application/json',
+        'Accept: application/json'
+    );
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => $baseurl . $endpoint,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_HTTPHEADER => $headers,
+        
+    ));
+
+    $curl_response = curl_exec($curl);
+    $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+    if ($status !== 200) {
+        $res = array(
+                'success' => false,
+                'message' => '<p>UNABLE TO UTHENTICATE!!<br>PLEASE TRY AGAIN!!</p>'
+        );
+        echo json_encode($res);
+        exit();
+    }
+    $result = json_decode($curl_response);
+    $access_token = $result->access_token;
+ 
+    return $access_token;
+    }
+     
+    public function curl_post($token,$endpoint,$payload){
+         $obrs_configs = $this->getObrsConfigurations();
+         $baseurl = $obrs_configs->baseurl; 
+         $headers = array(
+        'Content-Type: application/json',
+        'Authorization: Bearer '.$token,
+        'Accept: application/json'
+        );
+         $curl = curl_init();
+         curl_setopt_array($curl,array(
+         CURLOPT_URL=>$baseurl . $endpoint,
+         CURLOPT_RETURNTRANSFER=>true,
+         CURLOPT_CUSTOMREQUEST=>"POST",
+         CURLOPT_POSTFIELDS=>json_encode($payload),
+         CURLOPT_SSL_VERIFYPEER=>false,
+         CURLOPT_SSL_VERIFYHOST=>false,
+         CURLOPT_HTTPHEADER=>$headers
+         
+         ));
+         $curl_response = curl_exec($curl);
+         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+         return $curl_response;
+     }
+
+
 }

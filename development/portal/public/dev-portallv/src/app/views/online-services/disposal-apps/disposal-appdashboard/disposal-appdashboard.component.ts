@@ -69,7 +69,7 @@ export class DisposalAppdashboardComponent implements OnInit {
 
     this.FilterDetailsFrm = new FormGroup({
       sub_module_id: new FormControl('', Validators.compose([])),
-      section_id: new FormControl('', Validators.compose([])),
+      disposal_class_id: new FormControl('', Validators.compose([])),
       application_status_id: new FormControl('', Validators.compose([]))
     });
 
@@ -148,7 +148,7 @@ export class DisposalAppdashboardComponent implements OnInit {
   
   onLoadSections() {
     var data = {
-      table_name: 'par_sections',
+      table_name: 'par_disposalprodclass_category',
     };
     this.configService.onLoadConfigurationData(data)
       .subscribe(
@@ -221,16 +221,17 @@ export class DisposalAppdashboardComponent implements OnInit {
   }
   applicationActionColClick(e,data){
     var action_btn = e.itemData;
-    this.functActionColumnClick(action_btn,data);
-  }    onCellPrepared(e) {
+    this.functActionColumnClick(action_btn,data.data);
+  }    
+  onCellPrepared(e) {
     this.utilityService.onCellPrepared(e);
     
 }
   singleApplicationActionColClick(data){
-      
-    this.functActionColumnClick(data.data,data);
+  this.functActionColumnClick(data.data, data);
   
   }
+
   functActionColumnClick(action_btn, data) {
       
     if(action_btn.action === 'edit'){
@@ -368,10 +369,10 @@ export class DisposalAppdashboardComponent implements OnInit {
   }
   onSelectProdutFilters(e) {
     let sub_module_id = this.FilterDetailsFrm.get('sub_module_id').value;
-    let section_id = this.FilterDetailsFrm.get('section_id').value;
+    let disposal_class_id = this.FilterDetailsFrm.get('disposal_class_id').value;
     let application_status_id = this.FilterDetailsFrm.get('application_status_id').value;
      
-    this.reloadPermitApplicationsApplications({sub_module_id:sub_module_id,section_id:section_id,application_status_id:application_status_id});
+    this.reloadPermitApplicationsApplications({sub_module_id:sub_module_id,disposal_class_id:disposal_class_id,application_status_id:application_status_id});
 
   }
   onClearProdutFilters(){

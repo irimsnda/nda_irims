@@ -75,15 +75,12 @@
                           <button (click)="onApplicationDashboard()" class="btn btn-primary pull-left" style="margin:5px;" type="button"><i
                             class="fa fa-dashboard"></i>
                           &nbsp; Dashboard</button>
-                        <button type="button" class="btn btn-primary" (click)="funcValidateApplicationQueryresponse(1)" >Next(Permit Submission) &nbsp;<i class="fa fa-angle-double-right"></i></button>
+                        <button type="button" class="btn btn-primary" (click)="funcValidateApplicationQueryresponse(1)" >Next(Licence Submission) &nbsp;<i class="fa fa-angle-double-right"></i></button>
                       </div>
                 </wizard-step>
                 
-                <wizard-step stepTitle="Permit Query Response Submission" navigationSymbol="Submit"  >
-                    <div class="col-lg-12">
-                      <label>Submission Comments(Optional)</label>
-                      <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-                    </div>
+                <wizard-step stepTitle="Licence Query Response Submission" navigationSymbol="Submit"  >
+                    
                     <div class="col-lg-12">
                             <dx-check-box text="Agree to the Terms & Conditions" [value]="undefined" (onValueChanged)="submissionsTermscheckbox($event)">
                                 </dx-check-box>
@@ -102,14 +99,36 @@
 </div>
   <div class="col-lg-12"  *ngIf="status_id !== 8 && status_id !== 6">
     <wizard style="background: #fff !important; height: 100% !important;" navigationMode="strict" navBarLayout ="large-filled-symbols">
-      
+       <!-- [premiseTypeData] = "premiseTypeData" -->
       <wizard-step stepTitle=" Application Details"   navigationSymbol="Step 1" class="wizardStep-height">
-        <app-importexport-gendetails  [applicationGeneraldetailsfrm]="applicationGeneraldetailsfrm"  
-            [sectionsData] ="sectionsData"  
-            [applicationTypeData] ="applicationTypeData"  
+        <app-importexport-gendetails  [applicationGeneraldetailsfrm]="applicationGeneraldetailsfrm" 
+         [newPremisesPersonnelDetailsFrm] = "newPremisesPersonnelDetailsFrm"
+           [sectionsData] ="sectionsData"  
             [sub_module_id] ="sub_module_id"  
             [applicationTypeCategoryData] ="applicationTypeCategoryData"  
             [permitReasonData] ="permitReasonData" 
+            [premiseClassData] = "premiseClassData"
+            [businessTypeData] = "businessTypeData"
+            [is_registered_premise] = "is_registered_premise"
+            [is_clinical] = "is_clinical"
+            [is_grant] = "is_grant"
+            [is_govement] = "is_govement"
+            [is_importation] = "is_importation"
+            [licence_type_id] = "licence_type_id" 
+            [business_type_id] = "business_type_id"
+            [importation_reason_id] = "importation_reason_id"
+            [product_category_id] = "product_category_id"
+            [importationReasonData] = "importationReasonData"
+            [productImportationCategoryData] = "productImportationCategoryData"
+            [licenceTypeData] = "licenceTypeData"
+            [applicationTypeData] = "applicationTypeData"
+            [vcApplicationTypeData] ="vcApplicationTypeData"
+            [productClassData] = "productClassData"
+            [registrationLevelData] = "registrationLevelData"
+            [LicencedproductRangeData] = "LicencedproductRangeData"
+            [isProductCategoryId] = "isProductCategoryId"
+            [port_id]="port_id"
+            [has_registered_premises]="has_registered_premises"
             [portOfEntryExitData] ="portOfEntryExitData"   
             [payingCurrencyData] ="payingCurrencyData"  
             [currencyData]="currencyData"
@@ -120,10 +139,11 @@
             [module_id] ="module_id"  
             [application_code] ="application_code"  
             [ispremisesSearchWinVisible] ="ispremisesSearchWinVisible"  
+            [isclinicalTrialSearchWinVisible] = "isclinicalTrialSearchWinVisible"
             [registered_premisesData] ="registered_premisesData"  
-            [modeOfTransportData] ="modeOfTransportData"  
+            [registered_clinicalTrialData] = "registered_clinicalTrialData"
+            [modeOfTransportData] ="modeOfTransportData" 
 
-            
             [issenderreceiverSearchWinVisible] ="issenderreceiverSearchWinVisible"  
             [consignee_sendertitle] ="consignee_sendertitle"  
             [issenderreceiverAddWinVisible] ="issenderreceiverAddWinVisible"  
@@ -134,7 +154,7 @@
             [section_id] ="section_id"  
             
             [deviceTypeData] ="deviceTypeData"
-            [applicationCategoryData] ="applicationCategoryData"  
+            [applicationCategoryData] ="applicationCategoryData"    
             >
             </app-importexport-gendetails>
           <div class=" div-footer" style="border-top: 1px solid #ccc; ">
@@ -155,13 +175,13 @@
           </div>
         
       </wizard-step>
-      <wizard-step stepTitle="Permit Product Information " navigationSymbol="Step 2"  (stepEnter)="validateApplicationDetails($event)" class="wizardStep-height">
+      <!-- <wizard-step stepTitle="Permit Product Information " navigationSymbol="Step 2"  (stepEnter)="validateApplicationDetails($event)" class="wizardStep-height">
         <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
           <button type="button" class="btn btn-primary" previousStep>&nbsp;<i
               class="fa fa-angle-double-left"></i>Previous
             Application Details</button>
-            <!-- [disabled] ="isprodnextdisable"-->
-          <button type="button" class="btn btn-primary"
+             [disabled] ="isprodnextdisable"-->
+          <!-- <button type="button" class="btn btn-primary"
             (click)="funcValidatePermitProductDetails('Add Permit Product Details to proceed',2)">Next Documents
             Upload &nbsp;<i class="fa fa-angle-double-right"></i></button>
         </div>
@@ -199,18 +219,17 @@
               class="fa fa-angle-double-left"></i>Previous
             Application Details</button>
             
-            <!-- [disabled] ="isprodnextdisable"-->
-          <button type="button" class="btn btn-primary" 
+             [disabled] ="isprodnextdisable"-->
+          <!-- <button type="button" class="btn btn-primary" 
             (click)="funcValidatePermitProductDetails('Add Permit Product Details to proceed',2)">Next Documents
             Upload &nbsp;<i class="fa fa-angle-double-right"></i></button>
         </div>
-      </wizard-step>
-      <wizard-step stepTitle="Documents" navigationSymbol="Step 3"  class="wizardStep-height" (stepEnter)="validateProdApplicationDetails($event)">
+      </wizard-step>  -->
+      <wizard-step stepTitle="Documents" navigationSymbol="Step 2"  class="wizardStep-height" (stepEnter)="validateProdApplicationDetails($event)">
         <div class="wizard-divbottom">
-          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Permit
-            Products Details</button>
+           <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Application Details</button> 
           <button type="button" class="btn btn-primary"
-            (click)="funcValidatePermitDocumentsDetails(3)">Next
+            (click)="funcValidatePermitDocumentsDetails(2)">Next
             Application Submission<i class="fa fa-angle-double-right"></i></button>
 
         </div>
@@ -218,16 +237,16 @@
           <app-application-documents [section_id] ="section_id"  [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-application-documents>
         </div>
         <div class="wizard-divbottom">
-          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Permit
-            Products Details</button>
+           <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Application Details</button>
+
           <button type="button" class="btn btn-primary"
-            (click)="funcValidatePermitDocumentsDetails(3)">Next
+            (click)="funcValidatePermitDocumentsDetails(2)">Next
             Application Submission<i class="fa fa-angle-double-right"></i></button>
 
         </div>
 
       </wizard-step>
-      <wizard-step stepTitle="Completion & Submission"  (stepEnter)="validateSubmissionApplicationDetails($event)" navigationSymbol="Submit" >
+      <wizard-step stepTitle="Completion & Submission"  navigationSymbol="Submit" >
         
         <form [formGroup]="onApplicationSubmissionFrm" class="col-lg-12 row div-nopadding wizard-content" style="background: #fff;" enctype="multipart/form-data" role="form" (ngSubmit)="onProductApplicationSubmit()">
           <div class="col-lg-12">
@@ -238,10 +257,11 @@
                   </p>
               </ul>
           </div>
-          
-          <div class="col-lg-12">
-            <b> <label>Submission Comments(Optional)</label></b>
-              <dx-text-area formControlName="submission_comments" placeholder="Enter Comments(optional)"></dx-text-area>
+            <div class="col-lg-4" *ngIf="has_invoicegeneration" >
+            <label>Payment Currency(The payment will be based in USD/UGX)</label>
+              <dx-select-box [dataSource]="payingCurrencyData"  valueExpr="id" displayExpr="name"
+                placeholder="Select Paying Currency" [searchEnabled]="true" formControlName="paying_currency_id">
+              </dx-select-box>
           </div>
           <div class="col-lg-12">
             <dx-check-box text="Agree to the Declaration" [value]="undefined"
@@ -251,9 +271,9 @@
   
           <div class="wizard-divbottom">
             <button class="btn btn-primary" type="button" previousStep>Previous Step</button>
-            <app-invoice-appgeneration [onApplicationSubmissionFrm] ="onApplicationSubmissionFrm" [sub_module_id] ="sub_module_id" [app_routing] ="app_routing"  *ngIf="has_invoicegeneration"  [module_id] ="module_id" [section_id] ="section_id" [status_id] ="status_id"  [application_code]="application_code" ></app-invoice-appgeneration>
+              <app-invoice-appgeneration   [onApplicationSubmissionFrm] ="onApplicationSubmissionFrm" [sub_module_id] ="sub_module_id" [app_routing] ="app_routing"  *ngIf="has_invoicegeneration"  [module_id] ="module_id" [section_id] ="section_id" [status_id] ="status_id"  [application_code]="application_code" ></app-invoice-appgeneration>
             <button class="btn btn-primary" type="button" [disabled]="!termscheckbox"
-              (click)="onPermitsApplicationSubmit()">Submit Permit
+              (click)="onPermitsApplicationSubmit()">Submit Licence
               Application</button>
           </div>
 </form>
@@ -320,11 +340,12 @@
 
         <wizard-step stepTitle="Application Details"  navigationSymbol="Step 2"  class="wizardStep-height">
           <div class=" div-footer" style="border-top: 1px solid #ccc; ">
-            <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Permit
+            <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Licence
               Products Details</button>
             <button class="btn btn-primary pull-right" style="margin:5px;" [disabled]="!application_id" nextStep
               type="button">
-              Next Permit Product(s) &nbsp;<i class="fa fa-angle-double-right"></i></button>
+              Next Documents
+            Upload &nbsp;<i class="fa fa-angle-double-right"></i></button>
 
             <button type="button" (click)="onSaveImportExportApplication()"
                class="btn btn-primary  pull-right"
@@ -332,27 +353,49 @@
               Application</button>
 
           </div>
-        <app-importexport-gendetails  [applicationGeneraldetailsfrm]="applicationGeneraldetailsfrm"  
-            [sectionsData] ="sectionsData"  
-            [applicationTypeData] ="applicationTypeData"  
+          <!-- [premiseTypeData] = "premiseTypeData" -->
+        <app-importexport-gendetails  [applicationGeneraldetailsfrm]="applicationGeneraldetailsfrm" 
+         [newPremisesPersonnelDetailsFrm] = "newPremisesPersonnelDetailsFrm"
+           [sectionsData] ="sectionsData"  
             [sub_module_id] ="sub_module_id"  
             [applicationTypeCategoryData] ="applicationTypeCategoryData"  
             [permitReasonData] ="permitReasonData" 
+            [premiseClassData] = "premiseClassData"
+            [businessTypeData] = "businessTypeData"
+            [is_registered_premise] = "is_registered_premise"
+            [is_clinical] = "is_clinical"
+            [is_grant] = "is_grant"
+            [is_govement] = "is_govement"
+            [is_importation] = "is_importation"
+            [licence_type_id] = "licence_type_id" 
+            [business_type_id] = "business_type_id"
+            [importation_reason_id] = "importation_reason_id"
+            [product_category_id] = "product_category_id"
+            [importationReasonData] = "importationReasonData"
+            [productImportationCategoryData] = "productImportationCategoryData"
+            [licenceTypeData] = "licenceTypeData"
+            [applicationTypeData] = "applicationTypeData"
+            [vcApplicationTypeData] ="vcApplicationTypeData"
+            [productClassData] = "productClassData"
+            [registrationLevelData] = "registrationLevelData"
+            [LicencedproductRangeData] = "LicencedproductRangeData"
+            [isProductCategoryId] = "isProductCategoryId"
+
             [portOfEntryExitData] ="portOfEntryExitData"   
             [payingCurrencyData] ="payingCurrencyData"  
             [currencyData]="currencyData"
             [consigneeOptionsData] ="consigneeOptionsData"  
-            [permitProductsCategoryData] ="permitProductsCategoryData"  
-            [countries] ="countries"  
-
+            [permitProductsCategoryData] ="permitProductsCategoryData"
             [consignee_options_check] ="consignee_options_check"  
             [zoneData] ="zoneData"  
             [module_id] ="module_id"  
-            [modeOfTransportData] ="modeOfTransportData"  
-
             [application_code] ="application_code"  
             [ispremisesSearchWinVisible] ="ispremisesSearchWinVisible"  
+            [isclinicalTrialSearchWinVisible] = "isclinicalTrialSearchWinVisible"
             [registered_premisesData] ="registered_premisesData"  
+            [registered_clinicalTrialData] = "registered_clinicalTrialData"
+            [modeOfTransportData] ="modeOfTransportData" 
+
             [issenderreceiverSearchWinVisible] ="issenderreceiverSearchWinVisible"  
             [consignee_sendertitle] ="consignee_sendertitle"  
             [issenderreceiverAddWinVisible] ="issenderreceiverAddWinVisible"  
@@ -360,8 +403,10 @@
             [countries] ="countries"  
             [regions] ="regions"  
             [districts] ="districts"  
+            [section_id] ="section_id"  
             
-            [applicationCategoryData] ="applicationCategoryData"  
+            [deviceTypeData] ="deviceTypeData"
+            [applicationCategoryData] ="applicationCategoryData"      
             
             >
             </app-importexport-gendetails>
@@ -369,7 +414,8 @@
             
             <button class="btn btn-primary pull-right" style="margin:5px;" [disabled]="!application_id" nextStep
               type="button">
-              Next Permit Product(s) &nbsp;<i class="fa fa-angle-double-right"></i></button>
+              Next Documents
+            Upload &nbsp;<i class="fa fa-angle-double-right"></i></button>
 
             <button type="button" (click)="onSaveImportExportApplication()"
             class="btn btn-primary  pull-right"
@@ -379,12 +425,12 @@
           </div>
         
       </wizard-step>
-      <wizard-step stepTitle="PermitProduct Information " navigationSymbol="Step 3"   class="wizardStep-height">
+      <!-- <wizard-step stepTitle="LicenceProduct Information " navigationSymbol="Step 3"   class="wizardStep-height">
         <div class=" div-footer" style="border-top: 1px solid #ccc; ">
             
           <button class="btn btn-primary pull-right" style="margin:5px;" [disabled]="!application_id" nextStep
             type="button">
-            Next Permit Product(s) &nbsp;<i class="fa fa-angle-double-right"></i></button>
+            Next Licence Product(s) &nbsp;<i class="fa fa-angle-double-right"></i></button>
 
           <button type="button" (click)="onSaveImportExportApplication()"
            class="btn btn-primary  pull-right"
@@ -428,8 +474,8 @@
             nextStep>Next Documents
             Upload &nbsp;<i class="fa fa-angle-double-right"></i></button>
         </div>
-      </wizard-step>
-      <wizard-step stepTitle="Documents" navigationSymbol="Step 4"   class="wizardStep-height">
+      </wizard-step> -->
+      <wizard-step stepTitle="Documents" navigationSymbol="Step 3"   class="wizardStep-height">
         <div class="wizard-divbottom">
           <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Permit
             Products Details</button>
@@ -439,7 +485,7 @@
           <app-application-documents [section_id] ="section_id"  [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-application-documents>
         </div>
         <div class="wizard-divbottom">
-          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Permit
+          <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Licence
             Products Details</button>
           <button type="button" class="btn btn-primary" nextStep>Next Qurey Response<i class="fa fa-angle-double-right"></i></button>
 
@@ -512,7 +558,7 @@
 
 
 <!--Upload POP Up -->
-<dx-popup class="popup" [width]="funcpopWidth(40)" [height]="300" [showTitle]="true" title="Permit Documents Upload"
+<dx-popup class="popup" [width]="funcpopWidth(40)" [height]="300" [showTitle]="true" title="Licence Documents Upload"
   [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isDocumentUploadPopupVisible">
   <div *dxTemplate="let data of 'content'">
     <form role="form" class="row" enctype="multipart/form-data" role="form" [formGroup]="documentUploadfrm"

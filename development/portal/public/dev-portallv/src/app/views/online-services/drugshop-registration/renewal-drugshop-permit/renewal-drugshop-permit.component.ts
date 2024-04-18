@@ -27,14 +27,15 @@ import { Utilities } from 'src/app/services/common/utilities.service';
 export class RenewalDrugshopPermitComponent extends SharedDrugshopsregistrationclassComponent implements OnInit {
  premisesrenGeneraldetailsfrm: FormGroup;
   app_routing:any;
-  
+
 
  constructor(public cdr: ChangeDetectorRef,public dmsService:DocumentManagementService,public fb: FormBuilder,public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: PremisesApplicationsService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public utilityService:Utilities) {
     super(cdr,dmsService,fb,modalServ, viewRef, spinner, configService, appService, router, formBuilder, config, modalService, toastr, authService,utilityService)
   }
   
   ngOnInit() {
-   this.is_readonly = true;
+   //this.is_readonly = true;
+    this.is_renewal=true;
     this.premisesapp_details = this.appService.getPremisesApplicationDetail();
 
     if (!this.premisesapp_details) {
@@ -61,6 +62,10 @@ export class RenewalDrugshopPermitComponent extends SharedDrugshopsregistrationc
       this.module_id = this.premisesapp_details.module_id;
 
     }
+
+
+
+
     if(this.status_id < 1){
       this.status_name = "New"
       this.status_id = 1;

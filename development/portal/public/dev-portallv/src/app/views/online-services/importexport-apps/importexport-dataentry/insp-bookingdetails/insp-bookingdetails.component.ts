@@ -19,7 +19,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { AppSettings } from 'src/app/app-settings';
 import { ConfigurationsService } from 'src/app/services/shared/configurations.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { SharedImportexportclassComponent } from '../../shared-importexportclass/shared-importexportclass.component';
+import { SharedImportexportclassComponent } from '../../shared-importexportclass/SharedImportexportclassComponent';
 
 @Component({
   selector: 'app-insp-bookingdetails',
@@ -38,6 +38,7 @@ export class InspBookingdetailsComponent implements OnInit {
   @Input() portOfEntryExitData: any; 
   @Input() payingCurrencyData: any;  
   @Input() modeOfTransportData: any; 
+  @Input() productImportationCategoryData: any;
   
   @Input() currencyData: any;
   @Input() consigneeOptionsData: any; 
@@ -46,6 +47,7 @@ export class InspBookingdetailsComponent implements OnInit {
   @Input() module_id: any; 
   
   @Input() application_code: any; 
+  @Input() declaration_application_code: any;
   @Input() ispremisesSearchWinVisible: any; 
   @Input() registered_premisesData: any; 
   
@@ -72,6 +74,7 @@ export class InspBookingdetailsComponent implements OnInit {
   consigneeReceiverData:any ={};
   dataGrid: DxDataGridComponent;
   app_resp:any;
+   importationReasonsData: any;
   isReadOnly:boolean;
   hide_visalicensedetails:boolean = false;
   invoice_title:string;
@@ -117,6 +120,7 @@ export class InspBookingdetailsComponent implements OnInit {
     this.onLoadeligibleImportersDocTypes();
     
     this.onLoadconfirmDataParm() ;
+    this.onLoadImportReasons();
     if(this.section_id == 4){
       this.device_type_visible = true;
     }
@@ -168,6 +172,21 @@ export class InspBookingdetailsComponent implements OnInit {
           this.eligibleImportersDocTypes = data;
         });
 
+  }
+
+  onLoadImportReasons() {
+    var data = {
+      table_name: 'par_importexport_reasons',
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.importationReasonsData = data;
+        },
+      error => {
+          return false
+        });
   }
   
   onconsigneeOptionsChange($event) {

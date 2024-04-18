@@ -64,16 +64,21 @@ export class GmpBusinessdetailsComponent implements OnInit {
   addBusinessTypeDetailsMdl: boolean=false;
   isonContractGiverManufacturer:boolean = false;
   isContractGiverManufacturer:boolean = false;
+  isUncontractAcceptorWin:boolean = false;
   gmp_resp:any;
+  manufacturingActivityData:any;
   gmpappTypeData:any;
   product_resp:any;
   region_id:number;
   country_id:number;
+    app_route: any;
+
   constructor(public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: GmpApplicationServicesService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public dmsService:DocumentManagementService,public utilityService:Utilities,public httpClient: HttpClient) { 
      
   }
   ngOnInit() {
-     if(this.sub_module_id == 5){
+
+    if(this.sub_module_id == 5){
       this.manufacturingSiteLocationSet = true;
     }
     else{
@@ -88,8 +93,8 @@ export class GmpBusinessdetailsComponent implements OnInit {
     });
     this.onContractManufacturingDetailsLoad();
     this.onLoadCountries();
-       this.onLoadGmpAppType(this.sub_module_id);
-
+    this.onLoadGmpAppType(this.sub_module_id);
+    this.onLoadManufacturingActivity();
   }  
   onLoadGmpAppType(sub_module_id) {
     
@@ -173,13 +178,31 @@ export class GmpBusinessdetailsComponent implements OnInit {
           });
     
 
-  }   
-   funcSelectPremisePersonnel(data) {
-    if(this.personnel_type_id == 1){
-      this.gmpapplicationGeneraldetailsfrm.patchValue({ contact_person_id: data.data.id, contact_person: data.data.name})
+  } 
+    onGMPDashboard() {
+    if(this.sub_module_id == 117){
+      this.app_route = ['./online-services/gmp-preinspection-dashboard'];
+
+    }
+    else if(this.sub_module_id == 5){
+      this.app_route = ['./online-services/gmpapplications-dashboard'];
+
+    }else if(this.sub_module_id == 6){
+      this.app_route = ['./online-services/renewalgmpapplications-dashboard'];
     }
     else{
-      this.premisesPersonnelDetailsfrm.patchValue({ personnel_id: data.data.id, name: data.data.name, email_address: data.data.email_address, telephone_no: data.data.telephone_no, postal_address: data.data.postal_address })
+       this.app_route = ['./online-services/gmpapplications-dashboard'];
+
+    }
+    
+    this.router.navigate(this.app_route);
+  }  
+   funcSelectPremisePersonnel(data) {
+    if(this.personnel_type_id == 1){
+      this.contractManufacturingDetailsfrm.patchValue({ personnel_id: data.data.id, contact_person: data.data.name,email: data.data.email,telephone_no: data.data.telephone_no})
+    }
+    else{
+      this.contractManufacturingDetailsfrm.patchValue({ personnel_id: data.data.id, name: data.data.name, email_address: data.data.email_address, telephone_no: data.data.telephone_no, postal_address: data.data.postal_address })
       //reload the qualifications and documents
       this.personnel_id = data.data.id;
     }
@@ -237,7 +260,21 @@ export class GmpBusinessdetailsComponent implements OnInit {
           return false;
         });
   }
+  onLoadManufacturingActivity() {
 
+    var data = {
+      table_name: 'par_manufacturing_activities'
+    };
+    this.config.onLoadConfigurationData(data)
+
+      .subscribe(
+        data => {
+          this.manufacturingActivityData = data;
+        },
+        error => {
+          return false;
+        });
+  }
   onLoadRegions(country_id) {
 
     var data = {
@@ -325,10 +362,11 @@ export class GmpBusinessdetailsComponent implements OnInit {
 
   if($event.value == 1 || $event.value == 2 ){
       this.isContractGiverManufacturer = true;
+
   }
   else{
     this.isContractGiverManufacturer = false;
-    this.isonContractGiverManufacturer = false;
+
 
   }
 }
@@ -339,8 +377,7 @@ export class GmpBusinessdetailsComponent implements OnInit {
   }
   else{
     this.isonContractGiverManufacturer = false;
-    alert('Submission of the information of the Registered/Approved Contract Facility is Mandatory on Contract Giver or Acceptor.  application will not be received until all manufacturing parties have applied for an inspection');
-
+    this.isUncontractAcceptorWin = true;
 
   }
 }   
@@ -400,7 +437,7 @@ export class GmpBusinessdetailsComponent implements OnInit {
       //.pipe(first())
       .subscribe(
         data => {
-          this.contractManufacturingRows = data;
+          this.contractManufacturingRows = data.data;
         },
         error => {
           return false
@@ -423,7 +460,7 @@ export class GmpBusinessdetailsComponent implements OnInit {
               headers: headers,
               params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter }
             };
-            return me.httpClient.get(AppSettings.base_url + 'gmpinspection/getContractManufacturingSiteInformation',this.configData)
+            return me.httpClient.get(AppSettings.base_url + 'gmpinspection/getManufacturingSiteInformation',this.configData)
                 .toPromise()
                 .then((data: any) => {
                     return {
@@ -448,7 +485,7 @@ export class GmpBusinessdetailsComponent implements OnInit {
           this.gmp_resp = response.json();
           if (this.gmp_resp.success) {
             this.toastr.success(this.gmp_resp.message, 'Response');
-            this.isBusinessTypePopupVisible = false;
+            this.isContractManufacturingPopupVisible = false;
             this.onLoadContractDetails(this.manufacturing_site_id);
           } else {
             this.toastr.error(this.gmp_resp.message, 'Alert');
@@ -517,7 +554,7 @@ export class GmpBusinessdetailsComponent implements OnInit {
     let table_name = 'wb_contractmanufacturing_details';
   
     this.modalServ.openDialog(this.viewRef, {
-      title: 'Are You sure You want to delete Contract Details?',
+      title: 'Are You sure You want to delete Contract Manufacturing Details?',
       childComponent: '',
       settings: {
         closeButtonClass: 'fa fa-close'
@@ -534,7 +571,7 @@ export class GmpBusinessdetailsComponent implements OnInit {
                   let resp = data_response.json();
                  
                   if (resp.success) {
-                    this.onLoadPremisesOtherDetails(manufacturing_site_id);
+                    this.onLoadContractDetails(manufacturing_site_id);
 
                     this.toastr.success(resp.message, 'Response');
                   }

@@ -223,7 +223,7 @@ export class BloodestablishmentApplicationsrequestComponent implements OnInit {
     }
    
 
-    this.onLoadGuidelines(this.sub_module_id, this.section_id);
+    this.onLoadGuidelines(this.sub_module_id);
     if(this.application_details.application_code){
       this.bloodEstablishmentGeneraldetailsfrm.patchValue(this.application_details);
       
@@ -342,8 +342,8 @@ export class BloodestablishmentApplicationsrequestComponent implements OnInit {
           return false
         });
   }
-  onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+  onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {

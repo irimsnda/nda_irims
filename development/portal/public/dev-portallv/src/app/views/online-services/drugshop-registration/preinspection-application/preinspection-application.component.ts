@@ -1,8 +1,5 @@
-
 import { Component, OnInit, ViewChild, ViewContainerRef, Inject, ChangeDetectorRef } from '@angular/core';
-
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-
 import { SharedDrugshopsregistrationclassComponent } from '../shared-drugshopsregistrationclass/shared-drugshopsregistrationclass.component';
 
 @Component({

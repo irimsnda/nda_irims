@@ -8,14 +8,31 @@ import { ProductRegDashboardComponent } from '../../views/online-services/produc
 //gurds
 import { AuthGuard } from '../../guards/auth.guard';
 //import { NewDrugProductApplicationComponent } from '../../views/online-services/product-registration/new-product-registration/new-drugproduct-application/new-drugproduct-application.component';
+import { PreviewPremisesInformationComponent } from '../../views/online-services/premises-registration/preview-premises-information/preview-premises-information.component';
+import { PreviewDrugshopInformationComponent } from '../../views/online-services/drugshop-registration/preview-drugshop-information/preview-drugshop-information.component';
 
 import { PremiserelocationRegistrationComponent } from '../../views/online-services/premises-registration/premiserelocation-registration/premiserelocation-registration.component';
 import { NewPremisesRegistrationComponent } from '../../views/online-services/premises-registration/new-premises-registration/new-premises-registration.component';
 import { AnnexstoreRegistrationComponent } from '../../views/online-services/premises-registration/annexstore-registration/annexstore-registration.component';
 import { NewDrugshopsRegistrationComponent } from '../../views/online-services/drugshop-registration/new-drugshops-registration/new-drugshops-registration.component';
+import { NewSurgicalRegistrationComponent } from '../../views/online-services/surgicalinstruments-registration/new-surgical-registration/new-surgical-registration.component';
+import { PreinspectionsurgicalRegistrationComponent } from '../../views/online-services/surgicalinstruments-registration/preinspectionsurgical-registration/preinspectionsurgical-registration.component';
+import { PsurProdnotificationRequestComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-request/psur-prodnotification-request.component';
+import { PsurProductnotificationDashboardComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-dashboard/psur-productnotification-dashboard/psur-productnotification-dashboard.component';
+import { AdverseDrugReactionDashboardComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-dashboard/adverse-drug-reaction-dashboard/adverse-drug-reaction-dashboard.component';
+import { AdverseDrugReactionRequestComponent } from 'src/app/views/online-services/psur-product-notification/adverse-drug-reaction-request/adverse-drug-reaction-request.component';
+
+
 import { NewdrugshopDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/newdrugshop-dashboard/newdrugshop-dashboard.component';
 import { PreinspectionDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/preinspection-dashboard/preinspection-dashboard.component';
+import { PreinspectionsurgicalDashboardComponent } from 'src/app/views/online-services/surgicalinstruments-registration/surgical-reg-dashboard/preinspectionsurgical-dashboard/preinspectionsurgical-dashboard.component';
+import { NewsurgicalinstrumntDashboardComponent } from 'src/app/views/online-services/surgicalinstruments-registration/surgical-reg-dashboard/newsurgicalinstrumnt-dashboard/newsurgicalinstrumnt-dashboard.component';
+import { RenewalsurgicalDashboardComponent } from '../../views/online-services/surgicalinstruments-registration/surgical-reg-dashboard/renewalsurgical-dashboard/renewalsurgical-dashboard.component';
+import { SurgicalrelocationDashboardComponent } from '../../views/online-services/surgicalinstruments-registration/surgical-reg-dashboard/surgicalrelocation-dashboard/surgicalrelocation-dashboard.component';
+import { SurgicalAnnexstoreDashboardComponent } from '../../views/online-services/surgicalinstruments-registration/surgical-reg-dashboard/surgical-annexstore-dashboard/surgical-annexstore-dashboard.component';
 
+
+import { ImportexportApprovedappVCComponent } from 'src/app/views/online-services/importexport-apps/importexport-approvedappvc/importexport-approvedappvc.component';
 import { ApplicationSelectionComponent } from '../../views/online-services/product-registration/application-selection/application-selection.component';
 
 import { PremapplSelectionComponent } from '../../views/online-services/premises-registration/premappl-selection/premappl-selection.component';
@@ -29,13 +46,15 @@ import { ArchivedProductsappsComponent } from 'src/app/views/online-services/pro
 import { InitiateNewproductApplicationComponent } from 'src/app/views/online-services/product-registration/new-product-registration/initiate-newproduct-application/initiate-newproduct-application.component';
 
 import { PremisesAlterationComponent } from 'src/app/views/online-services/premises-registration/premises-alteration/premises-alteration.component';
+import { DrugshopVariationComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-variation/drugshop-variation.component';
 
 import { PremisesRegPreviewComponent } from 'src/app/views/online-services/premises-registration/premises-reg-preview/premises-reg-preview.component';
-
+import { DrugshopRegPreviewComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-preview/drugshop-reg-preview.component';
 import { ProductnotificationDashboardComponent } from 'src/app/views/online-services/product-notification/productnotification-dashboard/productnotification-dashboard.component';
 
 import { ProductnotificationSelComponent } from 'src/app/views/online-services/product-notification/productnotification-sel/productnotification-sel.component';
 import { ClinicalTrialdashComponent } from 'src/app/views/online-services/clinical-trials/clinical-trialdash/clinical-trialdash.component';
+import { ImportlicenseApplicationDashboardComponent } from 'src/app/views/online-services/importexport-apps/importexport-dashboard/importlicenseapplication-dashboard/importlicenseapplication-dashboard.component';
 import { ImportexportDashboardComponent } from 'src/app/views/online-services/importexport-apps/importexport-dashboard/importexport-dashboard.component';
 import { ImportexportSelComponent } from 'src/app/views/online-services/importexport-apps/importexport-sel/importexport-sel.component';
 import { ImportexportApplicationComponent } from 'src/app/views/online-services/importexport-apps/importexport-application/importexport-application.component';
@@ -53,6 +72,7 @@ import {InitiateRenewalproductApplicationComponent} from 'src/app/views/online-s
 import { ProductRegistrationselectionComponent } from 'src/app/views/online-services/product-registration/product-registrationselection/product-registrationselection.component';
 import { RegisteredDrugshopappsComponent } from 'src/app/views/online-services/drugshop-registration/registered-drugshopapps/registered-drugshopapps.component';
 import { DrugshopsRegistrationselectionComponent } from 'src/app/views/online-services/drugshop-registration/drugshops-registrationselection/drugshops-registrationselection.component';
+import { PsurProdnotificationGeneraldetailsComponent } from 'src/app/views/online-services/psur-product-notification/psur-prodnotification-dataentry/psur-prodnotification-generaldetails/psur-prodnotification-generaldetails.component';
 
 import { RegisteredProductappsComponent } from 'src/app/views/online-services/product-registration/registered-productapps/registered-productapps.component';
 import { RegisteredPremisesappsComponent } from 'src/app/views/online-services/premises-registration/registered-premisesapps/registered-premisesapps.component';
@@ -61,13 +81,22 @@ import { PremisesWithdrawalComponent } from 'src/app/views/online-services/premi
 import { RegisteredGmpapplicationsComponent } from 'src/app/views/online-services/gmp-applications/gmp/registered-gmpapplications/registered-gmpapplications.component';
 import { RegisteredGmpselectionComponent } from 'src/app/views/online-services/gmp-applications/gmp/registered-gmpselection/registered-gmpselection.component';
 import { GmpRegDashboardComponent } from 'src/app/views/online-services/gmp-applications/gmp/gmp-reg-dashboard/gmp-reg-dashboard.component';
+import { PreinspectionRegDashboardComponent } from 'src/app/views/online-services/gmp-applications/gmp/preinspection-reg-dashboard/preinspection-reg-dashboard.component';
+import { LocalgmpRegDashboardComponent } from 'src/app/views/online-services/gmp-applications/gmp/localgmp-reg-dashboard/localgmp-reg-dashboard.component';
+import { GmpRenewalRegDashboardComponent } from 'src/app/views/online-services/gmp-applications/gmp/gmp-renewal-reg-dashboard/gmp-renewal-reg-dashboard.component';
+
+
 import { VetDashboardComponent } from 'src/app/views/online-services/gmp-applications/vet-gmp/vet-dashboard/vet-dashboard.component';
 
 import { NewVetgmpApplicationComponent } from 'src/app/views/online-services/gmp-applications/vet-gmp/new-vetgmp-application/new-vetgmp-application.component';
+import { PreinspectionGmpApplicationComponent } from 'src/app/views/online-services/gmp-applications/gmp/preinspection-gmp-application/preinspection-gmp-application.component';
 
 import { NewGmpApplicationComponent } from 'src/app/views/online-services/gmp-applications/gmp/new-gmp-application/new-gmp-application.component';
+import { LocalGmpApplicationComponent } from 'src/app/views/online-services/gmp-applications/gmp/local-gmp-application/local-gmp-application.component';
 import { RenewalGmpApplicationComponent } from 'src/app/views/online-services/gmp-applications/gmp/renewal-gmp-application/renewal-gmp-application.component';
 import { GmpApplicationsSelectionComponent } from 'src/app/views/online-services/gmp-applications/gmp/gmp-applications-selection/gmp-applications-selection.component';
+import { GmpPreinspectionSelectionComponent } from 'src/app/views/online-services/gmp-applications/gmp/gmp-preinspection-selection/gmp-preinspection-selection.component';
+
 import { VetAppSelectionComponent } from 'src/app/views/online-services/gmp-applications/vet-gmp/vet-app-selection/vet-app-selection.component';
 
 import { GmpAppPreviewComponent } from 'src/app/views/online-services/gmp-applications/gmp/gmp-app-preview/gmp-app-preview.component';
@@ -106,6 +135,7 @@ import { ProdretentionRequestsappComponent } from 'src/app/views/online-services
 import { ImportLicensesappselectionComponent } from 'src/app/views/online-services/importexport-apps/import-licensesappselection/import-licensesappselection.component';
 import { ExportLicenseappselComponent } from 'src/app/views/online-services/importexport-apps/export-licenseappsel/export-licenseappsel.component';
 import { ImportgeneralicenseDashboardComponent } from 'src/app/views/online-services/importexport-apps/importexport-dashboard/importgeneralicense-dashboard/importgeneralicense-dashboard.component';
+import { ImportLicenseappselComponent } from 'src/app/views/online-services/importexport-apps/importlicense-appsel/importlicense-appsel.component';
 
 import { ImportvisaDashboardComponent } from 'src/app/views/online-services/importexport-apps/importexport-dashboard/importvisa-dashboard/importvisa-dashboard.component';
 import { ImportlicenseDashboardComponent } from 'src/app/views/online-services/importexport-apps/importexport-dashboard/importlicense-dashboard/importlicense-dashboard.component';
@@ -119,15 +149,21 @@ import { AnnexstoreDashboardComponent } from 'src/app/views/online-services/prem
 import { PremiserelocationDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/premiserelocation-dashboard/premiserelocation-dashboard.component';
 import { RenewalpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/renewalpremises-dashboard/renewalpremises-dashboard.component';
 import { RenewaldrugshopDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/renewaldrugshop-dashboard/renewaldrugshop-dashboard.component';
+import { VariationdrugshopDashboardComponent } from 'src/app/views/online-services/drugshop-registration/drugshop-reg-dashboard/variationdrugshop-dashboard/variationdrugshop-dashboard.component';
 import { VariationpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/variationpremises-dashboard/variationpremises-dashboard.component';
 import { WithdrawalpremisesDashboardComponent } from 'src/app/views/online-services/premises-registration/premises-reg-dashboard/withdrawalpremises-dashboard/withdrawalpremises-dashboard.component';
 import { InvoiceApppreviewComponent } from 'src/app/views/online-services/invoice-appgeneration/invoice-apppreview/invoice-apppreview.component';
 import { InspectionBookingComponent } from 'src/app/views/online-services/importexport-apps/inspection-booking/inspection-booking.component';
 import { NewprodRegDashboardComponent } from 'src/app/views/online-services/product-registration/product-reg-dashboard/newprod-reg-dashboard/newprod-reg-dashboard.component';
+
+import { NewvetprodRegDashboardComponent } from 'src/app/views/online-services/product-registration/product-reg-dashboard/newvetprod-reg-dashboard/newvetprod-reg-dashboard.component';
+import { NewsurgicalRegDashboardComponent } from 'src/app/views/online-services/product-registration/product-reg-dashboard/newsurgical-reg-dashboard/newsurgical-reg-dashboard.component';
 import { RenewalprodRegDashboardComponent } from 'src/app/views/online-services/product-registration/product-reg-dashboard/renewalprod-reg-dashboard/renewalprod-reg-dashboard.component';
 import { VariationprodRegDashboardComponent } from 'src/app/views/online-services/product-registration/product-reg-dashboard/variationprod-reg-dashboard/variationprod-reg-dashboard.component';
 import { WithdrawalprodRegDashboardComponent } from 'src/app/views/online-services/product-registration/product-reg-dashboard/withdrawalprod-reg-dashboard/withdrawalprod-reg-dashboard.component';
 import { ProductNotificationsDashboardComponent } from 'src/app/views/online-services/product-registration/product-reg-dashboard/product-notifications-dashboard/product-notifications-dashboard.component';
+import { ImportLicenseapplictionComponent } from 'src/app/views/online-services/importexport-apps/importexport-application/import-licenseapplication/import-licenseapplication.component';
+
 import { ImportVisaappComponent } from 'src/app/views/online-services/importexport-apps/importexport-application/import-visaapp/import-visaapp.component';
 import { ExprtLicenseappComponent } from 'src/app/views/online-services/importexport-apps/importexport-application/exprt-licenseapp/exprt-licenseapp.component';
 import { ImportLicenseappComponent } from 'src/app/views/online-services/importexport-apps/importexport-application/import-licenseapp/import-licenseapp.component';
@@ -181,16 +217,24 @@ const appRoutes: Routes = [
 		}, {
 			path: 'app-dashboard',
 			component: AppdashboardComponent
-		},  {
+		},{
 			path: 'appsubmission-dashboard',
 			component: AppsubmissionDashboardComponent
-		},
-		 {
+		},{
+			path: 'app-dashboard',
+			component: AppdashboardComponent
+		},{
 			path: 'productreg-dashboard',
-			component: ProductRegDashboardComponent
+			component: ProductRegDashboardComponent 
 		},{
 			path: 'newprodreg-dashboard',
 			component: NewprodRegDashboardComponent
+		},{
+			path: 'newsurgicalprodreg-dashboard',
+			component: NewsurgicalRegDashboardComponent
+		},{
+			path: 'newvetprodreg-dashboard',
+			component: NewvetprodRegDashboardComponent
 		},{
 			path: 'prodrenewalreg-dashboard',
 			component: RenewalprodRegDashboardComponent
@@ -238,6 +282,21 @@ const appRoutes: Routes = [
 			path: 'pre-inspection-dashboard',
 			component: PreinspectionDashboardComponent 
 		},{//
+			path: 'pre-inspection-surgical-dashboard',
+			component: PreinspectionsurgicalDashboardComponent  
+		},{//
+			path: 'newsurgicalreg-dashboard',
+			component: NewsurgicalinstrumntDashboardComponent  
+		},{//
+			path: 'surgicalrenewal-dashboard',
+			component: RenewalsurgicalDashboardComponent 
+		},{//
+			path: 'surgicalrelocation-dashboard',
+			component: SurgicalrelocationDashboardComponent
+		},{//
+			path: 'surgicalannex-dashboard',
+			component: SurgicalAnnexstoreDashboardComponent
+		},{//
 			path: 'premisesrenewal-dashboard',
 			component: RenewalpremisesDashboardComponent
 		},{//
@@ -246,7 +305,10 @@ const appRoutes: Routes = [
 		}, {//
 			path: 'premisesvariation-dashboard',
 			component: VariationpremisesDashboardComponent
-		}, {//
+		},  {//
+			path: 'drugshopvariation-dashboard',
+			component: VariationdrugshopDashboardComponent
+		},{//
 			path: 'premisesregclosure-dashboard',
 			component: WithdrawalpremisesDashboardComponent
 		},{//
@@ -279,33 +341,54 @@ const appRoutes: Routes = [
 			path: 'new-premises-applications',
 			component: NewPremisesRegistrationComponent
 		},{
-			path: 'new-premises-applications',
+			path: 'preview-application',
+			component: PreviewPremisesInformationComponent
+		},{
+			path: 'preview-drugshop-application',
+			component: PreviewDrugshopInformationComponent
+		},{
+			path: 'annexstore-premises-applications',
 			component: AnnexstoreRegistrationComponent
 		},{
 			path: 'premisesrelocation-applications',
-			component: PremiserelocationRegistrationComponent
+			component: PremiserelocationRegistrationComponent 
 		},{
 			path: 'new-drugshop-applications',
-			component: NewDrugshopsRegistrationComponent
+			component: NewDrugshopsRegistrationComponent  
+		},{
+			path: 'new-surgical-applications',
+			component: NewSurgicalRegistrationComponent
+		},{
+			path: 'preinspection-surgical-applications',
+			component: PreinspectionsurgicalRegistrationComponent
 		},{
 			path: 'importexport-approvedappsel',
 			component: ImportexportApprovedappselComponent
 		},{
 			path: 'importexportlic-ammendrequest',
 			component: ImportexportlicAmmendrequestComponent
-		},  {
+		},{
+			path: 'importexport-approvedappvc',
+			component: ImportexportApprovedappVCComponent
+		}, {
 			path: 'renewal-business-permit',
 			component: RenewalBusinessPermitComponent
 		}, {
 			path: 'renewal-drugshop-permit',
-			component: RenewalDrugshopPermitComponent
+			component: RenewalDrugshopPermitComponent 
 		},{
 			path: 'premises-alteration-request',
-			component: PremisesAlterationComponent
-		}, {
+			component: PremisesAlterationComponent 
+		},{
+			path: 'drugshop-variation-request',
+			component: DrugshopVariationComponent 
+		},  {
 			path: 'premises-reg-preview',
 			component: PremisesRegPreviewComponent
 		}, {
+			path: 'premises-reg-preview',
+			component: DrugshopRegPreviewComponent
+		},  {
 			path: 'archived_premises-applications',
 			component: ArchivedPremisesComponent
 		}, {
@@ -313,17 +396,32 @@ const appRoutes: Routes = [
 			component: TraderProfileComponent
 		}, {
 			path: 'notifications-panel',
-			component: NotificationsComponent 
+			component: NotificationsComponent   
 		}, {
 			path: 'gmpapplications-dashboard',
 			component: GmpRegDashboardComponent
+		},  {
+			path: 'renewalgmpapplications-dashboard',
+			component: GmpRenewalRegDashboardComponent
+		},{
+			path: 'local-gmpapplications-dashboard',
+			component: LocalgmpRegDashboardComponent
+		},{
+			path: 'gmp-preinspection-dashboard',
+			component: PreinspectionRegDashboardComponent
 		}, {
 			path: 'vetgmpapplications-dashboard',
-			component: VetDashboardComponent 
+			component: VetDashboardComponent  
 		}, {
 			path: 'new-gmp-applications',
 			component: NewGmpApplicationComponent
 		}, {
+			path: 'local-gmp-applications',
+			component: LocalGmpApplicationComponent
+		}, {
+			path: 'preinspection-gmp-applications',
+			component: PreinspectionGmpApplicationComponent
+		},{
 			path: 'new-gmp-applications',
 			component: NewVetgmpApplicationComponent
 		}, {
@@ -333,7 +431,10 @@ const appRoutes: Routes = [
 			path: 'gmp-applications-selection',
 			component: GmpApplicationsSelectionComponent
 		}, {
-			path: 'gmp-applications-selection',
+			path: 'gmp-preinspection-selection',
+			component: GmpPreinspectionSelectionComponent
+		},{
+			path: 'vet-applications-selection',
 			component: VetAppSelectionComponent
 		}, {
 			path: 'gmp-applications-preview',
@@ -376,6 +477,9 @@ const appRoutes: Routes = [
 			path: 'importvc-dashboard',
 			component: ImportvisaDashboardComponent
 		},{
+			path: 'importlicenseapplication-dashboard',
+			component: ImportlicenseApplicationDashboardComponent
+		},{
 			path: 'importlicense-dashboard',
 			component: ImportvisaDashboardComponent
 		},{
@@ -405,22 +509,28 @@ const appRoutes: Routes = [
 			path: 'import-licensesappselection',
 			component: ImportLicensesappselectionComponent
 		},{
+			path: 'importlicenses-appselection',
+			component: ImportLicenseappselComponent
+		},{
 			path: 'export-licensesappselection',
 			component: ExportLicenseappselComponent
 		},{
       path: 'importexport-application',
       component: ImportexportApplicationComponent
     },{
-      path: 'importvisa-application',
+      path: 'importexportvc-application',
       component: ImportVisaappComponent
     },{
+		path: 'import-license-application',
+		component: ImportLicenseapplictionComponent
+	  },{
       path: 'exportlicense-application',
       component: ExprtLicenseappComponent
     },{
       path: 'importlicense-application',
       component: ImportLicenseappComponent
     },{
-			path: 'impexpicenseammend-dashboard',
+			path: 'declaration-dashboard',
 			component: ImpexportamendDashboardComponent
 		},{
 			path: 'controldrugspermits-dashboard',
@@ -505,12 +615,18 @@ const appRoutes: Routes = [
 		},	
 		{
 			path: 'tradefairpermit-application',
-			component: TradefairpermitAppComponent,
+			component: TradefairpermitAppComponent 
 		},{
-			path: 'renew-product-application',
-			component: InitiateRenewalproductApplicationComponent
+			path: 'drugproduct-notification',
+			component: InitiateRenewalproductApplicationComponent   
 		},{
-			path: 'alt-product-application',
+			path: 'drug-product-notification',
+			component: PsurProdnotificationRequestComponent   
+		},{
+			path: 'adverse-drug-reation-application',
+			component: AdverseDrugReactionRequestComponent   
+		},{
+			path: '',
 			component: InitiateProductAlterationComponent
 		}, 
 		{
@@ -535,7 +651,7 @@ const appRoutes: Routes = [
 			path: 'registered-premises-selection',
 			component: PremisesRegistrationselectionComponent
 		},{
-			path: 'registered-drugshop-selection',
+			path: 'registered-application-selection',
 			component: DrugshopsRegistrationselectionComponent
 		},{
 			path: 'premises-withdrawal',
@@ -584,10 +700,16 @@ const appRoutes: Routes = [
 			component: RegisteredGmpselectionComponent 
 		},{
 			path: 'traderaccount-users',
-			component: TraderaccountUsersComponent
+			component: TraderaccountUsersComponent  
 		},{
 			path: 'pharmacist-dashboard',
-			component: PharmacistsaccountUserComponent
+			component: PharmacistsaccountUserComponent  
+		},{
+			path: 'product-nofication-dashboard',
+			component: PsurProductnotificationDashboardComponent
+		},{
+			path: 'adverse-drug-reaction-dashboard',
+			component: AdverseDrugReactionDashboardComponent
 		},{
 			path: 'product-retention-charges',
 			component: RetentionChargesComponent

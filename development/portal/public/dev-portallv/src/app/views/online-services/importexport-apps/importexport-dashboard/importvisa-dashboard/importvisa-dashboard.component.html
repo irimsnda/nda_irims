@@ -72,13 +72,25 @@
   <!-- /.col -->
 </div>
 
+<div class="row">
+        
+  <dx-button *ngFor="let sub_module of productappTypeData;" 
+      text="{{sub_module.name}} Application"
+      type="default"
+      width="350"
+      icon="fa {{sub_module.icon}}"
+      [elementAttr]="{ id: 'elementId', class: 'col-lg-2' }"
+      (onClick)="onClickSubModuleAppSelection(sub_module.id,sub_module.name)">
+  </dx-button>
+</div>
+
 
 <div class="row div-nopadding">
 
       <form role="form" class="row col-lg-12" enctype="multipart/form-data" role="form" [formGroup]="FilterDetailsFrm">
         
         <div class="col-lg-3">
-          <dx-select-box  [dataSource]="productappTypeData" [hidden]="true" valueExpr="id" displayExpr="name" 
+          <dx-select-box  [dataSource]="productappTypeData"  valueExpr="id" displayExpr="name" 
           (onSelectionChanged)="onSelectProdutFilters($event)" [readOnly]="true"  [searchEnabled]="true" placeholder="Select Application Type " formControlName="sub_module_id">
           </dx-select-box>
       </div>
@@ -134,19 +146,19 @@
           </dx-menu>
         </div>
       </dxi-column>
-      <dxi-column dataField="reference_no" caption="Application Reference"></dxi-column>
-      <dxi-column [width] = 90 [groupIndex]="0" dataField="section" caption="Product Type"></dxi-column>
-      <dxi-column dataField="application_type"></dxi-column>
-      <dxi-column [width] = 150  dataField="permit_category"></dxi-column>
-      <dxi-column  [width] = 100  dataField="proforma_invoice_no"></dxi-column>
-      <dxi-column dataField="proforma_invoice_date"></dxi-column>
-      <dxi-column dataField="sender_receiver" caption="Sender(Supplier)"></dxi-column>
-      
-      <dxi-column dataField="premises_name" caption="Premises Name"></dxi-column>
-      
-      <dxi-column [width] = 100  [allowFiltering]="false" dataField="date_added"></dxi-column>
-      <dxi-column  [groupIndex]="1"  dataField="status_name"></dxi-column>
-      <dxi-column   dataField="status_name" caption="Application Status"></dxi-column>
+      <dxi-column dataField="tracking_no"  caption="Tracking Number"></dxi-column>
+  <!-- <dxi-column [width] = 90 [groupIndex]="0"  dataField="section"  caption="Product Type"></dxi-column> -->
+  <dxi-column dataField="licence_type" caption="Licence Type"></dxi-column>
+  <dxi-column [width] = 150  dataField="business_type" caption="Business Type"></dxi-column>
+  <dxi-column [width] = 150  dataField="has_registered_premise" caption="Premise Type"></dxi-column>
+  <!-- <dxi-column [width] = 100  dataField="proforma_invoice_no" caption="Invoice No"></dxi-column>
+  <dxi-column dataField="proforma_invoice_date" caption="Invoice Date"></dxi-column> -->
+  <dxi-column dataField="product_classification" caption="Product Classification"></dxi-column>
+  <dxi-column dataField="registration_level" caption="Registration Level"></dxi-column>
+  <dxi-column dataField="premises_name" caption="Premises Name"></dxi-column>
+  <dxi-column [width] = 100  [allowFiltering]="false" dataField="date_added"></dxi-column>
+  <dxi-column [groupIndex]="1"  dataField="status_name"></dxi-column>
+  <dxi-column   dataField="status_name" caption="Application Status"></dxi-column>
       <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
     </dx-data-grid>
  
@@ -317,40 +329,62 @@
 </dx-popup>
 
 
-<dx-popup class="popup" [width]="funcpopWidth(45)" [height] = 550 [showTitle]="true" title="Visa Application"
+<dx-popup class="popup" [width]="funcpopWidth(45)" [height] = 550 [showTitle]="true" title="Verification Application"
 [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isPermitInitialisation">
 <div *dxTemplate="let data of 'content'">
   <dx-scroll-view>
     <form enctype="multipart/form-data" style="margin:0.5px" class="row div-whiteback " role="form" [formGroup]="applicationSelectionfrm"
     (ngSubmit)="onApplicationSelection()">
-    <div class="col-lg-12" style="margin-bottom: 30px;">
-      <h6>Import Visa is a permit issued after verifying whether products to be imported comply with applicable legal and regulatory requirements (standards) for quality, safety, and effectiveness:</h6>
-      <h6>Import Visa means an authorization/permit issued to the importer after confirmation by the Authority that the manufacturer(s)/suppliers of pharmaceutical products or medical devices or their respective raw materials to be imported comply with international and national standards. The Import visa gives the right to the importer to confirm an order/purchase order of the products and to apply for an import license.</h6>
-    </div>
-    <div class="col-lg-12">
-      <label class="control-label">Does Import Proforma Invoice contain Only registered Products?</label>
-      <dx-select-box [dataSource]="confirmDataParam" valueExpr="id" displayExpr="name"
-         placeholder="Select"  (onSelectionChanged)="onSelectionHasRegistered($event)" 
-        [searchEnabled]="true" formControlName="has_registered_products">
-      </dx-select-box> 
-    </div>
     
     <div class="col-lg-12"  *ngIf="!is_approvedVisaPermit">
-      <h3 class='apptype-selection'>Select Product Category/Type</h3>
-      <dx-select-box [dataSource]="sectionsData" valueExpr="id" displayExpr="name" [searchEnabled]="true"
+      <h3 class='apptype-selection'>VC Application Type</h3>
+      <dx-select-box [dataSource]="vcApplicationTypeData" valueExpr="id" displayExpr="name" [searchEnabled]="true"
         placeholder="Select Product Types/Category" 
-        formControlName="section_id">
+        formControlName="vc_application_type_id">
         <div *dxTemplate="let name of 'item'">
           <div>{{name.name}}</div>
       </div>
     </dx-select-box>
   </div>
+
+  <div class="col-lg-12" >
+                      <label>Registration Level</label>
+                      <dx-select-box [dataSource]="registrationLevelData" valueExpr="id" displayExpr="name" [searchEnabled]="true"
+                        placeholder="Registration Level" 
+                        formControlName="is_registered">
+                        <!-- (onValueChanged)="onSelectRegistrationLevel($event)" -->
+                        <div *dxTemplate="let name of 'item'">
+                          <div>{{name.name}}</div>
+                      </div>
+                    </dx-select-box>
+                    </div>
     <div class="col-lg-12 ">
       
-      <dx-button  [elementAttr]="{ class: 'btn btn-primary  pull-left' }"  icon="fa fa-arrow-right"  text="Initiate Permit Application" 
+      <dx-button  [elementAttr]="{ class: 'btn btn-primary  pull-left' }"  icon="fa fa-arrow-right"  text="Initiate VC Application" 
       [disabled]="!applicationSelectionfrm.valid" 
         type="success" (onClick)="onApplicationSelection()">
       </dx-button>
+    </div>
+ <br>
+ <br>
+    <div class="col-lg-12 apptype-selection bg-light text-dark">
+   
+      <h3 class='apptype-selection'>Description</h3>
+    
+    <h6>
+        <p class="justified-text"> Under Regulation 6(2) of the National Drug Policy and Authority (Importation and Exportation of Drugs) Regulations, 2014.</p>
+    </h6>
+    
+    </div>
+    
+    <div class="col-lg-12 apptype-selection bg-light text-dark">
+       
+    <h3 class='apptype-selection'>Condition</h3>
+    
+    <h6 >
+    <p class="justified-text"> Upon arrival of the consignment specified in this certificate at the specified port of entry/exit, the consignment shall be inspected by an Inspector before clearance by Customs. This certificate and all the other relevant documents shall be presented to the Inspector at the port of entry into/ exit out of Uganda. </p>
+    </h6>
+    
     </div>
   </form>
 </dx-scroll-view>

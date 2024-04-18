@@ -10,7 +10,7 @@ export class OfficialcertificateDashboardComponent extends Controlleddrugspermit
 
   
   ngOnInit() {
-    this.application_title = 'Official Certificate (Import of Controlled Drugs) Dashboard';
+    this.application_title = 'Controlled Drugs Dashboard';
     this.sub_module_id = 60;
     this.onLoadProductAppType(12,this.sub_module_id);
     this.FilterDetailsFrm.get('sub_module_id').setValue(this.sub_module_id);

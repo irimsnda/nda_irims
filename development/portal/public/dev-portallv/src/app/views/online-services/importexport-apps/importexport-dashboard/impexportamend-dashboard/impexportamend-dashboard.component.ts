@@ -7,17 +7,17 @@ import { ImportexportDashboardComponent } from '../importexport-dashboard.compon
   styleUrls: ['./impexportamend-dashboard.component.css']
 })
 export class ImpexportamendDashboardComponent extends ImportexportDashboardComponent implements OnInit  {
-
+ 
   
   ngOnInit() {
-    this.sub_module_id = '79,85';
+    this.sub_module_id = '115';
     this.reloadPermitApplicationsApplications({'sub_module_id':this.sub_module_id});
-    this.onLoadProductAppType(this.sub_module_id);
+    //this.onLoadProductAppType(this.sub_module_id);
     this. onLoadApplicationCounterDetails(this.sub_module_id);
     this.FilterDetailsFrm.get('sub_module_id').setValue(this.sub_module_id);
-    this.application_title = 'Licenses Amendment Request Dashboard';  
+    this.application_title = 'Technical Declaration Dashboard';  
   }
-  onImportappsToolbarPreparing(e) {
+   onImportappsToolbarPreparing(e) {
     e.toolbarOptions.items.unshift({
       location: 'before',
       widget: 'dxButton',
@@ -32,8 +32,8 @@ export class ImpexportamendDashboardComponent extends ImportexportDashboardCompo
       location: 'before',
       widget: 'dxButton',
       options: {
-        text: 'Initiate License Amendment Request',
-        tooltip: 'Initialisation of License Amendment Application on the Approved Licenses Application.',
+        text: 'Initiate Technical Declaration Request',
+        tooltip: 'Initialisation of Technical Declaration Application on the Approved Verification Application.',
         type: 'default',
         icon: 'fa fa-pencil-square-o',
         onClick: this.funcRequestforLicenseApplication.bind(this)
@@ -47,52 +47,51 @@ export class ImpexportamendDashboardComponent extends ImportexportDashboardCompo
         }
       });
   }funcRequestforLicenseApplication() {
-    this.isPermitInitialisation = true;
-    this.app_route = ['./online-services/importexport-approvedappsel'];
-    this.router.navigate(this.app_route);
+  this.onApplicationSelection(this.sub_module_id)
   }
-  /*
-  funcRequestforLicenseApplication() {
-    this.modalServ.openDialog(this.viewRef, {
-      title: 'Requirements for Import License?',
-      childComponent: SimpleModalComponent,
-      data: {
-        text: 'Import License authorizes imported regulated products to enter the Country after complying with all importation requirements:<br/>Import License for Registered products </br> Application of Import License on Approved Visa on Non-Registered and Authorised Products.'
-      },
-      settings: {
-        closeButtonClass: 'fa fa-close'
-      },
-      actionButtons: [{
-        text: 'Proceed with License Application',
-        buttonClass: 'btn btn-success',
-        onAction: () => new Promise((resolve: any, reject: any) => {
-              this.spinner.show();
-              this.app_route = ['./online-services/import-licensesappselection'];
-              this.router.navigate(this.app_route);
-        })
-      }, {
-        text: 'Initiate Visa Application',
-        buttonClass: 'btn btn-warning',
-        onAction: () => new Promise((resolve: any) => {
-            this.app_route = ['./online-services/importexportapp-sel'];
-            this.router.navigate(this.app_route);
+  
 
-        })
-      }, {
-        text: 'Close',
-        buttonClass: 'btn btn-danger',
-        onAction: () => new Promise((resolve: any) => {
+  // funcRequestforLicenseApplication() {
+  //   this.modalServ.openDialog(this.viewRef, {
+  //     title: 'Requirements for Import License?',
+  //     childComponent: SimpleModalComponent,
+  //     data: {
+  //       text: 'Import License authorizes imported regulated products to enter the Country after complying with all importation requirements:<br/>Import License for Registered products </br> Application of Import License on Approved Visa on Non-Registered and Authorised Products.'
+  //     },
+  //     settings: {
+  //       closeButtonClass: 'fa fa-close'
+  //     },
+  //     actionButtons: [{
+  //       text: 'Proceed with License Application',
+  //       buttonClass: 'btn btn-success',
+  //       onAction: () => new Promise((resolve: any, reject: any) => {
+  //             this.spinner.show();
+  //             this.app_route = ['./online-services/import-licensesappselection'];
+  //             this.router.navigate(this.app_route);
+  //       })
+  //     }, {
+  //       text: 'Initiate Visa Application',
+  //       buttonClass: 'btn btn-warning',
+  //       onAction: () => new Promise((resolve: any) => {
+  //           this.app_route = ['./online-services/importexportapp-sel'];
+  //           this.router.navigate(this.app_route);
 
-          resolve();
+  //       })
+  //     }, {
+  //       text: 'Close',
+  //       buttonClass: 'btn btn-danger',
+  //       onAction: () => new Promise((resolve: any) => {
 
-        })
-      }
-      ]
-    });
+  //         resolve();
+
+  //       })
+  //     }
+  //     ]
+  //   });
 
     
    
 
-  }
-  */
+  // }
+
 }

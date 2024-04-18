@@ -21,7 +21,7 @@ export class ClinicalTrialdashComponent implements OnInit {
   isPreviewApplicationsDetails:boolean= false;
   isPreviewApplicationProcessing:boolean= false;
   frmPreviewApplicationsDetails:FormGroup;
-
+  frmPreviewApprovedApplicationsDetails:FormGroup;
   applicationRejectionData:any;
   isApplicationRejectionVisible:boolean= false;
 
@@ -54,6 +54,7 @@ export class ClinicalTrialdashComponent implements OnInit {
   clincialtrialappTypeData:any;
   FilterDetailsFrm:any;
   applicationStatusData:any;
+  auto:any;
   constructor(private utilityService:Utilities,private viewRef: ViewContainerRef, private modalServ: ModalDialogService, private spinner: SpinnerVisibilityService, public toastr: ToastrService, private router: Router, private configService: ConfigurationsService, private appService: ImportexportService) {
     
     this.FilterDetailsFrm = new FormGroup({
@@ -64,10 +65,22 @@ export class ClinicalTrialdashComponent implements OnInit {
     this.frmPreviewApplicationsDetails = new FormGroup({
       tracking_no: new FormControl('', Validators.compose([Validators.required])),
       study_title: new FormControl('', Validators.compose([Validators.required])),
-      protocol_no: new FormControl('', Validators.compose([Validators.required])),
+      meeting_time: new FormControl('', Validators.compose([Validators.required])),
       application_type: new FormControl('', Validators.compose([Validators.required])),
       status: new FormControl('', Validators.compose([Validators.required]))
     });
+
+ this.frmPreviewApprovedApplicationsDetails = new FormGroup({
+      tracking_no: new FormControl('', Validators.compose([Validators.required])),
+      study_title: new FormControl('', Validators.compose([Validators.required])),
+      date_requested: new FormControl('', Validators.compose([Validators.required])),
+      meeting_time: new FormControl('', Validators.compose([Validators.required])),
+      meeting_venue: new FormControl('', Validators.compose([Validators.required])),
+
+    });
+
+
+
    }
 
   ngOnInit() {
@@ -165,10 +178,16 @@ export class ClinicalTrialdashComponent implements OnInit {
     this.dataGrid.instance.refresh();
   }
   funcProductPreviewDetails(data){
-    this.isPreviewApplicationsDetails = true;
-    this.frmPreviewApplicationsDetails.patchValue(data);
-
+     this.isPreviewApplicationsDetails = true;
+     this.frmPreviewApplicationsDetails.patchValue(data); 
+  
 }
+
+funcProductPreviewApprovedDetails(data){
+  this.isPreviewApplicationsDetails = true;
+  this.frmPreviewApprovedApplicationsDetails.patchValue(data);
+}
+
 singleApplicationActionColClick(data){
     
   this.funcActionsProcess(data.action,data);
@@ -189,6 +208,9 @@ singleApplicationActionColClick(data){
     }
     else if(action === 'preview'){
       this.funcProductPreviewDetails(data);
+    }
+     else if(action === 'preview_approved_dates'){
+      this.funcProductPreviewApprovedDetails(data);
     }
     else if(action == 'print_applications'){
       this.funcPrintApplicationDetails(data);
@@ -229,13 +251,14 @@ singleApplicationActionColClick(data){
   
   funcPrintLetterofRejection(app_data){
       //print details
-      let report_url = this.mis_url+'reports/generateClinicalTrialLetterOfRejection?application_code='+app_data.application_code;
+    const report_type_id = 5
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&report_type_id="+report_type_id;
       this.funcGenerateRrp(report_url,"Application Details");
 
   }
   funcPrintRegistrationCertificate(app_data){
-
-    let report_url = this.mis_url+'reports/generateClinicalTrialCertificate?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_clinical_trial_applications";
+    const report_type_id = 3
+    let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&report_type_id="+report_type_id+"&table_name=tra_clinical_trial_applications";
     this.funcGenerateRrp(report_url,"Application Invoice")
     
   }
@@ -274,15 +297,15 @@ singleApplicationActionColClick(data){
         });
   }
   funcPrintApplicationInvoice(app_data){
-
-    let report_url = this.mis_url+'reports/generateApplicationInvoice?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"sub_module_id="+app_data.sub_module_id;
+    const report_type_id = 1
+    let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"sub_module_id="+app_data.sub_module_id+"&report_type_id="+report_type_id;
     this.funcGenerateRrp(report_url,"Application Invoice")
     
   }
   funcPrintApplicationDetails(app_data){
     //print details
-
-      let report_url = this.base_url+'reports/generateClinicalTrialApplicationRpt?application_code='+app_data.application_code;
+      const report_type_id = 5
+      let report_url = this.base_url+'reports/getReportUrl?application_code='+app_data.application_code+"&report_type_id="+report_type_id;
       this.funcGenerateRrp(report_url,"Application Details");
      
   }
@@ -380,7 +403,7 @@ singleApplicationActionColClick(data){
 
     }else if(sub_module_id ==69){
       this.app_route = ['./online-services/preclinical-trialssubmissions'];
-      this.clinicalapp_details = {application_status_id:1,status_name:'New', module_id: this.module_id, process_title: 'Pre-submission Application', sub_module_id: sub_module_id, section_id: 3 };
+      this.clinicalapp_details = {application_status_id:1,status_name:'New', module_id: this.module_id, process_title: 'Pre-submission Meeting Request', sub_module_id: sub_module_id, section_id: 3 };
       this.router.navigate(this.app_route);
       
     }else{

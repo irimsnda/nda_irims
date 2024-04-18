@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef,ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { WizardComponent } from 'ng2-archwizard';
@@ -37,6 +37,7 @@ export class SharedpromotionalAdvertComponent implements OnInit {
   isInitalQueryResponseFrmVisible:boolean = false;
   promotionalMaterialsDta:any;
   promotionalChannelsDta:any;
+  promotionalChannelData:any;
   advertisementMeetingTypesDta:any;
   routeOfAdministrationData:any;
   applicationPreckingQueriesData:any;
@@ -47,10 +48,13 @@ export class SharedpromotionalAdvertComponent implements OnInit {
   sectionsData: any;
   app_route: any;
   app_details: any;
+  appDocumentsUploadRequirement:any;
+  appDocumentsUploadData:any;
   registrantOptionsData: any;
   is_sponsor: any;
   section_id: number;
   sub_module_id: number;
+  document_type_id:number;
   module_id: number=14;
   application_id: number;
   application_code: number;
@@ -75,6 +79,7 @@ export class SharedpromotionalAdvertComponent implements OnInit {
   promProductParticularsData:any;
   classificationData:any;
   params_where:any;
+  targetAudienceData:any;
   apppromMaterialsDetailData:any;
   isPromotionalPersonnelAddWinShow:boolean = false;
   isHasExhibitionMeeting:boolean = false;
@@ -85,23 +90,25 @@ export class SharedpromotionalAdvertComponent implements OnInit {
 
   loading:boolean;
   countries:any;
-  districts:any; regions:any;
+  districts:any; 
+  regions:any;
   sponsor_option_id:number;
   isPromotionalProductparticularswinadd:boolean = false;
   isPromotionalMaterialswinshow:boolean = false;
-
+  is_other_selected:boolean = false;
   promotionalProductparticularsfrm:FormGroup;
   promotionalMaterialsfrm:FormGroup;
   typeOfAdvertisementData:any;
   promotionalMaterialData:any;
   is_registered:boolean= false;
+    is_other_advert_materials:boolean =false;
   option_id:number;
   commonNamesData:any;
   checkProductsSubmission:boolean= false;
   isRegisteredProductsWinshow:boolean = false;
   registeredProductsData:any = {};
   payingCurrencyData:any;
-
+  languageData:any;
   query_sectioncheck:string;
   query_id:number;
   action_url:any;
@@ -111,7 +118,7 @@ export class SharedpromotionalAdvertComponent implements OnInit {
   dosageFormsData: any;
   addproductGenericNamesModal:boolean;
   advertisement_type_id:number;
-  constructor(public dmsService: DocumentManagementService, public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public modalDialogue: ModalDialogService, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: PromotionadvertService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService, public utilityService:Utilities,public httpClient: HttpClient,public appProdService:ProductApplicationService) {
+  constructor(public dmsService: DocumentManagementService,public cd: ChangeDetectorRef, public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public modalDialogue: ModalDialogService, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: PromotionadvertService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService, public utilityService:Utilities,public httpClient: HttpClient,public appProdService:ProductApplicationService) {
    
     this.onApplicationSubmissionFrm = new FormGroup({
       paying_currency_id: new FormControl('', Validators.compose([])),
@@ -148,7 +155,7 @@ export class SharedpromotionalAdvertComponent implements OnInit {
       exhibition_start_date: new FormControl('', Validators.compose([])),
       exhibition_end_date: new FormControl('', Validators.compose([])),
       venue_of_exhibition: new FormControl('', Validators.compose([])),
-      description_of_advert: new FormControl('', Validators.compose([Validators.required])),
+      description_of_advert: new FormControl('', Validators.compose([])),
       advertisement_type_id: new FormControl('', Validators.compose([Validators.required])),
       meeting_types_id: new FormControl('', Validators.compose([])),
       other_promotion_meetingtype: new FormControl('', Validators.compose([])),
@@ -160,13 +167,13 @@ export class SharedpromotionalAdvertComponent implements OnInit {
       promotions_material_id: new FormControl('', Validators.compose([])),
       other_promotion_materialtypes: new FormControl('', Validators.compose([])),
       otheradvertisement_channel: new FormControl('', Validators.compose([])),
-      
+      advert_language:new FormControl('', Validators.compose([])),
       advertisement_channel_id: new FormControl('', Validators.compose([])),
       zone_id: new FormControl('', Validators.compose([])),
-
+      target_audience_id:new FormControl('', Validators.compose([Validators.required])),
       application_code: new FormControl('', Validators.compose([])),
-      applicant_as_sponsor: new FormControl('', Validators.compose([Validators.required])),
-      sponsor_name: new FormControl('', Validators.compose([Validators.required])),
+      applicant_as_sponsor: new FormControl('', Validators.compose([])),
+      sponsor_name: new FormControl('', Validators.compose([])),
       sponsor_id: new FormControl('', Validators.compose([])),
       registered_promotionalapp_id: new FormControl('', Validators.compose([])),
       application_id: new FormControl(this.application_id, Validators.compose([])),
@@ -180,7 +187,10 @@ export class SharedpromotionalAdvertComponent implements OnInit {
       classification_id: new FormControl('', Validators.compose([])),
       product_category_id: new FormControl('', Validators.compose([])),
       distribution_category_id: new FormControl('', Validators.compose([])),
-
+      promotions_material_id: new FormControl('', Validators.compose([Validators.required])),
+      language_id:new FormControl('', Validators.compose([])),
+      other_advert_language: new FormControl('', Validators.compose([])),
+      other_promotion_materialtypes: new FormControl('', Validators.compose([])),
       product_strength: new FormControl('', Validators.compose([])),
       dosage_form_id: new FormControl('', Validators.compose([])),
       route_of_administration_id: new FormControl('', Validators.compose([])),
@@ -188,12 +198,13 @@ export class SharedpromotionalAdvertComponent implements OnInit {
       storage_condition: new FormControl('', Validators.compose([])),
       manufacturer_name: new FormControl('', Validators.compose([])),
       manufacturer_id: new FormControl('', Validators.compose([])),
-      is_registered: new FormControl('', Validators.compose([Validators.required])),
+      is_registered: new FormControl('', Validators.compose([])),
       registration_no: new FormControl('', Validators.compose([])),
       registrant_name: new FormControl('', Validators.compose([])),
       other_details: new FormControl('', Validators.compose([])),
       id: new FormControl('', Validators.compose([])),
-      application_id: new FormControl('', Validators.compose([])),
+      //node_ref: new FormControl('', Validators.compose([])),
+      application_id: new FormControl('', Validators.compose([]))
 
     });
     this.addproductGenericNamesFrm = new FormGroup({
@@ -204,8 +215,9 @@ export class SharedpromotionalAdvertComponent implements OnInit {
       tablename: new FormControl('', Validators.compose([Validators.required]))
     }); 
     this.promotionalMaterialsfrm = new FormGroup({
-      material_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
-      remarks: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+      promotions_material_id: new FormControl('', Validators.compose([Validators.required])),
+      other_advert_materials: new FormControl('', Validators.compose([])),
+      language_id: new FormControl('', Validators.compose([Validators.required])),
       id: new FormControl('', Validators.compose([])),
       application_id: new FormControl('', Validators.compose([]))
     });
@@ -217,7 +229,7 @@ export class SharedpromotionalAdvertComponent implements OnInit {
       district_id: new FormControl('', Validators.compose([])),
       email: new FormControl('', Validators.compose([Validators.required])),
       postal_address: new FormControl('', Validators.compose([Validators.required])),
-      telephone: new FormControl('', Validators.compose([])),
+      telephone: new FormControl('', Validators.compose([Validators.required])),
       mobile_no: new FormControl('', Validators.compose([])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
       tin_no: new FormControl('', Validators.compose([]))
@@ -237,6 +249,10 @@ export class SharedpromotionalAdvertComponent implements OnInit {
     }
     this.onloadApplicationProductParticulars();
     this.onLoadapppromMaterialsDetailData();
+    this.onLoadApplicationDocUploads();
+    this.onLoadPromotionalMaterialsDetails();
+
+
     this.initqueryresponsefrm = new FormGroup({
       queries_remarks: new FormControl('', Validators.compose([Validators.required])),
       response_txt: new FormControl('', Validators.compose([Validators.required])),
@@ -375,7 +391,7 @@ export class SharedpromotionalAdvertComponent implements OnInit {
 
   }
   onAutoLoadParameters(){
-
+  this.onLoadPromotionalMaterialsLanguage();
     this.onLoadClassificationData(this.section_id);
     this.onLoadproductCategoryData(this.section_id);
     this.onLoadconfirmDataParm();
@@ -388,9 +404,24 @@ export class SharedpromotionalAdvertComponent implements OnInit {
     this.onLoadcommonNamesData(this.section_id);
     this.onLoadpromotionalMaterialData(this.section_id);
     this.onLoadpromotionalChannelsDtaDetails();
-  }
-  funcEditProductParticularsDetails(data) {
+    this.onLoadtargetAudienceData();
 
+  }
+
+  onLoadPromotionalMaterialsLanguage() {
+    var data = {
+      table_name: 'par_promotion_material_language'
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.languageData = data;
+        });
+  }
+
+
+  funcEditProductParticularsDetails(data) {
+    this.appDocumentsUploadData = null;
     this.promotionalProductparticularsfrm.patchValue(data.data);
 
     this.isPromotionalProductparticularswinadd = true;
@@ -504,7 +535,30 @@ export class SharedpromotionalAdvertComponent implements OnInit {
           this.typeOfAdvertisementData = data;
         });
   }
+  funcValidateClinicalSiteDetails(table_name,nextStep,title,documentComponent) {
+  
+    this.utilityService.validateClinicalTrialOtherDetails(this.application_id,table_name)
+    .subscribe(
+      response => {
+        this.spinner.hide();
+        let response_data = response;
+        if (response_data.success) {
+          
+           this.wizard.model.navigationMode.goToStep(nextStep);
+           if(nextStep ==4){
 
+            documentComponent.onLoadAppDocRequirements();
+            documentComponent.onLoadApplicationDocUploads();
+           }
+        }
+        else{
+          this.toastr.error(title, 'Response');
+        }
+
+        this.spinner.hide();
+      });
+      
+  }
   onLoadpromotionalMaterialData(section_id) {
     var data = {
       table_name: 'par_promotion_material_items',
@@ -542,7 +596,7 @@ export class SharedpromotionalAdvertComponent implements OnInit {
     }
     else{
       this.isHasExhibitionMeeting = false;
-      this.onLoadPromotionalMaterialsDetails();
+      //this.onLoadPromotionalMaterialsDetails();
       this.onApplicationSubmissionFrm.get('exhibition_start_date').setValidators([]);
       this.onApplicationSubmissionFrm.get('exhibition_end_date').setValidators([]);
       this.onApplicationSubmissionFrm.get('venue_of_exhibition').setValidators([]);
@@ -577,12 +631,12 @@ export class SharedpromotionalAdvertComponent implements OnInit {
   }
   onLoadpromotionalChannelsDtaDetails() {
     var data = {
-      table_name: 'par_advertisement_channel'
+      table_name:'par_advertisement_channel'
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
         data => {
-          this.promotionalChannelsDta = data;
+          this.promotionalChannelData = data;
         });
   }
   
@@ -601,12 +655,21 @@ export class SharedpromotionalAdvertComponent implements OnInit {
   onLoadClassificationData(section_id) {
     var data = {
       table_name: 'par_classifications',
-      section_id: section_id
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
         data => {
           this.classificationData = data;
+        });
+  }
+   onLoadtargetAudienceData() {
+    var data = {
+      table_name: 'par_target_audiences',
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.targetAudienceData = data;
         });
   }
   onLoadproductCategoryData(section_id) {
@@ -650,11 +713,13 @@ export class SharedpromotionalAdvertComponent implements OnInit {
       .subscribe(
         data => {
           this.apppromMaterialsDetailData = data.data;
+          console.log(this.apppromMaterialsDetailData);
         },
         error => {
           return false
         });
   }
+
 
   onSavePromotionalApplication() {
    
@@ -684,6 +749,8 @@ export class SharedpromotionalAdvertComponent implements OnInit {
           this.application_code = this.app_resp.application_code;
           if (this.app_resp.success) {
             this.toastr.success(this.app_resp.message, 'Response');
+            this.wizard.model.navigationMode.goToStep(1);
+
           } else {
             this.toastr.error(this.app_resp.message, 'Alert');
           }
@@ -832,11 +899,31 @@ export class SharedpromotionalAdvertComponent implements OnInit {
       });
 
   }
-  onProductParticularsPreparing(e,is_readonly=false) {
+  onLoadApplicationDocUploads() {
+    let action_params = { document_type_id: this.document_type_id, application_code: this.application_code, section_id: this.section_id, sub_module_id: this.sub_module_id,status_id:this.status_id};
+    this.dmsService.onLoadApplicationDocploads(action_params,'getApplicationDocploads')
+      //.pipe(first())
+      .subscribe(
+        data => {
+          if (data.success) {
+            this.appDocumentsUploadData = data.data;
+            
+          }
+          else {
+            this.toastr.error(data.message, 'Alert');
+          }
 
-    this.functDataGridToolbar(e, this.funcAddProductParticulars, 'Promotional Product Particulars',is_readonly);
-
+        },
+        error => {
+          return false
+        });
   }
+
+
+  // onProductParticularsPreparing(e,is_readonly=false) {
+  //   this.functDataGridToolbar(e, this.funcAddProductParticulars, 'Promotional Materials Particulars',is_readonly);
+
+  // }
   onPromotionalMaterialsDetails(e,is_readonly=false) {
 
     this.functDataGridToolbar(e, this.funcAddPromotionalMaterialsDetail, 'Promotional Materials Details',is_readonly);
@@ -848,11 +935,24 @@ export class SharedpromotionalAdvertComponent implements OnInit {
     this.isPromotionalMaterialswinshow = true;
 
   }
-  funcAddProductParticulars(){
-      this.promotionalProductparticularsfrm.reset();
-      this.isPromotionalProductparticularswinadd = true;
+  // funcAddProductParticulars(){
+  //     this.onLoadapppromMaterialsDetailData();
+  //     this.promotionalProductparticularsfrm.reset();
+  //     this.isPromotionalProductparticularswinadd = true;
 
+  // }
+  OnSelectAdvertMaterial($event){
+      if( $event.selectedItem.id == 3){
+        this.is_other_advert_materials = true;
+    }
+    else{
+      this.is_other_advert_materials = false;
+     
+    }
   }
+
+
+
   functDataGridToolbar(e, funcBtn, btn_title, is_readonly=false) {
     e.toolbarOptions.items.unshift({
       location: 'before',
@@ -878,8 +978,8 @@ export class SharedpromotionalAdvertComponent implements OnInit {
     this.onloadApplicationProductParticulars();
   }
 
-  onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+  onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {
@@ -992,17 +1092,15 @@ export class SharedpromotionalAdvertComponent implements OnInit {
     }
 
   }
-  onRegionsCboSelect($event) {
-
-    this.onLoadDistricts($event.selectedItem.id);
-
+  onSelectOtherActivity($event){
+      if( $event.selectedItem.id == 7){
+        this.is_other_selected = true;
+    }
+    else{
+      this.is_other_selected = false;
+    }
   }
-  onCoutryCboSelect($event) {
 
-
-    this.onLoadRegions($event.selectedItem.id);
-
-  }
   onLoadCountries() {
 
     var data = {
@@ -1018,6 +1116,12 @@ export class SharedpromotionalAdvertComponent implements OnInit {
         error => {
           return false;
         });
+  }
+  onCoutryCboSelect($event) {
+
+
+    this.onLoadRegions($event.selectedItem.id);
+
   }
   onLoadRegions(country_id) {
 
@@ -1035,8 +1139,13 @@ export class SharedpromotionalAdvertComponent implements OnInit {
         error => {
           return false
         });
-  }
+  } 
 
+  onRegionsCboSelect($event) {
+
+    this.onLoadDistricts($event.selectedItem.id);
+
+  }
   onLoadDistricts(region_id) {
     var data = {
       table_name: 'par_districts',
@@ -1047,7 +1156,6 @@ export class SharedpromotionalAdvertComponent implements OnInit {
       .subscribe(
         data => {
           this.districts = data
-
         },
         error => {
           return false;
@@ -1235,17 +1343,15 @@ onSaveNewGenericName(){
 onLoadCommonNames(section_id) {
   var data = {
     table_name: 'par_common_names',
-    section_id: section_id
   };
   this.confirmDataParam = {
     params: data,
     headers: { 'Accept': 'application/json' }
   };
 
-
   var data = {
     table_name: 'par_common_names',
-    section_id: section_id
+  
   };
   this.config.onLoadConfigurationData(data)
     .subscribe(

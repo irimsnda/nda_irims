@@ -57,27 +57,41 @@ export class SharedGmpapplicationclassComponent implements OnInit {
   countries: any;
   regions: any;
   districts: any;
+  inspectionHistoryData:any;
   sectionsData: any;
+  sectionSelection:string;
   gmpLocationData: any;
   country_id: number;
   region_id: number;
   ZoneData: any;
   gmp_resp: any;
   tracking_no: string;
+  gmpControl:FormControl;
   premises_id: number;
   gmpapplicationGeneraldetailsfrm: FormGroup;
+  inspectionHistorydetailsfrm:FormGroup;
+  manufatcuringSiteActivityfrm:FormGroup;
+  gmppreInspectionGeneraldetailsfrm:FormGroup;
   contractManufacturingDetailsfrm:FormGroup;
   gmpOtherDetailsfrm: FormGroup;
   manufatcuringSiteBlocksfrm:FormGroup;
+  manufatcuringActivityfrm:FormGroup;
   manufatcuringContractDetailsfrm: FormGroup;
   gmpProductLineDetailsfrm:FormGroup;
+  gmpIntendedProductLineDetailsfrm:FormGroup;
+  gmpSurgicalProductLineDetailsfrm:FormGroup;
+  gmpSurgicalmanufatcuringSiteBlocksfrm:FormGroup
   premisesPersonnelDetailsfrm: FormGroup;
+  premanufatcuringSiteBlocksfrm:FormGroup;
+  prodSurgicalgmpAddinspectionFrm:FormGroup;
   is_local:number;
   value: any;
   loading: false;
   app_route: any;
   terms_conditions: any;
   checkPremisesSubmission: boolean = false;
+
+
   businessScaleData: any;
   businessCategoryData: any;
   qualificationsData: any = {};
@@ -92,13 +106,16 @@ export class SharedGmpapplicationclassComponent implements OnInit {
   section_id: number;
   contract_id: number;
   gmpapp_details: any;
+  gmpinspection_details:any;
   //premises other details 
   premisesOtherDetailsRows: any;
   gmpProductLineDataRows:any;
+  gmpSurgicalProductLineDataRows:any;
   gmpManufacturingBlocksDataRows:any;
   
   businessTypesData: any;
   product_lineData:any;
+  product_lineSurgicalData:any;
   productlineCategoryData:any;
   productlineDescriptionData:any;
   businessTypeDetailsData: any;
@@ -134,7 +151,7 @@ export class SharedGmpapplicationclassComponent implements OnInit {
  
 
   document_previewurl: any;
-  
+  contractManufacturingRows:any;
   premisesDocumentUploadfrm: FormGroup;
 isDocumentUploadPopupVisible:boolean= false;
   isDocumentPreviewDownloadwin:boolean= false;
@@ -182,7 +199,8 @@ registered_id: number;
     if (this.is_local == 1) {
       this.trader_aslocalagent = 1;
     }
-    this.gmpapp_details = this.appService.getGmpApplicationDetail();
+    this.gmpapp_details = this.appService.getGmpApplicationDetail();                   
+;
 
     if (!this.gmpapp_details) {
    
@@ -219,17 +237,80 @@ registered_id: number;
       submission_comments:new FormControl('', Validators.compose([]))
     });
     
-    this.onLoadPremisesPersonnelDetails(this.manufacturing_site_id)
-    this.onLoadgmpProductLineDataRows(this.manufacturing_site_id) 
-    this.onLoadgmpproductDetailsInformationData(this.manufacturing_site_id)
-    this.onLoadgmpManufacturingBlocksData(this.manufacturing_site_id)
-   
+    this.onLoadPremisesPersonnelDetails(this.manufacturing_site_id);
+    this.onLoadgmpProductLineDataRows(this.manufacturing_site_id);
+    this.onLoadgmpSurgicalProductLineDataRows(this.manufacturing_site_id);
+    this.onLoadgmpproductDetailsInformationData(this.manufacturing_site_id);
+    this.onLoadgmpManufacturingBlocksData(this.manufacturing_site_id);
+    this.onLoadContractDetails(this.manufacturing_site_id);
+    this.onLoadInspectionHistoryDetails(this.manufacturing_site_id);
     this.onLoadPremisesOtherDetails(this.manufacturing_site_id);
-  
+    this.gmpControl = new FormControl('', Validators.compose([]));
+
+
+    this.gmppreInspectionGeneraldetailsfrm = new FormGroup({
+      manufacturing_site_name: new FormControl('', Validators.compose([])),
+      gmp_type_id: new FormControl('', Validators.compose([Validators.required])),
+      section_id: new FormControl(this.section_id, Validators.compose([])),
+      country_id: new FormControl('', Validators.compose([Validators.required])),
+      region_id: new FormControl('', Validators.compose([])),
+      district_id: new FormControl('', Validators.compose([])),
+      email_address: new FormControl('', Validators.compose([Validators.required, Validators.email])),
+      postal_address: new FormControl('', Validators.compose([])),
+      telephone: new FormControl('', Validators.compose([])),
+      physical_address: new FormControl('', Validators.compose([Validators.required])),
+      mobile_no: new FormControl('', Validators.compose([])),
+      longitude: new FormControl('', Validators.compose([])),
+      latitude: new FormControl('', Validators.compose([])),
+      gmpsub_module_id: new FormControl(this.sub_module_id, Validators.compose([])),//Validators.required
+      gmpmodule_id: new FormControl(this.module_id, Validators.compose([])),//Validators.required
+      //zone_id: new FormControl(this.zoneData, Validators.compose([Validators.required])),//Validators.required
+      ltr_id:new FormControl('', Validators.compose([])),//Validators.required
+      premise_reg_no:new FormControl('', Validators.compose([])),//Validators.required
+      local_agent_id:new FormControl('', Validators.compose([])),//Validators.required
+      trader_aslocal_agent:new FormControl('', Validators.compose([])),//Validators.required
+      local_agent_name:new FormControl('', Validators.compose([])),
+      name:new FormControl('', Validators.compose([])),
+      premises_name:new FormControl('', Validators.compose([])),
+      man_site_id:new FormControl('', Validators.compose([])),
+      manufacturer_name:new FormControl('', Validators.compose([Validators.required])),
+      assessment_type_id:new FormControl('', Validators.compose([Validators.required])),
+      contact_person: new FormControl('', Validators.compose([])),//Validators.required
+      contact_person_id: new FormControl('', Validators.compose([])),//Validators.required
+      applicant_contact_person: new FormControl('', Validators.compose([Validators.required])),//Validators.required
+      contact_person_enddate: new FormControl('', Validators.compose([])),//Validators.required
+      contact_person_startdate: new FormControl('', Validators.compose([])),//Validators.required
+      billing_person_id: new FormControl('', Validators.compose([])),
+      billing_person: new FormControl('', Validators.compose([])),
+      applicant_billing_person: new FormControl('', Validators.compose([])),
+      gmpassessment_countries_ids: new FormControl('', Validators.compose([])),//
+      business_type_id: new FormControl('', Validators.compose([])),//Validators.required
+      premise_id: new FormControl('', Validators.compose([])),//Validators.required
+      registered_id: new FormControl('', Validators.compose([])),//Validators.required
+      device_type_id: new FormControl('', Validators.compose([])),//Validators.required
+      psu_no: new FormControl('', Validators.compose([])),
+      full_names: new FormControl('', Validators.compose([])),
+      psu_date: new FormControl('', Validators.compose([])),
+      pharmacist_telephone: new FormControl('', Validators.compose([])),
+      pharmacist_email: new FormControl('', Validators.compose([])),
+      pharmacist_qualification: new FormControl('', Validators.compose([])),
+      pharmacist_country_id: new FormControl('', Validators.compose([])),
+      pharmacist_district_id: new FormControl('', Validators.compose([])),
+      pharmacist_region_id: new FormControl('', Validators.compose([])),
+      pharmacist_id:new FormControl('', Validators.compose([])),
+      inspection_activities_id:new FormControl('', Validators.compose([])),
+      nda_approved_id: this.gmpControl,
+      permit_no: this.gmpControl,
+      manufacturer_site_name:this.gmpControl,
+      site_country_id: this.gmpControl,
+      site_physical_address:this.gmpControl,
+    });
+
     this.gmpapplicationGeneraldetailsfrm = new FormGroup({
       manufacturing_site_name: new FormControl('', Validators.compose([Validators.required])),
       gmp_type_id: new FormControl('', Validators.compose([Validators.required])),
-      section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+      inspection_activities_id:new FormControl('', Validators.compose([Validators.required])),
+      section_id: new FormControl(this.section_id, Validators.compose([])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
       region_id: new FormControl('', Validators.compose([Validators.required])),
       district_id: new FormControl('', Validators.compose([])),
@@ -242,12 +323,15 @@ registered_id: number;
       latitude: new FormControl('', Validators.compose([])),
       gmpsub_module_id: new FormControl(this.sub_module_id, Validators.compose([])),//Validators.required
       gmpmodule_id: new FormControl(this.module_id, Validators.compose([])),//Validators.required
-      zone_id: new FormControl(this.zoneData, Validators.compose([Validators.required])),//Validators.required
+      //zone_id: new FormControl(this.zoneData, Validators.compose([Validators.required])),//Validators.required
       ltr_id:new FormControl('', Validators.compose([])),//Validators.required
-      premise_reg_no:new FormControl('', Validators.compose([])),//Validators.required
+      premise_reg_no:new FormControl('', Validators.compose([])),
+      premise_no:new FormControl('', Validators.compose([])),
       local_agent_id:new FormControl('', Validators.compose([])),//Validators.required
       trader_aslocal_agent:new FormControl('', Validators.compose([])),//Validators.required
-      local_agent_name:new FormControl('', Validators.compose([Validators.required])),//Validators.required
+      local_agent_name:new FormControl('', Validators.compose([])),
+      name:new FormControl('', Validators.compose([Validators.required])),
+      premises_name:new FormControl('', Validators.compose([])),
       man_site_id:new FormControl('', Validators.compose([])),
       manufacturer_name:new FormControl('', Validators.compose([Validators.required])),
       assessment_type_id:new FormControl('', Validators.compose([Validators.required])),
@@ -258,13 +342,16 @@ registered_id: number;
       contact_person_startdate: new FormControl('', Validators.compose([])),//Validators.required
       billing_person_id: new FormControl('', Validators.compose([])),
       billing_person: new FormControl('', Validators.compose([])),
+      applicant_billing_person: new FormControl('', Validators.compose([])),
       gmpassessment_countries_ids: new FormControl('', Validators.compose([])),//
       business_type_id: new FormControl('', Validators.compose([])),//Validators.required
       premise_id: new FormControl('', Validators.compose([])),//Validators.required
       registered_id: new FormControl('', Validators.compose([])),//Validators.required
       device_type_id: new FormControl('', Validators.compose([])),//Validators.required
-     
+      intermediate_manufacturing_activity_id:this.gmpControl
+
     });
+    
 
     this.newPremisesPersonnelDetailsFrm = new FormGroup({
       name: new FormControl('', Validators.compose([Validators.required])),
@@ -273,23 +360,49 @@ registered_id: number;
       telephone_no: new FormControl('', Validators.compose([]))
     });
    
+
+    this.inspectionHistorydetailsfrm = new FormGroup({
+      start_date: new FormControl('', Validators.compose([Validators.required])),
+      compliant: new FormControl('', Validators.compose([Validators.required])),
+      timesince_lastinspection: new FormControl('', Validators.compose([Validators.required])),
+      meet_criteria: new FormControl('', Validators.compose([Validators.required])),
+      pms_complaintsreceived_previously: new FormControl('', Validators.compose([Validators.required])),
+      product_recallspreviously_conducted: new FormControl('', Validators.compose([Validators.required])),
+      approved_renewalprevious_productline: new FormControl('', Validators.compose([Validators.required])),
+      total_product_line: new FormControl('', Validators.compose([Validators.required])),
+      facility_inspected_who: new FormControl('', Validators.compose([Validators.required])),
+      country_id:this.gmpControl,
+      approval_date: this.gmpControl,
+      expiry_date: this.gmpControl,
+      validity_status: this.gmpControl,
+      times_to_expiry: this.gmpControl,
+      section_id: new FormControl(this.section_id, Validators.compose([])),
+      gmpsub_module_id: new FormControl(this.sub_module_id, Validators.compose([])),
+      id: new FormControl('', Validators.compose([]))
+
+    });
+
+
+
    this.contractManufacturingDetailsfrm = new FormGroup({
       contract_manufacturing_id: new FormControl('', Validators.compose([Validators.required])),
-      site_name: new FormControl('', Validators.compose([Validators.required])),
-      sitecountry_id: new FormControl('', Validators.compose([Validators.required])),
-      siteregion_id: new FormControl('', Validators.compose([Validators.required])),     
-      physical_address: new FormControl('', Validators.compose([Validators.required])),
-      name: new FormControl('', Validators.compose([Validators.required])),     
-      email_address: new FormControl('', Validators.compose([Validators.required,Validators.email])),
-      telephone_no: new FormControl('', Validators.compose([Validators.required])),
-      country_id: new FormControl('', Validators.compose([Validators.required])),     
-      region_id: new FormControl('', Validators.compose([Validators.required])),
-      inspected_id:new FormControl('', Validators.compose([Validators.required])),
+      inspected_activity_id: new FormControl('', Validators.compose([Validators.required])),
+      manufacturer_name: new FormControl('', Validators.compose([])),
+      sitecountry_id: new FormControl('', Validators.compose([])),
+      siteregion_id: new FormControl('', Validators.compose([])),     
+      physical_address: new FormControl('', Validators.compose([])),
+      contact_person: new FormControl('', Validators.compose([])),     
+      email_address: new FormControl('', Validators.compose([])),
+      telephone_no: new FormControl('', Validators.compose([])),
+      country_id: new FormControl('', Validators.compose([])),     
+      region_id: new FormControl('', Validators.compose([])),
+      inspected_id:new FormControl('', Validators.compose([])),
       id: new FormControl('', Validators.compose([])),
       personnel_id:new FormControl('', Validators.compose([])),
 
     });
 
+ 
     this.premisesPersonnelDetailsfrm = new FormGroup({
       start_date: new FormControl('', Validators.compose([])),
       position_id: new FormControl('', Validators.compose([Validators.required])),
@@ -312,16 +425,48 @@ registered_id: number;
       id: new FormControl('', Validators.compose([]))
 
     });
-    this.manufatcuringSiteBlocksfrm = new FormGroup({
+
+
+      this.gmpSurgicalmanufatcuringSiteBlocksfrm = new FormGroup({
+        name: new FormControl(this.businessTypesData, Validators.compose([Validators.required])),
+        inspection_category_id:new FormControl('', Validators.compose([Validators.required])),
+        general_manufacturing_activity_id:new FormControl('', Validators.compose([Validators.required])),
+        special_category_id:new FormControl('', Validators.compose([])),
+        id: new FormControl('', Validators.compose([]))
+    });
+
+ 
+      this.manufatcuringSiteBlocksfrm = new FormGroup({
       name: new FormControl(this.businessTypesData, Validators.compose([Validators.required])),
       inspection_category_id:new FormControl('', Validators.compose([Validators.required])),
-      inspection_activities_id:new FormControl('', Validators.compose([Validators.required])),
-      physical_address:new FormControl('', Validators.compose([])),
-      site_name: new FormControl('', Validators.compose([])),
-      country_id: new FormControl('', Validators.compose([])),
-      manufacturing_id: new FormControl(this.businessTypeDetailsData, Validators.compose([Validators.required])),
+      special_category_id:new FormControl('', Validators.compose([])),
       id: new FormControl('', Validators.compose([]))
     });
+      this.premanufatcuringSiteBlocksfrm = new FormGroup({
+      name: new FormControl(this.businessTypesData, Validators.compose([Validators.required])),
+      inspection_category_id:new FormControl('', Validators.compose([Validators.required])),
+      general_manufacturing_activity_id:new FormControl('', Validators.compose([Validators.required])),
+      special_category_id:new FormControl('', Validators.compose([])),
+      id: new FormControl('', Validators.compose([]))
+    });
+  
+
+
+    this.manufatcuringActivityfrm = new FormGroup({
+      name:new FormControl('', Validators.compose([Validators.required])),
+      id: new FormControl('', Validators.compose([]))
+    });
+
+
+
+    this.manufatcuringSiteActivityfrm = new FormGroup({
+      inteded_manufacturing_id: new FormControl('', Validators.compose([Validators.required])),
+      manufacturing_activity_id: new FormControl('', Validators.compose([Validators.required])),
+      id: new FormControl('', Validators.compose([]))
+    });
+
+
+
      this.manufatcuringContractDetailsfrm = new FormGroup({
       contract_id: new FormControl('', Validators.compose([Validators.required])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
@@ -334,18 +479,39 @@ registered_id: number;
       id: new FormControl('', Validators.compose([]))
     });
 
+    this.gmpSurgicalProductLineDetailsfrm = new FormGroup({
+      group_family_id:new FormControl('', Validators.compose([Validators.required])),
+      sterile_id:new FormControl('', Validators.compose([Validators.required])),
+      product_name:new FormControl('', Validators.compose([])),
+      gmdn_code_id:new FormControl('', Validators.compose([])),
+      gmdn_code:new FormControl('', Validators.compose([])),
+      gmdn_code_description:new FormControl('', Validators.compose([])),
+      classification_id:new FormControl('', Validators.compose([])),
+      block_name:new FormControl('', Validators.compose([])),
+      invasive_id:new FormControl('', Validators.compose([Validators.required])), 
+      manufacturingsite_block_id:new FormControl('', Validators.compose([])),
+      active_id:new FormControl('', Validators.compose([Validators.required])),
+      medicated_id:new FormControl('', Validators.compose([Validators.required])),
+      manufacturing_activity_id:new FormControl('', Validators.compose([Validators.required])),
+      id: new FormControl('', Validators.compose([]))
+    });
 
 
     this.gmpProductLineDetailsfrm = new FormGroup({
       product_line_id: new FormControl('', Validators.compose([Validators.required])),
-      block_name:new FormControl('', Validators.compose([Validators.required])),
-      no_ofblocks_inspected:new FormControl('', Validators.compose([Validators.required])),
+      block_name:new FormControl('', Validators.compose([])),
       non_betalactam: new FormControl('', Validators.compose([])),
       beta_lactam_id: new FormControl('', Validators.compose([])), 
-      gmpproduct_type_id:new FormControl('', Validators.compose([])),      
-      manufacturing_id: new FormControl('', Validators.compose([])),
+      gmpproduct_type_id:new FormControl('', Validators.compose([])), 
+      manufacturingsite_block_id:new FormControl('', Validators.compose([])),
+      manufacturing_id:new FormControl('', Validators.compose([])),
+      manufacturing_activity_id:new FormControl('', Validators.compose([Validators.required])),
+      manufacturing_activities:new FormControl('', Validators.compose([])), 
+      dosage_form_id:new FormControl('', Validators.compose([])),    
       id: new FormControl('', Validators.compose([]))
     });
+
+
     this.premisesDocumentUploadfrm = this.formBuilder.group({
       file: null,
       document_requirement_id: [null, Validators.required],
@@ -354,7 +520,19 @@ registered_id: number;
       description: [null]
     });
  
-  
+  this.prodSurgicalgmpAddinspectionFrm = new FormGroup({
+      brand_name: new FormControl('', Validators.compose([Validators.required])),
+      applicant_name: new FormControl('', Validators.compose([])),
+      reference_no: new FormControl('', Validators.compose([])),
+      reg_product_id: new FormControl('', Validators.compose([])),
+      gmdn_code: new FormControl('', Validators.compose([Validators.required])),
+      gmdn_code_id: new FormControl('', Validators.compose([])),
+      gmdn_code_description: new FormControl('', Validators.compose([Validators.required])),
+      classification_id: new FormControl('', Validators.compose([Validators.required])),
+      product_id: new FormControl('', Validators.compose([])),
+      gmp_productline_id: new FormControl('', Validators.compose([Validators.required]))
+    });
+
     this.prodgmpAddinspectionFrm = new FormGroup({
       brand_name: new FormControl('', Validators.compose([Validators.required])),
       applicant_name: new FormControl('', Validators.compose([Validators.required])),
@@ -393,7 +571,35 @@ registered_id: number;
           this.payingCurrencyData = data;
         });
 
-  }
+  }  
+  onLoadContractDetails(manufacturing_site_id) {
+    this.appService.onLoadContractDetails(manufacturing_site_id)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.contractManufacturingRows = data.data;
+        },
+        error => {
+          return false
+        });
+  } 
+
+  onLoadInspectionHistoryDetails(manufacturing_site_id) {
+    this.appService.onLoadInspectionHistoryDetails(manufacturing_site_id)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.inspectionHistoryData = data.data;
+          this.inspectionHistorydetailsfrm.patchValue(data.data);
+
+        },
+        error => {
+          return false
+        });
+  } 
+
+
+
   onLoadfastTrackOptionsData() {
     var data = {
       table_name: 'par_fasttrack_options'
@@ -511,9 +717,10 @@ registered_id: number;
     
     this.isInitalQueryWinVisible = true;
   }
-  onLoadAssessmentProcedure() {
+  onLoadAssessmentProcedure(sub_module_id) {
     var data = {
       table_name: 'par_gmp_assessment_types',
+      sub_module_id:sub_module_id
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
@@ -538,12 +745,13 @@ registered_id: number;
       this.onLoadPersonnelPositionDetails();
       //with section_id 
       this.onBusinessTypesLoad(section_id);
-      this.onLoadproduct_lineData(section_id);
+      this.onLoadproduct_lineData();
+      this.onLoadproduct_lineSurgicalData();
       this.onLoadproductlineCategoryData(section_id);
       this.onLoadproductlineDescriptionData(section_id);
-      this.onLoadGuidelines(this.sub_module_id, this.section_id);
+      this.onLoadGuidelines(this.sub_module_id);
       this.onLoadconfirmDataParm();
-      this.onLoadAssessmentProcedure();
+      this.onLoadAssessmentProcedure(this.sub_module_id);
       this.onLoadDeviceTypes();
 
 
@@ -577,10 +785,11 @@ registered_id: number;
   onLoadSections() {
     var data = {
       table_name: 'par_sections',
+      sectionSelection: this.sectionSelection
     };
 
-    this.config.onLoadConfigurationData(data)
-      .subscribe(
+    this.configService.onLoadConfigurationData(data)
+      .subscribe( 
         data => {
           this.sectionsData = data;
         });
@@ -721,12 +930,27 @@ registered_id: number;
           return false
         });
   }
+
+
+  onLoadproduct_lineSurgicalData() {
+
+    var data = {
+      table_name: 'par_medical_device_family',
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.product_lineSurgicalData = data;
+        },
+        error => {
+          return false
+        });
+  }
   
-  onLoadproduct_lineData(section_id) {
+  onLoadproduct_lineData() {
 
     var data = {
       table_name: 'gmp_product_lines',
-      section_id: section_id
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
@@ -826,8 +1050,8 @@ registered_id: number;
   
 
   //load premises personnel dms_repository_structure
-  onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+  onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {
@@ -1052,13 +1276,18 @@ registered_id: number;
   }
 
   onGMPDashboard() {
-    if(this.section_id == 4){
-      this.app_route = ['./online-services/gmpapplications-dashboard'];
+    if(this.sub_module_id == 117){
+      this.app_route = ['./online-services/gmp-preinspection-dashboard'];
 
     }
-    else{
-
+    else if(this.sub_module_id == 5){
       this.app_route = ['./online-services/gmpapplications-dashboard'];
+
+    }else if(this.sub_module_id == 6){
+      this.app_route = ['./online-services/renewalgmpapplications-dashboard'];
+    }
+    else{
+       this.app_route = ['./online-services/gmpapplications-dashboard'];
 
     }
     
@@ -1112,9 +1341,9 @@ registered_id: number;
       });
   }
   
-  funcValidatePremBusinessDetails(nextStep) {
+  funcValidateContractManufacturingDetails(nextStep) {
 
-    this.funcValidateStepDetails('Add Manufacturing Site Details to proceed', 'wb_mansite_otherdetails', nextStep);
+    this.funcValidateStepDetails('Add Manufacturing Site Details to proceed', 'wb_contractmanufacturing_details', nextStep);
 
   }
   funcValidatePremPersonnelDetails(nextStep) {
@@ -1349,6 +1578,21 @@ registered_id: number;
         return false
       });
     
+}
+
+
+onLoadgmpSurgicalProductLineDataRows(manufacturing_site_id) {
+  this.appService.getGMPDataDetails({ manufacturing_site_id: manufacturing_site_id, section_id: this.section_id }, 'gmpinspection/getGmpProductLineSurgicaldetails')
+    .subscribe(
+      data => {
+        if (data.success) {
+        this.gmpSurgicalProductLineDataRows = data.data;
+          this.toastr.success(data.message);
+        }
+      },
+      error => {
+        return false;
+      });
 }
 onLoadgmpProductLineDataRows(manufacturing_site_id) {
 

@@ -30,12 +30,14 @@ export class MedicaldevicesProductsdetailsComponent  extends SharedProductregist
   @Input() distributionCategoryData: any;
   @Input() storageConditionData: any;
   @Input() dosageFormsData: any;
+  @Input() commonAtcNamesData:any;
   @Input() routeOfAdministrationData: any;
   @Input() productCategoryData: any;
+  @Input() productTypeDta:any;
   @Input() durationDescData: any;
   @Input() productTypeData: any;
   @Input() confirmDataParam: any;
-
+  @Input() therapeuticGroupData:any;
   @Input() productFormData: any;
   @Input() methodOfUseData: any;
   @Input() intendedEndUserData: any;
@@ -77,15 +79,17 @@ export class MedicaldevicesProductsdetailsComponent  extends SharedProductregist
   @Input() fastTrackOptionsData: number;
   @Input() payingCurrencyData: number;
   @Output() productTypeEvent = new EventEmitter();
-  gmdnCodeData:any;
+  gmdnCodeData:any={};
   reasonForClassificationData:any;
   isHasModelChange:boolean = false;
   isHasMedicalFamily:boolean = false;
+  gmdnCodeWinshow:boolean = false;
   isonHasReagents_accessories:boolean = false;
-
+  device_type_id:number;
+  code:number;
  
   ngOnInit() {
-    this.onLoadGmdnCodeData(this.section_id);
+   // this.onLoadGmdnCodeData();
    
     let user_details = this.authService.getUserDetails();
     this.country_id = user_details.country_id;
@@ -100,6 +104,7 @@ export class MedicaldevicesProductsdetailsComponent  extends SharedProductregist
     }
     this.onLoadSections();
     this.onLoadManufacrunginCountries();
+
   }
   onLoadManufacrunginCountries() {
     let data = {
@@ -114,6 +119,7 @@ export class MedicaldevicesProductsdetailsComponent  extends SharedProductregist
           return false;
         });
   }
+
   onTraderasLocalAgentChange($event) {
     
     if($event.value == 1){
@@ -151,6 +157,50 @@ export class MedicaldevicesProductsdetailsComponent  extends SharedProductregist
     }
 
   }
+  onLoadGmdnCodeData() {
+        this.gmdnCodeWinshow = true;
+
+        let me = this;
+        this.gmdnCodeData.store = new CustomStore({
+          load: function (loadOptions: any) {
+              var params = '?';
+              params += 'skip=' + loadOptions.skip;
+              params += '&take=' + loadOptions.take;//searchValue
+              var headers = new HttpHeaders({
+                "Accept": "application/json",
+                "Authorization": "Bearer " + me.authService.getAccessToken(),
+              });
+            
+              this.configData = {
+                headers: headers,
+                params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter }
+              };
+              return me.httpClient.get(AppSettings.base_url + 'configurations/getGMDNDetails',this.configData)
+                  .toPromise()
+                  .then((data: any) => {
+                      return {
+                          data: data.data,
+                          totalCount: data.totalCount
+                      }
+                  })
+                  .catch(error => { throw 'Data Loading Error' });
+
+          }
+      });
+    
+
+  }
+
+ funcSelectgmdn(data) {
+      let resp_data = data.data;
+      this.productGeneraldetailsfrm.get('gmdn_id').setValue(resp_data.id);
+      this.productGeneraldetailsfrm.get('gmdn_term').setValue(resp_data.name);
+      this.productGeneraldetailsfrm.get('gmdn_code').setValue(resp_data.code);
+      this.productGeneraldetailsfrm.get('gmdn_category').setValue(resp_data.description);
+      this.gmdnCodeWinshow = false;
+
+  }
+
   funcSearchRegistrantDetails(is_local_agent) {
    // this.spinner.show();
 
@@ -223,21 +273,20 @@ onValidateBrandNameDetails(e){
   }
   
  }
- onLoadGmdnCodeData(section_id) {
+//  onLoadGmdnCodeData(section_id) {
+//   var data = {
+//     table_name: 'par_gmdn_codes',
+  
+//   };
+//   this.config.onLoadConfigurationData(data)
+//     .subscribe(
+//       data => {
+//         this.gmdnCodeData = data;
+//       });
+// }
+onLoadreasonForClassificationData(device_type_id) {
   var data = {
-    table_name: 'par_gmdn_codes',
-    section_id: section_id
-  };
-  this.config.onLoadConfigurationData(data)
-    .subscribe(
-      data => {
-        this.gmdnCodeData = data;
-      });
-}
-onLoadreasonForClassificationData(device_type_id,classification_id) {
-  var data = {
-    table_name: 'par_product_classificationrules',
-    classification_id: classification_id,
+    table_name: 'par_classification_rules',
     device_type_id:device_type_id
   };
   this.config.onLoadConfigurationData(data)
@@ -248,9 +297,8 @@ onLoadreasonForClassificationData(device_type_id,classification_id) {
 }
 
 ongmdnCodeDataSelect($event) {
-
-  this.productGeneraldetailsfrm.get('gmdn_term').setValue($event.selectedItem.description);
-  
+  this.productGeneraldetailsfrm.get('gmdn_term').setValue($event.selectedItem.name);
+  this.productGeneraldetailsfrm.get('gmdn_category').setValue($event.selectedItem.description);
 }
 onHasModelChange($event) {
 
@@ -280,10 +328,14 @@ onHasReagents_accessories($event) {
     this.isonHasReagents_accessories = true;
   }
 }
-onclassificationDevTypeDataSelect($event) {
-  let device_type_id =  this.productGeneraldetailsfrm.get('device_type_id').value;
-  let classification_id =  this.productGeneraldetailsfrm.get('classification_id').value;
-  this.onLoadreasonForClassificationData(device_type_id,classification_id);
-}
+
+ onclassificationDevTypeDataSelect($event) {
+    this.device_type_id = $event.selectedItem.id;
+    this.onLoadreasonForClassificationData(this.device_type_id);
+
+  }
+
+
+
 
 }

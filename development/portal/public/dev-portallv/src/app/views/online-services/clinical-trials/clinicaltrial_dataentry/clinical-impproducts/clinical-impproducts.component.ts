@@ -32,14 +32,20 @@ export class ClinicalImpproductsComponent implements OnInit {
   @Input() routeOfAdminData: any;
   @Input() siUnitsData: any;
   @Input() marketlocationData: any;
-  @Input() manufacturersData: any;
+   clinicalTrialControl: FormControl;
+
+  @Input() manufacturersData: any ={};
   addProductParamsdetailsfrm:FormGroup;
+  iMPHandlingProductDetailsFrm:FormGroup;
   addproductCommonNameModal:boolean;
   clinicaltrailPlaceboProdData:any;
   clinicaltrailComparatorPProdData:any;
+  clinicaltrailHandlingProdData:any;
   isClinicalSitesDetailsVisible:boolean=false;
-    isReadOnlyProduct:boolean=false;
-
+  isReadOnlyProduct:boolean=false;
+  district_id:number;
+  country_id:number;
+  
   studySitesData:any;
   studySiteFrm:FormGroup;
   isStudySiteAddWinVisible:boolean;
@@ -47,11 +53,13 @@ export class ClinicalImpproductsComponent implements OnInit {
   districts:any;
   app_resp:any;
   regions:any;
-confirmDataParam:any;
+  confirmDataParam:any;
   IMPProductDetailsWinVisible:boolean;
+  IMPHandlingProductDetailsWinVisible:boolean=false
   isRegisteredProductsWinshow:boolean=false;
   
   registeredProductsData:any ={};
+  manufacturersSiteData:any ={};
   clinicaltrailIMPProdData:any;
   isRegisteredProductSearchWinVisible:boolean=false;
   isPreviewApplicationsDetails:boolean=false;
@@ -88,15 +96,16 @@ confirmDataParam:any;
 
     });
   
-  
+      this.clinicalTrialControl = new FormControl('', Validators.compose([]));
+
     this.iMPProductDetailsFrm = new FormGroup({
       product_category_id: new FormControl('', Validators.compose([Validators.required])),
-      brand_name: new FormControl('', Validators.compose([Validators.required])),
-      common_name_id: new FormControl('', Validators.compose([])),
-      dosage_form_id: new FormControl('', Validators.compose([])),
-      routes_of_admin_id: new FormControl('', Validators.compose([])),
-      si_unit_id: new FormControl('', Validators.compose([])),
-      identification_mark: new FormControl('', Validators.compose([])),
+      brand_name: this.clinicalTrialControl,
+      common_name_id: new FormControl('', Validators.compose([Validators.required])),
+      dosage_form_id: new FormControl('', Validators.compose([Validators.required])),
+      routes_of_admin_id: new FormControl('', Validators.compose([Validators.required])),
+      si_unit_id: new FormControl('', Validators.compose([Validators.required])),
+      identification_mark: new FormControl('', Validators.compose([Validators.required])),
       registration_no: new FormControl('', Validators.compose([])),
       registration_date: new FormControl('', Validators.compose([])),
       market_location_id: new FormControl('', Validators.compose([Validators.required])),
@@ -104,18 +113,26 @@ confirmDataParam:any;
       product_desc: new FormControl('', Validators.compose([Validators.required])),
       registered_product_id: new FormControl('', Validators.compose([])),
       id: new FormControl('', Validators.compose([])),
-      product_strength: new FormControl('', Validators.compose([])),
+      product_strength: new FormControl('', Validators.compose([Validators.required])),
       gmdn_code: new FormControl('', Validators.compose([])),
       classification_id: new FormControl('', Validators.compose([])),
       gmdn_term: new FormControl('', Validators.compose([])),
       gmdn_category: new FormControl('', Validators.compose([])),
-      manufacturer_name: new FormControl('', Validators.compose([])),
+      abate_after_stopping: new FormControl('', Validators.compose([])),
+      reaction_reappear: new FormControl('', Validators.compose([])),
+      therapy_start_date: new FormControl('', Validators.compose([])),
+      therapy_end_date: new FormControl('', Validators.compose([])),
+      therapy_duration: new FormControl('', Validators.compose([])),
+      duration: new FormControl('', Validators.compose([])),
+      manufacturer_name: new FormControl('', Validators.compose([Validators.required])),
       investigationproduct_section_id: new FormControl('', Validators.compose([Validators.required]))
       
     });
     this.onLoadSections();
     this.onLoadconfirmDataParm();
     this.onLoadinvestigationproductSectionData();
+    this.onLoadclinicaltrailIMPProdData();
+      this.onLoadClassifications();
 
      
   }
@@ -130,6 +147,12 @@ confirmDataParam:any;
     this.IMPProductDetailsWinVisible = true;
 
   }
+    funcEditIMPHandlingDetails(data) {
+    this.section_id = data.data.section_id;
+    this.iMPHandlingProductDetailsFrm.patchValue(data.data);
+    this.IMPHandlingProductDetailsWinVisible = true;
+
+  }
   onProductSectionChange($event){
     if($event.value == 5 ){
       this.section_id = 2;
@@ -138,7 +161,6 @@ confirmDataParam:any;
       this.section_id = 1;
     }
       
-      this.onLoadClassifications(this.section_id);
       this.onLoadgmdnCategoryData(this.section_id);
       this.onLoaddevicesTypeData(this.section_id)
   }funcSelectManufacturer(data) {
@@ -149,28 +171,36 @@ confirmDataParam:any;
 
   } onManufacturerPreparing(e) {
     this.functDataGridToolbar(e, this.funcAddManufacturerSite, 'Manufacturers');
-  }onCoutryCboSelect($event) {
+  }
+  onCoutryCboSelect($event) {
 
+    this.country_id = $event.selectedItem.id;
 
-    this.onLoadRegions($event.selectedItem.id);
+    this.onLoadDistricts(this.country_id);
+    this.onLoadRegions(this.country_id);
 
-  }onLoadRegions(country_id) {
+  }
 
-    var data = {
-      table_name: 'par_regions',
-      country_id: country_id
-    };
-    this.config.onLoadConfigurationData(data)
-      //.pipe(first())
-      .subscribe(
-        data => {
-          console.log(data);
-          this.regions = data;
-        },
-        error => {
-          return false
-        });
-  } 
+  oDistrictsCboSelect($event) {
+    this.district_id = $event.selectedItem.id;
+    this.onLoadRegions(this.district_id);
+
+  }
+
+  onLoadRegions(district_id) {
+  this.config.onLoadRegionsData(district_id)
+    .subscribe(
+      data => {
+        if (data.success) {
+          this.regions = data.data;
+        } else {
+        }
+      },
+      error => {
+        console.error('HTTP request failed:', error);
+        return false;
+      });
+}
   onLoadconfirmDataParm() {
     var data = {
       table_name: 'par_confirmations',
@@ -187,10 +217,10 @@ confirmDataParam:any;
     this.onLoadDistricts($event.selectedItem.id);
 
   }
-  onLoadDistricts(region_id) {
+  onLoadDistricts(country_id) {
     var data = {
-      table_name: 'par_districts',
-      region_id: region_id
+      table_name: 'par_premise_districts',
+      country_id: country_id
     };
     this.config.onLoadConfigurationData(data)
       //.pipe(first())
@@ -235,10 +265,9 @@ confirmDataParam:any;
           this.gmdnCategoryData = data;
         });
   }
-  onLoadClassifications(section_id) {
+  onLoadClassifications() {
     var data = {
       table_name: 'par_classifications',
-      section_id: section_id
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
@@ -248,6 +277,58 @@ confirmDataParam:any;
   }
   funcDeleteIMPDetails(site_data,table_name) {
     this.funcClinicalTrialDeletehelper(site_data, table_name, 'imp_products', 'Clinical Trial Products');
+  }
+
+  funcDeleteOtherDetails(site_data,table_name) {
+    this.funcClinicalTrialOtherDeletehelper(site_data, table_name, 'tra_clinicaltrial_producthandling', 'Clinical Trial Products');
+  }
+  funcClinicalTrialOtherDeletehelper(record_data, table_name, reload_funccheck, delete_title) {
+    let app_data = record_data.data;
+    let record_id = app_data.id;
+    this.modalServ.openDialog(this.viewRef, {
+      title: 'Do you want deleted the selected ' + app_data.name + '?',
+      childComponent: '',
+      settings: {
+        closeButtonClass: 'fa fa-close'
+      },
+      actionButtons: [{
+        text: 'Yes',
+        buttonClass: 'btn btn-danger',
+        onAction: () => new Promise((resolve: any, reject: any) => {
+          this.spinner.show();
+          this.appService.onDeleteOtherdetails(record_id, table_name, this.application_id, delete_title)
+            .subscribe(
+              response => {
+                this.spinner.hide();
+                let response_data = response.json();
+                if (response_data.success) {
+                  
+                  this.funcOnReloadIMPProducts();
+                  
+                  this.toastr.success(response_data.message, 'Response');
+                }
+                else {
+
+                  this.toastr.success(response_data.message, 'Response');
+
+                }
+
+              },
+              error => {
+               // this.loading = false;
+              });
+          resolve();
+        })
+      }, {
+        text: 'no',
+        buttonClass: 'btn btn-default',
+        onAction: () => new Promise((resolve: any) => {
+          resolve();
+        })
+      }
+      ]
+    });
+
   }
 
   funcClinicalTrialDeletehelper(record_data, table_name, reload_funccheck, delete_title) {
@@ -307,6 +388,10 @@ confirmDataParam:any;
   onIMPproductsPreparing(e) {
     this.functIMPDataGridToolbar(e, this.funcAddIMPProductsDetails, 'IMP Products Details');
   }
+
+  onIMPhandlingproductsPreparing(e) {
+    this.functIMPDataGridToolbar(e, this.funcAddIMPHandlingProductsDetails, 'IMP Handling Products Details');
+  }
   functIMPDataGridToolbar(e, funcBtn, btn_title) {
     e.toolbarOptions.items.unshift({
       location: 'before',
@@ -332,6 +417,7 @@ confirmDataParam:any;
     this.onLoadclinicaltrailIMPProdData();
     this.onLoadclinicaltrailComparatorProdData();
     this.onLoadclinicaltrailPlaceboProdData();
+    this.onLoadclinicaltrailHandlingProdData();
 
   }
   functDataGridToolbar(e, funcBtn, btn_title) {
@@ -350,6 +436,12 @@ confirmDataParam:any;
   funcAddIMPProductsDetails() {
     this.IMPProductDetailsWinVisible = true;
     this.iMPProductDetailsFrm.reset();
+  }
+
+    funcAddIMPHandlingProductsDetails() {
+    this.IMPHandlingProductDetailsWinVisible = true;
+    this.iMPHandlingProductDetailsFrm.reset();
+    this.onLoadclinicaltrailIMPProdData();
   }
   funSelectRegisteredProdcustsApp(data){
     let productdata = data.data;
@@ -402,9 +494,13 @@ this.isRegisteredProductsWinshow = false;
     
     if($event.value == 1){
         this.isReadOnlyProduct =true;
+        this.clinicalTrialControl.setValidators([Validators.required]);
+        this.clinicalTrialControl.updateValueAndValidity();
 
     }else{
       this.isReadOnlyProduct =false;
+      this.clinicalTrialControl.clearValidators();
+      this.clinicalTrialControl.updateValueAndValidity();
     }
     
 
@@ -417,6 +513,22 @@ this.isRegisteredProductsWinshow = false;
         data => {
           if (data.success) {
             this.clinicaltrailComparatorPProdData = data.data;
+          }
+          else {
+            this.toastr.success(data.message, 'Alert');
+          }
+        },
+        error => {
+          return false
+        });
+  }
+    onLoadclinicaltrailHandlingProdData() {
+    //onLoadClinicalTrialOtherdetails
+    this.appService.getClinicalTrialOtherdetails({ table_name: 'wb_clinicaltrial_Producthandling', application_id: this.application_id }, 'getClinicaltrailIMPHandlingProdData')
+      .subscribe(
+        data => {
+          if (data.success) {
+            this.clinicaltrailHandlingProdData = data.data;
           }
           else {
             this.toastr.success(data.message, 'Alert');
@@ -487,7 +599,7 @@ funcSearchManufacturingSite() {
   var me = this;
  
 
-this.manufacturersData.store = new CustomStore({
+this.manufacturersSiteData.store = new CustomStore({
   load: function (loadOptions: any) {
     console.log(loadOptions)
       var params = '?';
@@ -513,7 +625,10 @@ this.manufacturersData.store = new CustomStore({
           .catch(error => { throw 'Data Loading Error' });
   }
 });
-} funcAddManufacturerSite() {
+
+} 
+
+funcAddManufacturerSite() {
   this.isnewmanufacturerModalShow = true;
   this.manufacturerFrm.reset();
 }
@@ -591,7 +706,6 @@ onSaveNewGenericDetails(){
 onLoadcommonNameData() {
   var data = {
     table_name: 'par_common_names',
-    section_id: this.section_id
   };
   this.config.onLoadConfigurationData(data)
     .subscribe(

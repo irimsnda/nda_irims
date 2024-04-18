@@ -81,10 +81,6 @@
                 
                 <wizard-step stepTitle="Permit Query Response Submission" navigationSymbol="Submit"  >
                     <div class="col-lg-12">
-                      <label>Submission Comments(Optional)</label>
-                      <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-                    </div>
-                    <div class="col-lg-12">
                             <dx-check-box text="Agree to the Terms & Conditions" [value]="undefined" (onValueChanged)="submissionsTermscheckbox($event)">
                                 </dx-check-box>
                     </div>
@@ -117,8 +113,10 @@
             [consigneeOptionsData] ="consigneeOptionsData"  
             [permitProductsCategoryData] ="permitProductsCategoryData"
             [consignee_options_check] ="consignee_options_check"  
-            [zoneData] ="zoneData"  
+            [zoneData] ="zoneData"
+            [prescriptionDataParam]="prescriptionDataParam" 
             [module_id] ="module_id"  
+            [application_type_id]="application_type_id"
             [application_code] ="application_code"  
             [ispremisesSearchWinVisible] ="ispremisesSearchWinVisible"  
             [registered_premisesData] ="registered_premisesData"  
@@ -237,11 +235,6 @@
                   </p>
               </ul>
           </div>
-          
-          <div class="col-lg-12">
-            <b> <label>Submission Comments(Optional)</label></b>
-              <dx-text-area formControlName="submission_comments" placeholder="Enter Comments(optional)"></dx-text-area>
-          </div>
           <div class="col-lg-12">
             <dx-check-box text="Agree to the Declaration" [value]="undefined"
               (onValueChanged)="submissionsTermscheckbox($event)">
@@ -250,12 +243,11 @@
   
           <div class="wizard-divbottom">
             <button class="btn btn-primary" type="button" previousStep>Previous Step</button>
-            <app-invoice-appgeneration [onApplicationSubmissionFrm] ="onApplicationSubmissionFrm" [sub_module_id] ="sub_module_id" [app_routing] ="app_routing"   [module_id] ="module_id" [section_id] ="section_id" [status_id] ="status_id"  [application_code]="application_code" ></app-invoice-appgeneration>
+            <!-- <app-invoice-appgeneration [onApplicationSubmissionFrm] ="onApplicationSubmissionFrm" [sub_module_id] ="sub_module_id" [app_routing] ="app_routing"   [module_id] ="module_id" [section_id] ="section_id" [status_id] ="status_id"  [application_code]="application_code" ></app-invoice-appgeneration> -->
             <button class="btn btn-primary" type="button" [disabled]="!termscheckbox"
-              (click)="onPermitsApplicationSubmit()">Submit Permit
-              Application</button>
+              (click)="onPermitsApplicationSubmit()">Submit Application</button>
           </div>
-</form>
+      </form>
       </wizard-step>
     </wizard>
   </div>

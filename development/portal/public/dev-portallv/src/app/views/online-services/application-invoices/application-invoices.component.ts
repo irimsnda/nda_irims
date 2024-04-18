@@ -32,7 +32,7 @@ export class ApplicationInvoicesComponent implements OnInit {
   }
   funcPrintProformaInvoice(app_data){
 
-    let report_url = this.mis_url+'reports/generateApplicationInvoice?application_code='+this.application_code+"&invoice_id="+app_data.invoice_id;
+    let report_url = this.mis_url+'reports/getReportUrl?application_code='+this.application_code+"&invoice_id="+app_data.invoice_id;
     this.funcGenerateRrp(report_url,"Application Proforma Invoice")
     
   }

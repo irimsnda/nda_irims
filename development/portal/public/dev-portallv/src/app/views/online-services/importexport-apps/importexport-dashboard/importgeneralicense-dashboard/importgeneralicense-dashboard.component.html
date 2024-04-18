@@ -104,7 +104,7 @@
       </div>
 </form>
 
-    <dx-data-grid class=" row-border hover " (onCellPrepared)="onCellPrepared($event)" [showRowLines] = "true"  [allowColumnResizing]="true" [columnHidingEnabled]="false"   [wordWrapEnabled]="true"
+  <dx-data-grid class=" table row-border hover div-backwhite " (onCellPrepared)="onCellPrepared($event)" [showRowLines] = "true"  [allowColumnResizing]="true" [columnHidingEnabled]="false"   [wordWrapEnabled]="true"
       [dataSource]="dtImportExpApplicationData" [showBorders]="true"
       (onToolbarPreparing)="onImportappsToolbarPreparing($event)" keyExpr="id">
       <dxo-filter-row [visible]="false"></dxo-filter-row>

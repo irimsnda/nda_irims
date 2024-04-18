@@ -12,7 +12,7 @@ body{
   margin: 0px !important;
 }.contentfieldset{
   width: 100% !important;
-  background-color: #497D36;
+  background-color: #c6ecd9;
   padding:10px 0 !important;
   padding-left: 5px;
 }dx-button .dx-icon {
@@ -20,7 +20,11 @@ body{
   margin-right: 0px;
   padding: 0px;
 }
-
+.auto-expand-textarea {
+  overflow: hidden; /* Hide overflow content */
+  resize: none; /* Disable the browser's native textarea resizing */
+  height: auto; /* Let the height adjust automatically */
+}
 .dx-button-has-icon .dx-button-content {
   padding: 0px;
 }
@@ -284,7 +288,7 @@ html{
   z-index: 100000 !important;
 }
 .top-banner span{
-  font-size: 25px !important; 
+  font-size: 18px !important; 
   font-weight:bold;
 }
 .top-banner ul li{
@@ -402,7 +406,7 @@ body.dialog-open {
   font-size: 1.2em;
   cursor: pointer;
 }
-.dx-button,.dx-button-normal,dx-selectbox, .dx-textbox, .dx-texteditor {
+.dx-button,.dx-button-normal,dx-selectbox, .dx-textbox, .dx-texteditor,.dx-tagbox {
   border-radius: 0px  !important;
   margin:5px !important;
 }
@@ -438,7 +442,6 @@ button[disabled]{
   .transparent {
     background-color: transparent;
   }
-
 .nsm-dialog {
   position: relative;
   opacity: 1;

@@ -83,6 +83,41 @@ export class DocumentManagementService {
         return <any>data;
       }));
   }
+  onLoadQualitySummaryDocRequirements( application_code,is_quality_summary, section_id, sub_module_id, document_type_id,status_id,query_ref_id,prodclass_category_id,business_type_id=0,permit_product_id=0) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+
+    this.config = {
+      params: { document_type_id: document_type_id,is_quality_summary:is_quality_summary, application_code: application_code, section_id: section_id, sub_module_id: sub_module_id,status_id:status_id,query_ref_id:query_ref_id,prodclass_category_id:prodclass_category_id ,business_type_id:business_type_id, permit_product_id:permit_product_id},
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'documentmanagement/getDocumentRequirements', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
+
+
+
+  onLoadDocRequirement( application_code, section_id, sub_module_id, document_type_id,status_id) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+
+    this.config = {
+      params: { document_type_id: document_type_id, application_code: application_code, section_id: section_id, sub_module_id: sub_module_id,status_id:status_id},
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'documentmanagement/getDocumentRequirements', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
   getApplicationDocumentDownloadurl(application_code, node_ref, document_id) {
     let user = this.authService.getUserDetails();
     var headers = new HttpHeaders({

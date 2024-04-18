@@ -38,26 +38,32 @@ export class GmpRegDashboardComponent extends SharedDashboardclassComponent impl
 
     super(viewRef, modalServ, spinner, toastr, router, configService,  appService, utilityService)
     this.sectionSelection = '1';
-    this.sectionsdata = '1,';
+    this.sectionsdata = '1';
   }
 
   ngOnInit() {
-    this.onLoadPremisesCounterDetails();
     this.onLoadSections();
+    this.sub_module_id = 5;
+    this.gmp_type_id = 1;
     this.reloadGMPApplications({});
-    
+    this.onLoadGmpAppType(this.sub_module_id);
+    this.onLoadPremisesCounterDetails(this.sub_module_id,this.gmp_type_id);
+    this.onLoadgmpLocationData(this.gmp_type_id);
+
   }
   onClickSubModuleAppSelection(sub_module_id,sub_module_name){
 
-    if(sub_module_id == 5){
+    if(sub_module_id){
       this.app_route = ['./online-services/gmp-applications-selection'];
       this.router.navigate(this.app_route);
     }else{
-      this.gmpapp_details = {module_id: this.module_id, process_title: sub_module_name, sub_module_id: sub_module_id};
+      this.gmpapp_details = {module_id: this.module_id, process_title: sub_module_name, sub_module_id: sub_module_id,gmp_type_id: this.gmp_type_id};
       this.appService.setGmpApplicationDetail(this.gmpapp_details);
       this.app_route = ['./online-services/registered-gmpselection'];
       this.router.navigate(this.app_route);
     }
   }
- 
+ onCellPrepared(e) {
+      this.utilityService.onCellPrepared(e);
+  }
 }

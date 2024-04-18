@@ -20,6 +20,7 @@ export class ImportexportService {
   email_address: string;
   config: any;
   application_details: any;
+  private adverseReactionIds: number[] = [];
   constructor(private authService: AuthService, private myRoute: Router, private http: Http, private httpClient: HttpClient) {
     let user = this.authService.getUserDetails();
 
@@ -43,7 +44,61 @@ export class ImportexportService {
         return data;
       }));
   }
-  
+
+  onLoadCustomeDeclaration(TrackingNumber) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+
+    this.config = {
+      headers: headers,
+      params: { TrackingNumber: TrackingNumber }
+    };
+
+    return this.httpClient.get(AppSettings.base_url + 'importexportapp/getDeclarationDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+
+  }
+  onLoadImportationReasonsDetails(business_type_id, licence_type_id){
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    this.config = {
+      params: {business_type_id:business_type_id, licence_type_id:licence_type_id},
+      headers: headers
+    };
+    return this.httpClient.get(AppSettings.base_url + 'importexportapp/getImportationReasons', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+  }
+
+   setAdverseReactionIds(ids: number[]): void {
+    this.adverseReactionIds = ids;
+  }
+
+  getAdverseReactionIds(): number[] {
+    return this.adverseReactionIds;
+  }
+  onSaveRenPermitApplication(application_id, permitData, tracking_no,action_url,uploadData ='') {
+
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    if(uploadData != ''){
+      
+    }
+    return this.http.post(AppSettings.base_url +action_url, permitData, { params: { application_id: application_id, tracking_no: tracking_no, 'trader_id': this.trader_id, 'trader_email': this.email_address }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
   onsavePermitProductdetails(application_code, permitData, tracking_no,action_url) {
 
     var headers = new Headers({
@@ -57,7 +112,87 @@ export class ImportexportService {
       }));
 
   }
-  
+ onSaveDeclarationPermitApplication(application_id,port_id, permitData, tracking_no,action_url,uploadData ='') {
+
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    if(uploadData != ''){
+      
+    }
+    return this.http.post(AppSettings.base_url +action_url, permitData, { params: { application_id: application_id, tracking_no: tracking_no,port_id:port_id, 'trader_id': this.trader_id, 'trader_email': this.email_address }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+ 
+
+  onLoaProductImportRangeDetails(importexport_product_range_id: number[]) {
+      if (!importexport_product_range_id || importexport_product_range_id.length === 0) {
+          return null;
+      }
+
+      const params = {};
+      importexport_product_range_id.forEach((id, index) => {
+          params[`importexport_product_range_id[${index}]`] = id;
+      });
+
+      const headers = new HttpHeaders({
+          "Accept": "application/json",
+          "Authorization": "Bearer " + this.authService.getAccessToken(),
+      });
+
+      const config = {
+          params: params,
+          headers: headers
+      };
+
+      return this.httpClient.get(AppSettings.base_url + 'importexportapp/getImportProductRange', config)
+          .pipe(map(data => {
+              return <any>data;
+          }));
+  }
+
+
+
+
+    onLoadApplicantIncharge(TinNo) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+
+    this.config = {
+      headers: headers,
+      params: { TinNo: TinNo }
+    };
+
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getBusinessDetails', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+
+  }
+
+   onLoadPersonnelInformations() {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+
+    this.config = {
+      headers: headers,
+      params: { mistrader_id: this.mistrader_id }
+    };
+
+    return this.httpClient.get(AppSettings.base_url + 'premisesregistration/getPersonnelInformations', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+
+  }
   
   onLoadApplicationCounterDetails(table_name) {
     let user = this.authService.getUserDetails();
@@ -213,6 +348,46 @@ export class ImportexportService {
         return data;
       }));
   }
+  onDeleteMisTablePermitdetails(record_id,table_name,application_code,title){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'clinicaltrials/onDeleteMisTablePermitdetails', '', { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,record_id:record_id,application_code:application_code,table_name:table_name,title:title}, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+onDeleteOtherdetails(record_id,table_name,application_code,title){
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'importexportapp/onDeleteOtherdetails', '', { params: { 'trader_id': this.trader_id, 'email_address': this.email_address,record_id:record_id,application_code:application_code,table_name:table_name,title:title}, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+onLoadControlledSubstance(ControlledSubstance) {
+    var headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Authorization": 'Bearer ' + this.authService.getAccessToken(),
+    });
+
+    this.config = {
+      headers: headers,
+      params: { ControlledSubstance: ControlledSubstance }
+    };
+
+    return this.httpClient.get(AppSettings.base_url + 'importexportapp/getControlledSubstance', this.config)
+      .pipe(map(data => {
+        return <any>data;
+      }));
+
+  }
+
   onDeletePermitUploadedProductsDetails(table_name,application_code,title){
 
     var headers = new Headers({
@@ -242,7 +417,19 @@ export class ImportexportService {
 
 
   }
-  
+  onsaveBatchProductdetails(application_code, permitData, tracking_no,action_url) {
+
+    var headers = new Headers({
+      "Accept": "application/json",
+      "Authorization": "Bearer " + this.authService.getAccessToken(),
+    });
+    let user = this.authService.getUserDetails();
+    return this.http.post(AppSettings.base_url + 'importexportapp/'+action_url, permitData, { params: { application_code: application_code, tracking_no: tracking_no, 'trader_id': this.trader_id, 'trader_email': this.email_address }, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+
+  }
   
   onSaveClinicalStudySite(study_site_data,table_name, application_id){//tra_permitsenderreceiver_data
     var headers = new Headers({

@@ -1327,16 +1327,47 @@ static function saveApplicationDocumentNodedetails($application_code,$tracking_n
 }
 
 static function getDocumentsProcess($section_id,$where){
+    $data = DB::connection('mis_db')->table('wf_tfdaprocesses')
+            ->where($where)->first();   
+
+    $module_id = $data->module_id;
+    
+    if($module_id == 29 || $module_id == 2 || $module_id== 33 ){
+        $processdata = DB::connection('mis_db')->table('wf_tfdaprocesses')
+                        ->where($where);
+            
+        if(validateIsNumeric($section_id)){
+            $sections_id = explode(',',$section_id);
+                unset($section_id);
+
+            //$processdata->whereIn('section_id', $sections_id);
+        }
+        $processdata = $processdata->get();
+
+    }else{
+
+        $processdata = DB::connection('mis_db')->table('wf_tfdaprocesses')
+                        ->where($where);
+        if(validateIsNumeric($section_id)){
+            $sections_id = explode(',',$section_id);
+            $processdata->whereIn('section_id', $sections_id);
+        }
+            $processdata = $processdata->get();
+
+    }
+            
+    $processdata = convertStdClassObjToArray($processdata);
+    $processdata = convertAssArrayToSimpleArray($processdata, 'id');
+    return $processdata;
+
+}
+static function getPremDocumentsProcess($where){
 
     $processdata = DB::connection('mis_db')->table('wf_tfdaprocesses')
             ->where($where);
-			
-			if(validateIsNumeric($section_id)){
-					 $sections_id = explode(',',$section_id);
-					$processdata->whereIn('section_id', $sections_id);
-				}
-			$processdata = $processdata->get();
-			
+        
+            $processdata = $processdata->get();
+            
     $processdata = convertStdClassObjToArray($processdata);
     $processdata = convertAssArrayToSimpleArray($processdata, 'id');
     return $processdata;
@@ -1345,6 +1376,7 @@ static function getDocumentsProcess($section_id,$where){
 static function getApplicationApplicableDocuments($section_id,$sub_module_id,	$status_id){
         $where = array('sub_module_id'=>$sub_module_id);
         $process_data = self::getDocumentsProcess($section_id,$where);
+
 
         $data = DB::connection('mysql')->table('wb_applicable_appdocuments')
                 ->where(array('status_id'=>$status_id))

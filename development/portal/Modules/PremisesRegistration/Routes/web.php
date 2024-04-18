@@ -21,7 +21,8 @@ Route::group(['middleware' => ['api', 'cors'], 'prefix' => 'premisesregistration
     Route::get('getPremisesPersonnelDetails', 'PremisesRegistrationController@getPremisesPersonnelDetails');
     Route::get('getPremisesStaffDetails', 'PremisesRegistrationController@getPremisesStaffDetails');
     Route::get('getPremisesDirectorsDetails', 'PremisesRegistrationController@getPremisesDirectorsDetails');
-
+    Route::get('getPremisesExternalStoreDetails', 'PremisesRegistrationController@getPremisesExternalStoreDetails');
+    Route::get('getClinicalPersonnelDetails', 'PremisesRegistrationController@getClinicalPersonnelDetails');
     Route::get('getPremisesCounterDetails', 'PremisesRegistrationController@getPremisesCounterDetails');
     Route::get('onSearchPublicRegisteredpremises', 'PremisesRegistrationController@onSearchPublicRegisteredpremises');
     Route::get('getPremisesStoreLocationDetails', 'PremisesRegistrationController@getPremisesStoreLocationDetails');
@@ -34,15 +35,22 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premisesregistration'], f
     Route::post('onSaveDrugShopStoreLocationDetails', 'PremisesRegistrationController@onSaveDrugShopStoreLocationDetails');
     Route::post('onSavePremisesDirectorsDetails', 'PremisesRegistrationController@onSavePremisesDirectorsDetails');
     Route::post('onSaveApprovalRecomDetails', 'PremisesRegistrationController@onSaveApprovalRecomDetails');
+    Route::post('onSaveProductNotificationApplication', 'PremisesRegistrationController@onSaveProductNotificationApplication');
+    Route::post('onSaveNotificationOtherDetails', 'PremisesRegistrationController@onSaveNotificationOtherDetails');
+
 
     Route::post('onSaveRenPremisesApplication', 'PremisesRegistrationController@onSaveRenPremisesApplication');
-    
+    Route::post('onSaveClinicalPersonnel', 'PremisesRegistrationController@onSaveClinicalPersonnel');
+     Route::post('onSaveDrugShopApplication', 'PremisesRegistrationController@onSaveDrugShopApplication');
     Route::post('onSavePremisesOtherDetails', 'PremisesRegistrationController@onSavePremisesOtherDetails');
+    Route::post('onSaveChangedPharmacistDetails', 'PremisesRegistrationController@onSaveChangedPharmacistDetails');
     Route::post('onSavePremisesPersonnel', 'PremisesRegistrationController@onSavePremisesPersonnel');
     Route::post('onSavePremisesStaff', 'PremisesRegistrationController@onSavePremisesStaff');
     Route::post('onSavePremisesholder', 'PremisesRegistrationController@onSavePremisesholder');
 
     Route::post('onSavePremisesDirectors', 'PremisesRegistrationController@onSavePremisesDirectors');
+    Route::post('onSavePremisesExternalStore', 'PremisesRegistrationController@onSavePremisesExternalStore');
+
     Route::post('onDeletePremisesDetails', 'PremisesRegistrationController@onDeletePremisesDetails');
     Route::post('onNewPremisesApplicationSubmit', 'PremisesRegistrationController@onNewPremisesApplicationSubmit');
     Route::post('onNewPremisesApplicationArchive', 'PremisesRegistrationController@onNewPremisesApplicationArchive');
@@ -61,18 +69,33 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premisesregistration'], f
     Route::get('getPersonnelInformations', 'PremisesRegistrationController@getPersonnelInformations');
     Route::get('getTelephoneDetails', 'PremisesRegistrationController@getTelephoneDetails');
     Route::get('getApplicantIncharge', 'PremisesRegistrationController@getApplicantIncharge');
-        Route::get('getSupervisingPharmacist', 'PremisesRegistrationController@getSupervisingPharmacist');
+    Route::get('getSupervisingPharmacist', 'PremisesRegistrationController@getSupervisingPharmacist');
+    Route::get('getApplicantInchargeDetails', 'PremisesRegistrationController@getApplicantInchargeDetails');
+    Route::get('getApplicantInchargeDetails', 'PremisesRegistrationController@getApplicantInchargeDetails');
+
+    Route::get('getBusinessDetails', 'PremisesRegistrationController@getBusinessDetails');
+    Route::get('getNotificationPProdData', 'PremisesRegistrationController@getNotificationPProdData');
+
+    Route::get('getpsurNotificationApplicationLoading', 'PremisesRegistrationController@getpsurNotificationApplicationLoading');
+
 
     Route::get('getDirectorsInformations', 'PremisesRegistrationController@getDirectorsInformations');
     Route::get('getStaffInformations', 'PremisesRegistrationController@getStaffInformations');
     Route::get('getOtherPremises', 'PremisesRegistrationController@getOtherPremises');
+    Route::get('getPremisesPharmacistDetails', 'PremisesRegistrationController@getPremisesPharmacistDetails');
 
-    Route::get('getpremisesApplicationDetails', 'PremisesRegistrationController@getpremisesApplicationDetails');
+   Route::get('getpremisesApplicationDetails', 'PremisesRegistrationController@getpremisesApplicationDetails');
+   //notification
+   Route::get('getNotificationApplicationDetails', 'PremisesRegistrationController@getNotificationApplicationDetails');
+
+   Route::get('getApplicantDetails', 'PremisesRegistrationController@getApplicantDetails');
+
     Route::get('getPersonnelQualifications', 'PremisesRegistrationController@getPersonnelQualifications');
     Route::get('getBusinessTypeDetails', 'PremisesRegistrationController@getBusinessTypeDetails');
     Route::get('getAppSubmissionGuidelines', 'PremisesRegistrationController@getAppSubmissionGuidelines');
   
     Route::get('getTradersRegisteredPremises', 'PremisesRegistrationController@getTradersRegisteredPremises');
+
     Route::get('getTradersRegisteredDrugShops', 'PremisesRegistrationController@getTradersRegisteredDrugShops');
     Route::get('getNearestPremises', 'PremisesRegistrationController@getNearestPremises');
     Route::get('getNearestDrugShops', 'PremisesRegistrationController@getNearestDrugShops');

@@ -16,7 +16,7 @@
         style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics; color: green;">
         Tracking No: <i> {{tracking_no}}</i> </label>
     </div>
-    <div class="col-lg-2">
+    <div class="col-lg-4">
       <label
         style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics;color: green;">Application
         Status:<i> {{status_name}}</i> </label>
@@ -103,10 +103,6 @@
     
           </wizard-step>
             <wizard-step navigationSymbol="Submission"  stepTitle="Query Response Submission">
-                <div class="col-lg-12">
-                  <label>Submission Comments(Optional)</label>
-                  <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-                </div>
                 
                 <div class="col-lg-12">
                   <dx-check-box text="Agree to the Declaration" [value]="undefined" (onValueChanged)="submissionsTermscheckbox($event)">
@@ -124,19 +120,14 @@
       </wizard>
     </div>
   <div class="col-lg-12"  *ngIf="status_id !== 6  && status_id !== 8">
-    <wizard style="background: #fff !important; height: 100% !important;"   navBarLayout ="large-filled-symbols">
-      
-      <wizard-step stepTitle="Pre Submission Application Details"  navigationSymbol="Step 1"  class="wizardStep-height">
-
-          <app-clinicalpresubmission-generaldetails [preSubmissionGeneraldetailsfrm] ="preSubmissionGeneraldetailsfrm"  
+    <wizard style="background: #fff !important; height: 100% !important;"navigationMode="strict" navBarLayout ="large-filled-symbols">
+        <wizard-step stepTitle="Pre Submission Meeting Request"  navigationSymbol="Step 1" class="wizardStep-height">
+          <app-clinicalpresubmission-generaldetails 
+          [preSubmissionGeneraldetailsfrm] ="preSubmissionGeneraldetailsfrm"  
           [durationDescData] ="durationDescData"  
           [payingCurrencyData] ="payingCurrencyData"  
           [ctrethicsCommitteesData] ="ctrethicsCommitteesData"  
           [clinicalTrialRegistryData] ="clinicalTrialRegistryData"  
-
-
-          
-   
           [fastTrackOptionsData] ="fastTrackOptionsData"  
           [sub_module_id] ="sub_module_id"  
           [module_id] ="module_id"  
@@ -151,8 +142,6 @@
           [is_readonly] ="is_readonly"
           (docClinicalSectionsEvent)="doc_section_id=$event"
           >
-          
-          
           </app-clinicalpresubmission-generaldetails>
           <div class=" div-footer" style="border-top: 1px solid #ccc; ">
            <dx-button
@@ -162,14 +151,9 @@
                     [elementAttr]="{  class: 'pull-left' }"
                     (onClick)="onPreSubmissionDashboard()">
             </dx-button>
-            <button class="btn btn-info pull-right" style="margin:5px;" [disabled]="!application_code" nextStep
-              type="button">
-              Next Clinical Application &nbsp;<i class="fa fa-angle-double-right"></i></button>
-
             <button type="submit" (click)="onSaveClincialTrialApplication()"
-              [disabled]="!preSubmissionGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
-              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Clinical Trial
-              Application</button>
+             class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
 
           </div>
        
@@ -209,10 +193,7 @@
               </ul>
           </div>
             
-            <div class="col-lg-12">
-              <b> <h4>Submission Comments(Optional)</h4></b>
-                <dx-text-area formControlName="submission_comments" placeholder="Enter Comments(optional)"></dx-text-area>
-            </div>
+
             <div class="col-lg-12">
               <dx-check-box text="Agree to the Declaration" [value]="undefined" (onValueChanged)="submissionsTermscheckbox($event)">
               </dx-check-box>
@@ -316,16 +297,16 @@
                     </dx-button>-->
               </div>
         </wizard-step>
-     
-        <wizard-step stepTitle="Clinical Trial Application Details" class="wizardStep-height">
-          <app-clinicalpresubmission-generaldetails  [preSubmissionGeneraldetailsfrm] ="preSubmissionGeneraldetailsfrm"  
+     <wizard-step stepTitle="Pre Submission Meeting Request"  navigationSymbol="Step 1" class="wizardStep-height">
+          <app-clinicalpresubmission-generaldetails 
+          [preSubmissionGeneraldetailsfrm] ="preSubmissionGeneraldetailsfrm"  
           [durationDescData] ="durationDescData"  
           [payingCurrencyData] ="payingCurrencyData"  
+          [ctrethicsCommitteesData] ="ctrethicsCommitteesData"  
+          [clinicalTrialRegistryData] ="clinicalTrialRegistryData"  
           [fastTrackOptionsData] ="fastTrackOptionsData"  
           [sub_module_id] ="sub_module_id"  
           [module_id] ="module_id"  
-          [ctrethicsCommitteesData] ="ctrethicsCommitteesData"  
-          [clinicalTrialRegistryData] ="clinicalTrialRegistryData"  
           [application_code] ="application_code" 
           [section_id] ="section_id"  
           [zoneData] ="zoneData"  
@@ -337,33 +318,42 @@
           [is_readonly] ="is_readonly"
           (docClinicalSectionsEvent)="doc_section_id=$event"
           >
-          
           </app-clinicalpresubmission-generaldetails>
           <div class=" div-footer" style="border-top: 1px solid #ccc; ">
-           
-            <button class="btn btn-info pull-right" style="margin:5px;"  nextStep
-              type="button">
-              Next Clinical Application &nbsp;<i class="fa fa-angle-double-right"></i></button>
-
+           <dx-button
+                    text="Dashboard"
+                    type="success"
+                    icon="fa fa-eraser"
+                    [elementAttr]="{  class: 'pull-left' }"
+                    (onClick)="onPreSubmissionDashboard()">
+            </dx-button>
             <button type="submit" (click)="onSaveClincialTrialApplication()"
-              [disabled]="!preSubmissionGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+             class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Clinical Trial
-              Application</button>
+              Application and Next</button>
 
           </div>
        
       </wizard-step>
-      
-      <wizard-step stepTitle="Documents" class="wizardStep-height">
      
+      <wizard-step navigationSymbol="Step 2"  stepTitle="Documents Uploads" class="wizardStep-height">
+          <div class="wizard-divtop">
+              <button type="button" class="btn btn-info pull-left" previousStep><i class="fa fa-angle-double-left"></i>Previous
+               Documents</button>
+              <button type="button" class="btn btn-info pull-right" (click)="funcValidateDocumentsDetails(2)">Next Application
+                Submission<i class="fa fa-angle-double-right"></i></button>
+    
+            </div>
           <div class=" wizard-content">
-            <app-application-documents #documentComponent [section_id] ="doc_section_id"  [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-application-documents>
+            <app-application-documents #documentComponent [section_id] ="section_id"  [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-application-documents>
           </div>
         
         <div class="wizard-divbottom">
-          <button type="button" class="btn btn-info" previousStep><i class="fa fa-angle-double-left"></i>Previous
-            Clinical Trial Investigators</button>
-        
+          <button type="button" class="btn btn-info  pull-left" previousStep><i class="fa fa-angle-double-left"></i>Previous
+           Documents</button>
+          <button type="button" class="btn btn-info  pull-right" (click)="funcValidateDocumentsDetails(2)">Next Application
+            Submission<i class="fa fa-angle-double-right"></i></button>
+
         </div>
 
       </wizard-step>

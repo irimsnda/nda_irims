@@ -40,14 +40,28 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'productregistration'], fu
     
     Route::post('onSaveRenAltProductApplication', 'ProductRegistrationController@onSaveRenAltProductApplication');
     Route::post('onSaveWithdrawalProductApplication', 'ProductRegistrationController@onSaveWithdrawalProductApplication');
-   
     Route::post('onSaveProductOtherDetails', 'ProductRegistrationController@onSaveProductOtherDetails');
+    Route::post('onSaveProductQualitySummaryDetails', 'ProductRegistrationController@onSaveProductQualitySummaryDetails');
+
+    //QOS
+    Route::post('onSaveProductQualitySummary', 'ProductRegistrationController@onSaveProductQualitySummary');
+    Route::post('onSaveProductGeneralQiSDetails', 'ProductRegistrationController@onSaveProductGeneralQiSDetails'); 
+    Route::post('onSaveProductManufQiSDetails', 'ProductRegistrationController@onSaveProductManufQiSDetails'); 
+    Route::post('onSaveProductCharacterQiSDetails', 'ProductRegistrationController@onSaveProductCharacterQiSDetails'); 
+    Route::post('onSaveProductControlAPIQiSDetails', 'ProductRegistrationController@onSaveProductControlAPIQiSDetails');
+    Route::post('onSaveProductReferQiSDetails', 'ProductRegistrationController@onSaveProductReferQiSDetails');
+    //end
     Route::post('onDeleteProductsDetails', 'ProductRegistrationController@onDeleteProductsDetails');
     Route::post('onAddManufacturingSite', 'ProductRegistrationController@onAddManufacturingSite');
     Route::post('onNewProductsApplicationSubmit', 'ProductRegistrationController@onNewProductsApplicationSubmit');
     Route::post('onSaveMedicalProductNotification', 'ProductRegistrationController@onSaveMedicalProductNotification');
     Route::get('getProductsNutrients', 'ProductRegistrationController@getProductsNutrients');
     
+    Route::get('getQualitySummaryReport', 'ProductRegistrationController@getQualitySummaryReport');
+    Route::get('getQualitySummaryTemplateReport', 'ProductRegistrationController@getQualitySummaryTemplateReport');
+
+    Route::get('getProductsCommonName', 'ProductRegistrationController@getProductsCommonName');
+
     Route::get('getProductsIngredients', 'ProductRegistrationController@getProductsIngredients');
     Route::get('getProductApplicationInformation', 'ProductRegistrationController@getProductApplicationInformation');
     Route::get('getProductsDrugsPackaging', 'ProductRegistrationController@getProductsDrugsPackaging');
@@ -61,7 +75,10 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'productregistration'], fu
     Route::get('getGmpInspectionsdetails', 'ProductRegistrationController@getGmpInspectionsdetails');
   
     Route::get('getProductsGMPInspectionDetails', 'ProductRegistrationController@getProductsGMPInspectionDetails');
-  
+    
+    Route::get('getprodStatesRegistrationsData', 'ProductRegistrationController@getprodStatesRegistrationsData');
+    Route::get('getotherStatesGmpInspectionsData', 'ProductRegistrationController@getotherStatesGmpInspectionsData');
+
     Route::get('onSearchRegisteredProductApplication', 'ProductRegistrationController@onSearchRegisteredProductApplication');
     Route::get('getProductSampleStageInformation', 'ProductRegistrationController@getProductSampleStageInformation');
     Route::get('getSampleSubmissionDetails', 'ProductRegistrationController@getSampleSubmissionDetails');
@@ -76,6 +93,40 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'productregistration'], fu
     Route::get('getGroupedProductApplicationInformation', 'ProductRegistrationController@getGroupedProductApplicationInformation');
     Route::get('getGroupedProductApplicationsSub', 'ProductRegistrationController@getGroupedProductApplicationsSub');
     
-    
+
+//QUOS
+
+
+    Route::get('getProductsQualitySummaryDetails', 'ProductRegistrationController@getProductsQualitySummaryDetails');
+    Route::get('getElucidationCharacterisation', 'ProductRegistrationController@getElucidationCharacterisation');
+    Route::get('getImpuritiesCharacterisation', 'ProductRegistrationController@getImpuritiesCharacterisation');
+    Route::get('getContainerClosureSystems', 'ProductRegistrationController@getContainerClosureSystems');
+    Route::get('getContainerClosureSystem', 'ProductRegistrationController@getContainerClosureSystems');
+    Route::get('getApiSpecification', 'ProductRegistrationController@getApiSpecification');
+    Route::get('getBatchAnalyses', 'ProductRegistrationController@getBatchAnalyses');
+    Route::get('getExcipientControl', 'ProductRegistrationController@getExcipientControl');
+    Route::get('getSpecificationDetails', 'ProductRegistrationController@getSpecificationDetails');
+    Route::get('getBatchAnalysesDetails', 'ProductRegistrationController@getBatchAnalysesDetails');
+    Route::get('getImpuritiesDetails', 'ProductRegistrationController@getImpuritiesDetails');
+    Route::get('getDossierOverage', 'ProductRegistrationController@getDossierOverage');
+    Route::get('getDecriptionComposition', 'ProductRegistrationController@getDecriptionComposition');
+    Route::get('getActiveIngredient', 'ProductRegistrationController@getActiveIngredient');
+    Route::get('getDossierFormulation', 'ProductRegistrationController@getDossierFormulation');
+    Route::get('getDossierOverage', 'ProductRegistrationController@getDossierOverage');
+    Route::get('getProductsNomenclature', 'ProductRegistrationController@getProductsNomenclature');
+    Route::get('getProductsGeneralProperties', 'ProductRegistrationController@getProductsGeneralProperties');
+    Route::get('getProductsManufacturingName', 'ProductRegistrationController@getProductsManufacturingName');
+    Route::get('getControlMaterials', 'ProductRegistrationController@getControlMaterials');
+    Route::get('getCriticolControlData', 'ProductRegistrationController@getCriticolControlData');
+    Route::get('getProductsManufacturingInfo', 'ProductRegistrationController@getProductsManufacturingInfo');
+    Route::get('getDecriptionManufacturing', 'ProductRegistrationController@getDecriptionManufacturing');
+    Route::get('getProductsSummaryInformation', 'ProductRegistrationController@getProductsSummaryInformation');
+    Route::get('getReferenceStandards', 'ProductRegistrationController@getReferenceStandards');
+    Route::get('getReferenceStandard', 'ProductRegistrationController@getReferenceStandard');
+    Route::get('getStabilitySummary', 'ProductRegistrationController@getStabilitySummary');
+    Route::get('getPostApprovalStability', 'ProductRegistrationController@getPostApprovalStability');
+    Route::get('getStabilityDossierSummary', 'ProductRegistrationController@getStabilityDossierSummary');
+    Route::get('getPostApproval', 'ProductRegistrationController@getPostApproval');
+
 });
 

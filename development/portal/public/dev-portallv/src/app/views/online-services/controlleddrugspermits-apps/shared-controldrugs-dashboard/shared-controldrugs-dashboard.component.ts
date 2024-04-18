@@ -46,23 +46,30 @@ export class SharedControldrugsDashboardComponent implements OnInit {
   isPrintReportVisible:boolean = false;
   printiframeUrl:string;
   isPreviewApplicationDetails:boolean= false;
+  isPermitInitialisation:boolean= false;
+  applicationSelectionfrm:FormGroup;
   frmPreviewAppDetails:FormGroup;
-
+  application_details:any;
   applicationRejectionData:any;
   isApplicationRejectionVisible:boolean= false;
   FilterDetailsFrm:FormGroup;
   application_title:string;
   productappTypeData:any;
   applicationStatusData:any;
+  vcApplicationTypeData:any;
   sectionsData:any;
   importExportPermitTypesData:any;
+  registrationLevelData:any;
   application_code:number;
-    isInvoiceGenerationWin:boolean;
+  vc_application_type_id:number;
+  is_registered:number;
+  isInvoiceGenerationWin:boolean;
   constructor(public utilityService:Utilities,public viewRef: ViewContainerRef, public modalServ: ModalDialogService, public spinner: SpinnerVisibilityService, public toastr: ToastrService, public router: Router, public configService: ConfigurationsService, public appService: ImportexportService) { 
 
     this.onLoadSections();
     this.onLoadApplicationstatuses();
-  
+    this.onLoadvcApplicationData();
+    this.onLoadImportRegistrationLevelData();
     this.FilterDetailsFrm = new FormGroup({
       sub_module_id: new FormControl('', Validators.compose([])),
       importexport_permittype_id: new FormControl('', Validators.compose([])),
@@ -78,6 +85,13 @@ export class SharedControldrugsDashboardComponent implements OnInit {
       application_type: new FormControl('', Validators.compose([Validators.required])),
       status: new FormControl('', Validators.compose([Validators.required]))
     });
+
+    this.applicationSelectionfrm = new FormGroup({
+      vc_application_type_id: new FormControl('', Validators.compose([Validators.required])),
+      is_registered: new FormControl('', Validators.compose([Validators.required])),
+      
+    });
+
   }
 
   ngOnInit(){
@@ -87,6 +101,31 @@ export class SharedControldrugsDashboardComponent implements OnInit {
   } funcpopWidth(percentage_width) {
     return window.innerWidth * percentage_width/100;
   }
+
+  onApplicationSelection(sub_module_id) {
+    
+    if (this.applicationSelectionfrm.invalid) {
+      this.toastr.error('Fill in all the Mandatory Fields', 'Alert!');
+
+      return;
+    }
+    this.spinner.show();
+    this.vc_application_type_id = this.applicationSelectionfrm.get('vc_application_type_id').value;
+    this.is_registered = this.applicationSelectionfrm.get('is_registered').value;
+  if (this.sub_module_id === 60) {
+        
+    this.application_details = {module_id: this.module_id, vc_application_type_id: this.vc_application_type_id,is_registered: this.is_registered,sub_module_id: this.sub_module_id};
+    this.appService.setApplicationDetail(this.application_details);
+
+    this.app_route = ['./online-services/importexport-approvedappsel'];
+
+    this.router.navigate(this.app_route);
+    this.spinner.hide(); 
+
+  }
+
+
+}
 
   onLoadApplicationCounterDetails(sub_module_id) {
 
@@ -118,8 +157,30 @@ export class SharedControldrugsDashboardComponent implements OnInit {
         });
 
   }
- 
-  
+   onLoadImportRegistrationLevelData() {
+    var data = {
+      table_name: 'par_import_registration_level',
+    };
+
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.registrationLevelData = data;
+        });
+  }
+
+   onLoadvcApplicationData() {
+    var data = {
+      table_name: 'par_vc_application_type',
+    };
+
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.vcApplicationTypeData = data;
+        });
+  }
+
   onLoadApplicationstatuses() {
     
     var data = {

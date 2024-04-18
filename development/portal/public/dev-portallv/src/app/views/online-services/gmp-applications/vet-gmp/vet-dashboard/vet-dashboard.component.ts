@@ -36,20 +36,20 @@ export class VetDashboardComponent extends SharedDashboardclassComponent impleme
   constructor(public viewRef: ViewContainerRef, public modalServ: ModalDialogService, public spinner: SpinnerVisibilityService, public toastr: ToastrService, public router: Router, public configService: ConfigurationsService, public appService: GmpApplicationServicesService,public utilityService:Utilities) { 
 
     super(viewRef, modalServ, spinner, toastr, router, configService,  appService, utilityService)
-    this.sectionSelection ='5';
-    this.sectionsdata ='5';
+    this.sectionSelection ='2';
+    this.sectionsdata ='2';
   }
 
   ngOnInit() {
-    this.onLoadPremisesCounterDetails();
     this.onLoadSections();
     this.reloadGMPApplications({});
-    
+        this.onLoadPremisesCounterDetails(this.sub_module_id,this.gmp_type_id);
+
   }
   onClickSubModuleAppSelection(sub_module_id,sub_module_name){
 
     if(sub_module_id == 5){
-      this.app_route = ['./online-services/gmp-applications-selection'];
+      this.app_route = ['./online-services/vet-applications-selection'];
       this.router.navigate(this.app_route);
     }else{
       this.gmpapp_details = {module_id: this.module_id, process_title: sub_module_name, sub_module_id: sub_module_id};

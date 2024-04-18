@@ -8,8 +8,8 @@ import { DrugshopRegDashboardComponent } from '../drugshop-reg-dashboard.compone
 export class RenewaldrugshopDashboardComponent  extends DrugshopRegDashboardComponent implements OnInit {
 
   ngOnInit() {
-    this.premises_dashboardtitle = "Renewal Drug Shop Application Dashboard"
-    this.sub_module_id = 108;
+    this.premises_dashboardtitle = "Renewal Licensed Seller Application Dashboard"
+    this.sub_module_id = 110;
     this.onLoadDrugshopAppType(this.sub_module_id);
     this.reloadPremisesApplications({sub_module_id:this.sub_module_id});
 

@@ -16,7 +16,7 @@
         style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics; color: green;">
         Tracking No: <i> {{tracking_no}}</i> </label>
     </div>
-    <div class="col-lg-2">
+    <div class="col-lg-4">
       <label
         style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics;color: green;">Application
         Status:<i> {{status_name}}</i> </label>
@@ -103,10 +103,6 @@
     
           </wizard-step>
             <wizard-step navigationSymbol="Submission"  stepTitle="Query Response Submission">
-                <div class="col-lg-12">
-                  <label>Submission Comments(Optional)</label>
-                  <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-                </div>
                 
                 <div class="col-lg-12">
                   <dx-check-box text="Agree to the Declaration" [value]="undefined" (onValueChanged)="submissionsTermscheckbox($event)">
@@ -124,21 +120,17 @@
       </wizard>
     </div>
   <div class="col-lg-12"  *ngIf="status_id !== 6  && status_id !== 8  && status_id !== 7">
-    <wizard style="background: #fff !important; height: 100% !important;"   navBarLayout ="large-filled-symbols">
-      
-      <wizard-step stepTitle="Clinical Trial Application Details"  navigationSymbol="Step 1"  class="wizardStep-height">
-
+    <wizard [navigationMode]='strict'  style="background: #fff !important;font-size:5px; height:100% !important;"   navBarLayout ="large-filled-symbols">
+      <wizard-step class="wizard-step" stepTitle="Identification of the Clinical Trial" navigationSymbol="Step 1" 
+         class="wizardStep-height">
           <app-clinical-generaldetails  [clinicaltrialGeneraldetailsfrm] ="clinicaltrialGeneraldetailsfrm"  
           [durationDescData] ="durationDescData"  
           [payingCurrencyData] ="payingCurrencyData"  
           [ctrethicsCommitteesData] ="ctrethicsCommitteesData"  
           [clinicalTrialRegistryData] ="clinicalTrialRegistryData"  
-
-
-          
-   
           [fastTrackOptionsData] ="fastTrackOptionsData"  
-          [sub_module_id] ="sub_module_id"  
+          [sub_module_id] ="sub_module_id"
+          [clinicalTrialControl]="clinicalTrialControl"  
           [module_id] ="module_id"  
           [application_code] ="application_code" 
           [section_id] ="section_id"  
@@ -151,96 +143,29 @@
           [is_readonly] ="is_readonly"
           (docClinicalSectionsEvent)="doc_section_id=$event"
           >
-          
-          
           </app-clinical-generaldetails>
           <div class=" div-footer" style="border-top: 1px solid #ccc; ">
             <button (click)="onClinicalDashboard()" class="btn btn-primary pull-left" style="margin:5px;" 
             type="button"><i class="fa fa-angle-double-left"></i>
               &nbsp;Dashboard</button>
-  
-            <button class="btn btn-info pull-right" style="margin:5px;" [disabled]="!application_code" nextStep
-              type="button">
-              Next Clinical Application &nbsp;<i class="fa fa-angle-double-right"></i></button>
-
-            <button type="submit" (click)="onSaveClincialTrialApplication()"
-              [disabled]="!clinicaltrialGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
-              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Clinical Trial
-              Application</button>
+            <button type="submit" (click)="onSaveClincialTrialApplication()"class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
 
           </div>
-       
       </wizard-step>
-      <wizard-step stepTitle="Clinical Trial Study Sites"  navigationSymbol="Step 2"  class="wizardStep-height">
+      <wizard-step  navigationSymbol="Step 2"  stepTitle="Medicines to be used in the trial">
           <div class="wizard-divtop">
               <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
-                  class="fa fa-angle-double-left"></i>Previous
-                Clinical Trial Information</button>
-              <button type="button" class="btn btn-info pull-right" (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_sites',2,'Clinical trial Sites')">Next Investigators Details &nbsp;<i class="fa fa-angle-double-right"></i></button>
+                  class="fa fa-angle-double-left"></i>Previous</button>
+               <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_products',2,'Medicines to be used in the trial')" class="btn btn-info  pull-right" >Next Sites & Investigators<i class="fa fa-angle-double-right"></i></button>
             </div>
-          <app-clinical-studysites  [clinicalSitesDetailsData] ="clinicalSitesDetailsData"  
-          [durationDescData] ="durationDescData"  
-          [application_id] ="application_id"  
-          [countries] ="countries"  
-          >
-  
-          </app-clinical-studysites>
-        <div class="wizard-divbottom">
-          <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
-              class="fa fa-angle-double-left"></i>Previous
-            Clinical Trial Information</button>
-          <button type="button" class="btn btn-info pull-right" (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_sites',2,'Clinical trial Sites')">Next Investigators Details &nbsp;<i class="fa fa-angle-double-right"></i></button>
-        </div>
-      </wizard-step>
-      <wizard-step navigationSymbol="Step 3"  stepTitle="Co-/Sub Investigators & Monitors ">
-        <div class="wizard-divtop">
-            <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
-                class="fa fa-angle-double-left"></i>Previous
-              Clinical trial Study Site</button>
-            <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_investigators',3,'Clinical Trial Investigators')" class="btn btn-info pull-right" >Next IMP Details<i class="fa fa-angle-double-right"></i></button>
-          </div>
-          <app-clinical-investigators  
-              [sub_module_id] ="sub_module_id"  
-              [module_id] ="module_id"  
-              [application_code] ="application_code"  
-              [clinicalSitesDetailsData] ="clinicalSitesDetailsData"  
-              
-              [countries] ="countries"
-              [regions] ="regions"
-              [districts] ="districts"
-              [application_id] ="application_id"
-              [investigatorCategoryData] ="investigatorCategoryData"
-          >
-        </app-clinical-investigators>
-          
-        <div class="wizard-divbottom">
-          <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
-              class="fa fa-angle-double-left"></i>Previous
-            Clinical trial Study Site</button>
-          <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_investigators',3,'Clinical Trial Investigators')" class="btn btn-info  pull-right" >Next IMP Details<i class="fa fa-angle-double-right"></i></button>
-        </div>
-
-      </wizard-step>
-      <wizard-step  navigationSymbol="Step 4"  stepTitle="IP Products Information">
-        
-          <div class="wizard-divtop">
-              <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
-                  class="fa fa-angle-double-left"></i>Previous
-                Clinical Trial Investigators</button>
-              <button type="button" class="btn btn-info  pull-right"  (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_products',4,'Clinical Trial IMP Products',documentComponent)">Next Application
-                  Documents<i class="fa fa-angle-double-right "></i></button>
-            </div>
-         
           <div class="accordion" id="productInfo">
-
               <div class="card">
                 <div class="card-headerdefined" id="headingTwo">
-            
                   <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#investigational_product"
                     aria-expanded="false" aria-controls="investigational_product">
-                    Clinial trial Investigational Product
+                    Clinical trial Investigational Product
                   </button>
-            
                 </div>
                 <div id="investigational_product" class="collapse show" aria-labelledby="headingTwo" data-parent="#productInfo">
                   <div class="card-body no-padding">
@@ -258,9 +183,35 @@
                         [marketlocationData] ="marketlocationData"
                         [manufacturersData] ="manufacturersData"
                           >
-                        
                         </app-clinical-investigationalproducts>
-                    
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-headerdefined" id="heading5">
+                  <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#handling_product"
+                    aria-expanded="false" aria-controls="investigational_product">
+                   Details of Handling Trial Medicines
+                  </button>
+                </div>
+                <div id="handling_product" class="collapse show" aria-labelledby="heading5" data-parent="#productInfo">
+                  <div class="card-body no-padding">
+                    <div class="no-padding">
+                        <app-clinical-handling
+                        [iMPHandlingProductDetailsFrm] ="iMPHandlingProductDetailsFrm"  
+                        [application_id] ="application_id"  
+                        [countries] ="countries"  
+                        [clinicalProductCategoryData] ="clinicalProductCategoryData"  
+                        
+                        [commonNameData] ="commonNameData" 
+                        [dosagFormData] ="dosagFormData" 
+                        [routeOfAdminData] ="routeOfAdminData" 
+                        [siUnitsData] ="siUnitsData"
+                        [marketlocationData] ="marketlocationData"
+                        [manufacturersData] ="manufacturersData"
+                          >
+                        </app-clinical-handling>
                     </div>
                   </div>
                 </div>
@@ -270,7 +221,7 @@
             
                   <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#comparator_product"
                     aria-expanded="false" aria-controls="comparator_product">
-                    Clinial trial Comparator Product
+                    Clinical trial Comparator Product
                   </button>
             
                 </div>
@@ -290,33 +241,315 @@
                         [marketlocationData] ="marketlocationData"
                         [manufacturersData] ="manufacturersData"
                           >
-                        
                         </app-clinical-comparatorproducts>
-                    
-            
                     </div>
                   </div>
                 </div>
               </div>
-             
           </div>
-
-
         <div class="wizard-divbottom">
           <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
               class="fa fa-angle-double-left"></i>Previous
             Clinical Trial Investigators</button>
-          <button type="button" class="btn btn-info  pull-right"  (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_products',4,'Clinical Trial IMP Products',documentComponent)">Next Application
-              Documents<i class="fa fa-angle-double-right"></i></button>
+         <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_products',2,'Medicines to be used in the trial')" class="btn btn-info  pull-right" >Next Sites & Investigators<i class="fa fa-angle-double-right"></i></button>
         </div>
-
       </wizard-step>
+      <wizard-step navigationSymbol="Step 3"  stepTitle="Sites & Investigators ">
+        <div class="wizard-divtop">
+            <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                class="fa fa-angle-double-left"></i>Previous</button>
+                <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_investigators',3,'Clinical Trial Investigators')" class="btn btn-info  pull-right" >Next Participants Details<i class="fa fa-angle-double-right"></i></button>
+          </div>
+          <div class="accordion" id="studySiteInfo">
+              <div class="card">
+                <div class="card-headerdefined" id="heading1">
+            
+                  <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#study_site"
+                    aria-expanded="false" aria-controls="study_site">
+                    Clinical trial Study Sites
+                  </button>
+            
+                </div>
+                <div id="study_site" class="collapse show" aria-labelledby="heading1" data-parent="#studySiteInfo">
+                  <div class="card-body no-padding">
+                    <div class="no-padding">
+                       <app-clinical-studysites  
+                        [clinicalSitesDetailsData] ="clinicalSitesDetailsData"  
+                        [durationDescData] ="durationDescData"  
+                        [application_id] ="application_id"  
+                        [countries] ="countries"  
+                      >
+                      </app-clinical-studysites>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <app-clinical-investigators  
+              [sub_module_id] ="sub_module_id"  
+              [module_id] ="module_id"  
+              [application_code] ="application_code"  
+              [clinicalSitesDetailsData] ="clinicalSitesDetailsData"  
+              
+              [countries] ="countries"
+              [regions] ="regions"
+              [districts] ="districts"
+              [application_id] ="application_id"
+              [investigatorCategoryData] ="investigatorCategoryData"
+              >
+              </app-clinical-investigators>
+              <div class="card">
+                <div class="card-headerdefined" id="heading2">
+            
+                  <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#premises_staffdetails"
+                    aria-expanded="false" aria-controls="premises_staffdetails">
+                    Other Trial Staff
+                  </button>
+            
+                </div>
+                <div id="premises_staffdetails" class="collapse show" 
+                    aria-labelledby="heading2" data-parent="#studySiteInfo">
+                  <div class="card-body no-padding">
+                    <div class="no-padding">
+                      <app-othertrial-staff  
+                        [clinicalPersonnellDetailsfrm] ="clinicalPersonnellDetailsfrm"  
+                        [newPremisesStafflDetailsfrm] ="newPremisesStafflDetailsfrm"  
+                        [premPersonnelDetailsData] ="premPersonnelDetailsData" 
+                        [countries] ="countries"
+                        [sub_module_id] ="sub_module_id" 
+                        [application_id]="application_id"  
+                        [regions] ="regions"  
+                        [districts] ="districts" 
+                        [isBusinessPersonnelPopupVisible] ="isBusinessPersonnelPopupVisible"  
+                        [qualificationsData] ="qualificationsData"  
+                        [personnelPositionData] ="personnelPositionData"  
+                        [studyFieldsData] ="studyFieldsData"  
+                        [personnel_informationData] ="personnel_informationData"  
+                        [isaddNewPremisesPersonnelDetails] ="isaddNewPremisesPersonnelDetails"  
+                        [is_readonly] ="is_readonly"  
+                        [premise_id] ="premise_id"  
+                        [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
+                        >
+                        </app-othertrial-staff>          
+                        </div>
+                        </div>
+                    </div>
+              </div>
+          </div>
+        <div class="wizard-divbottom">
+          <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+              class="fa fa-angle-double-left"></i>Previous
+          </button>
+          <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_investigators',3,'Clinical Trial Investigators')" class="btn btn-info  pull-right" >Next Participants Details<i class="fa fa-angle-double-right"></i></button>
+        </div>
+      </wizard-step>
+      <wizard-step stepTitle="Participants"  navigationSymbol="Step 4"  class="wizardStep-height">
+        <div class="wizard-divtop">
+          <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+              class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialParticipantsApplication()"
+              [disabled]="!clinicaltrialEndpointGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
+          </div>
+          <app-clinical-endpointsdetails 
+          [sub_module_id] ="sub_module_id"
+          [clinicaltrialEndpointGeneraldetailsfrm]="clinicaltrialEndpointGeneraldetailsfrm" 
+          [module_id] ="module_id"  
+          [application_code] ="application_code"
+          [durationDescData] ="durationDescData"
+          [section_id] ="section_id"   
+          [reg_clinical_trial_id] ="reg_clinical_trial_id"
+          [is_readonly] ="is_readonly"
+         
+          >
+          </app-clinical-endpointsdetails>
+          <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+               <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                  class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialParticipantsApplication()"
+              [disabled]="!clinicaltrialEndpointGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
 
-      <wizard-step navigationSymbol="Step 5"  stepTitle="Documents Uploads" class="wizardStep-height">
+          </div>
+      </wizard-step>
+      <wizard-step stepTitle="History of Previous and In-progress Trials"  navigationSymbol="Step 5"  class="wizardStep-height">
+         <div class="wizard-divtop">
+          <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+              class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialHistoryApplication()"
+              [disabled]="!clinicaltrialGeneralExclusiondetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
+          </div>
+          <app-clinical-inclusionothersites 
+          [sub_module_id] ="sub_module_id" 
+          [clinicaltrialGeneralExclusiondetailsfrm]="clinicaltrialGeneralExclusiondetailsfrm" 
+          [clinicalTrialControl]="clinicalTrialControl"
+          [module_id] ="module_id"  
+          [application_code] ="application_code" 
+          [section_id] ="section_id"   
+          [reg_clinical_trial_id] ="reg_clinical_trial_id"
+          [is_readonly] ="is_readonly"
+          >
+          </app-clinical-inclusionothersites>
+          <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+               <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                  class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialHistoryApplication();funcValidateOtherClinicalDetails(5+initWizardPanel)"
+              [disabled]="!clinicaltrialGeneralExclusiondetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
+
+          </div>
+      </wizard-step>
+      <wizard-step stepTitle="Ethics Review"  navigationSymbol="Step 6"  class="wizardStep-height">
+          <app-clinical-studydesignendpointsdetails 
+          [sub_module_id] ="sub_module_id"  
+          [clinicaltrialStudyGeneraldetailsfrm]="clinicaltrialStudyGeneraldetailsfrm"
+          [module_id] ="module_id"
+          [ctrethicsCommitteesData]="ctrethicsCommitteesData" 
+          [application_code] ="application_code" 
+          [section_id] ="section_id"   
+          [reg_clinical_trial_id] ="reg_clinical_trial_id"
+          [is_readonly] ="is_readonly"
+         
+          >
+          </app-clinical-studydesignendpointsdetails>
+          <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+               <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                  class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialEthicsApplication()"
+              [disabled]="!clinicaltrialStudyGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
+
+          </div>
+      </wizard-step>
+      <wizard-step stepTitle="Trial Conduct Monitoring and Reports"  navigationSymbol="Step 7"  class="wizardStep-height">
+        <div class="wizard-divtop">
+          <button type="button" class="btn btn-info pull-left" 
+            previousStep>&nbsp;<i
+            class="fa fa-angle-double-left"></i>Previous
+          </button>
+           <button type="submit" 
+            (click)="onSaveMonitoringApplication();funcValidateOtherClinicalDetails(7+initWizardPanel)"
+            [disabled]="!clinicaltrialMonitoringReportdetailsfrm.valid" class="btn btn-info  pull-right"
+            style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
+          </div>
+          <app-trial-monitoring-report 
+          [sub_module_id] ="sub_module_id" 
+          [clinicaltrialMonitoringReportdetailsfrm]="clinicaltrialMonitoringReportdetailsfrm" 
+          [module_id] ="module_id"  
+          [application_code] ="application_code" 
+          [section_id] ="section_id"   
+          [reg_clinical_trial_id] ="reg_clinical_trial_id"
+          [is_readonly] ="is_readonly"
+         
+          >
+          </app-trial-monitoring-report>
+          <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+               <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                  class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveMonitoringApplication();funcValidateOtherClinicalDetails(7+initWizardPanel)"
+              [disabled]="!clinicaltrialMonitoringReportdetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
+
+          </div>
+      </wizard-step>
+      <wizard-step stepTitle="Description of the Trial"  navigationSymbol="Step 8"  class="wizardStep-height">
+        <div class="wizard-divtop">
+          <button type="button" class="btn btn-info pull-left" 
+            previousStep>&nbsp;<i
+            class="fa fa-angle-double-left"></i>Previous
+          </button>
+           <button type="submit" (click)="onSaveClincialTrialDescriptionApplication();funcValidateOtherClinicalDetails(8+initWizardPanel)"
+           [disabled]="!clinicaltrialObjectiveGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
+          </div>
+          <app-clinical-objectivedetails 
+          [sub_module_id] ="sub_module_id"
+          [clinicaltrialObjectiveGeneraldetailsfrm]="clinicaltrialObjectiveGeneraldetailsfrm"  
+          [module_id] ="module_id"  
+          [application_code] ="application_code" 
+          [section_id] ="section_id"   
+          [reg_clinical_trial_id] ="reg_clinical_trial_id"
+          [is_readonly] ="is_readonly"
+         [application_id]="application_id"
+          >
+          </app-clinical-objectivedetails>
+          <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+              <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                  class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialDescriptionApplication();funcValidateOtherClinicalDetails(8+initWizardPanel)"[disabled]="!clinicaltrialObjectiveGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
+
+          </div>
+      </wizard-step>
+      <wizard-step stepTitle="Other Description of the Trial"  navigationSymbol="Step 9"  class="wizardStep-height">
+        <div class="wizard-divtop">
+          <button type="button" class="btn btn-info pull-left" 
+            previousStep>&nbsp;<i
+            class="fa fa-angle-double-left"></i>Previous
+          </button>
+           <button type="submit" (click)="onSaveClincialTrialOthersApplication();funcValidateOtherClinicalDetails(9+initWizardPanel)"
+               [disabled]="!clinicaltrialDescriptionGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
+          </div>
+          <app-trial-description 
+          [sub_module_id] ="sub_module_id"
+          [clinicaltrialDescriptionGeneraldetailsfrm]="clinicaltrialDescriptionGeneraldetailsfrm"  
+          [module_id] ="module_id"  
+          [application_code] ="application_code" 
+          [section_id] ="section_id"   
+          [reg_clinical_trial_id] ="reg_clinical_trial_id"
+          [is_readonly] ="is_readonly"
+         [application_id]="application_id"
+          >
+          </app-trial-description>
+          <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+               <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                  class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialOthersApplication();funcValidateOtherClinicalDetails(9+initWizardPanel)"
+                [disabled]="!clinicaltrialDescriptionGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
+
+          </div>
+      </wizard-step>
+      <wizard-step navigationSymbol="Step10"  stepTitle="Non Clinical (Mandatory Study Phase IV)" >
+        <div class="wizard-divtop">
+            <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                class="fa fa-angle-double-left"></i>Previous</button>
+                <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinicaltrial_toxicitydosage',10,'Dosage Toxicity')" class="btn btn-info  pull-right" >Next<i class="fa fa-angle-double-right"></i></button>
+          </div>
+           <app-non-clinicalfindings-pharmacokinetisc  
+              [sub_module_id] ="sub_module_id"  
+              [module_id] ="module_id"  
+              [application_code] ="application_code"  
+              [clinicalSitesDetailsData] ="clinicalSitesDetailsData"  
+              
+              [countries] ="countries"
+              [regions] ="regions"
+              [districts] ="districts"
+              [application_id] ="application_id"
+              [investigatorCategoryData] ="investigatorCategoryData"
+          >
+        </app-non-clinicalfindings-pharmacokinetisc>
+        <div class="wizard-divbottom">
+          <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+              class="fa fa-angle-double-left"></i>Previous
+          </button>
+          <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinicaltrial_toxicitydosage',10,'Dosage Toxicity')" class="btn btn-info  pull-right" >Next<i class="fa fa-angle-double-right"></i></button>
+        </div>
+      </wizard-step>
+      <wizard-step navigationSymbol="Step11"  stepTitle="Documents Uploads" class="wizardStep-height">
           <div class="wizard-divtop">
               <button type="button" class="btn btn-info pull-left" previousStep><i class="fa fa-angle-double-left"></i>Previous
                Documents</button>
-              <button type="button" class="btn btn-info pull-right" (click)="funcValidateDocumentsDetails(5)">Next Application
+              <button type="button" class="btn btn-info pull-right" (click)="funcValidateDocumentsDetails(11)">Next Application
                 Submission<i class="fa fa-angle-double-right"></i></button>
     
             </div>
@@ -327,15 +560,13 @@
         <div class="wizard-divbottom">
           <button type="button" class="btn btn-info  pull-left" previousStep><i class="fa fa-angle-double-left"></i>Previous
            Documents</button>
-          <button type="button" class="btn btn-info  pull-right" (click)="funcValidateDocumentsDetails(5)">Next Application
+          <button type="button" class="btn btn-info  pull-right" (click)="funcValidateDocumentsDetails(11)">Next Application
             Submission<i class="fa fa-angle-double-right"></i></button>
 
         </div>
 
       </wizard-step>
-    
       <wizard-step navigationSymbol="Submission"  stepTitle="Completion & Submission">
-
           <form [formGroup]="onApplicationSubmissionFrm" class="col-lg-12  div-nopadding" style="background: #fff;" enctype="multipart/form-data" role="form" (ngSubmit)="onGmpApplicationSubmit()">
             <div class="col-lg-12">
               <b><label>Declaration /Terms and condition</label></b>
@@ -345,11 +576,7 @@
                   </p>
               </ul>
           </div>
-            
-            <div class="col-lg-12">
-              <b> <h4>Submission Comments(Optional)</h4></b>
-                <dx-text-area formControlName="submission_comments" placeholder="Enter Comments(optional)"></dx-text-area>
-            </div>
+
             <div class="col-lg-12">
               <dx-check-box text="Agree to the Declaration" [value]="undefined" (onValueChanged)="submissionsTermscheckbox($event)">
               </dx-check-box>
@@ -368,10 +595,7 @@
   </div>
 </div>
 
-
-
-
-<dx-popup  class="popup" [width]="funcpopWidth(80)"  [height]="650" [showTitle]="true" title="Application Registration Query Response"
+<dx-popup  class="popup" [width]="funcpopWidth(1150)"  [height]="600" [showTitle]="true" title="Application Registration Query Response"
     [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isInitalQueryResponseFrmVisible">
       <div *dxTemplate="let data of 'content'">
       <dx-scroll-view>
@@ -409,16 +633,17 @@
                     </dx-button>-->
               </div>
         </wizard-step>
-     
-        <wizard-step stepTitle="Clincial Trial Application Details" class="wizardStep-height">
+        <wizard-step class="wizard-step" stepTitle="Identification of the Clinical Trial" navigationSymbol="Step 1" 
+         class="wizardStep-height">
           <app-clinical-generaldetails  [clinicaltrialGeneraldetailsfrm] ="clinicaltrialGeneraldetailsfrm"  
           [durationDescData] ="durationDescData"  
           [payingCurrencyData] ="payingCurrencyData"  
-          [fastTrackOptionsData] ="fastTrackOptionsData"  
-          [sub_module_id] ="sub_module_id"  
-          [module_id] ="module_id"  
           [ctrethicsCommitteesData] ="ctrethicsCommitteesData"  
           [clinicalTrialRegistryData] ="clinicalTrialRegistryData"  
+          [fastTrackOptionsData] ="fastTrackOptionsData"  
+          [sub_module_id] ="sub_module_id"
+          [clinicalTrialControl]="clinicalTrialControl"  
+          [module_id] ="module_id"  
           [application_code] ="application_code" 
           [section_id] ="section_id"  
           [zoneData] ="zoneData"  
@@ -430,40 +655,390 @@
           [is_readonly] ="is_readonly"
           (docClinicalSectionsEvent)="doc_section_id=$event"
           >
-          
-          
           </app-clinical-generaldetails>
           <div class=" div-footer" style="border-top: 1px solid #ccc; ">
-           
-            <button class="btn btn-info pull-right" style="margin:5px;"  nextStep
-              type="button">
-              Next Clinical Application &nbsp;<i class="fa fa-angle-double-right"></i></button>
-
+            <button (click)="onClinicalDashboard()" class="btn btn-primary pull-left" style="margin:5px;" 
+            type="button"><i class="fa fa-angle-double-left"></i>
+              &nbsp;Dashboard</button>
             <button type="submit" (click)="onSaveClincialTrialApplication()"
               [disabled]="!clinicaltrialGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
-              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Clinical Trial
-              Application</button>
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
 
           </div>
-       
       </wizard-step>
-      <wizard-step stepTitle="Clinical Study Sites" class="wizardStep-height">
-           <app-clinical-studysites  [clinicalSitesDetailsData] ="clinicalSitesDetailsData"  
-          [durationDescData] ="durationDescData"  
-          [application_id] ="application_id"  
-          [countries] ="countries"  
-          >
-  
-          </app-clinical-studysites>
-        <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
-          <button type="button" class="btn btn-info" previousStep>&nbsp;<i
+      <wizard-step  navigationSymbol="Step 2"  stepTitle="Medicines to be used in the trial">
+          <div class="wizard-divtop">
+              <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                  class="fa fa-angle-double-left"></i>Previous</button>
+               <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_products',2,'Medicines to be used in the trial')" class="btn btn-info  pull-right" >Next Sites & Investigators<i class="fa fa-angle-double-right"></i></button>
+            </div>
+          <div class="accordion" id="productInfo">
+              <div class="card">
+                <div class="card-headerdefined" id="headingTwo">
+                  <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#investigational_product"
+                    aria-expanded="false" aria-controls="investigational_product">
+                    Clinical trial Investigational Product
+                  </button>
+                </div>
+                <div id="investigational_product" class="collapse show" aria-labelledby="headingTwo" data-parent="#productInfo">
+                  <div class="card-body no-padding">
+                    <div class="no-padding">
+                        <app-clinical-investigationalproducts
+                        [iMPProductDetailsFrm] ="iMPProductDetailsFrm"  
+                        [application_id] ="application_id"  
+                        [countries] ="countries"  
+                        [clinicalProductCategoryData] ="clinicalProductCategoryData"  
+                        
+                        [commonNameData] ="commonNameData" 
+                        [dosagFormData] ="dosagFormData" 
+                        [routeOfAdminData] ="routeOfAdminData" 
+                        [siUnitsData] ="siUnitsData"
+                        [marketlocationData] ="marketlocationData"
+                        [manufacturersData] ="manufacturersData"
+                          >
+                        </app-clinical-investigationalproducts>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-headerdefined" id="heading5">
+                  <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#handling_product"
+                    aria-expanded="false" aria-controls="investigational_product">
+                   Details of Handling Trial Medicines
+                  </button>
+                </div>
+                <div id="handling_product" class="collapse show" aria-labelledby="heading5" data-parent="#productInfo">
+                  <div class="card-body no-padding">
+                    <div class="no-padding">
+                        <app-clinical-handling
+                        [iMPHandlingProductDetailsFrm] ="iMPHandlingProductDetailsFrm"  
+                        [application_id] ="application_id"  
+                        [countries] ="countries"  
+                        [clinicalProductCategoryData] ="clinicalProductCategoryData"  
+                        
+                        [commonNameData] ="commonNameData" 
+                        [dosagFormData] ="dosagFormData" 
+                        [routeOfAdminData] ="routeOfAdminData" 
+                        [siUnitsData] ="siUnitsData"
+                        [marketlocationData] ="marketlocationData"
+                        [manufacturersData] ="manufacturersData"
+                          >
+                        </app-clinical-handling>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-headerdefined" id="headingTwo">
+            
+                  <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#comparator_product"
+                    aria-expanded="false" aria-controls="comparator_product">
+                    Clinical trial Comparator Product
+                  </button>
+            
+                </div>
+                <div id="comparator_product" class="collapse show" aria-labelledby="headingTwo" data-parent="#productInfo">
+                  <div class="card-body no-padding">
+                    <div class="no-padding">
+                        <app-clinical-comparatorproducts 
+                        [iMPProductDetailsFrm] ="iMPProductDetailsFrm"  
+                        [application_id] ="application_id"  
+                        [countries] ="countries"  
+                        [clinicalProductCategoryData] ="clinicalProductCategoryData"  
+                        
+                        [commonNameData] ="commonNameData" 
+                        [dosagFormData] ="dosagFormData" 
+                        [routeOfAdminData] ="routeOfAdminData" 
+                        [siUnitsData] ="siUnitsData"
+                        [marketlocationData] ="marketlocationData"
+                        [manufacturersData] ="manufacturersData"
+                          >
+                        </app-clinical-comparatorproducts>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        <div class="wizard-divbottom">
+          <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
               class="fa fa-angle-double-left"></i>Previous
-            Clinical Trial Information</button>
-          <button type="button" class="btn btn-info" nextStep>Next Investigators Details &nbsp;<i class="fa fa-angle-double-right"></i></button>
+            Clinical Trial Investigators</button>
+         <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_products',2,'Medicines to be used in the trial')" class="btn btn-info  pull-right" >Next Sites & Investigators<i class="fa fa-angle-double-right"></i></button>
         </div>
       </wizard-step>
-      <wizard-step stepTitle="Co-/Sub Investigators & Monitors "  class="wizardStep-height">
-          <app-clinical-investigators  
+      <wizard-step navigationSymbol="Step 3"  stepTitle="Sites & Investigators ">
+        <div class="wizard-divtop">
+            <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                class="fa fa-angle-double-left"></i>Previous</button>
+                <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_investigators',3,'Clinical Trial Investigators')" class="btn btn-info  pull-right" >Next Participants Details<i class="fa fa-angle-double-right"></i></button>
+          </div>
+          <div class="accordion" id="studySiteInfo">
+              <div class="card">
+                <div class="card-headerdefined" id="heading1">
+            
+                  <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#study_site"
+                    aria-expanded="false" aria-controls="study_site">
+                    Clinical trial Study Sites
+                  </button>
+            
+                </div>
+                <div id="study_site" class="collapse show" aria-labelledby="heading1" data-parent="#studySiteInfo">
+                  <div class="card-body no-padding">
+                    <div class="no-padding">
+                       <app-clinical-studysites  
+                        [clinicalSitesDetailsData] ="clinicalSitesDetailsData"  
+                        [durationDescData] ="durationDescData"  
+                        [application_id] ="application_id"  
+                        [countries] ="countries"  
+                      >
+                      </app-clinical-studysites>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <app-clinical-investigators  
+              [sub_module_id] ="sub_module_id"  
+              [module_id] ="module_id"  
+              [application_code] ="application_code"  
+              [clinicalSitesDetailsData] ="clinicalSitesDetailsData"  
+              
+              [countries] ="countries"
+              [regions] ="regions"
+              [districts] ="districts"
+              [application_id] ="application_id"
+              [investigatorCategoryData] ="investigatorCategoryData"
+              >
+              </app-clinical-investigators>
+              <div class="card">
+                <div class="card-headerdefined" id="heading2">
+            
+                  <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#premises_staffdetails"
+                    aria-expanded="false" aria-controls="premises_staffdetails">
+                    Other Trial Staff
+                  </button>
+            
+                </div>
+                <div id="premises_staffdetails" class="collapse show" 
+                    aria-labelledby="heading2" data-parent="#studySiteInfo">
+                  <div class="card-body no-padding">
+                    <div class="no-padding">
+                      <app-othertrial-staff  
+                        [clinicalPersonnellDetailsfrm] ="clinicalPersonnellDetailsfrm"  
+                        [newPremisesStafflDetailsfrm] ="newPremisesStafflDetailsfrm"  
+                        [premPersonnelDetailsData] ="premPersonnelDetailsData" 
+                        [countries] ="countries"
+                        [sub_module_id] ="sub_module_id" 
+                        [application_id]="application_id"  
+                        [regions] ="regions"  
+                        [districts] ="districts" 
+                        [isBusinessPersonnelPopupVisible] ="isBusinessPersonnelPopupVisible"  
+                        [qualificationsData] ="qualificationsData"  
+                        [personnelPositionData] ="personnelPositionData"  
+                        [studyFieldsData] ="studyFieldsData"  
+                        [personnel_informationData] ="personnel_informationData"  
+                        [isaddNewPremisesPersonnelDetails] ="isaddNewPremisesPersonnelDetails"  
+                        [is_readonly] ="is_readonly"  
+                        [premise_id] ="premise_id"  
+                        [premisesGeneraldetailsfrm] ="premisesGeneraldetailsfrm"  
+                        >
+                        </app-othertrial-staff>          
+                        </div>
+                        </div>
+                    </div>
+              </div>
+          </div>
+        <div class="wizard-divbottom">
+          <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+              class="fa fa-angle-double-left"></i>Previous
+          </button>
+          <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinical_trial_investigators',3,'Clinical Trial Investigators')" class="btn btn-info  pull-right" >Next Participants Details<i class="fa fa-angle-double-right"></i></button>
+        </div>
+      </wizard-step>
+      <wizard-step stepTitle="Participants"  navigationSymbol="Step 4"  class="wizardStep-height">
+        <div class="wizard-divtop">
+          <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+              class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialParticipantsApplication()"
+              [disabled]="!clinicaltrialEndpointGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
+          </div>
+          <app-clinical-endpointsdetails 
+          [sub_module_id] ="sub_module_id"
+          [clinicaltrialEndpointGeneraldetailsfrm]="clinicaltrialEndpointGeneraldetailsfrm" 
+          [module_id] ="module_id"  
+          [application_code] ="application_code"
+          [durationDescData] ="durationDescData"
+          [section_id] ="section_id"   
+          [reg_clinical_trial_id] ="reg_clinical_trial_id"
+          [is_readonly] ="is_readonly"
+         
+          >
+          </app-clinical-endpointsdetails>
+          <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+               <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                  class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialParticipantsApplication()"
+              [disabled]="!clinicaltrialEndpointGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
+
+          </div>
+      </wizard-step>
+      <wizard-step stepTitle="History of Previous and In-progress Trials"  navigationSymbol="Step 5"  class="wizardStep-height">
+         <div class="wizard-divtop">
+          <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+              class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialHistoryApplication()"
+              [disabled]="!clinicaltrialGeneralExclusiondetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
+          </div>
+          <app-clinical-inclusionothersites 
+          [sub_module_id] ="sub_module_id" 
+          [clinicaltrialGeneralExclusiondetailsfrm]="clinicaltrialGeneralExclusiondetailsfrm" 
+          [clinicalTrialControl]="clinicalTrialControl"
+          [module_id] ="module_id"  
+          [application_code] ="application_code" 
+          [section_id] ="section_id"   
+          [reg_clinical_trial_id] ="reg_clinical_trial_id"
+          [is_readonly] ="is_readonly"
+          >
+          </app-clinical-inclusionothersites>
+          <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+               <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                  class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialHistoryApplication()"
+              [disabled]="!clinicaltrialGeneralExclusiondetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
+
+          </div>
+      </wizard-step>
+      <wizard-step stepTitle="Ethics Review"  navigationSymbol="Step 6"  class="wizardStep-height">
+          <app-clinical-studydesignendpointsdetails 
+          [sub_module_id] ="sub_module_id"  
+          [clinicaltrialStudyGeneraldetailsfrm]="clinicaltrialStudyGeneraldetailsfrm"
+          [module_id] ="module_id"
+          [ctrethicsCommitteesData]="ctrethicsCommitteesData" 
+          [application_code] ="application_code" 
+          [section_id] ="section_id"   
+          [reg_clinical_trial_id] ="reg_clinical_trial_id"
+          [is_readonly] ="is_readonly"
+         
+          >
+          </app-clinical-studydesignendpointsdetails>
+          <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+               <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                  class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialEthicsApplication()"
+              [disabled]="!clinicaltrialStudyGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
+
+          </div>
+      </wizard-step>
+      <wizard-step stepTitle="Trial Conduct Monitoring and Reports"  navigationSymbol="Step 7"  class="wizardStep-height">
+        <div class="wizard-divtop">
+          <button type="button" class="btn btn-info pull-left" 
+            previousStep>&nbsp;<i
+            class="fa fa-angle-double-left"></i>Previous
+          </button>
+           <button type="submit" 
+            (click)="onSaveMonitoringApplication()"
+            [disabled]="!clinicaltrialMonitoringReportdetailsfrm.valid" class="btn btn-info  pull-right"
+            style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
+          </div>
+          <app-trial-monitoring-report 
+          [sub_module_id] ="sub_module_id" 
+          [clinicaltrialMonitoringReportdetailsfrm]="clinicaltrialMonitoringReportdetailsfrm" 
+          [module_id] ="module_id"  
+          [application_code] ="application_code" 
+          [section_id] ="section_id"   
+          [reg_clinical_trial_id] ="reg_clinical_trial_id"
+          [is_readonly] ="is_readonly"
+         
+          >
+          </app-trial-monitoring-report>
+          <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+               <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                  class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveMonitoringApplication()"
+              [disabled]="!clinicaltrialMonitoringReportdetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
+
+          </div>
+      </wizard-step>
+      <wizard-step stepTitle="Description of the Trial"  navigationSymbol="Step 8"  class="wizardStep-height">
+        <div class="wizard-divtop">
+          <button type="button" class="btn btn-info pull-left" 
+            previousStep>&nbsp;<i
+            class="fa fa-angle-double-left"></i>Previous
+          </button>
+           <button type="submit" (click)="onSaveClincialTrialDescriptionApplication()"
+           [disabled]="!clinicaltrialObjectiveGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
+          </div>
+          <app-clinical-objectivedetails 
+          [sub_module_id] ="sub_module_id"
+          [clinicaltrialObjectiveGeneraldetailsfrm]="clinicaltrialObjectiveGeneraldetailsfrm"  
+          [module_id] ="module_id"  
+          [application_code] ="application_code" 
+          [section_id] ="section_id"   
+          [reg_clinical_trial_id] ="reg_clinical_trial_id"
+          [is_readonly] ="is_readonly"
+         [application_id]="application_id"
+          >
+          </app-clinical-objectivedetails>
+          <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+              <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                  class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialDescriptionApplication()"[disabled]="!clinicaltrialObjectiveGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
+
+          </div>
+      </wizard-step>
+      <wizard-step stepTitle="Other Description of the Trial"  navigationSymbol="Step 9"  class="wizardStep-height">
+        <div class="wizard-divtop">
+          <button type="button" class="btn btn-info pull-left" 
+            previousStep>&nbsp;<i
+            class="fa fa-angle-double-left"></i>Previous
+          </button>
+           <button type="submit" (click)="onSaveClincialTrialOthersApplication()"
+               [disabled]="!clinicaltrialDescriptionGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
+          </div>
+          <app-trial-description 
+          [sub_module_id] ="sub_module_id"
+          [clinicaltrialDescriptionGeneraldetailsfrm]="clinicaltrialDescriptionGeneraldetailsfrm"  
+          [module_id] ="module_id"  
+          [application_code] ="application_code" 
+          [section_id] ="section_id"   
+          [reg_clinical_trial_id] ="reg_clinical_trial_id"
+          [is_readonly] ="is_readonly"
+         [application_id]="application_id"
+          >
+          </app-trial-description>
+          <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+               <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                  class="fa fa-angle-double-left"></i>Previous
+              </button>
+            <button type="submit" (click)="onSaveClincialTrialOthersApplication()"
+                [disabled]="!clinicaltrialDescriptionGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+              style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
+
+          </div>
+      </wizard-step>
+      <wizard-step navigationSymbol="Step10"  stepTitle="Non Clinical (Mandatory Study Phase IV)" >
+        <div class="wizard-divtop">
+            <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
+                class="fa fa-angle-double-left"></i>Previous</button>
+                <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinicaltrial_toxicitydosage',10,'Dosage Toxicity')" class="btn btn-info  pull-right" >Next<i class="fa fa-angle-double-right"></i></button>
+          </div>
+           <app-non-clinicalfindings-pharmacokinetisc  
               [sub_module_id] ="sub_module_id"  
               [module_id] ="module_id"  
               [application_code] ="application_code"  
@@ -475,100 +1050,15 @@
               [application_id] ="application_id"
               [investigatorCategoryData] ="investigatorCategoryData"
           >
-        </app-clinical-investigators>
-          
-        <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
-          <button type="button" class="btn btn-info" previousStep>&nbsp;<i
-              class="fa fa-angle-double-left"></i>Previous
-            Clinical trial Study Site</button>
-          <button type="button"  nextStep class="btn btn-info" >Next Products Details<i class="fa fa-angle-double-right"></i></button>
-        </div>
-
-      </wizard-step>
-  
-      <wizard-step stepTitle="Clinical Trial Products Information">
-         
-        <div class="accordion" id="productInfo">
-
-          <div class="card">
-            <div class="card-headerdefined" id="headingTwo">
-        
-              <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#investigational_product"
-                aria-expanded="false" aria-controls="investigational_product">
-                Clinial trial Investigational Product
-              </button>
-        
-            </div>
-            <div id="investigational_product" class="collapse show" aria-labelledby="headingTwo" data-parent="#productInfo">
-              <div class="card-body no-padding">
-                <div class="no-padding">
-                    <app-clinical-investigationalproducts
-                    [iMPProductDetailsFrm] ="iMPProductDetailsFrm"  
-                    [application_id] ="application_id"  
-                    [countries] ="countries"  
-                    [clinicalProductCategoryData] ="clinicalProductCategoryData"  
-                    
-                    [commonNameData] ="commonNameData" 
-                    [dosagFormData] ="dosagFormData" 
-                    [routeOfAdminData] ="routeOfAdminData" 
-                    [siUnitsData] ="siUnitsData"
-                    [marketlocationData] ="marketlocationData"
-                    [manufacturersData] ="manufacturersData"
-                      >
-                    
-                    </app-clinical-investigationalproducts>
-                
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-headerdefined" id="headingTwo">
-        
-              <button class="btn btn-link " type="button" data-toggle="collapse" data-target="#comparator_product"
-                aria-expanded="false" aria-controls="comparator_product">
-                Other Clinial trial (Comparator, Placebo... Product)
-              </button>
-        
-            </div>
-            <div id="comparator_product" class="collapse show" aria-labelledby="headingTwo" data-parent="#productInfo">
-              <div class="card-body no-padding">
-                <div class="no-padding">
-                    <app-clinical-comparatorproducts 
-                    [iMPProductDetailsFrm] ="iMPProductDetailsFrm"  
-                    [application_id] ="application_id"  
-                    [countries] ="countries"  
-                    [clinicalProductCategoryData] ="clinicalProductCategoryData"  
-                    
-                    [commonNameData] ="commonNameData" 
-                    [dosagFormData] ="dosagFormData" 
-                    [routeOfAdminData] ="routeOfAdminData" 
-                    [siUnitsData] ="siUnitsData"
-                    [marketlocationData] ="marketlocationData"
-                    [manufacturersData] ="manufacturersData"
-                      >
-                    
-                    </app-clinical-comparatorproducts>
-                
-        
-                </div>
-              </div>
-            </div>
-          </div>
-         
-      </div>
+        </app-non-clinicalfindings-pharmacokinetisc>
         <div class="wizard-divbottom">
-          <button type="button" class="btn btn-info" previousStep>&nbsp;<i
+          <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
               class="fa fa-angle-double-left"></i>Previous
-            Clinical Trial Investigators</button>
-          <button type="button" class="btn btn-info" nextStep>Next Application
-              Documents<i class="fa fa-angle-double-right"></i></button>
+          </button>
+          <button type="button"  (click)="funcValidateClinicalSiteDetails('wb_clinicaltrial_toxicitydosage',10,'Dosage Toxicity')" class="btn btn-info  pull-right" >Next<i class="fa fa-angle-double-right"></i></button>
         </div>
-
       </wizard-step>
-
       <wizard-step stepTitle="Documents" class="wizardStep-height">
-     
           <div class=" wizard-content">
             <app-application-documents #documentComponent [section_id] ="doc_section_id"  [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-application-documents>
           </div>

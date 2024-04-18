@@ -106,10 +106,12 @@
       <wizard-step stepTitle=" Application Details"   navigationSymbol="Step 1" class="wizardStep-height">
         <app-importexport-gendetails  [applicationGeneraldetailsfrm]="applicationGeneraldetailsfrm"  
             [sectionsData] ="sectionsData"  
-            [applicationTypeData] ="applicationTypeData"  
             [sub_module_id] ="sub_module_id"  
             [applicationTypeCategoryData] ="applicationTypeCategoryData"  
             [permitReasonData] ="permitReasonData" 
+            [premiseClassData] = "premiseClassData"
+            [businessTypeData] = "businessTypeData"
+
             [portOfEntryExitData] ="portOfEntryExitData"   
             [payingCurrencyData] ="payingCurrencyData"  
             [currencyData]="currencyData"
@@ -121,9 +123,9 @@
             [application_code] ="application_code"  
             [ispremisesSearchWinVisible] ="ispremisesSearchWinVisible"  
             [registered_premisesData] ="registered_premisesData"  
-            [modeOfTransportData] ="modeOfTransportData"  
-
-            
+            [modeOfTransportData] ="modeOfTransportData" 
+            [port_id]="port_id"
+            [has_registered_premises]="has_registered_premises"
             [issenderreceiverSearchWinVisible] ="issenderreceiverSearchWinVisible"  
             [consignee_sendertitle] ="consignee_sendertitle"  
             [issenderreceiverAddWinVisible] ="issenderreceiverAddWinVisible"  
@@ -134,7 +136,7 @@
             [section_id] ="section_id"  
             
             [deviceTypeData] ="deviceTypeData"
-            [applicationCategoryData] ="applicationCategoryData"  
+            [applicationCategoryData] ="applicationCategoryData"      
             >
             </app-importexport-gendetails>
           <div class=" div-footer" style="border-top: 1px solid #ccc; ">
@@ -191,7 +193,8 @@
             [module_id] ="module_id"   
             [module_id] ="module_id"   
             [section_id] ="section_id"   
-            
+            [port_id]="port_id"
+
             >
             </app-permit-productsdetails>
         <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
@@ -251,7 +254,7 @@
   
           <div class="wizard-divbottom">
             <button class="btn btn-primary" type="button" previousStep>Previous Step</button>
-            <app-invoice-appgeneration [onApplicationSubmissionFrm] ="onApplicationSubmissionFrm" [sub_module_id] ="sub_module_id" [app_routing] ="app_routing"  *ngIf="has_invoicegeneration"  [module_id] ="module_id" [section_id] ="section_id" [status_id] ="status_id"  [application_code]="application_code" ></app-invoice-appgeneration>
+           <app-invoice-appgeneration [onApplicationSubmissionFrm] ="onApplicationSubmissionFrm" [sub_module_id] ="sub_module_id" [app_routing] ="app_routing"  *ngIf="has_invoicegeneration"  [module_id] ="module_id" [section_id] ="section_id" [status_id] ="status_id"  [application_code]="application_code" ></app-invoice-appgeneration>
             <button class="btn btn-primary" type="button" [disabled]="!termscheckbox"
               (click)="onPermitsApplicationSubmit()">Submit Permit
               Application</button>
@@ -367,25 +370,26 @@
           </div>
         <app-importexport-gendetails  [applicationGeneraldetailsfrm]="applicationGeneraldetailsfrm"  
             [sectionsData] ="sectionsData"  
-            [applicationTypeData] ="applicationTypeData"  
             [sub_module_id] ="sub_module_id"  
             [applicationTypeCategoryData] ="applicationTypeCategoryData"  
             [permitReasonData] ="permitReasonData" 
+            [premiseClassData] = "premiseClassData"
+            [businessTypeData] = "businessTypeData"
+
             [portOfEntryExitData] ="portOfEntryExitData"   
             [payingCurrencyData] ="payingCurrencyData"  
             [currencyData]="currencyData"
             [consigneeOptionsData] ="consigneeOptionsData"  
-            [permitProductsCategoryData] ="permitProductsCategoryData"  
-            [countries] ="countries"  
-
+            [permitProductsCategoryData] ="permitProductsCategoryData"
             [consignee_options_check] ="consignee_options_check"  
             [zoneData] ="zoneData"  
             [module_id] ="module_id"  
-            [modeOfTransportData] ="modeOfTransportData"  
-
             [application_code] ="application_code"  
             [ispremisesSearchWinVisible] ="ispremisesSearchWinVisible"  
             [registered_premisesData] ="registered_premisesData"  
+            [modeOfTransportData] ="modeOfTransportData" 
+            [port_id]="port_id"
+
             [issenderreceiverSearchWinVisible] ="issenderreceiverSearchWinVisible"  
             [consignee_sendertitle] ="consignee_sendertitle"  
             [issenderreceiverAddWinVisible] ="issenderreceiverAddWinVisible"  
@@ -393,8 +397,10 @@
             [countries] ="countries"  
             [regions] ="regions"  
             [districts] ="districts"  
+            [section_id] ="section_id"  
             
-            [applicationCategoryData] ="applicationCategoryData"  
+            [deviceTypeData] ="deviceTypeData"
+            [applicationCategoryData] ="applicationCategoryData"    
             
             >
             </app-importexport-gendetails>
@@ -449,7 +455,8 @@
             [module_id] ="module_id"   
             [module_id] ="module_id"   
             [section_id] ="section_id"   
-            
+            [port_id]="port_id"
+
             
             >
             </app-permit-productsdetails>

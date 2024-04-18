@@ -46,7 +46,7 @@ export class SharedControldrugsPermitlicenseComponent implements OnInit {
   isPrintReportVisible:boolean;
 
   printReportTitle:string;
- 
+  registrationLevelData:any;
 
   application_details: any;
   status_id: number;
@@ -58,7 +58,7 @@ export class SharedControldrugsPermitlicenseComponent implements OnInit {
   tracking_no: string;
   status_name: string;
   module_id: number = 12;
-
+  vc_application_type_id:number;
   app_route: any;
   applicationTypeData: any;
   applicationCategoryData: any;
@@ -110,6 +110,7 @@ export class SharedControldrugsPermitlicenseComponent implements OnInit {
   classificationData:any;
   quantity: number = 100;
   unit_price: number;
+  is_registered:number;
   isnewproductAddWinVisible:boolean= false;
   enabled_newproductadd:boolean= false;
   showProductAddOption: boolean = false;
@@ -150,7 +151,8 @@ export class SharedControldrugsPermitlicenseComponent implements OnInit {
       
             this.application_id = this.application_details.application_id;
             this.tracking_no = this.application_details.tracking_no;
-      
+            this.is_registered = this.application_details.is_registered;
+
             this.status_name = this.application_details.status_name;
             this.status_id = this.application_details.application_status_id;
             this.application_code = this.application_details.application_code;
@@ -163,28 +165,103 @@ export class SharedControldrugsPermitlicenseComponent implements OnInit {
           if(this.sub_module_id == 60){
 
             this.applicationGeneraldetailsfrm = new FormGroup({
-              sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
-              permit_reason_id: new FormControl('', Validators.compose([Validators.required])),
-              port_id: new FormControl('', Validators.compose([Validators.required])), 
-              mode_oftransport_id: new FormControl('', Validators.compose([Validators.required])),
-              proforma_invoice_no: new FormControl('', Validators.compose([Validators.required])),
-              proforma_invoice_date: new FormControl('', Validators.compose([Validators.required])),
-              paying_currency_id: new FormControl('', Validators.compose([])),
-              sender_receiver: new FormControl('', Validators.compose([Validators.required])),
-              sender_receiver_id: new FormControl('', Validators.compose([Validators.required])),
-              zone_id: new FormControl('', Validators.compose([])),
-              premises_name: new FormControl('', Validators.compose([])),
-              premise_id: new FormControl('', Validators.compose([])),
-              module_id: new FormControl(this.module_id, Validators.compose([Validators.required])),
-              application_code: new FormControl(this.application_code, Validators.compose([])),
-              otherpermit_reason: new FormControl('', Validators.compose([])),
-              approximate_dateof_arrival: new FormControl('', Validators.compose([])),
-              reason_fornonregister_outlet: new FormControl('', Validators.compose([])),
-              has_registered_outlets: new FormControl('', Validators.compose([Validators.required])),
-              eligible_importerscategory_id: new FormControl('', Validators.compose([])),
-              eligible_importersdoctype_id: new FormControl('', Validators.compose([]))
+        section_id: new FormControl(this.section_id, Validators.compose([])),
+        sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+        permit_category_id: new FormControl('', Validators.compose([])),
+        permit_productscategory_id: new FormControl('', Validators.compose([])),
+        permit_reason_id: new FormControl('', Validators.compose([])),
+        port_id: new FormControl('', Validators.compose([Validators.required])),
+        proforma_invoice_no: new FormControl('', Validators.compose([Validators.required])),
+        proforma_invoice_date: new FormControl('', Validators.compose([Validators.required])),
+        paying_currency_id: new FormControl('', Validators.compose([])),
+        consignee_options_id: new FormControl('', Validators.compose([])),
+        consignee_id: new FormControl('', Validators.compose([])),
+        consignee_name: new FormControl('', Validators.compose([])),
+        sender_receiver: new FormControl('', Validators.compose([Validators.required])),
+        sender_receiver_id: new FormControl('', Validators.compose([Validators.required])),
+        premises_name: new FormControl('', Validators.compose([])),
+        full_names: new FormControl('', Validators.compose([])),
+        pharmacist_region_id: new FormControl('', Validators.compose([])),
+        psu_date: new FormControl('', Validators.compose([])),
+        psu_no: new FormControl('', Validators.compose([])),
+        tin_no: new FormControl('', Validators.compose([])),
+        name_of_business: new FormControl('', Validators.compose([])),
+        email_address:new FormControl('', Validators.compose([])),
+        telephone_no: new FormControl('', Validators.compose([])),
+        pharmacist_id: new FormControl('', Validators.compose([])),
+        pharmacist_telephone: new FormControl('', Validators.compose([])),
+        pharmacist_email: new FormControl('', Validators.compose([])),
+        pharmacist_qualification: new FormControl('', Validators.compose([])),
+        pharmacist_country_id: new FormControl('', Validators.compose([])),
+        pharmacist_district_id: new FormControl('', Validators.compose([])),
+        has_registered_premises: new FormControl('', Validators.compose([Validators.required])),
+        business_type_id: new FormControl('', Validators.compose([Validators.required])),
+        premise_id: new FormControl('', Validators.compose([])),
+        zone_id: new FormControl('', Validators.compose([])),
+        module_id: new FormControl(this.module_id, Validators.compose([Validators.required])),
+        licence_type_id: new FormControl('', Validators.compose([Validators.required])),
+        importexport_product_range_id: new FormControl('', Validators.compose([])),
+        application_code: new FormControl(this.application_code, Validators.compose([])),
+        device_type_id: new FormControl('', Validators.compose([])),
+       // importexport_product_range: new FormControl('', Validators.compose([Validators.required])),
+        import_typecategory_id: new FormControl('', Validators.compose([])),
+        proforma_currency_id: new FormControl('', Validators.compose([])),
+        mode_oftransport_id: new FormControl('', Validators.compose([Validators.required])),
+        reason_fornonregister_outlet: new FormControl('', Validators.compose([])),
+        has_registered_outlets: new FormControl('', Validators.compose([])),
+        product_classification_id: new FormControl('', Validators.compose([Validators.required])),
+        eligible_importerscategory_id: new FormControl('', Validators.compose([])),
+        eligible_importersdoctype_id: new FormControl('', Validators.compose([])),
+        document_upload_id: new FormControl('', Validators.compose([])),
+        has_submitted_outlets: new FormControl('', Validators.compose([])),
+        // prodmanufacuredsection_id: new FormControl(this.module_id, Validators.compose([])),
+
+        //vc
+        importation_reason_id: new FormControl('', Validators.compose([Validators.required])),
+        clinical_trial_name: new FormControl('', Validators.compose([])),
+        clinical_trial_id: new FormControl('', Validators.compose([])),
+        product_category_id:  new FormControl('', Validators.compose([Validators.required])),
+        vc_application_type_id: new FormControl(this.vc_application_type_id, Validators.compose([Validators.required])),
+        importer_licence_number: new FormControl('', Validators.compose([])),
+        applicant_as_consignee: new FormControl('', Validators.compose([Validators.required])),
+        is_registered: new FormControl('', Validators.compose([Validators.required])),
+        government_grant_id: new FormControl('', Validators.compose([])),
+                // local_agent_id: new FormControl('', Validators.compose([Validators.required])),
+        // local_agent_name: new FormControl('', Validators.compose([Validators.required])),
+
+        //business details
+        tpin_no: new FormControl('', Validators.compose([])),
+        tpin_id: new FormControl('', Validators.compose([])),
+        name: new FormControl('', Validators.compose([])),
+        physical_address: new FormControl('', Validators.compose([])),
+        company_registration_no: new FormControl('', Validators.compose([])),
+        // incharge_telephone: new FormControl('', Validators.compose([])),
+        email: new FormControl('', Validators.compose([])),
+
+        //billing
+        applicant_contact_person: new FormControl('', Validators.compose([Validators.required])),
+        contact_person_id: new FormControl('', Validators.compose([])),
+        billing_person: new FormControl('', Validators.compose([])),
+        billing_person_id: new FormControl('', Validators.compose([])),
+
+        //manufacturer
+        entry_country_id: new FormControl('', Validators.compose([Validators.required])),
+        telephone: new FormControl('', Validators.compose([])),
+        status_of_the_manufacturing_facility: new FormControl('', Validators.compose([])),
+        approved_production_lines: new FormControl('', Validators.compose([])),
+        man_status_name: new FormControl('', Validators.compose([])),
+        contact_person: new FormControl('', Validators.compose([])),
+        country_id: new FormControl('', Validators.compose([])),
+
+
+        shipment_date: new FormControl('', Validators.compose([])),
+        proposed_inspection_date: new FormControl('', Validators.compose([])),
+        clearing_agent: new FormControl('', Validators.compose([])),
+        custom_declaration_no: new FormControl('', Validators.compose([]))
+      });
+
               
-            });
+
             
           }
           else if(this.sub_module_id == 71){
@@ -203,13 +280,14 @@ export class SharedControldrugsPermitlicenseComponent implements OnInit {
           }
           else{
             this.applicationGeneraldetailsfrm = new FormGroup({
-              importexport_permittype_id: new FormControl(),
+              section_id: new FormControl(this.section_id, Validators.compose([])),
               sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
-              permit_reason_id: new FormControl('', Validators.compose([Validators.required])),
-              port_id: new FormControl('', Validators.compose([Validators.required])), 
-              mode_oftransport_id: new FormControl('', Validators.compose([Validators.required])),
+              permit_category_id: new FormControl('', Validators.compose([])),
+              permit_productscategory_id: new FormControl('', Validators.compose([])),
+              permit_reason_id: new FormControl('', Validators.compose([])),
+              port_id: new FormControl('', Validators.compose([Validators.required])),
               proforma_invoice_no: new FormControl('', Validators.compose([Validators.required])),
-              proforma_invoice_date: new FormControl('', Validators.compose([])),
+              proforma_invoice_date: new FormControl('', Validators.compose([Validators.required])),
               paying_currency_id: new FormControl('', Validators.compose([])),
               consignee_options_id: new FormControl('', Validators.compose([])),
               consignee_id: new FormControl('', Validators.compose([])),
@@ -217,21 +295,86 @@ export class SharedControldrugsPermitlicenseComponent implements OnInit {
               sender_receiver: new FormControl('', Validators.compose([Validators.required])),
               sender_receiver_id: new FormControl('', Validators.compose([Validators.required])),
               premises_name: new FormControl('', Validators.compose([])),
-              premise_id: new FormControl('', Validators.compose([Validators.required])),
+              full_names: new FormControl('', Validators.compose([])),
+              pharmacist_region_id: new FormControl('', Validators.compose([])),
+              psu_date: new FormControl('', Validators.compose([])),
+              psu_no: new FormControl('', Validators.compose([])),
+              tin_no: new FormControl('', Validators.compose([])),
+              name_of_business: new FormControl('', Validators.compose([])),
+              email_address:new FormControl('', Validators.compose([])),
+              telephone_no: new FormControl('', Validators.compose([])),
+              pharmacist_id: new FormControl('', Validators.compose([])),
+              pharmacist_telephone: new FormControl('', Validators.compose([])),
+              pharmacist_email: new FormControl('', Validators.compose([])),
+              pharmacist_qualification: new FormControl('', Validators.compose([])),
+              pharmacist_country_id: new FormControl('', Validators.compose([])),
+              pharmacist_district_id: new FormControl('', Validators.compose([])),
+              has_registered_premises: new FormControl('', Validators.compose([Validators.required])),
+              business_type_id: new FormControl('', Validators.compose([Validators.required])),
+              premise_id: new FormControl('', Validators.compose([])),
               zone_id: new FormControl('', Validators.compose([])),
               module_id: new FormControl(this.module_id, Validators.compose([Validators.required])),
+              licence_type_id: new FormControl('', Validators.compose([Validators.required])),
+              importexport_product_range_id: new FormControl('', Validators.compose([])),
               application_code: new FormControl(this.application_code, Validators.compose([])),
-              proforma_currency_id: new FormControl('', Validators.compose([Validators.required])),
-              otherpermit_reason: new FormControl('', Validators.compose([])),
-              controlled_drugslicense_no: new FormControl('', Validators.compose([])),
-              license_application_code: new FormControl('', Validators.compose([])),
-              approximate_dateof_arrival: new FormControl('', Validators.compose([])),
-              has_apppliedctrdrugs_license: new FormControl('', Validators.compose([])),
+              device_type_id: new FormControl('', Validators.compose([])),
+             // importexport_product_range: new FormControl('', Validators.compose([Validators.required])),
+              import_typecategory_id: new FormControl('', Validators.compose([])),
+              proforma_currency_id: new FormControl('', Validators.compose([])),
+              mode_oftransport_id: new FormControl('', Validators.compose([Validators.required])),
               reason_fornonregister_outlet: new FormControl('', Validators.compose([])),
               has_registered_outlets: new FormControl('', Validators.compose([])),
+              product_classification_id: new FormControl('', Validators.compose([Validators.required])),
               eligible_importerscategory_id: new FormControl('', Validators.compose([])),
-              eligible_importersdoctype_id: new FormControl('', Validators.compose([]))
+              eligible_importersdoctype_id: new FormControl('', Validators.compose([])),
+              document_upload_id: new FormControl('', Validators.compose([])),
+              has_submitted_outlets: new FormControl('', Validators.compose([])),
+              // prodmanufacuredsection_id: new FormControl(this.module_id, Validators.compose([])),
+
+              //vc
+              importation_reason_id: new FormControl('', Validators.compose([Validators.required])),
+              clinical_trial_name: new FormControl('', Validators.compose([])),
+              clinical_trial_id: new FormControl('', Validators.compose([])),
+              product_category_id:  new FormControl('', Validators.compose([Validators.required])),
+              vc_application_type_id: new FormControl(this.vc_application_type_id, Validators.compose([Validators.required])),
+              importer_licence_number: new FormControl('', Validators.compose([])),
+              applicant_as_consignee: new FormControl('', Validators.compose([Validators.required])),
+              is_registered: new FormControl('', Validators.compose([Validators.required])),
+              government_grant_id: new FormControl('', Validators.compose([])),
+                      // local_agent_id: new FormControl('', Validators.compose([Validators.required])),
+              // local_agent_name: new FormControl('', Validators.compose([Validators.required])),
+
+              //business details
+              tpin_no: new FormControl('', Validators.compose([])),
+              tpin_id: new FormControl('', Validators.compose([])),
+              name: new FormControl('', Validators.compose([])),
+              physical_address: new FormControl('', Validators.compose([])),
+              company_registration_no: new FormControl('', Validators.compose([])),
+              // incharge_telephone: new FormControl('', Validators.compose([])),
+              email: new FormControl('', Validators.compose([])),
+
+              //billing
+              applicant_contact_person: new FormControl('', Validators.compose([Validators.required])),
+              contact_person_id: new FormControl('', Validators.compose([])),
+              billing_person: new FormControl('', Validators.compose([])),
+              billing_person_id: new FormControl('', Validators.compose([])),
+
+              //manufacturer
+              entry_country_id: new FormControl('', Validators.compose([Validators.required])),
+              telephone: new FormControl('', Validators.compose([])),
+              status_of_the_manufacturing_facility: new FormControl('', Validators.compose([])),
+              approved_production_lines: new FormControl('', Validators.compose([])),
+              man_status_name: new FormControl('', Validators.compose([])),
+              contact_person: new FormControl('', Validators.compose([])),
+              country_id: new FormControl('', Validators.compose([])),
+
+
+              shipment_date: new FormControl('', Validators.compose([])),
+              proposed_inspection_date: new FormControl('', Validators.compose([])),
+              clearing_agent: new FormControl('', Validators.compose([])),
+              custom_declaration_no: new FormControl('', Validators.compose([]))
             });
+
            
           }
          
@@ -273,7 +416,7 @@ export class SharedControldrugsPermitlicenseComponent implements OnInit {
               unit_price: new FormControl('', Validators.compose([])),
               currency_id: new FormControl('', Validators.compose([])),
               quantity: new FormControl('', Validators.compose([Validators.required])),
-              is_registered_product: new FormControl('', Validators.compose([Validators.required])),
+              is_registered_product: new FormControl('', Validators.compose([])),
               id: new FormControl('', Validators.compose([])),
               product_id: new FormControl('', Validators.compose([])),
               dosage_form_id: new FormControl('', Validators.compose([Validators.required])),
@@ -328,13 +471,13 @@ export class SharedControldrugsPermitlicenseComponent implements OnInit {
           });
           
           this.funcOnloadApplicationParams();
-
+          this.onLoadImportRegistrationLevelData();
           
           if (this.status_id < 1) {
             this.status_name = "New"
           }
           
-          this.onLoadGuidelines(this.sub_module_id, this.section_id);
+          this.onLoadGuidelines(this.sub_module_id);
 
           if (this.application_details) {
             this.applicationGeneraldetailsfrm.patchValue(this.application_details);
@@ -371,6 +514,17 @@ export class SharedControldrugsPermitlicenseComponent implements OnInit {
       .subscribe(
         data => {
           this.controlledDrugsBaseSaltData = data;
+        });
+  }    
+  onLoadImportRegistrationLevelData() {
+    var data = {
+      table_name: 'par_import_registration_level',
+    };
+
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.registrationLevelData = data;
         });
   }
   onLoadgramsBaseSiUnitData() {
@@ -604,8 +758,8 @@ export class SharedControldrugsPermitlicenseComponent implements OnInit {
         });
 
   }
- onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+ onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {

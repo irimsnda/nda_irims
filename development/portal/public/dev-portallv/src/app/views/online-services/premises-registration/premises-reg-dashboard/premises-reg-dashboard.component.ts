@@ -90,6 +90,7 @@ export class PremisesRegDashboardComponent implements OnInit {
    premisesAppSelectionfrm:FormGroup;
    section_id:number;
    premise_type_id:number;
+   report_type_id:number;
    business_type_id:number;
   constructor(private utilityService:Utilities,private viewRef: ViewContainerRef,private modalServ: ModalDialogService, private spinner: SpinnerVisibilityService,public toastr: ToastrService, private router: Router, private configService: ConfigurationsService, private appService: PremisesApplicationsService) {
 
@@ -335,7 +336,7 @@ export class PremisesRegDashboardComponent implements OnInit {
              // this.dtPremisesApplicationData = data.data;
              for(let rec of records){
              
-                  if(rec.status_id == 1){
+                  if(rec.status_id == 1 || rec.status_id == 79){
                   
                     this.pending_submission = rec.application_counter;
                   }if(rec.status_id == 6 || rec.status_id == 8 || rec.status_id == 17){
@@ -524,21 +525,21 @@ export class PremisesRegDashboardComponent implements OnInit {
 */
   }
   funcPrintPremisesRegistrationCertificate(app_data){
-
-    let report_url = this.mis_url+'reports/generatePremiseCertificate?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
-    this.funcGenerateRrp(report_url,"Application Certificate")
-    
-  }
+      const report_type_id = 3;
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&report_type_id="+report_type_id+"&table_name=tra_premises_applications";
+      this.funcGenerateRrp(report_url,"Application Certificate")
+    }
   funcPrintPremisesBusinessPermit(app_data){
-
-    let report_url = this.mis_url+'reports/generatePremisePermit?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
-    this.funcGenerateRrp(report_url,"Business Permits")
+        const report_type_id = 3; 
+        let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&report_type_id="+report_type_id+"&table_name=tra_premises_applications";
+        this.funcGenerateRrp(report_url,"Business Permits")
+      
   }
   
   funcPrintApplicationInvoice(app_data){
-
-    let report_url = this.mis_url+'reports/generateApplicationInvoice?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_premises_applications";
-    this.funcGenerateRrp(report_url,"Application Invoice")
+      const report_type_id = 1 
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&report_type_id="+report_type_id+"&table_name=tra_premises_applications";
+      this.funcGenerateRrp(report_url,"Application Invoice")
     
   }
   funcPrintApplicationReceipts(app_data){
@@ -551,16 +552,17 @@ export class PremisesRegDashboardComponent implements OnInit {
 }
   funcPrintLetterofRejection(app_data){
       //print details
-      let report_url = this.mis_url+'reports/generatePremisesRejectionLetter?application_code='+app_data.application_code;
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code;
       this.funcGenerateRrp(report_url,"Application Details");
 
   }
   funcPrintApplicationDetails(app_data){
     //print details
-
-      let report_url = this.mis_url+'reports/generatePremisesApplicationRpt?application_code='+app_data.application_code;
+  
+       const report_type_id = 4; 
+      let report_url = this.mis_url+'reports/getReportUrl?application_code='+app_data.application_code+"&report_type_id="+report_type_id;
       this.funcGenerateRrp(report_url,"Application Details");
-     
+   
   }
   funcGenerateRrp(report_url,title){
     
@@ -677,6 +679,7 @@ export class PremisesRegDashboardComponent implements OnInit {
 
     var data = {
       table_name: 'par_business_types',
+      is_online:1
     };
     this.configService.onLoadConfigurationData(data)
       .subscribe(

@@ -27,6 +27,7 @@ export class ImportLicensevisashareclassComponent implements OnInit {
 
   sectionsData: any;
   applicationTypeData: any;
+  applicationOutletData: any;
   dtAppsnProcessesData: any;
   dtImportExpApplicationData:any;
   applicationSelectionfrm: FormGroup;
@@ -37,8 +38,10 @@ export class ImportLicensevisashareclassComponent implements OnInit {
   applications_details: any;
   sectionItem: any;
   app_typeItem: any;
+  app_outletItem : any;
   section_id: number;
   sub_module_id: number;
+  product_classification_id: number;
   module_id: number = 4;
   checkApplicationSubmission: boolean = false;
   application_details: any;
@@ -47,11 +50,12 @@ export class ImportLicensevisashareclassComponent implements OnInit {
   registeredProductsData:any ={};
   constructor(private spinner: SpinnerVisibilityService, public toastr: ToastrService, private router: Router, public config: ConfigurationsService, private appService: ImportexportService,public httpClient: HttpClient,public authService: AuthService,private modalServ: ModalDialogService,public viewRef: ViewContainerRef,public utilityService: Utilities) {
     
-    this.onLoadSections();
+   // this.onLoadSections();
     this.onApplicationProcessGuidelines()
     this.applicationSelectionfrm = new FormGroup({
-      section_id: new FormControl(this.sectionsData, Validators.compose([Validators.required])),
+      //section_id: new FormControl(this.sectionsData, Validators.compose([Validators.required])),
       sub_module_id: new FormControl(this.applicationTypeData, Validators.compose([Validators.required])),
+     // product_classification_id: new FormControl(this.applicationOutletData, Validators.compose([Validators.required])),
     });
   }
 
@@ -66,10 +70,12 @@ export class ImportLicensevisashareclassComponent implements OnInit {
       return;
     }
     this.spinner.show();
-    this.sectionItem = this.applicationSelectionfrm.controls['section_id'];
+    //this.sectionItem = this.applicationSelectionfrm.controls['section_id'];
     this.app_typeItem = this.applicationSelectionfrm.controls['sub_module_id'];
-    this.section_id = this.sectionItem.value;
+    //this.app_outletItem  = this.applicationSelectionfrm.controls['product_classification_id'];
+   // this.section_id = this.sectionItem.value;
     this.sub_module_id = this.app_typeItem.value;
+    //this.product_classification_id = this.app_outletItem.value;
 
     this.config.getSectionUniformApplicationProces(this.sub_module_id, 1)
       .subscribe(
@@ -97,16 +103,44 @@ export class ImportLicensevisashareclassComponent implements OnInit {
         });
     return false;
   }
-  onLoadSections() {
-    var data = {
-      table_name: 'par_sections',
-    };
-    this.config.onLoadConfigurationData(data)
-      .subscribe(
-        data => {
-          this.sectionsData = data;
-        });
-  }
+  // onLoadSections(sub_module_id:any) {
+  //   var data = {
+  //     table_name: 'par_importexport_productcategory',
+  //     is_import_export: sub_module_id,
+  //   };
+  //   this.config.onLoadConfigurationData(data)
+  //     .subscribe(
+  //       data => {
+  //         this.sectionsData = data;
+  //       });
+  // }
+
+  
+  // onLoadOutlets(section_id:any) {
+  //   var data = {
+  //     table_name: 'par_outlet_products',
+  //     is_sections_id:section_id
+  //   };
+  //   this.config.onLoadConfigurationData(data)
+  //     .subscribe(
+  //       data => {
+  //         this.applicationOutletData = data;
+  //       });
+  // }
+
+  // onSelectApplicationType(e:any){
+  //   let sub_module_id = e.selectedItem.id;
+  //   this.onLoadSections(sub_module_id);
+
+  // }
+
+  // onSelectProductCategoryType(e:any) {
+  //   let section_id = e.selectedItem.id;
+  //   this.onLoadOutlets(section_id);
+  // }
+
+ 
+  
 
   onApplicationProcessGuidelines() {
     var data = {

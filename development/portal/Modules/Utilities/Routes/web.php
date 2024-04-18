@@ -27,12 +27,14 @@ Route::prefix('utilities')->group(function() {
     
    // Route::get('/', 'UtilitiesController@index');
     Route::get('/getApplicationPreRejectionDetails', 'UtilitiesController@getApplicationPreRejectionDetails');
+    Route::get('/getApplicationInspectionDetails', 'UtilitiesController@getApplicationInspectionDetails');
     Route::get('/getApplicationPreQueriesDetails', 'UtilitiesController@getApplicationPreQueriesDetails');
     Route::get('/validateApplicationDocQuerySubmission', 'UtilitiesController@validateApplicationDocQuerySubmission');
     Route::get('/validateApplicationotherDetails', 'UtilitiesController@validateApplicationotherDetails');
     
     Route::post('/onApplicationArchive', 'UtilitiesController@onApplicationArchive');
     Route::post('/onsaveApplicationVariationsrequests', 'UtilitiesController@onsaveApplicationVariationsrequests');
+      Route::post('/onsaveClinicalVariationsrequests', 'UtilitiesController@onsaveClinicalVariationsrequests');
     Route::post('/onSavesampleDetails', 'UtilitiesController@onSavesampleDetails');
    
     Route::get('/getapplicationVariationsrequests', 'UtilitiesController@getapplicationVariationsrequests');
@@ -40,6 +42,8 @@ Route::prefix('utilities')->group(function() {
     Route::get('/getSampleSubmissionDetails', 'UtilitiesController@getSampleSubmissionDetails');
     Route::get('/getApplicationProcessing', 'UtilitiesController@getApplicationProcessing');
     Route::get('getApplicationCounterDetails', 'UtilitiesController@getApplicationCounterDetails');
+    Route::get('getApplicationReportTypes', 'UtilitiesController@getApplicationReportTypes');
+
     Route::get('onValidateProductOtherdetails', 'UtilitiesController@onValidateProductOtherdetails');
     Route::get('getTraderApplicationProcessing', 'UtilitiesController@getTraderApplicationProcessing');
     Route::get('getDtaApplicationSubmissionData', 'UtilitiesController@getDtaApplicationSubmissionData');
@@ -62,7 +66,13 @@ Route::prefix('utilities')->group(function() {
     
     Route::post('onSubmitApplicationDismissal', 'UtilitiesController@onSubmitApplicationDismissal');
     Route::get('validateApplicationQueryresponse', 'UtilitiesController@validateApplicationQueryresponse');
+    Route::get('validateClinicalTrialDetails', 'UtilitiesController@validateClinicalTrialDetails');
+
     Route::get('validateClinicalTrialOtherDetails', 'UtilitiesController@validateClinicalTrialOtherDetails');
+    Route::get('validateClinicalTrialSaeOtherDetails', 'UtilitiesController@validateClinicalTrialSaeOtherDetails');
+    Route::get('validateOthetPremiseDetails', 'UtilitiesController@validateOthetPremiseDetails');
+
+    
     Route::post('onsaveProductConfigData', 'UtilitiesController@onsaveProductConfigData');
     Route::get('validateSampleProductDetails', 'UtilitiesController@validateSampleProductDetails');
     Route::get('onLoadApplicationNotifications', 'UtilitiesController@onLoadApplicationNotifications');
@@ -109,6 +119,9 @@ Route::prefix('utilities')->group(function() {
     Route::get('onLoadappUploadPaymentDeTailsData', 'UtilitiesController@onLoadappUploadPaymentDeTailsData');
   
     Route::post('onApplicationDelete', 'UtilitiesController@onApplicationDelete');
+    Route::post('onSaveInspectionDetails', 'UtilitiesController@onSaveInspectionDetails');
+
+    
     Route::get('generateTraderIdentification_no', 'UtilitiesController@generateTraderIdentification_no');
     Route::get('addTraderAccountUsers', 'UtilitiesController@addTraderAccountUsers');
     

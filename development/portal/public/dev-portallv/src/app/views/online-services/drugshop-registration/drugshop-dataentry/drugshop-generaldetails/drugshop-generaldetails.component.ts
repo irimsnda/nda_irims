@@ -44,6 +44,7 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
   @Input() supervisingDetailsData: any = {};
   @Input() isReadOnlyTraderasContact: boolean;
   @Input() isConvicted:boolean;
+  @Input() isFullTimeIncharge:boolean;
   @Input() isCancelled:boolean;
   @Input() isHealth:boolean;
   @Input() is_readonly: boolean;
@@ -62,6 +63,8 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
   applicantTypesData:any;
   qualificationsData:any;
   telephoneData:any;
+  longitude:any;
+  latitude:any;
   business_type_id:number;
   business_category_id:number;
   isaddNewPremisesPersonnelDetails:boolean=false;
@@ -74,42 +77,51 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
   premiseClassData:any;
   isSectionHidden:boolean=false;
   is_other_classification:boolean=false;
+  FullTimeIncharge:boolean=false;
   isHasModelChange:boolean = false;
   addTelephoneModal:boolean = false;
   addTelephonefrm:FormGroup;
   countyData:any;
+  perishData:any;
+  applicantData:any;
+  villageData:any;
   district_id:number;
   applicant_type_id:number;
   subCountyData:any;
-  nimNo:any;
+  nimNo:any; 
   county_id:number;
+  sub_county_id:number;
+  parish_id:number;
   trader_id:number;
-  clickCount = 0;
-  maxClicks = 3;
   private destroy$ = new Subject<void>();
   private isFetchingData = false;
+  is_made_readOnly:boolean = false;
   isButtonDisabled:boolean = false;
   registeringOrganisationData:any;
-  
+   mapVisible:boolean = false;
+  is_renewal:boolean = false;
+  mapCenter = { lat: 0, lng: 0 }; // Initial map center
+  mapZoom = 11; // Initial zoom level
+  markers: any[] = [];
+  readonlyFields: string[] = []; 
   has_otherregisteringorganisation:boolean= false
   constructor(public cdr: ChangeDetectorRef,public dmsService:DocumentManagementService,public fb: FormBuilder,public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: PremisesApplicationsService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public utilityService:Utilities) {
 
-
+  }
+get apiKey(): string {
+    return this.configService.apiKey;
   }
 
   ngOnInit() {
-   // this.onBusinessTypesLoad(this.section_id);
+
     this.onregisteringOrganisationDataLod();
     this.onLoadclassificationData();
     this.onLoadSections();
     this.onLoadBusinessTypesLoad();
     this.onLoadapplicantTypesLoad();
     this.onLoadQualificationDetails();
-    this.is_readonly = false;
-    if(this.sub_module_id != 1){
-      this.is_readonly = true;
-    }
-   
+    this.onLoadApplicantDetails();
+
     if(!this.application_code){
       //  this.premisesGeneraldetailsfrm.get('zone_id').setValue(2);
         this.premisesGeneraldetailsfrm.get('country_id').setValue(37);
@@ -122,7 +134,12 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
 
     });
 
-        this.setupSearchByNimNoHandler();
+if(this.sub_module_id == 96 || this.sub_module_id == 110 || this.sub_module_id == 111){
+    this.is_made_readOnly = true;
+
+}
+      this.setupSearchByNimNoHandler();
+      this.setupSearchByCompanyRegNoHandler();
 
   } 
    private setupSearchByNimNoHandler(): void {
@@ -135,7 +152,43 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
           this.searchByNimNo(nimNo);
         }
       });
-  } 
+  }  
+
+  private setupSearchByCompanyRegNoHandler(): void {
+    this.premisesGeneraldetailsfrm
+      .get('company_registration_no')
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((company_registration_no) => {
+        if (!this.isFetchingData) {
+          this.isFetchingData = true;
+          this.searchByCompanyRegNo(company_registration_no);
+        }
+      });
+  }
+
+
+  openMap() {
+    this.mapVisible = true;
+  }
+
+
+// onMapClick(event: any): void {
+//     // Replace 'YOUR_QUERY_HERE' with the actual query parameter you want to use
+//     const query = 'LocationName'; // For example, searching for a location by name
+    
+//     // Use the service function to get locations
+//     this.configService.getLocations(query).subscribe((data) => {
+//       // Handle the data returned from the service
+//       console.log(data);
+//     });
+// }
+ onMapClick(event:any) {
+   const latitude = event.location.lat;
+     const longitude = event.location.lng;
+
+     this.premisesGeneraldetailsfrm.patchValue({ latitude, longitude });
+    this.mapVisible = false;
+   }
   captureLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -158,6 +211,7 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
       (response: any) => {
         if (response && Array.isArray(response.data) && response.data.length > 0) {
           const dataItem = response.data[0];
+
           this.premisesGeneraldetailsfrm.get('fullname').setValue(dataItem.name);
           this.premisesGeneraldetailsfrm.get('incharge_email').setValue(dataItem.email);
           this.premisesGeneraldetailsfrm.get('incharge_telephone').setValue(dataItem.telephone);
@@ -165,7 +219,7 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
           this.premisesGeneraldetailsfrm.get('incharge_country_id').setValue(dataItem.country_id);
           this.premisesGeneraldetailsfrm.get('incharge_region_id').setValue(dataItem.region_id);
           this.premisesGeneraldetailsfrm.get('incharge_district_id').setValue(dataItem.district_id);
-
+          this.premisesGeneraldetailsfrm.get('incharge_id').setValue(dataItem.id);
 
         } else {
           
@@ -179,33 +233,59 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
       }
     );
   }
+
+  searchByCompanyRegNo(company_registration_no) {
+  this.appService.onLoadCompanyDetails(company_registration_no).subscribe(
+    (response: any) => {
+      if (response.success && response.results.length > 0) {
+        const dataItem = response.results[0];
+        this.premisesGeneraldetailsfrm.get('premises_name').setValue(dataItem.name);
+        this.premisesGeneraldetailsfrm.get('registration_date').setValue(dataItem.registration_date);
+        this.premisesGeneraldetailsfrm.get('company_reg_id').setValue(dataItem.id);
+      } else {
+        this.toastr.error('No data found for the given Business Registration No.');
+      }
+
+      this.isFetchingData = false;
+    },
+    (error) => {
+      console.error('Error fetching company details:', error);
+      this.toastr.error('An error occurred while fetching company details. Please try again.');
+      this.isFetchingData = false;
+    }
+  );
+}
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
-     addTelephone(){
-    this.addTelephonefrm.reset();
-    this.addTelephoneModal = true;
-    this.clickCount++;
-     if (this.clickCount >= this.maxClicks) {
-      this.isButtonDisabled = true;
-    }
-
-  } 
 
   onCoutryCboSelect($event) {
 
     this.country_id = $event.selectedItem.id;
 
-    this.onLoadRegions(this.country_id);
+    this.onLoadDistricts(this.country_id);
 
   }
 
 
+  onLoadApplicantDetails() {
+    this.appService.onLoadApplicantInchargeDetails()
+    .subscribe(
+      data_response => {
+        this.applicantData = data_response.data;
+        
+      },
+      error => {
+        return false
+      });
+
+  }
 
    onLoadSections() {
     var data = {
       table_name: 'par_premise_class',
+      is_online:2
     };
 
     this.config.onLoadConfigurationData(data)
@@ -214,23 +294,24 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
           this.premiseClassData = data;
         });
   }
-  onLoadRegions(country_id) {
 
-    var data = {
-      table_name: 'par_regions',
-      country_id: country_id
-    };
-    this.config.onLoadConfigurationData(data)
-      //.pipe(first())
-      .subscribe(
-        data => {
-          console.log(data);
-          this.regions = data;
-        },
-        error => {
-          return false
-        });
-  } 
+
+onLoadRegions(district_id) {
+  this.config.onLoadRegionsData(district_id)
+    .subscribe(
+      data => {
+        if (data.success) {
+          this.regions = data.data;
+        } else {
+        }
+      },
+      error => {
+        console.error('HTTP request failed:', error);
+        return false;
+      });
+}
+
+
    oCountyCboSelect($event) {
     this.county_id = $event.selectedItem.id;
 
@@ -303,10 +384,10 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
         });
   }
   
-  onLoadDistricts(region_id) {
+  onLoadDistricts(country_id) {
     var data = {
-      table_name: 'par_districts',
-      region_id: region_id
+      table_name: 'par_premise_districts',
+      country_id: country_id
     };
     this.config.onLoadConfigurationData(data)
       //.pipe(first())
@@ -318,7 +399,23 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
           return false;
         });
   }
-  onLoadCounty(district_id) {
+
+// onLoadCounty(district_id) {
+//   this.config.onLoadCountyData(district_id)
+//     .subscribe(
+//       data => {
+//         if (data.success) {
+//           this.countyData = data.data;
+//         } else {
+//         }
+//       },
+//       error => {
+//         console.error('HTTP request failed:', error);
+//         return false;
+//       });
+// }
+
+onLoadCounty(district_id) {
     var data = {
       table_name: 'par_county',
       district_id: district_id
@@ -332,15 +429,15 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
         error => {
           return false;
         });
-  }
+}
 
   
-  onRegionsCboSelect($event) {
-    this.region_id = $event.selectedItem.id;
+  // onRegionsCboSelect($event) {
+  //   this.region_id = $event.selectedItem.id;
 
-    this.onLoadDistricts(this.region_id);
+  //  // this.onLoadCounty(this.region_id);
 
-  }
+  // }
  
   onLoadclassificationData() {
     var data = {
@@ -357,12 +454,56 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
   oDistrictsCboSelect($event) {
     this.district_id = $event.selectedItem.id;
 
+    this.onLoadRegions(this.district_id);
     this.onLoadCounty(this.district_id);
+
+  }
+  onLoadParishes(sub_county_id) {
+    var data = {
+      table_name: 'par_parishes',
+      sub_county_id: sub_county_id
+    };
+    this.config.onLoadConfigurationData(data)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.perishData = data
+        },
+        error => {
+          return false;
+        });
+  }
+
+    onSubCountyCboSelect($event) {
+    this.sub_county_id = $event.selectedItem.id;
+
+    this.onLoadParishes(this.sub_county_id);
+
+  }
+
+  onLoadVillages(parish_id) {
+    var data = {
+      table_name: 'par_villages',
+      parish_id: parish_id
+    };
+    this.config.onLoadConfigurationData(data)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.villageData = data
+        },
+        error => {
+          return false;
+        });
+  }
+    onParishesCboSelect($event) {
+    this.parish_id = $event.selectedItem.id;
+
+    this.onLoadVillages(this.parish_id);
 
   }
 
 
-  
   onTraderasContactpersnChange($event) {
     
     if($event.selectedItem.id == 1){
@@ -373,7 +514,8 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
     }
     
 
-  } onPersonnelSearchDetails(personnel_type_id) {
+  } 
+  onPersonnelSearchDetails(personnel_type_id) {
     this.personnel_type_id = personnel_type_id;
     this.appService.onLoadPersonnelInformations()
     .subscribe(
@@ -386,7 +528,10 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
         return false
       });
 
-  }onPremisesPerGridToolbar(e,is_readonly) {
+  }
+
+
+  onPremisesPerGridToolbar(e,is_readonly) {
     this.functDataGridToolbar(e, this.funAddNewPremisesPersonnelDetails, 'Add Personnel',is_readonly);
   }
   funAddNewPremisesPersonnelDetails() {
@@ -450,6 +595,48 @@ export class DrugshopGeneraldetailsComponent implements OnInit, OnDestroy  {
 
     }else{
       this.isConvicted = false;
+    }
+    
+
+  }
+
+
+    onApplicantFullTimeIncharge($event) {
+    
+    if($event.selectedItem.id == 1){
+        this.isFullTimeIncharge = false;
+        this.FullTimeIncharge= true;
+        this.appService.onLoadApplicantInchargeDetails().subscribe(
+          (response: any) => {
+            if (response && Array.isArray(response.data) && response.data.length > 0) {
+              const dataItem = response.data[0];
+              console.log(dataItem);
+              this.premisesGeneraldetailsfrm.get('nin_no').setValue(dataItem.nin_no);
+              this.premisesGeneraldetailsfrm.get('fullname').setValue(dataItem.name);
+              this.premisesGeneraldetailsfrm.get('incharge_email').setValue(dataItem.email);
+              this.premisesGeneraldetailsfrm.get('incharge_telephone').setValue(dataItem.telephone);
+              this.premisesGeneraldetailsfrm.get('incharge_qualification').setValue(dataItem.qualification_id);
+              this.premisesGeneraldetailsfrm.get('incharge_country_id').setValue(dataItem.country_id);
+              this.premisesGeneraldetailsfrm.get('incharge_region_id').setValue(dataItem.region_id);
+              this.premisesGeneraldetailsfrm.get('incharge_district_id').setValue(dataItem.district_id);
+              this.premisesGeneraldetailsfrm.get('incharge_id').setValue(dataItem.id);
+
+            } else {
+              
+              this.toastr.error('No Data found with the Applicant Email Address');
+            }
+
+            this.isFetchingData = false;
+          },
+          (error) => {
+            this.isFetchingData = false;
+          }
+        );
+
+    }else{
+      this.isFullTimeIncharge = true;
+      this.FullTimeIncharge= false;
+
     }
     
 

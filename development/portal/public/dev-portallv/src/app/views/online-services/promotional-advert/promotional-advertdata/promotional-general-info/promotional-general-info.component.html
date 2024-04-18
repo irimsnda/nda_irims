@@ -2,11 +2,11 @@
 [formGroup]="promotionalappGeneraldetailsfrm">
 
 
-<fieldset class="row scheduler-border">
-  <legend>{{process_title}} Details</legend>
+<fieldset class="col-lg-12 row">
+  <legend class="contentfieldset">{{process_title}} Details</legend>
   
   <div class="col-lg-4">
-    <label class="control-label">Type of Advertisement</label>
+    <label class="control-label">Type of Application</label>
     <dx-select-box [dataSource]="typeOfAdvertisementData" [readOnly] = true
     (onSelectionChanged) = "onHasExhibitionMeeting($event)"   valueExpr="id" displayExpr="name" [searchEnabled]="true"  [readOnly]= "isReadOnly" 
       placeholder="Select Type of Advert" formControlName="advertisement_type_id">
@@ -21,27 +21,26 @@
     </div>
     
     <div class="col-lg-4">
-      <label class="control-label">Channel of Advertisement</label>
-      <dx-tag-box
-          [items]="promotionalChannelsDta"
-          formControlName="advertisement_channel_id"
-          placeholder="Channel of Advertisement"
-          valueExpr="id" [readOnly]="is_readonly" 
-          [showSelectionControls]="true"
-          [searchEnabled]="true"
-          applyValueMode="useButtons"
-          displayExpr="name">
-      </dx-tag-box>
+      <label class="control-label">Type of Activity (Select)</label>
+      <dx-select-box
+            [items]="promotionalChannelData"
+            formControlName="advertisement_channel_id"
+            placeholder="Type of Activity"
+            (onSelectionChanged)="onSelectOtherActivity($event)"
+            valueExpr="id" [readOnly]="is_readonly" 
+            [searchEnabled]="true"
+            displayExpr="name">
+      </dx-select-box>
     </div>
-    <div class="col-lg-12">
-      <label class="control-label">Other Channel of Advertisement(Optional)
+    <div class="col-lg-4"*ngIf="is_other_selected">
+      <label class="control-label">Specify Other Type of Activity
       </label>
-     <dx-text-area formControlName="otheradvertisement_channel" 
-        placeholder="Other Channel of Advertisement">
-      </dx-text-area>
+     <dx-text-box formControlName="otheradvertisement_channel" 
+        placeholder=" Specify Other Type of Activity">
+      </dx-text-box>
     </div>
     <div class="col-lg-12" *ngIf="isHasExhibitionMeeting">
-      <label class="control-label">Type of meetings
+      <label class="control-label">Type of meetings (Select)
       </label>
         <dx-tag-box
             [items]="advertisementMeetingTypesDta"
@@ -127,11 +126,11 @@
         </dx-text-box>
       </div>
 
-      <div class="col-lg-12" *ngIf="!isHasExhibitionMeeting">
-        <label class="control-label">Type of material
+ <!--      <div class="col-lg-12" *ngIf="!isHasExhibitionMeeting">
+        <label class="control-label">Type Advertisements Material (Select)
         </label>
         <dx-tag-box
-            [items]="promotionalChannelsDta"
+            [items]="promotionalMaterialsDta"
             formControlName="promotions_material_id"
             placeholder="Type of Advertisements Material"
             valueExpr="id" [readOnly]="is_readonly" 
@@ -140,51 +139,26 @@
             applyValueMode="useButtons"
             displayExpr="name">
         </dx-tag-box>
-      </div>
-      <div class="col-lg-12" *ngIf="!isHasExhibitionMeeting">
-        <label class="control-label">Other Type of Material(please specify)
-        </label>
-       <dx-text-area formControlName="other_promotion_materialtypes" 
-          placeholder="Other Type of Material(please specify)" 
-     >
-        </dx-text-area>
-      </div>
-    <div class="col-lg-12">
+      </div> -->
+    <div class="col-lg-12" [hidden]="true">
       <label class="control-label">Description Promotion(Activities)</label>
       <dx-text-area formControlName="description_of_advert"  
         [readOnly]="is_readonly"  placeholder="Brief summary describing the Advertisement or Exhibition" >
       </dx-text-area>
     </div>
 
-
-  <div class="col-lg-4">
-    <label class="control-label">Applicant As Sponsor</label>
-    <dx-select-box [dataSource]="confirmDataParam" 
-      valueExpr="flag" displayExpr="name" [searchEnabled]="true" placeholder="Applicant As Name of Sponsor" (onSelectionChanged) = "OnSelectSponsorOption($event)"   formControlName="applicant_as_sponsor">
-    </dx-select-box>
-  </div>
-  <div class="col-lg-4 row">
-    <div class="col-lg-10">
-      <label class="control-label">Sponsor Name</label>
-        <dx-text-box formControlName="sponsor_name" [readOnly]="true" 
-          [showClearButton]="true">
-        </dx-text-box>
-          <input type="hidden" name="sponsor_id" formControlName="sponsor_id" />
-          <input type="hidden" name="sub_module_id" formControlName="sub_module_id" />
+    <div class="col-lg-4">
+      <label>Target Audience</label>
+      <dx-select-box 
+        [dataSource]="targetAudienceData" valueExpr="id" displayExpr="name"
+        placeholder="Target Audiences" [searchEnabled]="true" formControlName="target_audience_id">
+      </dx-select-box>
     </div>
-    <div class="col-lg-2">
-      <button type="button" (click)="onLoadPersonnelDetails()" 
-        [disabled]="sponsor_optionDisabled"
-        class="btn btn-primary" style="margin-top:27px  !important;"><i class="fa fa-search"></i>Search
-      </button>
-    </div>
-  </div>
- 
   <div class="col-lg-4">
     <input type="hidden" name="module_id" formControlName="module_id" />
     <input type="hidden" name="application_code" formControlName="application_code" />
     <input type="hidden" name="registered_promotionalapp_id" formControlName="registered_promotionalapp_id" />
-  
+    <input type="hidden" name="sub_module_id" formControlName="sub_module_id" />
     <input type="hidden"  value={{application_id}} formControlName="application_id" />
   </div>
 </fieldset>
@@ -242,26 +216,28 @@
             <dx-text-box formControlName="name">
             </dx-text-box>
           </div>
-          <div class="col-xs-12 col-md-6 col-lg-4 col-xl-6">
-            <label class="control-label">Country</label>
-            <dx-select-box [dataSource]="countries" valueExpr="id" 
-              displayExpr="name" placeholder="Select Country"
-              (onSelectionChanged)="onCoutryCboSelect($event)" [searchEnabled]="true" formControlName="country_id">
-            </dx-select-box>
-          </div>
-          <div class="col-xs-12 col-md-6 col-lg-4 col-xl-6">
-            <label for="ti" class="control-label">Region/City</label>
-            <dx-select-box [dataSource]="regions" valueExpr="id" displayExpr="name"
-              (onSelectionChanged)="onRegionsCboSelect($event)" [searchEnabled]="true" formControlName="region_id">
-            </dx-select-box>
-          </div>
-          <div class="col-xs-12 col-md-6 col-lg-4 col-xl-6">
-            <label for="ti" class="control-label">District(Optional)</label>
-            <dx-select-box [dataSource]="districts" valueExpr="id" 
-              placeholder="Select District" displayExpr="name"
-              [searchEnabled]="true" formControlName="district_id">
-            </dx-select-box>
-          </div>
+          <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+          <label class="control-label">Country</label>
+
+          <dx-select-box [dataSource]="countries" valueExpr="id" displayExpr="name" placeholder="Select Country"
+            (onSelectionChanged)="onCoutryCboSelect($event)" [searchEnabled]="true" formControlName="country_id">
+          </dx-select-box>
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+          <label for="ti" class="control-label">Region/City</label>
+
+          <dx-select-box [dataSource]="regions" valueExpr="id" displayExpr="name"
+            (onSelectionChanged)="onRegionsCboSelect($event)" [searchEnabled]="true" formControlName="region_id">
+          </dx-select-box>
+
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-6">
+          <label for="ti" class="control-label">District(Optional)</label>
+
+          <dx-select-box [dataSource]="districts" valueExpr="id" placeholder="Select District" displayExpr="name"
+            [searchEnabled]="true" formControlName="district_id">
+          </dx-select-box>
+        </div>
           <div class="col-xs-12 col-md-6 col-lg-4 col-xl-6">
             <label for="ti" class="control-label">Email Address</label>
             <dx-text-box formControlName="email" placeholder="Email Address">
@@ -290,12 +266,6 @@
               formControlName="physical_address" placeholder="Physical Address">
             </dx-text-area>
           </div>
-          <div class="col-xs-12 col-md-6 col-lg-4 col-xl-6 ">
-            <label for="ti" class="control-label col-lg-12">TIN No(Tanzanian)</label>
-            <dx-number-box [value]="20" disabled formControlName="tin_no" 
-              placeholder="TIN NO">
-            </dx-number-box>
-          </div>
           <div class="col-lg-12 btn-margin-5">
             <br />
             <button type="submit" (submit)="onSavePromotionalPersonnel()" [disabled]="!promotional_materialspersonnelFrm.valid"
@@ -306,3 +276,4 @@
     </div>
   </div>
 </dx-popup>
+
