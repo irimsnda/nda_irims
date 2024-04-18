@@ -1843,12 +1843,13 @@ function validateApplicationDetails(application_code, module_id){
         success: function (response) {
             var resp = Ext.JSON.decode(response.responseText),
                 success = resp.success;
+                message = resp.message;
             if (success || success == true || success === true) {
                 is_valid = true;
             }
             else{
-               
                 is_valid = false;
+                 toastr.warning(message, 'Warning Response');
                 return false;
             }
         }

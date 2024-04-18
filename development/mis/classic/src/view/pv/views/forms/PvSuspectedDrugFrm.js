@@ -173,6 +173,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                             name: 'whodrug_level_id',
                             columnWidth: 0.5,
                             allowBlank:false,
+                            hideLabel:true,
                             forceSelection: true,
                             queryMode: 'local',
                             valueField: 'id',
@@ -200,6 +201,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                         labelAlign: 'top'
                     },
                     fieldLabel: 'Name',
+                    hideLabel:true,
                     items: [
                         {
                             xtype: 'textfield',
@@ -227,10 +229,12 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
             xtype: 'textfield',
             fieldLabel: 'Drug Name as Reported',
             name: 'brand_name',
+            columnWidth:0.5,
             allowBlank: false,
         }, {
             xtype: 'textfield',
             fieldLabel: 'MAH',
+            columnWidth:0.5,
             name: 'mah_holder',
             allowBlank: true,
         },
@@ -250,7 +254,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                 items:[{
                         xtype: 'textfield',
                         fieldLabel: 'Strength',
-                        //hideLabel: true,
+                        hideLabel: true,
                         name: 'strength',
                         emptyText: 'e.g., 125mg/250mg | 30%/70%',
                         allowBlank: false,
@@ -269,6 +273,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                     xtype: 'combo', anyMatch: true,
                     fieldLabel: 'SI Units',
                     name: 'si_unit_id',
+                    hideLabel: true,
                     forceSelection: true,
                     queryMode: 'local',
                     valueField: 'id',
@@ -290,12 +295,11 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                 }]
                 },
 
-         
-
         {
             xtype: 'combo', anyMatch: true,
             fieldLabel: 'Suspected Ingredient',
             name: 'suspected_ingredient_id',
+            columnWidth:1,
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
@@ -318,181 +322,44 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
          ]
         },
 
-          {
-               xtype: 'fieldcontainer',
-                columnWidth: 1,
-                fieldLabel: 'Additional drug-related problems',
-                layout: 'fit',
-                items:[ {
-                            xtype: 'tagfield',
-                            anyMatch: true,
-                            fieldLabel: 'Related Problem',
-                            hideLabel: true,
-                            columnWidth: 1,
-                            name: 'adr_related_problems_id',
-                            forceSelection: true,
-                            filterPickList: true,
-                            encodeSubmitValue: true,
-                            queryMode: 'local',
-                            valueField: 'id',
-                            growMax: 100,
-                            multiSelect: true,
-                            allowBlank: false,
-                            labelAlign: 'top',
-                            displayField: 'name',
-                            listeners: {
-                                    beforerender: {
-                                        fn: 'setCompStore',
-                                        config: {
-                                            pageSize: 1000,
-                                            proxy: {
-                                                extraParams: {
-                                                    table_name: 'par_adr_related_problems'
-                                                }
-                                            }
-                                        },
-                                        isLoad: true
-                                    }
-                                }
-            }]
-         },
-
          {
-               xtype: 'fieldcontainer',
-                columnWidth: 1,
-                fieldLabel: 'Indication',
-                layout: 'fit',
-                items:[
-           {
-                xtype:'fieldcontainer',
-                fieldLabel: 'Indication (MedDRA)',
-                columnWidth: 1,
-                layout: {
-                    type: 'column'
-                },
-                defaults:{
-                    columnWidth: 0.5,
-                    labelAlign: 'top'
-                },
-                items:[
-                      {
-                            xtype: 'combo',
-                            anyMatch: true,
-                            fieldLabel: 'MedDRA Level',
-                            name: 'indication_meddra_level_id',
-                            forceSelection: true,
-                            columnWidth: 0.5,
-                            allowBlank:false,
-                            queryMode: 'local',
-                            valueField: 'id',
-                            displayField: 'name',
-                            listeners: {
-                                beforerender: {
-                                    fn: 'setCompStore',
-                                    config: {
-                                        pageSize: 10000,
-                                        proxy: {
-                                            extraParams: {
-                                                table_name: 'par_pv_medra_levels'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                },
-                             change: function (cmbo, newVal) {
-                                var form = cmbo.up('form'),
-                                    indicationMedraStore = form.down('combo[name=indication_medra]').getStore(),
-                                    filterObj = {meddra_level_id: newVal},
-                                    filterStr = JSON.stringify(filterObj);
-                                indicationMedraStore.removeAll();
-                                indicationMedraStore.load({params: {filter: filterStr}});
-                            }
-                          
-                        }
-                     },
-                  {
-                            xtype: 'combo',
-                            anyMatch: true,
-                            fieldLabel: 'Indication',
-                            name: 'indication_medra',
-                            forceSelection: true,
-                            columnWidth: 0.5,
-                            allowBlank:false,
-                            queryMode: 'local',
-                            valueField: 'name',
-                            displayField: 'name',
-                             listeners: {
-                                beforerender: {
-                                    fn: 'setOrgConfigCombosStore',
-                                    config: {
-                                        pageSize: 100,
-                                        proxy: {
-                                        url: 'configurations/getMedDRAtearm'
-                                       }
-                                    },
-                                    isLoad: false
-                                }
-                         }
-                       }
-                    ]
-                }]
-         },
-
-
+            xtype:'fieldset',
+            columnWidth: 1,
+            title: 'Dosage information',
+            collapsible: true,
+            defaults: {
+                labelAlign: 'top',
+                allowBlank: true,
+                labelAlign: 'top',
+                margin: 5,
+                xtype: 'textfield',
+                columnWidth: 0.33
+            },
+            layout: 'column',
+            items:[
         //medical devices 
         {
             xtype: 'textfield',
             name: 'model_no',
+            allowBlank: true,
             fieldLabel: 'Model Number',
             hidden: true
         },
         {
             xtype: 'textfield',
             name: 'udi_no',
+            allowBlank: true,
             fieldLabel: 'Unique Identifier(UDI) Number',
             hidden: true
         },
         {
             xtype: 'textfield',
             name: 'device_operator',
+            allowBlank: true,
             fieldLabel: 'Operator of Device(Healthcare Professional/Patient/Consumer)',
             hidden: true
         },
-        {
-            xtype: 'textfield',
-            name: 'dosage',
-            fieldLabel: 'Dosage'
-        },
-         {
-            xtype: 'textfield',
-            name: 'batch_no',
-            fieldLabel: 'Batch number'
-        },
-        {
-            xtype: 'combo', anyMatch: true,
-            fieldLabel: 'Route of Administration',
-            name: 'route_of_administration_id',
-            forceSelection: true,
-            queryMode: 'local',
-            valueField: 'id',
-            displayField: 'name',
-            listeners: {
-                beforerender: {
-                    fn: 'setCompStore',
-                    config: {
-                        pageSize: 1000,
-                        proxy: {
-                            extraParams: {
-                                table_name: 'par_route_of_administration'
-                            }
-                        }
-                    },
-                    isLoad: true
-                }
-            }
-        },
-
-         {
+          {
                 xtype:'fieldcontainer',
                 fieldLabel: 'Dose',
                 columnWidth: 0.33,
@@ -538,6 +405,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
          {
             xtype: 'textfield',
             name: 'dose_interval',
+            allowBlank:true,
             fieldLabel: 'Doses in Interval'
         },
         {
@@ -582,12 +450,45 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                     }
                 }]
                 },
+        {
+            xtype: 'textfield',
+            name: 'dosage',
+            allowBlank:true,
+            fieldLabel: 'Dosage'
+        },
+
+        {
+            xtype: 'combo', anyMatch: true,
+            fieldLabel: 'Route of Administration',
+            name: 'route_of_administration_id',
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setCompStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                            extraParams: {
+                                table_name: 'par_route_of_administration'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+            }
+        },
+
+       
 
         {
             xtype: 'combo', anyMatch: true,
             fieldLabel: 'Route of administration (EDQM Standard Terms)',
             name: 'edqm_route_of_administration_id',
             forceSelection: true,
+            allowBlank: true,
             queryMode: 'local',
             valueField: 'id',
             displayField: 'name',
@@ -607,7 +508,12 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
             }
         },
 
-
+       {
+            xtype: 'textfield',
+            name: 'batch_no',
+            allowBlank:true,
+            fieldLabel: 'Batch number'
+        },
         {
                 xtype:'fieldcontainer',
                 fieldLabel: 'Start of administration',
@@ -676,7 +582,148 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                         // maxValue: '17:00',
                 
                     }]
-            }, 
+            }]
+        },
+
+        {
+            xtype:'fieldset',
+            columnWidth: 1,
+            title: 'Indication',
+            collapsible: true,
+            defaults: {
+                labelAlign: 'top',
+                allowBlank: false,
+                labelAlign: 'top',
+                margin: 5,
+                xtype: 'textfield',
+                allowBlank: true
+            },
+            layout: 'column',
+            items:[
+           {
+                xtype:'fieldcontainer',
+                fieldLabel: 'Indication (MedDRA)',
+                columnWidth: 1,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[
+                      {
+                            xtype: 'combo',
+                            anyMatch: true,
+                            fieldLabel: 'MedDRA Level',
+                            name: 'indication_meddra_level_id',
+                            forceSelection: true,
+                            columnWidth: 0.5,
+                            hideLabel:true,
+                            allowBlank:false,
+                            queryMode: 'local',
+                            valueField: 'id',
+                            displayField: 'name',
+                            listeners: {
+                                beforerender: {
+                                    fn: 'setCompStore',
+                                    config: {
+                                        pageSize: 10000,
+                                        proxy: {
+                                            extraParams: {
+                                                table_name: 'par_pv_medra_levels'
+                                            }
+                                        }
+                                    },
+                                    isLoad: true
+                                },
+                             change: function (cmbo, newVal) {
+                                var form = cmbo.up('form'),
+                                    indicationMedraStore = form.down('combo[name=indication_medra]').getStore(),
+                                    filterObj = {meddra_level_id: newVal},
+                                    filterStr = JSON.stringify(filterObj);
+                                indicationMedraStore.removeAll();
+                                indicationMedraStore.load({params: {filter: filterStr}});
+                            }
+                          
+                        }
+                     },
+                  {
+                            xtype: 'combo',
+                            anyMatch: true,
+                            fieldLabel: 'Indication',
+                            name: 'indication_medra',
+                            forceSelection: true,
+                            columnWidth: 0.5,
+                            allowBlank:false,
+                            hideLabel:true,
+                            queryMode: 'local',
+                            valueField: 'name',
+                            displayField: 'name',
+                             listeners: {
+                                beforerender: {
+                                    fn: 'setOrgConfigCombosStore',
+                                    config: {
+                                        pageSize: 100,
+                                        proxy: {
+                                        url: 'configurations/getMedDRAtearm'
+                                       }
+                                    },
+                                    isLoad: false
+                                }
+                         }
+                       }
+                    ]
+                },
+                {
+                            xtype: 'textarea',
+                            columnWidth: 1,
+                            fieldLabel: 'Indication as reported by initial reporter',
+                            name: 'indication',
+                            allowBlank: true,
+                }]
+        },
+
+          {
+               xtype: 'fieldcontainer',
+                columnWidth: 1,
+                fieldLabel: 'Additional drug-related problems',
+                layout: 'fit',
+                items:[ {
+                            xtype: 'tagfield',
+                            anyMatch: true,
+                            fieldLabel: 'Related Problem',
+                            hideLabel: true,
+                            columnWidth: 1,
+                            name: 'adr_related_problems_id',
+                            forceSelection: true,
+                            filterPickList: true,
+                            encodeSubmitValue: true,
+                            queryMode: 'local',
+                            valueField: 'id',
+                            growMax: 100,
+                            multiSelect: true,
+                            allowBlank: true,
+                            labelAlign: 'top',
+                            displayField: 'name',
+                            listeners: {
+                                    beforerender: {
+                                        fn: 'setCompStore',
+                                        config: {
+                                            pageSize: 1000,
+                                            proxy: {
+                                                extraParams: {
+                                                    table_name: 'par_adr_related_problems'
+                                                }
+                                            }
+                                        },
+                                        isLoad: true
+                                    }
+                                }
+            }]
+         },
+
+        
 
         {
             xtype: 'combo', anyMatch: true,
@@ -825,7 +872,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
             fieldLabel: 'Additional information on drug',
             columnWidth: 1,
             name: 'remarks',
-        },
+        }, 
         {
             xtype:'fieldset',
             columnWidth: 1,
@@ -864,6 +911,15 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                         isLoad: true
                     }
                 }
+        },
+        {
+            xtype: 'datefield',
+            fieldLabel: 'Expiry date',
+            format: 'Y-m-d',
+            allowBlank:true,
+            altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+            name: 'vaccine_expiry_date',
+            maxValue: new Date()
         },
 
         {
@@ -1038,7 +1094,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                     action: 'save',
                     table_name: 'tra_pv_suspected_drugs',
                     storeID: 'pvSuspectedDrugStr',
-                    formBind: true,
+                    //formBind: true,
                     ui: 'soft-green',
                     action_url: 'configurations/saveConfigCommonData',
                     handler: 'doCreatePvWin'

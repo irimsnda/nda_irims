@@ -488,6 +488,8 @@ Ext.define('Admin.controller.PvCtr', {
             if(activeTab.down('hiddenfield[name=is_dataammendment_request]')){
                 is_dataammendment_request = activeTab.down('hiddenfield[name=is_dataammendment_request]').getValue();
             }
+
+
         valid = this.validateNewPvReceivingSubmission();
         if (valid) {
             showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsreceivingfrm', winWidth, storeID,'','','',workflow_stage_id,is_dataammendment_request);
@@ -588,6 +590,8 @@ Ext.define('Admin.controller.PvCtr', {
         var mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
             applicantFrm = activeTab.down('productapplicantdetailsfrm'),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=active_module_id]').getValue(),
             application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
 
             // pvreactionGrid = activeTab.down('pvreactionGrid'),
@@ -615,15 +619,11 @@ Ext.define('Admin.controller.PvCtr', {
             return false;
         }
 
-        // if(activeTab.down('pvreactionGrid')){
+        var  validate_appdetails = validateApplicationDetails(application_code,module_id);
+        if(!validate_appdetails){
+                return false;
+        }
 
-        //     pvreactionGrid = activeTab.down('pvreactionGrid');
-        //     if (!pvreactionGrid.getStore().getTotalCount() > 0) {
-        //         toastr.warning('Please Add Reaction(s)!!', 'Warning Response');
-        //         return false;
-        //     }
-        // }
-        
         return true;
     }, 
     funcActiveOtherPvInformationTab: function (tab) {

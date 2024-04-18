@@ -18,7 +18,7 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugGrid', {
         action: 'add',
         ui: 'soft-blue',
         childXtype: 'pvSuspectedDrugFrm',
-        winTitle: 'Drug',
+        winTitle: 'Drug/Vaccine/Device',
         winWidth: '80%',
         bind: {
             hidden: '{isReadOnly}'
@@ -113,9 +113,9 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugGrid', {
         tdCls: 'wrap'
     },{
         xtype: 'datecolumn',
-        dataIndex: 'start_date',
+        dataIndex: 'administration_start_date',
         format: 'Y-m-d',
-        text: 'Start Date',
+        text: 'Start of administration',
         flex: 1,
         tdCls: 'wrap'
     },{
@@ -127,28 +127,8 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugGrid', {
         tdCls: 'wrap'
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'manufacturer_name',
-        text: 'Manufacturer',
-        tdCls: 'wrap',
-        flex: 1,
-        tdCls: 'wrap'
-    },{
-        xtype: 'datecolumn',
-        dataIndex: 'expiry_date',
-        text: 'Expiry date',
-        format: 'Y-m-d',
-        flex: 1,
-        tdCls: 'wrap'
-    },{
-        xtype: 'gridcolumn',
         dataIndex: 'remarks',
-        text: 'Comments',
-        flex: 1,
-        tdCls: 'wrap'
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'use_reasons',
-        text: 'Use Reasons',
+        text: 'Additional information on drug',
         flex: 1,
         tdCls: 'wrap'
     },{
@@ -159,7 +139,7 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugGrid', {
             xtype: 'button',
             text: 'View all Details',
             childXtype: 'pvSuspectedDrugFrm',
-            winTitle: 'Suspected Medicine/Vaccine/Device',
+            winTitle: 'Drug/Vaccine/Device',
             winWidth: '70%',
             ui: 'soft-green',
             iconCls: 'fa fa-eye',
@@ -183,7 +163,7 @@ Ext.define('Admin.view.pv.views.grids.PvSuspectedDrugGrid', {
                     tooltip: 'Edit',
                     action: 'edit',
                     childXtype: 'pvSuspectedDrugFrm',
-                    winTitle: 'Suspected Medicine/Vaccine/Device',
+                    winTitle: 'Drug/Vaccine/Device',
                     winWidth: '80%',
                     handler: 'showEditPvWinFrm',
                     bind: {
