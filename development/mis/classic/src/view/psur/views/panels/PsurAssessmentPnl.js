@@ -115,16 +115,19 @@ Ext.define('Admin.view.psur.views.panels.PsurAssessmentPnl', {
                     autoScroll: true,
                     items: [
                        {
+                    title: 'Report Details',
                     xtype: 'psurreportsdetailspnl'
                 },
                 {
+                    title: 'Report Documents',
                     xtype: 'psurDocUploadsGrid'
                 },
                 {
+                    title: 'Checklist',
                     xtype: 'productscreeninggrid'
                 },
                 {
-                    title: ' Evaluation',
+                    title: ' Assessment',
                     xtype: 'psurEvaluationFrm'
                 },{
                 title: 'Assessment Report Uploads',
@@ -133,11 +136,7 @@ Ext.define('Admin.view.psur.views.panels.PsurAssessmentPnl', {
                 items:[{
                     xtype: 'psurAssessmentUploadsGrid'
                  }]
-                },{
-                title: 'Assessment Checklist',
-                xtype: 'productscreeninggrid',
-                hidden:true
-                 },
+                },
                 ]
         },
         {
@@ -159,6 +158,7 @@ Ext.define('Admin.view.psur.views.panels.PsurAssessmentPnl', {
                 childXtype: 'previousPsurReportsPnl',
                 winTitle: 'Previous PSUR/PBRER Reports',
                 winWidth: '80%',
+                hidden:true,
                 handler: 'previewPreviousPsurDetails'
             },
             {

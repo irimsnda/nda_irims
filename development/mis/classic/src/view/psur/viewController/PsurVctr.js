@@ -77,6 +77,10 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
             winWidth=btn.winWidth,
             child = Ext.widget(childXtype),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+            if(!application_code){
+                toastr.warning('Please save application details first!!', 'Warning Response');
+                return false;
+            }
            
            
        //pass parameters
@@ -448,11 +452,11 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
                 activeIndex--;
             }
             
-            if(activeIndex > 1 && direction == 'next'){
+            if(activeIndex > 0 && direction == 'next'){
                 if(application_id){
                     //fgdg
                 }else{
-                    toastr.warning('Please save patient details first!!', 'Warning Response');
+                    toastr.warning('Please save Application details first!!', 'Warning Response');
                     return false;
                 }
             }
@@ -501,14 +505,14 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
             progress = wizardPnl.down('#progress_tbar'),
             progressItems = progress.items.items;
 
-        // if (step > 1) {
-        //     var thisItem = progressItems[step];
-        //     if (!application_id) {
-        //         thisItem.setPressed(false);
-        //         toastr.warning('Please save application details first!!', 'Warning Response');
-        //         return false;
-        //     }
-        // }
+        if (step > 0) {
+            var thisItem = progressItems[step];
+            if (!application_id) {
+                thisItem.setPressed(false);
+                toastr.warning('Please save application details first!!', 'Warning Response');
+                return false;
+            }
+        }
         if (step == 0) {
             wizardPnl.down('button[name=save_btn]').setDisabled(true);
             motherPnl.getViewModel().set('atBeginning', true);
@@ -601,7 +605,7 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
             form = Ext.widget(childXtype);
             form.loadRecord(record);
             form.down('button[name=save_btn]').setDisabled(true);
-        funcShowCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     
     },
     viewApplicationRecommendationLogs:function(btn) {

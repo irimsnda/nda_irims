@@ -65,56 +65,12 @@ Ext.define('Admin.view.psur.views.forms.PsurDetailsFrm', {
                             }
                         },
                          isLoad: true
-                    },
-                    change: function(combo, newVal, oldValue, eopts) {
-                        if(newVal == 1){
-                            var form = combo.up('form');
-                            // from_date = form.down('datefield[name=from_date]');
-                            // from_date.setVisible(false);
-                            // from_date.allowBlank = true;
-
-                            // var to_date = form.down('datefield[name=to_date]');
-                            // to_date.setVisible(false);
-                            // to_date.allowBlank = true;
-
-                            // var version_no = form.down('textfield[name=version_no]');
-                            // version_no.setVisible(true);
-                            // version_no.allowBlank = false;
-                            // version_no.validate();
-
-
-                        }else{
-                            // var form = combo.up('form'),
-                            // from_date = form.down('datefield[name=from_date]');
-                            // from_date.setVisible(true);
-                            // from_date.allowBlank = false;
-                            // from_date.validate();
-
-                       
-                            // var to_date = form.down('datefield[name=to_date]');
-                            // to_date.setVisible(true);
-                            // to_date.allowBlank = false;
-                            // to_date.validate();
-
-
-                            // var version_no = form.down('textfield[name=version_no]');
-                            // version_no.setVisible(false);
-                            // version_no.allowBlank = true;
-                        }
-                        
                     }
                    
                 }
             },
 
-            {
-                xtype: 'textfield',
-                fieldLabel: 'Version No:',
-                name: 'version_no',
-                bind:{
-                    readOnly: '{isReadOnly}'
-                }
-            },
+            
 
             {
                 xtype: 'datefield',
@@ -152,6 +108,14 @@ Ext.define('Admin.view.psur.views.forms.PsurDetailsFrm', {
                             toastr.error('Validation Error', 'Reporting Period To must be later than the Reporting Period From', 'Warning Response');
                         }
                     }
+                }
+            },
+            {
+                xtype: 'textfield',
+                fieldLabel: 'Version No:',
+                name: 'version_no',
+                bind:{
+                    readOnly: '{isReadOnly}'
                 }
             },
 

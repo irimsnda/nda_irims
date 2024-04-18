@@ -160,7 +160,7 @@ Ext.define('Admin.view.pv.views.grids.PsurProductGrid', {
                     text: 'Delete',
                     iconCls: 'x-fa fa-trash',
                     tooltip: 'Delete Record',
-                    table_name: 'tra_pv_sender_details',
+                    table_name: 'tra_product_notification_details',
                     storeID: 'psurproductStr',
                     action_url: 'configurations/deleteConfigRecord',  
                     action: 'actual_delete',

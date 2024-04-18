@@ -81,27 +81,22 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
 	        dataIndex: 'reference_no',
 	        text: 'Ref Number',
 	        flex: 1
-	    }, {
+	    },  {
 	        xtype: 'gridcolumn',
-	        dataIndex: 'product_name',
-	        text: 'Product Name',
+	        dataIndex: 'report_type',
+	        text: 'Report Type',
+	        flex: 1
+	    },  {
+	        xtype: 'gridcolumn',
+	        dataIndex: 'from_date',
+	        text: 'Reporting Period From',
 	        flex: 1
 	    }, {
 	        xtype: 'gridcolumn',
-	        dataIndex: 'common_name',
-	        text: 'Common Name',
+	        dataIndex: 'to_date',
+	        text: 'Reporting Period To',
 	        flex: 1
-	    }, {
-	        xtype: 'gridcolumn',
-	        dataIndex: 'prodclass_category',
-	        text: 'Product Category',
-	        flex: 1
-	    }, {
-	        xtype: 'gridcolumn',
-	        dataIndex: 'applicant_name',
-	        text: 'Applicant',
-	        flex: 1
-	    }, {
+	    },  {
 	        xtype: 'gridcolumn',
 	        dataIndex: 'date_added',
 	        text: 'Date Received',

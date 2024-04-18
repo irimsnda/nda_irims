@@ -897,6 +897,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'showApplicationCommentsWin'
             },
 
+            'psurAssessmentPnl toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+
             'importexportlicencevaluationpnl toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
@@ -1384,6 +1388,9 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'newdrugshopinspectionpanel button[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
+            'psurAssessmentPnl button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
 
             'prepresiapremiseinspectionpanel toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
@@ -1588,6 +1595,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'receiveOnlineApplicationDetailsFrmBtn'
             },
             'controldrugsimppermitapprovalpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'psurManagerReviewPnl button[name=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
 

@@ -606,7 +606,7 @@ Ext.define('Admin.controller.PsurCtr', {
             app_doc_types_store = activeTab.down('combo[name=applicable_documents]').getStore(),
             // applicantFrm = activeTab.down('productapplicantdetailsfrm'),
             // localagentFrm = activeTab.down('productlocalapplicantdetailsfrm'),
-            products_detailsfrm = activeTab.down('drugsProductsDetailsFrm'),
+           // products_detailsfrm = activeTab.down('drugsProductsDetailsFrm'),
             psurdetailsFrm = activeTab.down('psurdetailsFrm'),
             psurEvaluationFrm = activeTab.down('psurEvaluationFrm'),
            // app_check_types_store = activeTab.down('combo[name=applicable_checklist]').getStore(),
@@ -659,7 +659,7 @@ Ext.define('Admin.controller.PsurCtr', {
 
                         // applicantFrm.loadRecord(model);
                         // localagentFrm.loadRecord(ltr_model);
-                        products_detailsfrm.loadRecord(model);
+                       // products_detailsfrm.loadRecord(model);
                         psurdetailsFrm.loadRecord(model);
                         psurEvaluationFrm.loadRecord(assessment_model)
                         // zone_cbo.setReadOnly(true);

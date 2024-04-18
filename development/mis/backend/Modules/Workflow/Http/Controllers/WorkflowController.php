@@ -2586,6 +2586,8 @@ public function getProcessApplicableChecklistItems(Request $request)
             $this->processNormalManagersApplicationSubmission($request);
         }else if ($module_id == 23) {//Alert
             $this->processNormalManagersApplicationSubmission($request);
+        }else if ($module_id == 32) {//psur
+            $this->processNormalManagersApplicationSubmission($request);
         }else {
             //unknown module
             echo "module not set";
