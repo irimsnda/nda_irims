@@ -142,6 +142,7 @@ Ext.define('Admin.view.clinicaltrial.views.sharedinterfaces.panels.ClinicalTrial
                {
                     text: 'Sample Management Requests',
                     ui: 'soft-purple',
+                    hidden:true,
                     iconCls: 'fa fa-sliders',
                     menu: {
                         xtype: 'menu',
