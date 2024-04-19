@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, Inject, Input,ChangeDetectionStrategy, ChangeDetectorRef, Output, EventEmitter  } from '@angular/core';
+import { Component, OnInit,OnDestroy, ViewChild, ViewContainerRef, Inject, Input,ChangeDetectionStrategy, ChangeDetectorRef, Output, EventEmitter  } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgxSmartModalService } from 'ngx-smart-modal';
@@ -17,6 +17,7 @@ import { SharedGmpapplicationclassComponent } from '../../shared-gmpapplicationc
 import { ConfigurationsService } from 'src/app/services/shared/configurations.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { PremisesApplicationsService } from 'src/app/services/premises-applications/premises-applications.service';
 
 import CustomStore from 'devextreme/data/custom_store';
 import { AppSettings } from 'src/app/app-settings';
@@ -26,7 +27,7 @@ import { AppSettings } from 'src/app/app-settings';
   templateUrl: './gmp-generaldetails.component.html',
   styleUrls: ['./gmp-generaldetails.component.css']
 })
-export class GmpGeneraldetailsComponent implements OnInit {
+export class GmpGeneraldetailsComponent implements OnInit{
   
   @Input() gmpapplicationGeneraldetailsfrm: FormGroup;
   @Input() assessmentProcedureData: any;
@@ -54,7 +55,7 @@ export class GmpGeneraldetailsComponent implements OnInit {
   
   @Input() isPersonnelPopupVisible: boolean;
   @Input() isBillingPersonnelPopupVisible: boolean;
-
+  @Input() gmpControl:FormControl;
   @Input() personnel_informationData: any;
   @Input() billingpersonnel_informationData: any;
 
@@ -66,6 +67,7 @@ export class GmpGeneraldetailsComponent implements OnInit {
   @Input()  traderAccountsDetailsData:any = {};
   @Input() ispremisesSearchWinVisible: boolean;
   @Input() isManufacturerPopupVisible: boolean;
+  @Input() isManufacturerSitePopupVisible:boolean;
   @Input() registered_premisesData: any;
   @Input() manufacturersSiteData: any = {};
 
@@ -79,7 +81,7 @@ export class GmpGeneraldetailsComponent implements OnInit {
   manufacturersData:any = {};
   isproductManufacturerModalShow:boolean=false;
   @Output() businessTypeEvent = new EventEmitter();
-
+  mistrader_id:number;
   region_id:number;
   country_id:number;
   personnel_type_id:number;
@@ -90,6 +92,9 @@ export class GmpGeneraldetailsComponent implements OnInit {
   is_local_agent:boolean;
   trader_title:string;
   isgmpapplicationSearchWinVisible:boolean=false;
+  isonContractGiverManufacturer:boolean = false;
+  isonApprovedByNDA:boolean = false;
+  isReadOnlySite:boolean=false;
   devicesTypeData:any;
   isReadOnlyTraderasContactPerson:boolean;
   isReadOnlyTraderasBillingPerson:boolean;
@@ -97,13 +102,19 @@ export class GmpGeneraldetailsComponent implements OnInit {
   manufacturerFrm:FormGroup;
   isReadOnlyTraderasLtr:boolean = false;
   is_local:number;
+  sectionData:any;
+  manufacturingDetails:any;
   trader_aslocalagent:number;
+  registered_gmpApplicationData:any;
   isRegistrantDetailsWinshow:boolean= false;
   isonInterCompleteManufacturer:boolean = false;
+  is_domestic:boolean = false;
+  inspectionAtivitiesData:any;
   gmpAssessmentCountriesDta:any;
   assessment_procedure_id:number;
   hasCountriesSelection:boolean;
-  constructor(public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: GmpApplicationServicesService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public dmsService:DocumentManagementService,public utilityService:Utilities,public httpClient: HttpClient) { 
+
+  constructor(public modalServ: ModalDialogService, public premService:PremisesApplicationsService,public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: GmpApplicationServicesService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public dmsService:DocumentManagementService,public utilityService:Utilities,public httpClient: HttpClient) { 
 
     let user_details = this.authService.getUserDetails();
     
@@ -111,26 +122,31 @@ export class GmpGeneraldetailsComponent implements OnInit {
     if (this.is_local == 1) {
       this.isReadOnlyTraderasLtr = true;
     }
-
+    if(this.gmp_type_id == 2){
+      this.is_domestic = true;
+    }else{
+      this.is_domestic = false;
+    }
     this.manufacturerFrm = new FormGroup({
       name: new FormControl('', Validators.compose([Validators.required])),
       country_id: new FormControl('', Validators.compose([Validators.required])),
       region_id: new FormControl('', Validators.compose([])),
+      district_id: new FormControl('', Validators.compose([])),
       email_address: new FormControl('', Validators.compose([Validators.required])),
-      postal_address: new FormControl('', Validators.compose([Validators.required])),
-      telephone_no: new FormControl('', Validators.compose([])),
-      physical_address: new FormControl('', Validators.compose([])),
-      mansite_name: new FormControl('', Validators.compose([Validators.required])),
-      mansitecountry_id: new FormControl('', Validators.compose([Validators.required])),
+      physical_address: new FormControl('', Validators.compose([Validators.required])),
+      telephone: new FormControl('', Validators.compose([Validators.required])),
+      mansite_name: new FormControl('', Validators.compose([])),
+      mansitecountry_id: new FormControl('', Validators.compose([])),
       mansiteregion_id: new FormControl('', Validators.compose([])),
-      mansiteemail_address: new FormControl('', Validators.compose([Validators.required])),
-      mansitepostal_address: new FormControl('', Validators.compose([Validators.required])),
-      mansitetelephone_no: new FormControl('', Validators.compose([Validators.required])),
-      mansitephysical_address: new FormControl('', Validators.compose([Validators.required])),
-      contact_person: new FormControl('', Validators.compose([Validators.required])),
+      mansiteemail_address: new FormControl('', Validators.compose([])),
+      mansitepostal_address: new FormControl('', Validators.compose([])),
+      mansitetelephone_no: new FormControl('', Validators.compose([])),
+      mansitephysical_address: new FormControl('', Validators.compose([])),
+      contact_person: new FormControl('', Validators.compose([])),
       manufacturer_id: new FormControl('', Validators.compose([])),
       
     });
+    this.onLoadSitemanufacturingInspectionActivities();
 
   }
   onAssessmentCboSelect($event) {
@@ -148,6 +164,50 @@ export class GmpGeneraldetailsComponent implements OnInit {
       }
     }
   }
+  captureLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          this.gmpapplicationGeneraldetailsfrm.patchValue({ latitude, longitude });
+        },
+        (error) => {
+          console.error('Error getting user location:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
+  }
+
+
+onLoadmanufacturingInspectionActivities() {
+  var data = {
+    table_name: 'par_manufacturinginspection_activities',
+  };
+
+  this.config.onLoadConfigurationData(data)
+    .subscribe(
+      data => {
+        this.inspectionAtivitiesData = data;
+      });
+} 
+
+onLoadSitemanufacturingInspectionActivities() {
+  var data = {
+    table_name: 'par_site_manufacturing_activities',
+  };
+
+  this.config.onLoadConfigurationData(data)
+    .subscribe(
+      data => {
+        this.manufacturingDetails = data;
+      });
+} 
+
+
+
 
   onLoadCountriesLists(gmp_assessment_id) {
 
@@ -168,12 +228,15 @@ export class GmpGeneraldetailsComponent implements OnInit {
   }
   ngOnInit() {
     this.onLoaddevicesTypeData(this.section_id);
+    //this.onLoadSections();
     if(this.sub_module_id == 5){
       this.manufacturingSiteLocationSet = true;
-    }
+   
+      }
     else{
       this.manufacturingSiteLocationSet = false;
-    }
+    }    
+    this.onLoadmanufacturingInspectionActivities();
 
   }
   onCoutryCboSelect($event) {
@@ -290,7 +353,7 @@ export class GmpGeneraldetailsComponent implements OnInit {
   }
    onBillingPersonnelSearchDetails(personnel_type_id) {
     this.personnel_type_id = personnel_type_id;
-    this.appService.onLoadBillingPersonnelInformations()
+    this.appService.onLoadPersonnelInformations()
     .subscribe(
       data_response => {
         this.billingpersonnel_informationData = data_response.data;
@@ -301,6 +364,35 @@ export class GmpGeneraldetailsComponent implements OnInit {
         return false
       });
 
+  }  
+  onSearchManufacturingSiteDetails() {
+    this.isManufacturerSitePopupVisible = true;
+    let me = this;
+    this.manufacturersSiteData.store = new CustomStore({
+        load: function (loadOptions: any) {
+            var params = '?';
+            params += 'skip=' + loadOptions.skip;
+            params += '&take=' + loadOptions.take;//searchValue
+            var headers = new HttpHeaders({
+              "Accept": "application/json",
+              "Authorization": "Bearer " + me.authService.getAccessToken(),
+            });
+            this.configData = {
+              headers: headers,
+              params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter }
+            };
+            return me.httpClient.get(AppSettings.base_url + 'gmpinspection/getManufacturingSiteInformation',this.configData)
+                .toPromise()
+                .then((data: any) => {
+                    return {
+                        data: data.data,
+                        totalCount: data.totalCount
+                    }
+                })
+                .catch(error => { throw 'Data Loading Error' });
+
+        }
+    });
   }
 
 
@@ -336,18 +428,20 @@ export class GmpGeneraldetailsComponent implements OnInit {
   onAddManufacturingSite(){
       this.isAddNewManufacturingSite = true;
   }
-  onManDetailPreparing(e) {
-    e.toolbarOptions.items.unshift( {
-        location: 'after',
-        widget: 'dxButton',
-        options: {
-          icon: 'add',
-          text: 'New Manufacturing Site',
-          type: 'default',
-          onClick: this.onAddManufacturingSite.bind(this)
-        }
-      });
+onManDetailPreparing(e) {
+  if (this.gmp_type_id == 1) {
+    e.toolbarOptions.items.unshift({
+      location: 'after',
+      widget: 'dxButton',
+      options: {
+        icon: 'add',
+        text: 'New Manufacturing Site',
+        type: 'default',
+        onClick: this.onAddManufacturingSite.bind(this),
+      },
+    });
   }
+}
   funcSearchRegistrantDetails(is_local_agent) {
    
         this.isRegistrantDetailsWinshow = true;
@@ -427,6 +521,15 @@ export class GmpGeneraldetailsComponent implements OnInit {
     
 
   }
+  onTraderLTRChange($event){
+    if($event.value == 1){
+        this.isReadOnlyTraderasLtr = true;
+
+    }else{
+      this.isReadOnlyTraderasLtr = false;
+    }
+    
+  }
     onTraderasBillingpersnChange($event) {
     
     if($event.value == 1){
@@ -438,6 +541,34 @@ export class GmpGeneraldetailsComponent implements OnInit {
     
 
   }
+
+ onContractGiverManufacturer($event) {
+
+  if($event.value == 2){
+      this.isonContractGiverManufacturer = true;
+      this.gmpControl.setValidators([Validators.required]);
+      this.gmpControl.updateValueAndValidity();
+  }
+  else{
+    this.isonContractGiverManufacturer = false;
+    this.isonApprovedByNDA = false;
+    this.gmpControl.clearValidators();
+    this.gmpControl.updateValueAndValidity();
+
+  }
+} 
+onApprovedByNDA($event) {
+
+  if($event.value == 1){
+      this.isonApprovedByNDA = true;
+      this.isReadOnlySite =true;
+  }
+  else{
+    this.isonApprovedByNDA = false;
+      this.isReadOnlySite =false;
+
+  }
+} 
   
   funcSelectPremisePersonnel(data) {
     if(this.personnel_type_id == 1){
@@ -514,7 +645,7 @@ export class GmpGeneraldetailsComponent implements OnInit {
 
         onSaveNewBillingPremisesPersonnelDetails() {
         let table_name;
-        table_name = 'tra_billingpersonnel_information';
+        table_name = 'tra_personnel_information';
         let name = this.newPremisesPersonnelDetailsFrm.get('name').value;
         let email_address = this.newPremisesPersonnelDetailsFrm.get('email_address').value;
         let telephone_no = this.newPremisesPersonnelDetailsFrm.get('telephone_no').value;
@@ -544,6 +675,65 @@ export class GmpGeneraldetailsComponent implements OnInit {
               this.toastr.error('Error Occurred', 'Alert');
             });
       }
+
+      onRegisteredGMPSearch() {
+        //load the Premises Details 
+        this.appService.getGMPDataDetails({ mistrader_id:this.mistrader_id}, 'gmpinspection/getTradersRegisteredGMPApplications')
+        .subscribe(
+          data => {
+            if (data.success) {
+            this.ispremisesSearchWinVisible= true;
+              this.registered_gmpApplicationData = data.data;
+            }
+            else {
+              this.toastr.success(data.message, 'Alert');
+            }
+          },
+          error => {
+            return false
+          });
+      }
+
+      onRegisteredPremisesSearch() {
+          
+          //load the Premises Details 
+          this.premService.onLoadRegisteredPremises({})
+            .subscribe(
+              data_response => {
+              this.ispremisesSearchWinVisible= true;
+                this.registered_gmpApplicationData = data_response.data;
+              },
+              error => {
+                return false
+              });
+      }
+
+       onDomesticPremisesSearch() {
+      if(this.manufacturing_site_id < 1){
+          this.toastr.error('Gmp Application has already been saved.', 'Alert');
+          return;
+          
+      }
+      else{
+        this.appService.getGMPDataDetails({ mistrader_id:this.mistrader_id, section_id: this.section_id }, 'gmpinspection/getTradersRegisteredPremises')
+        .subscribe(
+          data => {
+            if (data.success) {
+              
+              this.ispremisesSearchWinVisible= true;
+              this.registered_premisesData = data.data;
+
+            }
+            else {
+              this.toastr.success(data.message, 'Alert');
+            }
+          },
+          error => {
+            return false
+          });
+      }
+    
+  }
       funcSelectTraderDetails(data) {
         let record = data.data;
         
@@ -552,7 +742,8 @@ export class GmpGeneraldetailsComponent implements OnInit {
           this.isRegistrantDetailsWinshow = false;
       }
       funcSelectPremiseDetails(data){
-        this.gmpapplicationGeneraldetailsfrm.patchValue(data.data);
+        let resp_data = data.data;
+        this.gmpapplicationGeneraldetailsfrm.patchValue({premises_name:resp_data.premises_name,premise_id:resp_data.premise_id,premise_no:resp_data.premise_no});
          this.ispremisesSearchWinVisible= false;
          this.isgmpapplicationSearchWinVisible = false;
          
@@ -565,7 +756,7 @@ export class GmpGeneraldetailsComponent implements OnInit {
   funcSelectManufacturer(data) {
     if (this.gmp_type_id == 2) {
       let resp_data = data.data;
-      this.gmpapplicationGeneraldetailsfrm.patchValue({manufacturer_name:resp_data.manufacturer_name,man_site_id:resp_data.man_site_id});
+      this.gmpapplicationGeneraldetailsfrm.patchValue(data.data);
       this.gmpapplicationGeneraldetailsfrm.patchValue({section_id:this.section_id,gmp_type_id:2});
     }
     else {
@@ -573,12 +764,30 @@ export class GmpGeneraldetailsComponent implements OnInit {
       this.gmpapplicationGeneraldetailsfrm.patchValue(data.data);
       
       this.gmpapplicationGeneraldetailsfrm.patchValue({section_id:this.section_id,gmp_type_id:1});
-     
-
     }
      
     this.isManufacturerPopupVisible = false;
   }
+
+  funcSelectManufacturerSite(data) {
+    if (this.gmp_type_id == 2) {
+      let resp_data = data.data;
+      this.gmpapplicationGeneraldetailsfrm.get('manufacturer_site_name').setValue(resp_data.manufacturer_name);
+      this.gmpapplicationGeneraldetailsfrm.get('site_country_id').setValue(resp_data.country_id);
+      this.gmpapplicationGeneraldetailsfrm.get('site_physical_address').setValue(resp_data.physical_address);
+    }
+    else {
+      this.gmp_type_id = 1
+      this.gmpapplicationGeneraldetailsfrm.get('manufacturer_site_name').setValue(data.data.manufacturer_name);
+      this.gmpapplicationGeneraldetailsfrm.get('site_country_id').setValue(data.data.country_id);
+      this.gmpapplicationGeneraldetailsfrm.get('site_physical_address').setValue(data.data.physical_address);
+    }
+     
+    this.isManufacturerSitePopupVisible = false;
+  }
+
+
+
   onPremisesPerGridToolbar(e,is_readonly) {
     this.functDataGridToolbar(e, this.funAddNewPremisesPersonnelDetails, 'Add New Personnel',is_readonly);
   }

@@ -23,15 +23,15 @@ export class VetAppSelectionComponent  extends SharedDashboardclassComponent  im
   constructor(public viewRef: ViewContainerRef, public modalServ: ModalDialogService, public spinner: SpinnerVisibilityService, public toastr: ToastrService, public router: Router, public configService: ConfigurationsService, public appService: GmpApplicationServicesService,public utilityService:Utilities) { 
 
     super(viewRef, modalServ, spinner, toastr, router, configService,  appService, utilityService)
-    this.sectionSelection = '5';
-    this.sectionsdata = '5';
+    this.sectionSelection = '2';
+    this.sectionsdata = '2';
   }
   ngOnInit() {
 
     this.onLoadSections();
-    this.onLoadGmpAppType();
+    this.onLoadGmpAppType(this.sub_module_id);
     this.onApplicationProcessGuidelines()
-    this.onLoadgmpLocationData()
+    //this.onLoadgmpLocationData()
   }
   onGmpAppSelection() {
     if (this.GmpAppSelectionfrm.invalid) {

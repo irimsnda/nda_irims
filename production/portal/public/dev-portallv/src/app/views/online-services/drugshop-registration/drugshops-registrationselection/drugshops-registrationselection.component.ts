@@ -31,20 +31,23 @@ export class DrugshopsRegistrationselectionComponent implements OnInit {
   sub_module_id:number;
   status_name:string;
   status_id:string;
+  loading: boolean = false;
   constructor(public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: PremisesApplicationsService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public utilityService:Utilities) { }
+
+
 
   ngOnInit() {
 
     this.premisesapp_details = this.appService.getPremisesApplicationDetail();
 
-    console.log( this.premisesapp_details);
     if (!this.premisesapp_details) {
-      this.router.navigate(['./../online-services/premisesrenewal-dashboard']);
+      this.router.navigate(['./../online-services/drugshop-renewal-dashboard']);
       return;
     }
     else {
       this.sub_module_id = this.premisesapp_details.sub_module_id;
-      
+      this.registration_status = this.premisesapp_details.registration_status;
+      this.validity_status = this.premisesapp_details.validity_status;
       this.module_id = this.premisesapp_details.module_id;
       this.process_title = this.premisesapp_details.process_title;
      
@@ -97,18 +100,23 @@ export class DrugshopsRegistrationselectionComponent implements OnInit {
           return false;
    }
   
-   onRegisteredPremisesSearch() {
-    
-      //load the Premises Details 
-      this.appService.onLoadRegisteredPremises({})
-        .subscribe(
-          data_response => {
-            this.registeredPremisesData = data_response.data;
-          },
-          error => {
-            return false
-          });
-  }
+  onRegisteredPremisesSearch() {
+  this.loading = true; // Show a loading indicator
+
+  this.appService.onLoadRegisteredDrugShops({sub_module_id: this.sub_module_id,module_id: this.module_id,registration_status: this.registration_status,validity_status: this.validity_status,
+  }).subscribe(
+    (data_response) => {
+      this.registeredPremisesData = data_response.data;
+      this.loading = false; 
+    },
+    (error) => {
+      this.loading = false; 
+      console.error("Error loading data:", error);
+    }
+  );
+}
+
+
   onPremisesappsToolbarPreparing(e) {
     e.toolbarOptions.items.unshift( {
         location: 'after',

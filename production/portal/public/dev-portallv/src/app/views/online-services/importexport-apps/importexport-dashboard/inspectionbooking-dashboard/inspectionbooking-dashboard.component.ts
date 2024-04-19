@@ -15,7 +15,7 @@ export class InspectionbookingDashboardComponent extends ImportexportDashboardCo
     this.onLoadProductAppType(this.sub_module_id);
     this. onLoadApplicationCounterDetails(this.sub_module_id);
     this.FilterDetailsFrm.get('sub_module_id').setValue(this.sub_module_id);
-    this.application_title = 'Import License Dashboard';  
+    this.application_title = 'Inpection Booking Dashboard';  
 
 
     
@@ -32,22 +32,26 @@ export class InspectionbookingDashboardComponent extends ImportexportDashboardCo
         onClick: this.onClickSubModulehelpGuidelines.bind(this)
 
       }
-    }, {
-      location: 'before',
-      widget: 'dxButton',
-      options: {
-        text: 'Intiate Inspection Booking',
-        type: 'default',visible:false,
-        icon: 'fa fa-pencil-square-o'
-      }
-    },{
+    },
+    //  {
+    //   location: 'before',
+    //   widget: 'dxButton',
+    //   options: {
+    //     text: 'Intiate Inspection Booking',
+    //     type: 'default',visible:true,
+    //     icon: 'fa fa-pencil-square-o',
+    //     onClick: this.onClickSubModuleAppSelection.bind(this)
+    //   }
+    // },
+    {
         location: 'after',
         widget: 'dxButton',
         options: {
           icon: 'refresh',
           onClick: this.refreshDataGrid.bind(this)
         }
-      });
+      }
+      );
   }
   onCellPrepared(e) {
     

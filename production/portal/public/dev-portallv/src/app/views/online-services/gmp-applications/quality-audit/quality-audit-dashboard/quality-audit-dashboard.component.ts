@@ -42,9 +42,9 @@ export class QualityAuditDashboardComponent extends SharedDashboardclassComponen
   constructor(public viewRef: ViewContainerRef, public modalServ: ModalDialogService, public spinner: SpinnerVisibilityService, public toastr: ToastrService, public router: Router, public configService: ConfigurationsService, public appService: GmpApplicationServicesService,public utilityService:Utilities) { 
 
     super(viewRef, modalServ, spinner, toastr, router, configService,  appService, utilityService)
-    this.sectionSelection = '2';
-    this.sectionsdata = '2';
-    this.onLoadPremisesCounterDetails();
+    this.sectionSelection = '5';
+    this.sectionsdata = '5';
+    this.onLoadPremisesCounterDetails(this.sub_module_id,this.gmp_type_id);
   }
 
   ngOnInit() {

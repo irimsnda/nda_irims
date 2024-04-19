@@ -36,17 +36,20 @@ export class ControlleddrugslicenseGendetailsComponent implements OnInit {
   @Input() permitReasonData: any; 
   @Input() portOfEntryExitData: any; 
   @Input() payingCurrencyData: any; 
-  
+  @Input() is_registered:number;
+
   @Input() currencyData: any;
   @Input() consigneeOptionsData: any; 
   @Input() consignee_options_check: any; 
   @Input() zoneData: any; 
+  @Input() registrationLevelData: any;
+
   @Input() module_id: any; 
   @Input() importExportPermitTypesData: any; 
   @Input() application_code: any; 
   @Input() ispremisesSearchWinVisible: any; 
   @Input() registered_premisesData: any; 
-  
+  @Input() has_registered_premises:number;
   @Input() issenderreceiverSearchWinVisible: any; 
   @Input() consignee_sendertitle: any; 
   @Input() issenderreceiverAddWinVisible: any; 
@@ -64,14 +67,33 @@ export class ControlleddrugslicenseGendetailsComponent implements OnInit {
   has_registred_outlet:boolean= false;
   device_type_visible:boolean= false;
   import_typecategory_visible:boolean= false;
+  is_registered_premise:boolean= false;
+  is_not_registered_premise:boolean= false;
+  is_importation:boolean= false;
+  isReadOnlyTraderasContactPerson:boolean= false;
+  isReadOnlyTraderasConsigneePerson:boolean= false;
+  isPersonnelPopupVisible:boolean= false;
+  is_exportation:boolean= false;
   consignee_options_id:number;
+  mode_oftransport_id:number;
   senderReceiverData:any ={};
   checkifsenderreceiver:boolean;
   isconsigneeSearchWinVisible:boolean;
   consigneeReceiverData:any ={};
   dataGrid: DxDataGridComponent;
   app_resp:any;
+  applicationData:any;
+  premiseTypeData:any;
+  licenceTypeData:any;
+  personnel_informationData:any;
+  businessTypeData:any;
+  qualificationsData:any;
+  vcApplicationTypeData:any;
+  importationReasonData:any;
   showreason_fornonregister_outlet:boolean= false;
+  vc_application_type_id:number;
+  business_type_id:number;
+  licence_type_id:number;
   hasotherpermit_reason:boolean= false;
   constructor(public utilityService:Utilities, public premappService: PremisesApplicationsService, public dmsService: DocumentManagementService, public fb: FormBuilder, public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: ImportexportService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public httpClient: HttpClient) {
   
@@ -80,6 +102,15 @@ export class ControlleddrugslicenseGendetailsComponent implements OnInit {
   ngOnInit(){
     this.onLoadCountries();
     this.onLoadconfirmDataParm() ;
+    this.onLoadApplicationType();
+    this.onLoadPremiseTypeDataChange();
+    this.onLoadbusinessTypeData();
+    this.onLoadLicenceType();
+    this.onLoadvcApplicationData();
+    this.onLoadportOfEntryExitData(this.mode_oftransport_id);
+    //this.onLoadImportReasons(this.business_type_id, this.licence_type_id);
+    this.onLoadQualificationDetails();
+   // this.onLoadImportRegistrationLevelData();
     if(this.section_id == 4){
       this.device_type_visible = true;
     }
@@ -100,6 +131,32 @@ export class ControlleddrugslicenseGendetailsComponent implements OnInit {
       }
     }
   }
+
+
+  onLoadImportReasons(business_type_id, licence_type_id) {
+     this.appService.onLoadImportationReasonsDetails(business_type_id, licence_type_id)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.importationReasonData = data.data;
+        },
+        error => {
+          return false;
+        });
+  } 
+
+  onSelectBusinessType($event) {
+    this.business_type_id = $event.selectedItem.id;
+    this.onLoadImportReasons(this.business_type_id, this.licence_type_id);
+
+  }
+  
+  onSelectLicenceType($event) {
+    this.licence_type_id = $event.selectedItem.id;
+    this.onLoadImportReasons(this.business_type_id, this.licence_type_id);
+
+  }
+
   onProformaInvoiceCurrencyChange($event) {
     this.proforma_currency_id = $event.value;
     this.onProformaInvoiceEvent.emit(this.proforma_currency_id);
@@ -142,6 +199,159 @@ export class ControlleddrugslicenseGendetailsComponent implements OnInit {
       });
 
   }
+
+  onSelectPremiseType($event){
+    if ($event.selectedItem.id == 1) {
+      this.is_registered_premise = true;
+      this.is_not_registered_premise = false;
+      this.applicationGeneraldetailsfrm.get('tpin_no').setValidators([]);
+      this.applicationGeneraldetailsfrm.get('name').setValidators([]);
+      this.applicationGeneraldetailsfrm.get('physical_address').setValidators([]);
+      this.applicationGeneraldetailsfrm.get('email').setValidators([]);
+
+        } 
+    else{
+      this.is_registered_premise = false;
+      this.is_not_registered_premise = true;
+      this.applicationGeneraldetailsfrm.get('tpin_no').setValidators([Validators.required]);
+      this.applicationGeneraldetailsfrm.get('name').setValidators([Validators.required]);
+      this.applicationGeneraldetailsfrm.get('physical_address').setValidators([Validators.required]);
+      this.applicationGeneraldetailsfrm.get('email').setValidators([]);
+
+    }
+    
+  }
+  onLoadImportRegistrationLevelData() {
+    var data = {
+      table_name: 'par_import_registration_level',
+    };
+
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.registrationLevelData = data;
+        });
+  }
+  onLoadQualificationDetails() {
+    var data = {
+      table_name: 'par_personnel_qualifications',
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.qualificationsData = data;
+        });
+  }
+
+
+  onLoadportOfEntryExitData(mode_oftransport_id) {
+        this.configService.onLoaPortOfEntryDetails(mode_oftransport_id,this.sub_module_id)
+          //.pipe(first())
+          .subscribe(
+            data => {
+              this.portOfEntryExitData = data.data;
+            },
+            error => {
+              return false;
+            });
+
+      }
+  onShipmentSelect($event) {
+    this.mode_oftransport_id = $event.selectedItem.id;
+
+    this.onLoadportOfEntryExitData(this.mode_oftransport_id);
+
+  }
+  onApplicantConsigneeChange($event) {
+    
+    if($event.value == 1){
+        this.isReadOnlyTraderasConsigneePerson = true;
+      this.applicationGeneraldetailsfrm.get('consignee_name').setValidators([]);
+
+
+    }else{
+      this.isReadOnlyTraderasConsigneePerson = false;
+      this.applicationGeneraldetailsfrm.get('consignee_name').setValidators([Validators.required]);
+
+    }
+    
+  }
+
+    onTraderasContactpersnChange($event) {
+    if($event.value == 1){
+        this.isReadOnlyTraderasContactPerson = true;
+      this.applicationGeneraldetailsfrm.get('contact_person').setValidators([]);
+
+
+    }else{
+      this.isReadOnlyTraderasContactPerson = false;
+      this.applicationGeneraldetailsfrm.get('contact_person').setValidators([Validators.required]);
+
+    }
+    
+
+  }
+  onLoadvcApplicationData() {
+    var data = {
+      table_name: 'par_vc_application_type',
+    };
+
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.vcApplicationTypeData = data;
+        });
+  }
+  onLoadPremiseTypeDataChange() {
+    var data = {
+      table_name: 'par_business_types',
+      is_non_licenced: 1
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.premiseTypeData = data;
+        });
+  }
+  onSelectVcType($event){
+    if ($event.selectedItem.id == 1) {
+      this.is_importation = true;
+      this.is_exportation = false;
+
+
+        }else{
+      this.is_importation = false;
+      this.is_exportation = true;
+
+
+    }
+    
+  }
+
+   onLoadLicenceType() {
+    var data = {
+      table_name: 'par_licence_type',
+   
+    };
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.licenceTypeData = data;
+        });
+  }
+    onLoadApplicationType() {
+    var data = {
+      table_name: 'par_importexport_application_type',
+    };
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.applicationData = data;
+        });
+  }
+
   onRegisteredPremisesSearch() {
 
     this.premappService.onLoadRegisteredPremises({})
@@ -244,8 +454,8 @@ export class ControlleddrugslicenseGendetailsComponent implements OnInit {
 
   onCoutryCboSelect($event) {
 
-
     this.onLoadRegions($event.selectedItem.id);
+    this.onLoadDistricts($event.selectedItem.id);
 
   }
   onLoadCountries() {
@@ -264,7 +474,71 @@ export class ControlleddrugslicenseGendetailsComponent implements OnInit {
           return false;
         });
   }
-  
+    onLoadbusinessTypeData() {
+    var data = {
+      table_name: 'par_business_types',
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.businessTypeData = data;
+        });
+  }
+    onPersonnelSearchDetails() {
+    this.appService.onLoadPersonnelInformations()
+    .subscribe(
+      data_response => {
+        this.personnel_informationData = data_response.data;
+        
+           this.isPersonnelPopupVisible = true;
+      },
+      error => {
+        return false
+      });
+
+  }
+    funcSelectPremisePersonnel(data) {
+      this.applicationGeneraldetailsfrm.patchValue({ contact_person_id: data.data.id, contact_person: data.data.name})
+    this.isPersonnelPopupVisible = false;
+    
+  }
+  onsearchConsignee() {
+    
+    this.consignee_sendertitle = 'Consignee Details';
+    this.checkifsenderreceiver = false;
+
+    this.isconsigneeSearchWinVisible = true;
+        let me = this;
+        this.consigneeReceiverData.store = new CustomStore({
+          load: function (loadOptions: any) {
+            console.log(loadOptions)
+              var params = '?';
+              params += 'skip=' + loadOptions.skip;
+              params += '&take=' + loadOptions.take;//searchValue
+              var headers = new HttpHeaders({
+                "Accept": "application/json",
+                "Authorization": "Bearer " + me.authService.getAccessToken(),
+              });
+            
+              this.configData = {
+                headers: headers,
+                params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter,table_name:'tra_consignee_data'}
+              };
+              return me.httpClient.get(AppSettings.base_url + 'importexportapp/getSenderreceiversDetails',this.configData)
+                  .toPromise()
+                  .then((data: any) => {
+                      return {
+                          data: data.data,
+                          totalCount: data.totalCount
+                      }
+                  })
+                  .catch(error => { throw 'Data Loading Error' });
+          }
+      });
+  }
+
+
   onsavePermitReceiverSender() {
     this.spinner.show();
     let table_name;

@@ -83,6 +83,7 @@ export class SharedGmpapplicationclassComponent implements OnInit {
   gmpSurgicalmanufatcuringSiteBlocksfrm:FormGroup
   premisesPersonnelDetailsfrm: FormGroup;
   premanufatcuringSiteBlocksfrm:FormGroup;
+  prodSurgicalgmpAddinspectionFrm:FormGroup;
   is_local:number;
   value: any;
   loading: false;
@@ -109,6 +110,7 @@ export class SharedGmpapplicationclassComponent implements OnInit {
   //premises other details 
   premisesOtherDetailsRows: any;
   gmpProductLineDataRows:any;
+  gmpSurgicalProductLineDataRows:any;
   gmpManufacturingBlocksDataRows:any;
   
   businessTypesData: any;
@@ -237,6 +239,7 @@ registered_id: number;
     
     this.onLoadPremisesPersonnelDetails(this.manufacturing_site_id);
     this.onLoadgmpProductLineDataRows(this.manufacturing_site_id);
+    this.onLoadgmpSurgicalProductLineDataRows(this.manufacturing_site_id);
     this.onLoadgmpproductDetailsInformationData(this.manufacturing_site_id);
     this.onLoadgmpManufacturingBlocksData(this.manufacturing_site_id);
     this.onLoadContractDetails(this.manufacturing_site_id);
@@ -479,8 +482,9 @@ registered_id: number;
     this.gmpSurgicalProductLineDetailsfrm = new FormGroup({
       group_family_id:new FormControl('', Validators.compose([Validators.required])),
       sterile_id:new FormControl('', Validators.compose([Validators.required])),
-      product_name:new FormControl('', Validators.compose([Validators.required])),
+      product_name:new FormControl('', Validators.compose([])),
       gmdn_code_id:new FormControl('', Validators.compose([])),
+      gmdn_code:new FormControl('', Validators.compose([])),
       gmdn_code_description:new FormControl('', Validators.compose([])),
       classification_id:new FormControl('', Validators.compose([])),
       block_name:new FormControl('', Validators.compose([])),
@@ -516,7 +520,19 @@ registered_id: number;
       description: [null]
     });
  
-  
+  this.prodSurgicalgmpAddinspectionFrm = new FormGroup({
+      brand_name: new FormControl('', Validators.compose([Validators.required])),
+      applicant_name: new FormControl('', Validators.compose([])),
+      reference_no: new FormControl('', Validators.compose([])),
+      reg_product_id: new FormControl('', Validators.compose([])),
+      gmdn_code: new FormControl('', Validators.compose([Validators.required])),
+      gmdn_code_id: new FormControl('', Validators.compose([])),
+      gmdn_code_description: new FormControl('', Validators.compose([Validators.required])),
+      classification_id: new FormControl('', Validators.compose([Validators.required])),
+      product_id: new FormControl('', Validators.compose([])),
+      gmp_productline_id: new FormControl('', Validators.compose([Validators.required]))
+    });
+
     this.prodgmpAddinspectionFrm = new FormGroup({
       brand_name: new FormControl('', Validators.compose([Validators.required])),
       applicant_name: new FormControl('', Validators.compose([Validators.required])),
@@ -1562,6 +1578,21 @@ registered_id: number;
         return false
       });
     
+}
+
+
+onLoadgmpSurgicalProductLineDataRows(manufacturing_site_id) {
+  this.appService.getGMPDataDetails({ manufacturing_site_id: manufacturing_site_id, section_id: this.section_id }, 'gmpinspection/getGmpProductLineSurgicaldetails')
+    .subscribe(
+      data => {
+        if (data.success) {
+        this.gmpSurgicalProductLineDataRows = data.data;
+          this.toastr.success(data.message);
+        }
+      },
+      error => {
+        return false;
+      });
 }
 onLoadgmpProductLineDataRows(manufacturing_site_id) {
 

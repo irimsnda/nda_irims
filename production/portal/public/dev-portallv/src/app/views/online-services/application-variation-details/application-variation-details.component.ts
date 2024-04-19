@@ -26,7 +26,7 @@ export class ApplicationVariationDetailsComponent implements OnInit {
   @Input() sub_module_id: number;
   @Input() section_id: number;
   @Input() module_id: number;
-
+  @Input() business_type_id:number;
   @Input() query_ref_id: number;
 
   @Input() prodclass_category_id: number;
@@ -34,7 +34,7 @@ export class ApplicationVariationDetailsComponent implements OnInit {
   isDocumentPreviewDownloadwin: boolean = false;
   appDocumentsUploadData: any;
   portalapp_variationsdata_id:number;
-
+  auto:any;
   appDocumentUploadfrm:FormGroup;
   isDocumentUploadPopupVisible:boolean = false;
   documentMenuItems = [

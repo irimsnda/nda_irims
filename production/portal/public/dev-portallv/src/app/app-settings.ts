@@ -7,10 +7,10 @@ if(app_connection == 'development'){
 
   var s2bpayjs = 'https://test-s2bpay.sc.com/s2bpaysit/resources/merchant/js/s2bpay.js';
 
-  var base_url = 'http://localhost:83/nda_irims/demonstration/portal/'
- var  assets_url = 'http://localhost:83/nda_irims/demonstration/portal/public/resources/';
+  var base_url = 'http://localhost:80/uganda_irims/portal/'
+ var  assets_url = 'http://localhost:80/uganda_irims/portal/public/resources/';
 
-  var mis_url = 'localhost:83/nda_irims/demonstration/mis';
+  var mis_url = 'localhost:80/uganda_irims/mis';
   var siteKey = '6LcoH54UAAAAAOqpAGCXC4cmup6N2c5KseVHmv1c';
   
 }
@@ -29,11 +29,12 @@ export class AppSettings {
   //* on production mode localhost:4200
   public static base_url = base_url;
   public static assets_url = assets_url;
+  public static irimshelpdesk_url = 'https://irimss.nda.or.ug/helpdesk/public/';
   public static mis_url = mis_url;
   public static siteKey= "6LdIjbsUAAAAAOhQtlHVuK8kpSdbBXAtX3K5pYQb";
-  public static system_title ='Uganda National Drug Authority Information Management System';
+  public static system_title ='NDA intergrated Regulatory Information Management System';
   public static system_website = 'https://www.nda.or.ug/';
-  public static system_version = 'iRIMS 2.8';
+  public static system_version = 'iRIMS 3.0';
   public static session_timeoutcheck = 4800000;
   public static encryptSecretKey = 'kPJks1MrdXE03n8H';
 

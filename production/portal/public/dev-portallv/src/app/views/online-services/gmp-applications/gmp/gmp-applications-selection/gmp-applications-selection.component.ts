@@ -43,10 +43,12 @@ export class GmpApplicationsSelectionComponent  implements OnInit {
     this.onLoadGmpAppType();
     this.onApplicationProcessGuidelines()
     this.GmpAppSelectionfrm = new FormGroup({
-     // section_id: new FormControl(this.sectionsData, Validators.compose([Validators.required])),
+      section_id: new FormControl(this.sectionsData, Validators.compose([Validators.required])),
       sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
       gmp_type_id: new FormControl('', Validators.compose([Validators.required])),
     });
+    this.GmpAppSelectionfrm.get('gmp_type_id').setValue(1);
+
     this.onLoadgmpLocationData()
   }
   onGmpAppSelection() {
@@ -54,10 +56,10 @@ export class GmpApplicationsSelectionComponent  implements OnInit {
       return;
     }
     //this.spinner.show();
-    //this.sectionItem = this.GmpAppSelectionfrm.controls['section_id'];
+    this.sectionItem = this.GmpAppSelectionfrm.controls['section_id'];
     this.app_typeItem = this.GmpAppSelectionfrm.controls['sub_module_id'];
     this.gmp_locationItem = this.GmpAppSelectionfrm.controls['gmp_type_id'];
-   // this.section_id = this.sectionItem.value;
+    this.section_id = this.sectionItem.value;
     this.sub_module_id = this.app_typeItem.value;
     this.gmp_type_id = this.gmp_locationItem.value;
 
@@ -89,7 +91,6 @@ export class GmpApplicationsSelectionComponent  implements OnInit {
   onLoadSections() {
     var data = {
       table_name: 'par_sections',
-      sectionSelection: '1'
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(

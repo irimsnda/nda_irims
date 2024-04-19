@@ -66,7 +66,7 @@ export class ApplicationPaymentsComponent implements OnInit {
     // let report_url = this.base_url+'reports/generateApplicationReceipts?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&receipt_id="+app_data.receipt_id+"&table_name=tra_product_applications";
  
  
-     let report_url = this.mis_url+'reports/generateApplicationReceipt?payment_id=' + app_data.receipt_id + '&&module_id=' + app_data.module_id + '&&application_id=' + app_data.application_id;
+     let report_url = this.mis_url+'reports/getReportUrl?payment_id=' + app_data.receipt_id + '&&module_id=' + app_data.module_id + '&&application_id=' + app_data.application_id;
      
      this.funcGenerateRrp(report_url,"Application Receipt")
      
@@ -80,7 +80,7 @@ export class ApplicationPaymentsComponent implements OnInit {
 }
   funcPrintApplicationInvoice(app_data){
   
-    let report_url = this.base_url+'reports/generateApplicationInvoice?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_product_applications";
+    let report_url = this.base_url+'reports/getReportUrl?application_code='+app_data.application_code+"&module_id="+app_data.module_id+"&sub_module_id="+app_data.sub_module_id+"&table_name=tra_product_applications";
     this.funcGenerateRrp(report_url,"Application Invoice")
     
   }onapplicationPaymentsDetailsToolBar(e){

@@ -144,8 +144,8 @@ export class ProdretentionRequestsappComponent implements OnInit {
           this.toastr.error('Error Occurred', 'Alert');
         });
         
-  }   onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+  }   onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {

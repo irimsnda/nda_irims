@@ -756,7 +756,7 @@ onApprovedByNDA($event) {
   funcSelectManufacturer(data) {
     if (this.gmp_type_id == 2) {
       let resp_data = data.data;
-      this.gmpapplicationGeneraldetailsfrm.patchValue({manufacturer_name:resp_data.manufacturer_name,man_site_id:resp_data.man_site_id});
+      this.gmpapplicationGeneraldetailsfrm.patchValue(data.data);
       this.gmpapplicationGeneraldetailsfrm.patchValue({section_id:this.section_id,gmp_type_id:2});
     }
     else {

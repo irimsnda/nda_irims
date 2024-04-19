@@ -34,7 +34,6 @@ icon="fa fa-trash"  [disabled]="isReadOnly"
   <dxi-column dataField="brand_name"></dxi-column>
   <dxi-column dataField="generic_name"></dxi-column>
   <dxi-column dataField="classification_name"></dxi-column>
-  <dxi-column dataField="registration_no"></dxi-column>
   <dxi-column dataField="identification_mark"  caption="Product Origin"></dxi-column>
   
   <dxi-column dataField="market_location"  caption="Product Origin"></dxi-column>
@@ -48,7 +47,7 @@ icon="fa fa-trash"  [disabled]="isReadOnly"
  
 </dx-data-grid>
 
-<dx-popup class="popup"  [width]="funcpopWidth(85)" [height]="800" [showTitle]="true" title="Clinical trial Comparator Products"
+<dx-popup class="popup"  [width]="funcpopWidth(85)" [height]="auto" [showTitle]="true" title="Clinical trial Comparator Products"
 [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="IMPProductDetailsWinVisible">
 <div *dxTemplate="let data of 'content'">
   <dx-scroll-view>
@@ -56,7 +55,7 @@ icon="fa fa-trash"  [disabled]="isReadOnly"
     <form enctype="multipart/form-data" role="form" [formGroup]="iMPProductDetailsFrm"
       (ngSubmit)="onsaveiMPProductDetailsDetails()">
       <div class=" col-xs-12 col-md-4 col-lg-4 col-xl-4">
-        <label class="control-label">Comaparator/Placebo Products</label>
+        <label class="control-label">Comparator/Placebo Products</label>
         <dx-select-box [dataSource]="clinicalProductCategoryData" valueExpr="id" displayExpr="category_name" 
          [searchEnabled]="true" formControlName="product_category_id">
         </dx-select-box>
@@ -78,7 +77,7 @@ icon="fa fa-trash"  [disabled]="isReadOnly"
             </div>
             <div class="col-lg-4">
                 
-                  <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:25px  !important;"  text="Search Details"  type="default" (onClick)="onSearchRegisteredProductApplication()">
+                  <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:30px  !important;"  text="Search Details"  type="default" (click)="onSearchRegisteredProductApplication()">
                     <i class="fa fa-search"></i>Search
                 </dx-button>
             </div>
@@ -191,7 +190,7 @@ icon="fa fa-trash"  [disabled]="isReadOnly"
                               <div class="col-lg-2">
                                 
 
-                              <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:25px  !important;"  text="Search Manufacturing Details"  type="default" (onClick)="funcSearchManufacturingSite()">
+                              <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}" style="margin-top:30px  !important;"  text="Search Manufacturing Details"  type="default" (onClick)="funcSearchManufacturingSite()">
                                   <i class="fa fa-search"></i>Search Details
                               </dx-button>
                             </div>
@@ -315,11 +314,11 @@ icon="fa fa-trash"  [disabled]="isReadOnly"
 
 
 
-<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="600" [showTitle]="true" title="Manufacturing Site Details"
+<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="500" [showTitle]="true" title="Manufacturing Site Details"
 [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isManufacturerSitePopupVisible">
 <div *dxTemplate="let data of 'content'">
 <dx-scroll-view>
-    <dx-data-grid class="table row-border hover"  [allowColumnResizing]="true"  [columnHidingEnabled]="true"   (onToolbarPreparing)="onManufacturerPreparing($event)" [dataSource]="manufacturersData" [remoteOperations]='true'   keyExpr="id">
+    <dx-data-grid class="table row-border hover"  [allowColumnResizing]="true"  [columnHidingEnabled]="true"   (onToolbarPreparing)="onManufacturerPreparing($event)" [dataSource]="manufacturersSiteData" [remoteOperations]='true'   keyExpr="id">
               <dxo-filter-row [visible]="false"></dxo-filter-row>
               <dxo-search-panel [visible]="true">
               </dxo-search-panel>

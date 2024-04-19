@@ -18,7 +18,7 @@ export class ClinicalComparatorproductsComponent extends ClinicalImpproductsComp
   @Input() siUnitsData: any;
   @Input() marketlocationData: any;
   @Input() manufacturersData: any;
-
+auto:any;
   ngOnInit() { 
 
     this.iMPProductDetailsFrm = new FormGroup({
@@ -41,7 +41,7 @@ export class ClinicalComparatorproductsComponent extends ClinicalImpproductsComp
       classification_id: new FormControl('', Validators.compose([])),
       gmdn_term: new FormControl('', Validators.compose([])),
       gmdn_category: new FormControl('', Validators.compose([])),
-      manufacturer_name: new FormControl('', Validators.compose([])),
+      manufacturer_name: new FormControl('', Validators.compose([Validators.required])),
       investigationproduct_section_id: new FormControl('', Validators.compose([Validators.required]))
     });
 

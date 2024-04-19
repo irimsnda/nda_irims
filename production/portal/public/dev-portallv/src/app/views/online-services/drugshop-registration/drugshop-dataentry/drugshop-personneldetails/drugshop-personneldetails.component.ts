@@ -75,13 +75,15 @@ export class DrugshopPersonneldetailsComponent implements OnInit {
     this.personnel_id = data.data.personnel_id;
 
   }      
-  funcSelectDirectorsDetails(data){
+  funcSelectDirectorsDetails(data){ 
+
     this.premisesDirectorsDetailsfrm.patchValue(data.data);
-      this.isDirectorsPopupVisible= false;         
+    
+    this.isDirectorsPopupVisible= false;         
   }
  
-    onSearchStaffDetails() {
-      this.appService.onLoadPremisesDirectorsDetails({})
+    onSearchPartnersDetails() {  
+    this.appService.onLoadDirectorsInformations()
         .subscribe(
           data_response => {
             this.isDirectorsPopupVisible = true;
@@ -205,6 +207,7 @@ export class DrugshopPersonneldetailsComponent implements OnInit {
       .subscribe(
         data => {//dtpremPersonnelDetailsData
           this.premDirectorsDetailsData = data.data;
+          console.log(this.premDirectorsDetailsData);
         },
         error => {
           return false
@@ -296,7 +299,7 @@ export class DrugshopPersonneldetailsComponent implements OnInit {
     this.isPersonnelPopupVisible = false;
     
   }onPremisesDirectorsToolbar(e,is_readonly) {
-    this.functDataGridToolbar(e, this.funAddPremisesDirectorsDetails, 'Add Director',is_readonly);
+    this.functDataGridToolbar(e, this.funAddPremisesDirectorsDetails, 'Add Director or Partner',is_readonly);
   }
  
   functDataGridToolbar(e, funcBtn, btn_title,is_readonly= false) {

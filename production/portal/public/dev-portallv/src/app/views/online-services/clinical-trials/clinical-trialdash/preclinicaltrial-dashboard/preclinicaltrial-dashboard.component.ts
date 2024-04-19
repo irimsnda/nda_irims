@@ -10,7 +10,7 @@ export class PreclinicaltrialDashboardComponent extends ClinicalTrialdashCompone
 
   
   ngOnInit() {
-    this.application_title = 'Pre Submissions Applications ';
+    this.application_title = 'Pre Submissions Meeting Request ';
     this.sub_module_id = 69;
     this.reloadClinicalApplications({sub_module_id: this.sub_module_id});
     this.onLoadApplicationstatuses();

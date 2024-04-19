@@ -13,11 +13,11 @@
   </div>
   <div style="background: #fff; font-weight: bold;padding:5px;margin-bottom: 5px !important; height: 55px !important;">
     <div class="row">
-      <div class="col-lg-3">
+      <div class="col-lg-5">
         <label style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics; color: green;">
           Tracking No: <i> {{tracking_no}}</i> </label>
       </div>
-      <div class="col-lg-2">
+      <div class="col-lg-5">
         <label style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics;color: green;">Application
           Status:<i> {{status_name}}</i> </label>
       </div>
@@ -78,10 +78,7 @@
                     </div>
               </wizard-step>
               <wizard-step stepTitle="Query Response Submission">
-                  <div class="col-lg-12">
-                    <label>Submission Comments(Optional)</label>
-                    <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-                  </div>
+
                   <div class="col-lg-12">
                     <dx-check-box text="Agree to the Terms & Conditions" [value]="undefined" (onValueChanged)="newPremTermscheckbox($event)">
                     </dx-check-box>
@@ -99,75 +96,255 @@
   
     <div class="col-lg-12"   *ngIf="status_id !== 8 && status_id !== 6 && status_id !== 9 && status_id !== 7">
       <wizard  style="background: #fff !important; height: 100% !important;">
-        
-        <wizard-step stepTitle="Manufacturing Site Application Details" class="wizardStep-height">
-            
-            <app-gmp-generaldetails  [gmpapplicationGeneraldetailsfrm] ="gmpapplicationGeneraldetailsfrm"  
-            [assessmentProcedureData] ="assessmentProcedureData"  
-            [sectionsData] ="sectionsData"  
-            [manufacturingSiteLocationSet] ="manufacturingSiteLocationSet"  
-            [countries] ="countries"  
-            [gmpLocationData] ="gmpLocationData"  
+      <wizard-step stepTitle="GMP Application Details" navigationSymbol="Step 1" class="wizardStep-height">
+          <app-gmp-generaldetails  [gmpapplicationGeneraldetailsfrm] ="gmpapplicationGeneraldetailsfrm"  
+          [assessmentProcedureData] ="assessmentProcedureData"  
+          [sectionsData] ="sectionsData"  
+          [manufacturingSiteLocationSet] ="manufacturingSiteLocationSet"  
+          [countries] ="countries"  
+          [gmpLocationData] ="gmpLocationData"  
+          [regions] ="regions" 
+          [districts] ="districts"  
+          [businessTypesData] ="businessTypesData" 
+          [inspectionTypesData]="inspectionTypesData" 
+          [zoneData] ="zoneData"  
+          [confirmDataParam] ="confirmDataParam"
+          [sub_module_id] ="sub_module_id" 
+          [module_id] ="module_id" 
+          [man_site_id] ="man_site_id"
+          [ltr_id] ="ltr_id" 
+          [manufacturing_site_id] ="manufacturing_site_id"
+          [premise_id] ="premise_id" 
+          [registered_id] ="registered_id"
+          [isReadOnlyTraderasContact] ="isReadOnlyTraderasContact"
+          [gmpControl]="gmpControl"
+          [isPersonnelPopupVisible] ="isPersonnelPopupVisible"
+          [isBillingPersonnelPopupVisible]="isBillingPersonnelPopupVisible"
+          [personnel_informationData] ="personnel_informationData"
+          [billingpersonnel_informationData]="billingpersonnel_informationData"
+          [isaddNewPremisesPersonnelDetails] ="isaddNewPremisesPersonnelDetails"
+          [isaddNewBillingPremisesPersonnelDetails]="isaddNewBillingPremisesPersonnelDetails"
+          [traderAccountsDetailsData] ="traderAccountsDetailsData"
+          [ispremisesSearchWinVisible] ="ispremisesSearchWinVisible"
+          [isManufacturerPopupVisible] ="isManufacturerPopupVisible"
+          [isManufacturerSitePopupVisible] ="isManufacturerSitePopupVisible"
+          [registered_premisesData] ="registered_premisesData"
+          [manufacturersSiteData] ="manufacturersSiteData"
+          [newPremisesPersonnelDetailsFrm] ="newPremisesPersonnelDetailsFrm"
+          
+          [fastTrackOptionsData] ="fastTrackOptionsData"
+          [section_id] ="section_id"
+          [gmp_type_id] ="gmp_type_id"
+          (businessTypeEvent)="business_type_id=$event"
+          [payingCurrencyData] ="payingCurrencyData"
+          [is_readonly] ="is_readonly" >
+          </app-gmp-generaldetails>
+        <div class=" div-footer" style="border-top: 1px solid #ccc; ">
+            <dx-button
+            text="Dashboard"
+            type="success"
+            icon="fa fa-eraser"
+            [elementAttr]="{  class: 'pull-left' }"
+            (onClick)="onGMPDashboard()">
+            </dx-button>
+            <button type="submit" (click)="onSaveGMPApplication()" [disabled]="!gmpapplicationGeneraldetailsfrm.valid"
+              class="btn btn-primary pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save GMP
+              Application and Next</button>
+          </div>
+      </wizard-step>
+        <wizard-step stepTitle="Inspection History of the Facility" class="wizardStep-height navigable" navigationSymbol="2" (onNext)="onStep2Next($event)">
+          <app-gmp-inspection-history  
+          [inspectionHistorydetailsfrm] ="inspectionHistorydetailsfrm"  
+          [assessmentProcedureData] ="assessmentProcedureData"  
+          [sectionsData] ="sectionsData"  
+          [manufacturingSiteLocationSet] ="manufacturingSiteLocationSet"  
+          [countries] ="countries"  
+          [gmpLocationData] ="gmpLocationData"  
+          [regions] ="regions" 
+          [districts] ="districts"  
+          [businessTypesData] ="businessTypesData" 
+          [inspectionTypesData]="inspectionTypesData" 
+          [zoneData] ="zoneData"  
+          [confirmDataParam] ="confirmDataParam"
+          [sub_module_id] ="sub_module_id" 
+          [module_id] ="module_id" 
+          [man_site_id] ="man_site_id"
+          [ltr_id] ="ltr_id" 
+          [manufacturing_site_id] ="manufacturing_site_id"
+          [premise_id] ="premise_id" 
+          [registered_id] ="registered_id"
+          [isReadOnlyTraderasContact] ="isReadOnlyTraderasContact"
+          [gmpControl]="gmpControl"
+          [isPersonnelPopupVisible] ="isPersonnelPopupVisible"
+          [isBillingPersonnelPopupVisible]="isBillingPersonnelPopupVisible"
+          [personnel_informationData] ="personnel_informationData"
+          [billingpersonnel_informationData]="billingpersonnel_informationData"
+          [isaddNewPremisesPersonnelDetails] ="isaddNewPremisesPersonnelDetails"
+          [isaddNewBillingPremisesPersonnelDetails]="isaddNewBillingPremisesPersonnelDetails"
+          [traderAccountsDetailsData] ="traderAccountsDetailsData"
+          [ispremisesSearchWinVisible] ="ispremisesSearchWinVisible"
+          [isManufacturerPopupVisible] ="isManufacturerPopupVisible"
+          [isManufacturerSitePopupVisible] ="isManufacturerSitePopupVisible"
+          [registered_premisesData] ="registered_premisesData"
+          [manufacturersSiteData] ="manufacturersSiteData"
+          [newPremisesPersonnelDetailsFrm] ="newPremisesPersonnelDetailsFrm"
+          
+          [fastTrackOptionsData] ="fastTrackOptionsData"
+          [section_id] ="section_id"
+          [gmp_type_id] ="gmp_type_id"
+          (businessTypeEvent)="business_type_id=$event"
+          [payingCurrencyData] ="payingCurrencyData"
+          [is_readonly] ="is_readonly" >
+          </app-gmp-inspection-history>
+        <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
+          <button type="button" class="btn btn-primary" previousStep>&nbsp;<i class="fa fa-angle-double-left"></i>Previous
+            GMP Information</button>
+           <button type="submit" (click)="onSaveGMPHistoryApplication()" [disabled]="!inspectionHistorydetailsfrm.valid"
+              class="btn btn-primary pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
+          </div>
+      </wizard-step>
+       <wizard-step stepTitle="Contract Manufacturing Activity Details" class="wizardStep-height navigable" navigationSymbol="3" (onNext)="onStep3Next($event)">
+          <app-gmp-businessdetails  [premisesOtherDetailsRows] ="premisesOtherDetailsRows"  
+            [isBusinessTypePopupVisible] ="isBusinessTypePopupVisible" 
+            [isContractManufacturingPopupVisible]="isContractManufacturingPopupVisible" 
+            [contractManufacturingRows]="contractManufacturingRows"
+            [businessTypesData] ="businessTypesData"  
             [regions] ="regions" 
             [districts] ="districts"  
-            [businessTypesData] ="businessTypesData"  
-            [zoneData] ="zoneData"  
-            [confirmDataParam] ="confirmDataParam"
-            [sub_module_id] ="sub_module_id" 
-            [module_id] ="module_id" 
-            [man_site_id] ="man_site_id"
-            [ltr_id] ="ltr_id" 
-            [manufacturing_site_id] ="manufacturing_site_id"
-            [premise_id] ="premise_id" 
-            [registered_id] ="registered_id"
-            [isReadOnlyTraderasContact] ="isReadOnlyTraderasContact"
-            
-            [isPersonnelPopupVisible] ="isPersonnelPopupVisible"
-            
-            [personnel_informationData] ="personnel_informationData"
-            
-            [isaddNewPremisesPersonnelDetails] ="isaddNewPremisesPersonnelDetails"
-            
-            [traderAccountsDetailsData] ="traderAccountsDetailsData"
-            [ispremisesSearchWinVisible] ="ispremisesSearchWinVisible"
-            [isManufacturerPopupVisible] ="isManufacturerPopupVisible"
-            [registered_premisesData] ="registered_premisesData"
-            [manufacturersSiteData] ="manufacturersSiteData"
-            [newPremisesPersonnelDetailsFrm] ="newPremisesPersonnelDetailsFrm"
-            
-            [fastTrackOptionsData] ="fastTrackOptionsData"
+            [confirmDataParam]="confirmDataParam"
+            [manufacturersSiteData]="manufacturersSiteData"
+            [isManufacturerPopupVisible]="isManufacturerPopupVisible"
+            [section_id]="section_id"
+            [newPremisesPersonnelDetailsFrm]="newPremisesPersonnelDetailsFrm"
+            [premisesPersonnelDetailsfrm]="premisesPersonnelDetailsfrm"
+            [sub_module_id]="sub_module_id"
+            [isPersonnelPopupVisible]="isPersonnelPopupVisible"
+            [personnel_informationData]="personnel_informationData"
+            [isaddNewPremisesPersonnelDetails]="isaddNewPremisesPersonnelDetails"
+            [gmpapplicationGeneraldetailsfrm]="gmpapplicationGeneraldetailsfrm"
+            [personnel_type_id]="personnel_type_id"
+            [gmp_type_id]="gmp_type_id"
+            [personnel_id]="personnel_id"
+            [manufacturingSiteLocationSet]="manufacturingSiteLocationSet"
+            [countries] ="countries"
+            [businessTypeDetailsData] ="businessTypeDetailsData"  
+            [gmpOtherDetailsfrm] ="gmpOtherDetailsfrm" 
+            [contractManufacturingDetailsfrm] ="contractManufacturingDetailsfrm"
+            [is_readonly] ="is_readonly"  
+            [business_type_id] ="business_type_id" 
+            [contract_manufacturing_id]="contract_manufacturing_id"
+            [manufacturing_site_id] ="manufacturing_site_id" 
+            >
+           
+          </app-gmp-businessdetails>
+        <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
+          <button type="button" class="btn btn-primary" previousStep>&nbsp;<i class="fa fa-angle-double-left"></i>Previous
+            GMP Information</button>
+          <button type="button" class="btn btn-primary" (click)="funcValidateContractManufacturingDetails(2+initWizardPanel)">Next GMP
+            Product Line Details&nbsp;<i class="fa fa-angle-double-right"></i></button>
+        </div>
+      </wizard-step>
+      <wizard-step stepTitle="Manufacturing Activity Details to be inspected." class="wizardStep-height">
+          <div *ngIf="section_id == 1 || section_id == 2 || section_id == 6 || section_id == 7 || section_id == 27">
+            <app-gmp-manufatcuringdetails  [gmpManufacturingBlocksDataRows] ="gmpManufacturingBlocksDataRows" 
+            [gmpProductLineDataRows] ="gmpProductLineDataRows"  
+            [gmpproductDetailsInformationData] ="gmpproductDetailsInformationData"  
+            [manufatcuringSiteBlocksfrm] ="manufatcuringSiteBlocksfrm" 
+            [manufacturersSiteData]="manufacturersSiteData"
+            [isManufacturerPopupVisible]="isManufacturerPopupVisible"
+            [isRegisteredGmPopupVisible]="isRegisteredGmPopupVisible"
+            [prodgmpAddinspectionFrm] ="prodgmpAddinspectionFrm"  
+            [isManufatcuringSiteBlocks] ="isManufatcuringSiteBlocks"  
+            [isManufatcuringSiteProductLine]="isManufatcuringSiteProductLine"
+            [isManufatcuringSiteBlock]="isManufatcuringSiteBlock"
             [section_id] ="section_id"
-            [gmp_type_id] ="gmp_type_id"
-            
-  
-             
-            (businessTypeEvent)="business_type_id=$event"
-  
-            [payingCurrencyData] ="payingCurrencyData"
-            [is_readonly] ="is_readonly" >
-    
-  
-            </app-gmp-generaldetails>
-            <div class=" div-footer" style="border-top: 1px solid #ccc; ">
-                <button (click)="onGMPDashboard()" class="btn btn-primary pull-left" style="margin:5px;" type="button"><i
-                        class="fa fa-dashboard"></i>
-                    &nbsp; Dashboard</button>
-                <button class="btn btn-primary pull-right" style="margin:5px;" [disabled]="!manufacturing_site_id"
-                    nextStep type="button">
-                    Next Manufacturing Site Information &nbsp;<i class="fa fa-angle-double-right"></i></button>
+            [manufacturingSiteLocationSet]="manufacturingSiteLocationSet"
+            [gmp_type_id]="gmp_type_id" 
+            [sub_module_id]="sub_module_id"
+            [customData]="customData"
+            [is_readonly] ="is_readonly" 
+            [gmpControl]="gmpControl"
+            [product_lineData] ="product_lineData"  
+            [productlineDescriptionData] ="productlineDescriptionData"  
+            [isManufacturingSiteProductsDetails] ="isManufacturingSiteProductsDetails"  
+            [manSiteRegisteredProductsData] ="manSiteRegisteredProductsData"  
+            [isgmpAddProductsModalShow] ="isgmpAddProductsModalShow"  
+            [gmpProductLineDetailsfrm] ="gmpProductLineDetailsfrm"  
+            [gmpapplicationGeneraldetailsfrm] ="gmpapplicationGeneraldetailsfrm"  
+            [manufacturing_site_id] ="manufacturing_site_id"  
+            [productlineCategoryData] ="productlineCategoryData"  
+            >
+            </app-gmp-manufatcuringdetails>
+          </div>
+          <div *ngIf="section_id == 5">
+            <app-intended-surgicalmanufacturing  [gmpManufacturingBlocksDataRows] ="gmpManufacturingBlocksDataRows" 
+            [gmpProductLineDataRows] ="gmpProductLineDataRows" 
+            [gmpSurgicalProductLineDataRows] ="gmpSurgicalProductLineDataRows" 
+            [gmpproductDetailsInformationData] ="gmpproductDetailsInformationData"  
+            [gmpSurgicalmanufatcuringSiteBlocksfrm] ="gmpSurgicalmanufatcuringSiteBlocksfrm" 
+            [manufacturersSiteData]="manufacturersSiteData"
+            [isManufacturerPopupVisible]="isManufacturerPopupVisible"
+            [isRegisteredGmPopupVisible]="isRegisteredGmPopupVisible"
+            [prodgmpAddinspectionFrm] ="prodgmpAddinspectionFrm"
+            [prodSurgicalgmpAddinspectionFrm]="prodSurgicalgmpAddinspectionFrm"   
+            [isManufatcuringSiteBlocks] ="isManufatcuringSiteBlocks"  
+            [isManufatcuringSiteProductLine]="isManufatcuringSiteProductLine"
+            [isManufatcuringSiteBlock]="isManufatcuringSiteBlock"
+            [section_id] ="section_id"
+            [manufacturingSiteLocationSet]="manufacturingSiteLocationSet"
+            [gmp_type_id]="gmp_type_id" 
+            [sub_module_id]="sub_module_id"
+            [customData]="customData"
+            [is_readonly] ="is_readonly"  
+            [product_lineData] ="product_lineData" 
+            [product_lineSurgicalData] ="product_lineSurgicalData"
+            [productlineDescriptionData] ="productlineDescriptionData"  
+            [isManufacturingSiteProductsDetails] ="isManufacturingSiteProductsDetails"  
+            [manSiteRegisteredProductsData] ="manSiteRegisteredProductsData"  
+            [isgmpAddProductsModalShow] ="isgmpAddProductsModalShow"  
+            [gmpProductLineDetailsfrm] ="gmpProductLineDetailsfrm"  
+            [gmpSurgicalProductLineDetailsfrm]="gmpSurgicalProductLineDetailsfrm"
+            [gmpapplicationGeneraldetailsfrm] ="gmpapplicationGeneraldetailsfrm"  
+            [manufacturing_site_id] ="manufacturing_site_id"  
+            [productlineCategoryData] ="productlineCategoryData"  
+            >
+            </app-intended-surgicalmanufacturing>
+          </div>
 
-                  <!--  <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-right'}"  [disabled]="!manufacturing_site_id" text="Submit Application Renewal"  type="default" (onClick)="onClickApplicationSubmitWin()">
-                <i class="fa fa-dashboard"></i>
-                </dx-button>
-            -->
-                <button type="submit" (click)="onSaveGMPApplication()"
-                    class="btn btn-primary pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save
-                    GMP Renewal Request
-                </button>
-            </div>
-          
+        <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
+          <button type="button" class="btn btn-primary" previousStep>&nbsp;<i class="fa fa-angle-double-left"></i>Previous
+            </button>
+          <button type="button" class="btn btn-primary" (click)="funcValidateProductLineDetails(3+initWizardPanel)">Next
+            personnel Details&nbsp;<i class="fa fa-angle-double-right"></i></button>
+        </div>
+      </wizard-step>
+      <wizard-step stepTitle="Manufacturing Site Personnel Details">
+        <app-gmp-personneldetails  [gmpPersonnelDetailsData] ="gmpPersonnelDetailsData"  
+          [isBusinessPersonnelPopupVisible] ="isBusinessPersonnelPopupVisible"  
+          [premisesPersonnelDetailsfrm] ="premisesPersonnelDetailsfrm"  
+          [personnelPositionData] ="personnelPositionData"  
+          [qualificationsData] ="qualificationsData"  
+          [studyFieldsData] ="studyFieldsData"  
+          [isPersonnelPopupVisible] ="isPersonnelPopupVisible"  
+          [personnel_informationData] ="personnel_informationData"  
+          [newPremisesPersonnelDetailsFrm] ="newPremisesPersonnelDetailsFrm"  
+          [is_readonly] ="is_readonly" 
+          [personnel_type_id] ="personnel_type_id" 
+          [manufacturing_site_id] ="manufacturing_site_id" 
+          [isperssonelAddPopupVisible] ="isperssonelAddPopupVisible" 
+          [personnel_id] ="personnel_id" 
+          [gmpapplicationGeneraldetailsfrm] ="gmpapplicationGeneraldetailsfrm" 
+            >
+          </app-gmp-personneldetails>
+  
+          <div class="wizard-divbottom">
+            <button type="button" class="btn btn-primary" previousStep>&nbsp;<i class="fa fa-angle-double-left"></i>Previous</button>
+            <button type="button" class="btn btn-primary" nextStep>Next
+              Application Documents<i class="fa fa-angle-double-right"></i></button>
+          </div>
+  
         </wizard-step>
-        <wizard-step stepTitle="Documents" class="wizardStep-height">
+      <wizard-step stepTitle="Documents" class="wizardStep-height">
    
             <div class=" wizard-content">
               <app-application-documents [section_id] ="section_id"  [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-application-documents>
@@ -176,11 +353,10 @@
           <div class="wizard-divbottom">
             <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Previous
               Manufacturing Site Business Details<</button>
-            <button type="button" class="btn btn-primary" (click)="funcValidateDocumentsDetails(1+initWizardPanel)">Next Application
+            <button type="button" class="btn btn-primary" (click)="funcValidateDocumentsDetails(5+initWizardPanel)">Next Application
               Submission<i class="fa fa-angle-double-right"></i></button>
   
           </div>
-  
         </wizard-step>
         <wizard-step stepTitle="Completion & Submission">
                 <form [formGroup]="onApplicationSubmissionFrm" class="col-lg-12  div-nopadding" style="background: #fff;" enctype="multipart/form-data" role="form" (ngSubmit)="onGmpApplicationSubmit()">
@@ -198,16 +374,6 @@
                           placeholder="Select Fast Track" [searchEnabled]="true" formControlName="is_fast_track">
                         </dx-select-box>
                       </div>
-                      <div class="col-lg-4" >
-                        <label>Payment Currency(The payment will be based in USD/Tshs)</label>
-                        <dx-select-box [dataSource]="payingCurrencyData"  valueExpr="id" displayExpr="name"
-                          placeholder="Select Paying Currency" [searchEnabled]="true" formControlName="paying_currency_id">
-                        </dx-select-box>
-                      </div>
-                    <div class="col-lg-12">
-                      <b> <h4>Submission Comments(Optional)</h4></b>
-                        <dx-text-area formControlName="submission_comments" placeholder="Enter Comments(optional)"></dx-text-area>
-                    </div>
                     <div class="col-lg-12">
                       <dx-check-box text="Agree to the Declaration" [value]="undefined" (onValueChanged)="newPremTermscheckbox($event)">
                       </dx-check-box>

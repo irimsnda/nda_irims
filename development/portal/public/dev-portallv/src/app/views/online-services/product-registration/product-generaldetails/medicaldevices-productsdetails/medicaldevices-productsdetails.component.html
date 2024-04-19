@@ -30,41 +30,47 @@
 
     <div class="col-lg-4">
       <label for="ti" class="control-label">Medical devices Type</label>
-      <dx-select-box [dataSource]="devicesTypeData" valueExpr="id" displayExpr="name" (onValueChanged)="onclassificationDevTypeDataSelect($event)"  [readOnly]= "isReadOnly"  [searchEnabled]="true"
+      <dx-select-box [dataSource]="devicesTypeData" valueExpr="id" displayExpr="name" 
+      (onSelectionChanged)="onclassificationDevTypeDataSelect($event)"  [readOnly]= "isReadOnly"  [searchEnabled]="true"
         placeholder="Select Device Type" formControlName="device_type_id">
       </dx-select-box>
     </div>  
         <div class="col-lg-8">
           <label for="ti" class="control-label">Rules for classifying the device as Class A, B, C or D device:(Select Devices Type)</label>
-          <dx-select-box [readOnly]= "isReadOnly" [dataSource]="reasonForClassificationData" valueExpr="id" displayExpr="name" (onSelectionChanged)="onclassificationDevTypeDataSelect($event)"  placeholder="Rule for Classification" [searchEnabled]="true" formControlName="reason_for_classification_id">
+          <dx-select-box [readOnly]= "isReadOnly" [dataSource]="reasonForClassificationData" valueExpr="id" displayExpr="name"  placeholder="Rule for Classification" [searchEnabled]="true" formControlName="reason_for_classification_id">
           </dx-select-box>
        </div>
-
       <div class="col-lg-4">
-        <label class="control-label">Product Manufacturing Country</label>
-
-        <dx-select-box [dataSource]="countriesData"  valueExpr="id" displayExpr="name" [searchEnabled]="true"
-          placeholder="Product Manufacturing Country" (onValueChanged)="onManufacturingCountryChange($event)" formControlName="manufacturing_country_id">
-        </dx-select-box>
-    </div>
-    <div class="col-lg-4">
+        <label class="control-label"><br>Product Manufacturing Country</label>
+        <dx-tag-box
+          [items]="countriesData"  
+          valueExpr="id" 
+          displayExpr="name" 
+          [searchEnabled]="true"
+          [showSelectionControls]="true"
+          applyValueMode="useButtons"
+          placeholder="Product Manufacturing Country" 
+          formControlName="manufacturing_country_id">
+        </dx-tag-box>
+      </div>
+      <div class="col-lg-4">
         <label class="control-label">Product Origin</label>
 
         <dx-select-box [dataSource]="productTypeData" valueExpr="id" displayExpr="name" [searchEnabled]="true"   [readOnly]="readOnlyOrigin" 
           placeholder="Product Origin" formControlName="product_origin_id">
         </dx-select-box>
       </div>
-    <div class="col-lg-8">
-      <label class="control-label">Intended Use</label>
-      <dx-text-box formControlName="intended_use" placeholder="Enter Intended Use"  [readOnly]= "isReadOnly" [showClearButton]="true">
-      </dx-text-box>
-    </div>
-    <div class="col-lg-4">
-        <label class="control-label">Method of Use</label>
+      <div class="col-lg-8">
+        <label class="control-label">Intended Use</label>
+        <dx-text-box formControlName="intended_use" placeholder="Enter Intended Use"  [readOnly]= "isReadOnly" [showClearButton]="true">
+        </dx-text-box>
+      </div>
+      <div class="col-lg-4">
+          <label class="control-label">Method of Use</label>
 
-        <dx-select-box [dataSource]="methodOfUseData" valueExpr="id" displayExpr="name" [searchEnabled]="true"   
-          placeholder="Method of Use" formControlName="method_ofuse_id">
-        </dx-select-box>
+          <dx-select-box [dataSource]="methodOfUseData" valueExpr="id" displayExpr="name" [searchEnabled]="true"   
+            placeholder="Method of Use" formControlName="method_ofuse_id">
+          </dx-select-box>
       </div>
 <!-- 
     <div class="col-lg-4">
@@ -75,27 +81,34 @@
       </dx-select-box>
     </div>
  -->    
-    <div class="col-lg-4">
-      <label class="control-label">GMDN Code</label>
-      <dx-text-box formControlName="gmdn_code" placeholder="Enter GMDN Code"  [showClearButton]="true">
-      </dx-text-box>
-    <!--
-        <dx-select-box [dataSource]="gmdnCodeData" (onSelectionChanged)="ongmdnCodeDataSelect($event)"  valueExpr="id" displayExpr="name"  [readOnly]= "isReadOnly"  [searchEnabled]="true"
-        placeholder="GMDN Code" formControlName="gmdn_code">
-      </dx-select-box>
-    -->
-    </div>
+     <div class="col-lg-4 row input-group ">
+      <div class="col-lg-8">
+        <label class="control-label">GMDN Code</label>
+        <dx-text-box [readOnly]="true" 
+          formControlName="gmdn_code"
+          placeholder="GMDN Code" [showClearButton]="true">
+        </dx-text-box>
+          <input type="hidden" name="gmdn_id" value="gmdn_id" formControlName="gmdn_id" />
+      </div>
+      <div class="col-lg-4 no-padding">
+        <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-left'}" 
+          style="margin-top:30px  !important;"  text="Search Code"  
+          type="default" (onClick)="onLoadGmdnCodeData()">
+          <i class="fa fa-search"></i>Search
+        </dx-button>
+      </div>  
+    </div> 
+
+
     <div class="col-lg-4">
       <label class="control-label">GMDN Term</label>
-      <dx-text-box formControlName="gmdn_term" placeholder="Enter GMDN Term"  [showClearButton]="true">
+      <dx-text-box formControlName="gmdn_term" [readOnly]="true" placeholder="Enter GMDN Term"  [showClearButton]="true">
       </dx-text-box>
     </div>
     <div class="col-lg-4">
       <label class="control-label">GMDN Category</label>
-      
-      <dx-select-box [dataSource]="gmdnCategoryData" valueExpr="id" displayExpr="name" [searchEnabled]="true"  [readOnly]= "isReadOnly" 
-      placeholder=" GMDN Category" formControlName="gmdn_category">
-    </dx-select-box>
+      <dx-text-box formControlName="gmdn_category" [readOnly]="true" placeholder="GMDN Category"  [showClearButton]="true">
+      </dx-text-box>
     </div>
     
     <div class="col-lg-4">
@@ -144,8 +157,8 @@
       </div>
       <div class="col-lg-2">
           <dx-button text="Local Responsible Person" (click)="funcSearchRegistrantDetails(1)"  [disabled]="isReadOnlyTraderasLtr"
-                                type="success" icon="search" [elementAttr]="{ class: 'btn btn-primary' }">
-                              </dx-button>
+            type="success" icon="search" [elementAttr]="{ class: 'btn btn-primary' }">
+          </dx-button>
       </div>
     </div>
    
@@ -226,4 +239,33 @@
               </div>
           </form>
   </div>
+</dx-popup>
+
+
+  <dx-popup class="popup" [width]="funcpopWidth(80)" [height]="500" [showTitle]="true" title="GMDN Details" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="gmdnCodeWinshow">
+<div *dxTemplate="let data of 'content'">
+  <dx-data-grid class="table row-border hover"  [height]="450"   [remoteOperations]='true'  [dataSource]="gmdnCodeData" keyExpr="id">
+    <dxo-filter-row [visible]="false"></dxo-filter-row>
+    <dxo-search-panel [visible]="true">
+    </dxo-search-panel>
+    <dxo-paging [enabled]="true">
+    </dxo-paging>
+    <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
+    </dxo-pager>
+    <dxo-export [enabled]="true" fileName="traderFile" [allowExportSelectedData]="true"></dxo-export>
+
+    <dxo-selection mode="multiple"></dxo-selection>
+    <dxo-group-panel [visible]="true"></dxo-group-panel>
+    <dxi-column [width]="120" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
+     cellTemplate="cellTemplate">
+    <div *dxTemplate="let data of 'cellTemplate'">
+     <a (click)="funcSelectgmdn(data)" class="action-btn"><i class="fa fa-edit"></i>Select</a>&nbsp;
+                      </div>
+                    </dxi-column>
+    <dxi-column dataField="name"></dxi-column>
+    <dxi-column dataField="code" caption="GMDN Code"></dxi-column>
+    <dxi-column dataField="description"></dxi-column>
+
+  </dx-data-grid>
+</div>
 </dx-popup>

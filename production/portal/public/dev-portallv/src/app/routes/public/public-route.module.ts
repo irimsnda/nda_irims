@@ -15,6 +15,7 @@ import { UserManualComponent } from '../../views/public/user-manual/user-manual.
 import { FeesChargesComponent } from '../../views/public/fees-charges/fees-charges.component';
 import { RegistrationRegulationsComponent } from '../../views/public/registration-regulations/registration-regulations.component';
 import { ClinicalTrialsComponent } from '../../views/public/clinical-trials/clinical-trials.component';
+import { AdrReportingRequestComponent } from '../../views/public/adr-registration-request/adr-reporting-request/adr-reporting-request.component';
 import { PasswordRecoverComponent } from '../../views/public/password-recover/password-recover.component';
 import { AdminLoginComponent } from 'src/app/views/public/admin-login/admin-login.component';
 import { PreviewclinicaltrialComponent } from 'src/app/views/public/previewclinicaltrial/previewclinicaltrial.component';
@@ -106,6 +107,9 @@ const routes: Routes = [
     },{
       path: 'clinical-trials',
       component: ClinicalTrialsComponent
+    },{
+      path: 'adverse-drug-reaction',
+      component: AdrReportingRequestComponent
     },{
       path: 'reset-password',
       component: PasswordRecoverComponent

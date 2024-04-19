@@ -31,6 +31,8 @@ export class DrugsProductsdetailsComponent extends SharedProductregistrationclas
   @Input() distributionCategoryData: any;
   @Input() storageConditionData: any;
   @Input() dosageFormsData: any;
+  @Input() productTypeDta:any;
+  @Input() commonAtcNamesData:any;
   @Input() routeOfAdministrationData: any;
   @Input() productCategoryData: any;
   @Input() durationDescData: any;
@@ -41,26 +43,27 @@ export class DrugsProductsdetailsComponent extends SharedProductregistrationclas
   @Input() zonesData: any;
   @Input() section_id: number;
   @Input() atc_code_id: number;
-
+  @Input() registered_premisesData:any;
   @Input() productFormData: any;
   @Input() reasonForClassificationData:any;
   @Input() gmdnCategoryData: any;
   @Input() hasAssessmentProcedure: any;
   @Input() hasOtherDistributionCategory: any;
- 
+  @Input() productControl:FormControl;
   @Input() methodOfUseData: any;
   @Input() intendedEndUserData: any;
   @Input() productSubCategoryData: any;
   @Input() productSpecialCategoryData: any;
   @Input() devicesTypeData: any;
   @Input() assessmentTypesData: any;
-
+  @Input() therapeuticGroupData:any;
   @Input() sub_module_id: number;
   @Input() product_id: number;
   @Input() application_code: number;
-
+  @Input() product_type_id:number;
   @Input() isReadOnly: boolean;
   @Input() reg_product_id: number;
+  @Input() drugscommonNamesData:any;
   @Input() tra_product_id: number;
   @Input() isReadOnlyTraderasLtr: boolean;
   @Input() prodclass_category_id: number;
@@ -78,19 +81,36 @@ export class DrugsProductsdetailsComponent extends SharedProductregistrationclas
  // is_local_agent:boolean;
   trader_title:string;
   isRegistrantDetailsWinshow:boolean = false;
-  
   ATCCodesData:any;
   ATCCodesDataAll:any;
   field_hidden:number= 1;
   product_resp:any;
+
+  variationCategoriesData:any;
+  variationSubCategoriesData:any;
+  variationDescData:any;
+  variationSubDescData:any;
+  typeofVariationData:any;
+
+  variation_category_id:number;
+  variation_subcategory_id:number;
+  variation_description_id:number;
+  variation_type_id:number;
+  variation_subdescription_id:number;
+applicationVariationRequestsData:any;
+  prodClassCategoriesData:any;
   prodAssessmentCountriesDta:any;
   addproductGenericNamesModal:boolean= false;
-  isonHasMaximumResidue_limit:boolean = false;
+  isonHasCurrentPatent:boolean = false;
+  isCopackedProduct:boolean = false;
   hasReferenceMaximumResidue_limit:boolean = false;
   isHasModelChange:boolean = false;
   isHasMedicalFamily:boolean = false;
   isonHasReagents_accessories:boolean = false;
   addproductGenericNamesFrm:FormGroup;
+  
+  
+  
   ngOnInit() {
     let user_details = this.authService.getUserDetails();
     this.country_id = user_details.country_id;
@@ -101,10 +121,18 @@ export class DrugsProductsdetailsComponent extends SharedProductregistrationclas
         this.productGeneraldetailsfrm.get('zone_id').setValue(2);
     }
     this.onLoadSections();
+    this.onLoadprodClassCategoriesData(this.section_id);
     this.onLoadvetmedicinesRegistrationtypeData();
     this.onLoadAssessmentProcedureTypes();
     this.onLoadManufacrunginCountries();
-  } onLoadvetmedicinesRegistrationtypeData() {
+    this.onLoadvariationCategoriesData(this.sub_module_id);
+    this.onLoadApplicationVariationData();
+    this.onLoadtypeofVariationData();
+    this.onLoadATCCodesData();
+    this.onLoadtherapeuticGroupData();
+
+  } 
+  onLoadvetmedicinesRegistrationtypeData() {
     var data = {
       table_name: 'par_vetmedicines_registrationtypes'
     };
@@ -113,7 +141,128 @@ export class DrugsProductsdetailsComponent extends SharedProductregistrationclas
         data => {
           this.vetmedicinesRegistrationtypeData = data;
         });
-  }onLoadAssessmentProcedureTypes() {
+  }
+
+   onLoadprodClassCategoriesData(section_id) {
+    var data = {
+      table_name: 'par_prodclass_categories',
+      section_id:section_id
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.prodClassCategoriesData = data;
+        });
+
+  }
+
+  onLoadApplicationVariationData() {
+    //onLoadClinicalTrialOtherdetails
+    this.utilityService.getApplicationUniformDetails({ table_name: 'wb_application_variationsdata', application_code: this.application_code }, 'getapplicationVariationsrequests')
+      .subscribe(
+        data => {
+          if (data.success) {
+            this.applicationVariationRequestsData = data.data;
+          }
+          else {
+            this.toastr.success(data.message, 'Alert');
+          }
+        },
+        error => {
+          return false
+        });
+  }
+  onLoadtypeofVariationData() {
+    var data = {
+      table_name: 'par_variation_reportingtypes',
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.typeofVariationData = data;
+        });
+
+  }
+
+
+  onLoadvariationCategoriesData(sub_module_id) {
+    var data = {
+      table_name: 'par_variation_categories',
+      sub_module_id:this.sub_module_id
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.variationCategoriesData = data;
+        });
+
+  }
+
+  onLoadVariationSubCategoryData(variation_category_id) {
+    var data = {
+      table_name: 'par_variation_subcategories',
+      variation_category_id:variation_category_id
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.variationSubCategoriesData = data;
+        });
+
+  }
+
+
+  onVariationCategorySelect($event) {
+    this.variation_category_id = $event.selectedItem.id;
+    this.onLoadVariationSubCategoryData(this.variation_category_id);
+
+  }
+
+  onVariationSubCategorySelect($event) {
+    this.variation_subcategory_id = $event.selectedItem.id;
+    this.onLoadVariationDescriptionData(this.variation_subcategory_id);
+
+  }
+
+  onLoadVariationDescriptionData(variation_subcategory_id) {
+    var data = {
+      table_name: 'par_variation_description',
+      variation_subcategory_id:variation_subcategory_id
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.variationDescData = data;
+        });
+
+  }
+  onVariationDescCategorySelect($event) {
+    this.variation_description_id = $event.selectedItem.id;
+    this.onLoadVariationSubDescData(this.variation_description_id);
+
+  }
+
+  onLoadVariationSubDescData(variation_description_id) {
+    var data = {
+      table_name: 'par_variation_subdescription',
+      variation_description_id:variation_description_id
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.variationSubDescData = data;
+        });
+
+  }
+
+   //  onVariationSubDescCategorySelect($event) {
+   //  this.variation_subdescription_id = $event.selectedItem.id;
+   //   this.onLoadtypeofVariationData(this.variation_subdescription_id);
+
+   // }
+
+
+  onLoadAssessmentProcedureTypes() {
     var data = {
       table_name: 'par_assessmentprocedure_types',
     };
@@ -149,7 +298,7 @@ export class DrugsProductsdetailsComponent extends SharedProductregistrationclas
   onAddNewCommonNameDetails(){
     this.addproductGenericNamesFrm.reset();
     this.addproductGenericNamesModal = true;
-    this.onLoadATCCodesDataAll();
+   // this.onLoadATCCodesDataAll();
   }
   
   onSaveNewGenericName(){
@@ -161,7 +310,7 @@ export class DrugsProductsdetailsComponent extends SharedProductregistrationclas
         this.product_resp = response.json();
         //the details 
         if (this.product_resp.success) {
-          this.onLoadCommonNames(this.section_id);
+          this.onLoadCommonNames();
          
           this.addproductGenericNamesModal = false;
           this.productGeneraldetailsfrm.get('common_name_id').setValue(this.product_resp.record_id)
@@ -222,15 +371,53 @@ export class DrugsProductsdetailsComponent extends SharedProductregistrationclas
     }
    
   }
-  onHasMaximumResidue_limit($event) {
+
+
+  onProductType($event) {
+
+  if($event.value == 3){
+      this.isCopackedProduct = true;
+      this.productGeneraldetailsfrm.get('common_name_id').clearValidators();
+      this.productGeneraldetailsfrm.get('atc_code_id').clearValidators();
+      this.productGeneraldetailsfrm.get('therapeutic_group').clearValidators();
+      this.productGeneraldetailsfrm.get('product_strength').clearValidators();
+      this.productGeneraldetailsfrm.get('si_unit_id').clearValidators();
+      this.productGeneraldetailsfrm.get('dosage_form_id').clearValidators();
+
+      this.productGeneraldetailsfrm.get('common_name_id').updateValueAndValidity();
+      this.productGeneraldetailsfrm.get('atc_code_id').updateValueAndValidity();
+      this.productGeneraldetailsfrm.get('therapeutic_group').updateValueAndValidity();
+      this.productGeneraldetailsfrm.get('product_strength').updateValueAndValidity();
+      this.productGeneraldetailsfrm.get('si_unit_id').updateValueAndValidity();
+      this.productGeneraldetailsfrm.get('dosage_form_id').updateValueAndValidity();
+
+  }
+
+  else{
+    this.isCopackedProduct = false;
+    this.productGeneraldetailsfrm.get('common_name_id').setValidators(Validators.required);
+    this.productGeneraldetailsfrm.get('atc_code_id').setValidators(Validators.required);    
+    this.productGeneraldetailsfrm.get('therapeutic_group').setValidators(Validators.required);
+    this.productGeneraldetailsfrm.get('product_strength').setValidators(Validators.required);
+    this.productGeneraldetailsfrm.get('si_unit_id').setValidators(Validators.required);
+    this.productGeneraldetailsfrm.get('dosage_form_id').setValidators(Validators.required);
+
+    this.productGeneraldetailsfrm.get('common_name_id').updateValueAndValidity();
+    this.productGeneraldetailsfrm.get('atc_code_id').updateValueAndValidity();
+    this.productGeneraldetailsfrm.get('therapeutic_group').updateValueAndValidity();
+    this.productGeneraldetailsfrm.get('product_strength').updateValueAndValidity();
+    this.productGeneraldetailsfrm.get('si_unit_id').updateValueAndValidity();
+    this.productGeneraldetailsfrm.get('dosage_form_id').updateValueAndValidity();
+
+  }
+}
+  onHasCurrentPatent($event) {
 
   if($event.value == 1){
-      this.isonHasMaximumResidue_limit = false;
-      this.hasReferenceMaximumResidue_limit = true;
+      this.isonHasCurrentPatent = true;
   }
   else{
-    this.isonHasMaximumResidue_limit = true;
-    this.hasReferenceMaximumResidue_limit = false;
+    this.isonHasCurrentPatent = false;
   }
 }
   onSelectRegistrantOptions($event) {
@@ -291,33 +478,22 @@ export class DrugsProductsdetailsComponent extends SharedProductregistrationclas
      // this.traderAccountsDetailsData.load();
 
   }
-  funcSelectTraderDetails(data) {
-    let record = data.data;
-    this.productGeneraldetailsfrm.get('local_agent_name').setValue(record.trader_name);
-    this.productGeneraldetailsfrm.get('local_agent_id').setValue(record.id);
-    
-    this.isRegistrantDetailsWinshow = false;
-  }
+
   onProductTypeSelection($event){
 
     this.productTypeEvent.emit($event.selectedItem.id);
 
 }
 onCommonNameCboSelect($event) {
-  if($event.selectedItem){
-        let common_namedetails =$event.selectedItem;
-        this.onLoadATCCodesData(common_namedetails.id);
-  
-  }
- 
- // this.productGeneraldetailsfrm.get('atc_code_id').setValue(common_namedetails.atc_code_id); onAssessmentTypesCboSelect
+  let common_namedetails =$event.selectedItem;
+
+ // this.productGeneraldetailsfrm.get('atc_code_id').setValue(common_namedetails.atc_code_id);
  // this.productGeneraldetailsfrm.get('atc_code').setValue(common_namedetails.atc_code);
 //  this.productGeneraldetailsfrm.get('atc_code_description').setValue(common_namedetails.atc_code_description);
 }
+
 onATCCboSelect($event) {
-  let atccode_details =$event.selectedItem;
- 
- this.productGeneraldetailsfrm.get('atc_code_id').setValue(atccode_details.id);
+  let atccode_details = $event.selectedItem;
  this.productGeneraldetailsfrm.get('atc_code_description').setValue(atccode_details.description);
 }
 
@@ -360,15 +536,20 @@ onLoadreasonForClassificationData(device_type_id,classification_id) {
       });
 }
 
+onLoadtherapeuticGroupData() {
+    var data = {
+      table_name: 'par_therapeutic_group',
 
-onLoadATCCodesData(common_name_id) {
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.therapeuticGroupData = data;
+        });
+  }
+onLoadATCCodesData() {
   var data = {
     table_name: 'par_atc_codes',
-    common_name_id: common_name_id
-  };
-  this.confirmDataParam = {
-    params: data,
-    headers: { 'Accept': 'application/json' }
   };
 
   this.config.onLoadConfigurationData(data)
@@ -387,6 +568,11 @@ onLoadATCCodesData(common_name_id) {
       });
      
 }
+
+
+
+
+
 onHasModelChange($event) {
 
   if($event.value == 1){

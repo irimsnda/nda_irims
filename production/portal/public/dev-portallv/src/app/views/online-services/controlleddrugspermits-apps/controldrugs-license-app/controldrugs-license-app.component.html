@@ -9,12 +9,12 @@
 </div>
 <div style="background: #fff; font-weight: bold;padding:5px;margin-bottom: 5px !important; height: 55px !important;">
   <div class="row">
-    <div class="col-lg-3">
+    <div class="col-lg-5">
       <label
         style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics; color: green;">
         Tracking No: <i> {{tracking_no}}</i> </label>
     </div>
-    <div class="col-lg-2">
+    <div class="col-lg-5">
       <label
         style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics;color: green;">Application
         Status:<i> {{status_name}}</i> </label>
@@ -98,10 +98,7 @@
                   </div>
                 </wizard-step>
                 <wizard-step stepTitle="Permit Query Response Submission">
-                    <div class="col-lg-12">
-                      <label>Submission Comments(Optional)</label>
-                      <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-                    </div>
+
                     <div class="col-lg-12">
                             <dx-check-box text="Agree to the Terms & Conditions" [value]="undefined" (onValueChanged)="submissionsTermscheckbox($event)">
                                 </dx-check-box>
@@ -145,11 +142,12 @@
             [consignee_sendertitle] ="consignee_sendertitle"  
             [issenderreceiverAddWinVisible] ="issenderreceiverAddWinVisible"  
             [permitReceiverSenderFrm] ="permitReceiverSenderFrm"  
-            [countries] ="countries"  
+            [countries] ="countries" 
+            [registrationLevelData]="registrationLevelData"
             [regions] ="regions"  
             [districts] ="districts"  
             [section_id] ="section_id"  
-            
+            [is_registered]="is_registered"
             [deviceTypeData] ="deviceTypeData"
             [applicationCategoryData] ="applicationCategoryData"  
             >
@@ -162,9 +160,6 @@
             [elementAttr]="{  class: 'pull-left' }"
             (onClick)="onApplicationDashboard()">
         </dx-button>
-            <button class="btn btn-primary pull-right" style="margin:5px;" [disabled]="!application_id" nextStep
-              type="button">
-              Next Controlled Drugs Particulars &nbsp;<i class="fa fa-angle-double-right"></i></button>
 
             <button type="button" (click)="onSaveControlledDrugsImptPermitApplication()"
              class="btn btn-primary  pull-right"
@@ -198,6 +193,7 @@
             [currencyData] ="currencyData" 
             [proforma_currency_id] ="proforma_currency_id" 
             [importexport_permittype_id] ="importexport_permittype_id" 
+            [is_registered]="is_registered"
 
             [permitProductsFrm] ="permitProductsFrm"  
             [productGeneraldetailsfrm] ="productGeneraldetailsfrm"  
@@ -229,7 +225,7 @@
             Upload &nbsp;<i class="fa fa-angle-double-right"></i></button>
         </div>
       </wizard-step>
-      <wizard-step stepTitle="Documents" class="wizardStep-height"   navigationSymbol="Step 1" >
+      <wizard-step stepTitle="Documents" class="wizardStep-height"   navigationSymbol="Step 3" >
         <div style="border-top: 1px solid #ccc; ">
           <button type="button" class="btn btn-primary" previousStep><i class="fa fa-angle-double-left"></i>Permit
             Controlled Drugs Details</button>
@@ -260,11 +256,6 @@
                       {{guide.no}} {{guide.term_conditiondetails}}
                   </p>
               </ul>
-          </div>
-          
-          <div class="col-lg-12">
-            <b> <label>Submission Comments(Optional)</label></b>
-              <dx-text-area formControlName="submission_comments" placeholder="Enter Comments(optional)"></dx-text-area>
           </div>
           <div class="col-lg-12">
             <dx-check-box text="Agree to the Declaration" [value]="undefined"
@@ -337,6 +328,7 @@
             [consigneeOptionsData] ="consigneeOptionsData"  
             [consignee_options_check] ="consignee_options_check"  
             [zoneData] ="zoneData"  
+            [registrationLevelData]="registrationLevelData"
             [module_id] ="module_id"  
             [application_code] ="application_code"  
             [ispremisesSearchWinVisible] ="ispremisesSearchWinVisible"  
@@ -345,7 +337,8 @@
             [consignee_sendertitle] ="consignee_sendertitle"  
             [issenderreceiverAddWinVisible] ="issenderreceiverAddWinVisible"  
             [permitReceiverSenderFrm] ="permitReceiverSenderFrm"  
-            [countries] ="countries"  
+            [countries] ="countries"
+            [is_registered]="is_registered"  
             [regions] ="regions"  
             [districts] ="districts"  
             [importExportPermitTypesData]="importExportPermitTypesData" 
@@ -406,7 +399,8 @@
             [module_id] ="module_id"   
             [section_id] ="section_id"   
             [sectionsData] ="sectionsData" 
-            
+            [is_registered]="is_registered"
+
             [controlledDrugsTypesData] ="controlledDrugsTypesData" 
             [controlDrugsSubstanceData] ="controlDrugsSubstanceData" 
             [controlledDrugsBaseSaltData] ="controlledDrugsBaseSaltData" 

@@ -237,10 +237,13 @@
             </dxi-column>
             <dxi-column *ngIf="product_type_id == 3" dataField="generic_name" [groupIndex]="1" [allowEditing]="false" caption="Generic Name"></dxi-column>
             <dxi-column dataField="country" caption ="Country"></dxi-column>
-            <dxi-column  dataField="application_reference" caption="Application(Inspection) no"></dxi-column>
-            <dxi-column  dataField="approval_date" caption="Approving Authority "></dxi-column>
+            <dxi-column  dataField="application_reference" caption="GMP Inspection Certificate No"></dxi-column>
+            <dxi-column  dataField="approving_authority" caption="Approving Authority "></dxi-column>
+            <dxi-column  dataField="approval_date" caption="Approving Date "></dxi-column>
             <dxi-column dataField="inspection_date" caption="Inspection Date"></dxi-column>
-            <dxi-column dataField="approved_productlines" ></dxi-column>
+            <dxi-column dataField="approved_productlines"caption="Approved Product Line"></dxi-column>
+            <dxi-column  dataField="product_category" caption="Product Category"></dxi-column>
+            <dxi-column dataField="manufacturing_activity" caption="Manufacturing Activity"></dxi-column>
           </dx-data-grid>
       </div>
     </div>
@@ -328,6 +331,7 @@
      </form>
     </div>
   </dx-popup>
+  
   <dx-popup class="popup"  [width]="funcpopWidth(70)" [height]="auto" 
       [showTitle]="true" title="Product Ingredients Details" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="productIngredientsModal">
     <div *dxTemplate="let data of 'content'" >
@@ -1231,8 +1235,9 @@
   </div>
   </dx-popup>
   
-<dx-popup class="popup"  [width]="funcpopWidth(40)" [height]="600" [showTitle]="true" title=" GMP Inspections In other States/Countries" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="otherStatesGmpInspections">
+<dx-popup class="popup"  [width]="funcpopWidth(70)" [height]="600" [showTitle]="true" title=" GMP Inspections In other States/Countries" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="otherStatesGmpInspections">
   <div *dxTemplate="let data of 'content'" >
+      <dx-scroll-view>
         <form [formGroup]="otherStatesGmpInspectionsFrm" class="col-lg-12  div-nopadding" style="background: #fff;" enctype="multipart/form-data" role="form" (ngSubmit)="onSaveotherStatesGmpInspections()">
           <div class="col-lg-12 row div-nopadding div-backwhite">
               <div class="col-lg-12" *ngIf="product_type_id == 3">
@@ -1251,21 +1256,19 @@
             <div class="col-lg-12 " style="margin:1px;">
               <label class="control-label">Country</label>
 
-              <dx-select-box [dataSource]="recognisedassessmentsCountriesData" valueExpr="id" displayExpr="name" [searchEnabled]="true"
+              <dx-select-box [dataSource]="recognisedassessmentsCountriesData" valueExpr="id" displayExpr="name" [searchEnabled]="true"(onSelectionChanged)="onCoutryCboSelect($event)"
                 placeholder="Country" formControlName="country_id">
               </dx-select-box>
             </div>
-            <div class="col-lg-12" style="margin:1px;">
-
+            <div class="col-lg-12 " style="margin:1px;">
               <label class="control-label">Approving Authority</label>
-              <dx-text-box formControlName="approving_authority" placeholder="Approving Authority" [showClearButton]="true">
-              </dx-text-box>
+              <dx-select-box [dataSource]="approvingAuthorityData" valueExpr="id" displayExpr="name" [searchEnabled]="true"
+                placeholder="Approving Authority" formControlName="approving_authority_id">
+              </dx-select-box>
             </div>
-           
             <div class="col-lg-12" style="margin:1px;">
-
-              <label class="control-label">GMP Inspection Number</label>
-              <dx-text-box formControlName="gmpapplication_reference" placeholder="GMP Application/Inspection Number" [showClearButton]="true">
+              <label class="control-label">GMP Inspection Certificate Number</label>
+              <dx-text-box formControlName="gmpapplication_reference" placeholder="GMP Inspection Certificate Number" [showClearButton]="true">
               </dx-text-box>
             </div>
             <div class="col-lg-12" style="margin:1px;">
@@ -1280,12 +1283,31 @@
               <dx-date-box formControlName="approval_date" placeholder="Approval Date" [showClearButton]="true">
               </dx-date-box>
             </div>
-            <div class="col-lg-12" style="margin:1px;">
 
-              <label class="control-label">Approved Product Line</label>
-              <dx-text-area formControlName="approved_productlines" placeholder="Approved Product Line" >
-              </dx-text-area>
+            <div class="col-lg-12" style="margin:1px;">
+                <label for="ti" class="control-label">Manufacturing Product Line</label>
+                <dx-select-box [dataSource]="gmpProductLineData" valueExpr="id" placeholder="Product Line" displayExpr="product_line" [searchEnabled]="true" formControlName="gmp_productline_id">
+                        <div *dxTemplate="let data of 'item'">
+                            <div class="custom-item">
+                                {{data.product_line}} {{data.product_category}}
+
+                            </div>
+                        </div>
+                    </dx-select-box>
+                </div>
+            <div class="col-lg-12" style="margin:1px;">
+              <label>Product Category</label>
+              <dx-select-box [items]="gmpproductTypeData"  valueExpr="id"
+               displayExpr="name" placeholder="Product Category" 
+              [searchEnabled]="true" formControlName="gmpproduct_type_id">
+              </dx-select-box>
             </div>
+            <div class="col-lg-12" style="margin:1px;">
+              <label>Manufacturing Activities</label>
+              <dx-select-box [items]="manufacturingActivitiesData" [searchEnabled]="true" valueExpr="id" displayExpr="name" formControlName="manufacturing_activity_id" placeholder="Select Manufacturing Activities">
+              </dx-select-box>
+            </div>
+
             <div class="col-lg-12">
                 <input type="hidden" formControlName="id" />
                 <input type="hidden" value="application_code" formControlName="application_code" />
@@ -1295,11 +1317,12 @@
             </div>
           </div>
         </form>
+        </dx-scroll-view>
       </div>
     </dx-popup>
 
   
-<dx-popup class="popup"  [width]="funcpopWidth(40)" [height]="600" [showTitle]="true" title="Product Registration (Marketing authorisation) status in other States/Countries" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="otherProdStatesRegistrations">
+<dx-popup class="popup"  [width]="funcpopWidth(70)" [height]="600" [showTitle]="true" title="Product Registration (Marketing authorisation) status in other States/Countries" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="otherProdStatesRegistrations">
   <div *dxTemplate="let data of 'content'" >
         <form [formGroup]="otherProdStatesRegistrationsFrm" class="col-lg-12  div-nopadding" style="background: #fff;" enctype="multipart/form-data" role="form" (ngSubmit)="onSaveotherProdStatesRegistrations()">
           <div class="col-lg-12  row  div-nopadding div-backwhite">
@@ -1319,17 +1342,16 @@
             <div class="col-lg-12 " style="margin:1px;">
               <label class="control-label">Country</label>
 
-              <dx-select-box [dataSource]="recognisedassessmentsCountriesData" valueExpr="id" displayExpr="name" [searchEnabled]="true"
+              <dx-select-box [dataSource]="recognisedassessmentsCountriesData" valueExpr="id" displayExpr="name" [searchEnabled]="true"(onSelectionChanged)="onCoutryCboSelect($event)"
                 placeholder="Country" formControlName="country_id">
               </dx-select-box>
             </div>
-            <div class="col-lg-12" style="margin:1px;">
-
+            <div class="col-lg-12 " style="margin:1px;">
               <label class="control-label">Approving Authority</label>
-              <dx-text-box formControlName="approving_authority" placeholder="Approving Authority" [showClearButton]="true">
-              </dx-text-box>
+              <dx-select-box [dataSource]="approvingAuthorityData" valueExpr="id" displayExpr="name" [searchEnabled]="true"
+                placeholder="Approving Authority" formControlName="approving_authority_id">
+              </dx-select-box>
             </div>
-           
             <div class="col-lg-12" style="margin:1px;">
 
               <label class="control-label">Registration Reference No:</label>
@@ -1342,12 +1364,10 @@
               <dx-date-box formControlName="date_of_registration" placeholder="Date of Registration" [showClearButton]="true">
               </dx-date-box>
             </div>
-            
             <div class="col-lg-12" style="margin:1px;">
-
-              <label class="control-label">Current Registration Status(Active, Withdrawn)</label>
-              <dx-text-area formControlName="current_registrationstatus" placeholder="Current Registration Status(Active, Withdrawn)" >
-              </dx-text-area>
+              <label>Current Registration Status(Active, Withdrawn)</label>
+              <dx-select-box [items]="currentRegStatusData" [searchEnabled]="true" valueExpr="id" displayExpr="name" formControlName="current_registrationstatus" placeholder="Current Registration Status(Active, Withdrawn)">
+              </dx-select-box>
             </div>
             <div class="col-lg-12">
                 <input type="hidden" formControlName="id" />

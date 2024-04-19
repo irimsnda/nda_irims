@@ -5,20 +5,48 @@ body{
   background: #fff;
   font-size: 12px !important;
   max-width: 100% !important;
+  
  /* .dx-button .dx-icon 248855 */
-} /*
-.main-sidebar{
-  background-color: #000000 !important;
-  background-image: linear-gradient(147deg, #000000 0%, #434343 74%) !important;
-  background-color: #000000  !important;
-  background-image: linear-gradient(147deg, #000000 0%, #04619f 74%)  !important;
-}*/
+}.wizard-contentfieldset{
+
+  margin: 0px !important;
+}.contentfieldset{
+  width: 100% !important;
+  background-color: #c6ecd9;
+  padding:10px 0 !important;
+  padding-left: 5px;
+}dx-button .dx-icon {
+  font-size: 8px;
+  margin-right: 0px;
+  padding: 0px;
+}
+.auto-expand-textarea {
+  overflow: hidden; /* Hide overflow content */
+  resize: none; /* Disable the browser's native textarea resizing */
+  height: auto; /* Let the height adjust automatically */
+}
+.dx-button-has-icon .dx-button-content {
+  padding: 0px;
+}
+
+#success.dx-button .dx-icon {
+  font-size: 10px;
+}
+
 .dx-popup-wrapper > .dx-overlay-content{
     z-index: 1000000000000 !important;
 
 }
+.dx-datagrid .dx-row > td{
+
+  padding: 6px !important;
+}
+.input-group{
+   margin: 0px !important;
+   padding: 0px !important;
+}
 .modal{
-  z-index: 100000000 !important;
+   z-index: 100000000 !important;
 
 }
 .dx-datagrid-rowsview .dx-row.dx-group-row:not(.dx-row-focused) {
@@ -26,7 +54,7 @@ body{
      background-color:#f5f5f5 !important;
  }
 .pending_submitted {
-  background-color: #e9ecf3;
+  background-color: #e9ecf3  !important;
   text-align: center;
 }
 .dx-list-item-content {  
@@ -35,7 +63,7 @@ body{
 .navbar-custom{
 
   background-color: #000000  !important;
-  background-image: linear-gradient(147deg, #000000 0%, #04619f 74%)  !important;
+  background-image: linear-gradient(147deg, #000000 0%, #497D36 74%)  !important;
 }
 .dx-button-mode-contained.dx-button-default{
 
@@ -178,7 +206,7 @@ html{
     font-size: 14px !important;
     font-weight: bold !important;
 }#sidebar-menu > ul > li > a{
-  font-size: 12px !important;
+  font-size: 11px !important;
 }
 #sidebar-menu a {
   line-height: 2  !important;
@@ -260,7 +288,7 @@ html{
   z-index: 100000 !important;
 }
 .top-banner span{
-  font-size: 25px !important; 
+  font-size: 18px !important; 
   font-weight:bold;
 }
 .top-banner ul li{
@@ -327,8 +355,8 @@ table{
 .content{
   height: 100%;
   min-height: 100%;
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 .table{
   font-size: 12px !important;
@@ -340,9 +368,9 @@ table.dataTable thead th, table.dataTable tfoot th{
 }
 
 .dx-datagrid-table,dx-datagrid dx-gridbase-container{
-  color: #6b6b6b !important;
+  color: #3B0C02 !important;
   font-weight: normal !important;
-  font-size: 12px !important;
+  font-size: 13px !important;
   
 }
 .main-container{
@@ -378,7 +406,7 @@ body.dialog-open {
   font-size: 1.2em;
   cursor: pointer;
 }
-.dx-button,.dx-button-normal,dx-selectbox, .dx-textbox, .dx-texteditor {
+.dx-button,.dx-button-normal,dx-selectbox, .dx-textbox, .dx-texteditor,.dx-tagbox {
   border-radius: 0px  !important;
   margin:5px !important;
 }
@@ -414,7 +442,6 @@ button[disabled]{
   .transparent {
     background-color: transparent;
   }
-
 .nsm-dialog {
   position: relative;
   opacity: 1;
@@ -621,8 +648,9 @@ button[disabled]{
   height:   100%;
   z-index:  20000;
  /* background: #076D08 repeat center;
-  background:url(../images/bg.jpg) no-repeat center;*/
-  background: linear-gradient(50deg, #0099D0, #E2E2E2, #C0D7DF);
+  background:url(../images/bg.jpg) no-repeat center;*/ 
+  background: linear-gradient(2deg,#497d36, #E2E2E2, #497d36) !important;
+   
 }
 .pull-left{
     float:left !important;
@@ -648,7 +676,7 @@ button[disabled]{
 
 }
 .center_title{
-	
+  
 margin-top:35px;
 font-weight: bold  !important;
 font-size: 25px  !important; 
@@ -1540,6 +1568,11 @@ legend.scheduler-border {
     .dx-overlay-content.dx-popup-fullscreen.dx-resizable.dx-popup-fullscreen-width
     {
         width: 100%;
+    }
+    .col-xl-2_5 {
+      -ms-flex: 0 0 100%  !important;
+      flex: 0 0 100%  !important;
+      max-width: 100% !important ;
     }
 }.dx-datebox-date {
   width: 100% !important;

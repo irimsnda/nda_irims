@@ -49,9 +49,11 @@ export class PersonnalisedimportDashboardComponent implements OnInit {
   isApplicationRejectionVisible:boolean= false;
   FilterDetailsFrm:FormGroup;
   productappTypeData:any;
+  applicationTypeData:any;
   applicationStatusData:any;
   sectionsData:any;guidelines_title:string;
   sub_module_id: string;
+  application_type_id:number;
   permit_type_id: 1;
   application_title:string;
   sectionItem:any;
@@ -75,10 +77,11 @@ export class PersonnalisedimportDashboardComponent implements OnInit {
     permitProductsData:any;
   onApplicationSubmissionFrm:FormGroup;
   has_approvedauthorisation:boolean=false;
-  constructor(public utilityService:Utilities,private viewRef: ViewContainerRef, private modalServ: ModalDialogService, private spinner: SpinnerVisibilityService, public toastr: ToastrService, public router: Router, private configService: ConfigurationsService, public appService: ImportexportService) { // this.onLoadApplicationCounterDetails();
+  constructor(public utilityService:Utilities,private viewRef: ViewContainerRef, private modalServ: ModalDialogService, public spinner: SpinnerVisibilityService, public toastr: ToastrService, public router: Router, public configService: ConfigurationsService, public appService: ImportexportService) { // this.onLoadApplicationCounterDetails();
     this.onLoadSections();
     this.onLoadconfirmDataParam();
     this.onLoadApplicationstatuses();
+    this.onLoadApplicationPermitType();
     //this.onLoadProductAppType();
 
     this.FilterDetailsFrm = new FormGroup({
@@ -87,9 +90,8 @@ export class PersonnalisedimportDashboardComponent implements OnInit {
       application_status_id: new FormControl('', Validators.compose([]))
     });
     this.applicationSelectionfrm = new FormGroup({
-      section_id: new FormControl(this.sectionsData, Validators.compose([Validators.required])),
+      application_type_id: new FormControl(this.applicationTypeData, Validators.compose([Validators.required])),
       sub_module_id: new FormControl('', Validators.compose([])),
-      has_approvedproduct_authosation: new FormControl('', Validators.compose([Validators.required]))
     });
 
 
@@ -129,23 +131,8 @@ export class PersonnalisedimportDashboardComponent implements OnInit {
   }
   
   onApplicationSelection() {
+    this.application_type_id = this.applicationSelectionfrm.get('application_type_id').value;
     this.sub_module_idsel = 87;
-    const invalid = [];
-    const controls = this.applicationSelectionfrm.controls;
-    for (const name in controls) {
-        if (controls[name].invalid) {
-          this.toastr.error('Fill In All Mandatory fields with (*), missing value on '+ name.replace('_id','')+' and Initiate Import permit application', 'Alert');
-            return;
-        }
-    }
-    if (this.applicationSelectionfrm.invalid) {
-      return;
-    }
-    this.spinner.show();
-    this.sectionItem = this.applicationSelectionfrm.controls['section_id'];
-    
-    this.section_id = this.sectionItem.value;
-
     this.configService.getSectionUniformApplicationProces(this.sub_module_idsel, 1)
       .subscribe(
         data => {
@@ -155,9 +142,8 @@ export class PersonnalisedimportDashboardComponent implements OnInit {
             this.title = this.processData[0].name;
             this.router_link = this.processData[0].router_link;
 
-            this.application_details = { module_id: this.module_id, process_title: this.title, sub_module_id: this.sub_module_idsel, section_id: this.section_id,application_status_id: 1,status_name: 'New' };
+            this.application_details = { module_id: this.module_id, process_title: this.title, sub_module_id: this.sub_module_idsel, application_type_id: this.application_type_id,application_status_id: 1,status_name: 'New' };
             this.appService.setApplicationDetail(this.application_details);
-
             this.app_route = ['./online-services/' + this.router_link];
 
             this.router.navigate(this.app_route);
@@ -245,6 +231,19 @@ export class PersonnalisedimportDashboardComponent implements OnInit {
           this.sectionsData = data;
         });
   }
+  onLoadApplicationPermitType() {
+    var data = {
+      table_name: 'par_personalisedpermit_type',
+    };
+
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.applicationTypeData = data;
+        });
+  }
+
+
   onLoadconfirmDataParam() {
     var data = {
       table_name: 'par_confirmations'

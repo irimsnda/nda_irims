@@ -14,7 +14,7 @@ export class PersonalimportappDashboardComponent  extends PersonnalisedimportDas
     this.onLoadProductAppType(this.sub_module_id);
     this. onLoadApplicationCounterDetails(this.sub_module_id);
     this.FilterDetailsFrm.get('sub_module_id').setValue(this.sub_module_id);
-    this.application_title = 'Personnalised Products Import Dashboard';  
+    this.application_title = 'Products for Personal Use Dashboard';  
   }
   onImportappsToolbarPreparing(e) {
     e.toolbarOptions.items.unshift({
@@ -33,7 +33,7 @@ export class PersonalimportappDashboardComponent  extends PersonnalisedimportDas
       widget: 'dxButton',
       options: {
         text: 'Initiate Import Application',
-        tooltip: 'Initialisation of Import Visa Application on Authorised Products.',
+        tooltip: 'Initialisation of Import Application on Authorised Products.',
         type: 'default',
         icon: 'fa fa-plus',
         onClick: this.funcApplicationSelectcion.bind(this)
@@ -47,9 +47,10 @@ export class PersonalimportappDashboardComponent  extends PersonnalisedimportDas
         }
       });
   }
-  funcApplicationSelectcion() {
+   funcApplicationSelectcion() {
     this.isPermitInitialisation = true;
    // this.app_route = ['./online-services/importexportapp-sel'];
     //this.router.navigate(this.app_route);
   }
+
 }

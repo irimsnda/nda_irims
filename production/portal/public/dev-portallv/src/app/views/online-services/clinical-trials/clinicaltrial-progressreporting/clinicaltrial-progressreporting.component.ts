@@ -43,6 +43,7 @@ SharedClinicaltrialComponent implements OnInit {
             this.application_id = this.app_resp.application_id;
             this.application_code = this.app_resp.application_code;
             this.toastr.success(this.app_resp.message, 'Response');
+            this.wizard.model.navigationMode.goToStep(1);
           } else {
             this.toastr.error(this.app_resp.message, 'Alert');
           }
@@ -50,7 +51,8 @@ SharedClinicaltrialComponent implements OnInit {
         error => {
           this.loading = false;
         });
-  }  onClinicalDashboard() {
+  }  
+  onClinicalDashboard() {
     this.app_route = ['./online-services/clinicaltrial-progressrptdashboard'];
 
     this.router.navigate(this.app_route);

@@ -31,7 +31,19 @@ export class PublicService {
         return <any>data;
       }));
 
-  } onsaveApplicationUniformDetails(application_code, permitData,action_url) {
+  } 
+  onSaveApplication(permitData,registrant_details,action_url) {
+    var headers = new Headers({
+      "Accept": "application/json",
+    });
+    let registrant_data = JSON.stringify(registrant_details);
+    return this.http.post(AppSettings.base_url + 'productregistration/'+action_url, permitData, { params: { registrant_data}, headers: headers })
+      .pipe(map(data => {
+        return data;
+      }));
+  }
+
+  onsaveApplicationUniformDetails(application_code, permitData,action_url) {
 
     var headers = new Headers({
       "Accept": "application/json"

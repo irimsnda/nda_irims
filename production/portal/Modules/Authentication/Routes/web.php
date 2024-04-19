@@ -24,7 +24,8 @@ Route::group(['prefix' => 'authentication'], function() {
     
     //get requests
     Route::get('onRecoverAccountPassword', [AuthenticationController::class,'onRecoverAccountPassword']);
-   
+    Route::get('getCompanyDetails', [AuthenticationController::class,'getCompanyDetails']);
+
     
 });
 // Route::prefix('authentication')->group(function() {

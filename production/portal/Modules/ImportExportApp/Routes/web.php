@@ -24,10 +24,13 @@ Route::prefix('importexportapp')->group(function() {
 Route::group(['middleware' => 'auth:api', 'prefix' => 'importexportapp'], function()
 {
     Route::post('saveImportExportApplication', 'ImportExportAppController@saveImportExportApplication');
+    Route::post('saveRenImportExportApplication', 'ImportExportAppController@saveRenImportExportApplication');
+    Route::post('saveDeclarationImportExportApplication', 'ImportExportAppController@saveDeclarationImportExportApplication');
     
     Route::post('onAddUniformApplicantDataset', 'ImportExportAppController@onAddUniformApplicantDataset');
     
     Route::post('savePermitProductdetails', 'ImportExportAppController@savePermitProductdetails');
+    Route::post('saveBatchProductdetails', 'ImportExportAppController@saveBatchProductdetails');
     Route::post('onDeletePermitdetails', 'ImportExportAppController@onDeletePermitdetails');
     Route::post('onPermitApplicationSubmit', 'ImportExportAppController@onPermitApplicationSubmit');
     Route::post('onAddNewProductinformation', 'ImportExportAppController@onAddNewProductinformation');
@@ -35,17 +38,25 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'importexportapp'], functi
     Route::post('saveControlledDrugsImptPermitApplication', 'ImportExportAppController@saveControlledDrugsImptPermitApplication');
     
     Route::get('getApplicationCounterDetails', 'ImportExportAppController@getApplicationCounterDetails');
+    Route::get('getDeclarationDetails', 'ImportExportAppController@getDeclarationDetails');
+    Route::get('getControlledSubstance', 'ImportExportAppController@getControlledSubstance');
+    Route::get('getManufacturingSiteRegisteredProductsData', 'ImportExportAppController@getManufacturingSiteRegisteredProductsData');
     
     Route::get('getImportExpPermitsApplicationLoading', 'ImportExportAppController@getImportExpPermitsApplicationLoading');
     Route::get('getPermitsApplicationDetails', 'ImportExportAppController@getPermitsApplicationDetails');
     
     Route::get('getSenderreceiversDetails', 'ImportExportAppController@getSenderreceiversDetails');
     Route::get('getRegisteredNonRegisteredProducts', 'ImportExportAppController@getRegisteredNonRegisteredProducts');
+    Route::get('getSenderreceiversInvestigatorDetails', 'ImportExportAppController@getSenderreceiversInvestigatorDetails');
+    Route::get('getImportationReasons', 'ImportExportAppController@getImportationReasons');
 
-
-    
     Route::get('getPermitProductsDetails', 'ImportExportAppController@getPermitProductsDetails');
+    Route::get('getDeclaredProductsDetails', 'ImportExportAppController@getDeclaredProductsDetails');
+    Route::get('getUnRegisteredProductsDetails', 'ImportExportAppController@getUnRegisteredProductsDetails');
+    Route::get('getBatchPermitProductsDetails', 'ImportExportAppController@getBatchPermitProductsDetails');
+    Route::get('getApprovedProductsDetails', 'ImportExportAppController@getApprovedProductsDetails');
     Route::get('getPermitUploadedProductsDetails', 'ImportExportAppController@getPermitUploadedProductsDetails');
+    Route::get('getImportProductRange', 'ImportExportAppController@getImportProductRange');
 
     
     Route::get('getregulatedProductsPermitData', 'ImportExportAppController@getregulatedProductsPermitData');
@@ -53,7 +64,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'importexportapp'], functi
    
     Route::get('onfuncValidatePermitDetails', 'ImportExportAppController@onfuncValidatePermitDetails');
    
-    
+    Route::get('getControlledImportPermitsApplicationLoading', 'ImportExportAppController@getControlledImportPermitsApplicationLoading');
     Route::get('getDisposalApplicationsLoading', 'ImportExportAppController@getDisposalApplicationsLoading');
     Route::post('saveDisposalApplication', 'ImportExportAppController@saveDisposalApplication');
     Route::post('saveDisposalPermitProductdetails', 'ImportExportAppController@saveDisposalPermitProductdetails');

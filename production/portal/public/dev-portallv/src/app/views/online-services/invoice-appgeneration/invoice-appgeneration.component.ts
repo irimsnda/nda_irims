@@ -61,6 +61,7 @@ export class InvoiceAppgenerationComponent implements OnInit {
   app_route:any;
   isDocumentPreviewDownloadwin: boolean = false;
   app_data:any;
+  auto:any;
   publicKey:string;
   constructor(public modalServ: ModalDialogService,public viewRef: ViewContainerRef,public spinner: SpinnerVisibilityService,public utilityService: Utilities,public toastr: ToastrService,public configService: ConfigurationsService,public dmsService: DocumentManagementService,public formBuilder: FormBuilder, public config: ConfigurationsService,private renderer: Renderer2) {
       //the details 
@@ -490,7 +491,7 @@ export class InvoiceAppgenerationComponent implements OnInit {
           buttonClass: 'btn btn-danger',
           onAction: () => new Promise((resolve: any, reject: any) => {
 
-            if(this.status_id ==1 || this.status_id ==40  || this.status_id ==52){
+            if(this.status_id ==1 || this.status_id ==79 || this.status_id ==40  || this.status_id ==52){
               this.spinner.show();
               let app_params = {
                 application_code:this.application_code,
@@ -504,14 +505,14 @@ export class InvoiceAppgenerationComponent implements OnInit {
               }
               this.utilityService.onApplicationInvoiceGeneration(this.application_code, app_params, 'onApplicationInvoiceGeneration')
               .subscribe(
-                response => {
+                response => { 
                   this.invoice_resp = response.json();
                   //the details 
                   if (this.invoice_resp.success) {
                     this.isInvoiceGenerationWin = true;
                     this.toastr.success(this.invoice_resp.message, 'Response');
                     this.funcLoadApplicationInvDetails();
-                   // this.funcPrintProformaInvoice(this.invoice_resp.invoice_data)
+                    this.funcPrintProformaInvoice(this.invoice_resp.invoice_data)
                   } else {
                     this.toastr.error(this.invoice_resp.message, 'Response');
       
@@ -641,7 +642,7 @@ export class InvoiceAppgenerationComponent implements OnInit {
       location: 'before',
       widget: 'dxButton',
       options: {
-        text: 'Add Payment Remittance DEtails',
+        text: 'Add Payment Remittance Details',
         type: 'default',
         icon: 'fa fa-plus',
         onClick: this.funcAddPaymentsDetails.bind(this)

@@ -23,7 +23,7 @@ import { AppSettings } from 'src/app/app-settings';
   styleUrls: ['./directors-details.component.css']
 })
 export class DirectorsDetailsComponent implements OnInit {
-  @Input() premisesDirectorsDetailsfrm: FormGroup;
+ @Input() premisesDirectorsDetailsfrm: FormGroup;
   @Input() newPremisesDirectorsDetailsFrm: FormGroup;
   @Input() premDirectorsDetailsData: any;
   @Input() isBusinessPersonnelPopupVisible: boolean;
@@ -33,6 +33,7 @@ export class DirectorsDetailsComponent implements OnInit {
   @Input() isDirectorsPopupVisible: boolean;
   @Input() directorsDetailsData: any = {};
   @Input() countries: any;
+  @Input() sub_module_id: number;
   @Input() regions: any;
   @Input() districts: any;
   @Input() personnel_informationData: any;
@@ -50,6 +51,7 @@ export class DirectorsDetailsComponent implements OnInit {
   personnel_QualificationData:any;
   personnel_type_id:number;
   app_resp:any;
+  auto:any;
   isPersonnelPopupVisible:boolean;
   premises_resp:any;
   isperssonelAddPopupVisible:boolean;
@@ -61,27 +63,28 @@ export class DirectorsDetailsComponent implements OnInit {
     this.onLoadPremisesDirectorsDetails();
     this.onpersonnelIdentificationTypeDataLoad();
     this.onLoadCountries();
+    
+    if(this.sub_module_id == 108){
+        this.is_readonly = true;
+    }else{
+      this.is_readonly = false;
+
+    }
   }
   funcEditPersonnelDetails(data) {
 
-    // this.premisesDirectorsDetailsfrm.patchValue({personnel_id:data.data.personnel_id,id:data.data.id,start_date:data.data.start_date,end_date:data.data.end_date, personnel_name:data.data.personnel_name})
     this.premisesDirectorsDetailsfrm.patchValue(data.data);
-
-    this.premisesDirectorsDetailsfrm.patchValue(data.data);
-    //load the personnel qualifiations 
-
     this.isBusinessPersonnelPopupVisible = true;
-    this.onLoadPersonnerQualifationsDetails(data.data.personnel_id);
-    this.personnel_id = data.data.personnel_id;
-
   }      
-  funcSelectDirectorsDetails(data){
+  funcSelectDirectorsDetails(data){ 
+
     this.premisesDirectorsDetailsfrm.patchValue(data.data);
-      this.isDirectorsPopupVisible= false;         
+    
+    this.isDirectorsPopupVisible= false;         
   }
  
-    onSearchStaffDetails() {
-      this.appService.onLoadPremisesDirectorsDetails({})
+    onSearchPartnersDetails() {  
+    this.appService.onLoadDirectorsInformations()
         .subscribe(
           data_response => {
             this.isDirectorsPopupVisible = true;
@@ -143,7 +146,7 @@ export class DirectorsDetailsComponent implements OnInit {
   }
     onLoadDistricts(region_id) {
     var data = {
-      table_name: 'par_districts',
+      table_name: 'par_premise_districts',
       region_id: region_id
     };
     this.config.onLoadConfigurationData(data)
@@ -296,7 +299,7 @@ export class DirectorsDetailsComponent implements OnInit {
     this.isPersonnelPopupVisible = false;
     
   }onPremisesDirectorsToolbar(e,is_readonly) {
-    this.functDataGridToolbar(e, this.funAddPremisesDirectorsDetails, 'Add Director',is_readonly);
+    this.functDataGridToolbar(e, this.funAddPremisesDirectorsDetails, 'Add Director or Partner',is_readonly);
   }
  
   functDataGridToolbar(e, funcBtn, btn_title,is_readonly= false) {

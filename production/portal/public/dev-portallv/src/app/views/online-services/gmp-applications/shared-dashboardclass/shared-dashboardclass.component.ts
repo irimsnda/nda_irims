@@ -57,8 +57,8 @@ export class SharedDashboardclassComponent implements OnInit {
   pending_submission: number = 0;
   queried_premises: number = 0;
   rejected_premises: number = 0;
-  
   documents_submissions:number=0;
+  submitted_application:number =0;
   productApplicationProcessingData:any;
   isPreviewApplicationProcessing:boolean= false;
 
@@ -72,6 +72,7 @@ export class SharedDashboardclassComponent implements OnInit {
   contextMenuItems: any;
   gmpapp_details:any;
   sectionsData:any;
+  applicationInspectionData:any;
   FilterDetailsFrm:FormGroup;
   applicationStatusData:any;
   sectionSelection:string;
@@ -81,25 +82,35 @@ export class SharedDashboardclassComponent implements OnInit {
   gmp_locationItem:any;
 
   gmp_type_id:number;
+  manufacturing_site_id:number;
   GmpAppTypeData: any;
   dtAppsnProcessesData: any;
   
   GmpAppSelectionfrm: FormGroup;
-
+  selectedAppData: any;
   Gmpapp_details: any;
   sectionItem: any;
   app_typeItem: any;
   section_id: number;
-  sub_module_id: number = 5;
-
-
+  sub_module_id: number;
+  inspectionDate:any;
+  inspectionHistoryData:any;
   gmpLocationData:any;
+  gmpControl: FormControl;
   frmPreviewApplicationssDetails:FormGroup;
+  frmInspectionConfirmationApplicationssDetails:FormGroup;
   isPreviewApplicationsDetails:boolean = false;
+  isConfirmInspectionApplicationsDetails:boolean = false;
+  isonRejection:boolean = false;
   isDismissApplicationWin:boolean=false;
   applicationDismissalFrm:FormGroup;
+  inspectionHistorydetailsfrm:FormGroup;
   reasonForDismissalData:any;
   constructor(public viewRef: ViewContainerRef, public modalServ: ModalDialogService, public spinner: SpinnerVisibilityService, public toastr: ToastrService, public router: Router, public configService: ConfigurationsService, public appService: GmpApplicationServicesService,public utilityService:Utilities) {
+
+
+    this.gmpControl = new FormControl('', Validators.compose([]));
+
 
     this.frmPreviewApplicationssDetails = new FormGroup({
       tracking_no: new FormControl('', Validators.compose([Validators.required])),
@@ -109,6 +120,17 @@ export class SharedDashboardclassComponent implements OnInit {
       application_type: new FormControl('', Validators.compose([Validators.required])),
       status: new FormControl('', Validators.compose([Validators.required]))
     });
+
+    this.frmInspectionConfirmationApplicationssDetails = new FormGroup({
+      customer_confirmation_id: new FormControl('', Validators.compose([Validators.required])),
+      client_preferred_start_date:this.gmpControl,
+      start_date: new FormControl('', Validators.compose([Validators.required])),
+      end_date: new FormControl('', Validators.compose([Validators.required])),
+      client_rejection_reason: this.gmpControl,
+    });
+
+
+
     this.FilterDetailsFrm = new FormGroup({
       sub_module_id: new FormControl('', Validators.compose([])),
       section_id: new FormControl('', Validators.compose([])),
@@ -121,15 +143,16 @@ export class SharedDashboardclassComponent implements OnInit {
 
     });
     this.GmpAppSelectionfrm = new FormGroup({
-      section_id: new FormControl(this.sectionsData, Validators.compose([Validators.required])),
+      section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
       sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
       gmp_type_id: new FormControl('', Validators.compose([Validators.required])),
     });
-    this.onLoadGmpAppType();
+    this.onLoadGmpAppType(this.sub_module_id);
     this.onLoadreasonForDismissalData();
-
     this.onLoadApplicationstatuses();
-    
+    this.onLoadInspectionApplicationstatuses();
+    this.onLoadPremisesCounterDetails(this.sub_module_id,this.gmp_type_id);
+    this.onLoadInspectionHistoryDetails(this.manufacturing_site_id);
    }
 
   ngOnInit() {
@@ -152,6 +175,25 @@ onLoadApplicationCounterDueforRenewal(){
           this.spinner.hide();
         });
   }
+
+ onRejection($event) {
+
+  if($event.value == 30){
+      this.isonRejection = true;
+      this.gmpControl.setValidators([Validators.required]);
+      this.gmpControl.updateValueAndValidity();
+  }
+  else{
+    this.isonRejection = false;
+    this.gmpControl.clearValidators();
+    this.gmpControl.updateValueAndValidity();
+
+  }
+}
+onCellPrepared(e) {
+      this.utilityService.onCellPrepared(e);
+  }
+
   onLoadApplicationDetailsDueforRenewal(){
     if(this.app_renewalduenotifications <1){
       this.toastr.error('There is no application due for expiry (3months)!!', 'Alert!');
@@ -200,10 +242,22 @@ onLoadApplicationCounterDueforRenewal(){
          this.applicationStatusData =  data;
         });
   }
+  onLoadInspectionApplicationstatuses() {
+    
+    var data = {
+      table_name: 'par_system_statuses'
+    };
+    this.configService.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+         this.inspectionDate =  data;
+        });
+  }
+
+
   onLoadSections() {
     var data = {
       table_name: 'par_sections',
-      sectionSelection: this.sectionSelection
     };
 
     this.configService.onLoadConfigurationData(data)
@@ -212,8 +266,10 @@ onLoadApplicationCounterDueforRenewal(){
           this.sectionsData = data;
         });
   }
+  
   reloadGMPApplications(filter_params) {
-    filter_params.sectionsdata = this.sectionsdata;
+    filter_params.sub_module_id = this.sub_module_id;
+    filter_params.gmp_type_id = this.gmp_type_id;
     this.appService.onGMPApplicationLoading(filter_params)
       .subscribe(
         resp_data => {
@@ -230,10 +286,12 @@ onLoadApplicationCounterDueforRenewal(){
   onLoadingActionMenu(e, data) {
 
   }
-  onLoadGmpAppType() {
+  onLoadGmpAppType(sub_module_id) {
     
     var data = {
       table_name: 'sub_modules',
+    sub_module_id:sub_module_id,
+
       module_id: 3
     };
     this.configService.onLoadConfigurationData(data)
@@ -242,6 +300,7 @@ onLoadApplicationCounterDueforRenewal(){
          this.gmpappTypeData =  data;
         });
   }
+
   onLoadreasonForDismissalData() {
     
     var data = {
@@ -253,9 +312,9 @@ onLoadApplicationCounterDueforRenewal(){
          this.reasonForDismissalData =  data;
         });
   }
-  onLoadPremisesCounterDetails() {
+  onLoadPremisesCounterDetails(sub_module_id,gmp_type_id) {
 
-    this.appService.onLoadGmpCounterDetails({sectionsdata:this.sectionsdata})
+    this.appService.onLoadGmpCounterDetails({sub_module_id:this.sub_module_id,gmp_type_id:this.gmp_type_id})
       .subscribe(
         data => {
           if (data.success) {
@@ -274,6 +333,8 @@ onLoadApplicationCounterDueforRenewal(){
               }
               if (rec.status_id == 27 || rec.status_id == 28) {
                 this.documents_submissions += rec.application_counter;
+              }if (rec.status_id == 2 || rec.status_id == 3) {
+                    this.submitted_application = rec.application_counter;
               }
               //
             }
@@ -316,6 +377,10 @@ console.log(action_btn);
       }
       else if (action_btn === 'preview') {
         this.funcGMPPreviewDetails(data);
+      } else if (action_btn === 'confirm_dates') {
+        this.funcGMPConfirmDetails(data);
+        this.selectedAppData = data;
+
       }
       else if (action_btn == 'print_applications') {
         this.funcPrintApplicationDetails(data);
@@ -444,6 +509,50 @@ console.log(action_btn);
     this.frmPreviewApplicationssDetails.patchValue(data);
 
 }
+
+funcGMPConfirmDetails(app_data) {
+  this.utilityService.getApplicationInspectionDetails(app_data.application_code, 'tra_gmp_inspection_dates', 'application_status_id')
+    .subscribe(
+      resp_data => {
+        if (resp_data.success && resp_data.data.length > 0) {
+          const inspectionData = resp_data.data[0];
+          this.frmInspectionConfirmationApplicationssDetails.patchValue({
+            start_date: inspectionData.start_date,
+            end_date: inspectionData.end_date
+          });
+
+          this.isConfirmInspectionApplicationsDetails = true;
+          this.spinner.hide();
+
+        } else {
+          this.toastr.error(resp_data.message, 'Alert!');
+        }
+      },
+      error => {
+        // Handle errors if needed
+      }
+    );
+}
+
+onSaveInspectionDetails() {
+  this.appService.onSaveInspectionDetails(this.selectedAppData.application_code, this.frmInspectionConfirmationApplicationssDetails.value)
+    .subscribe(
+      response => {
+        let gmp_resp = response.json();
+        if (gmp_resp.success) {
+          this.toastr.success(gmp_resp.message, 'Response');
+          this.isConfirmInspectionApplicationsDetails = false;
+          this.frmInspectionConfirmationApplicationssDetails.reset();
+        } else {
+          this.toastr.error(gmp_resp.message, 'Alert');
+        }
+      },
+      error => {
+        // Handle errors if needed
+      });
+} 
+
+
   onLoadApplicationProcessingData(data) {
 
     this.utilityService.onLoadApplicationProcessingData(data.application_code)
@@ -464,6 +573,17 @@ console.log(action_btn);
     this.app_route = ['./online-services/gmp-applications-selection'];
     this.router.navigate(this.app_route);
   }
+  onLoadInspectionHistoryDetails(manufacturing_site_id) {
+    this.appService.onLoadInspectionHistoryDetails(manufacturing_site_id)
+      //.pipe(first())
+      .subscribe(
+        data => {
+          this.inspectionHistoryData = data.data;
+        },
+        error => {
+          return false
+        });
+  } 
 
   onPremisesappsToolbarPreparing(e) {
     e.toolbarOptions.items.unshift({
@@ -505,12 +625,9 @@ console.log(action_btn);
           this.processData = data.data;
           this.spinner.hide();
           if (data.success) {
-            console.log(this.processData[0]);
             this.title = this.processData[0].process_title;
             this.router_link = this.processData[0].router_link;
             // this.router_link = this.processData[0].router_link;
-           
-              
               this.appService.setGmpApplicationDetail(this.processData[0]);
               if(this.processData[0].section_id == 2){
                 
@@ -577,9 +694,10 @@ console.log(action_btn);
 }
 //details 
 
-onLoadgmpLocationData() {
+onLoadgmpLocationData(gmp_type_id) {
   var data = {
     table_name: 'par_gmplocation_details',
+    gmp_type_id:gmp_type_id
   };
 
   this.configService.onLoadConfigurationData(data)

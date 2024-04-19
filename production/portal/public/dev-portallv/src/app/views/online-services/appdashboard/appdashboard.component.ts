@@ -10,8 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { ProductApplicationService } from 'src/app/services/product-applications/product-application.service';
 import { PremisesApplicationsService } from 'src/app/services/premises-applications/premises-applications.service';
-//import { DrushopsRegistrationService } from 'src/app/services/drugshop-applications/drugshops-registration.service';
-import { ConfigurationsService } from 'src/app/services/shared/configurations.service';
+import { ConfigurationsService } from '../../../services/shared/configurations.service';
 import { AppSettings } from 'src/app/app-settings';
 
 import CustomStore from 'devextreme/data/custom_store';
@@ -115,9 +114,10 @@ export class AppdashboardComponent implements OnInit {
   onApplicationSubmissionFrm:FormGroup;
   termscheckbox:boolean;
   app_resp:any;
+  clickedMenuItem: any;
   loading:any;
   constructor(public authService:AuthService, private premisesService:PremisesApplicationsService, private appService: ProductApplicationService,private spinner: SpinnerVisibilityService,private fb: FormBuilder, private cd: ChangeDetectorRef,private http: HttpClient,private renderer: Renderer, private router:Router, private utilityService:Utilities,public toastr: ToastrService,private configService: ConfigurationsService,public httpClient: HttpClient ,private accountService:AccountManagementService,public modalServ: ModalDialogService,public viewRef: ViewContainerRef) { 
-
+    this.clickedMenuItem = this.configService.getClickedMenuItem(); 
     let user_details = this.authService.getUserDetails();
     this.country_id = user_details.country_id;
     this.trader_id = user_details.trader_id;
@@ -166,7 +166,11 @@ export class AppdashboardComponent implements OnInit {
     this.termscheckbox = e.value;
 
   }
-
+ funcOnlineServices(){
+    
+    this.router.navigate(['/online-dashboard']);
+    
+  }
   ngOnInit() {
     this.spinner.hide();
     const that = this; 
@@ -199,7 +203,8 @@ export class AppdashboardComponent implements OnInit {
     this.onLoadmodulesData() ;
     this.onLoadApplicationsCounterDetails();
     this.onLoadApplicationCounterDueforRenewal();
-    
+
+
     this.OnloadProductRetetentionDetails({});
   }
   //sub process 
@@ -329,11 +334,15 @@ export class AppdashboardComponent implements OnInit {
   }
   funcRecordClick(){
     
-  }onLoadApplicationsCounterDetails() {
-   
-    this.utilityService.onLoadApplicationCounterDetails('wb_onlinesubmissions')
-      .subscribe(
-        data => {
+  }
+
+  onLoadApplicationsCounterDetails() {
+    if(this.clickedMenuItem){
+        const menuIdToFilter = this.clickedMenuItem.id; 
+        if(menuIdToFilter == 30 || menuIdToFilter == 230 || menuIdToFilter == 128){
+           this.utilityService.onLoadApplicationCounterDetails('wb_premises_applications')
+            .subscribe(
+            data => {
           if (data.success) {
             let records = data.data;
              // this.dtPremisesApplicationData = data.data;
@@ -355,7 +364,164 @@ export class AppdashboardComponent implements OnInit {
           }
           
         });
+
+      }else if(menuIdToFilter == 20 || menuIdToFilter == 163){
+          this.utilityService.onLoadApplicationCounterDetails('wb_product_applications')
+            .subscribe(
+            data => {
+          if (data.success) {
+            let records = data.data;
+             // this.dtPremisesApplicationData = data.data;
+             for(let rec of records){
+             
+                  if(rec.status_id == 1){
+                    this.pending_submission = rec.application_counter;
+                  }if(rec.status_id == 6 || rec.status_id == 7 || rec.status_id == 8 || rec.status_id == 9){
+                    this.queried_applications += rec.application_counter;
+                  }if(rec.status_id == 10){
+                    this.approved_applications = rec.application_counter;
+                  }if(rec.status_id == 11){
+                    this.rejected_applications = rec.application_counter;
+                  }if(rec.status_id == 4){
+                    this.invoiced_pendingpayment = rec.application_counter;
+                  }
+
+            }
+          }
+          
+        });
+      }else if(menuIdToFilter==39){
+          this.utilityService.onLoadApplicationCounterDetails('wb_clinical_trial_applications')
+            .subscribe(
+            data => {
+          if (data.success) {
+            let records = data.data;
+             // this.dtPremisesApplicationData = data.data;
+             for(let rec of records){
+             
+                  if(rec.status_id == 1){
+                    this.pending_submission = rec.application_counter;
+                  }if(rec.status_id == 6 || rec.status_id == 7 || rec.status_id == 8 || rec.status_id == 9){
+                    this.queried_applications += rec.application_counter;
+                  }if(rec.status_id == 10){
+                    this.approved_applications = rec.application_counter;
+                  }if(rec.status_id == 11){
+                    this.rejected_applications = rec.application_counter;
+                  }if(rec.status_id == 4){
+                    this.invoiced_pendingpayment = rec.application_counter;
+                  }
+
+            }
+          }
+          
+        });
+      }else if(menuIdToFilter==52){
+          this.utilityService.onLoadApplicationCounterDetails('wb_promotion_adverts_applications')
+            .subscribe(
+            data => {
+          if (data.success) {
+            let records = data.data;
+             // this.dtPremisesApplicationData = data.data;
+             for(let rec of records){
+             
+                  if(rec.status_id == 1){
+                    this.pending_submission = rec.application_counter;
+                  }if(rec.status_id == 6 || rec.status_id == 7 || rec.status_id == 8 || rec.status_id == 9){
+                    this.queried_applications += rec.application_counter;
+                  }if(rec.status_id == 10){
+                    this.approved_applications = rec.application_counter;
+                  }if(rec.status_id == 11){
+                    this.rejected_applications = rec.application_counter;
+                  }if(rec.status_id == 4){
+                    this.invoiced_pendingpayment = rec.application_counter;
+                  }
+
+            }
+          }
+          
+        });
+      }else if(menuIdToFilter==33){
+          this.utilityService.onLoadApplicationCounterDetails('wb_gmp_applications')
+            .subscribe(
+            data => {
+          if (data.success) {
+            let records = data.data;
+             // this.dtPremisesApplicationData = data.data;
+             for(let rec of records){
+             
+                  if(rec.status_id == 1){
+                    this.pending_submission = rec.application_counter;
+                  }if(rec.status_id == 6 || rec.status_id == 7 || rec.status_id == 8 || rec.status_id == 9){
+                    this.queried_applications += rec.application_counter;
+                  }if(rec.status_id == 10){
+                    this.approved_applications = rec.application_counter;
+                  }if(rec.status_id == 11){
+                    this.rejected_applications = rec.application_counter;
+                  }if(rec.status_id == 4){
+                    this.invoiced_pendingpayment = rec.application_counter;
+                  }
+
+            }
+          }
+          
+        });
+      }else if(menuIdToFilter==36 || menuIdToFilter==147 || menuIdToFilter==165){
+          this.utilityService.onLoadApplicationCounterDetails('wb_importexport_applications')
+            .subscribe(
+            data => {
+          if (data.success) {
+            let records = data.data;
+             // this.dtPremisesApplicationData = data.data;
+             for(let rec of records){
+             
+                  if(rec.status_id == 1){
+                    this.pending_submission = rec.application_counter;
+                  }if(rec.status_id == 6 || rec.status_id == 7 || rec.status_id == 8 || rec.status_id == 9){
+                    this.queried_applications += rec.application_counter;
+                  }if(rec.status_id == 10){
+                    this.approved_applications = rec.application_counter;
+                  }if(rec.status_id == 11){
+                    this.rejected_applications = rec.application_counter;
+                  }if(rec.status_id == 4){
+                    this.invoiced_pendingpayment = rec.application_counter;
+                  }
+
+            }
+          }
+          
+        });
+      }else{
+          this.utilityService.onLoadApplicationCounterDetails('wb_disposal_applications')
+            .subscribe(
+            data => {
+          if (data.success) {
+            let records = data.data;
+             // this.dtPremisesApplicationData = data.data;
+             for(let rec of records){
+             
+                  if(rec.status_id == 1){
+                    this.pending_submission = rec.application_counter;
+                  }if(rec.status_id == 6 || rec.status_id == 7 || rec.status_id == 8 || rec.status_id == 9){
+                    this.queried_applications += rec.application_counter;
+                  }if(rec.status_id == 10){
+                    this.approved_applications = rec.application_counter;
+                  }if(rec.status_id == 11){
+                    this.rejected_applications = rec.application_counter;
+                  }if(rec.status_id == 4){
+                    this.invoiced_pendingpayment = rec.application_counter;
+                  }
+
+            }
+          }
+          
+        });
+      }
+    }else{
+      console.error('No menu item is selected.');
+
+    }
   }
+
   onViewApplicationDueforRenewal(){
 
 
@@ -441,7 +607,7 @@ export class AppdashboardComponent implements OnInit {
     let section_id = this.retetentionFilterDetailsFrm.get('section_id').value;
     let retention_yearfrom = this.retetentionFilterDetailsFrm.get('retention_yearfrom').value;
    let mis_url = AppSettings.mis_url;
-    let report_url = mis_url+'reports/generateSelectedRetentionInvoiceStatement?retention_yearto='+retention_yearto+"&section_id="+section_id+"&retention_yearfrom="+retention_yearfrom+"&applicant_id="+this.mistrader_id ;
+    let report_url = mis_url+'reports/getReportUrl?retention_yearto='+retention_yearto+"&section_id="+section_id+"&retention_yearfrom="+retention_yearfrom+"&applicant_id="+this.mistrader_id ;
 
     this.funcGenerateRrp(report_url,"Retention Invoice")
     
@@ -487,20 +653,160 @@ export class AppdashboardComponent implements OnInit {
     this.router.navigate(app_route);
   }
  
+
   onLoadApplicationProcessingData(filter_params) {
-    this.spinner.show();
-    this.utilityService.onLoadTraderApplicationProcessingData(filter_params,'utilities/getTraderApplicationProcessing')
-      .subscribe(
-        resp_data => {
-          if (resp_data.success) {
-            this.dtAppsnProcessesData =  resp_data.data;
+
+   if(this.clickedMenuItem){
+      const menuIdToFilter = this.clickedMenuItem.id; 
+      if(menuIdToFilter == 30 || menuIdToFilter == 230 || menuIdToFilter == 128){
+        const requestParams = {
+        table_name: 'tra_premises_applications',
+        ...filter_params
+        };
+        this.utilityService.onLoadTraderApplicationProcessingData( requestParams, 'utilities/getTraderApplicationProcessing')
+        .subscribe(
+          data => {
+          if (data.success) {
+            this.dtAppsnProcessesData = data.data;
           }
           else {
-            this.toastr.error(resp_data.message, 'Alert!');
+            this.toastr.success(data.message, 'Alert');
           }
-          this.spinner.hide();
+        },
+        error => {
+          return false
         });
-  }
+
+      }else if(menuIdToFilter == 20 || menuIdToFilter == 163){
+        const requestParams = {
+        table_name: 'tra_product_applications',
+        ...filter_params
+        };
+        this.utilityService.onLoadTraderApplicationProcessingData( requestParams, 'utilities/getTraderApplicationProcessing')
+        .subscribe(
+          data => {
+          if (data.success) {
+            this.dtAppsnProcessesData = data.data;
+          }
+          else {
+            this.toastr.success(data.message, 'Alert');
+          }
+        },
+        error => {
+          return false
+        });
+
+      }else if(menuIdToFilter==39){
+        const requestParams = {
+        table_name: 'tra_clinical_trial_applications',
+        ...filter_params
+        };
+        this.utilityService.onLoadTraderApplicationProcessingData( requestParams, 'utilities/getTraderApplicationProcessing')
+        .subscribe(
+          data => {
+          if (data.success) {
+            this.dtAppsnProcessesData = data.data;
+          }
+          else {
+            this.toastr.success(data.message, 'Alert');
+          }
+        },
+        error => {
+          return false
+        });
+      }else if(menuIdToFilter==52){
+        const requestParams = {
+        table_name: 'tra_promotion_adverts_applications',
+        ...filter_params
+        };
+        this.utilityService.onLoadTraderApplicationProcessingData( requestParams, 'utilities/getTraderApplicationProcessing')
+        .subscribe(
+          data => {
+          if (data.success) {
+            this.dtAppsnProcessesData = data.data;
+          }
+          else {
+            this.toastr.success(data.message, 'Alert');
+          }
+        },
+        error => {
+          return false
+        });
+      }else if(menuIdToFilter==33){
+        const requestParams = {
+        table_name: 'tra_gmp_applications',
+        ...filter_params
+        };
+        this.utilityService.onLoadTraderApplicationProcessingData( requestParams, 'utilities/getTraderApplicationProcessing')
+        .subscribe(
+          data => {
+          if (data.success) {
+            this.dtAppsnProcessesData = data.data;
+          }
+          else {
+            this.toastr.success(data.message, 'Alert');
+          }
+        },
+        error => {
+          return false
+        });
+      }else if(menuIdToFilter==36 || menuIdToFilter==147 || menuIdToFilter==165){
+        const requestParams = {
+        table_name: 'tra_importexport_applications',
+        ...filter_params
+        };
+        this.utilityService.onLoadTraderApplicationProcessingData( requestParams, 'utilities/getTraderApplicationProcessing')
+        .subscribe(
+          data => {
+          if (data.success) {
+            this.dtAppsnProcessesData = data.data;
+          }
+          else {
+            this.toastr.success(data.message, 'Alert');
+          }
+        },
+        error => {
+          return false
+        });
+      }else{
+        const requestParams = {
+        table_name: 'tra_disposal_applications',
+        ...filter_params
+        };
+        this.utilityService.onLoadTraderApplicationProcessingData( requestParams, 'utilities/getTraderApplicationProcessing')
+        .subscribe(
+          data => {
+          if (data.success) {
+            this.dtAppsnProcessesData = data.data;
+          }
+          else {
+            this.toastr.success(data.message, 'Alert');
+          }
+        },
+        error => {
+          return false
+        });
+
+      }
+    }
+
+}
+
+
+  // onLoadApplicationProcessingData(filter_params) {
+  //   this.spinner.show();
+  //   this.utilityService.onLoadTraderApplicationProcessingData(filter_params,'utilities/getTraderApplicationProcessing')
+  //     .subscribe(
+  //       resp_data => {
+  //         if (resp_data.success) {
+  //           this.dtAppsnProcessesData =  resp_data.data;
+  //         }
+  //         else {
+  //           this.toastr.error(resp_data.message, 'Alert!');
+  //         }
+  //         this.spinner.hide();
+  //       });
+  // }
 
   onLoadAllApplicationProcessingData(data) {
 

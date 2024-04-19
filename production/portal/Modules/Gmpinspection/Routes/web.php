@@ -28,25 +28,44 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'gmpinspection'], function
     Route::post('onSaveRenewalGmpApplication', 'GmpinspectionController@onSaveRenewalGmpApplication');
     
     Route::post('onSaveGmpOtherDetails', 'GmpinspectionController@onSaveGmpOtherDetails');
+    Route::post('onSaveGmpContractDetails', 'GmpinspectionController@onSaveGmpContractDetails');
     Route::post('onSavePremisesPersonnel', 'GmpinspectionController@onSavePremisesPersonnel');
     Route::post('onDeletePremisesDetails', 'GmpinspectionController@onDeletePremisesDetails');
     Route::post('onNewGmpApplicationSubmit', 'GmpinspectionController@onNewGmpApplicationSubmit');
     Route::post('onNewPremisesApplicationArchive', 'GmpinspectionController@onNewPremisesApplicationArchive');
     
+    Route::post('onSaveInspectionDetails', 'GmpinspectionController@onSaveInspectionDetails');
     Route::post('onSavePersonnelQualification', 'GmpinspectionController@onSavePersonnelQualification');
     Route::post('onSavePremisesAmmendmentsRequest', 'GmpinspectionController@onSavePremisesAmmendmentsRequest');
     Route::post('onSaveGmpProductLinedetails', 'GmpinspectionController@onSaveGmpProductLinedetails');
+    Route::post('onSaveGmpHistoryInformation', 'GmpinspectionController@onSaveGmpHistoryInformation');
+    Route::post('onDeleteMisTablePermitdetails', 'GmpinspectionController@onDeleteMisTablePermitdetails');
+
+
     Route::post('onSavemanufatcuringSiteBlocks', 'GmpinspectionController@onSavemanufatcuringSiteBlocks');
+    Route::post('onSaveIntededmanufatcuringActivity', 'GmpinspectionController@onSaveIntededmanufatcuringActivity');
+
     
     //get 
     Route::get('getGMPOtherDetails', 'GmpinspectionController@getGMPOtherDetails');
     Route::get('getGmpProductLinedetails', 'GmpinspectionController@getGmpProductLinedetails');
-    
+    Route::get('getGmpProductLinedetailsDt', 'GmpinspectionController@getGmpProductLinedetailsDt');
+    Route::get('getProductLinedetails', 'GmpinspectionController@getProductLinedetails');
+    Route::get('getGmpProductLineSurgicaldetails', 'GmpinspectionController@getGmpProductLineSurgicaldetails');
+
+    Route::get('getGmpProductLineSurgicaldetailsDt', 'GmpinspectionController@getGmpProductLineSurgicaldetailsDt');
+
+
+    Route::get('getManufacturingSiteInformation', 'GmpinspectionController@getManufacturingSiteInformation');
+    Route::get('getGmpPreProductLinedetails', 'GmpinspectionController@getGmpPreProductLinedetails');
+
     
     Route::get('getGmpApplicationLoading', 'GmpinspectionController@getGmpApplicationLoading');
+    Route::get('getGMPContractManufacturingDetails', 'GmpinspectionController@getGMPContractManufacturingDetails');
     Route::get('getPremisesArchivedApplicationLoading', 'GmpinspectionController@getPremisesArchivedApplicationLoading');
     
     Route::get('getPersonnelInformations', 'GmpinspectionController@getPersonnelInformations');
+    Route::get('getBillingPersonnelInformations', 'GmpinspectionController@getBillingPersonnelInformations');
     Route::get('getgmpApplicationDetails', 'GmpinspectionController@getgmpApplicationDetails');
     Route::get('getPersonnelQualifications', 'GmpinspectionController@getPersonnelQualifications');
     Route::get('getAppSubmissionGuidelines', 'GmpinspectionController@getAppSubmissionGuidelines');
@@ -63,8 +82,13 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'gmpinspection'], function
     
     Route::get('getPremisesPersonnelDetails', 'GmpinspectionController@getPremisesPersonnelDetails');
     Route::get('getManufacturingSiteInformation', 'GmpinspectionController@getManufacturingSiteInformation');
-    Route::get('onLoadgmpManufacturingBlocksData', 'GmpinspectionController@onLoadgmpManufacturingBlocksData');
 
+    Route::get('getManufacturingSitePreInformation', 'GmpinspectionController@getManufacturingSitePreInformation');
+
+    
+    Route::get('getGmpManufacturingBlocksDetails', 'GmpinspectionController@getGmpManufacturingBlocksDetails');
+    Route::get('getPreGmpManufacturingDetails', 'GmpinspectionController@getPreGmpManufacturingDetails');
+    Route::get('getGmpInspectionHistoryDetails', 'GmpinspectionController@getGmpInspectionHistoryDetails');
 
     Route::get('getManufacturingSiteRegisteredProductsData', 'GmpinspectionController@getManufacturingSiteRegisteredProductsData');
     Route::get('getgmpproductDetailsInformationData', 'GmpinspectionController@getgmpproductDetailsInformationData');

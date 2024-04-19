@@ -16,7 +16,7 @@
       <label style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics; color: green;">
           Tracking No: <i> {{tracking_no}}</i> </label>
     </div>
-    <div class="col-lg-2">
+    <div class="col-lg-4">
       <label style="font-weight: bold;margin: 5px; font-style:italics;font-size: 15px;font-style: italics;color: green;">Application
           Status:<i> {{status_name}}</i> </label>
     </div>
@@ -107,10 +107,7 @@
           </div>
         </wizard-step>
         <wizard-step stepTitle="Query Response Submission"  navigationSymbol="Submission"  >
-          <div class="col-lg-12">
-            <label>Submission Comments(Optional)</label>
-            <dx-text-area placeholder="Enter Comments(optional)"></dx-text-area>
-          </div>
+
           <div class="col-lg-12">
             <dx-check-box text="Agree to the Terms & Conditions" 
               [value]="undefined" (onValueChanged)="newProductTermscheckbox($event)">
@@ -132,19 +129,19 @@
       
         <wizard-step stepTitle="Promotional Materials Application Details"  navigationSymbol="Step 1" 
           class="wizardStep-height">
-          <app-promotional-general-info [promotionalappGeneraldetailsfrm]="promotionalappGeneraldetailsfrm" [section_id] ="section_id"  
-          [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-promotional-general-info>
+          <app-promotional-general-info 
+          [promotionalappGeneraldetailsfrm]="promotionalappGeneraldetailsfrm" 
+          [section_id] ="section_id"  
+          [module_id] ="module_id" 
+          [status_id] ="status_id" 
+          [sub_module_id] ="sub_module_id" 
+          [application_code] ="application_code">
+            
+          </app-promotional-general-info>
 
           <div class="col-lg-12 div-footer">
-            <button class="btn btn-primary pull-right" style="margin:5px;" 
-              [disabled]="!promotionalappGeneraldetailsfrm.valid"
-              nextStep type="button"><i class="fa fa-angle-double-right"></i>
-                &nbsp;Next Information
-            </button>
-            
-
             <dx-button
-                  text="Save Application"
+                  text="Save and Next"
                   type="default"
                   icon="fa fa-save"
                   [elementAttr]="{ id: 'elementId', class: 'pull-right' }"
@@ -163,8 +160,16 @@
         </wizard-step>
         <wizard-step stepTitle="Product Particulars"  navigationSymbol="Step 2" 
           class="wizardStep-height navigable" navigationSymbol="Step 2" >
-          <app-promotional-products-particulars [promProductParticularsData]="promProductParticularsData" [promotionalProductparticularsfrm] ="promotionalProductparticularsfrm"   [application_id] ="application_id"  [application_code] ="application_code"  [section_id] ="section_id" 
-          [isRegisteredProductsWinshow] ="isRegisteredProductsWinshow" [registeredProductsData] ="registeredProductsData"></app-promotional-products-particulars>
+          <app-promotional-products-particulars 
+          [promProductParticularsData]="promProductParticularsData" 
+          [promotionalProductparticularsfrm] ="promotionalProductparticularsfrm"   
+          [application_id] ="application_id"  
+          [application_code] ="application_code"  
+          [section_id] ="section_id" 
+          [isRegisteredProductsWinshow] ="isRegisteredProductsWinshow" 
+          [registeredProductsData] ="registeredProductsData">
+            
+          </app-promotional-products-particulars>
 
           <div style="border-top: 1px solid #ccc; min-height: 100px !important;">
             <button type="button" class="btn btn-primary" 
@@ -177,8 +182,12 @@
         </wizard-step>
         <wizard-step stepTitle="Supporting Documents" navigationSymbol="Step 3"  class="wizardStep-height">
           <div class="row wizard-content">
-            <app-application-documents [section_id] ="section_id"  
-              [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code">
+            <app-application-documents 
+            [section_id] ="section_id"  
+              [module_id] ="module_id" 
+              [status_id] ="status_id" 
+              [sub_module_id] ="sub_module_id" 
+              [application_code] ="application_code">
             </app-application-documents>
           </div>
           <div class="wizard-divbottom">
@@ -198,23 +207,12 @@
           <form [formGroup]="onApplicationSubmissionFrm" 
             class="col-lg-12 row div-nopadding" style="background: #fff;" enctype="multipart/form-data" role="form" (ngSubmit)="onProductApplicationSubmit()">
             <div class="col-lg-12">
-              <b><label>Declaration</label></b>
+              <b><label>Declaration and Disclaimer</label></b>
               <ul>
                 <li *ngFor="let guide of terms_conditions;">
                   <p>{{guide.no}} {{guide.term_conditiondetails}}</p>
                 </li>
               </ul>
-            </div>
-            <label>Payment Currency(The payment will be based in USD/FRW)</label>
-            <dx-select-box [dataSource]="payingCurrencyData"  
-              valueExpr="id" displayExpr="name"
-              placeholder="Select Paying Currency" [searchEnabled]="true" formControlName="paying_currency_id">
-            </dx-select-box>
-            <div class="col-lg-12">
-              <b> <label>Submission Comments(Optional)</label></b>
-              <dx-text-area formControlName="submission_comments" 
-                placeholder="Enter Comments(optional)">
-              </dx-text-area>
             </div>
             <div class="col-lg-12">
               <dx-check-box text="Agree to the Declaration" [value]="undefined" 
@@ -399,15 +397,15 @@
         </wizard-step>
         <wizard-step stepTitle="Promotional Materials Application Details"   navigationSymbol="Step 2" 
           class="wizardStep-height">
-          <app-promotional-general-info [promotionalappGeneraldetailsfrm]="promotionalappGeneraldetailsfrm" [section_id] ="section_id"  
-          [module_id] ="module_id" [status_id] ="status_id" [sub_module_id] ="sub_module_id" [application_code] ="application_code"></app-promotional-general-info>
-
+          <app-promotional-general-info 
+            [promotionalappGeneraldetailsfrm]="promotionalappGeneraldetailsfrm" 
+            [section_id] ="section_id"  
+            [module_id] ="module_id" 
+            [status_id] ="status_id" 
+            [sub_module_id] ="sub_module_id" 
+            [application_code] ="application_code">
+          </app-promotional-general-info>
           <div class="col-lg-12 div-footer">
-              <button class="btn btn-primary pull-right" style="margin:5px;" 
-                [disabled]="!promotionalappGeneraldetailsfrm.valid"
-                nextStep type="button"><i class="fa fa-angle-double-right"></i>
-                &nbsp;Next Information
-              </button>
               <button  (onClick)="onSavePromotionalApplication()" awNextStep 
                 class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save product
                 Application

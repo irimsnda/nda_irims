@@ -60,6 +60,17 @@
   </div>
  
 </div>
+<div class="row">
+        
+  <dx-button *ngFor="let sub_module of productappTypeData;" 
+      text="{{sub_module.name}} Application"
+      type="default"
+      width="350"
+      icon="fa {{sub_module.icon}}"
+      [elementAttr]="{ id: 'elementId', class: 'col-lg-2' }"
+      (onClick)="onClickSubModuleAppSelection(sub_module.id,sub_module.name)">
+  </dx-button>
+</div>
 
 
 <div class="row div-nopadding">
@@ -122,19 +133,19 @@
           </dx-menu>
         </div>
       </dxi-column>
-      <dxi-column dataField="reference_no"></dxi-column>
+      <dxi-column dataField="tracking_no"></dxi-column>
       <dxi-column [width] = 90 [groupIndex]="0" dataField="section"></dxi-column>
-      <dxi-column  dataField="application_type"></dxi-column>
+      <!-- <dxi-column  dataField="application_type"></dxi-column> -->
       <dxi-column  [width] = 100  dataField="proforma_invoice_no" caption="Invoice No"></dxi-column>
       <dxi-column dataField="proforma_invoice_date" caption="Invoice Date"></dxi-column>
-      <dxi-column dataField="booking_date" caption="Inspection Booking Date"></dxi-column>
-      <dxi-column dataField="port_of_entry" caption="Port of Entry/Exit"></dxi-column>
-      <dxi-column dataField="shipment_date" caption="Consignment Shipment Date"></dxi-column>
+      <dxi-column dataField="date_added" caption="Inspection Booking Date"></dxi-column>
+      <dxi-column dataField="port_data" caption="Port of Entry/Exit"></dxi-column>
+      <dxi-column dataField="shipment_date" caption="Shipment Date"></dxi-column>
       <dxi-column dataField="proposed_inspection_date" caption="Proposed Inspection Date"></dxi-column>
-      <dxi-column dataField="inspection_date" caption="Consignment Inspection Date"></dxi-column>
-      <dxi-column dataField="inspection_recommendation" caption="Inspection Recommendation"></dxi-column>
-      <dxi-column  [groupIndex]="1"  dataField="status_name"></dxi-column>
-      <dxi-column   dataField="status_name" caption="Application Status"></dxi-column>
+      <!-- <dxi-column dataField="inspection_date" caption="Inspection Date"></dxi-column>
+      <dxi-column dataField="inspection_recommendation" caption="Inspection Recommendation"></dxi-column> -->
+      <dxi-column [groupIndex]="1"  dataField="status_name"></dxi-column>
+  <dxi-column   dataField="status_name" caption="Application Status"></dxi-column>
       <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
     </dx-data-grid>
 
@@ -263,6 +274,112 @@
   <dx-scroll-view>
   <app-application-processguidelines  [sub_module_id]="sub_module_id" [module_id]="module_id" [guidelines_title] ="guidelines_title">
   </app-application-processguidelines>
+</dx-scroll-view>
+  </div>
+</dx-popup>
+
+<dx-popup class="popup" [width]="funcpopWidth(45)" [height] = 550 [showTitle]="true" title="Inspection Booking"
+[dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isPermitInitialisation">
+<div *dxTemplate="let data of 'content'">
+  <dx-scroll-view>
+    <form enctype="multipart/form-data" style="margin:0.5px" class="row div-whiteback " role="form" [formGroup]="applicationSelectionfrm"
+    (ngSubmit)="onApplicationSelection()">
+    
+    <div class="col-lg-12">
+            <label class="control-label">Tracking No.</label>
+            <dx-text-box formControlName="tracking_no" placeholder="" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+
+          <div class="col-lg-12">
+            
+            <dx-text-box formControlName="port_id" placeholder="" hidden="true" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+          <div class="col-lg-12">
+            
+            <dx-text-box formControlName="proforma_invoice_no" placeholder="" hidden="true" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+          <div class="col-lg-12">
+        
+            <dx-text-box formControlName="proforma_invoice_date" placeholder="" hidden="true" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+          <div class="col-lg-12">
+           
+            <dx-text-box formControlName="entry_country_id" placeholder="" hidden="true" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+          <div class="col-lg-12">
+            
+            <dx-text-box formControlName="mode_oftransport_id" placeholder="" hidden="true" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+          <div class="col-lg-12">
+          
+            <dx-text-box formControlName="sender_receiver_id" placeholder="" hidden="true" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+          <div class="col-lg-12">
+           
+            <dx-text-box formControlName="shipment_date" placeholder="" hidden="true" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+          <div class="col-lg-12">
+           
+            <dx-text-box formControlName="id" placeholder="" hidden="true" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+          <div class="col-lg-12">
+           
+            <dx-text-box formControlName="custom_declaration_no" placeholder="" hidden="true" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+          <div class="col-lg-12">
+           
+            <dx-text-box formControlName="importation_reason_id" placeholder="" hidden="true" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+          <div class="col-lg-12">
+           
+            <dx-text-box formControlName="product_category_id" placeholder="" hidden="true" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+          <div class="col-lg-12">
+           
+            <dx-text-box formControlName="application_code" placeholder="" hidden="true" [showClearButton]="true">
+            </dx-text-box>
+          </div>
+    <div class="col-lg-12 ">
+      
+      <!-- <dx-button  [elementAttr]="{ class: 'btn btn-primary  pull-left' }"  icon="fa fa-arrow-right"  text="Initiate VC Application" 
+      [disabled]="!applicationSelectionfrm.valid" 
+        type="success" (onClick)="onApplicationSelection()">
+      </dx-button> -->
+    </div>
+<!--  <br>
+ <br>
+    <div class="col-lg-12 apptype-selection bg-light text-dark">
+   
+      <h3 class='apptype-selection'>Description</h3>
+    
+    <h6>
+        <p class="justified-text"> An Application Verification Certificate is issued to confirm that a software application complies with established quality, security, and industry-specific standards. </p>
+    </h6>
+    
+    </div>
+    
+    <div class="col-lg-12 apptype-selection bg-light text-dark">
+       
+    <h3 class='apptype-selection'>Condition</h3>
+    
+    <h6 >
+    <p class="justified-text"> The condition for an Application Verification Certificate typically involves confirming that the software application meets established quality and security standards, ensuring its reliability and compliance with industry-specific requirements. </p>
+    </h6>
+    
+    </div> -->
+  </form>
 </dx-scroll-view>
   </div>
 </dx-popup>

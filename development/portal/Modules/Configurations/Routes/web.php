@@ -21,7 +21,7 @@ Route::prefix('configurations')->group(function() {
     
     Route::get('getProhibitedProducts', 'ConfigurationsController@getProhibitedProducts');
     Route::get('getonApplicationProcessGuidelines', 'ConfigurationsController@getonApplicationProcessGuidelines');
-    
+    Route::get('getGMDNDetails', 'ConfigurationsController@getGMDNDetails');
     
     //controlled 
     Route::get('getApplicationProcess', 'ConfigurationsController@getApplicationProcess');

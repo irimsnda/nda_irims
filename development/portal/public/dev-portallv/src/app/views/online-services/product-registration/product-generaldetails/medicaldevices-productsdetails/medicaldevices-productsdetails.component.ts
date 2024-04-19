@@ -79,15 +79,17 @@ export class MedicaldevicesProductsdetailsComponent  extends SharedProductregist
   @Input() fastTrackOptionsData: number;
   @Input() payingCurrencyData: number;
   @Output() productTypeEvent = new EventEmitter();
-  gmdnCodeData:any;
+  gmdnCodeData:any={};
   reasonForClassificationData:any;
   isHasModelChange:boolean = false;
   isHasMedicalFamily:boolean = false;
+  gmdnCodeWinshow:boolean = false;
   isonHasReagents_accessories:boolean = false;
   device_type_id:number;
+  code:number;
  
   ngOnInit() {
-    this.onLoadGmdnCodeData(this.section_id);
+   // this.onLoadGmdnCodeData();
    
     let user_details = this.authService.getUserDetails();
     this.country_id = user_details.country_id;
@@ -102,6 +104,7 @@ export class MedicaldevicesProductsdetailsComponent  extends SharedProductregist
     }
     this.onLoadSections();
     this.onLoadManufacrunginCountries();
+
   }
   onLoadManufacrunginCountries() {
     let data = {
@@ -154,6 +157,50 @@ export class MedicaldevicesProductsdetailsComponent  extends SharedProductregist
     }
 
   }
+  onLoadGmdnCodeData() {
+        this.gmdnCodeWinshow = true;
+
+        let me = this;
+        this.gmdnCodeData.store = new CustomStore({
+          load: function (loadOptions: any) {
+              var params = '?';
+              params += 'skip=' + loadOptions.skip;
+              params += '&take=' + loadOptions.take;//searchValue
+              var headers = new HttpHeaders({
+                "Accept": "application/json",
+                "Authorization": "Bearer " + me.authService.getAccessToken(),
+              });
+            
+              this.configData = {
+                headers: headers,
+                params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter }
+              };
+              return me.httpClient.get(AppSettings.base_url + 'configurations/getGMDNDetails',this.configData)
+                  .toPromise()
+                  .then((data: any) => {
+                      return {
+                          data: data.data,
+                          totalCount: data.totalCount
+                      }
+                  })
+                  .catch(error => { throw 'Data Loading Error' });
+
+          }
+      });
+    
+
+  }
+
+ funcSelectgmdn(data) {
+      let resp_data = data.data;
+      this.productGeneraldetailsfrm.get('gmdn_id').setValue(resp_data.id);
+      this.productGeneraldetailsfrm.get('gmdn_term').setValue(resp_data.name);
+      this.productGeneraldetailsfrm.get('gmdn_code').setValue(resp_data.code);
+      this.productGeneraldetailsfrm.get('gmdn_category').setValue(resp_data.description);
+      this.gmdnCodeWinshow = false;
+
+  }
+
   funcSearchRegistrantDetails(is_local_agent) {
    // this.spinner.show();
 
@@ -226,17 +273,17 @@ onValidateBrandNameDetails(e){
   }
   
  }
- onLoadGmdnCodeData(section_id) {
-  var data = {
-    table_name: 'par_gmdn_codes',
-    section_id: section_id
-  };
-  this.config.onLoadConfigurationData(data)
-    .subscribe(
-      data => {
-        this.gmdnCodeData = data;
-      });
-}
+//  onLoadGmdnCodeData(section_id) {
+//   var data = {
+//     table_name: 'par_gmdn_codes',
+  
+//   };
+//   this.config.onLoadConfigurationData(data)
+//     .subscribe(
+//       data => {
+//         this.gmdnCodeData = data;
+//       });
+// }
 onLoadreasonForClassificationData(device_type_id) {
   var data = {
     table_name: 'par_classification_rules',
@@ -250,9 +297,8 @@ onLoadreasonForClassificationData(device_type_id) {
 }
 
 ongmdnCodeDataSelect($event) {
-
-  this.productGeneraldetailsfrm.get('gmdn_term').setValue($event.selectedItem.description);
-  
+  this.productGeneraldetailsfrm.get('gmdn_term').setValue($event.selectedItem.name);
+  this.productGeneraldetailsfrm.get('gmdn_category').setValue($event.selectedItem.description);
 }
 onHasModelChange($event) {
 

@@ -67,10 +67,16 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
 
   otherProdStatesRegistrationsFrm:FormGroup;
   otherProdStatesRegistrations:boolean=false;
-recognisedassessmentsCountriesData:any;
+  recognisedassessmentsCountriesData:any;
 
+  approvingAuthorityData:any;
 
-prodStatesRegistrationsData:any;
+  product_lineData:any;
+  gmpproductTypeData:any;
+  manufacturingActivitiesData:any;
+  currentRegStatusData:any;
+
+  prodStatesRegistrationsData:any;
 
    addproductIngredientsModal:boolean = false;
    addIngredientsdetailsfrm:FormGroup;
@@ -114,6 +120,7 @@ prodStatesRegistrationsData:any;
   otherStatesGmpInspectionsData:any;
   manufacturersData:any = {};
   manufacturer_type_id: number;
+  ingredient_id:number;
   manufacturer_id:number;
   addproductInclusionModal:boolean= false;
   isSampleDetailsWinshow:boolean=false;
@@ -133,9 +140,12 @@ prodStatesRegistrationsData:any;
       gmpapplication_reference: new FormControl('', Validators.compose([Validators.required])),
       inspection_date: new FormControl('', Validators.compose([Validators.required])),
       approval_date: new FormControl('', Validators.compose([Validators.required])),
-      approving_authority: new FormControl('', Validators.compose([Validators.required])),
+      approving_authority_id: new FormControl('', Validators.compose([Validators.required])),
+      gmp_productline_id: new FormControl('', Validators.compose([])),
+      gmpproduct_type_id: new FormControl('', Validators.compose([Validators.required])),
+      manufacturing_activity_id: new FormControl('', Validators.compose([Validators.required])),      
       active_common_name_id: new FormControl('', Validators.compose([])),
-      approved_productlines: new FormControl('', Validators.compose([Validators.required])),
+      approved_productlines: new FormControl('', Validators.compose([])),
       id: new FormControl('', Validators.compose([])),
 
     });
@@ -148,7 +158,7 @@ prodStatesRegistrationsData:any;
       date_of_registration: new FormControl('', Validators.compose([Validators.required])),
       current_registrationstatus: new FormControl('', Validators.compose([Validators.required])),
       active_common_name_id: new FormControl('', Validators.compose([])),
-      approving_authority: new FormControl('', Validators.compose([Validators.required])),
+      approving_authority_id: new FormControl('', Validators.compose([Validators.required])),
       id: new FormControl('', Validators.compose([])),
 
     });
@@ -243,16 +253,21 @@ prodStatesRegistrationsData:any;
     this.OnLoadProductsGMPInspectionDetails(product_id)
     this.OnLoadotherStatesGmpInspectionsData(this.product_id);
     this.OnLoadprodStatesRegistrationsData(this.product_id);
+    this.onLoadmanufacturingActivities();
+    this.onLoadgmpproductTypeData();
+    this.onLoadgmpproductTypeData();
+    this.onLoadcurrentRegStatusData();
+
 
   }onIngredientsSelectionChange($event) {
-    if($event.selectedItem){
-      let ingredient_name =$event.selectedItem;
-  
+    //if($event.selectedItem){
+      this.ingredient_id =$event.selectedItem.id;
+      this.onLoadreasonForInclusionData(this.ingredient_id)
     // this.productIngredientsdetailsfrm.get('atc_code_id').setValue(ingredient_name.atc_code_id);
     //  this.productIngredientsdetailsfrm.get('atc_code').setValue(ingredient_name.atc_code);
      // this.productIngredientsdetailsfrm.get('atc_code_description').setValue(ingredient_name.atc_code_description);
 
-    }
+    //}
     
   }oncontainerTypeDataSelection($event){
 
@@ -268,7 +283,66 @@ prodStatesRegistrationsData:any;
 
     }
 } 
-  
+    onLoadapprovingAuthorityData(country_id) {
+    var data = {
+      table_name: 'par_approving_authority',
+      country_id:country_id
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.approvingAuthorityData = data;
+        });
+  }
+
+  onLoadproduct_lineData() {
+    var data = {
+      table_name: 'gmp_product_lines',
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.product_lineData = data;
+        },
+        error => {
+          return false
+        });
+  }
+
+onLoadgmpproductTypeData(){
+
+  var data = {
+    table_name: 'par_gmpproduct_types',
+  };
+
+  this.config.onLoadConfigurationData(data)
+    .subscribe(
+      data => {
+        this.gmpproductTypeData = data;
+      });
+}   
+onLoadmanufacturingActivities() {
+  var data = {
+    table_name: 'par_manufacturing_activities',
+  };
+
+  this.config.onLoadConfigurationData(data)
+    .subscribe(
+      data => {
+        this.manufacturingActivitiesData = data;
+      });
+} 
+onLoadcurrentRegStatusData() {
+  var data = {
+    table_name: 'par_current_reg_status',
+  };
+
+  this.config.onLoadConfigurationData(data)
+    .subscribe(
+      data => {
+        this.currentRegStatusData = data;
+      });
+} 
   
   onLoadpackagingUnitsData(section_id) {
     var data = {
@@ -318,7 +392,7 @@ prodStatesRegistrationsData:any;
         this.product_resp = response.json();
         //the details 
         if (this.product_resp.success) {
-          this.onLoadreasonForInclusionData(this.section_id);
+          this.onLoadreasonForInclusionData(this.ingredient_id);
          
           this.addproductInclusionModal = false;
           this.productIngredientsdetailsfrm.get('inclusion_reason_id').setValue(this.product_resp.record_id)
@@ -436,9 +510,10 @@ prodStatesRegistrationsData:any;
           this.containerMaterialData = data;
         });
   }
-  onLoadreasonForInclusionData(section_id) {
+  onLoadreasonForInclusionData(ingredient_id) {
     var data = {
-      table_name: 'par_inclusions_reasons'
+      table_name: 'par_inclusions_reasons',
+      ingredient_id:ingredient_id
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
@@ -490,7 +565,7 @@ prodStatesRegistrationsData:any;
     this.onLoadingredientsData(section_id);
     this.onLoadspecificationData(section_id);
 
-    this.onLoadreasonForInclusionData(section_id);
+   // this.onLoadreasonForInclusionData(section_id);
     this.onLoadcontainerMaterialData(section_id)
     this.onLoadcontainerData(section_id);
     this.onLoadmanufacturingRoleData(section_id);
@@ -509,8 +584,8 @@ prodStatesRegistrationsData:any;
   onCoutryCboSelect($event) {
 
     this.country_id = $event.selectedItem.id;
-
     this.onLoadRegions(this.country_id);
+    this.onLoadapprovingAuthorityData(this.country_id);
 
   }
   onLoadingredientTypeData(section_id) {
@@ -644,10 +719,7 @@ prodStatesRegistrationsData:any;
 
 }
   
-  funcEditOtherStatesRegistrations(data) {
-    this.otherProdStatesRegistrationsFrm.patchValue(data.data);
-    this.otherProdStatesRegistrations = true;
-  }
+
   onOtherStatesGmpInspectionsPreparing(e) {
     //this.isReadOnly = this.isReadOnly;
     this.functDataGridToolbar(e, this.funcAddOtherStatesGmpInspections, 'Add Details(GMP Inspections');
@@ -802,17 +874,53 @@ OnLoadProductsPackagingMaterials(product_id) {
   this.productIngredientsdetailsfrm.patchValue(data.data);
   this.productIngredientsModal = true;
 }
+
+ funcEditOtherStatesGmpInspections(data) {
+  this.otherStatesGmpInspectionsFrm.patchValue(data.data);
+  this.otherStatesGmpInspections = true;
+}
+
+ funcEditOtherStatesRegistrations(data) {
+  this.otherProdStatesRegistrationsFrm.patchValue(data.data);
+  this.otherProdStatesRegistrations = true;
+}
+
+
 funcEditPackagingDetails(data) {
   this.productPackagingdetailsfrm.patchValue(data.data);
   this.modalService.getModal('productPackagingModal').open();
-}funcDeleteIngredientsDetails(data) {
+}
+
+
+
+funcDelOtherStatesGmpInspections(data) {
+  //func_delete records 
+  let record_id = data.data.id;
+  let appproduct_id = data.data.product_id;
+  let table_name = 'wb_otherstates_productgmpinspections';
+  this.funcDeleteDetailhelper(record_id, appproduct_id, table_name, 'otherstates_gmpinspection', 'Other State GMP Inspections');
+
+}
+
+funcDeleteIngredientsDetails(data) {
   //func_delete records 
   let record_id = data.data.id;
   let appproduct_id = data.data.product_id;
   let table_name = 'wb_product_ingredients';
   this.funcDeleteDetailhelper(record_id, appproduct_id, table_name, 'product_ingredients', 'Product Ingredients');
 
-}funcDeleteSampleDetails(data) {
+}
+funcDelOtherStatesRegistrations(data) {
+  //func_delete records 
+  let record_id = data.data.id;
+  let appproduct_id = data.data.product_id;
+  let table_name = 'wb_otherstates_productregistrations';
+  this.funcDeleteDetailhelper(record_id, appproduct_id, table_name, 'current_registrationstatus', 'Current Registration Status');
+
+}
+
+
+funcDeleteSampleDetails(data) {
   //func_delete records 
   let record_id = data.data.id;
   let appproduct_id = data.data.product_id;
@@ -894,8 +1002,9 @@ funcDeleteDetailhelper(record_id, appproduct_id, table_name, reload_type, title)
                     this.onLoadActivePharmaceuticalData(appproduct_id);
                   }else if (reload_type == 'otherstates_gmpinspection') {
                       this.OnLoadotherStatesGmpInspectionsData(this.product_id);
+                    }else if (reload_type == 'current_registrationstatus') {
+                      this.OnLoadprodStatesRegistrationsData(this.product_id);
                     }
-                  
                   this.spinner.hide();
                   this.toastr.success(resp.message, 'Response');
                 }
@@ -1424,8 +1533,9 @@ onAddManufacturerDetails() {
         if (this.product_resp.success) {
           this.isnewmanufacturerModalShow = false;
           this.isproductManufacturerModalShow = false;
-  
+          let manufacturer_data = this.product_resp.data; // Access the data object
           let manufacturer_id =this.product_resp.record_id;
+          let physical_address = manufacturer_data.physical_address;
           //load Manufactureing Sites 
           if (this.manufacturer_type_id == 1) {
             this.isproductmanSiteDetailsModalShow = true;
@@ -1438,8 +1548,10 @@ onAddManufacturerDetails() {
           else {
             
             this.isapimanSiteDetailsModalShow = true;
-            this.productapimanufacturingSiteFrm.get('manufacturer_id').setValue(manufacturer_id)
-            this.productapimanufacturingSiteFrm.get('name').setValue(manufacturer_name)
+            this.productmanufacturingSiteFrm.get('manufacturer_id').setValue(manufacturer_id)
+            this.productmanufacturingSiteFrm.get('manufacturer_name').setValue(manufacturer_name)
+            this.productmanufacturingSiteFrm.get('physical_address').setValue(physical_address)
+
           
           }
 

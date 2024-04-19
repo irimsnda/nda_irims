@@ -744,7 +744,8 @@ onLoadgmpproductTypeData(inspection_category_id){
       data => {
         this.gmpproductTypeData = data;
       });
-} onLoadmanufacturingInspectionCategory() {
+} 
+onLoadmanufacturingInspectionCategory() {
   var data = {
     table_name: 'par_manufacturinginspection_category',
     is_surgical:0

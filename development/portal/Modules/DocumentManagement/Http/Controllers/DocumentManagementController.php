@@ -1455,7 +1455,7 @@ public function getApplicationDocploads(Request $req){
 						else{
 									
 										
-										$file_size =		$file->getClientSize();
+										$file_size =		$file->getSize();
 										$file_size = number_format($file_size / 1048576,2);
 
 										if($file_size > 350){
@@ -1745,7 +1745,7 @@ public function getApplicationDocploads(Request $req){
 						if ($req->hasFile('file')) {
 								$origFileName = $file->getClientOriginalName();
 								$extension = $file->getClientOriginalExtension();
-								$fileSize = $file->getClientSize();
+								$fileSize = $file->getSize();
 								$file = $req->file('file');
 
 								$origFileName = $file->getClientOriginalName();

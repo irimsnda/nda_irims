@@ -37,13 +37,19 @@ export class ClinicalInvestigatorsComponent implements OnInit {
   checkifsponsor:boolean = false;
   checkifMonitor:boolean = false;
   checkifAllInvestigatorsponsor:boolean = false;
+  isInvestigatorSearchWinVisible:boolean = false;
+  isInvestigatorAddWinVisible:boolean = false;
   sponsorInvestigatorData:any;
   isSponsorInvestigatorSearchWinVisible:boolean = false;
   issponsorInvestigatorAddWinVisible:boolean = false;
   sponsorInvestigatorFrm:FormGroup;
+  investigatorFrm:FormGroup;
   clinicaltInvestigatorFrm:FormGroup;
   app_resp:any;
   InvestigatorDetailsWinVisible:boolean;
+  country_id:number;
+  district_id:number;
+  region_id:number;
   
   clinicaltrailinvestigatorsData: any;
   clinicaltrailMonitorsData:any;
@@ -62,12 +68,26 @@ export class ClinicalInvestigatorsComponent implements OnInit {
       region_id: new FormControl('', Validators.compose([])),
       district_id: new FormControl('', Validators.compose([])),
       email: new FormControl('', Validators.compose([Validators.required])),
-      postal_address: new FormControl('', Validators.compose([Validators.required])),
-      telephone: new FormControl('', Validators.compose([])),
+      postal_address: new FormControl('', Validators.compose([])),
+      telephone: new FormControl('', Validators.compose([Validators.required])),
       mobile_no: new FormControl('', Validators.compose([])),
       physical_address: new FormControl('', Validators.compose([Validators.required])),
-      contact_person: new FormControl('', Validators.compose([Validators.required]))
+      contact_person: new FormControl('', Validators.compose([]))
     });
+
+    this.investigatorFrm = new FormGroup({
+      name: new FormControl('', Validators.compose([Validators.required])),
+      country_id: new FormControl('', Validators.compose([Validators.required])),
+      region_id: new FormControl('', Validators.compose([])),
+      district_id: new FormControl('', Validators.compose([])),
+      email: new FormControl('', Validators.compose([Validators.required])),
+      postal_address: new FormControl('', Validators.compose([])),
+      telephone: new FormControl('', Validators.compose([Validators.required])),
+      mobile_no: new FormControl('', Validators.compose([])),
+      physical_address: new FormControl('', Validators.compose([Validators.required])),
+      contact_person: new FormControl('', Validators.compose([]))
+    });
+
   }
   ngOnInit() {
     this.onLoadclinicaltrailinvestigatorsData();
@@ -104,6 +124,50 @@ export class ClinicalInvestigatorsComponent implements OnInit {
     }
      
   }
+funcSelectInvestigator(data) {
+    
+    if(this.checkifMonitor == true){
+      this.appService.onsaveClinicaltrialOtherDetails(this.application_id, {monitor_id:data.data.id}, 'onsaveclinicaltMonitorDetails')
+      .subscribe(
+        response => {
+          this.app_resp = response.json();
+          //the details 
+          if (this.app_resp.success) {
+            this.isInvestigatorSearchWinVisible = false;
+            //reload
+            this.onLoadclinicaltrailMonitorsData();
+            this.toastr.success(this.app_resp.message, 'Response');
+          } else {
+            this.toastr.error(this.app_resp.message, 'Alert');
+          }
+          this.spinner.hide();
+        },
+        error => {
+          this.toastr.error('Error Occurred', 'Alert');
+        });
+
+    }
+    else{
+      this.clinicaltInvestigatorFrm.get('investigator_id').setValue(data.data.id);
+      this.clinicaltInvestigatorFrm.get('investigator_name').setValue(data.data.name);
+    
+       this.isInvestigatorSearchWinVisible = false;
+    }
+     
+  }
+
+
+
+    funcEditInvestigatorDetails(data) {
+    this.clinicaltInvestigatorFrm.patchValue(data.data);
+    this.InvestigatorDetailsWinVisible = true;
+
+  }
+
+  funcEditMonitorrDetails(data) {
+    this.isSponsorInvestigatorSearchWinVisible = true;
+
+  }
   onLoadClinicalSiteDetails() {
     this.appService.getClinicalTrialOtherdetails({ table_name: 'study_sites', application_id: this.application_id }, 'getClinicalTrialSites')
       .subscribe(
@@ -134,7 +198,9 @@ export class ClinicalInvestigatorsComponent implements OnInit {
         error => {
           return false
         });
-  } onLoadclinicaltrailMonitorsData() {
+  } 
+  
+  onLoadclinicaltrailMonitorsData() {
     //onLoadClinicalTrialOtherdetails
     this.appService.getClinicalTrialOtherdetails({ table_name: 'wb_clinical_trial_monitors', application_id: this.application_id }, 'getClinicaltrailMonitorssData')
       .subscribe(
@@ -165,6 +231,21 @@ export class ClinicalInvestigatorsComponent implements OnInit {
     this.sponsorInvestigatorFrm.reset();
 
   }
+
+ onInvestigatorPreparing(e) {
+    this.functDataGridToolbar(e, this.funcAddInvestigatoretails,'Add');
+  }
+
+  funcAddInvestigatoretails() {
+
+    this.isInvestigatorSearchWinVisible = false;
+    this.isInvestigatorAddWinVisible = true;
+    this.investigatorFrm.reset();
+
+  }
+
+
+
   functDataGridToolbar(e, funcBtn, btn_title) {
     e.toolbarOptions.items.unshift({
       location: 'before',
@@ -209,36 +290,16 @@ export class ClinicalInvestigatorsComponent implements OnInit {
           return false
         });
   }
-  onClinicalTrialInvestigator() {
-    this.sponsor_investigatortitle = 'Clinical trial Principal Invetigator';
-    this.checkifsponsor = false;
-    this.checkifAllInvestigatorsponsor = false;
-    this.appService.getPermitsOtherDetails({ table_name: 'clinical_trial_personnel' }, 'getSenderreceiversDetails')
-      .subscribe(
-        data => {
-          if (data.success) {
-            this.sponsorInvestigatorData = data.data;
-            this.isSponsorInvestigatorSearchWinVisible = true;
-          }
-          else {
-            this.toastr.success(data.message, 'Alert');
-          }
-        },
-        error => {
-          return false
-        });
-  }
  
  
   onCoutryCboSelect($event) {
 
-
-    this.onLoadRegions($event.selectedItem.id);
-
+    this.country_id = $event.selectedItem.id;
+    //this.onLoadDistricts(this.country_id);
+    this.onLoadRegions(this.country_id);
   }
   
   onLoadRegions(country_id) {
-
     var data = {
       table_name: 'par_regions',
       country_id: country_id
@@ -247,13 +308,13 @@ export class ClinicalInvestigatorsComponent implements OnInit {
       //.pipe(first())
       .subscribe(
         data => {
-          console.log(data);
-          this.regions = data;
+          this.regions = data
         },
         error => {
-          return false
+          return false;
         });
   }
+  
   
   onLoadCountries() {
 
@@ -272,7 +333,12 @@ export class ClinicalInvestigatorsComponent implements OnInit {
         });
   } onRegionsCboSelect($event) {
 
-    this.onLoadDistricts($event.selectedItem.id);
+    this.region_id = $event.selectedItem.id;
+    this.onLoadDistricts(this.region_id);
+  }
+    oDistrictsCboSelect($event) {
+    this.district_id = $event.selectedItem.id;
+    //this.onLoadRegions(this.district_id);
 
   }
   onLoadDistricts(region_id) {
@@ -440,6 +506,31 @@ onInvestigatorsPreparing(e) {
           //the details 
           if (this.app_resp.success) {
             this.issponsorInvestigatorAddWinVisible = false;
+            this.updateConsigneeReceiver(this.app_resp.record_id, name);
+            
+          } else {
+          }
+          this.spinner.hide();
+        },
+        error => {
+          this.toastr.error('Error Occurred', 'Alert');
+        });
+  }
+
+
+    onsaveInvestigator() {
+    this.spinner.show();
+    let table_name;
+    table_name = 'clinicaltrial_investigator_personnel';
+
+    let name = this.investigatorFrm.get('name').value;
+    this.appService.onAddPermitReceiverSender(table_name, this.investigatorFrm.value)
+      .subscribe(
+        response => {
+          this.app_resp = response.json();
+          //the details 
+          if (this.app_resp.success) {
+            this.isInvestigatorAddWinVisible = false;
 
             this.updateConsigneeReceiver(this.app_resp.record_id, name);
 
@@ -455,17 +546,16 @@ onInvestigatorsPreparing(e) {
         });
   }
   
-  onClinicalTrialAllinvestigators() {
-    this.sponsor_investigatortitle = 'Clinical trial Investigators';
-    this.checkifMonitor = false;
-    this.checkifAllInvestigatorsponsor = true;
+  onClinicalTrialInvestigator() {
+    this.sponsor_investigatortitle = 'Clinical Trials Principal Investigator';
     this.checkifsponsor = false;
-    this.appService.getPermitsOtherDetails({ table_name: 'clinical_trial_personnel' }, 'getSenderreceiversDetails')
+    this.checkifAllInvestigatorsponsor = false;
+    this.appService.getPermitsOtherDetails({ table_name: 'clinicaltrial_investigator_personnel' }, 'getSenderreceiversInvestigatorDetails')
       .subscribe(
         data => {
           if (data.success) {
             this.sponsorInvestigatorData = data.data;
-            this.isSponsorInvestigatorSearchWinVisible = true;
+            this.isInvestigatorSearchWinVisible = true;
           }
           else {
             this.toastr.success(data.message, 'Alert');
@@ -475,5 +565,6 @@ onInvestigatorsPreparing(e) {
           return false
         });
   }
+
 
 }

@@ -31,6 +31,7 @@ export class ApplicationDocumentsComponent implements OnInit {
   
   @Input() document_type_id: number;
   @Input() permit_product_id: number;
+  @Input() has_registered_premises:number;
   @Input() customer_account_id: number;
   
   @Input() preview_allonlinedocuploads: any;
@@ -98,8 +99,8 @@ export class ApplicationDocumentsComponent implements OnInit {
     });
 
     this.onLoadApplicationDocUploads();
-	  this.onLoadAppDocRequirements();
-	  this.injectScript(this.assets_url+'/assets/js/resumable.js')
+    this.onLoadAppDocRequirements();
+    this.injectScript(this.assets_url+'/assets/js/resumable.js')
         .then(() => { console.log('Script loaded!'); this.setupResumable(); })
         .catch(error => { console.log(error); });
 
@@ -128,6 +129,7 @@ export class ApplicationDocumentsComponent implements OnInit {
           document_requirement_id:document_requirement_id,
           business_type_id:this.business_type_id,
           permit_product_id:this.permit_product_id,
+          has_registered_premises:this.has_registered_premises,
           node_ref:node_ref,
           customer_account_id:this.customer_account_id,
           description:description
@@ -184,7 +186,7 @@ export class ApplicationDocumentsComponent implements OnInit {
             customer_account_id:'',
             node_ref:''
         } ,
-        fileType: ['zip','pdf','png'],
+       fileType: ['zip','pdf','png', 'jpg', 'jpeg', 'doc','docx', 'rar', 'mp4','mkv','xlsx', 'xlsm','xls','XLSB'],
         chunkSize: 10*10024, // default is 1*1024*1024, this should be less than your maximum limit in php.ini
         headers: {
           "Authorization": 'Bearer ' + this.authService.getAccessToken(),
@@ -276,7 +278,7 @@ export class ApplicationDocumentsComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     //console.log(changes.section_id.currentValue)
     this.onLoadAppDocRequirements();
-	  this.onLoadApplicationDocUploads();
+    this.onLoadApplicationDocUploads();
     
    }
   onLoadAppDocRequirements() {
@@ -306,16 +308,9 @@ export class ApplicationDocumentsComponent implements OnInit {
 
   } functDataGridToolbar(e) {
     e.toolbarOptions.items.unshift({
-      location: 'before',
+      location: 'after',
       widget: 'dxButton',
       options: {
-        text: 'Multiple Documents Can be Uploaded under one Document Requirement/Defination, press the Upload option to upload.',
-        type: 'default'
-      }
-    }, {
-        location: 'after',
-        widget: 'dxButton',
-        options: {
           icon: 'refresh',
           onClick: this.onLoadApplicationDocUploads.bind(this)
         }
@@ -402,7 +397,7 @@ export class ApplicationDocumentsComponent implements OnInit {
         });
   }
   onLoadApplicationDocUploads() {
-    let action_params = { document_type_id: this.document_type_id, application_code: this.application_code, section_id: this.section_id, sub_module_id: this.sub_module_id,status_id:this.status_id,query_ref_id:this.query_ref_id,prodclass_category_id:this.prodclass_category_id,business_type_id:this.business_type_id,permit_product_id:this.permit_product_id ,customer_account_id:this.customer_account_id};
+    let action_params = { document_type_id: this.document_type_id, application_code: this.application_code, section_id: this.section_id, sub_module_id: this.sub_module_id,status_id:this.status_id,query_ref_id:this.query_ref_id,prodclass_category_id:this.prodclass_category_id,business_type_id:this.business_type_id,permit_product_id:this.permit_product_id ,customer_account_id:this.customer_account_id,has_registered_premises:this.has_registered_premises};
     this.dmsService.onLoadApplicationDocploads(action_params,'getApplicationDocploads')
       //.pipe(first())
       .subscribe(

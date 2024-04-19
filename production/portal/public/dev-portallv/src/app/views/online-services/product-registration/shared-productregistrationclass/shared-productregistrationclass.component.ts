@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { DxDataGridComponent } from 'devextreme-angular';
 import { ArchwizardModule } from 'ng2-archwizard';
 import { WizardComponent } from 'ng2-archwizard';
+import { PremisesApplicationsService } from 'src/app/services/premises-applications/premises-applications.service';
 
 import { Utilities } from 'src/app/services/common/utilities.service';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
@@ -54,6 +55,7 @@ export class SharedProductregistrationclassComponent implements OnInit {
   riskCategoriesData:any;
   zonesData: any;  config_data: any;
   productData: any;
+  productTypeDta:any;
   assessmentProcedureData: any;
   registrantOptionsData: any;
   siUnitsData: any;
@@ -72,11 +74,12 @@ export class SharedProductregistrationclassComponent implements OnInit {
   productSubCategoryData: any;
   productSpecialCategoryData: any;
   intendedEndUserData: any;
-
+  ProductApplicationData: any = {};
+  therapeuticGroupData:any;
   ingredientTypeData: any;
   nutrientsCategoryData: any;
   nutientsData: any;
-
+  registered_premisesData:any;
   dosageFormsData: any;
   productFormData: any;
   methodOfUseData: any;
@@ -101,7 +104,7 @@ export class SharedProductregistrationclassComponent implements OnInit {
   //details forms definationn
   productGeneraldetailsfrm: FormGroup;
   renAltproductGeneraldetailsfrm: FormGroup;
-
+  productNotificationGeneraldetailsfrm:FormGroup;
   applicationApplicantdetailsfrm: FormGroup;
   productIngredientsdetailsfrm: FormGroup;
   productPackagingdetailsfrm: FormGroup;
@@ -141,7 +144,7 @@ export class SharedProductregistrationclassComponent implements OnInit {
   containerMaterialData: any;
   terms_conditions: any;
   addproductGenericNamesModal:boolean = false;
-  
+  commonAtcNamesData:any;
   module_id: number;
   sub_module_id: number;
   country_id: number;
@@ -189,6 +192,7 @@ export class SharedProductregistrationclassComponent implements OnInit {
 
   tra_product_id: number;
   local_agent_id: number;
+  product_type_id:number;
   reg_product_id: number;
   is_local: number;
 
@@ -212,12 +216,13 @@ export class SharedProductregistrationclassComponent implements OnInit {
   applicationPreckingQueriesData:any;
   initqueryresponsefrm:FormGroup;
   initqualitysummaryresponsefrm:FormGroup;
-  
+  drugscommonNamesData:any;
   isInitalQueryDataWinVisible:boolean = false;
   businessTypesData: any;
   isInitalQueryFrmVisible:boolean = false;
 
   isInitalQueryResponseFrmVisible:boolean = false;
+  ispremisesSearchWinVisible:boolean = false;
 
   //sections 
   query_sectioncheck:string;
@@ -262,7 +267,7 @@ export class SharedProductregistrationclassComponent implements OnInit {
   hasAssessmentProcedure:boolean;
   assessmentTypesData:any;
   isInitiateAddProductGroupAppWin:boolean;
-  constructor(public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public modalDialogue: ModalDialogService, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: ProductApplicationService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService, public utilityService: Utilities,public httpClient: HttpClient, public dmsService:DocumentManagementService) {
+  constructor(public modalServ: ModalDialogService,public premService:PremisesApplicationsService, public viewRef: ViewContainerRef, public modalDialogue: ModalDialogService, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: ProductApplicationService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService, public utilityService: Utilities,public httpClient: HttpClient, public dmsService:DocumentManagementService) {
 
    // if(!this.check_sharedclassloaded){
 
@@ -283,13 +288,41 @@ export class SharedProductregistrationclassComponent implements OnInit {
             local_agent_id: new FormControl('', Validators.compose([]))
 
           });
-          
+
+
+          this.productNotificationGeneraldetailsfrm = new FormGroup({
+            sub_module_id: new FormControl(8, Validators.compose([])),
+            sourceofpsur_id: new FormControl('', Validators.compose([Validators.required])),
+            psur_type_id: new FormControl('', Validators.compose([Validators.required])),
+            from_date: new FormControl('', Validators.compose([Validators.required])),
+            to_date: new FormControl('', Validators.compose([Validators.required])),
+            international_birth_date: new FormControl('', Validators.compose([Validators.required]))
+
+          });
+
+          if(this.sub_module_id == 9){
           this.productGeneraldetailsfrm = new FormGroup({
+            section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+            sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+            module_id: new FormControl(this.module_id, Validators.compose([])),
+
+            variation_category_id: new FormControl('', Validators.compose([])),
+            variation_subcategory_id: new FormControl('', Validators.compose([])),
+            variation_description_id: new FormControl('', Validators.compose([])),
+            variation_subdescription_id: new FormControl('', Validators.compose([])),
+            variation_type_id: new FormControl('', Validators.compose([])),
+
+            group_application_code: new FormControl(this.module_id, Validators.compose([]))
+          });
+          }else{
+            this.productGeneraldetailsfrm = new FormGroup({
             section_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
             sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
             module_id: new FormControl(this.module_id, Validators.compose([])),
             group_application_code: new FormControl(this.module_id, Validators.compose([]))
           });
+          }
+
           this.applicationApplicantdetailsfrm = new FormGroup({
             local_agent_id: new FormControl('', Validators.compose([Validators.required])),
             local_agent_name: new FormControl('', Validators.compose([Validators.required])),
@@ -309,7 +342,7 @@ export class SharedProductregistrationclassComponent implements OnInit {
           this.trader_name = user_details.company_name;
           this.is_local = user_details.is_local;
 
-          if (this.country_id == 36) {
+          if (this.country_id == 37) {
             this.trader_aslocalagent = 1;
           }
           this.productapp_details = this.appService.getProductApplicationDetail();
@@ -321,7 +354,7 @@ export class SharedProductregistrationclassComponent implements OnInit {
           else {
             this.section_id = this.productapp_details.section_id;
             this.sub_module_id = this.productapp_details.sub_module_id;
-
+            this.product_type_id = this.productapp_details.product_type_id;
             this.module_id = this.productapp_details.module_id;
             this.process_title = this.productapp_details.process_title;
             this.product_id = this.productapp_details.product_id;
@@ -416,7 +449,7 @@ export class SharedProductregistrationclassComponent implements OnInit {
             name: new FormControl('', Validators.compose([Validators.required])),
             physical_address: new FormControl('', Validators.compose([])),
             manufacturer_id: new FormControl('', Validators.compose([Validators.required])),
-
+            active_common_name_id: new FormControl('', Validators.compose([])),
             active_ingredient_id: new FormControl('', Validators.compose([Validators.required])),
 
           });
@@ -427,7 +460,7 @@ export class SharedProductregistrationclassComponent implements OnInit {
               manufacturer_id: new FormControl('', Validators.compose([Validators.required])),
               manufacturer_role_id: new FormControl('', Validators.compose([])),
               manufacturing_activities: new FormControl('', Validators.compose([])),
-
+              active_common_name_id: new FormControl('', Validators.compose([])),
               man_site_id: new FormControl('', Validators.compose([]))
               
           });
@@ -456,44 +489,52 @@ export class SharedProductregistrationclassComponent implements OnInit {
               ingredient_type_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
               proportion: new FormControl(this.sub_module_id, Validators.compose([])),
               inclusion_reason_id: new FormControl('', Validators.compose([])),
+              si_unit_id:new FormControl('', Validators.compose([Validators.required])),
+              active_common_name_id: new FormControl('', Validators.compose([])),
               //atc_code: new FormControl('', Validators.compose([])),
               //atc_code_description: new FormControl('', Validators.compose([])),
               purpose_of_use: new FormControl('', Validators.compose([])),
               inci_name: new FormControl('', Validators.compose([])),
               cas_number: new FormControl('', Validators.compose([])),
+                strength: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+              specification_type_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
               ingredient_function: new FormControl('', Validators.compose([])),
-              
               ingredient_id: new FormControl('', Validators.compose([Validators.required])),
               id: new FormControl('', Validators.compose([])),
             });
           }else if(this.prodclass_category_id == 2 ||
             this.prodclass_category_id == 10){
             this.productIngredientsdetailsfrm = new FormGroup({
-              proportion: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
-              ingredientssi_unit_id: new FormControl('', Validators.compose([])),
-              atc_code: new FormControl('', Validators.compose([])),
-              atc_code_description: new FormControl('', Validators.compose([])),purpose_of_use: new FormControl('', Validators.compose([])),
-              inci_name: new FormControl('', Validators.compose([])),
-              cas_number: new FormControl('', Validators.compose([])),
-              ingredient_function: new FormControl('', Validators.compose([])),
-              ingredient_type_id: new FormControl(this.section_id, Validators.compose([])),
-              inclusion_reason_id: new FormControl('', Validators.compose([Validators.required])),
-              ingredient_id: new FormControl('', Validators.compose([Validators.required])),
-              id: new FormControl('', Validators.compose([])),
-
-          });
-
-          }
-          else{
-            this.productIngredientsdetailsfrm = new FormGroup({
               specification_type_id: new FormControl(this.section_id, Validators.compose([])),
-              strength: new FormControl(this.sub_module_id, Validators.compose([])),
+              strength: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
               ingredientssi_unit_id: new FormControl('', Validators.compose([])),
               inclusion_reason_id: new FormControl('', Validators.compose([])),
               atc_code: new FormControl('', Validators.compose([])),purpose_of_use: new FormControl('', Validators.compose([])),
               cas_number: new FormControl('', Validators.compose([])),
               ingredient_function: new FormControl('', Validators.compose([])),
-              
+              si_unit_id:new FormControl('', Validators.compose([])),
+              active_common_name_id: new FormControl('', Validators.compose([])),
+              ingredient_type_id: new FormControl(this.section_id, Validators.compose([])),
+              inci_name: new FormControl('', Validators.compose([])),
+              proportion: new FormControl(this.sub_module_id, Validators.compose([])),
+              atc_code_description: new FormControl('', Validators.compose([])),
+              ingredient_id: new FormControl('', Validators.compose([Validators.required])),
+              id: new FormControl('', Validators.compose([])),
+            });
+
+          }
+          else{
+            this.productIngredientsdetailsfrm = new FormGroup({
+              specification_type_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+              strength: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
+              ingredientssi_unit_id: new FormControl('', Validators.compose([])),
+              inclusion_reason_id: new FormControl('', Validators.compose([Validators.required])),
+              atc_code: new FormControl('', Validators.compose([])),
+              purpose_of_use: new FormControl('', Validators.compose([])),
+              cas_number: new FormControl('', Validators.compose([])),
+              ingredient_function: new FormControl('', Validators.compose([])),
+              si_unit_id:new FormControl('', Validators.compose([Validators.required])),
+              active_common_name_id: new FormControl('', Validators.compose([])),
               ingredient_type_id: new FormControl(this.section_id, Validators.compose([])),
               inci_name: new FormControl('', Validators.compose([])),
               proportion: new FormControl(this.sub_module_id, Validators.compose([])),
@@ -507,8 +548,8 @@ export class SharedProductregistrationclassComponent implements OnInit {
             this.prodclass_category_id == 13 
             || this.prodclass_category_id == 14){
             this.productPackagingdetailsfrm = new FormGroup({
-              container_id: new FormControl('', Validators.compose([Validators.required])),
-              container_material_id: new FormControl('', Validators.compose([Validators.required])),
+              container_type: new FormControl('', Validators.compose([Validators.required])),
+              container_material_id: new FormControl('', Validators.compose([])),
               retail_packaging_size: new FormControl('', Validators.compose([])),
               container_type_id: new FormControl('', Validators.compose([])),
 
@@ -521,21 +562,20 @@ export class SharedProductregistrationclassComponent implements OnInit {
           });
           }else{
             this.productPackagingdetailsfrm = new FormGroup({
-              container_id: new FormControl('', Validators.compose([Validators.required])),
+              container_type: new FormControl('', Validators.compose([Validators.required])),
               container_material_id: new FormControl('', Validators.compose([Validators.required])),
-              retail_packaging_size: new FormControl('', Validators.compose([])),
+              no_of_packs: new FormControl('', Validators.compose([Validators.required])),
               retail_packaging_size1: new FormControl('', Validators.compose([])),
               retail_packaging_size2: new FormControl('', Validators.compose([])),
               retail_packaging_size3: new FormControl('', Validators.compose([])),
               retail_packaging_size4: new FormControl('', Validators.compose([])),
               retail_packaging_size5: new FormControl('', Validators.compose([])),
-              unit_pack: new FormControl('', Validators.compose([])),
+              no_of_units: new FormControl('', Validators.compose([Validators.required])),
               id: new FormControl('', Validators.compose([])),
-              packaging_units_id: new FormControl('', Validators.compose([])),
+              si_unit_id: new FormControl('', Validators.compose([])),
               seal_type_id: new FormControl('', Validators.compose([])),
               closure_material_id: new FormControl('', Validators.compose([])),
-
-              container_type_id: new FormControl('', Validators.compose([Validators.required])),
+              container_type_id: new FormControl('', Validators.compose([])),
             });
 
           }
@@ -579,19 +619,21 @@ export class SharedProductregistrationclassComponent implements OnInit {
   
                   if (this.is_local == 1) {
                     this.isReadOnlyTraderasLtr = true;
-                    this.productGeneraldetailsfrm.patchValue({ local_agent_name: this.trader_name, local_agent_id: this.trader_id,trader_aslocal_agent: 1 })
+                    this.productGeneraldetailsfrm.patchValue({ premise_name: this.trader_name, premise_id: this.trader_id,trader_aslocal_agent: 1 })
                     //deiable field
                   }
                   else {
                       this.isReadOnlyTraderasLtr = false;
-                      this.productGeneraldetailsfrm.patchValue({ local_agent_name: 'Select Local Agent', local_agent_id: '', trader_aslocal_agent: 2 })
+                      this.productGeneraldetailsfrm.patchValue({ premise_name: 'Select Local Agent', premise_id: '', trader_aslocal_agent: 2 })
                   }
               
             }
   
           }
-          
           this.onLoaddurationDescData();
+
+
+
           this.initqueryresponsefrm = new FormGroup({
             queries_remarks: new FormControl('', Validators.compose([Validators.required])),
             response_txt: new FormControl('', Validators.compose([Validators.required])),
@@ -612,7 +654,8 @@ export class SharedProductregistrationclassComponent implements OnInit {
    
   }
   ngOnInit() {
-
+this.onLoadpackagingUnitsData(this.section_id);
+this.OnLoadProductsCommonName(this.product_id)
   }
  
   private async onLoadGeneralProductsFormfields1(){ 
@@ -672,6 +715,7 @@ export class SharedProductregistrationclassComponent implements OnInit {
         });
 
   }
+
   OnAddNewManufacturerReionDetails(){
     let country_id = this.manufacturerFrm.get('country_id').value;
     this.addRegionDetailsFrm.reset();
@@ -685,7 +729,28 @@ export class SharedProductregistrationclassComponent implements OnInit {
     }
 
   }
-  
+  funcSelectTraderDetails(data) {
+    let record = data.data;
+    this.productGeneraldetailsfrm.get('premise_name').patchValue(record.premises_name);
+    this.productGeneraldetailsfrm.get('premise_id').setValue(record.premise_id);
+    
+    this.ispremisesSearchWinVisible = false;
+  }
+
+    onRegisteredPremisesSearch() {
+          
+          //load the Premises Details 
+          this.premService.onLoadRegisteredPremises({})
+            .subscribe(
+              data_response => {
+              this.ispremisesSearchWinVisible= true;
+                this.registered_premisesData = data_response.data;
+              },
+              error => {
+                return false
+              });
+      }
+
   OnAddNewManufactureDistrictDetails(){
     let region_id = this.manufacturerFrm.get('region_id').value;
     
@@ -921,8 +986,24 @@ funcgetPreckingQueriesData(){
   }
 
 
+OnLoadProductsCommonName(product_id) {
 
+  this.appService.getProductsOtherDetails({ product_id: product_id }, 'getProductsCommonName')
+    //.pipe(first())
+    .subscribe(
+      data => {
+        if (data.success) {
+          this.drugscommonNamesData = data.data;
+        }
+        else {
+          this.toastr.success(data.message, 'Alert');
+        }
 
+      },
+      error => {
+        return false
+      });
+}
 
 
   onProductDashboard() {
@@ -964,15 +1045,15 @@ funcgetPreckingQueriesData(){
           if (this.product_resp.success) {
             this.tracking_no = this.product_resp.tracking_no;
             this.product_id = this.product_resp.product_id;
+            this.product_type_id = this.product_resp.product_type_id;
             this.application_code = this.product_resp.application_code;
-  
             this.productGeneraldetailsfrm.patchValue({ product_id: this.product_id })
             this.toastr.success(this.product_resp.message, 'Response');
 
             this.wizard.model.navigationMode.goToStep(1);
-
             this.onLoadProductApplciations();
-            
+            this.OnLoadProductsPackagingMaterials(this.product_type_id);
+
           } else {
             this.toastr.error(this.product_resp.message, 'Alert');
           }
@@ -1346,7 +1427,8 @@ onLoadProductApplciations(filter_params={group_application_code: this.group_appl
     this.onLoadconfirmDataParm();
     this.onLoadconfirmDataParmAll();
     this.onLoadRegistrantOptions();
-    this.onLoadCommonNames(section_id);
+    this.onLoadCommonNames();
+    this.onLoadCommonSaltNames();
     this.onLoadgmdnCategoryData(section_id);
     this.onLoadClassifications(section_id);
     this.onLoadriskCategoriesData(section_id);
@@ -1375,7 +1457,7 @@ onLoadProductApplciations(filter_params={group_application_code: this.group_appl
 
     this.onLoadclosureMaterialData(section_id)
     this.onLoadsealTypeData(section_id);
-    this.onLoadrouteOfAdministration(section_id);
+    this.onLoadrouteOfAdministration();
     this.onLoadtargetSpecies(section_id);
     this.onLoadvetmedicinesRegistrationtypeData();
 
@@ -1394,6 +1476,7 @@ onLoadProductApplciations(filter_params={group_application_code: this.group_appl
     this.onLoadintendedEndUserData(section_id);
     this.onLoadfastTrackOptionsData();
     this.onLoadpayingCurrencyData();
+    this.onLoadproductTypeDta();
   }
   onLoadingredientTypeData(section_id) {
     var data = {
@@ -1406,6 +1489,7 @@ onLoadProductApplciations(filter_params={group_application_code: this.group_appl
           this.ingredientTypeData = data;
         });
   }
+
   onLoadingredientCategoryData(section_id) {
     var data = {
       table_name: 'par_nutrients_category',
@@ -1615,6 +1699,16 @@ onLoadProductApplciations(filter_params={group_application_code: this.group_appl
           this.storageConditionData = data;
         });
   }
+  onLoadproductTypeDta() {
+    var data = {
+      table_name: 'par_product_type'
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.productTypeDta = data;
+        });
+  }
 
 
   onLoadproductCategoryData(section_id) {
@@ -1818,7 +1912,7 @@ onLoadProductApplciations(filter_params={group_application_code: this.group_appl
         });
 
   }
-  onLoadrouteOfAdministration(section_id) {
+  onLoadrouteOfAdministration() {
     var data = {
       table_name: 'par_route_of_administration'
     };
@@ -1853,7 +1947,6 @@ onLoadProductApplciations(filter_params={group_application_code: this.group_appl
   onLoadSiUnits(section_id) {
     var data = {
       table_name: 'par_si_units',
-      section_id: section_id
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
@@ -1886,7 +1979,7 @@ onLoadProductApplciations(filter_params={group_application_code: this.group_appl
   }onLoadgmdnCategoryData(section_id) {
     var data = {
       table_name: 'par_gmdn_categories',
-      section_id: section_id
+     
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
@@ -1895,38 +1988,56 @@ onLoadProductApplciations(filter_params={group_application_code: this.group_appl
         });
   }
   
-  onLoadCommonNames(section_id) {
-    var data = {
-      table_name: 'par_common_names',
-      section_id: section_id
-    };
-    this.confirmDataParam = {
-      params: data,
-      headers: { 'Accept': 'application/json' }
-    };
+  // onLoadCommonNames() {
+  //   var data = {
+  //     table_name: 'par_common_names',
+      
+  //   };
+  //   this.confirmDataParam = {
+  //     params: data,
+  //     headers: { 'Accept': 'application/json' }
+  //   };
   
  
+  //   var data = {
+  //     table_name: 'par_common_names',
+  //   };
+  //   this.config.onLoadConfigurationData(data)
+  //     .subscribe(
+  //       data => {
+  //         //this.commonNamesData = data;
+  //         this.commonNamesData = new DataSource({
+  //             paginate: true,
+  //             pageSize: 200,
+  //             store: {
+  //               type: "array",
+  //                 data: data,
+  //                 key: "id"
+  //             }
+  //         });
+  //       });
+       
+  // }
+   onLoadCommonNames() {
     var data = {
       table_name: 'par_common_names',
-      section_id: section_id
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
         data => {
-          //this.commonNamesData = data;
-          this.commonNamesData = new DataSource({
-              paginate: true,
-              pageSize: 200,
-              store: {
-                type: "array",
-                  data: data,
-                  key: "id"
-              }
-          });
+          this.commonNamesData = data;
         });
-       
   }
- 
+   onLoadCommonSaltNames() {
+    var data = {
+      table_name: 'par_commonsalt_names',
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.commonAtcNamesData = data;
+        });
+  }
 
   onLoadClassifications(section_id) {
       
@@ -1943,7 +2054,8 @@ onLoadProductApplciations(filter_params={group_application_code: this.group_appl
         data => {
           this.classificationData = data;
         });
-  } onLoadriskCategoriesData(section_id) {
+  } 
+  onLoadriskCategoriesData(section_id) {
     var data = {
       table_name: 'par_productrisk_categories',
       section_id: section_id
@@ -2638,8 +2750,8 @@ onLoadProductApplciations(filter_params={group_application_code: this.group_appl
     this.checkProductsSubmission = e.value;
 
   }
-  onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+  onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {
@@ -2941,7 +3053,7 @@ onSaveNewGenericName(){
       this.product_resp = response.json();
       //the details 
       if (this.product_resp.success) {
-        this.onLoadCommonNames(this.section_id);
+        this.onLoadCommonNames();
        
         this.addproductGenericNamesModal = false;
         this.productGeneraldetailsfrm.get('common_name_id').setValue(this.product_resp.record_id)

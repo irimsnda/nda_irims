@@ -1,5 +1,6 @@
 import {Pipe, Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import DataSource from 'devextreme/data/data_source';
 
 import { WizardComponent } from 'ng2-archwizard';
 import { DxDataGridComponent } from 'devextreme-angular';
@@ -32,6 +33,7 @@ export class DisposalSharedclassComponent implements OnInit {
   dataGrid: DxDataGridComponent;
   productApplicationProcessingData:any;
   isPreviewApplicationProcessing:boolean= false;
+  isOtherDisposalReason:boolean= false;
 
   @ViewChild(WizardComponent)
   public wizard: WizardComponent;
@@ -40,13 +42,15 @@ export class DisposalSharedclassComponent implements OnInit {
   documentUploadfrm: FormGroup;
   permitProductsFrm: FormGroup;
   regulatedProductsPermitData: any;
-
+  trader_id:number;
   mis_url:string = AppSettings.mis_url;
   printiframeUrl:any;
   isPrintReportVisible:boolean;
-
+  disposalclassData:any;
+  destructionCompanyData:any;
+  destructionSiteData:any;
   printReportTitle:string;
-  
+  packTypeData:any;
   onApplicationSubmissionFrm:FormGroup;
   sectionsData: any;
   typesOfDisposalData:any;
@@ -117,7 +121,7 @@ export class DisposalSharedclassComponent implements OnInit {
   countries: any;
   regions: any;
   districts: any;
-
+commonNamesData:any;
   senderReceiverData: any ={};
   ispremisesSearchWinVisible: boolean = false;
   issenderreceiverSearchWinVisible: boolean = false;
@@ -138,8 +142,9 @@ export class DisposalSharedclassComponent implements OnInit {
 
   permitProductsData: any;
   registeredProductsData: any = {};
-  commonNamesData:any;
   productCategoryData: any;
+  dosageFormsData:any;
+  siUnitsData:any;
   devicesTypeData: any;
   device_type_visible: boolean = false;
   import_typecategory_visible: boolean = false;
@@ -154,7 +159,7 @@ export class DisposalSharedclassComponent implements OnInit {
   enabled_newproductadd:boolean= false;
   showProductAddOption: boolean = false;
   is_regulatedproducts:boolean = false;
-
+  applicantData:any;
   isInitalQueryResponseFrmVisible:boolean = false;
   initqueryresponsefrm:FormGroup;
   applicationPreckingQueriesData:any;
@@ -191,7 +196,7 @@ export class DisposalSharedclassComponent implements OnInit {
       
             this.application_id = this.application_details.application_id;
             this.tracking_no = this.application_details.tracking_no;
-      
+            this.trader_id = this.application_details.trader_id;
             this.status_name = this.application_details.status_name;
             this.status_id = this.application_details.application_status_id;
             this.application_code = this.application_details.application_code;
@@ -204,19 +209,20 @@ export class DisposalSharedclassComponent implements OnInit {
             application_code:null
           });
           this.dispapplicationGeneraldetailsfrm = new FormGroup({
-            proposedmethod_of_disposal_id: new FormControl(this.section_id, Validators.compose([Validators.required])),
+            company_disposal_id: new FormControl('', Validators.compose([Validators.required])),
             reason_of_destruction_id: new FormControl(this.section_id, Validators.compose([])),
             sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
-            reason_for_disposal: new FormControl('', Validators.compose([])),
+            reason_for_disposal_id: new FormControl('', Validators.compose([])),
+            other_product_category:new FormControl('', Validators.compose([])),
             total_weight: new FormControl('', Validators.compose([Validators.required])),
             weights_units_id: new FormControl('', Validators.compose([Validators.required])),
             quantity: new FormControl('', Validators.compose([])),
             otherproposedmethod_of_disposal: new FormControl('', Validators.compose([])),
             product_particulars_description: new FormControl('', Validators.compose([Validators.required])),
-            market_value: new FormControl('', Validators.compose([Validators.required])),
+            market_value: new FormControl('', Validators.compose([])),
             currency_id: new FormControl('', Validators.compose([Validators.required])),
-            
-            section_id: new FormControl('', Validators.compose([Validators.required])),
+            disposal_class_id: new FormControl('', Validators.compose([Validators.required])),
+            section_id: new FormControl('', Validators.compose([])),
             zone_id: new FormControl('', Validators.compose([])),
             module_id: new FormControl(this.module_id, Validators.compose([Validators.required])),
             application_code: new FormControl(this.application_code, Validators.compose([])),
@@ -228,8 +234,10 @@ export class DisposalSharedclassComponent implements OnInit {
             superintendent_registration_number: new FormControl('', Validators.compose([])),
             registration_body: new FormControl('', Validators.compose([])),
             premise_id: new FormControl('', Validators.compose([])),
+            hold_premise:new FormControl('', Validators.compose([Validators.required])),
             premises_name: new FormControl('', Validators.compose([])),
-            
+            trader_id: new FormControl('', Validators.compose([])),
+            other_disposal_reasons: new FormControl('', Validators.compose([]))
           });
           
           this.permitReceiverSenderFrm = new FormGroup({
@@ -254,18 +262,21 @@ export class DisposalSharedclassComponent implements OnInit {
           });
       
           this.permitProductsFrm = this.fb.group({
-            brand_name: new FormControl('', Validators.compose([Validators.required])),
+            brand_name: new FormControl('', Validators.compose([])),
             product_description: new FormControl('', Validators.compose([])),
             quantity: new FormControl(this.quantity, Validators.compose([Validators.required])),
+            si_unit_id: new FormControl(this.quantity, Validators.compose([])),
             currency_name: new FormControl('', Validators.compose([])),
             estimated_value: new FormControl('', Validators.compose([])),
             packaging_unit_id: new FormControl('', Validators.compose([])),
-            common_name: new FormControl('', Validators.compose([])),
+            packaging_type_id:new FormControl('', Validators.compose([])),
+            common_name_id: new FormControl('', Validators.compose([Validators.required])),
             product_strength: new FormControl('', Validators.compose([])),
-            dosage_form: new FormControl('', Validators.compose([])),
+            dosage_form_id: new FormControl('', Validators.compose([])),
             pack_size: new FormControl('', Validators.compose([])),
+            product_pack:new FormControl('', Validators.compose([])),
             batch_no: new FormControl('', Validators.compose([])),
-            reason_for_disposal: new FormControl('', Validators.compose([])),
+            reason_for_disposal_id: new FormControl('', Validators.compose([Validators.required])),
             product_id: new FormControl('', Validators.compose([])),
             id: new FormControl('', Validators.compose([]))
           });
@@ -301,7 +312,7 @@ export class DisposalSharedclassComponent implements OnInit {
             this.status_name = "New"
           }
          
-          this.onLoadGuidelines(this.sub_module_id, this.section_id);
+          this.onLoadGuidelines(this.sub_module_id);
         if(this.application_details.application_code){
           this.dispapplicationGeneraldetailsfrm.patchValue(this.application_details);
           
@@ -320,8 +331,7 @@ export class DisposalSharedclassComponent implements OnInit {
         
 
   } ngOnInit() {
-    
-    
+
   }sanitize(url:string){
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
 }
@@ -331,15 +341,21 @@ export class DisposalSharedclassComponent implements OnInit {
     this.onLoadWeightsData()
     this.onLoadconsigneeOptionsData();
     this.onLoadpayingCurrencyData();
+    this.onLoadpackTypeData();
     this.onloadApplicationTypes();
-
     this.onLoaddisposalSiteoptionData()
     this.onLoadZones();
+    this.onLoadSiUnits();
+    this.onLoadCommonNames();
     this.onLoadSections();
+    this.onLoaddosageForms();
     this.onLoaddestructionMethodsData();
     this.onLoadreasonsOfDisposalData();
+    this.onLoadDisposalCompaniesData();
+    this.onLoadDisposalSiteData();
     this.onLoadconfirmDataParm();
-
+    this.onLoadDisposalclass();
+    this.onLoadApplicantData();
   }
   funcpopWidth(percentage_width) {
     return window.innerWidth * percentage_width/100;
@@ -374,8 +390,49 @@ export class DisposalSharedclassComponent implements OnInit {
       });
 
   }
- 
-  
+   onLoaddosageForms() {
+    var data = {
+      table_name: 'par_dosage_forms'
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+         // this.dosageFormsData = data;
+          this.dosageFormsData = new DataSource({
+            paginate: true,
+            pageSize: 200,
+            store: {
+              type: "array",
+                data: data,
+                key: "id"
+            }
+        });
+        });
+  }
+
+  onLoadApplicantData() {
+    var data = {
+      table_name: 'wb_trader_account',
+    };
+    this.config.onLoadPortalConfigurationData(data)
+      .subscribe(
+        data => {
+          this.applicantData = data;
+        });
+  }
+  onLoadSiUnits() {
+    var data = {
+      table_name: 'par_si_units',
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.siUnitsData = data;
+        });
+  }
+
+
+
   funcReloadQueriesDetails(){
 
     this.funcgetPreckingQueriesData();
@@ -391,6 +448,16 @@ export class DisposalSharedclassComponent implements OnInit {
       });
   }
   
+   onOtherDisposalReasonsChange($event) {
+    
+    if($event.selectedItem.id == 2){
+        this.isOtherDisposalReason = true;
+
+    }else{
+      this.isOtherDisposalReason = false;
+    }
+    
+}
  
   onLoadClassifications() {
     var data = {
@@ -402,7 +469,11 @@ export class DisposalSharedclassComponent implements OnInit {
           this.classificationData = data;
         });
   }
-  
+
+
+
+
+
   onIsREguatedProdulctsSelect($event){
       if($event.selectedItem.id == 1){
           this.is_regulatedproducts = false;
@@ -413,10 +484,10 @@ export class DisposalSharedclassComponent implements OnInit {
         this.is_regulatedproducts = true;
       }
   }
-  onLoadCommonNames(section_id) {
+  onLoadCommonNames() {
     var data = {
       table_name: 'par_common_names',
-      section_id: section_id
+     
     };
     this.config.onLoadConfigurationData(data)
       .subscribe(
@@ -426,8 +497,8 @@ export class DisposalSharedclassComponent implements OnInit {
   }
 
   
-  onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+  onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {
@@ -480,6 +551,30 @@ export class DisposalSharedclassComponent implements OnInit {
           this.reasonsOfDisposalData = data;
         });
   }
+
+  onLoadDisposalSiteData() {
+    var data = {
+      table_name: 'par_disposal_siteoptions',
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.destructionSiteData = data;
+        });
+  }
+  onLoadDisposalCompaniesData() {
+    var data = {
+      table_name: 'par_disposal_company',
+    };
+
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.destructionCompanyData = data;
+        });
+  }
+
   onLoadZones() {
     var data = {
       table_name: 'par_zones',
@@ -584,6 +679,17 @@ export class DisposalSharedclassComponent implements OnInit {
         });
 
   }
+    onLoadpackTypeData() {
+    var data = {
+      table_name: 'par_packaging_units',
+    };
+    this.config.onLoadConfigurationData(data)
+      .subscribe(
+        data => {
+          this.packTypeData = data;
+        });
+
+  }
   onLoadCurrenciesData() {
     var data = {
       table_name: 'par_currencies'
@@ -655,7 +761,7 @@ export class DisposalSharedclassComponent implements OnInit {
             this.application_id = this.app_resp.application_id;
             this.application_code = this.app_resp.application_code;
             this.toastr.success(this.app_resp.message, 'Response');
-            this.wizard.model.navigationMode.goToStep(2);
+            this.wizard.model.navigationMode.goToStep(1);
           } else {
             this.toastr.error(this.app_resp.message, 'Alert');
           }
@@ -836,7 +942,17 @@ export class DisposalSharedclassComponent implements OnInit {
         });
   }
   
- 
+   onLoadDisposalclass() {
+    var data = {
+      table_name: 'par_disposalprodclass_category',
+    };
+
+    this.configService.onLoadConfigurationData(data)
+      .subscribe( 
+        data => {
+          this.disposalclassData = data;
+        });
+  }
   OnReloadPermitProducts(){
 
       let me = this;

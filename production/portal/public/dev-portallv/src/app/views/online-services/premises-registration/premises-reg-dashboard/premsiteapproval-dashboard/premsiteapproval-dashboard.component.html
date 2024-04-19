@@ -26,7 +26,7 @@
       <h1 class="m-b-20 text-white counter">{{pending_submission}}</h1>
     </div>
     <div class="card-box noradius noborder bg-warning">
-      <a class="reg_routerlink"  (click) ="reloadPremisesApplications({application_status_id:'1', sub_module_id: 1})"><span>View Applications</span></a>
+      <a class="reg_routerlink"  (click) ="reloadPremisesApplications({application_status_id:'79', sub_module_id: 1})"><span>View Applications</span></a>
 
     </div>
   </div>
@@ -96,9 +96,9 @@
 <div class="row">
         
     <dx-button *ngFor="let sub_module of premisesappTypeData;" 
-        text="{{sub_module.name}} Application"
+        text="{{sub_module.name}}"
         type="default"
-        width="290"
+        width="350"
         icon="fa {{sub_module.icon}}"
         [elementAttr]="{ id: 'elementId', class: 'col-lg-2' }"
         (onClick)="onClickSubModuleAppSelection(sub_module.id,sub_module.name)">
@@ -110,8 +110,8 @@
       <form role="form" class="row" enctype="multipart/form-data" role="form" [formGroup]="FilterDetailsFrm">
                 
               <div class="col-lg-3">
-                  <dx-select-box  [dataSource]="sectionsData" valueExpr="id" displayExpr="name" 
-                  (onSelectionChanged)="onSelectPremisesFilters($event)"   [searchEnabled]="true" placeholder="Select Premises Category" formControlName="section_id">
+                  <dx-select-box  [dataSource]="businessTypesData" valueExpr="id" displayExpr="name" 
+                  (onSelectionChanged)="onSelectPremisesFilters($event)"   [searchEnabled]="true" placeholder="Select Premises Category" formControlName="business_type_id">
                   </dx-select-box>
               </div>
               <div class="col-lg-3">
@@ -165,16 +165,15 @@
       </dxi-column>
     
       <dxi-column  dataField="reference_no"></dxi-column>
-
-      <dxi-column dataField="section" ></dxi-column>
-      <dxi-column  [groupIndex]="0" dataField="application_type"></dxi-column>
+      <dxi-column  dataField="tracking_no"></dxi-column>
+      <dxi-column dataField="premise_category" ></dxi-column>
       <dxi-column  dataField="premises_name"></dxi-column>
       <dxi-column  dataField="physical_address"></dxi-column>
       <dxi-column dataField="region_name"></dxi-column>
       <dxi-column [allowFiltering]="false" dataField="date_added"></dxi-column>
       <dxi-column [allowFiltering]="false" dataField="submission_date"></dxi-column>
       <dxi-column  [groupIndex]="1" dataField="status"></dxi-column>
-      <dxi-column  dataField="status"></dxi-column>
+      <dxi-column  dataField="status_name"></dxi-column>
   
       <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
     </dx-data-grid>
@@ -369,22 +368,17 @@
     <span>Select the Premises Category to Initiate the Application Process .</span>
     <br/>
   </div>
-      <div class="col-lg-12 apptype-selection apptype-selection bg-light text-dark">
+    <div class="col-lg-12 apptype-selection apptype-selection bg-light text-dark">
           <label>Select Premises Category</label>
          <dx-select-box [dataSource]="businessTypesData" valueExpr="id" displayExpr="name" 
-           placeholder="Select Business Types" (onValueChanged)="onWholesalepremise($event)" [value] ='business_type_id' [searchEnabled]="true" formControlName="business_type_id">
+           placeholder="Select Business Types" [value] ='business_type_id' [searchEnabled]="true" formControlName="business_type_id">
           <div *dxTemplate="let name of 'item'">
                 <p>{{name.name}} </p>
             </div>
         </dx-select-box>
-    <div class="col-lg-12 "*ngIf ="isWholePremises">
-    <label>Premises wholesale Category Details</label>
-      <dx-select-box [dataSource]="businessTypeDetailsData" valueExpr="id" displayExpr="name" placeholder="Select Category Type Details" [searchEnabled]="true" formControlName="business_typecategory_id">
-                </dx-select-box>
-        </div>
-      </div>          
+    </div>       
     <div class="col-lg-12  pull-right row" style="text-align: center;">
-        <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-right' }"   icon="fa fa-arrow-right" text="Initiate New Product Application" 
+        <dx-button  [elementAttr]="{ class: 'btn btn-primary pull-right' }"   icon="fa fa-arrow-right" text="Initiate New Premises Application" 
           type="success" (onClick)="onPremisesAppSelection()">
         </dx-button>
       

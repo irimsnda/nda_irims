@@ -13,24 +13,25 @@ export class ControlleddrugspermitsDashboardComponent extends SharedControldrugs
       
   } 
   onClickSubModuleAppSelection(sub_module_id,sub_module_name){
+    this.isPermitInitialisation = true;
 
-   if(sub_module_id == 60){
-    this.app_details = {section_id:14, module_id: this.module_id, process_title: sub_module_name, sub_module_id: sub_module_id};
-        this.appService.setApplicationDetail(this.app_details);
+   // if(sub_module_id == 60){
+   //  this.app_details = {section_id:14, module_id: this.module_id, process_title: sub_module_name, sub_module_id: sub_module_id};
+   //      this.appService.setApplicationDetail(this.app_details);
 
-        this.app_route = ['./online-services/controlleddrugs-license-application'];
+   //      this.app_route = ['./online-services/controlleddrugs-license-application'];
 
-        this.router.navigate(this.app_route);
+   //      this.router.navigate(this.app_route);
       
-    }else{
+   //  }else{
 
-      this.app_details = {section_id:14,module_id: this.module_id, process_title: sub_module_name, sub_module_id: sub_module_id};
-      this.appService.setApplicationDetail(this.app_details);
+   //    this.app_details = {section_id:14,module_id: this.module_id, process_title: sub_module_name, sub_module_id: sub_module_id};
+   //    this.appService.setApplicationDetail(this.app_details);
 
-     this.app_route = ['./online-services/controlleddrugs-importpermit-application'];
+   //   this.app_route = ['./online-services/controlleddrugs-importpermit-application'];
         
-      this.router.navigate(this.app_route);
-    }
+   //    this.router.navigate(this.app_route);
+   //  }
 
   }onLoadProductAppType(module_id, sub_module_id) {
     

@@ -25,9 +25,9 @@ import { AppSettings } from 'src/app/app-settings';
   styleUrls: ['./drugshop-licensedetails.component.css']
 })
 export class DrugshopLicensedetailsComponent implements OnInit {
-  @Input() newPremisesStafflDetailsfrm: FormGroup;
+  @Input() newPremisesDetailsfrm: FormGroup;
   @Input() premPersonnelDetailsData: any;
-  @Input() premisesStafflDetailsfrm:any;
+  @Input() premisesDetailsfrm:any;
   @Input() isBusinessPersonnelPopupVisible: boolean;
   @Input() qualificationsData: any;
   @Input() personnelPositionData: any;
@@ -36,6 +36,7 @@ export class DrugshopLicensedetailsComponent implements OnInit {
   @Input() staffDetailsData: any = {};
   @Input() countries: any;
   @Input() regions: any;
+  @Input() confirmDataParam: any;
   @Input() districts: any;
   @Input() personnel_informationData: any;
   @Input() isaddNewPremisesPersonnelDetails: boolean;
@@ -49,13 +50,16 @@ export class DrugshopLicensedetailsComponent implements OnInit {
   district_id:number;
   region_id:number;
   country_id:number;
+  tra_premise_id:number;
   personnel_QualificationData:any;
+  registeredPremisesData:any;
   personnel_type_id:number;
   app_resp:any;
+  auto:any;
   isPersonnelPopupVisible:boolean;
   is_local_agent:boolean;
   isRegistrantDetailsWinshow:boolean= false;
-  isReadOnlyTraderasLtr:boolean=false;
+  isReadOnlyPremise:boolean=false;
   premises_resp:any;
   isperssonelAddPopupVisible:boolean;
   loading:boolean;
@@ -63,96 +67,41 @@ export class DrugshopLicensedetailsComponent implements OnInit {
 
   }
   ngOnInit() {
-    this.onLoadPremisesStaffDetails();
+    this.onLoadOtherPremisesDetails();
     this.onpersonnelIdentificationTypeDataLoad();
   }  
-  funcSearchRegistrantDetails(is_local_agent) {
-
-    //  this.spinner.show();
-
-        this.isStaffPopupVisible = true;
-        if (is_local_agent == 1) {
-          this.is_local_agent = is_local_agent;
-          this.trader_title = 'Other Premises';
-        }
-        else {
-          this.is_local_agent = is_local_agent;
-          this.trader_title = 'Product Registrant';
-        }
-        let me = this;
-        this.traderAccountsDetailsData.store = new CustomStore({
-          load: function (loadOptions: any) {
-              var params = '?';
-              params += 'skip=' + loadOptions.skip;
-              params += '&take=' + loadOptions.take;//searchValue
-              var headers = new HttpHeaders({
-                "Accept": "application/json",
-                "Authorization": "Bearer " + me.authService.getAccessToken(),
-              });
-            
-              this.configData = {
-                headers: headers,
-                params: { skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter,is_local_agent:is_local_agent }
-              };
-              return me.httpClient.get(AppSettings.base_url + 'productregistration/getTraderInformationDetails',this.configData)
-                  .toPromise()
-                  .then((data: any) => {
-                      return {
-                          data: data.data,
-                          totalCount: data.totalCount
-                      }
-                  })
-                  .catch(error => { throw 'Data Loading Error' });
-
-          }
-      });
-    
-     // this.traderAccountsDetailsData.load();
-
+ 
+  onRegisteredPremisesSearch() {
+   
+      //load the Premises Details 
+      this.appService.onLoadRegisteredPremises({tra_premise_id:this.tra_premise_id})
+        .subscribe(
+          data_response => {
+            this.isStaffPopupVisible = true;
+            this.registeredPremisesData = data_response.data;
+          },
+          error => {
+            return false
+          });
   }
 
   funcEditPersonnelDetails(data) {
 
-    // this.premisesPersonnelDetailsfrm.patchValue({personnel_id:data.data.personnel_id,id:data.data.id,start_date:data.data.start_date,end_date:data.data.end_date, personnel_name:data.data.personnel_name})
-    this.premisesStafflDetailsfrm.patchValue(data.data);
+    this.premisesDetailsfrm.patchValue(data.data);
 
-    this.premisesStafflDetailsfrm.patchValue(data.data);
-    //load the personnel qualifiations 
+    this.premisesDetailsfrm.patchValue(data.data);
 
     this.isBusinessPersonnelPopupVisible = true;
     this.onLoadPersonnerQualifationsDetails(data.data.personnel_id);
     this.personnel_id = data.data.personnel_id;
 
   }      
-  // funcSelectStaffDetails(data){
-  //   this.premisesStafflDetailsfrm.patchValue(data.data);
-  //     this.isStaffPopupVisible= false;         
-  // }
-  funcSelectTraderDetails(data) {
-        let record = data.data;
-        
-          this.premisesStafflDetailsfrm.get('local_agent_name').setValue(record.trader_name);
-          this.premisesStafflDetailsfrm.get('local_agent_id').setValue(record.id);
-          this.isStaffPopupVisible = false;
-      }
 
 
+  funcSelectPremisesDetails(data){ 
 
-
-
-  onSearchStaffDetails() {
-      this.appService.onLoadPremisesStaffDetails({})
-        .subscribe(
-          data_response => {
-            this.isStaffPopupVisible = true;
-            this.staffDetailsData = data_response.data;
-          },
-          error => {
-            return false
-      
-
-
-       });
+    this.premisesDetailsfrm.patchValue(data.data);
+    this.isStaffPopupVisible= false;         
   }
   onCoutryCboSelect($event) {
 
@@ -243,13 +192,13 @@ export class DrugshopLicensedetailsComponent implements OnInit {
         });
   }
   */
-  onLoadPremisesStaffDetails() {
+  onLoadOtherPremisesDetails() {
 
-    this.appService.onLoadPremisesStaffDetails(this.premise_id)
+    this.appService.onLoadOtherPremisesDetails(this.premise_id)
       //.pipe(first())
       .subscribe(
         data => {//dtpremPersonnelDetailsData
-          this.premPersonnelDetailsData = data.data;
+          this.premPersonnelDetailsData = data;
         },
         error => {
           return false
@@ -259,8 +208,8 @@ export class DrugshopLicensedetailsComponent implements OnInit {
     //func_delete records 
     let record_id = data.data.id;
     let apppremises_id = data.data.premise_id;
-    let table_name = 'wb_premises_staff';
-    this.funcDeleteDetailhelper(record_id, apppremises_id, table_name, 'busines_personnel', 'Staff Details');
+    let table_name = 'wb_other_premises';
+    this.funcDeleteDetailhelper(record_id, apppremises_id, table_name, 'busines_personnel', 'Premises Details');
 
   }
   funcDeleteDetailhelper(record_id, apppremises_id, table_name, reload_type, title) {
@@ -283,7 +232,7 @@ export class DrugshopLicensedetailsComponent implements OnInit {
 
                   if (resp.success) {
                     
-                      this.onLoadPremisesStaffDetails();
+                      this.onLoadOtherPremisesDetails();
 
                     this.toastr.success(resp.message, 'Response');
                   }
@@ -332,7 +281,7 @@ export class DrugshopLicensedetailsComponent implements OnInit {
       this.premisesGeneraldetailsfrm.patchValue({ contact_person_id: data.data.id, contact_person: data.data.name})
     }
     else{
-      this.premisesStafflDetailsfrm.patchValue({ personnel_id: data.data.id, name: data.data.name, email_address: data.data.email_address, telephone_no: data.data.telephone_no, postal_address: data.data.postal_address })
+      this.premisesDetailsfrm.patchValue({ personnel_id: data.data.id, name: data.data.name, email_address: data.data.email_address, telephone_no: data.data.telephone_no, postal_address: data.data.postal_address })
     //reload the qualifications and documents
     this.personnel_id = data.data.id;
     }
@@ -379,20 +328,20 @@ export class DrugshopLicensedetailsComponent implements OnInit {
           return false
         });
   }
-  onTraderasContactpersonChange($event) {
+  onOtherPremisesnChange($event) {
     
     if($event.value == 1){
-        this.isReadOnlyTraderasLtr = true;
+        this.isReadOnlyPremise = false;
 
     }else{
-      this.isReadOnlyTraderasLtr = false;
+      this.isReadOnlyPremise = true;
     }
     
 
   }
   funAddPremisesPersonnelDetails() {
   
-    this.premisesStafflDetailsfrm.reset();
+    this.premisesDetailsfrm.reset();
     //load the personnel qualifiations 
 
     this.isBusinessPersonnelPopupVisible = true;
@@ -406,12 +355,12 @@ export class DrugshopLicensedetailsComponent implements OnInit {
     //    this.spinner.show();
         let table_name;
         table_name = 'tra_staff_information';
-        let name = this.newPremisesStafflDetailsfrm.get('name').value;
-        let email_address = this.newPremisesStafflDetailsfrm.get('email_address').value;
-        let telephone_no = this.newPremisesStafflDetailsfrm.get('telephone_no').value;
-        let postal_address = this.newPremisesStafflDetailsfrm.get('postal_address').value;
+        let name = this.newPremisesDetailsfrm.get('name').value;
+        let email_address = this.newPremisesDetailsfrm.get('email_address').value;
+        let telephone_no = this.newPremisesDetailsfrm.get('telephone_no').value;
+        let postal_address = this.newPremisesDetailsfrm.get('postal_address').value;
 
-        this.utilityService.onAddPersonnDetails(table_name, this.newPremisesStafflDetailsfrm.value)
+        this.utilityService.onAddPersonnDetails(table_name, this.newPremisesDetailsfrm.value)
           .subscribe(
             response => {
               this.app_resp = response.json();
@@ -424,7 +373,7 @@ export class DrugshopLicensedetailsComponent implements OnInit {
                   this.premisesGeneraldetailsfrm.patchValue({ contact_person_id: this.app_resp.record_id, contact_person: name})
                 }
                 else{
-                  this.premisesStafflDetailsfrm.patchValue({ personnel_id: this.app_resp.record_id, name: name, email_address: email_address, telephone_no: telephone_no, postal_address: postal_address })
+                  this.premisesDetailsfrm.patchValue({ personnel_id: this.app_resp.record_id, name: name, email_address: email_address, telephone_no: telephone_no, postal_address: postal_address })
                 }
                 this.isaddNewPremisesPersonnelDetails = false;
                 this.isPersonnelPopupVisible = false;
@@ -437,12 +386,12 @@ export class DrugshopLicensedetailsComponent implements OnInit {
               this.toastr.error('Error Occurred', 'Alert');
             });
       }
-  onSavePremisesStaffDetails() {
-    if (this.premisesStafflDetailsfrm.invalid) {
+  onSavePremisesHolderDetails() {
+    if (this.premisesDetailsfrm.invalid) {
       return;
     }
     //also get the premises ID
-    this.appService.onSavePremisesStaffDetails(this.premisesStafflDetailsfrm.value, this.premise_id)
+    this.appService.onSavePremisesHolderDetails(this.premisesDetailsfrm.value, this.premise_id)
       .subscribe(
         response => {
           this.premises_resp = response.json();
@@ -451,7 +400,7 @@ export class DrugshopLicensedetailsComponent implements OnInit {
             this.isBusinessPersonnelPopupVisible = false;
             this.isperssonelAddPopupVisible = false;
 
-            this.onLoadPremisesStaffDetails();
+            this.onLoadOtherPremisesDetails();
 
           } else {
             this.toastr.error(this.premises_resp.message, 'Alert');

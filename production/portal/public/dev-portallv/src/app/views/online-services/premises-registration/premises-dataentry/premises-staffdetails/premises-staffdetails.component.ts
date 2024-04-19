@@ -33,6 +33,7 @@ export class PremisesStaffdetailsComponent implements OnInit {
   @Input() isStaffPopupVisible: boolean;
   @Input() staffDetailsData: any = {};
   @Input() countries: any;
+  @Input() sub_module_id: number;
   @Input() regions: any;
   @Input() districts: any;
   @Input() personnel_informationData: any;
@@ -42,7 +43,7 @@ export class PremisesStaffdetailsComponent implements OnInit {
   @Input() premise_id: number;
   @Input() premisesGeneraldetailsfrm: FormGroup;
   personnelIdentificationTypeData:any;
-  
+
   personnel_id:number;
   district_id:number;
   region_id:number;
@@ -50,37 +51,56 @@ export class PremisesStaffdetailsComponent implements OnInit {
   personnel_QualificationData:any;
   personnel_type_id:number;
   app_resp:any;
+  auto:any;
   isPersonnelPopupVisible:boolean;
   premises_resp:any;
   isperssonelAddPopupVisible:boolean;
   loading:boolean;
   constructor(public cdr: ChangeDetectorRef,public dmsService:DocumentManagementService,public fb: FormBuilder,public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: PremisesApplicationsService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public utilityService:Utilities) {
-
   }
   ngOnInit() {
     this.onLoadPremisesStaffDetails();
+    this.onLoadPremisesPersonnelDetails()
     this.onpersonnelIdentificationTypeDataLoad();
+    if(this.sub_module_id == 108){
+        this.is_readonly = true;
+    }else{
+      this.is_readonly = false;
+
+    }
+
   }
   funcEditPersonnelDetails(data) {
 
-    // this.premisesPersonnelDetailsfrm.patchValue({personnel_id:data.data.personnel_id,id:data.data.id,start_date:data.data.start_date,end_date:data.data.end_date, personnel_name:data.data.personnel_name})
     this.premisesStafflDetailsfrm.patchValue(data.data);
 
     this.premisesStafflDetailsfrm.patchValue(data.data);
-    //load the personnel qualifiations 
 
     this.isBusinessPersonnelPopupVisible = true;
     this.onLoadPersonnerQualifationsDetails(data.data.personnel_id);
     this.personnel_id = data.data.personnel_id;
 
   }      
-  funcSelectStaffDetails(data){
+  funcSelectStaffDetails(data){ 
+
     this.premisesStafflDetailsfrm.patchValue(data.data);
-      this.isStaffPopupVisible= false;         
+    
+    this.isStaffPopupVisible= false;         
   }
- 
-    onSearchStaffDetails() {
-      this.appService.onLoadPremisesStaffDetails({})
+   onLoadPremisesPersonnelDetails() {
+
+    this.appService.onLoadPremisesPersonnelDetails(this.premise_id)
+      //.pipe(first())
+      .subscribe(
+        data => {//dtpremPersonnelDetailsData
+          this.premPersonnelDetailsData = data.data;
+        },
+        error => {
+          return false
+        });
+  }
+  onSearchStaffDetails() {
+      this.appService.onLoadStaffInformations()
         .subscribe(
           data_response => {
             this.isStaffPopupVisible = true;
@@ -198,7 +218,7 @@ export class PremisesStaffdetailsComponent implements OnInit {
     //func_delete records 
     let record_id = data.data.id;
     let apppremises_id = data.data.premise_id;
-    let table_name = 'wb_premises_staff';
+    let table_name = 'wb_premises_personnel';
     this.funcDeleteDetailhelper(record_id, apppremises_id, table_name, 'busines_personnel', 'Staff Details');
 
   }
@@ -222,7 +242,7 @@ export class PremisesStaffdetailsComponent implements OnInit {
 
                   if (resp.success) {
                     
-                      this.onLoadPremisesStaffDetails();
+                      this.onLoadPremisesPersonnelDetails();
 
                     this.toastr.success(resp.message, 'Response');
                   }
@@ -364,12 +384,11 @@ export class PremisesStaffdetailsComponent implements OnInit {
               this.toastr.error('Error Occurred', 'Alert');
             });
       }
-  onSavePremisesStaffDetails() {
+  onSavePremisesPersonnelDetails() {
     if (this.premisesStafflDetailsfrm.invalid) {
       return;
     }
-    //also get the premises ID
-    this.appService.onSavePremisesStaffDetails(this.premisesStafflDetailsfrm.value, this.premise_id)
+    this.appService.onSavePremisesPersonnelDetails(this.premisesStafflDetailsfrm.value, this.premise_id)
       .subscribe(
         response => {
           this.premises_resp = response.json();
@@ -378,7 +397,7 @@ export class PremisesStaffdetailsComponent implements OnInit {
             this.isBusinessPersonnelPopupVisible = false;
             this.isperssonelAddPopupVisible = false;
 
-            this.onLoadPremisesStaffDetails();
+            this.onLoadPremisesPersonnelDetails();
 
           } else {
             this.toastr.error(this.premises_resp.message, 'Alert');

@@ -425,8 +425,8 @@ export class ProdnoficationSharedclassComponent implements OnInit {
     this.checkProductsSubmission = e.value;
 
   }
-  onLoadGuidelines(sub_module_id, section_id) {
-    this.configService.onLoadAppSubmissionGuidelines(sub_module_id, section_id)
+  onLoadGuidelines(sub_module_id) {
+    this.configService.onLoadAppSubmissionGuidelines(sub_module_id)
       //.pipe(first())
       .subscribe(
         data => {

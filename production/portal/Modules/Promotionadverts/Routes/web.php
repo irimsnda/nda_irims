@@ -27,7 +27,12 @@ Route::group(['middleware' => 'auth:api','prefix' => 'promotionadverts'], functi
     Route::post('OnSavePromotionalProductParticulars', 'PromotionadvertsController@OnSavePromotionalProductParticulars');
     Route::post('onDeleteOtherApplicationsDetails', 'PromotionadvertsController@onDeleteOtherApplicationsDetails');
     Route::post('onSavepromotionalMaterialsDetails', 'PromotionadvertsController@onSavepromotionalMaterialsDetails');
+
     Route::get('getApppromMaterialsDetailData', 'PromotionadvertsController@getApppromMaterialsDetailData');
+
+    Route::get('getApppromChannelsDetailData', 'PromotionadvertsController@getApppromChannelsDetailData');
+    Route::get('getApppromMeetingTypesDetailData', 'PromotionadvertsController@getApppromMeetingTypesDetailData');
+    
     Route::get('getApplicationsCounter', 'PromotionadvertsController@getApplicationsCounter');
 
     
