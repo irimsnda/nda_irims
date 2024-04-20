@@ -3775,6 +3775,12 @@ setConfigGridsStore: function (obj, options) {
             if (Ext.ComponentQuery.query('#siapremisedetailsfrm')[0]) {
             form = Ext.ComponentQuery.query('#siapremisedetailsfrm')[0];   
             }
+
+            var  validate_nin = validateNinNoSubmisson(record.get('nin_no'));
+            if(!validate_nin){
+                return false;
+            }
+
             form.down('textfield[name=nin_no]').setValue(record.get('nin_no'));
             form.down('textfield[name=incharge_name]').setValue(record.get('incharge_name'));
             form.down('combo[name=incharge_qualification_id]').setValue(record.get('incharge_qualification_id'));

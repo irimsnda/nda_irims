@@ -4125,6 +4125,7 @@ $include-admin-view-pv-views-forms-pvtestfrm: dynamic(true);;
 $include-admin-view-pv-views-grids-casualityevaluationgrid: dynamic(true);;
 $include-admin-view-pv-views-grids-causalityreportabstractgrid: dynamic(true);;
 $include-admin-view-pv-views-grids-facilityselectiongrid: dynamic(true);;
+$include-admin-view-pv-views-grids-frequentreportersselectiongrid: dynamic(true);;
 $include-admin-view-pv-views-grids-psurproductgrid: dynamic(true);;
 $include-admin-view-pv-views-grids-pvadditionalproblemsgrid: dynamic(true);;
 $include-admin-view-pv-views-grids-pvdrughistorygrid: dynamic(true);;

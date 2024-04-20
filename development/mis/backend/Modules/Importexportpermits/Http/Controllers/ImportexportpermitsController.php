@@ -1,4 +1,4 @@
-<?php
+]<?php
 
 namespace Modules\Importexportpermits\Http\Controllers;
 
@@ -5824,7 +5824,7 @@ public function getNarcoticspermitsproductsDetails(Request $req){
                
                 
                 $user_id = $this->user_id;
-                $view_id = generateApplicationViewID();
+                
                 
                 $app_data = array(
                              "module_id" => $request->input('module_id'),
@@ -5842,7 +5842,7 @@ public function getNarcoticspermitsproductsDetails(Request $req){
                              "village" => $request->input('village'),
                              "tpin_no" => $request->input('tpin_no'),
                              "telephone_no" => $request->input('telephone_no'),
-                             "view_id" => $view_id,
+                             
                             "inspected_by" => $user_id,
                              "street" => $request->input('street'),
                              "physical_address" => $request->input('physical_address'),
@@ -5908,6 +5908,7 @@ public function getNarcoticspermitsproductsDetails(Request $req){
                         
                         $apptype_code = getSingleRecordColValue('sub_modules', array('id' => $sub_module_id), 'code');
                       
+                     
                                  $codes_array = array(
                                      'section_code' => $section_code,
                                      'zone_code' => $zone_code,
@@ -5917,6 +5918,8 @@ public function getNarcoticspermitsproductsDetails(Request $req){
                         $application_code = generateApplicationCode($sub_module_id, $applications_table);
     
                         $application_status = getApplicationInitialStatus($module_id, $sub_module_id);
+    
+ 
                         $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $process_id, $zone_id, $user_id);
  
                          if ($tracking_details['success'] == false) {
@@ -6028,8 +6031,25 @@ public function getNarcoticspermitsproductsDetails(Request $req){
                                     'unitpack_unit_id'=>$req->unitpack_unit_id,
                                     'application_code'=>$req->application_code,
                                     'dosage_form_id'=>$req->dosage_form_id,
-                                     'batch_numbers'=>$req->batch_numbers
+                                    'no_of_packs_tertiary'=>$req->no_of_packs_tertiary,
+                                    'no_of_packs_secondary'=>$req->no_of_packs_secondary,
+                                    'no_of_packs'=>$req->no_of_packs,
+                                    'no_of_units'=>$req->no_of_units,
+                                    'container_type_id'=>$req->container_type_id,
+                                    'batch_numbers'=>$req->batch_numbers,
+                                    'manufacturer_id'=>$req->manufacturer_id,
+                                    'product_type_id'=>$req->product_type_id,
+                                    'product_strength'=>$req->product_strength,
+                                    'si_unit_id'=>$req->si_unit_id,
+                                    'atc_code_id'=>$req->atc_code_id,
+                                    'atc_desciption'=>$req->atc_desciption,
+                                    'gmdn_code'=>$req->gmdn_code,
+                                    'gmdn_descriptor'=>$req->gmdn_descriptor,
+                                    'therapeutic_group'=>$req->therapeutic_group,
+                                    'distribution_category_id'=>$req->distribution_category_id,
+                                    "route_of_administration_id" =>json_encode(json_decode($request->route_of_administration_id)),
                             );
+                 dd($data);
                 if(validateIsNumeric($record_id)){
                     $where = array('id'=>$record_id);
                     if (recordExists($table_name, $where)) {

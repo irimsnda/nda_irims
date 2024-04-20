@@ -65,29 +65,54 @@ Ext.define('Admin.view.pv.views.forms.PvPersonnelFrm', {
             },
             layout: 'column',
             items:[
-            {
-                    xtype: 'combo', anyMatch: true,
-                    fieldLabel: 'Reporter As',
-                    name: 'adr_reporter_type_id',
-                    forceSelection: true,
-                    queryMode: 'local',
-                    valueField: 'id',
-                    displayField: 'name',
-                    listeners: {
-                        beforerender: {
-                            fn: 'setCompStore',
-                            config: {
-                                pageSize: 1000,
-                                proxy: {
-                                    extraParams: {
-                                        table_name: 'par_adr_reporter_types'
-                                    }
+
+             {
+                    xtype: 'fieldcontainer',
+                    layout: 'column',
+                    columnWidth: 0.33,
+                    defaults: {
+                        labelAlign: 'top'
+                    },
+                    fieldLabel: '(Search from Frequent Reporters) Reporter As',
+                    items: [{
+                            xtype: 'button',
+                            iconCls: 'x-fa fa-search',
+                            columnWidth: 0.1,
+                            name: 'search_reporter',
+                            tooltip: 'Search Reporter',
+                            childXtype:'frequentreportersselectiongrid',
+                            handler: 'showAddConfigParamWinFrm',
+                            winTitle: 'Frequent Reporters Selection List',
+                            winWidth: '90%'
+                        },
+                        {
+                            xtype: 'combo',
+                            anyMatch: true,
+                            name: 'adr_reporter_type_id',
+                            forceSelection: true,
+                            queryMode: 'local',
+                            valueField: 'id',
+                            columnWidth: 0.9,
+                            displayField: 'name',
+                            listeners: {
+                                beforerender: {
+                                    fn: 'setCompStore',
+                                    config: {
+                                        pageSize: 1000,
+                                        proxy: {
+                                            extraParams: {
+                                                table_name: 'par_adr_reporter_types'
+                                            }
+                                        }
+                                    },
+                                    isLoad: true
                                 }
-                            },
-                            isLoad: true
+                            }
                         }
-                    }
-         },
+                    ]
+         } ,
+
+       
          {
                     xtype: 'combo', anyMatch: true,
                     fieldLabel: 'Reporter Professional Qualification',
@@ -185,7 +210,7 @@ Ext.define('Admin.view.pv.views.forms.PvPersonnelFrm', {
             xtype: 'textfield',
             fieldLabel: 'Email address',
             name: 'email_address',
-            allowBlank: false,
+            allowBlank: true,
           },
 
          {
@@ -292,7 +317,7 @@ Ext.define('Admin.view.pv.views.forms.PvPersonnelFrm', {
             }
         }, {
             xtype: 'combo', anyMatch: true,
-            fieldLabel: 'Organization Category',
+            fieldLabel: 'Reporter/Organization Category',
             name: 'reporter_category_id',
             forceSelection: true,
            // readOnly: true,
@@ -595,7 +620,7 @@ Ext.define('Admin.view.pv.views.forms.PvPersonnelFrm', {
 
                 {
                     xtype: 'textfield',
-                    fieldLabel: 'Physical Address',
+                    fieldLabel: 'Premise Physical Address',
                     readOnly: true,
                     hidden:true,
                     allowBlank: true,
@@ -606,7 +631,7 @@ Ext.define('Admin.view.pv.views.forms.PvPersonnelFrm', {
                     readOnly: true,
                     hidden:true,
                     allowBlank: true,
-                    fieldLabel: 'Telephone',
+                    fieldLabel: 'Premise Telephone',
                     name: 'link_telephone'
                 },
          ]

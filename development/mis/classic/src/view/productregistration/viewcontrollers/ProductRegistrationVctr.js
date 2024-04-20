@@ -1877,7 +1877,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             storeArray = eval(btn.stores),
             arrayLength = storeArray.length,
             childObject = Ext.widget(childXtype);
-            sm = grid.getSelectionModel(),
+            var sm = grid.getSelectionModel(),
             selected_records = sm.getSelection(),
             selected= [];
              Ext.each(selected_records, function (item) {
@@ -1886,7 +1886,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             if (arrayLength > 0) {
                 me.fireEvent('refreshStores', storeArray);
             }
-            selected = JSON.stringify(selected),
+            var selected = JSON.stringify(selected);
             childObject.down('hiddenfield[name=selected_appcodes]').setValue(selected);
             
             funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');

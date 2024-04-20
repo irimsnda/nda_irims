@@ -69,7 +69,7 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsIngredientsGri
     columns: [{
         xtype: 'gridcolumn',
         dataIndex: 'ingredient_name',
-        text: 'Name of Immunogen(s)',
+        text: 'Ingredient',
         flex: 1
     }, {
         xtype: 'gridcolumn',
@@ -78,8 +78,8 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsIngredientsGri
         flex: 1,
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'quantity',
-        text: 'Quantity /dosage unit',
+        dataIndex: 'strength',
+        text: 'Strength',
         flex: 1,
     }, {
         xtype: 'gridcolumn',
@@ -94,7 +94,7 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsIngredientsGri
     },{
         xtype: 'gridcolumn',
         dataIndex: 'reason_for_inclusion',
-        hidden:true,
+       // hidden:true,
         text: 'Reason for Inclusion',
         flex: 1,
     }, {

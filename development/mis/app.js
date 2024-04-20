@@ -1864,6 +1864,36 @@ function validateApplicationDetails(application_code, module_id){
     return is_valid;
 }
 
+function validateNinNoSubmisson(nin_no){
+    is_valid = true;
+    Ext.Ajax.request({
+        method: 'GET',
+        async: false,
+        url: 'api/validateNinNoSubmisson',
+        params: {
+            nin_no: nin_no
+        },
+        headers: {
+            'Authorization': 'Bearer ' + access_token
+        },
+        success: function (response) {
+            var resp = Ext.JSON.decode(response.responseText),
+                success = resp.success;
+                message = resp.message;
+            if (success || success == true || success === true) {
+                is_valid = true;
+            }
+            else{
+                is_valid = false;
+                 toastr.warning(message, 'Warning Response');
+                return false;
+            }
+        }
+    });
+    return is_valid;
+}
+
+
 
 
 function checkApplicationEvaluationOverralRecom(application_code,comment_type_id){

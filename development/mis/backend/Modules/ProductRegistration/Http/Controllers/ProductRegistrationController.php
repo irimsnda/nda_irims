@@ -539,7 +539,7 @@ class ProductRegistrationController extends Controller
 
 
     }
-    function returnProductDataSets($request){
+    function returnProductDataSets($request){  
         $prod_data = array("dosage_form_id" => $request->input('dosage_form_id'),
                     "classification_id" => $request->input('classification_id'),
                     "brand_name" => $request->input('brand_name'),
@@ -562,7 +562,10 @@ class ProductRegistrationController extends Controller
                     "intended_enduser_id" => $request->input('intended_enduser_id'),
                     "intended_use_id" => $request->input('intended_use_id'),
                     "route_of_administration_id" =>json_encode(json_decode($request->input('route_of_administration_id'))),
+                    "manufacturing_country_id" =>json_encode(json_decode($request->input('manufacturing_country_id'))),
                     "method_ofuse_id" => $request->input('method_ofuse_id'),
+                    "product_type_id" => $request->input('product_type_id'),
+                    "atc_code_description" => $request->input('atc_code_description'),
                     "instructions_of_use" => $request->input('instructions_of_use'),
                     'prodclass_category_id'=>$request->prodclass_category_id,
                     "warnings" => $request->input('warnings'),
@@ -1475,16 +1478,16 @@ if(validateIsNumeric($section_id)){
 
             $results = $qry1->first();
             $results->route_of_administration_id=json_decode($results->route_of_administration_id);
-
-
+            $results->manufacturing_country_id=json_decode($results->manufacturing_country_id);
+            
  
             $qry2 = clone $main_qry;
             $qry2->join('tra_premises as t3a', 't1.local_agent_id', '=', 't3a.id')
                  ->Join('tra_premises_applications as t3b', 't3b.premise_id', '=', 't3a.id')
-                ->Join('tra_approval_recommendations as t3c', 't3a.permit_id', '=', 't3c.id')
-                ->Join('wb_trader_account as t3d', 't3b.applicant_id', '=', 't3d.id')  
-                ->select('t3a.id as premise_id', 't3a.*','t3d.name as applicant_name', 't3d.contact_person','t3a.name','t3c.permit_no');
+                ->Join('tra_approval_recommendations as t3c', 't3b.application_code', '=', 't3c.application_code')
+                 ->select('t3a.id as ltr_id', 't3c.permit_no as link_permit_no','t3a.name as ltr_name','t3a.tpin_no as ltr_tin_no', 't3a.physical_address as link_physical_address','t3a.telephone as link_telephone');
             $ltrDetails = $qry2->first();
+
 
             $qualityReport_main = DB::table('tra_quality_overrallsummaryreport as t1')
                 ->where('t1.application_code', $application_code)
@@ -1504,7 +1507,7 @@ if(validateIsNumeric($section_id)){
                 'success' => true,
                 'results' => $results,
                 'ltrDetails' => $ltrDetails,
-                'qualityReport' => $qualityReport,
+                //'qualityReport' => $qualityReport,
                 'message' => 'All is well'
             );
 
@@ -2743,7 +2746,7 @@ if(validateIsNumeric($section_id)){
             }
         }
         try {
-            $qry = DB::table('tra_manufacturers_information as t1')
+            $qry = DB::table('tra_manufacturing_sites as t1')
                 ->join('par_countries as t2', 't1.country_id', '=', 't2.id')
                 ->join('par_regions as t3', 't1.region_id', '=', 't3.id')
                 ->leftJoin('par_districts as t4', 't1.district_id', '=', 't4.id')

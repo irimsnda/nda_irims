@@ -95,7 +95,14 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
         }, {
             xtype: 'textfield',
             name: 'quantity',
+            allowBlank:true,
             fieldLabel: 'Quantity /dosage unit'
+
+        }, 
+         {
+            xtype: 'textfield',
+            name: 'strength',
+            fieldLabel: 'strength'
 
         },  {
             xtype:'fieldcontainer',
@@ -189,7 +196,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
             xtype: 'combo',
             name: 'inclusion_reason_id',
             allowBlank: true,
-            hidden:true,
+            //hidden:true,
             fieldLabel: 'Reason for Inclusion',
             valueField: 'id',
             displayField: 'name',

@@ -136,11 +136,11 @@ public function getFacilityList(Request $request)
             }
        
             $totalCount  = $qry->count();
-                $records = $qry->skip($start*$limit)->take($limit)->get();
-                $res = array('success'=>true, 
+            $records = $qry->skip($start*$limit)->take($limit)->get();
+            $res = array('success'=>true, 
                                 'results'=>$records,
                                 'totalCount'=>$totalCount
-                            );
+                );
            
         } catch (\Exception $exception) {
             $res = array(
@@ -1007,10 +1007,11 @@ public function getWHOCasaultyAssessment(Request $request)
             ->leftJoin('par_regions as t5', 't1.region_id', '=', 't5.id')
             ->leftJoin('par_districts as t6', 't1.district_id', '=', 't6.id')
             ->leftJoin('par_pv_reporter_qualifications as t7', 't1.qualification_id', '=', 't7.id')
-            ->select(DB::raw("DISTINCT  t1.id,t1.*,t2.name as reporter_as,t3.name as title,t4.name as city,t5.name as region,t6.name as district,t7.name as qualification")) 
+            ->leftJoin('par_adr_reporter_categories as t8', 't1.reporter_category_id', '=', 't8.id')
+            ->select(DB::raw("DISTINCT  t1.id,t1.*,t8.name as organization_category, t2.name as reporter_as,t3.name as title,t4.name as city,t5.name as region,t6.name as district,t7.name as qualification,  CASE WHEN t1.reporter_category_id = 1 THEN t1.facility_name WHEN t1.reporter_category_id = 2 THEN t1.ltr_name ELSE t1.organisation END AS organisation_details")) 
                     ->where('t1.application_code', $application_code);
             $results = $qry->get();
-            $res = array(
+            $res = array(  
                 'success' => true,
                 'results' => $results,
                 'message' => 'All is well'
@@ -1024,6 +1025,76 @@ public function getWHOCasaultyAssessment(Request $request)
         }
         return \response()->json($res);
     }
+
+    public function onLoadFrequentReporters(Request $req){
+        $start = $req->start;
+        $limit = $req->limit;
+        $filter = $req->input('filter');
+        $filter_string = '';
+        if (isset($filter)) {
+            $filters = json_decode($filter);
+            if ($filters != NULL) {
+                foreach ($filters as $filter) {
+                    switch ($filter->property) {
+                        case 'first_name' :
+                            $whereClauses[] = "t1.first_name like '%" . ($filter->value) . "%'";
+                            break;
+                        case 'last_name' :
+                            $whereClauses[] = "t1.last_name like '%" . ($filter->value) . "%'";
+                            break;
+                        case 'physical_address' :
+                            $whereClauses[] = "t1.physical_address like '%" . ($filter->value) . "%'";
+                             break;
+                        case 'telephone_no' :
+                            $whereClauses[] = "t1.telephone_no like '%" . ($filter->value) . "%'";
+                            break;
+                        case 'email_address' :
+                            $whereClauses[] = "t1.email_address like '%" . ($filter->value) . "%'";
+                            break;
+                    }
+                }
+                $whereClauses = array_filter($whereClauses);
+            }
+            if (!empty($whereClauses)) {
+                $filter_string = implode(' AND ', $whereClauses);
+            }
+        }
+        try{
+         
+            $qry = DB::table('tra_pv_personnel as t1')
+            ->leftJoin('par_adr_reporter_types as t2', 't1.adr_reporter_type_id', '=', 't2.id')
+            ->leftJoin('par_titles as t3', 't1.title_id', '=', 't3.id')
+            ->leftJoin('par_cities as t4', 't1.city_id', '=', 't4.id')
+            ->leftJoin('par_regions as t5', 't1.region_id', '=', 't5.id')
+            ->leftJoin('par_districts as t6', 't1.district_id', '=', 't6.id')
+            ->leftJoin('par_pv_reporter_qualifications as t7', 't1.qualification_id', '=', 't7.id')
+            ->leftJoin('par_adr_reporter_categories as t8', 't1.reporter_category_id', '=', 't8.id')
+            ->select(DB::raw("DISTINCT  t1.id,t1.*,t8.name as organization_category, t2.name as reporter_as,t3.name as title,t4.name as city,t5.name as region,t6.name as district,t7.name as qualification,  CASE WHEN t1.reporter_category_id = 1 THEN t1.facility_name WHEN t1.reporter_category_id = 2 THEN t1.ltr_name ELSE t1.organisation END AS organisation_details"));
+           if ($filter_string != '') {
+                $qry->whereRAW($filter_string);
+            }
+
+            $totalCount  = $qry->count();
+            $records = $qry->skip($start*$limit)->take($limit)->get();
+             // Iterate through each result and unset the undesired fields
+            foreach ($records as $record) {
+                unset($record->id, $record->pv_id, $record->application_code);
+            }
+            $res = array('success'=>true, 
+                        'results'=>$records,
+                        'totalCount'=>$totalCount
+        );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+           $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        }
+        return \response()->json($res);
+    }
+
+
 
     public function onLoadSenderDetails(Request $req){
         try{

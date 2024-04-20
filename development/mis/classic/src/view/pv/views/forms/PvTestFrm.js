@@ -46,11 +46,10 @@ Ext.define('Admin.view.pv.views.forms.PvTestFrm', {
             collapsible: true,
             defaults: {
                 labelAlign: 'top',
-                allowBlank: false,
+                allowBlank: true,
                 labelAlign: 'top',
                 margin: 5,
                 xtype: 'textfield',
-                allowBlank: false,
                 columnWidth: 0.33,
             },
             layout: 'column',
@@ -149,7 +148,7 @@ Ext.define('Admin.view.pv.views.forms.PvTestFrm', {
             xtype: 'textfield',
             fieldLabel: 'Test Name',
             name: 'test_name',
-            allowBlank: false,
+            allowBlank: true,
         },        {
                 xtype:'fieldcontainer',
                 fieldLabel: 'Test result',
@@ -166,6 +165,7 @@ Ext.define('Admin.view.pv.views.forms.PvTestFrm', {
                     name: 'test_logic_id',
                     forceSelection: true,
                     hideLabel: true,
+                    allowBlank: true,
                     queryMode: 'local',
                     valueField: 'id',
                     displayField: 'name',
@@ -188,7 +188,7 @@ Ext.define('Admin.view.pv.views.forms.PvTestFrm', {
                         hideLabel: true,
                         fieldLabel: ' ',
                         name: 'no_of_tests',
-                        allowBlank: false
+                        allowBlank: true
                     },
                     {
                         xtype: 'combo',
@@ -228,6 +228,7 @@ Ext.define('Admin.view.pv.views.forms.PvTestFrm', {
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
+            allowBlank: true,
             displayField: 'name',
             listeners: {
                 beforerender: {
@@ -260,7 +261,7 @@ Ext.define('Admin.view.pv.views.forms.PvTestFrm', {
                         hideLabel: true,
                         fieldLabel: ' ',
                         name: 'normal_low_value',
-                        allowBlank: false
+                        allowBlank: true
                     },
                     {
                         xtype: 'combo',
@@ -306,7 +307,7 @@ Ext.define('Admin.view.pv.views.forms.PvTestFrm', {
                         hideLabel: true,
                         fieldLabel: ' ',
                         name: 'normal_high_value',
-                        allowBlank: false
+                        allowBlank: true
                     },
                     {
                         xtype: 'combo',
@@ -340,6 +341,7 @@ Ext.define('Admin.view.pv.views.forms.PvTestFrm', {
             xtype: 'htmleditor',
             fieldLabel: 'Result',
             columnWidth: 1,
+            allowBlank: true,
             name: 'result',
         },
        

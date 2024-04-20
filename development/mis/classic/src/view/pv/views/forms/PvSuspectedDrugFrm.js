@@ -163,17 +163,66 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                     type: 'column'
                 },
                 defaults:{
-                    columnWidth: 0.5,
+                    columnWidth: 0.33,
                     labelAlign: 'top'
                 },
-                items:[
+                items:[{
+                        xtype: 'combo',
+                        fieldLabel: 'Has WHODrug name?',
+                        name: 'has_whodrug_name_id',
+                        forceSelection: true,
+                        allowBlank: false,
+                        queryMode: 'local',
+                        valueField: 'id',
+                        value:1,
+                        columnWidth: 0.33,
+                        displayField: 'name',
+                        listeners: {
+                            beforerender: {
+                                fn: 'setCompStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                        url: 'configurations/getConfigParamFromTable',
+                                        extraParams: {
+                                            table_name: 'par_confirmations'
+                                        }
+                                    }
+                                },
+                                isLoad: true
+                            },
+                            change:function(combo,value){
+                                search_whodrug_name_btn=combo.up('form').down('button[name=search_whodrug_name]');
+                                whodrug_level_id=combo.up('form').down('combo[name=whodrug_level_id]');
+                                who_drug_name=combo.up('form').down('textfield[name=who_drug_name]');
+                                if(value==2)
+                                {
+                                    search_whodrug_name_btn.setDisabled(true);
+                                    whodrug_level_id.allowBlank = true;
+                                    whodrug_level_id.setReadOnly(true);
+                                    who_drug_name.allowBlank = true;
+                                }
+                                else{
+
+                                    search_whodrug_name_btn.setDisabled(false);
+                                    whodrug_level_id.allowBlank = false;
+                                    whodrug_level_id.validate();
+                                    whodrug_level_id.setReadOnly(false);
+                                    who_drug_name.allowBlank = false;
+                                    who_drug_name.validate();
+                                }
+
+
+                            }
+                        }
+                    },
                      {
                             xtype: 'combo', anyMatch: true,
                             fieldLabel: 'Who Drug Level',
                             name: 'whodrug_level_id',
-                            columnWidth: 0.5,
+                            columnWidth: 0.33,
                             allowBlank:false,
-                            hideLabel:true,
+                            //hideLabel:true,
                             forceSelection: true,
                             queryMode: 'local',
                             valueField: 'id',
@@ -196,12 +245,12 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                  {
                     xtype: 'fieldcontainer',
                     layout: 'column',
-                    columnWidth: 0.5,
+                     columnWidth: 0.33,
                     defaults: {
                         labelAlign: 'top'
                     },
                     fieldLabel: 'Name',
-                    hideLabel:true,
+                    //hideLabel:true,
                     items: [
                         {
                             xtype: 'textfield',
@@ -215,6 +264,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                             xtype: 'button',
                             iconCls: 'x-fa fa-search',
                             columnWidth: 0.1,
+                            name:'search_whodrug_name',
                             tooltip: 'Search WHODrug',
                             handler: 'showWHODugSelectionList',
                             winTitle: 'LTR Selection List',

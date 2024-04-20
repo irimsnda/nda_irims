@@ -106,13 +106,16 @@ class ConfigurationsController extends Controller
 
                  if($table_name == 'tra_pv_suspected_drugs'){
                      $application_code = $req->input('application_code');
+                     $drug_role_id = $req->input('drug_role_id');
                      if (recordExists($table_name, $where = array('application_code' => $application_code,'drug_role_id' => 1))) {
+                         if($drug_role_id==1 || $drug_role_id===1){
                             $res = array(
                                 'success' => false,
                                 'message' => 'Suspect Drug Already added!!'
                              );
                             echo json_encode($res);
                             exit();
+                        }
                     }
                 
                   }
@@ -1258,10 +1261,12 @@ public function deleteWorkflowRecord(Request $req)
             else if ($req->table_name == 'par_atc_codes') {
                 
                 $qry = DB::table($table_name)
-                    ->leftJoin('par_common_names as t2', 't1.common_name_id', '=', 't2.id')
-                    ->select(DB::raw("t1.id,t1.name, CONCAT_WS(' ' ,t1.name,t2.name) as name"));
-
-                  
+                    ->select(DB::raw('t1.id,t1.name, t1.description as atc_code_description,CONCAT(t1.name, " - ",t1.description) as atc_code'));
+            }
+            else if ($req->table_name == 'par_gmdn_codes') {
+                
+                $qry = DB::table($table_name)
+                    ->select(DB::raw('t1.id,t1.name, t1.description as gmdn_code_description,CONCAT(t1.code, " - ",t1.name) as gmdn_code'));
             }
 
               else if ($req->table_name == 'par_confirmations') {

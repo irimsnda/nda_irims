@@ -117,6 +117,10 @@ Ext.define('Admin.controller.PvCtr', {
                 itemdblclick: 'onWHODrugselectionListDblClick'
             },
 
+            'frequentreportersselectiongrid': {
+                itemdblclick: 'onFrequentReporterSelectionListDblClick'
+            },
+
             'pvRcMeetingApplicationListGrid button[name=save_btn]': {
                 click: 'saveTCMeetingDetails'
             },
@@ -235,6 +239,27 @@ Ext.define('Admin.controller.PvCtr', {
           drugHistoryForm.down('textfield[name=previous_medication_whodrug]').setValue(record.get('drugName'));
           
         }
+        Ext.Function.defer(function () {
+            mask.hide();
+            win.close();
+        }, 200);
+        
+    },
+
+      onFrequentReporterSelectionListDblClick: function (view, record, item, index, e, eOpts) {
+        var me = this,
+            grid = view.grid,
+            win = grid.up('window'),
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            mask = new Ext.LoadMask({
+                msg: 'Please wait...',
+                target: win
+            });
+        mask.show();
+        
+        pvpersonnelFrm = Ext.ComponentQuery.query("#pvpersonnelfrm")[0];
+        pvpersonnelFrm.loadRecord(record);
         Ext.Function.defer(function () {
             mask.hide();
             win.close();

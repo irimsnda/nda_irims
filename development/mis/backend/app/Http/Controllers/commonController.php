@@ -2045,6 +2045,33 @@ class CommonController extends Controller
         return \response()->json($res);
     }
 
+    public function validateNinNoSubmisson (Request $req){
+        try {
+                $nin_no = $req->nin_no;
+                $record = DB::table('tra_premises')->where('nin_no',$nin_no)->first();
+                if($record){
+                    // $res = array('success'=>false, 'message'=>'Please note this Incharge has been used for another application');
+                    $res = array('success'=>true,  'message'=>'This NIN NO is valid');
+                }
+                else{
+                    $res = array('success'=>true,  'message'=>'This NIN NO is valid');
+                }
+
+
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    }
+
        public function validateInspectionReportSubmission(Request $req){
         try {
                 $application_code = $req->application_code;

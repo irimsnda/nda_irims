@@ -2585,14 +2585,6 @@ downloadPreviousDocupload: function (item) {
 
         form.loadRecord(record);
         funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
-        if(section_id == 4){
-            form.down('combo[name=device_type_id]').show();
-       
-        }
-        else{
-            form.down('combo[name=device_type_id]').hide();
-       
-        }
     },
      showPreviewProductOtherdetailWinFrm: function (btn) {
 
@@ -2605,14 +2597,6 @@ downloadPreviousDocupload: function (item) {
 
         form.loadRecord(record);
         funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
-        if(section_id == 4){
-            form.down('combo[name=device_type_id]').show();
-       
-        }
-        else{
-            form.down('combo[name=device_type_id]').hide();
-       
-        }
     },
     showProductPreviousComments: function (item) {
         

@@ -11,7 +11,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsOtherI
     },
     items: [{
         xtype: 'drugsIngredientsGrid',
-        title: 'immunogenic substance(s)',
+        title: 'Product Ingredients',
         autoScroll:true,
         listeners: {
             beforerender: {

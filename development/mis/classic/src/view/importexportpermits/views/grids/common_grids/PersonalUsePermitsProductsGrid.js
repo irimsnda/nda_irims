@@ -149,7 +149,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PersonalUseP
                     },
                     childXtype: 'personalusepermitsproductsfrm',
                     winTitle: 'Permit Products details',
-                    winWidth: '40%',
+                    winWidth: '70%',
                     handler: 'showEditProductOtherdetailWinFrm',
                     stores: '[]'
                 }, {

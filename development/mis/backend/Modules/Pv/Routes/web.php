@@ -37,6 +37,7 @@ Route::group(['middleware' => 'web', 'prefix' => 'pv'], function () {
     Route::post('updateAEFICategory', [PvController::class, 'updateAEFICategory']);
     Route::post('saveWHOAssessmentReportdetails', [PvController::class, 'saveWHOAssessmentReportdetails']);
     Route::get('getFacilityList', [PvController::class, 'getFacilityList']);
+    Route::get('onLoadFrequentReporters', [PvController::class, 'onLoadFrequentReporters']);
 
 });
 //non json calls

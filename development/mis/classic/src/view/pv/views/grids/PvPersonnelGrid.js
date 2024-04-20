@@ -88,12 +88,6 @@ Ext.define('Admin.view.pv.views.grids.PvPersonnelGrid', {
         tdCls: 'wrap-text'
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'telephone_no',
-        text: 'Reporter Category',
-        flex: 1,
-        tdCls: 'wrap-text'
-    }, {
-        xtype: 'gridcolumn',
         dataIndex: 'first_name',
         text: 'Given name',
         flex: 1,
@@ -108,7 +102,7 @@ Ext.define('Admin.view.pv.views.grids.PvPersonnelGrid', {
     {
         xtype: 'gridcolumn',
         dataIndex: 'organization_category',
-        text: 'Organization Category',
+        text: 'Reporter/Organization Category',
         flex: 1,
         tdCls: 'wrap-text'
     }, 
