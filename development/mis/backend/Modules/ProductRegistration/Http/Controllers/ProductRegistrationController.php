@@ -1307,17 +1307,21 @@ if(validateIsNumeric($section_id)){
         try {
             $main_qry = DB::table('tra_product_applications as t1')
                 ->join('tra_product_information as t2', 't1.product_id', '=', 't2.id')
+                 ->Join('tra_approval_recommendations as t2c', 't1.application_code', '=', 't2c.application_code')
                 ->where('t2.id', $tra_product_id);
 
             $qry1 = clone $main_qry;
-            $qry1->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
-                ->select('t1.*', 't2.brand_name as brand_name', 't1.product_id as tra_product_id',
+            $qry1->leftjoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->select('t1.*', 't2c.certificate_no as product_registration_no','t2.brand_name as brand_name', 't1.product_id as tra_product_id',
                     't3.name as applicant_name', 't3.contact_person','t1.id as active_application_id','t1.application_code as active_application_code',
                     't3.tin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
                     't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website',
                     't2.*');
 
             $results = $qry1->first();
+             unset($results->id,$results->application_code);
+            
+            //dd($results);
             $results->product_id = '';
             $qry2 = clone $main_qry;
             $qry2->join('wb_trader_account as t3', 't1.local_agent_id', '=', 't3.id')
@@ -1325,7 +1329,6 @@ if(validateIsNumeric($section_id)){
                     't3.tin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
                     't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website');
             $ltrDetails = $qry2->first();
-
             $res = array(
                 'success' => true,
                 'results' => $results,
@@ -3500,6 +3503,7 @@ if(validateIsNumeric($section_id)){
                 ->select(DB::raw("DISTINCT t7.id,t7.*, t1.*, t1.id as active_application_id, t1.reg_product_id, t3.name as applicant_name, t9.name as local_agent, t4.name as application_status,
                 t13.name as storage_condition, t7.brand_name, t7.id as tra_product_id, t8.name as common_name, t10.name as classification_name, t11.certificate_no, t12.expiry_date,
                 t7.brand_name as sample_name,t7.physical_description as product_description, t14.manufacturer_id, t15.name as dosage_form"));
+    
             if (validateIsNumeric($section_id)) {
                 $qry->where('t7.section_id', $section_id);
             }
@@ -3530,8 +3534,8 @@ if(validateIsNumeric($section_id)){
            
             
           
-            $results = $qry->groupBy('t12.id')->get()->slice($start)->take($limit);
-
+           // $results = $qry->groupBy('t12.id')->get()->slice($start)->take($limit);
+            $results = $qry->skip($start*$limit)->take($limit)->get();
             $res = array(
                 'success' => true,
                 'results' => $results,

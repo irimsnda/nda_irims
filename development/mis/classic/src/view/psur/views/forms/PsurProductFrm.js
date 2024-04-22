@@ -2,6 +2,7 @@
 Ext.define('Admin.view.pv.views.forms.PsurProductFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'psurformFrm',
+    itemId: 'psurformfrm',
     controller: 'psurVctr',
     height: Ext.Element.getViewportHeight() - 118,
     layout: {
@@ -100,9 +101,9 @@ Ext.define('Admin.view.pv.views.forms.PsurProductFrm', {
                     labelAlign: 'top',
                    
                 },
+                fieldLabel: 'Registration No',
                 items:[{
                         xtype: 'textfield',
-                        fieldLabel: 'Registration No',
                         columnWidth: 0.9,
                         readOnly: true,
                         name: 'product_registration_no',allowBlank: true,
@@ -123,35 +124,30 @@ Ext.define('Admin.view.pv.views.forms.PsurProductFrm', {
                 ]
             },{
                 xtype: 'textfield',
-                fieldLabel: 'Trade/Brand Name',
+                fieldLabel: 'Trade/Brand/Device Name',
                 name: 'brand_name',
                 bind:{
                     readOnly: '{isReadOnly}'
                 }
             },{
-                xtype: 'textfield',
-                fieldLabel: 'Generic Name',
-                name: 'generic_name',
-                bind:{
-                    readOnly: '{isReadOnly}'
-                }
-            },{
                 xtype: 'combo',
-                queryMode: 'local',
-                forceSelection: true,
+                fieldLabel: 'Generic/Common Name',
+                allowBlank: true,
                 valueField: 'id',
                 displayField: 'name',
-                fieldLabel: 'Product Type',
-                name: 'product_type_id',
+                forceSelection: true,
+                name: 'common_name_id',
+                queryMode: 'local',
                 listeners: {
                     beforerender: {
                         fn: 'setCompStore',
                         config: {
-                            pageSize: 100,
+                            pageSize: 10000,
                             proxy: {
-                                url: 'commonparam/getCommonParamFromTable',
+                                url: 'configurations/getNonrefParameter',
                                 extraParams: {
-                                    table_name: 'par_sections'
+                                    table_name: 'par_common_names',
+                                    has_filter: 0
                                 }
                             }
                         },
@@ -159,6 +155,82 @@ Ext.define('Admin.view.pv.views.forms.PsurProductFrm', {
                     }
                 }
             },{
+                xtype: 'combo',
+                fieldLabel: 'Classification',
+                name: 'classification_id',
+                forceSelection: true,
+                allowBlank:true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                    afterrender: {
+                        fn: 'setCompStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'configurations/getproductApplicationParameters',
+                                extraParams: {
+                                    table_name: 'par_classifications'
+                                }
+                            }
+                        },
+                        isLoad: true
+                    }
+                }
+            }, 
+            {
+                xtype: 'combo',
+                fieldLabel: 'Product Class Category',
+                name: 'prodclass_category_id',
+                forceSelection: true,
+                queryMode: 'local',
+                allowBlank:true,
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                    afterrender: {
+                        fn: 'setCompStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'configurations/getproductApplicationParameters',
+                                extraParams: {
+                                    table_name: 'par_prodclass_categories'
+                                }
+                            }
+                        },
+                        isLoad: true
+                    }
+                }
+
+            },{
+                xtype: 'combo',
+                fieldLabel: 'Product Type',
+                name: 'product_type_id',
+                forceSelection: true,
+                allowBlank:true,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                    afterrender: {
+                        fn: 'setCompStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'configurations/getRegistrationApplicationParameters',
+                                extraParams: {  
+                                    table_name: 'par_product_type'
+                                }
+                            }
+                        },
+                        isLoad: true
+                    }
+                }
+
+            },
+             {
                 xtype: 'combo',
                 fieldLabel: 'Dosage Form',
                 forceSelection: true,
@@ -182,15 +254,229 @@ Ext.define('Admin.view.pv.views.forms.PsurProductFrm', {
                         isLoad: true
                     },
                 }
-            },{
-                xtype: 'textfield',
-                fieldLabel:'Product Strength',
-                 allowBlank: true,
-                name: 'product_strength',
-                bind:{
-                    readOnly: '{isReadOnly}',
+            },
+
+            {
+                xtype:'fieldcontainer',
+                fieldLabel: 'Strength',
+                columnWidth: 0.33,
+                //hideLabel: true,
+                layout: {
+                    type: 'column'
+                },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[{
+                        xtype: 'textfield',
+                        fieldLabel: 'Strength',
+                        hideLabel: true,
+                        allowBlank:true,
+                        name: 'product_strength',
+                        emptyText: 'e.g., 125| 30',
+                        allowBlank: true,
+                        listeners: {
+                            render: function (field) {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: field.getEl(),
+                                    html: 'e.g., 125| 30',
+                                    trackMouse: true
+                                });
+                            }
+                        }
+                    },
+
+                {
+                        xtype: 'combo',
+                        fieldLabel: 'SI Units',
+                        hideLabel:true,
+                        allowBlank: true,
+                        valueField: 'id',
+                        displayField: 'name',
+                        forceSelection: true,
+                        name: 'si_unit_id',
+                        queryMode: 'local',
+                        listeners: {
+                            beforerender: {
+                                fn: 'setCompStore',
+                                config: {
+                                    pageSize: 10000,
+                                    proxy: {
+                                        url: 'configurations/getNonrefParameter',
+                                        extraParams: {
+                                            table_name: 'par_si_units',
+                                            has_filter: 0
+                                        }
+                                    }
+                                },
+                                isLoad: true
+                            }
+                        }
+                    }
+
+                 ]
+            },
+             {
+            xtype: 'combo',
+            fieldLabel: ' ATC Code',
+            name: 'atc_code_id',
+            allowBlank:true,
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'atc_code',
+            listeners: {
+                afterrender: {
+                    fn: 'setCompStore',
+                    config: {
+                        pageSize: 10000,
+                        storeId: 'par_atccodesstr',
+                        proxy: {
+                            url: 'configurations/getproductApplicationParameters',
+                            extraParams: {
+                                table_name: 'par_atc_codes'
+                            }
+                        }
+                    },
+                    isLoad: true
+                },select: function (cmbo, record) {
+                        var form = cmbo.up('form'),
+                            description = record.get('atc_code_description');
+                        form.down('textfield[name=atc_desciption]').setValue(description);
+                    }
+            }
+        },
+        {
+            xtype:'textfield',
+            name:'atc_desciption',
+            fieldLabel:'ATC Description',
+            allowBlank: true,
+            readOnly: true
+        },
+
+        {
+            xtype: 'combo',
+            fieldLabel: ' GMDN Code',
+            name: 'gmdn_code',
+            allowBlank:true,
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'gmdn_code',
+            listeners: {
+                afterrender: {
+                    fn: 'setCompStore',
+                    config: {
+                        pageSize: 10000,
+                        storeId: 'par_atccodesstr',
+                        proxy: {
+                            url: 'configurations/getproductApplicationParameters',
+                            extraParams: {
+                                table_name: 'par_gmdn_codes'
+                            }
+                        }
+                    },
+                    isLoad: true
+                },select: function (cmbo, record) {
+                        var form = cmbo.up('form'),
+                            description = record.get('gmdn_code_description');
+                        form.down('textfield[name=gmdn_descriptor]').setValue(description);
+                    }
+            }
+        },
+        {
+            xtype:'textfield',
+            name:'gmdn_descriptor',
+            fieldLabel:'GMDN Descriptor',
+            allowBlank: true,
+            readOnly: true
+        },
+
+          {
+            xtype: 'combo',
+            fieldLabel: 'Therapeutic Group',
+            name: 'therapeutic_group',
+            allowBlank:true,
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                afterrender: {
+                  fn: 'setCompStore',
+                    config: {
+                        pageSize: 10000,
+                        proxy: {
+                            url: 'configurations/getRegistrationApplicationParameters',
+                            extraParams: {
+                                table_name: 'par_therapeutic_group'
+                            }
+                        }
+                    },
+                    isLoad: true
                 }
-            },{
+            }
+        },{
+            xtype: 'tagfield',
+            fieldLabel: 'Route of Administration',
+            name: 'route_of_administration_id',
+            allowBlank: true,
+            forceSelection: true,
+            filterPickList: true,
+            encodeSubmitValue: true,
+            emptyText: 'Route of Administration',
+            growMax: 100,
+            columnWidth: 0.33,
+            multiSelect: true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                afterrender: {
+                    fn: 'setCompStore',
+                    config: {
+                        pageSize: 10000,
+                        proxy: {
+                            url: 'configurations/getRegistrationApplicationParameters',
+                            extraParams: {
+                                table_name: 'par_route_of_administration'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+            }
+        },
+
+        {
+            xtype: 'combo',
+            fieldLabel: 'Distribution Category',
+            name: 'distribution_category_id',
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',
+            allowBlank: true,
+            displayField: 'name',
+            listeners: {
+                afterrender: {
+                    fn: 'setCompStore',
+                    config: {
+                        pageSize: 10000,
+                        proxy: {
+                            url: 'configurations/getRegistrationApplicationParameters',
+                            extraParams: {
+                                table_name: 'par_distribution_categories'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+            }
+        },
+
+
+            {
                 xtype: 'textfield',
                 fieldLabel:'Marketing Authorisation Holder',
                 allowBlank: true,
@@ -249,6 +535,7 @@ Ext.define('Admin.view.pv.views.forms.PsurProductFrm', {
                         xtype: 'button',
                         iconCls: 'x-fa fa-plus',
                         columnWidth: 0.1,
+                        disabled:true,
                         tooltip: 'add manufacturer',
                         childXtype: 'manufacturerConfigFrm',
                         stores: 'manufacturersConfigStr',

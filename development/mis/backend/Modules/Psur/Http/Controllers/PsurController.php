@@ -472,10 +472,11 @@ public function preparenewPsurReceiving(Request $req)
    
 
             $qry = DB::table('tra_product_notification_details as t1')
-                   ->leftJoin('par_sections as t2', 't1.product_type_id', '=', 't2.id')
+                   ->leftJoin('par_product_type as t2', 't1.product_type_id', '=', 't2.id')
                     ->leftJoin('par_dosage_forms as t3', 't1.dosage_form_id', '=', 't3.id')
-                    ->leftJoin('tra_manufacturers_information as t4', 't1.manufacturer_id', '=', 't4.id')
-                   ->select('t1.*','t2.name as product_type','t3.name as dosage_form','t4.name as manufacturer_name')
+                    ->leftJoin('tra_manufacturing_sites as t4', 't1.manufacturer_id', '=', 't4.id')
+                     ->leftJoin('par_common_names as t5', 't1.common_name_id', '=', 't5.id')
+                   ->select('t1.*','t2.name as product_type','t3.name as dosage_form','t4.name as manufacturer_name','t5.name as generic_name')
                     ->where('t1.application_code', $application_code);
             $results = $qry->get();
             $res = array(

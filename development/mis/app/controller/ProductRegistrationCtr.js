@@ -1247,11 +1247,12 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             var applicantFrm = activeTab.down('productapplicantdetailsfrm'),
             localagentFrm = activeTab.down('productlocalapplicantdetailsfrm'),
             products_detailsfrm = activeTab.down('#productsDetailsFrm'),
-            is_populate_primaryappdata = false;
+            is_populate_primaryappdata = false,
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             zone_cbo = activeTab.down('combo[name=zone_id]');
+            psurformfrm = Ext.ComponentQuery.query("#psurformfrm")[0];
             if(activeTab.down('hiddenfield[name=is_populate_primaryappdata]')){
 
                 is_populate_primaryappdata = activeTab.down('hiddenfield[name=is_populate_primaryappdata]').getValue();
@@ -1310,6 +1311,10 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                         }
                         if(products_detailsfrm){
                           products_detailsfrm.loadRecord(model);
+                        }
+                        if(psurformfrm){
+                           model.set('id', ' ');
+                          psurformfrm.loadRecord(model);
                         }
                         
                         // zone_cbo.setReadOnly(true);

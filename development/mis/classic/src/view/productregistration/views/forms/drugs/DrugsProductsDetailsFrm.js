@@ -564,7 +564,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             displayField: 'name',
             listeners: {
                 afterrender: {
-                    fn: 'setConfigCombosSectionfilterStore',
+                    fn: 'setConfigCombosStore',
                     config: {
                         pageSize: 10000,
                         proxy: {
@@ -591,7 +591,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             displayField: 'name',
             listeners: {
                 afterrender: {
-                    fn: 'setConfigCombosSectionfilterStore',
+                    fn: 'setConfigCombosStore',
                     config: {
                         pageSize: 10000,
                         proxy: {

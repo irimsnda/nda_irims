@@ -71,7 +71,7 @@ Ext.define('Admin.view.pv.views.grids.PsurProductGrid', {
     },{
         xtype: 'gridcolumn',
         dataIndex: 'brand_name',
-        text: 'Brand Name',
+        text: 'Brand /Device Name',
         flex: 1,
         tdCls: 'wrap-text'
     },{
