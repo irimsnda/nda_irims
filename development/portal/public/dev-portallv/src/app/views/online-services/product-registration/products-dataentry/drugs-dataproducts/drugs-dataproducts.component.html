@@ -1283,6 +1283,13 @@
               <dx-date-box formControlName="approval_date" placeholder="Approval Date" [showClearButton]="true">
               </dx-date-box>
             </div>
+            <div class="col-lg-12" style="margin:1px;">
+              <label>FPP Manufacturer</label>
+              <dx-select-box [items]="gmpfppManufacturerData"  valueExpr="id"
+               displayExpr="name" placeholder="Manufacturing Site Name" 
+              [searchEnabled]="true" formControlName="fpp_manufacturer_id">
+              </dx-select-box>
+            </div>
 
             <div class="col-lg-12" style="margin:1px;">
                 <label for="ti" class="control-label">Manufacturing Product Line</label>
@@ -1310,6 +1317,7 @@
 
             <div class="col-lg-12">
                 <input type="hidden" formControlName="id" />
+                <input type="hidden" formControlName="site_id"/>
                 <input type="hidden" value="application_code" formControlName="application_code" />
               <button type="submit" (submit)="onSaveotherStatesGmpInspections()" [disabled]="!otherStatesGmpInspectionsFrm.valid"
                 class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Details

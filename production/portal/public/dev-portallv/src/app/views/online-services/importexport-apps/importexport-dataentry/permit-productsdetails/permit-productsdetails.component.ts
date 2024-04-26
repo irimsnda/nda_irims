@@ -63,7 +63,7 @@ export class PermitProductsdetailsComponent extends SharedImportexportclassCompo
    @Input() enabled_newproductadd: boolean;
    @Input() sub_module_id: number;
    @Input() tracking_no: string;
-
+   @Input() business_type_id:number;
    @Input() module_id: number;
    @Input() section_id: number;
    @Input() proforma_currency_id: number;

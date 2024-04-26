@@ -166,13 +166,13 @@
             [showClearButton]="true">
           </dx-text-box>
         </div>
-        <div class="col-lg-4">
+         <div class="col-lg-4">
           <label class="control-label">Trader As Local Technical Representative</label>
-            <dx-select-box  [dataSource]="confirmDataParam"(onValueChanged)="onTraderLTRChange($event)"   
-              displayExpr="name" [searchEnabled]="true"
-             placeholder="Trader as Local Agent" formControlName="trader_aslocal_agent">
-            </dx-select-box>    
-        </div>
+            <dx-select-box (onValueChanged)="onCheckTraderAsLTR($event)"  
+              [dataSource]="confirmDataParam" valueExpr="id" displayExpr="name" [searchEnabled]="true"
+              placeholder="Trader as Local Agent" formControlName="trader_aslocal_agent">
+            </dx-select-box>
+          </div> 
         <div class="col-lg-4 input-group">
           <div class="col-lg-8">
             <label class="control-label">Local  Technical Representative</label>

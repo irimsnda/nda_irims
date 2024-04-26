@@ -541,12 +541,7 @@ public function getProductsQualitySummaryDetails(Request $req){
 
                 
  
-            } if($table_name == 'par_business_types'){
-                    $sql =  $sql->whereNotIn('id',[3,5,7]);
-
-                
- 
-            }
+            } 
             if($table_name == 'par_classifications'){
                 $prodclass_category_id = $req->prodclass_category_id;
                 $sql->join('par_prodcat_classifications as t2', 't1.id', '=', 't2.classification_id')->where(array('t2.prodclass_category_id'=>$prodclass_category_id));

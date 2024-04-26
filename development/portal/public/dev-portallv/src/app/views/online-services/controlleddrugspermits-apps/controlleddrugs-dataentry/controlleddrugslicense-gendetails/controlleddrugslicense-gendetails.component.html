@@ -95,8 +95,7 @@
             [searchEnabled]="true"
             placeholder="Reason" 
             formControlName="importation_reason_id"
-            (onSelectionChanged)="onSelectImportationReason($event)"
-            (onValueChanged)="onSelectImportationReasons($event)">
+            (onSelectionChanged)="onSelectImportationReason($event)">
             <div *dxTemplate="let name of 'item'">
               <div>{{name.name}}</div>
             </div>

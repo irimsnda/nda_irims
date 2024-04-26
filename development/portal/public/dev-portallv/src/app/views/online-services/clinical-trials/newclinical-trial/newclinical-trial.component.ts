@@ -85,6 +85,7 @@ export class NewclinicalTrialComponent extends SharedClinicaltrialComponent impl
           if (this.app_resp.success) {
             this.application_id = this.app_resp.application_id;
             this.toastr.success(this.app_resp.message, 'Response');
+            this.wizard.model.navigationMode.goToStep(8);
           } else {
             this.toastr.error(this.app_resp.message, 'Alert');
           }
@@ -113,6 +114,8 @@ export class NewclinicalTrialComponent extends SharedClinicaltrialComponent impl
           if (this.app_resp.success) {
             this.application_id = this.app_resp.application_id;
             this.toastr.success(this.app_resp.message, 'Response');
+            this.wizard.model.navigationMode.goToStep(9);
+
           } else {
             this.toastr.error(this.app_resp.message, 'Alert');
           }
@@ -195,6 +198,8 @@ onSaveNonClincialTrialPharmacology() {
           if (this.app_resp.success) {
             this.application_id = this.app_resp.application_id;
             this.toastr.success(this.app_resp.message, 'Response');
+            this.wizard.model.navigationMode.goToStep(6);
+
           } else {
             this.toastr.error(this.app_resp.message, 'Alert');
           }
@@ -218,6 +223,8 @@ onSaveNonClincialTrialPharmacology() {
           if (this.app_resp.success) {
             this.application_id = this.app_resp.application_id;
             this.toastr.success(this.app_resp.message, 'Response');
+            this.wizard.model.navigationMode.goToStep(7);
+
           } else {
             this.toastr.error(this.app_resp.message, 'Alert');
           }
@@ -241,6 +248,7 @@ onSaveNonClincialTrialPharmacology() {
           if (this.app_resp.success) {
             this.application_id = this.app_resp.application_id;
             this.toastr.success(this.app_resp.message, 'Response');
+            this.wizard.model.navigationMode.goToStep(4);
           } else {
             this.toastr.error(this.app_resp.message, 'Alert');
           }
@@ -264,6 +272,7 @@ onSaveNonClincialTrialPharmacology() {
           if (this.app_resp.success) {
             this.application_id = this.app_resp.application_id;
             this.toastr.success(this.app_resp.message, 'Response');
+            this.wizard.model.navigationMode.goToStep(5);
 
           } else {
             this.toastr.error(this.app_resp.message, 'Alert');

@@ -322,7 +322,11 @@
                         placeholder="Product Origin" formControlName="product_origin_id">
                       </dx-select-box>
                     </div>
-                   
+                  <div class="col-lg-12">
+                    <label class="control-label">Indications</label>
+                    <dx-text-area [height]="60" [readOnly]= "isReadOnly"  formControlName="indications"  placeholder="Enter Indications">
+                    </dx-text-area>
+                  </div>
                   <div class="col-lg-12">
                     <label class="control-label">Visual description e.g Color</label>
                     <dx-text-area [height]="60" formControlName="physical_description" [readOnly]= "isReadOnly" placeholder="Physical description"
@@ -626,12 +630,16 @@
                             </dx-tag-box>
                         </div>
                         <div class="col-lg-4">
-                            <label class="control-label"><br>Product Origin</label>
-                            <dx-select-box [dataSource]="productTypeData" valueExpr="id" displayExpr="name" [searchEnabled]="true"   [readOnly]="readOnlyOrigin" 
-                              placeholder="Product Origin" formControlName="product_origin_id">
-                            </dx-select-box>
-                          </div>
-                         
+                          <label class="control-label"><br>Product Origin</label>
+                          <dx-select-box [dataSource]="productTypeData" valueExpr="id" displayExpr="name" [searchEnabled]="true"   [readOnly]="readOnlyOrigin" 
+                            placeholder="Product Origin" formControlName="product_origin_id">
+                          </dx-select-box>
+                        </div>
+                        <div class="col-lg-12">
+                          <label class="control-label">Indications</label>
+                          <dx-text-area [height]="60" [readOnly]= "isReadOnly"  formControlName="indications"  placeholder="Enter Indications">
+                          </dx-text-area>
+                        </div>
                         <div class="col-lg-12">
                           <label class="control-label">Visual description e.g Color</label>
                           <dx-text-area [height]="60" formControlName="physical_description" [readOnly]= "isReadOnly" placeholder="Physical description"

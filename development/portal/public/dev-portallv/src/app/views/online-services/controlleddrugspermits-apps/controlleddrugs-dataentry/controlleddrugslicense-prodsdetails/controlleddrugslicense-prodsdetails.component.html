@@ -36,145 +36,151 @@
   </dx-data-grid>
 </div>
 
-<dx-popup class="popup"  [width]="funcpopWidth(75)" height="funcpopHeight(80)" [showTitle]="true" title="Permit Products Details"
+
+ <dx-popup class="popup"  [width]="funcpopWidth(80)" height="600" [showTitle]="true" title=" Products Details"
   [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isPermitproductsPopupVisible">
   <div *dxTemplate="let data of 'content'">
-
     <dx-scroll-view>
-      <div class="row col-lg-12">
-          <form role="form" class="row" enctype="multipart/form-data" role="form" [formGroup]="permitProductsFrm"
-          (ngSubmit)="onsavePermitProductdetails()">
-          <div class="col-lg-12 row row-no-margin ">
-            <div class="col-lg-6 ">
-              <label>Controlled Drug Type</label>
-              <dx-select-box [dataSource]="controlledDrugsTypesData" valueExpr="id" placeholder="Select Controlled Drug Type"   (onValueChanged) ="funcChangeControlDrugType($event)"
-                displayExpr="name" formControlName="controlleddrugs_type_id" [searchEnabled]="true">
-              </dx-select-box>
-            </div>
-            <div class="input-group col-lg-6" *ngIf="is_registered == 1">         
-                <label class="col-lg-12">Market Authorisation No</label>
-                <dx-text-box placeholder="Market Authorisation No" readOnly="true" formControlName="product_registration_no">
-                </dx-text-box>
-                <dx-button
-                    text="Search Registered Drugs"
-                    type="success"
-                    icon="fa fa-search" 
-                    [elementAttr]="{  class: 'pull-left input-group-text' }"
-                    (onClick)="onSearchRegisteredProductApplication()">
-                </dx-button>
-            </div>
+      <dx-tab-panel (onItemClick)="onPermitsProductsTabCLick($event)">
+        <dxi-item title="Products Details" icon="rowfield">
+          <div *dxTemplate>
+            <div class="row col-lg-12">
+              <form role="form" class="row" enctype="multipart/form-data" role="form" 
+                [formGroup]="permitProductsFrm"(ngSubmit)="onsavePermitProductdetails()">
+                <div class="col-lg-12 row row-no-margin ">
+                  <div class="col-lg-4 ">
+                    <label>Controlled Drug Type</label>
+                    <dx-select-box [dataSource]="controlledDrugsTypesData" valueExpr="id" placeholder="Select Controlled Drug Type"   (onValueChanged) ="funcChangeControlDrugType($event)"
+                      displayExpr="name" formControlName="controlleddrugs_type_id" [searchEnabled]="true">
+                    </dx-select-box>
+                  </div>
+                  <div class="col-lg-4 input-group" *ngIf =" is_registered == 1">
+                    <div class="col-lg-10  ">
+                      <label class="control-label">Market Authorisation No</label>
+                      <dx-text-box placeholder="Market Authorisation No" [readOnly]="true"  formControlName="product_registration_no">
+                      </dx-text-box>
+                    </div>
+                    <div class="col-lg-2">
+                      <dx-button [elementAttr]="{ class: 'pull-left'}" style="margin-top:32px!important;" type="success" (click)="onSearchRegisteredProductApplication()" >
+                        <i class="fa fa-search"></i>Search
+                      </dx-button>
+                    </div>
+                </div>
 
-            <div class="input-group col-lg-6">         
-                <label class="col-lg-12">Brand Name</label>
-                <dx-text-box placeholder="Brand Name" readOnly="true" formControlName="brand_name">
-                </dx-text-box>
-                <dx-button
-                    text="Search UnRegistered Drugs"
-                    type="success"
-                    [disabled]="is_registered == 1"
-                    icon="fa fa-search" 
-                    [elementAttr]="{  class: 'pull-left input-group-text' }"
-                    (onClick)="onSearchUnRegisteredRegisteredProductApplication()">
+                <div class="col-lg-4 input-group" *ngIf =" is_registered == 1">
+                  <div class="col-lg-10  ">
+                    <label class="control-label">Brand Name</label>
+                    <dx-text-box placeholder="Brand Name" [readOnly]="true"  formControlName="brand_name">
+                      </dx-text-box>
+                  </div>
+                  <div class="col-lg-2">
+                    <dx-button [disabled]="is_registered == 1" [elementAttr]="{ class: 'pull-left'}" style="margin-top:32px!important;" type="success" (click)="onSearchUnRegisteredRegisteredProductApplication()" >
+                      <i class="fa fa-search"></i>Search
+                    </dx-button>
+                  </div>
+                </div>
+                  <div class="col-lg-4 ">
+                    <label>Controlled Drugs Substance</label>
+                    <dx-select-box [dataSource]="controlDrugsSubstanceData" valueExpr="id" placeholder="Select Controlled Drugs Substance"   (onValueChanged) ="funcChangecontrolDrugsSubstance($event)"
+                      displayExpr="name" formControlName="controlled_drugssubstances_id" [searchEnabled]="true">
+                    </dx-select-box>
+                  </div>
+                  <div class="col-lg-4 ">
+                    <label>Esther/Salt(Optional)</label>
+                    <dx-select-box [dataSource]="controlledDrugsBaseSaltData" valueExpr="id" placeholder="Select Esther /Salt"  (onValueChanged) ="funcChangecontrolledDrugsBaseSaltData($event)" 
+                      displayExpr="name" formControlName="controlleddrugs_basesalt_id" [searchEnabled]="true">
+                    </dx-select-box>
+                  </div>
+                  <div class="col-lg-4">
+                    <label>Drug Contents(%)</label>
+                    <dx-text-box placeholder="Drug Contents(%)" [readOnly]= "readOnly_drugcontent" 
+                    (onValueChanged)="baseStrengthCalculation()"  formControlName="drugs_content">
+                    </dx-text-box>
+                  </div>
+                  <div class="col-lg-4">
+                    <label>Dosage Form</label>
+                    <dx-select-box [dataSource]="dosageFormsData" valueExpr="id" placeholder="Select Product Dosage Form"
+                      displayExpr="name" [readOnly]="is_registered == 1" formControlName="dosage_form_id" [searchEnabled]="true">
+                    </dx-select-box>
+                  </div>
+                  <div class="col-lg-4">
+                    <label>Purpose of Drug Use</label>
+                    <dx-text-box placeholder="Purpose of Drug Use"formControlName="purpose_of_drugsuse">
+                    </dx-text-box>
+                  </div>
+                  
+                  <div class="col-lg-4  row" style="margin-left: 5px !important;padding:0px !important;">
+                    <div class="col-lg-6">
+                      <label>Product Strength (In Packaging Type)</label>
+                      <dx-number-box placeholder="Product Strength (In Packaging Type)"  (onValueChanged)="funcChangeProductStrength($event)"   formControlName="product_strength">
+                      </dx-number-box>
+                    </div>
+                    <div class="col-lg-6">
+                      <label>Units</label>
+                      <dx-select-box [dataSource]="gramsBaseSiUnitData" valueExpr="id" placeholder="Select Units"
+                        displayExpr="name" (onSelectionChanged) ="funcChangeProductStrengthUnits($event)"  formControlName="gramsbasesiunit_id" [searchEnabled]="true">
+                      </dx-select-box>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 row" style="margin-left: 5px !important;padding:0px !important;">
+                    <div class="col-lg-6">
+                      <label>Packaging Unit Size</label>
+                      <dx-text-box placeholder="Pack Unit" (onValueChanged)="calculateProductStrengthinGrams()"  formControlName="pack_unit">
+                      </dx-text-box>
+                    </div>
+                    <div class="col-lg-6">
+                      <label>Pack Units(i.e ml etc)</label>
+                      <dx-select-box [dataSource]="siUnitsData" valueExpr="id" placeholder="Select Pack Units"
+                        displayExpr="name" formControlName="unitpack_unit_id" [searchEnabled]="true">
+                      </dx-select-box>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <label>Packaging Type(Container)</label>
+                    <dx-select-box [dataSource]="drugsPackagingTypeData" valueExpr="id" placeholder="Select Packaging Type"
+                      displayExpr="name" formControlName="drugspackaging_type_id" [searchEnabled]="true">
+                    </dx-select-box>
+                  </div>
+                  <div class="col-lg-4">
+                    <label>Strength(g)</label>
+                    <dx-number-box placeholder="Strength(g)" 
+                    (onValueChanged)="baseStrengthCalculation()"   [readOnly]= "true"  formControlName="strength_asgrams">
+                    </dx-number-box>
+                  </div>
+                  <div class="col-lg-4">
+                    <label>Quantity</label>
+                    <dx-number-box placeholder="Item Quantity"
+                    (onValueChanged)="baseStrengthCalculation()"   
+                    formControlName="quantity">
+                    </dx-number-box>
+                  </div>
+                  <div class="col-lg-4">
+                    <label>Base(g)</label>
+                    <dx-number-box placeholder="Base(g)" [readOnly]= "true"    formControlName="controlleddrug_base">
+                    </dx-number-box>
+                  </div>
+                  <div class="col-lg-12 ">
+                    <input type="hidden" formControlName="id" />
+                    <input type="hidden" formControlName="product_id" />
+                    <input type="hidden" formControlName="conversion_unit" />
+                  </div>
+                <div>
+                <dx-button text="Save Products Details" [disabled]="!permitProductsFrm.valid"
+                  (onClick)="onsavePermitProductdetails()" type="success" icon="save"
+                  [elementAttr]="{ class: 'btn btn-primary; pull-right' }">
                 </dx-button>
-            </div>
-
-            <div class="col-lg-6 ">
-              <label>Controlled Drugs Substance</label>
-              <dx-select-box [dataSource]="controlDrugsSubstanceData" valueExpr="id" placeholder="Select Controlled Drugs Substance"   (onValueChanged) ="funcChangecontrolDrugsSubstance($event)"
-                displayExpr="name" formControlName="controlled_drugssubstances_id" [searchEnabled]="true">
-              </dx-select-box>
-            </div>
-            <div class="col-lg-6 ">
-              <label>Esther/Salt(Optional)</label>
-              <dx-select-box [dataSource]="controlledDrugsBaseSaltData" valueExpr="id" placeholder="Select Esther /Salt"  (onValueChanged) ="funcChangecontrolledDrugsBaseSaltData($event)" 
-                displayExpr="name" formControlName="controlleddrugs_basesalt_id" [searchEnabled]="true">
-              </dx-select-box>
-            </div>
-            <div class="col-lg-6">
-              <label>Drug Contents(%)</label>
-              <dx-text-box placeholder="Drug Contents(%)" [readOnly]= "readOnly_drugcontent" 
-              (onValueChanged)="baseStrengthCalculation()"  formControlName="drugs_content">
-              </dx-text-box>
-            </div>
-            <div class="col-lg-6">
-              <label>Dosage Form</label>
-              <dx-select-box [dataSource]="dosageFormsData" valueExpr="id" placeholder="Select Product Dosage Form"
-                displayExpr="name" [readOnly]="is_registered == 1" formControlName="dosage_form_id" [searchEnabled]="true">
-              </dx-select-box>
-            </div>
-            <div class="col-lg-6">
-              <label>Purpose of Drug Use</label>
-              <dx-text-box placeholder="Purpose of Drug Use"formControlName="purpose_of_drugsuse">
-              </dx-text-box>
-            </div>
-            
-            <div class="col-lg-6  row" style="margin-left: 5px !important;padding:0px !important;">
-              <div class="col-lg-6">
-                <label>Product Strength (In Packaging Type)</label>
-                <dx-number-box placeholder="Product Strength (In Packaging Type)"  (onValueChanged)="funcChangeProductStrength($event)"   formControlName="product_strength">
-                </dx-number-box>
-              </div>
-              <div class="col-lg-6">
-                <label>Units</label>
-                <dx-select-box [dataSource]="gramsBaseSiUnitData" valueExpr="id" placeholder="Select Units"
-                  displayExpr="name" (onSelectionChanged) ="funcChangeProductStrengthUnits($event)"  formControlName="gramsbasesiunit_id" [searchEnabled]="true">
-                </dx-select-box>
               </div>
             </div>
-            <div class="col-lg-6  row" style="margin-left: 5px !important;padding:0px !important;">
-              <div class="col-lg-6">
-                <label>Packaging Unit Size</label>
-                <dx-text-box placeholder="Pack Unit" (onValueChanged)="calculateProductStrengthinGrams()"  formControlName="pack_unit">
-                </dx-text-box>
-              </div>
-              <div class="col-lg-6">
-                <label>Pack Units(i.e ml etc)</label>
-                <dx-select-box [dataSource]="siUnitsData" valueExpr="id" placeholder="Select Pack Units"
-                  displayExpr="name" formControlName="unitpack_unit_id" [searchEnabled]="true">
-                </dx-select-box>
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <label>Packaging Type(Container)</label>
-              <dx-select-box [dataSource]="drugsPackagingTypeData" valueExpr="id" placeholder="Select Packaging Type"
-                displayExpr="name" formControlName="drugspackaging_type_id" [searchEnabled]="true">
-              </dx-select-box>
-            </div>
-            <div class="col-lg-6">
-              <label>Strength(g)</label>
-              <dx-number-box placeholder="Strength(g)" 
-              (onValueChanged)="baseStrengthCalculation()"   [readOnly]= "true"  formControlName="strength_asgrams">
-              </dx-number-box>
-            </div>
-            <div class="col-lg-6">
-              <label>Quantity</label>
-              <dx-number-box placeholder="Item Quantity"
-              (onValueChanged)="baseStrengthCalculation()"   
-              formControlName="quantity">
-              </dx-number-box>
-            </div>
-            <div class="col-lg-6">
-              <label>Base(g)</label>
-              <dx-number-box placeholder="Base(g)" [readOnly]= "true"    formControlName="controlleddrug_base">
-              </dx-number-box>
-            </div>
-            
-            <div class="col-lg-12 ">
-              <input type="hidden" formControlName="id" />
-              <input type="hidden" formControlName="product_id" />
-              <input type="hidden" formControlName="conversion_unit" />
-              
-            </div>
-            <dx-button text="Save Products Details"
-              (onClick)="onsavePermitProductdetails()" type="success" icon="save"
-              [elementAttr]="{ class: 'btn btn-primary; pull-right' }">
-            </dx-button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </dx-scroll-view>
-    </div>
-  </dx-popup>
+    </dxi-item>
+  </dx-tab-panel>
+  </dx-scroll-view>
+  </div>
+</dx-popup>
+
+
 
 <dx-popup class="popup" [width]="funcpopWidth(80)" [height]="600" [showTitle]="true" title="Registered Products Details"
   [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isRegisteredproductsPopupVisible">

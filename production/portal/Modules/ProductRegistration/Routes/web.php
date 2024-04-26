@@ -67,6 +67,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'productregistration'], fu
     Route::get('getProductsDrugsPackaging', 'ProductRegistrationController@getProductsDrugsPackaging');
     Route::get('getManufacturingSiteInformation', 'ProductRegistrationController@getManufacturingSiteInformation');
     Route::get('getManufacturersInformation', 'ProductRegistrationController@getManufacturersInformation');
+    Route::get('getproductFPPManufactureringData', 'ProductRegistrationController@getproductFPPManufactureringData');
 
     Route::get('getproductManufactureringData', 'ProductRegistrationController@getproductManufactureringData');
     Route::get('getAPIproductManufactureringData', 'ProductRegistrationController@getAPIproductManufactureringData');

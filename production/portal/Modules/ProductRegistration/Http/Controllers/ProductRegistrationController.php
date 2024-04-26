@@ -4108,6 +4108,67 @@ return $man_roles;
       return response()->json($res);
 
     }
+
+   public function getproductFPPManufactureringData(Request $req){
+         
+        try{
+            $data = array();
+            $product_id = $req->product_id;
+            $manufacturer_type_id = $req->manufacturer_type_id;
+            $records = DB::table('wb_product_manufacturers as t1')
+                       ->where(array('product_id'=>$product_id,'manufacturer_type_id'=>$manufacturer_type_id))   
+                         ->get();
+
+                         foreach ($records as $rec) {
+                                $product_manufacturer_id = $rec->id;
+                                $manufacturer_id = $rec->manufacturer_id;
+                                //$man_site_id = $rec->man_site_id;
+
+                                $genericNameData = getParameterItems('par_common_names','','mis_db');
+                                $manufacturer_roleData = getParameterItems('par_manufacturing_roles','','mis_db');
+
+                                $man_data = DB::connection('mis_db')
+                                    ->table('par_man_sites as t1')
+                                    ->select('t1.*','t1.id as manufacturer_id', 't1.name as manufacturing_site', 't5.name as manufacturer_name','t5.email_address','t2.name as country', 't3.name as region','t4.name as district')
+                                    ->leftjoin('par_countries as t2', 't1.country_id', '=','t2.id')
+                                    ->leftjoin('par_regions as t3', 't1.region_id', '=','t3.id')
+                                    ->leftJoin('par_districts as t4', 't1.district_id', '=','t4.id')
+                                    ->leftJoin('tra_manufacturers_information as t5', 't1.manufacturer_id','=','t5.id' )
+                                    ->where(array('t5.id'=>$manufacturer_id, 't1.manufacturer_id'=>$manufacturer_id))
+                                    ->first();
+
+                                if($man_data){
+                                    $data[] = array(
+                                            'site_id'=>$rec->manufacturer_id,
+                                            'name'=>$man_data->manufacturer_name,
+                                        );
+                                }
+                               
+                        }  
+                        $res = array(
+                            'success' => true,
+                            'data' => $data
+                        );
+      }
+      catch (\Exception $e) {
+          $res = array(
+              'success' => false,
+              'message' => $e->getMessage()
+          );
+      } catch (\Throwable $throwable) {
+          $res = array(
+              'success' => false,
+              'message' => $throwable->getMessage()
+          );
+      }
+      return response()->json($res);
+
+    }
+
+
+
+
+
     public function getAPIproductManufactureringData(Request $req){
          
         try{

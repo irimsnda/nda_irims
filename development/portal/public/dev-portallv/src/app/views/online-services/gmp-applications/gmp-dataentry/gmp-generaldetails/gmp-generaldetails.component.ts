@@ -100,7 +100,7 @@ export class GmpGeneraldetailsComponent implements OnInit{
   isReadOnlyTraderasBillingPerson:boolean;
   isAddNewManufacturingSite:boolean = false;
   manufacturerFrm:FormGroup;
-  isReadOnlyTraderasLtr:boolean = false;
+  isReadOnlyTraderasLtr:boolean;
   is_local:number;
   sectionData:any;
   manufacturingDetails:any;
@@ -119,9 +119,7 @@ export class GmpGeneraldetailsComponent implements OnInit{
     let user_details = this.authService.getUserDetails();
     
     this.is_local = user_details.is_local;
-    if (this.is_local == 1) {
-      this.isReadOnlyTraderasLtr = true;
-    }
+ 
     if(this.gmp_type_id == 2){
       this.is_domestic = true;
     }else{
@@ -521,15 +519,18 @@ onManDetailPreparing(e) {
     
 
   }
-  onTraderLTRChange($event){
+  onCheckTraderAsLTR($event) {
+    
     if($event.value == 1){
-        this.isReadOnlyTraderasLtr = true;
+        this.isReadOnlyTraderasLtr = true
 
     }else{
       this.isReadOnlyTraderasLtr = false;
     }
     
+
   }
+
     onTraderasBillingpersnChange($event) {
     
     if($event.value == 1){

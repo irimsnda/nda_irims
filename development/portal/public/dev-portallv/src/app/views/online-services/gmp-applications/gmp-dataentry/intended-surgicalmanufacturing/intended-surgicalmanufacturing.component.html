@@ -238,7 +238,7 @@
                   <div class="col-xs-12 col-md-6 col-lg-6 col-xl-12">
                       <label for="ti" class="control-label">Product Line</label>
 
-                      <dx-select-box [dataSource]="gmpSurgicalProductLineDataRows" valueExpr="id" placeholder="Product Line" displayExpr="products_line_name" [searchEnabled]="true" formControlName="gmp_productline_id">
+                      <dx-select-box [dataSource]="gmpSurgicalProductLineDataRows" valueExpr="id" placeholder="Product Line" displayExpr="products_line_name" [searchEnabled]="true" formControlName="group_family_id">
                           <div *dxTemplate="let data of 'item'">
                               <div class="custom-item">
                                   {{data.products_line_name}} {{data.manufacturing_activities}}

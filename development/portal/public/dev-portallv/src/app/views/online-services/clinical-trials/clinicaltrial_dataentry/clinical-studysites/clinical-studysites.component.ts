@@ -69,7 +69,7 @@ export class ClinicalStudysitesComponent implements OnInit {
   }
   ngOnInit() {
     this.onLoadClinicalSiteDetails(this.application_id);
-    this.clinicalSTudySiteDetailsFrm.get('country_id').setValue(37);
+    //this.clinicalSTudySiteDetailsFrm.get('country_id').setValue(37);
 
   }
   funcDeleteClinicalSiteDetails(site_data) {

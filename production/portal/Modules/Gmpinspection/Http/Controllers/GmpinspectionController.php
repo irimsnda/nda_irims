@@ -130,6 +130,7 @@ class GmpinspectionController extends Controller
                                     'contact_person_enddate'=>$req->contact_person_enddate,
                                     'applicant_contact_person'=>$req->applicant_contact_person
                         );
+
           }
                         
                     $app_data = array('sub_module_id'=>$sub_module_id,
@@ -3004,7 +3005,7 @@ public function getgmpproductDetailsInformationData(Request $req){
                         $reg_site_id = $rec->reg_site_id;
                         $prodline_description = $rec->prodline_description;
                         //$product_line_id = $rec->product_line_id;
-                        //$group_family_id = $rec->group_family_id;
+                        $group_family_id = $rec->group_family_id;
                         $reg_product_id = $rec->reg_product_id;
                         $product_id = $rec->product_id;
                         $records = DB::connection('mis_db')->table('tra_product_applications as t1')
@@ -3064,5 +3065,83 @@ public function getgmpproductDetailsInformationData(Request $req){
         }
         return response()->json($res);
     }
-    
+    public function getgmpSurgicalproductDetailsInformationData(Request $req){
+        try{
+            $mis_db = DB::connection('mis_db')->getDatabaseName();                    
+            $manufacturing_site_id = $req->manufacturing_site_id;
+            $data = array();
+            //get the records 
+                $gmpproductDescriptionData = getParameterItems('gmp_product_descriptions','','mis_db');
+               // $gmpProductLineData = getParameterItems('gmp_product_lines','','mis_db');
+            $records = DB::table('wb_product_gmpinspectiondetails as t1')
+                    ->select('t1.*','t3.name as product_line_name','t10.name as classification_name','t2.prodline_description')
+                    ->join($mis_db.'.gmp_productline_details as t2','t2.id' ,'=', 't1.group_family_id')
+                    ->leftjoin($mis_db.'.par_medical_device_family as t3','t2.group_family_id' ,'=', 't3.id')
+                     ->leftJoin($mis_db.'.par_medicaldevices_classification as t10', 't1.classification_id', '=', 't10.id')
+                    ->where(array('t1.manufacturing_site_id' => $manufacturing_site_id))
+                    ->get();
+                if(count($records)>0 && validateisNumeric($manufacturing_site_id)){
+                    foreach ($records as $rec) {
+                        //get the array 
+                        $reg_site_id = $rec->reg_site_id;
+                        $prodline_description = $rec->prodline_description;
+                        $group_family_id = $rec->group_family_id;
+                        $reg_product_id = $rec->reg_product_id;
+                        $product_id = $rec->product_id;
+                        $records = DB::connection('mis_db')->table('tra_product_applications as t1')
+                                    ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                                    ->join('tra_product_information as t7', 't1.product_id', '=', 't7.id')
+                                    ->leftJoin('par_common_names as t8', 't7.common_name_id', '=', 't8.id')
+                                    ->leftJoin('wb_trader_account as t9', 't1.local_agent_id', '=', 't9.id')
+                                    ->leftJoin('par_medicaldevices_classification as t10', 't7.classification_id', '=', 't10.id')
+                                    ->leftJoin('tra_approval_recommendations as t11', 't1.permit_id', '=', 't11.id')
+                                    ->leftJoin('tra_registered_products as t12', 't12.tra_product_id', '=', 't7.id')
+                                    ->leftJoin('par_storage_conditions as t13', 't7.storage_condition_id', '=', 't13.id')
+                                    ->join('par_validity_statuses as t4', 't12.validity_status_id', '=', 't4.id')
+                                    ->join('par_registration_statuses as t15', 't12.validity_status_id', '=', 't15.id')
+                                    ->join('par_sections as t16', 't1.section_id', '=', 't16.id')
+                                    ->leftJoin('par_dosage_forms as t17', 't7.dosage_form_id', '=', 't17.id')
+                                    ->leftJoin('par_product_types as t18', 't1.product_type_id', '=', 't18.id')
+                                    ->select('t7.*','t1.*', 't16.name as section_name', 't4.name as validity_status','t15.name as registration_status', 't1.id as active_application_id',  't3.name as applicant_name','t3.physical_address', 't17.name as dosage_form',   't9.name as local_agent', 't12.id as reg_product_id','t1.product_id as tra_product_id','t7.id as product_id',
+                                        't13.name as storage_condition','t7.brand_name', 't12.tra_product_id', 't8.name as common_name', 't10.name as classification_name', 't11.certificate_no', 't11.expiry_date',
+                                        't7.brand_name as sample_name') 
+                                        ->where(array('t12.id'=>$reg_product_id, 't1.product_id'=>$product_id))
+                                        ->first();//, 't7.section_id'=>$section_id
+                        $prodline_description = returnParamFromArray($gmpproductDescriptionData,$rec->prodline_description);
+                               // if($records){
+                                    $data[] = array('id'=>$rec->id,
+                                    //'product_id'=>$records->product_id,
+                                     'reg_site_id'=>$reg_site_id,
+                                     //'reference_no'=>$records->reference_no,
+                                    // 'brand_name'=>$records->brand_name,
+                                   // 'applicant_name'=>$records->applicant_name,
+                                     'classification_name'=>$rec->classification_name,
+                                    // 'common_name'=>$records->common_name,
+                                     'prodline_description'=>$prodline_description,
+                                     'product_line_name'=>$rec->product_line_name,
+
+                                    // 'product_linedetails'=>$product_linedetails
+                                  );
+
+                                //}
+                                   
+                     }
+
+                }
+                     
+                     $res =array('success'=>true,'data'=> $data);
+        }
+        catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+    }
 }

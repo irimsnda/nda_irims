@@ -480,7 +480,7 @@ export class SharedClinicaltrialComponent implements OnInit {
               investigator_id: new FormControl('', Validators.compose([Validators.required])),
              // paying_currency_id: new FormControl('', Validators.compose([Validators.required])),
               sponsor_id: new FormControl('', Validators.compose([Validators.required])),
-              zone_id: new FormControl('', Validators.compose([Validators.required])),
+              zone_id: new FormControl('', Validators.compose([])),
               duration_stimate:new FormControl('', Validators.compose([])),
               application_code: new FormControl(this.application_code, Validators.compose([])),           
               sub_module_id: new FormControl(this.sub_module_id, Validators.compose([Validators.required])),
@@ -973,11 +973,11 @@ export class SharedClinicaltrialComponent implements OnInit {
 
 
   }
-   funcValidateOtherClinicalDetails(nextStep) {
+   //funcValidateOtherClinicalDetails(nextStep) {
 
-    this.funcValidateStepDetails('Add Other Clinical Trial Details', 'wb_clinical_trial_applications', nextStep);
+   // this.funcValidateStepDetails('Add Other Clinical Trial Details', 'wb_clinical_trial_applications', nextStep);
 
-  }
+  //}
   funcValidateClinicalInvestDetails(nextStep) {
    // this.funcValidateStepDetails('Add Clinical trial Investigators to proceed', this.clinicaltrailinvestigatorsData, nextStep);
 

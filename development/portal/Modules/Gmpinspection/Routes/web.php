@@ -92,6 +92,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'gmpinspection'], function
 
     Route::get('getManufacturingSiteRegisteredProductsData', 'GmpinspectionController@getManufacturingSiteRegisteredProductsData');
     Route::get('getgmpproductDetailsInformationData', 'GmpinspectionController@getgmpproductDetailsInformationData');
+    Route::get('getgmpSurgicalproductDetailsInformationData', 'GmpinspectionController@getgmpSurgicalproductDetailsInformationData');
+
+    
     
 });
 

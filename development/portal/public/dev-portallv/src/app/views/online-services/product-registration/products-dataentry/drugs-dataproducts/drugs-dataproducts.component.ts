@@ -110,6 +110,7 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
   manufacturingRoleDataSource: any;
   manufacturingRoleData:any;
   countries: any;
+  gmpfppManufacturerData:any;
   regions: any;
   districts: any;
   country_id:number;
@@ -142,10 +143,12 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
       approval_date: new FormControl('', Validators.compose([Validators.required])),
       approving_authority_id: new FormControl('', Validators.compose([Validators.required])),
       gmp_productline_id: new FormControl('', Validators.compose([])),
+      fpp_manufacturer_id: new FormControl('', Validators.compose([Validators.required])),
       gmpproduct_type_id: new FormControl('', Validators.compose([Validators.required])),
       manufacturing_activity_id: new FormControl('', Validators.compose([Validators.required])),      
       active_common_name_id: new FormControl('', Validators.compose([])),
       approved_productlines: new FormControl('', Validators.compose([])),
+      site_id: new FormControl('', Validators.compose([])),
       id: new FormControl('', Validators.compose([])),
 
     });
@@ -249,6 +252,7 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
     this.OnLoadProductsCommonName(product_id);
     this.OnLoadProductsPackagingMaterials(product_id);
     this.OnLoadproductManufacturersData(product_id);
+    this.OnLoadfppManufacturersData(product_id);
     this.OnLoadapiManufacturersData(product_id)
     this.OnLoadProductsGMPInspectionDetails(product_id)
     this.OnLoadotherStatesGmpInspectionsData(this.product_id);
@@ -730,6 +734,8 @@ onLoadcurrentRegStatusData() {
     
     this.otherStatesGmpInspections = true;
     this.otherStatesGmpInspectionsFrm.reset();
+    this.OnLoadfppManufacturersData(this.product_id);
+
   }
 
   onProdStatesRegistrationsPreparing(e) {
@@ -1087,6 +1093,19 @@ OnLoadproductManufacturersData(product_id) {
         return false
       });
 }
+OnLoadfppManufacturersData(product_id) {
+
+  this.appService.getProductsOtherDetails({ product_id: product_id, manufacturer_type_id: 1 }, 'getproductFPPManufactureringData')
+    //.pipe(first())
+    .subscribe(
+      data => {
+        this.gmpfppManufacturerData = data.data;
+      },
+      error => {
+        return false
+      });
+}
+
 
 
 OnLoadapiManufacturersData(product_id) {

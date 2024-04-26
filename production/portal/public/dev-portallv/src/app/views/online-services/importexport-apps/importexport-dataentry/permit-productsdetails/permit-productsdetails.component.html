@@ -18,17 +18,17 @@
 
       </div>
     </dxi-column>
-    <dxi-column dataField="brand_name" caption="Proprietary Name"></dxi-column>
+    <dxi-column dataField="brand_name" caption="Brand Name"></dxi-column>
     <dxi-column dataField="common_name"caption="Generic Name"></dxi-column>
-    <dxi-column dataField="dosage_form"caption="Dosage Name"></dxi-column>
     <dxi-column dataField="product_strength"caption="Product Strength"></dxi-column>
-    <dxi-column dataField="specification_type"caption="Standard"></dxi-column>
-    <dxi-column dataField="no_of_packs"caption="No of Primary pack per Secondary pack"></dxi-column>
-    <dxi-column dataField="no_of_packs_secondary"caption="No of secondary pack per Tertiary pack"></dxi-column>
-    <dxi-column dataField="pack_size"></dxi-column>
-    <dxi-column dataField="currency_name"></dxi-column>
-    <dxi-column dataField="unit_price"></dxi-column>
-    <dxi-column dataField="total_value" caption="FOB Value"></dxi-column>
+    <dxi-column dataField="no_of_packs_tertiary"caption="Number of Tertiary Pack"></dxi-column>
+    <dxi-column dataField="no_of_packs_secondary"caption="Number  of secondary pack per Tertiary pack"></dxi-column>
+    <dxi-column dataField="no_of_packs"caption="Number of Primary Packs per Secondary Packs"></dxi-column>   
+    <dxi-column dataField="quantity"caption="Total Quantity"></dxi-column> 
+    <dxi-column dataField="units_for_quantity"caption="Units"></dxi-column>
+    <dxi-column dataField="currency_name"caption="Currency"></dxi-column>
+    <dxi-column dataField="unit_price"caption="Unit Value"></dxi-column>
+    <dxi-column dataField="total_value" caption="Value"></dxi-column>
     <dxo-paging [enabled]="true">
     </dxo-paging>
 
@@ -64,7 +64,7 @@
 
       </div>
     </dxi-column>
-    <dxi-column dataField="brand_name" caption="Proprietary Name"></dxi-column>
+    <dxi-column dataField="brand_name" caption="Brand Name"></dxi-column>
     <dxi-column dataField="common_name"caption="Generic Name"></dxi-column>
     <dxi-column dataField="dosage_form"caption="Dosage Name"></dxi-column>
     <dxi-column dataField="product_strength"caption="Product Strength"></dxi-column>
@@ -112,17 +112,17 @@
 
       </div>
     </dxi-column>
-    <dxi-column dataField="brand_name" caption="Proprietary Name"></dxi-column>
+    <dxi-column dataField="brand_name" caption="Brand Name"></dxi-column>
     <dxi-column dataField="common_name"caption="Generic Name"></dxi-column>
-    <dxi-column dataField="dosage_form"caption="Dosage Name"></dxi-column>
     <dxi-column dataField="product_strength"caption="Product Strength"></dxi-column>
-    <dxi-column dataField="specification_type"caption="Standard"></dxi-column>
-    <dxi-column dataField="no_of_packs"caption="No of Primary pack per Secondary pack"></dxi-column>
-    <dxi-column dataField="no_of_packs"caption="No of secondary pack per Tertiary pack"></dxi-column>
-    <dxi-column dataField="pack_size"></dxi-column>
-    <dxi-column dataField="currency_name"></dxi-column>
-    <dxi-column dataField="unit_price"></dxi-column>
-    <dxi-column dataField="total_value" caption="FOB Value"></dxi-column>
+    <dxi-column dataField="no_of_packs_tertiary"caption="Number of Tertiary Pack"></dxi-column>
+    <dxi-column dataField="no_of_packs_secondary"caption="Number  of secondary pack per Tertiary pack"></dxi-column>
+    <dxi-column dataField="no_of_packs"caption="Number of Primary Packs per Secondary Packs"></dxi-column>   
+    <dxi-column dataField="quantity"caption="Total Quantity"></dxi-column> 
+    <dxi-column dataField="units_for_quantity"caption="Units"></dxi-column>
+    <dxi-column dataField="currency_name"caption="Currency"></dxi-column>
+    <dxi-column dataField="unit_price"caption="Unit Value"></dxi-column>
+    <dxi-column dataField="total_value" caption="Value"></dxi-column>
     <dxo-paging [enabled]="true">
     </dxo-paging>
 
@@ -511,28 +511,7 @@
                   placeholder="Ingredients" [readOnly]="true" formControlName="ingredient_id">
                   </dx-select-box>
                 </div>
-                <div class="col-lg-4" *ngIf = " product_category_id == 11 && sub_module_id == 12">
-                  <label >Name of Chemical Reference Standards</label>
-                  <dx-text-box formControlName="name_chemical_reference" [readOnly]='isRegisteredLevel' placeholder="Name of Chemical Reference">
-                  </dx-text-box>
-                </div> 
-                <div class="col-lg-4" *ngIf = "(product_category_id == 7 || product_category_id == 6) && sub_module_id == 12">
-                  <label class="control-label">Equipment Name</label>
-                  <dx-text-box formControlName="name_of_material" placeholder="Equipment Name">
-                  </dx-text-box>
-                </div>
-                <div class="col-lg-4" *ngIf = "(product_category_id == 7 || product_category_id == 6) && sub_module_id == 12">
-                  <label class="control-label">Equipment Purpose (For Manufacture of for Analytical Testing</label>
-                  <dx-text-box formControlName="equipment_purpose" placeholder="Equipment Purpose">
-                  </dx-text-box>
-                </div>
-
-             <!--    <div class="col-lg-4" *ngIf = "sub_module_id == 115 || sub_module_id == 49">
-                  <label class="control-label">Pack Size</label>
-                  <dx-text-box formControlName="total_units" placeholder="Pack Size" [showClearButton]="true">
-                  </dx-text-box>
-                </div> -->
-
+                
                 <div class="col-lg-4" *ngIf = "sub_module_id == 115 || sub_module_id == 49">
                   <label class="control-label">Approved Qty</label>
                   <dx-text-box formControlName="approved_qty" placeholder="Approved Qty" [readOnly]="true" [showClearButton]="true">
@@ -606,7 +585,11 @@
                   <dx-select-box [dataSource]="packagingUnitsData" valueExpr="id" placeholder="units of strength"
                     displayExpr="name" formControlName="si_unit_id" [searchEnabled]="true">
                   </dx-select-box>
-                      
+                </div>
+                <div class="col-lg-4" *ngIf = "business_type_id == 5  && sub_module_id == 12">
+                  <label class="control-label">Item/Product</label>
+                  <dx-text-box formControlName="name_of_material" placeholder="Item/Product">
+                  </dx-text-box>
                 </div>
                 <div class="col-lg-4" *ngIf="sub_module_id == 12">
                   <label>Country of Origin</label>

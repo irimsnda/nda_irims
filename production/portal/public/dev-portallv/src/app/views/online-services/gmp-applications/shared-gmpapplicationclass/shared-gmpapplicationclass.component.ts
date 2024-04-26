@@ -530,7 +530,7 @@ registered_id: number;
       gmdn_code_description: new FormControl('', Validators.compose([Validators.required])),
       classification_id: new FormControl('', Validators.compose([Validators.required])),
       product_id: new FormControl('', Validators.compose([])),
-      gmp_productline_id: new FormControl('', Validators.compose([Validators.required]))
+      group_family_id: new FormControl('', Validators.compose([Validators.required]))
     });
 
     this.prodgmpAddinspectionFrm = new FormGroup({

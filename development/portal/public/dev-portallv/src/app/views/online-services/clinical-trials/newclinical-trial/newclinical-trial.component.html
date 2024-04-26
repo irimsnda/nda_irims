@@ -148,8 +148,7 @@
             <button (click)="onClinicalDashboard()" class="btn btn-primary pull-left" style="margin:5px;" 
             type="button"><i class="fa fa-angle-double-left"></i>
               &nbsp;Dashboard</button>
-            <button type="submit" (click)="onSaveClincialTrialApplication()"
-              [disabled]="!clinicaltrialGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+            <button type="submit" (click)="onSaveClincialTrialApplication()"class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
 
           </div>
@@ -348,7 +347,7 @@
           <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
               class="fa fa-angle-double-left"></i>Previous
               </button>
-            <button type="submit" (click)="onSaveClincialTrialParticipantsApplication();funcValidateOtherClinicalDetails(4+initWizardPanel)"
+            <button type="submit" (click)="onSaveClincialTrialParticipantsApplication()"
               [disabled]="!clinicaltrialEndpointGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
           </div>
@@ -368,7 +367,7 @@
                <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
                   class="fa fa-angle-double-left"></i>Previous
               </button>
-            <button type="submit" (click)="onSaveClincialTrialParticipantsApplication();funcValidateOtherClinicalDetails(4+initWizardPanel)"
+            <button type="submit" (click)="onSaveClincialTrialParticipantsApplication()"
               [disabled]="!clinicaltrialEndpointGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
 
@@ -379,7 +378,7 @@
           <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
               class="fa fa-angle-double-left"></i>Previous
               </button>
-            <button type="submit" (click)="onSaveClincialTrialHistoryApplication();funcValidateOtherClinicalDetails(5+initWizardPanel)"
+            <button type="submit" (click)="onSaveClincialTrialHistoryApplication()"
               [disabled]="!clinicaltrialGeneralExclusiondetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
           </div>
@@ -421,7 +420,7 @@
                <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
                   class="fa fa-angle-double-left"></i>Previous
               </button>
-            <button type="submit" (click)="onSaveClincialTrialEthicsApplication();funcValidateOtherClinicalDetails(6+initWizardPanel)"
+            <button type="submit" (click)="onSaveClincialTrialEthicsApplication()"
               [disabled]="!clinicaltrialStudyGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
 
@@ -861,7 +860,7 @@
           <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
               class="fa fa-angle-double-left"></i>Previous
               </button>
-            <button type="submit" (click)="onSaveClincialTrialParticipantsApplication();funcValidateOtherClinicalDetails(4+initWizardPanel)"
+            <button type="submit" (click)="onSaveClincialTrialParticipantsApplication()"
               [disabled]="!clinicaltrialEndpointGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
           </div>
@@ -881,7 +880,7 @@
                <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
                   class="fa fa-angle-double-left"></i>Previous
               </button>
-            <button type="submit" (click)="onSaveClincialTrialParticipantsApplication();funcValidateOtherClinicalDetails(4+initWizardPanel)"
+            <button type="submit" (click)="onSaveClincialTrialParticipantsApplication()"
               [disabled]="!clinicaltrialEndpointGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
 
@@ -892,7 +891,7 @@
           <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
               class="fa fa-angle-double-left"></i>Previous
               </button>
-            <button type="submit" (click)="onSaveClincialTrialHistoryApplication();funcValidateOtherClinicalDetails(5+initWizardPanel)"
+            <button type="submit" (click)="onSaveClincialTrialHistoryApplication()"
               [disabled]="!clinicaltrialGeneralExclusiondetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
           </div>
@@ -911,7 +910,7 @@
                <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
                   class="fa fa-angle-double-left"></i>Previous
               </button>
-            <button type="submit" (click)="onSaveClincialTrialHistoryApplication();funcValidateOtherClinicalDetails(5+initWizardPanel)"
+            <button type="submit" (click)="onSaveClincialTrialHistoryApplication()"
               [disabled]="!clinicaltrialGeneralExclusiondetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
 
@@ -934,7 +933,7 @@
                <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
                   class="fa fa-angle-double-left"></i>Previous
               </button>
-            <button type="submit" (click)="onSaveClincialTrialEthicsApplication();funcValidateOtherClinicalDetails(6+initWizardPanel)"
+            <button type="submit" (click)="onSaveClincialTrialEthicsApplication()"
               [disabled]="!clinicaltrialStudyGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
 
@@ -947,7 +946,7 @@
             class="fa fa-angle-double-left"></i>Previous
           </button>
            <button type="submit" 
-            (click)="onSaveMonitoringApplication();funcValidateOtherClinicalDetails(7+initWizardPanel)"
+            (click)="onSaveMonitoringApplication()"
             [disabled]="!clinicaltrialMonitoringReportdetailsfrm.valid" class="btn btn-info  pull-right"
             style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
           </div>
@@ -966,7 +965,7 @@
                <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
                   class="fa fa-angle-double-left"></i>Previous
               </button>
-            <button type="submit" (click)="onSaveMonitoringApplication();funcValidateOtherClinicalDetails(7+initWizardPanel)"
+            <button type="submit" (click)="onSaveMonitoringApplication()"
               [disabled]="!clinicaltrialMonitoringReportdetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next </button>
 
@@ -978,7 +977,7 @@
             previousStep>&nbsp;<i
             class="fa fa-angle-double-left"></i>Previous
           </button>
-           <button type="submit" (click)="onSaveClincialTrialDescriptionApplication();funcValidateOtherClinicalDetails(8+initWizardPanel)"
+           <button type="submit" (click)="onSaveClincialTrialDescriptionApplication()"
            [disabled]="!clinicaltrialObjectiveGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
           </div>
@@ -997,7 +996,7 @@
               <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
                   class="fa fa-angle-double-left"></i>Previous
               </button>
-            <button type="submit" (click)="onSaveClincialTrialDescriptionApplication();funcValidateOtherClinicalDetails(8+initWizardPanel)"[disabled]="!clinicaltrialObjectiveGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
+            <button type="submit" (click)="onSaveClincialTrialDescriptionApplication()"[disabled]="!clinicaltrialObjectiveGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
 
           </div>
@@ -1008,7 +1007,7 @@
             previousStep>&nbsp;<i
             class="fa fa-angle-double-left"></i>Previous
           </button>
-           <button type="submit" (click)="onSaveClincialTrialOthersApplication();funcValidateOtherClinicalDetails(9+initWizardPanel)"
+           <button type="submit" (click)="onSaveClincialTrialOthersApplication()"
                [disabled]="!clinicaltrialDescriptionGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
           </div>
@@ -1027,7 +1026,7 @@
                <button type="button" class="btn btn-info pull-left" previousStep>&nbsp;<i
                   class="fa fa-angle-double-left"></i>Previous
               </button>
-            <button type="submit" (click)="onSaveClincialTrialOthersApplication();funcValidateOtherClinicalDetails(9+initWizardPanel)"
+            <button type="submit" (click)="onSaveClincialTrialOthersApplication()"
                 [disabled]="!clinicaltrialDescriptionGeneraldetailsfrm.valid" class="btn btn-info  pull-right"
               style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save and Next</button>
 

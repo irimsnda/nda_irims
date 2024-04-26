@@ -35,6 +35,7 @@ export class ImportexportDashboardComponent implements OnInit {
   app_response: any;
   @Input() licenceTypeData: any;
   @Input() premiseBusinessTypeData: any;
+  @Input() registeredPremiseBusinessTypeData:any;
   processData: any;
   title: string;
   sub_module: number;
@@ -124,6 +125,7 @@ export class ImportexportDashboardComponent implements OnInit {
     this.onLoadApplicationType();
     //this.onLoadBusinessType();
     this.onLoadpremiseBusinessTypeData();
+    this.onLoadregisteredpremiseBusinessTypeData()
     this.onLoadconfirmDataParam();
     this.onLoadApplicationstatuses();
     this.onLoadvcApplicationData();
@@ -691,7 +693,7 @@ export class ImportexportDashboardComponent implements OnInit {
       this.is_registered_premise = true;
       this.is_not_registered_premise = false;
       this.onLoadLicenceType();
-      this.applicationSelectionfrm.get('business_type_id').setValidators([]); 
+      this.applicationSelectionfrm.get('business_type_id').setValidators([Validators.required]); 
     }
     else{
       this.is_registered_premise = false;
@@ -761,6 +763,19 @@ export class ImportexportDashboardComponent implements OnInit {
        });
 
  }
+  onLoadregisteredpremiseBusinessTypeData(){
+    var data = {
+     table_name: 'par_business_types',
+     is_non_licenced: 0
+   };
+   this.configService.onLoadConfigurationData(data)
+     .subscribe(
+       data => {
+         this.registeredPremiseBusinessTypeData = data;
+       });
+
+ }
+
 
   // onLoadBusinessType(){
   //    var data = {
