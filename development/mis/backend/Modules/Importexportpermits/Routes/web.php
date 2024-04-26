@@ -42,6 +42,7 @@ Route::group(['middleware' => ['web'], 'prefix' => 'importexportpermits'], funct
     Route::get('prepapareImportpermitUniformStage', [ImportexportpermitsController::class, 'prepapareImportpermitUniformStage']);
     Route::get('prepareImportInvoicingStage', [ImportexportpermitsController::class, 'prepareImportInvoicingStage']);
     Route::get('getImportsInvoicingOtherDetails', [ImportexportpermitsController::class, 'getImportsInvoicingOtherDetails']);
+    Route::get('getAllNonLicensedPremises', [ImportexportpermitsController::class, 'getAllNonLicensedPremises']);
     Route::get('prepareNewImportExportPaymentStage', [ImportexportpermitsController::class, 'prepareNewImportExportPaymentStage']);
     Route::get('getImportExportApprovedPermit', [ImportexportpermitsController::class, 'getImportExportApprovedPermit']);
     Route::post('saveDisposalApplicationDetails', [ImportexportpermitsController::class, 'saveDisposalApplicationDetails']);

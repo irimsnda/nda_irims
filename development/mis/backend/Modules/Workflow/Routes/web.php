@@ -46,6 +46,7 @@ Route::post('saveWorkflowCommonData', [WorkflowController::class,'saveWorkflowCo
     Route::get('getProcessApplicableChecklistCategories', [WorkflowController::class,'getProcessApplicableChecklistCategories']);
     Route::get('getProcessEditableFormFields', [WorkflowController::class,'getProcessEditableFormFields']);
     Route::get('getProcessEditableOtherParts', [WorkflowController::class,'getProcessEditableOtherParts']);
+    Route::get('getInitialImportExportLicenceWorkflowDetails', [WorkflowController::class,'getInitialImportExportLicenceWorkflowDetails']);
     //Route::get('getProcessApplicableChecklistTypes', [WorkflowController::class,'getProcessApplicableChecklistTypes');
     //Route::get('getProcessApplicableChecklistItems', [WorkflowController::class,'getProcessApplicableChecklistItems');
     Route::post('syncProcessApplicableChecklistCategories', [WorkflowController::class,'syncProcessApplicableChecklistCategories']);

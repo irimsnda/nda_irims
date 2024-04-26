@@ -37,7 +37,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
                 name: 'ingredient_id',
                // allowBlank: true,
                 labelAlign: 'top',
-                fieldLabel: 'Name of Immunogen',
+                fieldLabel: 'Active Ingredient',
                 queryMode: 'local',
                 valueField: 'id', width: '85%',
                 displayField: 'name',
@@ -95,6 +95,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
         }, {
             xtype: 'textfield',
             name: 'quantity',
+            hidden:true,
             allowBlank:true,
             fieldLabel: 'Quantity /dosage unit'
 
@@ -153,6 +154,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
             layout: {
                 type: 'hbox'
             },
+            //hidden:true,
             items:[{
                 xtype: 'combo',
                 name: 'excipient_id',

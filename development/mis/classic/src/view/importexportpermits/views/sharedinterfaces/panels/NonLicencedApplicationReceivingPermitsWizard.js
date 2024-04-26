@@ -111,87 +111,13 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.NonLice
         }
     ],
     items: [{
-            xtype: 'importexportnonlicencedetailspnl',
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    ui: 'footer',
-                    dock: 'top',
-                    margin: 3,
-                    items: [
-                        {
-                            xtype: 'tbseparator',
-                            width: 2
-                        },
-                        // {
-                        //     xtype: 'combo',
-                        //     fieldLabel: 'Zone',
-                        //     labelWidth: 50,
-                        //     width: 400,
-                        //     name: 'zone_id',
-                        //     valueField: 'id',
-                        //     displayField: 'name',
-                        //     queryMode: 'local',
-                        //     forceSelection: true,
-                        //     listeners: {
-                        //         beforerender: {
-                        //             fn: 'setOrgConfigCombosStore',
-                        //             config: {
-                        //                 pageSize: 1000,
-                        //                 proxy: {
-                        //                     extraParams: {
-                        //                         model_name: 'Zone'
-                        //                     }
-                        //                 }
-                        //             },
-                        //             isLoad: true
-                        //         }
-                        //     },
-                        //     labelStyle: 'font-weight:bold'
-                        // }
-                        // '->',{
-                        //     xtype: 'fieldcontainer',
-                        //     layout: 'column',
-                           
-                        //     items: [
-                        //         {
-                        //             xtype: 'textfield',
-                        //             name: 'reference_no',
-                        //             hidden: false,fieldLabel: 'Visa Application Details',
-                        //             readOnly: true,
-                        //             columnWidth: 0.9
-                        //         },
-                        //         {
-                        //             xtype: 'button',
-                        //             iconCls: 'x-fa fa-search',
-                        //             columnWidth: 0.1,
-                        //             hidden: false,
-                        //             text: 'Search',
-                        //             tooltip: 'Select Application',
-                        //             name: 'select_applications',
-                        //             childXtype: 'allapprovedvisaapplicationsgrid',
-                        //             winTitle:'Approved Visa Applications',
-                        //             winWidth:'70%',
-                        //             handler: 'showIEApplicationsSelectionList'
-                        //         }
-                        //     ]
-                        // }
-                    ]
-                }
-            ],
+            xtype: 'importexportnonlicencedetailspnl'
         },
-        // {
-        //     xtype: 'licensepermitsproductsgrid',
-        //     title: 'Permit Products Details',
-        //  },
           {
             xtype: 'importexportdocuploadsgrid',
             title: 'Document Upload'
          },
-        //{
-        //     xtype: 'productscreeninggrid',
-        //     title: 'Import/Export Permit Prechecking'
-        // },
+      
         {
             xtype: 'appinvoicepaymentspanel'
            
@@ -291,7 +217,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.NonLice
                     ui: 'soft-purple',
                     iconCls: 'fa fa-save',
                     name: 'save_btn', 
-                    form_panel:'#importexportlicencedetailsfrm',
+                    form_panel:'#onlineimportexportnonlicencebusinessdetailsfrm',
                     action_url: 'saveImportPermittReceivingBaseDetails',
                     wizard: 'nonlicencedapplicationreceivingpermitswizard',
                     handler: 'saveImporExportNonLicencedReceivingBaseDetails'

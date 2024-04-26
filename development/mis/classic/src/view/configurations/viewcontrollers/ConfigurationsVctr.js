@@ -26,6 +26,10 @@ Ext.define('Admin.view.configurations.viewcontrollers.ConfigurationsVctr', {
      setCompStore: function (obj, options) {
         this.fireEvent('setCompStore', obj, options);
     },
+    setConfigCombosProductfilterStore: function (obj, options) {
+
+        this.fireEvent('setConfigCombosProductfilterStore', obj, options);
+    },
 
     setOrgConfigCombosStore: function (obj, options) {
         this.fireEvent('setOrgConfigCombosStore', obj, options);

@@ -102,6 +102,7 @@
                     title:'GMP Online Assessment'
                }, {
                     xtype: 'productscreeninggrid',
+                    hidden:true,
                     title: 'Inspection Checklist'
                 },
                {

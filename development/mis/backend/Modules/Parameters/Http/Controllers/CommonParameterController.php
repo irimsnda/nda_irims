@@ -557,7 +557,7 @@ class CommonParameterController extends BaseController
             if($table_name == 'par_business_types'){
                 $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')
-                        ->whereIn('id',[1,2,4])
+                        //->whereIn('id',[1,2,4])
                         ->select('t1.*');
             } else if($table_name == 'par_premise_districts'){
                  $qry = DB::connection($db_con)
@@ -870,8 +870,17 @@ class CommonParameterController extends BaseController
                 $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')
                         ->Join('par_countries as t4','t1.country_id','t4.id')
-                        ->Join('par_recognisedassessments_ctrregions as t5','t1.recognisedassessments_ctrregion_id','t5.id')
-                        ->select('t1.*', 't4.name as country', 't5.name as recognisedassessments_ctrregion');
+                        ->leftJoin('par_recognisedassessments_ctrregions as t5','t1.recognisedassessments_ctrregion_id','t5.id')
+                        ->leftJoin('par_current_reg_status as t6','t1.current_registrationstatus','t6.id')
+                        ->leftJoin('par_approving_authority as t11','t1.approving_authority_id','t11.id')
+                         ->leftJoin('gmp_productline_details  as t7', 't1.fpp_manufacturer_id', '=', 't7.manufacturing_site_id')
+                        ->leftJoin('gmp_product_lines as t8', 't7.product_line_id', '=', 't8.id')
+                        ->leftJoin('par_gmpproduct_types  as t9', 't7.category_id', '=', 't9.id')
+                        ->leftJoin('par_manufacturing_activities as t10', 't7.manufacturing_activity_id', '=', 't10.id')
+                        ->leftJoin('tra_manufacturing_sites as t12', 't1.fpp_manufacturer_id', '=', 't12.id')
+                        ->select('t1.*', 't4.name as country', 't5.name as recognisedassessments_ctrregion','t6.name as current_registrationstatus_name','t11.name as approving_authority','t12.name as fpp_manufacturer',DB::raw("CONCAT(t8.name, '<b>Product Line Category</b>', t9.name, '<b> Manufacturing Activity </b>', t10.name) AS approved_productlines"))
+                        ->where('t1.application_code', $filters['application_code']);
+                        unset($filters['application_code']);
                
             }else if ($table_name == 'tra_productreg_clinicalresearchsdetails') {
                 $qry = DB::connection($db_con)

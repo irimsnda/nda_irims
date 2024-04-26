@@ -28,10 +28,12 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductManuc
     {
         xtype: 'hiddenfield',
         name: 'product_id'
-    }, {
+    }, 
+    {
         xtype: 'hiddenfield',
         name: 'manufacturer_id'
-    }, {
+    }, 
+    {
         xtype: 'hiddenfield',
         value: 1,
         name: 'manufacturer_type_id'
@@ -74,6 +76,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductManuc
     }, {
         xtype: 'container',
         layout: 'hbox',
+        hidden:true,
         items: [{
             xtype: 'textfield',
             width: '70%',margin: 5,
@@ -103,8 +106,8 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductManuc
     }, {
         xtype: 'combo',
         name: 'manufacturer_role_id',
-        allowBlank: true,
-        fieldLabel: 'Manufacturing Role',
+        allowBlank: false,
+        fieldLabel: 'Manufacturing Scope',
         queryMode: 'local',
         valueField: 'id',
         displayField: 'name',
@@ -125,13 +128,14 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductManuc
         }
     },{
         xtype: 'textarea',
+        allowBlank:true,
         name: 'manufacturing_activities',
-        fieldLabel: 'Manufacturering Activities',
+        fieldLabel: 'Other Manufacturering Activities',
         
     }, {
         xtype: 'combo',
         name: 'has_beeninspected',
-        allowBlank: true,
+        allowBlank: false,
         fieldLabel: 'Has the Manufacturing Site been Inspected/Submitted Request for Inspection to the NDA',
         queryMode: 'local',
         valueField: 'id',
@@ -150,13 +154,40 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductManuc
                 },
                 isLoad: true
             },
-            change:function(cbo, value){
-                        
+            change: function(combo, newVal, oldValue, eopts) {
+                    if(newVal == 1){
+                        var form = combo.up('form'),
+                            gmp_productline_id = form.down('combo[name=gmp_productline_id]'),
+                            manufacturer_id = form.down('hiddenfield[name=manufacturer_id]').getValue(),
+                            gmp_productlineStore = form.down('combo[name=gmp_productline_id]').getStore();
+                            gmp_productline_id.setVisible(true);
+                            gmp_productline_id.allowBlank = false;
+                            gmp_productline_id.validate();
 
+                            if (!manufacturer_id) {
+                                toastr.error('Select Manuafacturer First to proceed.', 'Failure Response');
+                                return;
+                            }
+
+                            // var filterObj = {manufacturing_site_id: manufacturer_id},
+                            // filterStr = JSON.stringify(filterObj);
+                            gmp_productlineStore.removeAll();
+                            gmp_productlineStore.load({params: {manufacturing_site_id: manufacturer_id}});
+
+
+                    }else{
+                         var form = combo.up('form'),
+                            gmp_productline_id = form.down('combo[name=gmp_productline_id]');
+                            gmp_productline_id.setVisible(false);
+                            gmp_productline_id.allowBlank = true;
+                            gmp_productline_id.validate();
+                    }
+                        
             }
         }
     }, {
         xtype: 'container',
+        hidden:true,
         layout: 'hbox',
         items: [{
             xtype: 'textfield',
@@ -182,6 +213,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductManuc
         xtype: 'combo',
         name: 'gmp_productline_id',
         allowBlank: true,
+        hidden:true,
         fieldLabel: 'GMP product Line',
         queryMode: 'local',
         valueField: 'gmp_productline_id',
@@ -192,10 +224,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductManuc
                 config: {
                     pageSize: 10000,
                     proxy: {
-                        url: 'productregistration/getGMPproductLinesDetails',
-                        extraParams: {
-                            table_name: 'manufacturing_site_id'
-                        }
+                        url: 'productregistration/getGMPproductLinesDetails'
                     }
                 },
                 isLoad: false

@@ -41,6 +41,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.InspectionIn
             xtype: 'combo',
             fieldLabel: 'Country',
             name: 'country_id',
+            allowBlank: false,
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
@@ -55,14 +56,44 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.InspectionIn
                         }
                     },
                     isLoad: true
+                },
+                change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        approving_authorityStore = form.down('combo[name=approving_authority_id]').getStore(),
+                        filterObj = {country_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        approving_authorityStore.removeAll();
+                        approving_authorityStore.load({params: {filters: filterStr}});
+                       
                 }
             }
         },
         {
-            xtype: 'textfield',
+            xtype: 'combo',
             fieldLabel: 'Approving Authority',
-            name: 'approving_authority'
-        },{
+            name: 'approving_authority_id',
+            allowBlank: true,
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setConfigCombosStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                                url: 'commonparam/getCommonParamFromTable',
+                                extraParams: {
+                                    table_name: 'par_approving_authority'
+                                }
+                            }
+                     },
+                    isLoad: false
+                }
+            }
+        },
+      {
             xtype: 'textfield',
             fieldLabel: 'GMP Inspection Number',
             name: 'gmpapplication_reference'
@@ -81,13 +112,56 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.InspectionIn
             altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
             name: 'approval_date',
             maxValue: new Date() 
-        },
+        }, {
+        xtype: 'combo',
+        name: 'fpp_manufacturer_id',
+        allowBlank: false,
+        fieldLabel: 'Manufacturer',
+        queryMode: 'local',
+        valueField: 'manufacturer_id',
+        displayField: 'manufacturer_name',
+        listeners: {
+            afterrender: {
+                fn: 'setConfigCombosProductfilterStore',
+                config: {
+                    pageSize: 10000,
+                    proxy: {
+                        url: 'productregistration/onLoadproductManufacturer'
+                        
+                    }
+                },
+                isLoad: true
+            },
+            change: function(combo, newVal, oldValue, eopts) {
+                    var form = combo.up('form'),
+                        gmp_productlineStore = form.down('combo[name=gmp_productline_id]').getStore();
+                        gmp_productlineStore.removeAll();
+                        gmp_productlineStore.load({params: {manufacturing_site_id: newVal}});
+                }
+            }
+        }, 
         {
-            xtype: 'textarea',
-            fieldLabel: 'Approved Product Line(s)',
+            xtype: 'combo',
+            name: 'gmp_productline_id',
+            allowBlank: false,
             columnWidth: 1,
-            name: 'approved_productlines'
-        }
+            fieldLabel: 'GMP product Line',
+            queryMode: 'local',
+            valueField: 'gmp_productline_id',
+            displayField: 'gmpproduct_line',
+            listeners: {
+                afterrender: {
+                    fn: 'setConfigCombosProductfilterStore',
+                    config: {
+                        pageSize: 10000,
+                        proxy: {
+                            url: 'productregistration/getGMPproductLinesDetails'
+                        }
+                    },
+                    isLoad: false
+                }
+            }
+    }
     ],
     dockedItems:[
         {

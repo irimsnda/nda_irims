@@ -3237,10 +3237,10 @@ downloadPreviousDocupload: function (item) {
        mainTabPnl = btn.up('#contentPanel'),
 
        containerPnl = mainTabPnl.getActiveTab();
-       console.log(containerPnl);
        var process_id = containerPnl.down('hiddenfield[name=process_id]').getValue(),
        module_id = containerPnl.down('hiddenfield[name=module_id]').getValue(),
-      sub_module_id = containerPnl.down('hiddenfield[name=sub_module_id]').getValue(),
+       workflow_stage_id = containerPnl.down('hiddenfield[name=workflow_stage_id]').getValue(),
+       sub_module_id = containerPnl.down('hiddenfield[name=sub_module_id]').getValue(),
        // module_id = 4,
        // sub_module_id = 15,
         //zone_id = containerPnl.down('combo[name=zone_id]').getValue(),
@@ -3255,6 +3255,8 @@ downloadPreviousDocupload: function (item) {
            waitMsg: 'Please wait...',
            params: {
                active_application_id: active_application_id,
+               process_id: process_id,
+                workflow_stage_id: workflow_stage_id,
                module_id: module_id,
                sub_module_id: sub_module_id,
                '_token': token
@@ -3299,10 +3301,8 @@ downloadPreviousDocupload: function (item) {
              action_url = btn.action_url,
              form_panel = btn.form_panel,
             mainTabPnl = btn.up('#contentPanel'),
-
             containerPnl = mainTabPnl.getActiveTab();
-            console.log(containerPnl);
-            var process_id = containerPnl.down('hiddenfield[name=process_id]').getValue(),
+           var process_id = containerPnl.down('hiddenfield[name=process_id]').getValue(),
             module_id = containerPnl.down('hiddenfield[name=module_id]').getValue(),
             sub_module_id = containerPnl.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = containerPnl.down('hiddenfield[name=section_id]').getValue(),
@@ -3312,12 +3312,11 @@ downloadPreviousDocupload: function (item) {
 
             applicantDetailsForm = containerPnl.down('importexportapplicantdetailsfrm'),
             senderreceiverdetailsfrm = containerPnl.down('senderreceiverdetailsfrm'),
-            importexportpremisesfrm = containerPnl.down('importexportpremisesfrm'),
             
             applicant_id = applicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue(),
             sender_receiver_id = senderreceiverdetailsfrm.down('hiddenfield[name=applicant_id]').getValue(),
-            premise_id = importexportpremisesfrm.down('hiddenfield[name=premise_id]').getValue(),
-            importexportdetailsfrm = containerPnl.down(form_panel);
+            importexportdetailsfrm = containerPnl.down(form_panel),
+            premise_id = importexportdetailsfrm.down('hiddenfield[name=premise_id]').getValue();
 
             if(importexportdetailsfrm){
             importexportdetailsform = importexportdetailsfrm.getForm();
@@ -3327,24 +3326,14 @@ downloadPreviousDocupload: function (item) {
                 zone_id = containerPnl.down('combo[name=zone_id]').getValue();
             }
 
-            if(containerPnl.down('importexportpremisesfrm')){
-                importexportpremisesfrm = containerPnl.down('importexportpremisesfrm');
-            }else if(containerPnl.down('onlineimportexportnonlicencebusinessdetailsfrm')){
-                importexportpremisesfrm = containerPnl.down('onlineimportexportnonlicencebusinessdetailsfrm');
-            }else{
-                importexportpremisesfrm = containerPnl.down('importexportlicencedetailsfrm');
-            }
+          
            
         if (!applicant_id) {
             //
             toastr.warning('Please select applicant!!', 'Warning Response');
             return false;
         }
-        // if (!sender_receiver_id) {
-        //     //sender_receiver_id
-        //     toastr.warning('Please select sender/Receiver details!!', 'Warning Response');
-        //     return false;
-        // }
+       
        
         if (importexportdetailsform.isValid()) {
             importexportdetailsform.submit({
@@ -3358,8 +3347,6 @@ downloadPreviousDocupload: function (item) {
                     module_id: module_id,
                     sub_module_id: sub_module_id,
                     section_id: section_id,
-                    premise_id:premise_id,
-                    sender_receiver_id:sender_receiver_id,
                     '_token': token
 
 
@@ -3407,7 +3394,7 @@ downloadPreviousDocupload: function (item) {
              wizardPnl = btn.up(wizard),
              action_url = btn.action_url,
              form_panel = btn.form_panel,
-            mainTabPnl = btn.up('#contentPanel'),
+             mainTabPnl = btn.up('#contentPanel'),
 
             containerPnl = mainTabPnl.getActiveTab();
             console.log(containerPnl);
@@ -3424,7 +3411,7 @@ downloadPreviousDocupload: function (item) {
             onlineimportexportnonlicencebusinessdetailsfrm = containerPnl.down('onlineimportexportnonlicencebusinessdetailsfrm'),
             
             applicant_id = applicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue(),
-            sender_receiver_id = senderreceiverdetailsfrm.down('hiddenfield[name=applicant_id]').getValue(),
+    
           //  premise_id = importexportpremisesfrm.down('hiddenfield[name=premise_id]').getValue(),
             onlineimportexportnonlicencebusinessdetailsfrm = containerPnl.down(form_panel);
 
@@ -3437,25 +3424,13 @@ downloadPreviousDocupload: function (item) {
             }
 
             
-            if(containerPnl.down('onlineimportexportnonlicencebusinessdetailsfrm')){
-                onlineimportexportnonlicencebusinessdetailsfrm = containerPnl.down('onlineimportexportnonlicencebusinessdetailsfrm');
-            }
-            else if(containerPnl.down('importexportpremisesfrm')){
-                onlineimportexportnonlicencebusinessdetailsfrm = containerPnl.down('importexportpremisesfrm');
-            }else{
-                onlineimportexportnonlicencebusinessdetailsfrm = containerPnl.down('importexportlicencedetailsfrm');
-            }
-           
+            
         if (!applicant_id) {
             //
             toastr.warning('Please select applicant!!', 'Warning Response');
             return false;
         }
-        // if (!sender_receiver_id) {
-        //     //sender_receiver_id
-        //     toastr.warning('Please select sender/Receiver details!!', 'Warning Response');
-        //     return false;
-        // }
+     
        
         if (onlineimportexportnonlicencebusinessdetailsfrm.isValid()) {
             onlineimportexportnonlicencebusinessdetailsfrm.submit({
@@ -3469,7 +3444,6 @@ downloadPreviousDocupload: function (item) {
                     module_id: module_id,
                     sub_module_id: sub_module_id,
                     section_id: section_id,
-                    sender_receiver_id:sender_receiver_id,
                     '_token': token
 
 

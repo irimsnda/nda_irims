@@ -871,7 +871,7 @@ trait ReportsTrait
 										 //$pdf->Cell(0,4,'MARK', 0,1,'');
 
 										 $pdf->Cell(0,4,$record->permit_signatoryname,0,1,'');
-										 $pdf->Cell(0,4,'DIRECTOR, INSPECTORATE & ENFORCEMENT', 0,1,'');
+										 $pdf->Cell(0,4,' for DIRECTOR, INSPECTORATE & ENFORCEMENT', 0,1,'');
 										
 
 		

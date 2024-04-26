@@ -1594,7 +1594,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                 section_id = win.down('hiddenfield[name=section_id]').getValue();
         }
 
-        childXtype = btn.childXtype,
+        var childXtype = btn.childXtype,
             winTitle = btn.winTitle,
             winWidth = btn.winWidth,
             child = Ext.widget(childXtype),

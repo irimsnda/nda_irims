@@ -586,56 +586,56 @@ Ext.define('Admin.controller.ReportsCtr', {
         print_report(action_url);
     },
 
-    // generateClinicalTrialCertificate: function (application_id, application_code) {
-    //     var action_url = 'reports/generateClinicalTrialCertificate?application_id=' + application_id + '&&application_code=' + application_code;
-    //     print_report(action_url);
-    // },
+    generateClinicalTrialCertificate: function (application_id, application_code) {
+        var action_url = 'reports/generateClinicalTrialCertificate?application_id=' + application_id + '&&application_code=' + application_code;
+        print_report(action_url);
+    },
     //rejections 
 
 
-      generateClinicalTrialCertificate: function (application_code,module_id,sub_module_id,report_type_id,isPreview) {
-      Ext.getBody().mask();
-        Ext.Ajax.request({
-                        url: 'reports/getReportUrl',
-                        method: 'GET',
-                        params: {
-                            application_code:application_code,
-                            module_id: module_id,
-                            sub_module_id:sub_module_id,
-                            report_type_id:report_type_id,
-                            isPreview:isPreview
-                        },
-                        headers: {
-                            'Authorization': 'Bearer ' + access_token,
-                            'X-CSRF-Token': token
-                        },
-                        success: function (response) {
-                            Ext.getBody().unmask();
-                            var resp = Ext.JSON.decode(response.responseText),
-                                success = resp.success;
-                            document_url = resp.document_url;
-                            if (success == true || success === true) {
+    //   generateClinicalTrialCertificate: function (application_code,module_id,sub_module_id,report_type_id,isPreview) {
+    //   Ext.getBody().mask();
+    //     Ext.Ajax.request({
+    //                     url: 'reports/getReportUrl',
+    //                     method: 'GET',
+    //                     params: {
+    //                         application_code:application_code,
+    //                         module_id: module_id,
+    //                         sub_module_id:sub_module_id,
+    //                         report_type_id:report_type_id,
+    //                         isPreview:isPreview
+    //                     },
+    //                     headers: {
+    //                         'Authorization': 'Bearer ' + access_token,
+    //                         'X-CSRF-Token': token
+    //                     },
+    //                     success: function (response) {
+    //                         Ext.getBody().unmask();
+    //                         var resp = Ext.JSON.decode(response.responseText),
+    //                             success = resp.success;
+    //                         document_url = resp.document_url;
+    //                         if (success == true || success === true) {
                                 
-                                print_report(document_url);
+    //                             print_report(document_url);
                                 
-                            } else {
-                                toastr.error(resp.message, 'Failure Response');
-                            }
-                        },
-                        failure: function (response) {
-                            Ext.getBody().unmask();
-                            var resp = Ext.JSON.decode(response.responseText),
-                                message = resp.message;
-                            toastr.error(message, 'Failure Response');
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            Ext.getBody().unmask();
-                            toastr.error('Error downloading data: ' + errorThrown, 'Error Response');
-                        }
-                });
+    //                         } else {
+    //                             toastr.error(resp.message, 'Failure Response');
+    //                         }
+    //                     },
+    //                     failure: function (response) {
+    //                         Ext.getBody().unmask();
+    //                         var resp = Ext.JSON.decode(response.responseText),
+    //                             message = resp.message;
+    //                         toastr.error(message, 'Failure Response');
+    //                     },
+    //                     error: function (jqXHR, textStatus, errorThrown) {
+    //                         Ext.getBody().unmask();
+    //                         toastr.error('Error downloading data: ' + errorThrown, 'Error Response');
+    //                     }
+    //             });
                 
             
-    },
+    // },
 
 
     

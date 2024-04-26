@@ -84,6 +84,7 @@ class PsurController extends Controller
                 $workflow_stage_id = $request->input('workflow_stage_id');
                 $section_id = $request->input('section_id');
                 $module_id = $request->input('module_id');
+                $application_code = $request->input('application_code');
                 $sub_module_id = $request->input('sub_module_id');
                 $local_agent_id = $request->input('local_applicant_id');
                 $user_id= \Auth::user()->id;
@@ -96,12 +97,14 @@ class PsurController extends Controller
          try {
              DB::beginTransaction();
              $applications_table = 'tra_psur_pbrer_applications';
-    
-             $where_app = array(
-                 'id' => $active_application_id
-             );
+
+
+           
+             
+
              //Edit enforcement Application
-             if (isset($active_application_id) && $active_application_id != "") {
+             //if (isset($active_application_id) && $active_application_id != "") {
+             if (isset($active_application_id) || isset($application_code)) {
                  
                  $application_params = array(
                     'applicant_id' => $applicant_id,
@@ -110,6 +113,7 @@ class PsurController extends Controller
                     'remarks'=> $request->remarks,
                     'from_date'=>$request->from_date,
                     'to_date' => $to_date,
+                    'report_approval_date' => $request->report_approval_date,
                     'version_no'=>$request->version_no,
                     'version_no'=>$request->version_no,
                     'data_log_point' => $request->data_log_point,
@@ -124,9 +128,18 @@ class PsurController extends Controller
                     'local_technical_representative' => $request->local_technical_representative,
                     'manufacturer_id' => $request->manufacturer_id
                  );
-                 $where_app = array(
-                     'id' => $active_application_id
-                 );
+                     if(validateIsNumeric($application_code)){
+                        $where_app = array(
+                         'application_code' => $application_code,
+                         
+                         );
+                     }else{
+                          $where_app = array(
+                             'id' => $active_application_id
+                             
+                         );  
+                     }
+
     
                  if (recordExists($applications_table, $where_app)) {
               
@@ -186,6 +199,7 @@ class PsurController extends Controller
                     'remarks'=> $request->remarks,
                     'from_date'=>$request->from_date,
                     'to_date' => $to_date,
+                    'report_approval_date' => $request->report_approval_date,
                     'version_no'=>$request->version_no,
                     'international_birth_date' => $request->international_birth_date,
                     'data_log_point' => $request->data_log_point,
@@ -360,55 +374,74 @@ public function preparenewPsurReceiving(Request $req)
             $active_application_code = $request->active_application_code;
             $active_application_id = $request->active_application_id;
             $product_id = $request->product_id;
-            $user_id = $this->user_id;  
+            $user_id = $this->user_id;
+            $post_data = $request->all();  
             $record_id = $request->assessment_id;
-            $app_data = array(
-                'application_code'=> $active_application_code,
-                'application_id'=>$active_application_id,
-                'product_id'=>$product_id,
-                'introduction'=>$request->introduction,
-                'marketing_approval_status'=>$request->marketing_approval_status,
-                'actions_reporting_interval'=>$request->actions_reporting_interval,
-                'reference_safety_information'=>$request->reference_safety_information,
-                'cumulative_exposure_clinical'=>$request->cumulative_exposure_clinical,
-                'cumulative_exposure_marketing'=>$request->cumulative_exposure_marketing,
-                'cumulative_summary_clinical'=>$request->cumulative_summary_clinical,
-                'cumulative_summary_marketing'=>$request->cumulative_summary_marketing,
-                'completed_clinical_trials'=>$request->completed_clinical_trials,
-                'ongoing_clinical_trials'=>$request->ongoing_clinical_trials,
-                'long_time_followup'=>$request->long_time_followup,
-                'other_therapeutic_product_use'=>$request->other_therapeutic_product_use,
-                'safety_data_related_to_fixed_combination_therapies'=>$request->safety_data_related_to_fixed_combination_therapies,
-                'other_clinical_trials'=>$request->other_clinical_trials,
-                'medication_errors'=>$request->medication_errors,
-                'findings_non_interventional_studies'=>$request->findings_non_interventional_studies,
-                'non_clinical_data'=>$request->non_clinical_data,
-                'literature'=>$request->literature,
-                'other_periodic_reports'=>$request->other_periodic_reports,
-                'Lack_of_efficacy_in_controlled_ct'=>$request->Lack_of_efficacy_in_controlled_ct,
-                'late_breaking_information'=>$request->late_breaking_information,
-                'overview_of_signals'=>$request->overview_of_signals,
-                'summary_of_safety_concerns'=>$request->summary_of_safety_concerns,
-                'signal_evaluation'=>$request->signal_evaluation,
-                'evaluation_risks_and_new_information'=>$request->evaluation_risks_and_new_information,
-                'characterization_of_risks'=>$request->characterization_of_risks,
-                'effectiveness_of_risk_minimization'=>$request->effectiveness_of_risk_minimization,
-                'important_baseline_efficacy'=>$request->important_baseline_efficacy,
-                'newly_identified_information'=>$request->newly_identified_information,
-                'characterization_of_benefits'=>$request->characterization_of_benefits,
-                'benefit_risk_context'=>$request->benefit_risk_context,
-                'benefit_risk_analysis'=>$request->benefit_risk_analysis,
-                'questions_comments'=>$request->questions_comments,
-                'draft_response'=>$request->draft_response,
-                'recommendations'=>$request->recommendations,
-            );
+            unset($post_data['_token']);
+            unset($post_data['table_name']);
+            unset($post_data['application_code']);
+            unset($post_data['model']);
+            unset($post_data['id']);
+            unset($post_data['unset_data']);
+            $post_data['application_code']= $post_data['active_application_code'];
+            $post_data['application_id']= $post_data['active_application_id'];
+            unset($post_data['active_application_code']);
+            unset($post_data['active_application_id']);
+            unset($post_data['assessment_id']);
+            $app_data = $post_data;
+            // $app_data = array(
+            //     'application_code'=> $active_application_code,
+            //     'application_id'=>$active_application_id,
+            //     'product_id'=>$product_id,
+            //     'introduction'=>$request->introduction,
+            //     'marketing_approval_status'=>$request->marketing_approval_status,
+            //     'actions_reporting_interval'=>$request->actions_reporting_interval,
+            //     'reference_safety_information'=>$request->reference_safety_information,
+            //     'cumulative_exposure_clinical'=>$request->cumulative_exposure_clinical,
+            //     'cumulative_exposure_marketing'=>$request->cumulative_exposure_marketing,
+            //     'cumulative_summary_clinical'=>$request->cumulative_summary_clinical,
+            //     'cumulative_summary_marketing'=>$request->cumulative_summary_marketing,
+            //     'completed_clinical_trials'=>$request->completed_clinical_trials,
+            //     'ongoing_clinical_trials'=>$request->ongoing_clinical_trials,
+            //     'long_time_followup'=>$request->long_time_followup,
+            //     'other_therapeutic_product_use'=>$request->other_therapeutic_product_use,
+            //     'safety_data_related_to_fixed_combination_therapies'=>$request->safety_data_related_to_fixed_combination_therapies,
+            //     'other_clinical_trials'=>$request->other_clinical_trials,
+            //     'medication_errors'=>$request->medication_errors,
+            //     'findings_non_interventional_studies'=>$request->findings_non_interventional_studies,
+            //     'non_clinical_data'=>$request->non_clinical_data,
+            //     'literature'=>$request->literature,
+            //     'other_periodic_reports'=>$request->other_periodic_reports,
+            //     'Lack_of_efficacy_in_controlled_ct'=>$request->Lack_of_efficacy_in_controlled_ct,
+            //     'late_breaking_information'=>$request->late_breaking_information,
+            //     'overview_of_signals'=>$request->overview_of_signals,
+            //     'summary_of_safety_concerns'=>$request->summary_of_safety_concerns,
+            //     'signal_evaluation'=>$request->signal_evaluation,
+            //     'evaluation_risks_and_new_information'=>$request->evaluation_risks_and_new_information,
+            //     'characterization_of_risks'=>$request->characterization_of_risks,
+            //     'effectiveness_of_risk_minimization'=>$request->effectiveness_of_risk_minimization,
+            //     'important_baseline_efficacy'=>$request->important_baseline_efficacy,
+            //     'newly_identified_information'=>$request->newly_identified_information,
+            //     'characterization_of_benefits'=>$request->characterization_of_benefits,
+            //     'benefit_risk_context'=>$request->benefit_risk_context,
+            //     'benefit_risk_analysis'=>$request->benefit_risk_analysis,
+            //     'questions_comments'=>$request->questions_comments,
+            //     'draft_response'=>$request->draft_response,
+            //     'recommendations'=>$request->recommendations,
+            // );
             if(validateIsNumeric($record_id)){
                 $app_data['dola'] = Carbon::now();
                 $app_data['altered_by'] = $user_id;
                 $where = array(
                     'id'=>$record_id
                 );
-                $res = updateRecord('tra_psur_evaluation_details', $where, $app_data);
+
+                 $previous_data = getPreviousRecords('tra_psur_evaluation_details', $where);
+                    if ($previous_data['success'] == false) {
+                        return $previous_data;
+                    }
+                $previous_data = $previous_data['results'];
+                $res = updateRecord('tra_psur_evaluation_details', $previous_data, $where, $app_data, $user_id);
             }else{
                 $res = insertRecord('tra_psur_evaluation_details', $app_data);
                
@@ -423,6 +456,7 @@ public function preparenewPsurReceiving(Request $req)
     public function getStagePsurApplications(Request $request)
     {
         $module_id = $request->input('module_id');
+        $sub_module_id = $request->input('sub_module_id');
         $workflow_stage = $request->input('workflow_stage_id');
         $table_name = getTableName($module_id);
         try {  
@@ -447,12 +481,16 @@ public function preparenewPsurReceiving(Request $req)
                 ->leftJoin('par_psur_type as t26', 't1.psur_type_id', 't26.id')
                 ->select('t1.*','t1.from_date as reporting_from','t1.to_date as reporting_to','t2.product_origin_id', 't2.brand_name as product_name', DB::raw("CONCAT_WS(' ',decrypt(t10.first_name),decrypt(t10.last_name)) as submitted_by"), 't9.date_received as submitted_on', 't8.name as common_name', 't3.name as applicant_name', 't4.name as application_status',
                      't1.id as active_application_id', 't5.decision_id','t5.approval_date','t5.expiry_date', 't5.id as approval_id', 't12.stage_category_id','t14.decision_id as approval_decision_id'
-                    ,'t25.introduction','t25.marketing_approval_status','t25.actions_reporting_interval','t25.reference_safety_information','t25.cumulative_exposure_clinical','t25.cumulative_exposure_marketing','t25.cumulative_summary_clinical','t25.cumulative_summary_marketing','t25.completed_clinical_trials','t25.ongoing_clinical_trials','t25.long_time_followup','t25.other_therapeutic_product_use'
-                    ,'t25.safety_data_related_to_fixed_combination_therapies','t25.other_clinical_trials','t25.medication_errors','t25.findings_non_interventional_studies','t25.non_clinical_data','t25.literature','t25.other_periodic_reports','t25.Lack_of_efficacy_in_controlled_ct','t25.late_breaking_information','t25.overview_of_signals','t25.summary_of_safety_concerns','t25.signal_evaluation','t25.evaluation_risks_and_new_information'
-                    ,'t25.characterization_of_risks','t25.effectiveness_of_risk_minimization','t25.important_baseline_efficacy','t25.newly_identified_information','t25.characterization_of_benefits','t25.benefit_risk_context','t25.benefit_risk_analysis','t25.questions_comments','t25.overall_conclusion','t25.draft_response','t25.recommendations','t26.name as report_type');
-                //->where(array('t9.current_stage'=>$workflow_stage,'isDone'=>0) );
+                    ,'t26.name as report_type')
+                ->where(array('t9.current_stage'=>$workflow_stage,'isDone'=>0) );
+
+          if (validateIsNumeric($sub_module_id)) {
+                $qry->where('t1.sub_module_id', $sub_module_id);
+            }
 
             $results = $qry->orderBy('t9.id','desc')->groupBy('t1.id')->get();
+
+
             $res = array(
                 'success' => true,
                 'results' => $results,
@@ -479,6 +517,9 @@ public function preparenewPsurReceiving(Request $req)
                    ->select('t1.*','t2.name as product_type','t3.name as dosage_form','t4.name as manufacturer_name','t5.name as generic_name')
                     ->where('t1.application_code', $application_code);
             $results = $qry->get();
+            foreach ($results as $result) {
+                $result->route_of_administration_id = json_decode($result->route_of_administration_id);
+            }
             $res = array(
                 'success' => true,
                 'results' => $results,

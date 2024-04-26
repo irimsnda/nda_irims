@@ -94,8 +94,9 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRegIn
         text: 'Approving Authority',
         flex: 1
     },{
-        xtype: 'gridcolumn',
+        xtype: 'datecolumn',
         dataIndex: 'date_of_registration',
+        format: 'Y-m-d',
         text: 'Registration Date',
         flex: 1
     },{
@@ -105,7 +106,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRegIn
         flex: 1
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'current_registrationstatus',
+        dataIndex: 'current_registrationstatus_name',
         text: 'Registration Status',
         flex: 1,
     },{

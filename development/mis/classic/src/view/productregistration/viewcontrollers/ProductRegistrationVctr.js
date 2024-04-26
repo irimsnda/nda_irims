@@ -970,12 +970,12 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             toastr.warning('Please select applicant!!', 'Warning Response');
             return false;
         }
-        if(is_local_applicant != 1){
-            if (!local_applicant_id) {
-                toastr.warning('Please select Local Technical Representative Details!!', 'Warning Response');
-                return false;
-            }
-        }
+        // if(is_local_applicant != 1){
+        //     if (!local_applicant_id) {
+        //         toastr.warning('Please select Local Technical Representative Details!!', 'Warning Response');
+        //         return false;
+        //     }
+        // }
       
         // if (!zone_id) {
         //     //toastr.warning('Please select Zone Location!!', 'Warning Response');

@@ -39,6 +39,38 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
         value: token
     },{
             xtype: 'combo',
+            fieldLabel: 'Product  Category',
+            name: 'product_category_id',
+            forceSelection: true,
+            queryMode: 'local',
+            allowBlank:false,
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setConfigCombosStore',
+                    config: {
+                        pageSize: 10000,
+                        proxy: {
+                           url: 'commonparam/getCommonParamFromTable',
+                            extraParams: {
+                                table_name: 'par_importexport_product_category'
+                            }
+                        }
+                    },
+                    isLoad: false
+                },
+                afterrender: function (cmbo) {
+                         var store = cmbo.getStore(),
+                         filterObj = {is_personal_id: 1},
+                         filterStr = JSON.stringify(filterObj);
+                         store.removeAll();
+                         store.load({params: {filters: filterStr}});
+                }
+            }
+
+        },{
+            xtype: 'combo',
             fieldLabel: 'Classification',
             name: 'classification_id',
             forceSelection: true,
@@ -47,7 +79,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
             valueField: 'id',
             displayField: 'name',
             listeners: {
-                afterrender: {
+                beforerender: {
                     fn: 'setConfigCombosStore',
                     config: {
                         pageSize: 10000,
@@ -72,7 +104,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
             valueField: 'id',
             displayField: 'name',
             listeners: {
-                afterrender: {
+                beforerender: {
                     fn: 'setConfigCombosStore',
                     config: {
                         pageSize: 10000,
@@ -97,7 +129,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
             valueField: 'id',
             displayField: 'name',
             listeners: {
-                afterrender: {
+                beforerender: {
                     fn: 'setConfigCombosStore',
                     config: {
                         pageSize: 10000,
@@ -211,7 +243,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
             valueField: 'id',
             displayField: 'atc_code',
             listeners: {
-                afterrender: {
+                beforerender: {
                     fn: 'setConfigCombosStore',
                     config: {
                         pageSize: 10000,
@@ -249,7 +281,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
             valueField: 'id',
             displayField: 'gmdn_code',
             listeners: {
-                afterrender: {
+                beforerender: {
                     fn: 'setConfigCombosStore',
                     config: {
                         pageSize: 10000,
@@ -287,7 +319,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
             valueField: 'id',
             displayField: 'name',
             listeners: {
-                afterrender: {
+                beforerender: {
                   fn: 'setConfigCombosStore',
                     config: {
                         pageSize: 10000,
@@ -314,7 +346,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
             valueField: 'id',
             displayField: 'name',
             listeners: {
-                afterrender: {
+                beforerender: {
                     fn: 'setConfigCombosStore',
                     config: {
                         pageSize: 10000,
@@ -344,7 +376,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
             valueField: 'id',
             displayField: 'name',
             listeners: {
-                afterrender: {
+                beforerender: {
                     fn: 'setConfigCombosStore',
                     config: {
                         pageSize: 10000,
@@ -370,7 +402,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
             allowBlank: true,
             displayField: 'name',
             listeners: {
-                afterrender: {
+                beforerender: {
                     fn: 'setConfigCombosStore',
                     config: {
                         pageSize: 10000,

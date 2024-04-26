@@ -170,7 +170,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductPackagi
                                     proxy: {
                                         url: 'commonparam/getCommonParamFromTable',
                                         extraParams: {
-                                            table_name: 'par_si_units'
+                                            table_name: 'si_units'
                                         }
                                     }
                                 },

@@ -101,6 +101,7 @@ Ext.define('Admin.view.gmpapplications.views.sharedinterfaces.panels.SingleGmpAp
                             title:'GMP Online Assessment'
                        }, {
                             xtype: 'productscreeninggrid',
+                            hidden:true,
                             title: 'Inspection Checklist'
                         }
                     ]

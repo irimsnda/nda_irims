@@ -111,9 +111,19 @@ Ext.define('Admin.view.psur.views.forms.PsurDetailsFrm', {
                 }
             },
             {
+                xtype: 'datefield',
+                fieldLabel: 'Approval Date',
+                name: 'report_approval_date',submitFormat: 'Y-m-d',
+                format: 'd/m/Y',
+                hidden:true,
+                allowBlank:true,
+                altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
+            },
+            {
                 xtype: 'textfield',
-                fieldLabel: 'Version No:',
+                fieldLabel: 'Version No',
                 name: 'version_no',
+                allowBlank:true,
                 bind:{
                     readOnly: '{isReadOnly}'
                 }

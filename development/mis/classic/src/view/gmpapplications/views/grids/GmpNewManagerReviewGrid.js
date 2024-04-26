@@ -4,13 +4,13 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpNewManagerReviewGrid', {
     viewConfig: {
         deferEmptyText: false,
         emptyText: 'Nothing to display',
-        listeners: {
-            refresh: function () {
-                var gridView = this,
-                    grid = gridView.grid;
-                grid.fireEvent('moveRowTop', gridView);
-            }
-        }
+        // listeners: {
+        //     refresh: function () {
+        //         var gridView = this,
+        //             grid = gridView.grid;
+        //         grid.fireEvent('moveRowTop', gridView);
+        //     }
+        // }
     },
     features:[
         {
@@ -113,25 +113,25 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpNewManagerReviewGrid', {
             fn: 'setGmpApplicationGridsStore',
             config: {
                 pageSize: 10000,
-                groupField: 'inspection_id',
+                groupField: 'inspection_details',
                 proxy: {
                     url: 'gmpapplications/getManagerApplicationsGeneric'
                 }
             },
             isLoad: true
         },
-        afterrender: function () {
-            var grid = this,
-                sm = grid.getSelectionModel();
-            grid.store.on('load', function (store, records, options) {
-                Ext.each(records, function (record) {
-                    var rowIndex = store.indexOf(record);
-                    if (record.data.meeting_id) {
-                        sm.select(rowIndex, true);
-                    }
-                });
-            });
-        },
+        // afterrender: function () {
+        //     var grid = this,
+        //         sm = grid.getSelectionModel();
+        //     grid.store.on('load', function (store, records, options) {
+        //         Ext.each(records, function (record) {
+        //             var rowIndex = store.indexOf(record);
+        //             if (record.data.meeting_id) {
+        //                 sm.select(rowIndex, true);
+        //             }
+        //         });
+        //     });
+        // },
         select: function (sel, record, index, eOpts) {
             var grid = sel.view.grid,
                 selCount = grid.getSelectionModel().getCount();

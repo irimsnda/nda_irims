@@ -96,7 +96,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.InspectionIn
     },{
         xtype: 'gridcolumn',
         dataIndex: 'gmpapplication_reference',
-        text: 'GMP Application Reference',
+        text: 'GMP Inspection Certificate Number',
         flex: 1
     },{
         xtype: 'datecolumn',
@@ -109,6 +109,11 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.InspectionIn
         dataIndex: 'approval_date',
         text: 'Approval Date',
         format: 'Y-m-d',
+        flex: 1,
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'fpp_manufacturer',
+        text: 'Manufacturer',
         flex: 1,
     },{
         xtype: 'gridcolumn',

@@ -2014,26 +2014,39 @@ Ext.define('Admin.view.clinicaltrial.viewcontrollers.ClinicalTrialVctr', {
         this.fireEvent('showApplicationCommentsWin', item, application_id, application_code);
     },
 
-    printClinicalTrialCertificate: function (btn) {
-        var me = this,
+    // printClinicalTrialCertificate: function (btn) {
+    //     var me = this,
+    //         record = btn.getWidgetRecord(),
+    //         application_code = record.get('application_code');
+    //         module_id = record.get('module_id');
+    //         sub_module_id = record.get('sub_module_id');
+    //         report_type_id = 3;
+    //         isPreview = 0;
+    //     this.fireEvent('generateClinicalCertificate', application_code,module_id,sub_module_id,report_type_id,isPreview);
+    // },
+
+
+    // printColumnClinicalTrialCertificate: function (item) {
+    //     var record = item.getWidgetRecord(),
+    //         application_code = record.get('application_code');
+    //         module_id = record.get('module_id');
+    //         sub_module_id = record.get('sub_module_id');
+    //         report_type_id = 3;
+    //         isPreview = 0;
+    //     this.fireEvent('generateClinicalCertificate', application_code,module_id,sub_module_id,report_type_id,isPreview);
+    // },
+     printClinicalTrialCertificate: function (btn) {
+         var me = this,
             record = btn.getWidgetRecord(),
+            application_id = record.get('active_application_id'),
             application_code = record.get('application_code');
-            module_id = record.get('module_id');
-            sub_module_id = record.get('sub_module_id');
-            report_type_id = 3;
-            isPreview = 0;
-        this.fireEvent('generateClinicalCertificate', application_code,module_id,sub_module_id,report_type_id,isPreview);
+        this.fireEvent('generateClinicalCertificate', application_id, application_code);
     },
-
-
-    printColumnClinicalTrialCertificate: function (item) {
+    printColumnClinicalTrialCertificate:function(item){
         var record = item.getWidgetRecord(),
-            application_code = record.get('application_code');
-            module_id = record.get('module_id');
-            sub_module_id = record.get('sub_module_id');
-            report_type_id = 3;
-            isPreview = 0;
-        this.fireEvent('generateClinicalCertificate', application_code,module_id,sub_module_id,report_type_id,isPreview);
+        application_id = record.get('active_application_id'),
+        application_code = record.get('application_code');
+        this.fireEvent('generateClinicalCertificate', application_id, application_code);
     },
    
     showAddClinicalTrialUnstructuredQueriesWin: function (btn) {

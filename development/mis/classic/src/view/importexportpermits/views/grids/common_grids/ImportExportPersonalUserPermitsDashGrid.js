@@ -92,7 +92,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         tdCls: 'wrap'
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'inspection_recommendation_id',
+        dataIndex: 'inspection_recommendation',
         text: 'Inspection Recommendation',
         flex: 1
     },{

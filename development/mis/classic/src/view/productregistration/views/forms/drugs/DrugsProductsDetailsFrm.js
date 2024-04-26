@@ -522,6 +522,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             xtype: 'textfield',
             name: 'use_period',
             hidden:true,
+            allowBlank:true,
             fieldLabel: 'How long has this medicine been in use'
 
         },  
@@ -532,7 +533,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
-            allowBlank: false,
+            allowBlank:true,
             hidden:true,
             displayField: 'name',
             listeners: {

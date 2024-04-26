@@ -77,22 +77,12 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManuc
         mode: 'local'
     }],
 
-    columns: [{
-        xtype: 'gridcolumn',
-        dataIndex: 'manufacturing_role',
-        text: 'Manufacturering Roles',
-        flex: 1
-    }, {
+    columns: [ {
         xtype: 'gridcolumn',
         dataIndex: 'manufacturer_name',
         text: 'Manufacturer Name',
         flex: 1,
     },{
-        xtype: 'gridcolumn',
-        dataIndex: 'manufacturing_site',
-        text: 'Manufacturing Site',
-        flex: 1,
-    }, {
         xtype: 'gridcolumn',
         dataIndex: 'country_name',
         text: 'Country',
@@ -114,28 +104,35 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManuc
         flex: 1,
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'manufacturer_role',
-        text: 'Manufacturing Role',
+        dataIndex: 'manufacturing_role',
+        text: 'Manufacturing Scope',
         flex: 1,
     },  {
         xtype: 'gridcolumn',
         dataIndex: 'manufacturing_activities',
-        text: 'Manufacturing Activities',
+        text: 'Other Manufacturing Activities',
         flex: 1,
+    },  {
+        xtype: 'gridcolumn',
+        dataIndex: 'product_line_details',
+        text: 'Product Line',
+        flex: 2,
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'has_beeninspected',
-        text: 'Has Been Inspected',
+        text: 'Has Been Inspected/Request submitted',
         flex: 1,
         renderer: function (val, meta, record, rowIndex, colIndex, store, view) {
                         var textVal = 'Inspection';
                         if (val == 1) {
                             meta.tdStyle = 'color:white;background-color:green';
                             textVal = 'Inspected';
+                            return textVal;
                             
                         }else if(val == 2){
                             meta.tdStyle = 'color:white;background-color:red';
                             textVal = 'Not Inspected';
+                            return textVal;
                            
                         }
 
@@ -143,25 +140,32 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManuc
         }
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'has_beeninspected',
-        text: 'Inspected Statuses',
+        dataIndex: 'prodline_inspectionstatus_id',
+        text: 'Inspection Statuses',
         flex: 1,
         renderer: function (val, meta, record, rowIndex, colIndex, store, view) {
                         var textVal = 'Inspection Status';
-                        if (val == 2) {
+                        if (val == 8) {
                             meta.tdStyle = 'color:white;background-color:green';
                             textVal = 'Compliant';
+                            return textVal;
                             
-                        }else if(val == 2){
+                        }else if(val == 9){
                             meta.tdStyle = 'color:white;background-color:red';
                             textVal = 'Non-Compliant';
+                            return textVal;
                            
-                        }else if(val == 3){
+                        }else if(val == 10){
                             meta.tdStyle = 'color:white;background-color:yellow';
-                            textVal = 'CAPA Request';
+                            textVal = 'Pending Capa Report';
+                            return textVal;
+                           
+                        }else if(val == 12){
+                            meta.tdStyle = 'color:white;background-color:blue';
+                            textVal = 'Out of Scope(Not Inspected)';
+                            return textVal;
                            
                         }
-
 
 
         }

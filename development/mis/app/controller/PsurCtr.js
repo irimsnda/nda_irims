@@ -36,6 +36,12 @@ Ext.define('Admin.controller.PsurCtr', {
             'psurAssessmentPnl': {
                 afterrender: 'preparenewPsurAssessment'
             },
+               'psurdetailsFrm': {
+                afterrender: 'psurdetailsDetailsFrmDefination'
+            },
+            'psurdetailsFrm combo[name=psur_type_id]': {
+                afterrender: 'afterPremisePsurTypeComboRender'
+            },
 
         }
 
@@ -167,6 +173,100 @@ Ext.define('Admin.controller.PsurCtr', {
             Ext.getBody().unmask();
         }, 300);
     },
+
+
+    psurdetailsDetailsFrmDefination:function(frm){
+        var me = this,
+            mainTabPnl = this.getMainTabPanel(),
+            activeTab = mainTabPnl.getActiveTab();
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue();
+            if(sub_module_id ==116){
+                frm.down('datefield[name=from_date]').setVisible(true);
+                frm.down('datefield[name=from_date]').allowBlank = false;
+                frm.down('datefield[name=from_date]').validate();
+
+                frm.down('datefield[name=to_date]').setVisible(true);
+                frm.down('datefield[name=to_date]').allowBlank = false;
+                frm.down('datefield[name=to_date]').validate();
+
+                frm.down('datefield[name=report_approval_date]').setVisible(false);
+                frm.down('datefield[name=report_approval_date]').allowBlank = true;
+
+                frm.down('datefield[name=international_birth_date]').setVisible(true);
+                frm.down('datefield[name=international_birth_date]').allowBlank = true;
+
+                frm.down('datefield[name=data_log_point]').setVisible(true);
+                frm.down('datefield[name=data_log_point]').allowBlank = true;
+            }
+            else if(sub_module_id ==128){
+                frm.down('datefield[name=from_date]').setVisible(false);
+                frm.down('datefield[name=from_date]').allowBlank = true;
+
+
+                frm.down('datefield[name=to_date]').setVisible(false);
+                frm.down('datefield[name=to_date]').allowBlank = true;
+               
+                frm.down('datefield[name=report_approval_date]').setVisible(true);
+                frm.down('datefield[name=report_approval_date]').allowBlank = false;
+                frm.down('datefield[name=report_approval_date]').validate();
+
+                frm.down('datefield[name=international_birth_date]').setVisible(true);
+                frm.down('datefield[name=international_birth_date]').allowBlank = true;
+
+                frm.down('datefield[name=data_log_point]').setVisible(true);
+                frm.down('datefield[name=data_log_point]').allowBlank = true;
+            }else if(sub_module_id ==129){
+                frm.down('datefield[name=from_date]').setVisible(true);
+                frm.down('datefield[name=from_date]').allowBlank = false;
+                frm.down('datefield[name=from_date]').validate();
+
+                frm.down('datefield[name=to_date]').setVisible(true);
+                frm.down('datefield[name=to_date]').allowBlank = false;
+                frm.down('datefield[name=to_date]').validate();
+
+                frm.down('datefield[name=report_approval_date]').setVisible(false);
+                frm.down('datefield[name=report_approval_date]').allowBlank = true;
+
+                frm.down('datefield[name=international_birth_date]').setVisible(true);
+                frm.down('datefield[name=international_birth_date]').allowBlank = true;
+
+                frm.down('datefield[name=data_log_point]').setVisible(false);
+                frm.down('datefield[name=data_log_point]').allowBlank = true;
+            
+            }
+            else{
+                frm.down('datefield[name=from_date]').setVisible(true);
+                frm.down('datefield[name=from_date]').allowBlank = false;
+                frm.down('datefield[name=from_date]').validate();
+
+                frm.down('datefield[name=to_date]').setVisible(true);
+                frm.down('datefield[name=to_date]').allowBlank = false;
+                frm.down('datefield[name=to_date]').validate();
+
+                frm.down('datefield[name=report_approval_date]').setVisible(false);
+                frm.down('datefield[name=report_approval_date]').allowBlank = true;
+
+                frm.down('datefield[name=international_birth_date]').setVisible(true);
+                frm.down('datefield[name=international_birth_date]').allowBlank = true;
+
+                frm.down('datefield[name=data_log_point]').setVisible(true);
+                frm.down('datefield[name=data_log_point]').allowBlank = true;
+            }
+
+    },
+
+    afterPremisePsurTypeComboRender: function (cmbo) {
+        var form = cmbo.up('form'),
+            mainTabPnl = this.getMainTabPanel(),
+            activeTab = mainTabPnl.getActiveTab(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            store = cmbo.getStore(),
+            filterObj = {sub_module_id: sub_module_id},
+            filterStr = JSON.stringify(filterObj);
+        store.removeAll();
+        store.load({params: {filters: filterStr}});
+    },
+
      psurHome: function (btn) {
         var me = this,
             mainTabPanel = me.getMainTabPanel(),

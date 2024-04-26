@@ -107,26 +107,29 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsOtherI
             }
         },
     }, {
-        xtype: 'productGmpInspectionDetailsGrid',hidden: true,
-         autoScroll:true,
+        xtype: 'productGmpInspectionDetailsGrid',
+        hidden: true,
+        autoScroll:true,
         title: 'GMP Inspection Details (Inspected Sites)'
 
         
     },{
         xtype: 'otherregisterdproductapigrid',
          autoScroll:true,
+         hidden:true,
         title: 'Registered Products with Same API'
         
     },
     {
         xtype: 'inspectioninothercountriesGrid',
          autoScroll:true,
+         hidden:true,
         title: 'Ongoing Application for Products with Same API'
         
     },{
         xtype: 'inspectioninothercountriesGrid',
          autoScroll:true,
-        title: 'GMP inspection from other countries'
+        title: 'GMP inspection in other countries'
         
     },{
         xtype: 'productreginothercountriesGrid',
@@ -136,6 +139,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsOtherI
     },{
         xtype: 'conductedproductclinicaltrialGrid',
         autoScroll:true,
+        hidden:true,
         title: 'clinical trial information'
         
     }, {

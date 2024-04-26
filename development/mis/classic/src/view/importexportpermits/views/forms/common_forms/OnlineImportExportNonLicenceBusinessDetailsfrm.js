@@ -23,7 +23,6 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.OnlineImport
         
     },
     
-    //title: 'APPLICANTION DETAILS',
     items: [
 
         {
@@ -32,14 +31,13 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.OnlineImport
         allowBlank: true
     }, {
             xtype: 'hiddenfield',
-            name: 'tpin_id'
+            name: 'premise_id'
         },{
         xtype: 'hiddenfield',
         name: 'table_name',
-        value: 'wb_importexport_applications'
+        value: 'tra_importexport_applications'
     },
-
-    {
+  {
         xtype:'fieldset',
         columnWidth: 1,
         title: "APPLICATION DETAILS",
@@ -55,56 +53,17 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.OnlineImport
         },
         layout: 'column',
           items:[
-    {
-        xtype: 'combo',
-        fieldLabel: 'Application Type',
-        labelWidth: 80,
-        width: 320,
-        readOnly: true,
-        valueField: 'id',
-        displayField: 'name',
-        forceSelection: true,
-        name: 'sub_module_id',
-         hidden: true,
-        queryMode: 'local',
-        fieldStyle: {
-            'color': 'green',
-            'font-weight': 'bold'
-        }, bind: {
-            readOnly: '{isReadOnly}'
-        },
-        readOnly: true,
-        listeners: {
-            beforerender: {
-                fn: 'setWorkflowCombosStore',
-                config: {
-                    pageSize: 1000,
-                    proxy: {
-                        url: 'workflow/getSystemSubModules',
-                        extraParams: {
-                            model_name: 'SubModule',
-                            module_id: 4
-                        }
-                    }
-                },
-                isLoad: true
-            }
-        }
-     },
-  
+ 
     {
         xtype: 'combo',
         fieldLabel: 'NDA Application Type',
-        labelWidth: 80,
-   
+        value:2,
         valueField: 'id',
         displayField: 'name',
         forceSelection: true,
         readOnly: true,
+        allowBlank:true,
         name: 'has_registered_premises',
-        queryMode: 'local',bind: {
-            readOnly: '{isReadOnly}'
-        },
         listeners: {
             beforerender: {
                 fn: 'setWorkflowCombosStore',
@@ -136,7 +95,6 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.OnlineImport
                 config: {
                     pageSize: 10000,
                     proxy: {
-                       // url: 'configurations/getRegistrationApplicationParameters',
                         url: 'configurations/getNonrefParameter',
                         extraParams: {
                             table_name: 'par_licence_type'
@@ -164,7 +122,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.OnlineImport
                 config: {
                     pageSize: 10000,
                     proxy: {
-                       // url: 'configurations/getRegistrationApplicationParameters',
+                       
                         url: 'configurations/getNonrefParameter',
                         extraParams: {
                             table_name: 'par_premise_class'
@@ -183,6 +141,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.OnlineImport
         fieldLabel: 'Business Type',
         name: 'business_type_id',
         forceSelection: true,
+        columnWidth: 1,
         queryMode: 'local',
         valueField: 'id',
         displayField: 'name',
@@ -192,15 +151,21 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.OnlineImport
                 config: {
                     pageSize: 10000,
                     proxy: {
-                       // url: 'configurations/getRegistrationApplicationParameters',
-                        url: 'configurations/getNonrefParameter',
+                   
+                        url: 'commonparam/getCommonParamFromTable',
                         extraParams: {
                             table_name: 'par_business_types'
                         }
                     }
                 },
-                isLoad: true
-            }
+                isLoad: false
+            },afterrender: function (cmbo) {
+                         var store = cmbo.getStore(),
+                         filterObj = {is_non_licenced: 1},
+                         filterStr = JSON.stringify(filterObj);
+                         store.removeAll();
+                         store.load({params: {filters: filterStr}});
+          }
         },bind: {
             readOnly: '{isReadOnly}'
         },
@@ -210,7 +175,8 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.OnlineImport
         fieldLabel: 'Product Range',
         columnWidth: 0.33,
         name: 'importexport_product_range_id',
-        allowBlank: true,
+        allowBlank: false,
+        columnWidth: 1,
         forceSelection: true,
         filterPickList: true,
         encodeSubmitValue: true,
@@ -226,7 +192,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.OnlineImport
                     pageSize: 100,
                     proxy: {
                         url: 'commonparam/getCommonParamFromTable',
-                      // url: 'configurations/getImportExportProductRange',
+                  
                         extraParams: {
                             table_name: 'par_importexport_product_range'
                         }
@@ -237,34 +203,6 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.OnlineImport
         }
     }
     
-
-    // {
-    //     xtype: 'combo',
-    //     fieldLabel: 'Product Range',
-    //     name: 'importexport_product_range_id',
-    //     forceSelection: true,
-    //     queryMode: 'local',
-    //     valueField: 'id',
-    //     displayField: 'name',
-    //     listeners: {
-    //         beforerender: {
-    //             fn: 'setConfigCombosSectionfilterStore',
-    //             config: {
-    //                 pageSize: 10000,
-    //                 proxy: {
-    //                    // url: 'configurations/getRegistrationApplicationParameters',
-    //                     url: 'configurations/getImportExportProductRange',
-    //                     extraParams: {
-    //                         table_name: 'par_importexport_product_range'
-    //                     }
-    //                 }
-    //             },
-    //             isLoad: true
-    //         }
-    //     },bind: {
-    //         readOnly: '{isReadOnly}'
-    //     },
-    // } 
 ]
 },
 
@@ -294,22 +232,16 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.OnlineImport
             items: [
                 {
                     xtype: 'textfield',
-                    name: 'tpin_no',
+                    name: 'premise_tpin_no',
                     columnWidth: 0.9,
                     allowBlank: false,
+                    readOnly:true,
                     fieldLabel: 'TIN No.',
                     bind: {
                         readOnly: '{isReadOnly}'
                     }
                 },
-            //     {
-            //     xtype: 'textfield',
-            //     fieldLabel: 'TIN No.',
-            //     labelWidth: 80,
-            //     displayField: 'tpin_no',
-            //     name: 'tpin_no'
-            //     //columnWidth: 1
-            // },
+            
                 {
                     xtype: 'button',
                     iconCls: 'x-fa fa-search',
@@ -331,31 +263,31 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.OnlineImport
             {
                 xtype: 'textfield',
                 fieldLabel: 'Name of Business',
-                labelWidth: 80,
-                displayField: 'name',
-                name: 'name',
+                allowBlank:true,
+                readOnly:true,
+                name: 'premise_name',
             },
 
             {
                 xtype: 'textfield',
                 fieldLabel: 'Physical address of the Business or Institution',
-                labelWidth: 80,
-                displayField: 'physical_address',
-                name: 'physical_address',
+                allowBlank:true,
+                readOnly:true,
+                name: 'premise_physical_address',
             },
             {
                 xtype: 'textfield',
                 fieldLabel: 'Email',
-                labelWidth: 80,
-                displayField: 'email',
-                name: 'email',
+                allowBlank:true,
+                readOnly:true,
+                name: 'premise_email',
             },
             {
                 xtype: 'textfield',
                 fieldLabel: 'Company Registration Number',
-                labelWidth: 80,
-                displayField: 'company_registration_no',
-                name: 'company_registration_no',
+                allowBlank:true,
+                readOnly:true,
+                name: 'premise_company_registration_no',
             }
         ]
     },

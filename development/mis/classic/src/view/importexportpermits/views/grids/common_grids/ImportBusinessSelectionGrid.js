@@ -34,21 +34,6 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportBusine
             fieldStyle: {
                 'color': 'green'
             }
-        },
-        {
-            xtype: 'hiddenfield',
-            name: 'section_id'
-        },
-        {
-            xtype: 'hiddenfield',
-            name: 'gmp_type_id'
-        },
-        {
-            xtype: 'hiddenfield',
-            name: 'region_id'
-        },{
-            xtype: 'hiddenfield',
-            name: 'district_id'
         }
     ],
     bbar: [{
@@ -59,36 +44,30 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportBusine
         emptyMsg: 'No Records',
         beforeLoad: function () {
             var store = this.getStore(),
-                grid = this.up('grid'),
-                section_id = grid.down('hiddenfield[name=section_id]').getValue();
-                region_id = grid.down('hiddenfield[name=region_id]').getValue();
-                district_id = grid.down('hiddenfield[name=district_id]').getValue();
-            store.getProxy().extraParams = {
-                section_id: section_id,
-                region_id: region_id,
-            };
+                grid = this.up('grid');
+               
         }
     }],
-    /* features: [{
+     features: [{
          ftype: 'searching',
          minChars: 2,
          mode: 'local'
-     }],*/
+     }],
     plugins: [{
         ptype: 'filterfield'
     }],
-    listeners: {
+     listeners: {
         beforerender: {
-            fn: 'setPremiseRegGridsStore',
+            fn: 'setConfigGridsStore',
             config: {
                 pageSize: 10000,
                 remoteFilter: true,
                 proxy: {
-                    url: 'premiseregistration/getBusinessList',
-					reader: {
+                    url: 'importexportpermits/getAllNonLicensedPremises',
+                    reader: {
                         type: 'json',
                         totalProperty: 'totalCount',
-                        rootProperty: 'data'
+                        rootProperty: 'results'
                     }
                 }
             },

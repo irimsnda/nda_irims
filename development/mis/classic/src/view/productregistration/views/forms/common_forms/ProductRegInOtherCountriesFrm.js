@@ -41,6 +41,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductRegIn
             xtype: 'combo',
             fieldLabel: 'Country',
             name: 'country_id',
+            allowBlank: false,
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
@@ -55,18 +56,48 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductRegIn
                         }
                     },
                     isLoad: true
+                },
+                change: function (cmbo, newVal) {
+                        var form = cmbo.up('form'),
+                        approving_authorityStore = form.down('combo[name=approving_authority_id]').getStore(),
+                        filterObj = {country_id: newVal},
+                        filterStr = JSON.stringify(filterObj);
+                        approving_authorityStore.removeAll();
+                        approving_authorityStore.load({params: {filters: filterStr}});
+                       
                 }
             }
         },
         {
-            xtype: 'textfield',
+            xtype: 'combo',
             fieldLabel: 'Approving Authority',
-            name: 'approving_authority'
+            name: 'approving_authority_id',
+            allowBlank: true,
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setConfigCombosStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                                url: 'commonparam/getCommonParamFromTable',
+                                extraParams: {
+                                    table_name: 'par_approving_authority'
+                                }
+                            }
+                     },
+                    isLoad: false
+                }
+            }
         },
         {
             xtype: 'datefield',
             fieldLabel: 'Registration Date',
             format: 'Y-m-d',
+            allowBlank: false,
             altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
             name: 'date_of_registration',
             maxValue: new Date() 
@@ -74,11 +105,33 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductRegIn
         {
             xtype: 'textfield',
             fieldLabel: 'Registration Reference',
+            allowBlank: false,
             name: 'registration_ref'
-        },{
-            xtype: 'textfield',
-            fieldLabel: 'Current Registration Status(Active, Withdrawn etc)',
-            name: 'current_registrationstatus'
+        },
+         {
+            xtype: 'combo',
+            fieldLabel: 'Current Registration Status(Active, Withdrawn)',
+            name: 'current_registrationstatus',
+            allowBlank: false,
+            forceSelection: true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setConfigCombosStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                                url: 'commonparam/getCommonParamFromTable',
+                                extraParams: {
+                                    table_name: 'par_current_reg_status'
+                                }
+                            }
+                     },
+                    isLoad: true
+                }
+            }
         }
     ],
     dockedItems:[

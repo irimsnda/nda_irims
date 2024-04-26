@@ -156,7 +156,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PersonalUseP
                     text: 'Delete',
                     iconCls: 'x-fa fa-trash',
                     tooltip: 'Delete Record',
-                    table_name: 'tra_personalusepermits_products',
+                    table_name: 'tra_permits_products',
                     bind: {
                         hidden: '{isReadOnly}'  // negated
                     },

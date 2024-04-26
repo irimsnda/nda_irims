@@ -167,6 +167,7 @@ Ext.define('Admin.view.clinicaltrial.views.grids.ClinicalTrialCommunicationsGrid
                     {
                         text: 'Clinical Trial Certificate',
                         iconCls: 'x-fa fa-certificate',
+                        hidden:true,
                         handler: 'printClinicalTrialCertificate',
                         name: 'certificate'
                     },

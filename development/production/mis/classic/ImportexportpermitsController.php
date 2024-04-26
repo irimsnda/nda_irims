@@ -185,73 +185,6 @@ class ImportexportpermitsController extends Controller
         return \response()->json($res);
     }
 
-    public function getAllNonLicensedPremises(Request $request)
-    {
-      
-  
-        $filter = $request->input('filter');
-        $whereClauses = array();
-        $start = $request->start;
-                $limit = $request->limit;
-
-        $filter_string = '';
-        if (isset($filter)) {
-            $filters = json_decode($filter);
-            if ($filters != NULL) {
-                foreach ($filters as $filter) {
-                    switch ($filter->property) {
-                        case 'tpin_no' :
-                            $whereClauses[] = "t1.tpin_no like '%" . ($filter->value) . "%'";
-                            break;
-                        case 'physical_address' :
-                            $whereClauses[] = "t1.physical_address like '%" . ($filter->value) . "%'";
-                            break;
-                        case 'email' :
-                            $whereClauses[] = "t1.email like '%" . ($filter->value) . "%'";
-                            break;
-                        case 'company_registration_no' :
-                            $whereClauses[] = "t1.company_registration_no like '%" . ($filter->value) . "%'";
-                            break;
-                            case 'name' :
-                            $whereClauses[] = "t1.name like '%" . ($filter->value) . "%'";
-                            break;
-                    }
-                }
-                $whereClauses = array_filter($whereClauses);
-            }
-            if (!empty($whereClauses)) {
-                $filter_string = implode(' AND ', $whereClauses);
-            }
-        }
-        try {
-            $qry = DB::table('tra_non_license_business_details as t1')
-                ->select('t1.id as premised_id','t1.*');
-       
-            if ($filter_string != '') {
-                $qry->whereRAW($filter_string);
-            }
-           
-            $totalCount  = $qry->count();
-                $records = $qry->skip($start*$limit)->take($limit)->orderBy('t1.id','desc')->get();
-                $res = array('success'=>true,
-                                'results'=>$records,
-                                'totalCount'=>$totalCount
-                            );
-
-        } catch (\Exception $exception) {
-            $res = array(
-                'success' => false,
-                'message' => $exception->getMessage()
-            );
-        } catch (\Throwable $throwable) {
-            $res = array(
-                'success' => false,
-                'message' => $throwable->getMessage()
-            );
-        }
-        return \response()->json($res);
-    }
-
     public function prepareOnlineImportExportNonLicencedReceivingStage(Request $req)
     {
 
@@ -538,19 +471,18 @@ class ImportexportpermitsController extends Controller
                 ->leftJoin('tra_approval_recommendations as t4', 't1.application_code','t4.application_code')
                 ->leftJoin('tra_prechecking_recommendations as t5', 't1.application_code','t5.application_code')
                 ->leftJoin('tra_managerpermits_review as t6', 't1.application_code','t6.application_code')
-                ->leftJoin('tra_non_license_business_details as t7', 't1.premise_id','t7.id')
                 ->where('t1.id', $application_id);
+
             $qry1 = clone $main_qry;
             $qry1->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
                 
                 ->select('t1.*','q.name as application_status', 't1.id as active_application_id',
                     't3.name as applicant_name', 't3.contact_person','t4.decision_id as approval_recommendation_id','t5.recommendation_id as prechecking_recommendation_id', 't6.decision_id as review_recommendation_id',
                     't3.tin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
-                    't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website','t7.tpin_no as premise_tpin_no','t7.name as premise_name','t7.physical_address as premise_physical_address','t7.email as premise_email','t7.company_registration_no as premise_company_registration_no'
+                    't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website'
                     );
 
             $results = $qry1->first();
-            $results->importexport_product_range_id = json_decode($results->importexport_product_range_id);
             $premise_id = $results->tpin_id;
             $sender_receiver_id = $results->sender_receiver_id;
             $qry2 = DB::table('tra_permitsenderreceiver_data as t3')
@@ -2226,6 +2158,7 @@ $res = array("success"=>false,'message'=>'Pemrit Details failed to update' );
 
                             "permit_reason_id" => $request->input('permit_reason_id'),
                             "proforma_invoice_no" => $request->input('proforma_invoice_no'),
+                            
                             "proforma_invoice_date" => $request->input('proforma_invoice_date'),
                             "mode_oftransport_id" => $request->input('mode_oftransport_id'),
                             "has_registered_premises" => $request->input('has_registered_premises'),
@@ -2269,7 +2202,7 @@ $res = array("success"=>false,'message'=>'Pemrit Details failed to update' );
                    $res['active_application_id'] = $active_application_id;
                    $res['application_code'] = $application_code;
                    $res['ref_no'] = $ref_number;
-                   $res['tracking_no'] = $ref_number;
+    $res['tracking_no'] = $ref_number;
                } else {
 
             
@@ -2323,7 +2256,7 @@ $res = array("success"=>false,'message'=>'Pemrit Details failed to update' );
                            'process_id' => $process_id,
                            'application_code' => $application_code,
                            'reference_no' => $ref_number,
-                          'tracking_no' => $ref_number,
+                            'tracking_no' => $ref_number,
                            'usr_from' => $user_id,
                            'usr_to' => $user_id,
                            'previous_stage' => $workflow_stage_id,
@@ -5996,49 +5929,19 @@ public function getNarcoticspermitsproductsDetails(Request $req){
                          
                         $view_id = generateApplicationViewID();
                        
-                       
-
                         $app_data['tracking_no'] = $tracking_no;
-                        $app_data['view_id'] = $view_id;
                         $app_data['application_code'] = $application_code;
                         $app_data['created_by'] = \Auth::user()->id;
                         $app_data['created_on'] = Carbon::now();
     
                        
                         $res = insertRecord($applications_table, $app_data, $user_id);
-
                      
                         $active_application_id = $res['record_id'];
 
-                       //add to submissions table
-                       $submission_params = array(
-                           'application_id' => $active_application_id,
-                           'process_id' => $process_id,
-                           'application_code' => $application_code,
-                           'reference_no' => $tracking_no,
-                           'tracking_no' => $tracking_no,
-                           'usr_from' => $user_id,
-                           'usr_to' => $user_id,
-                           'previous_stage' => $workflow_stage_id,
-                           'current_stage' => $workflow_stage_id,
-                           'module_id' => $module_id,
-                           'sub_module_id' => $sub_module_id,
-                           'section_id' => $section_id,
-                           'application_status_id' => $application_status->status_id,
-                           'urgency' => 1,
-                           'applicant_id' => $applicant_id,
-                           'remarks' => 'Initial save of the application',
-                           'date_received' => Carbon::now(),
-                           'created_on' => Carbon::now(),
-                           'created_by' => $user_id
-                       );
-   
-                       insertRecord('tra_submissions', $submission_params, $user_id);
-                       $res['active_application_id'] = $active_application_id;
-                       $res['application_code'] = $application_code;
-                    
-                      // $res['ref_no'] = $tracking_no;
-                       $res['tracking_no'] = $tracking_no;
+                        $res['active_application_id'] = $active_application_id;
+                        $res['application_code'] = $application_code;
+                        $res['tracking_no'] = $tracking_no;
                        
                 }
     

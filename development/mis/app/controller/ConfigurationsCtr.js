@@ -243,7 +243,7 @@ Ext.define('Admin.controller.ConfigurationsCtr', {
             
         if (isLoad === true || isLoad == true) {
             store.removeAll();
-            store.load({params:{filters:filters} });
+            store.load({params:{filters:filters,product_id:product_id} });
         }
     }
 

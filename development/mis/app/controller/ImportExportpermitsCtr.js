@@ -47,6 +47,10 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
             'importbusinessselectiongrid': {
                 itemdblclick: 'onImportBusinessSelectionListDblClick'
             },
+
+            'importbusinessselectiongrid': {
+                itemdblclick: 'onImportNonLicensedBusinessSelectionListDblClick'
+            },
              'licensepermitsproductsgrid': {
                 refresh: 'refreshimportexportpermitsproductsgrid'
             },
@@ -308,11 +312,22 @@ Ext.define('Admin.controller.ImportExportpermitsCtr', {
                 itemdblclick: 'onPermitApplicantSelectionListDblClick' 
             },'importexportpremisesfrm button[action=search_premise]': {
                 click: 'showImpPremiseSelectionList'
-            },'onlineimportexportnonlicencebusinessdetailsfrm button[action=search_premise]': {
+            },
+
+
+            'onlineimportexportnonlicencebusinessdetailsfrm button[action=search_premise]': {
                 click: 'showImpPremiseSelectionList'
             },'vcimportexportnonlicencebusinessdetailsfrm button[action=search_premise]': {
                 click: 'showImpPremiseSelectionList'
             },
+
+             'onlineimportexportnonlicencebusinessdetailsfrm button[action=search_premise]': {
+                click: 'showImpNonPremiseSelectionList'
+            },'vcimportexportnonlicencebusinessdetailsfrm button[action=search_premise]': {
+                click: 'showImpNonPremiseSelectionList'
+            },
+
+
             'importexportpermitsproductsfrm button[action=btn_savepermitproducts]': {
                 click: 'onSavePermitProductsDetails'
             },
@@ -2491,7 +2506,7 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
             mainTabPanel = me.getMainTabPanel(),
             sec_dashboard = btn.sec_dashboard,
             activeTab = mainTabPanel.getActiveTab(),
-            dashboardWrapper = activeTab.down('#importexportpersonaluserpermitsdashwrapper');
+            dashboardWrapper = activeTab.down('#permitsdashwrapper');
         if (!dashboardWrapper.down(sec_dashboard)) {
             dashboardWrapper.removeAll();
             dashboardWrapper.add({xtype: sec_dashboard});
@@ -3616,6 +3631,40 @@ previewPreviousDeclaredImpExpApplication: function (view, record) {
             }
             
             importexportpremisesfrm.loadRecord(record);
+
+        Ext.Function.defer(function () {
+            mask.hide();
+            win.close();
+        }, 200);
+    },
+
+
+     onImportNonLicensedBusinessSelectionListDblClick: function (view, record, item, index, e, eOpts) {
+        var me = this,
+            grid = view.grid,
+            win = grid.up('window'),
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            importexportpremisesfrm = activeTab.down('onlineimportexportnonlicencebusinessdetailsfrm'),
+            premiseForm,
+            applicantForm,
+            contactPersonFrm,
+            mask = new Ext.LoadMask({
+                msg: 'Please wait...',
+                target: win
+            });
+        mask.show();
+           
+        if(importexportpremisesfrm){
+            importexportpremisesfrm.down('hiddenfield[name=premise_id]').setValue(record.get('id'));
+            importexportpremisesfrm.down('textfield[name=premise_tpin_no]').setValue(record.get('tpin_no'));
+            importexportpremisesfrm.down('textfield[name=premise_name]').setValue(record.get('name'));
+            importexportpremisesfrm.down('textfield[name=premise_physical_address]').setValue(record.get('physical_address'));
+            importexportpremisesfrm.down('textfield[name=premise_email]').setValue(record.get('email'));
+            importexportpremisesfrm.down('textfield[name=premise_company_registration_no]').setValue(record.get('company_registration_no'));
+        }
 
         Ext.Function.defer(function () {
             mask.hide();
@@ -6001,6 +6050,30 @@ showPermitApplicationMoreDetails: function (btn) {
             funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
 
     },
+
+    showImpNonPremiseSelectionList:function(btn){
+        var me = this,
+            childXtype = btn.childXtype,
+            winTitle = btn.winTitle,
+            winWidth = btn.winWidth,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            
+            activeTab = mainTabPanel.getActiveTab();
+
+            if(activeTab.down('hiddenfield[name=section_id]')){
+                section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+            }
+            if(activeTab.down('hiddenfield[name=active_application_code]')){
+                section_id = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+            }
+            gmp_type_id = 0;
+        var childObject = Ext.widget(childXtype);
+        childObject.setHeight(450);
+            
+            funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
+
+    },
     showImpSenderReceiverlectionList:function(btn){
         var me = this,
             childXtype = 'senderreceiverinformationgrid',
@@ -6802,16 +6875,15 @@ showPermitApplicationMoreDetails: function (btn) {
 
          Ext.getBody().mask('Please wait...');
         var me = this,
-            activeTab = pnl;
-            application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
+            activeTab = pnl,
+            varapplication_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
             applicantFrm = activeTab.down('importexportapplicantdetailsfrm'),
             senderreceiverdetailsfrm = activeTab.down('#senderreceiverdetailsfrm'),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
-            zone_cbo = activeTab.down('combo[name=zone_id]');
-            filter = { section_id: section_id },
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
 
              if(activeTab.down('importexportlicencedetailsfrm')){
@@ -6821,7 +6893,6 @@ showPermitApplicationMoreDetails: function (btn) {
 
             }
              
-
             var importexportpremisesfrm, importexportnonLicencedfrm;
             if(activeTab.down('vcimportexportnonlicencebusinessdetailsfrm')){
               importexportpremisesfrm = activeTab.down('vcimportexportnonlicencebusinessdetailsfrm');
@@ -6874,7 +6945,7 @@ showPermitApplicationMoreDetails: function (btn) {
                         senderreceiverdetailsfrm.loadRecord(senderReceiverDetails);
                         }
 
-                        zone_cbo.setValue(zone_id);
+             
 
                         activeTab.down('displayfield[name=application_status]').setValue(results.application_status);
 
@@ -6913,8 +6984,7 @@ showPermitApplicationMoreDetails: function (btn) {
         } else {
             Ext.getBody().unmask();
             //It's a new application
-            activeTab.down('combo[name=sub_module_id]').setDisabled(true);
-            activeTab.down('combo[name=sub_module_id]').setValue(sub_module_id);
+        
                           
         }
     },

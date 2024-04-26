@@ -89,6 +89,7 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsIngredientsGri
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'excipient_name',
+        
         text: 'Name of Excipient(s)',
         flex: 1,
     },{

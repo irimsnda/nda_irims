@@ -1794,9 +1794,8 @@ if(validateIsNumeric($section_id)){
                     $data['altered_by'] = $user_id;
 
                     $previous_data = getPreviousRecords($table_name, $where);
-
+                  
                     $resp = updateRecord($table_name, $previous_data['results'], $where, $data, $user_id);
-
                 }
             } else {
                 //insert
@@ -2421,8 +2420,10 @@ if(validateIsNumeric($section_id)){
             //get the records
             $filters['t3.is_active_reason'] = 1;
             $data = DB::table('gmp_productline_details as t1')
-                ->select('t1.id as gmp_productline_id', 't2.name as gmpproduct_line')
                 ->join('gmp_product_lines as t2', 't1.product_line_id', '=', 't2.id')
+                ->leftJoin('par_gmpproduct_types  as t3', 't1.category_id', '=', 't3.id')
+                ->leftJoin('par_manufacturing_activities as t4', 't1.manufacturing_activity_id', '=', 't4.id')
+                ->select('t1.id as gmp_productline_id', DB::raw("CONCAT(t2.name, '  Product Line Category:', t3.name, ' Manufacturing Activity :', t4.name) AS gmpproduct_line"))
                 ->where(array('manufacturing_site_id' => $manufacturing_site_id))
             //  ->whereIn('prodline_inspectionstatus_id',[8,10])
                 ->get();
@@ -2524,15 +2525,18 @@ if(validateIsNumeric($section_id)){
             $records = array();
             //get the records
             $records = DB::table('tra_product_manufacturers as t1')
-                ->select('t1.*', 't2.email_address', 't7.name as manufacturer_name', 't1.id as manufacturer_id', 't6.name as manufacturing_role', 't2.physical_address', 't2.name as manufacturing_site', 't3.name as country_name', 't4.name as region_name', 't5.name as district_name')
-                ->leftJoin('par_man_sites as t2', 't1.man_site_id', '=', 't2.id')
+                ->leftJoin('tra_manufacturing_sites as t2', 't1.manufacturer_id', '=', 't2.id')
                 ->leftJoin('par_countries as t3', 't2.country_id', '=', 't3.id')
                 ->leftJoin('par_regions as t4', 't2.region_id', '=', 't4.id')
                 ->leftJoin('par_districts as t5', 't2.district_id', '=', 't5.id')
                 ->leftJoin('par_manufacturing_roles as t6', 't1.manufacturer_role_id', '=', 't6.id')
-                ->leftJoin('tra_manufacturers_information as t7', 't1.manufacturer_id', '=', 't7.id')
+                ->leftJoin('gmp_productline_details  as t7', 't1.manufacturer_id', '=', 't7.manufacturing_site_id')
+                ->leftJoin('gmp_product_lines as t8', 't7.product_line_id', '=', 't8.id')
+                ->leftJoin('par_gmpproduct_types  as t9', 't7.category_id', '=', 't9.id')
+                ->leftJoin('par_manufacturing_activities as t10', 't7.manufacturing_activity_id', '=', 't10.id')
+                ->select('t1.*', 't2.email as email_address', 't6.name as manufacturing_role', 't2.physical_address', 't2.name as manufacturer_name', 't3.name as country_name', 't4.name as region_name', 't5.name as district_name','prodline_inspectionstatus_id',DB::raw("CONCAT(t8.name, '<b>Product Line Category</b>', t9.name, '<b> Manufacturing Activity </b>', t10.name) AS product_line_details"))
                 ->where(array('t1.product_id' => $product_id, 'manufacturer_type_id' => 1))
-                ->get();
+               ->groupBy('t1.id')->get();
 
             $res = array('success' => true, 'results' => $records);
 
@@ -2560,8 +2564,8 @@ if(validateIsNumeric($section_id)){
             $records = array();
             //get the records
             $records = DB::table('tra_product_manufacturers as t1')
-                ->select('t1.*', 't2.email_address', 't2.id as manufacturer_id', 't7.name as ingredient_name', 't2.physical_address', 't2.name as manufacturer_name', 't3.name as country_name', 't4.name as region_name', 't5.name as district_name')
-                ->join('tra_manufacturers_information as t2', 't1.manufacturer_id', '=', 't2.id')
+                ->select('t1.*', 't2.email as email_address', 't2.id as manufacturer_id', 't7.name as ingredient_name', 't2.physical_address', 't2.name as manufacturer_name', 't3.name as country_name', 't4.name as region_name', 't5.name as district_name')
+                ->join('tra_manufacturing_sites as t2', 't1.manufacturer_id', '=', 't2.id')
                 ->join('par_countries as t3', 't2.country_id', '=', 't3.id')
                 ->join('par_regions as t4', 't2.region_id', '=', 't4.id')
                 ->leftJoin('par_districts as t5', 't2.district_id', '=', 't5.id')

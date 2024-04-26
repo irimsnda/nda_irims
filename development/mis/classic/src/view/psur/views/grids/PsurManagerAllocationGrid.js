@@ -22,6 +22,7 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerAllocationGrid', {
             var grid = this.up('grid'),
                 pnl = grid.up('panel'),
                 module_id = pnl.down('hiddenfield[name=module_id]').getValue(),
+                sub_module_id = pnl.down('hiddenfield[name=sub_module_id]').getValue(),
                 application_code = pnl.down('hiddenfield[name=active_application_code]').getValue(),
                 workflow_stage_id = pnl.down('hiddenfield[name=workflow_stage_id]').getValue(),
                 store = this.getStore();
@@ -29,6 +30,7 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerAllocationGrid', {
             store.getProxy().extraParams = {
                 application_code: application_code,
                 module_id: module_id,
+                sub_module_id: sub_module_id,
                 workflow_stage_id: workflow_stage_id
             }
         }
@@ -56,6 +58,77 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerAllocationGrid', {
             },
             isLoad: true
         },
+        afterrender: function(grid) {
+                var pnl = grid.up('panel'),
+                subModuleId = pnl.down('hiddenfield[name=sub_module_id]').getValue();
+                grid.columns.forEach(function(column) {
+            	if(subModuleId==116 || subModuleId===116){
+		                    if (column.dataIndex === 'from_date') {
+		                        column.setHidden(false);
+		                    } 
+		                    if (column.dataIndex === 'to_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'report_approval_date') {
+		                        column.setHidden(true);
+		                    }
+		                    if (column.dataIndex === 'international_birth_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'data_log_point') {
+		                        column.setHidden(false);
+		                    }   
+		              }else if(subModuleId==128 || subModuleId===128){
+		                    if (column.dataIndex === 'from_date') {
+		                        column.setHidden(true);
+		                    } 
+		                    if (column.dataIndex === 'to_date') {
+		                        column.setHidden(true);
+		                    }
+		                    if (column.dataIndex === 'report_approval_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'international_birth_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'data_log_point') {
+		                        column.setHidden(false);
+		                    } 
+		                  }else if(subModuleId==129 || subModuleId===129){
+		                    if (column.dataIndex === 'from_date') {
+		                        column.setHidden(false);
+		                    } 
+		                    if (column.dataIndex === 'to_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'report_approval_date') {
+		                        column.setHidden(true);
+		                    }
+		                    if (column.dataIndex === 'international_birth_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'data_log_point') {
+		                        column.setHidden(true);
+		                    } 
+		                  }else{
+		                    if (column.dataIndex === 'from_date') {
+		                        column.setHidden(false);
+		                    } 
+		                    if (column.dataIndex === 'to_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'report_approval_date') {
+		                        column.setHidden(true);
+		                    }
+		                    if (column.dataIndex === 'international_birth_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'data_log_point') {
+		                        column.setHidden(false);
+		                    }  
+		                  }
+		            });
+        },
         select: function(sel, record, index, eOpts) {
             var me = this,
                 grid = sel.view.grid,
@@ -76,35 +149,50 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerAllocationGrid', {
 	        dataIndex: 'tracking_no',
 	        text: 'Tracking No',
 	        flex: 1
-	    },{
-	        xtype: 'gridcolumn',
-	        dataIndex: 'reference_no',
-	        text: 'Ref Number',
-	        flex: 1
 	    }, {
 	        xtype: 'gridcolumn',
 	        dataIndex: 'report_type',
 	        text: 'Report Type',
 	        flex: 1
 	    },  {
-	        xtype: 'gridcolumn',
-	        dataIndex: 'from_date',
-	        text: 'Reporting Period From',
-	        flex: 1
-	    }, {
-	        xtype: 'gridcolumn',
-	        dataIndex: 'to_date',
-	        text: 'Reporting Period To',
-	        flex: 1
-	    }, {
+		    xtype: 'gridcolumn',
+		    dataIndex: 'from_date',
+		    text: 'Reporting Period From',
+		    flex: 1
+		},
+		{
+		    xtype: 'gridcolumn',
+		    dataIndex: 'to_date',
+		    text: 'Reporting Period To',
+		    flex: 1
+		},
+		{
+		    xtype: 'gridcolumn',
+		    dataIndex: 'report_approval_date',
+		    text: 'Approval Date',
+		    flex: 1
+		},
+		{
+		    xtype: 'gridcolumn',
+		    dataIndex: 'international_birth_date',
+		    text: 'International Birth Date',
+		    flex: 1
+		},
+		{
+		    xtype: 'gridcolumn',
+		    dataIndex: 'data_log_point',
+		    text: 'Data lock point',
+		    flex: 1
+		},
+		{
+		    xtype: 'gridcolumn',
+		    dataIndex: 'version_no',
+		    text: 'Version No',
+		    flex: 1
+		}, {
 	        xtype: 'gridcolumn',
 	        dataIndex: 'date_added',
 	        text: 'Date Received',
-	        flex: 1
-	    }, {
-	        xtype: 'gridcolumn',
-	        dataIndex: 'submitted_by',
-	        text: 'Submitted By',
 	        flex: 1
 	    }, {
 	        xtype: 'gridcolumn',

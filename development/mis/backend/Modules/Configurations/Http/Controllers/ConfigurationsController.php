@@ -2078,26 +2078,22 @@ public function getProductInvoiceChargesConfig(Request $req){
     }
 
      public function getPortOfEntry(Request $req)
-    {
+       {
+           $filters = $req->input('filters');
         try {
-
-          $filters = $req->input('filter');
-            $qry = DB::table('par_ports_information as t1')
-            ->join('par_portsinformation as t2', 't2.port_id', '=', 't1.id')
-            ->select('t1.id', 't1.name');
-
-            $results = $qry->get();
-
 
             if ($filters != '') {
                 $filters = (array)json_decode($filters);
                 $mode_oftransport_id = $filters['mode_oftransport_id'];
-
-               // dd($filters['mode_oftransport_id']);
-               $results->where($filters)->where('t2.mode_oftransport_id',$mode_oftransport_id);
             }
 
-
+            $sql = DB::table('par_portsinformation as t1')
+                ->leftjoin('par_ports_information as t2', 't1.port_id', '=', 't2.id') 
+            ->select(DB::raw("t1.*,t2.*"));
+            if(validateIsnumeric($mode_oftransport_id)){
+                $sql ->where('t1.mode_oftransport_id',$mode_oftransport_id);
+            }
+            $results= $sql->get();
             $res = array(
                 'success' => true,
                 'results' => $results,

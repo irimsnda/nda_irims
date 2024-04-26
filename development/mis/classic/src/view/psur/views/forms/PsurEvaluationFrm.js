@@ -11,6 +11,7 @@ Ext.define('Admin.view.psur.views.forms.PsurEvaluationFrm', {
         columnWidth: 1,
         margin: 5,
         allowBlank: true,
+        labelWidth: '100%', 
         labelAlign: 'top'
     },
     scrollable: true,
@@ -32,33 +33,6 @@ Ext.define('Admin.view.psur.views.forms.PsurEvaluationFrm', {
             name: '_token',
             value: token
         }, 
-        {
-            xtype: 'htmleditor',
-            name: 'introduction',
-            fieldLabel: 'Introduction',
-            columnWidth: 1,
-            resizable: true,
-          },
-          {
-            xtype: 'htmleditor',
-            name: 'marketing_approval_status',
-            fieldLabel: 'Worldwide marketing approval status',
-            columnWidth: 1,
-            resizable: true,
-          }, {
-            xtype: 'htmleditor',
-            name: 'actions_reporting_interval',
-            fieldLabel: 'Actions taken in the reporting interval for safety reasons',
-            columnWidth: 1,
-            resizable: true,
-          },
-          {
-            xtype: 'htmleditor',
-            name: 'reference_safety_information',
-            fieldLabel: 'Changes to reference safety information',
-            columnWidth: 1,
-            resizable: true,
-          },
           {
             xtype:'fieldset',
             columnWidth: 1,
@@ -67,32 +41,89 @@ Ext.define('Admin.view.psur.views.forms.PsurEvaluationFrm', {
             defaults: {
                 labelAlign: 'top',
                 allowBlank: true,
-                labelAlign: 'top',
-                margin: 5,
+                margin: '5', 
                 xtype: 'textfield',
                 columnWidth: 1,
             },
             layout: 'column',
             items :[
                 {
+                   xtype: 'displayfield',
+                   columnWidth:1,
+                   fieldLabel: 'Comment on the adequacy and reliability of the methods used to calculate/estimate the product exposure indices. '
+                  },                             
+                 {
                     xtype: 'htmleditor',
-                    name: 'cumulative_exposure_clinical',
-                    fieldLabel: 'Cumulative subject exposure in clinical trials',
+                    name: 'reliability_of_methods_used_tocalculate_product_exposure',
                     columnWidth: 1,
                     resizable: true,
                   },
                   {
                     xtype: 'htmleditor',
-                    name: 'cumulative_exposure_marketing',
-                    fieldLabel: 'Cumulative and interval patient exposure from marketing experience',
+                    name: 'rc_reliability_of_methods_used_tocalculate_product_exposure',
+                    fieldLabel: "Reviewer's Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
                     columnWidth: 1,
                     resizable: true,
                   },
+
+                  {
+                   xtype: 'displayfield',
+                   columnWidth:1,
+                   fieldLabel: 'Comment on the cumulative, and interval exposure trends relative to adverse event trends. Increase in adverse events with a decreasing or unchanged exposure may be a reason for concern and discussion of probable causes for this.'
+                  },   
+                  {
+                    xtype: 'htmleditor',
+                    name: 'cumulative_exposure_adverse_event_trends',
+                    //fieldLabel: 'Comment on the cumulative, and interval exposure trends relative to adverse event trends. Increase in adverse events with a decreasing or unchanged exposure may be a reason for concern and discussion of probable causes for this.',
+                    columnWidth: 1,
+                    resizable: true,
+                  },
+                  {
+                    xtype: 'htmleditor',
+                    name: 'reviewers_comments_cumulative_exposure_adverse_event_trends',
+                    fieldLabel: "Reviewer's Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
+                    columnWidth: 1,
+                    resizable: true,
+                  },
+                  {
+                   xtype: 'displayfield',
+                   columnWidth:1,
+                    fieldLabel: 'comment on the exposure-adverse event patterns in special groups and any impression on possible increased event in any particular groups',
+                  },  
+                  {
+                    xtype: 'htmleditor',
+                    name: 'exposure_adverse_event_patterns',
+                    //fieldLabel: 'comment on the exposure-adverse event patterns in special groups and any impression on possible increased event in any particular groups',
+                    columnWidth: 1,
+                    resizable: true,
+                  },
+                  {
+                    xtype: 'htmleditor',
+                    name: 'reviewers_comments_exposure_adverse_event_patterns',
+                    fieldLabel: "Reviewer's Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
+                    columnWidth: 1,
+                    resizable: true,
+                  },
+                   {
+                    xtype: 'htmleditor',
+                    name: 'estimated_exposure_additional_comments',
+                    fieldLabel: 'Additional comments',
+                    columnWidth: 1,
+                    resizable: true,
+                  },
+                  {
+                    xtype: 'htmleditor',
+                    name: 'reviewers_comments_estimated_exposure_additional_comments',
+                    fieldLabel: "Reviewer's Additional Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
+                    columnWidth: 1,
+                    resizable: true,
+                  }
+
         ]
         },{
             xtype:'fieldset',
             columnWidth: 1,
-            title: 'Data in summary tabulations',
+            title: 'Summary of significant findings from clinical trials in the reporting interval',
             collapsible: true,
             defaults: {
                 labelAlign: 'top',
@@ -104,25 +135,46 @@ Ext.define('Admin.view.psur.views.forms.PsurEvaluationFrm', {
             },
             layout: 'column',
             items :[
+                 {
+                   xtype: 'displayfield',
+                   columnWidth:1,
+                   fieldLabel: 'Comment on the emerging safety and efficacy findings from clinical trials that are not consistent with previous knowledge or labeling. Evaluate the evidence for these being potential risks, information reported that can facilitate characterization, pointing out any missing critical information. Also verify that all potential risks from clinical trials are included in the overview of signals',
+                  }, 
                 {
                     xtype: 'htmleditor',
-                    name: 'cumulative_summary_clinical',
-                    fieldLabel: 'Cumulative summary tabulations of serious adverse events from clinical trials',
+                    name: 'safety_efficacy_findings',
+                    //fieldLabel: 'Comment on the emerging safety and efficacy findings from clinical trials that are not consistent with previous knowledge or labeling. Evaluate the evidence for these being potential risks, information reported that can facilitate characterization, pointing out any missing critical information. Also verify that all potential risks from clinical trials are included in the overview of signals',
                     columnWidth: 1,
                     resizable: true,
                   },
                   {
                     xtype: 'htmleditor',
-                    name: 'cumulative_summary_marketing',
-                    fieldLabel: 'Cumulative and interval summary tabulations from post-marketing data sources',
+                    name: 'reviewers_comments_safety_efficacy_findings',
+                    fieldLabel: "Reviewer's Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
                     columnWidth: 1,
                     resizable: true,
                   },
+                  {
+                    xtype: 'htmleditor',
+                    name: 'clinical_trial_significant_additional_comment',
+                    fieldLabel: 'Additional comments',
+                    columnWidth: 1,
+                    resizable: true,
+                  },
+                  {
+                    xtype: 'htmleditor',
+                    name: 'reviewers_comment_estimated_exposure_comments',
+                    fieldLabel: "Reviewer's Additional Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
+                    columnWidth: 1,
+                    resizable: true,
+                  }
         ]
-        },{
+        },
+
+        {
             xtype:'fieldset',
             columnWidth: 1,
-            title: 'Summaries of significant safety findings from clinical trials during the reporting period',
+            title: 'Overview of signals',
             collapsible: true,
             defaults: {
                 labelAlign: 'top',
@@ -134,176 +186,62 @@ Ext.define('Admin.view.psur.views.forms.PsurEvaluationFrm', {
             },
             layout: 'column',
             items :[
+                  {
+                   xtype: 'displayfield',
+                   columnWidth:1,
+                   fieldLabel: 'Evaluate and comment on the adequacy of the signal evaluation, the basis upon which the signal was either refuted or considered to be a potential or identified risk by the marketing authorisation holder. The evaluations should adequately explore all possible sources of information (literature, other regulatory bodies, spontaneous reports, registries, etc.). Any omissions that the officer considers critical to the evaluation should be pointed out',
+                  },
                 {
                     xtype: 'htmleditor',
-                    name: 'completed_clinical_trials',
-                    fieldLabel: 'Completed clinical trials',
+                    name: 'adequacy_signal_evaluation',
+                    //fieldLabel: 'Evaluate and comment on the adequacy of the signal evaluation, the basis upon which the signal was either refuted or considered to be a potential or identified risk by the marketing authorisation holder. The evaluations should adequately explore all possible sources of information (literature, other regulatory bodies, spontaneous reports, registries, etc.). Any omissions that the officer considers critical to the evaluation should be pointed out',
                     columnWidth: 1,
                     resizable: true,
                   },
                   {
                     xtype: 'htmleditor',
-                    name: 'ongoing_clinical_trials',
-                    fieldLabel: 'Ongoing clinical trials',
+                    name: 'reviewers_comments_adequacy_signal_evaluation',
+                    fieldLabel: "Reviewer's Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
+                    columnWidth: 1,
+                    resizable: true,
+                  },
+                  {
+                   xtype: 'displayfield',
+                   columnWidth:1,
+                   fieldLabel: 'For signals considered to be a potential or identified risk by the marketing authorisation holder, a comment on the adequacy of the risk minimization strategies proposed by the MAH should be made. Such measures should be applicable in Uganda`s health system and have capacity to mitigate the risk.',
+                  },
+                  {
+                    xtype: 'htmleditor',
+                    name: 'identified_risk_mah',
+                    //fieldLabel: 'For signals considered to be a potential or identified risk by the marketing authorisation holder, a comment on the adequacy of the risk minimization strategies proposed by the MAH should be made. Such measures should be applicable in Uganda`s health system and have capacity to mitigate the risk.',
                     columnWidth: 1,
                     resizable: true,
                   },
                   {
                     xtype: 'htmleditor',
-                    name: 'long_time_followup',
-                    fieldLabel: 'Long-term follow-up',
+                    name: 'reviewers_comments_identified_risk_mah',
+                    fieldLabel: "Reviewer's Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
                     columnWidth: 1,
                     resizable: true,
                   },
                   {
                     xtype: 'htmleditor',
-                    name: 'other_therapeutic_product_use',
-                    fieldLabel: 'Other therapeutic use of medicinal product',
+                    name: 'signal_overview_additional_comment',
+                    fieldLabel: 'Additional comments',
                     columnWidth: 1,
                     resizable: true,
                   },
                   {
                     xtype: 'htmleditor',
-                    name: 'safety_data_related_to_fixed_combination_therapies',
-                    fieldLabel: 'New safety data related to fixed combination therapies',
+                    name: 'reviewers_comments_signal_overview_additional_comment',
+                    fieldLabel: "Reviewer's Additional Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
                     columnWidth: 1,
                     resizable: true,
                   },
         ]
         },
-      
-        {
-            xtype:'fieldset',
-            columnWidth: 1,
-            title: 'Information from other clinical trials and sources ',
-            collapsible: true,
-            defaults: {
-                labelAlign: 'top',
-                allowBlank: true,
-                labelAlign: 'top',
-                margin: 5,
-                xtype: 'textfield',
-                columnWidth: 1,
-            },
-            layout: 'column',
-            items :[
-                {
-                    xtype: 'htmleditor',
-                    name: 'other_clinical_trials',
-                    fieldLabel: 'Other clinical trials',
-                    columnWidth: 1,
-                    resizable: true,
-                  },
-                  {
-                    xtype: 'htmleditor',
-                    name: 'medication_errors',
-                    fieldLabel: 'Medication errors',
-                    columnWidth: 1,
-                    resizable: true,
-                  },
-        ]
-        },
-        {
-            xtype: 'htmleditor',
-            name: 'findings_non_interventional_studies',
-            fieldLabel: 'Findings from non-interventional studies',
-            columnWidth: 1,
-            resizable: true,
-        },
-        {
-            xtype: 'htmleditor',
-            name: 'non_clinical_data',
-            fieldLabel: 'Non-clinical data',
-            columnWidth: 1,
-            resizable: true,
-          },
-          {
-            xtype: 'htmleditor',
-            name: 'literature',
-            fieldLabel: 'Literature ',
-            columnWidth: 1,
-            resizable: true,
-          },
-          {
-            xtype: 'htmleditor',
-            name: 'other_periodic_reports',
-            fieldLabel: 'Other periodic reports',
-            columnWidth: 1,
-            resizable: true,
-          },
-          {
-            xtype: 'htmleditor',
-            name: 'Lack_of_efficacy_in_controlled_ct',
-            fieldLabel: 'Lack of efficacy in controlled clinical trials',
-            columnWidth: 1,
-            resizable: true,
-          },
-          {
-            xtype: 'htmleditor',
-            name: 'late_breaking_information',
-            fieldLabel: 'Late-breaking information',
-            columnWidth: 1,
-            resizable: true,
-          },
-          {
-            xtype: 'htmleditor',
-            name: 'overview_of_signals',
-            fieldLabel: 'Overview of signals: new, ongoing, or closed ',
-            columnWidth: 1,
-            resizable: true,
-          },
-          {
-            xtype:'fieldset',
-            columnWidth: 1,
-            title: 'Signal and risk evaluation',
-            collapsible: true,
-            defaults: {
-                labelAlign: 'top',
-                allowBlank: true,
-                labelAlign: 'top',
-                margin: 5,
-                xtype: 'textfield',
-                columnWidth: 1,
-            },
-            layout: 'column',
-            items :[
-                {
-                    xtype: 'htmleditor',
-                    name: 'summary_of_safety_concerns',
-                    fieldLabel: 'Summary of safety concerns',
-                    columnWidth: 1,
-                    resizable: true,
-                  },
-                  {
-                    xtype: 'htmleditor',
-                    name: 'signal_evaluation',
-                    fieldLabel: 'Signal evaluation',
-                    columnWidth: 1,
-                    resizable: true,
-                  },
-                  {
-                    xtype: 'htmleditor',
-                    name: 'evaluation_risks_and_new_information',
-                    fieldLabel: 'Evaluation of risks and new information',
-                    columnWidth: 1,
-                    resizable: true,
-                  },
-                  {
-                    xtype: 'htmleditor',
-                    name: 'characterization_of_risks',
-                    fieldLabel: 'Characterization of risks',
-                    columnWidth: 1,
-                    resizable: true,
-                  },
-                  {
-                    xtype: 'htmleditor',
-                    name: 'effectiveness_of_risk_minimization',
-                    fieldLabel: 'Effectiveness of risk minimization',
-                    columnWidth: 1,
-                    resizable: true,
-                  },
-        ]
-        }, {
+
+      {
             xtype:'fieldset',
             columnWidth: 1,
             title: 'Benefit evaluation',
@@ -318,32 +256,48 @@ Ext.define('Admin.view.psur.views.forms.PsurEvaluationFrm', {
             },
             layout: 'column',
             items :[
+                 {
+                   xtype: 'displayfield',
+                   columnWidth:1,
+                   fieldLabel: 'Comment on any new positive benefit (efficacy and effectiveness) information in the authorised indications reported by the MAH. comment on the MAH`s reported evidence for and limitations against the benefits, and the reliability of the MAH`s conclusions.',
+                  },
                 {
                     xtype: 'htmleditor',
                     name: 'important_baseline_efficacy',
-                    fieldLabel: 'Important baseline efficacy/effectiveness information ',
+                   // fieldLabel: 'Comment on any new positive benefit (efficacy and effectiveness) information in the authorised indications reported by the MAH. comment on the MAH`s reported evidence for and limitations against the benefits, and the reliability of the MAH`s conclusions.',
                     columnWidth: 1,
                     resizable: true,
                   },
                   {
                     xtype: 'htmleditor',
-                    name: 'newly_identified_information',
-                    fieldLabel: 'Newly identified information on efficacy/effectiveness ',
+                    name: 'reviewers_comments_important_baseline_efficacy',
+                    fieldLabel: "Reviewer's Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
+                    columnWidth: 1,
+                    resizable: true,
+                  },
+                
+                  {
+                    xtype: 'htmleditor',
+                    name: 'benefit_evaluation_additional_comment',
+                    fieldLabel: 'Additional comments',
                     columnWidth: 1,
                     resizable: true,
                   },
                   {
                     xtype: 'htmleditor',
-                    name: 'characterization_of_benefits',
-                    fieldLabel: 'Characterization of benefits',
+                    name: 'reviewers_comments_benefit_evaluation_additional_comment',
+                    fieldLabel: "Reviewer's Additional Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
                     columnWidth: 1,
                     resizable: true,
                   },
+
         ]
-        },{
+        },
+
+          {
             xtype:'fieldset',
             columnWidth: 1,
-            title: 'Integrated benefit-risk analysis for approved Indications ',
+            title: 'Benefit-risk evaluation',
             collapsible: true,
             defaults: {
                 labelAlign: 'top',
@@ -356,32 +310,49 @@ Ext.define('Admin.view.psur.views.forms.PsurEvaluationFrm', {
             layout: 'column',
             items :[
                 {
+                   xtype: 'displayfield',
+                   columnWidth:1,
+                   fieldLabel: ' Comment on the MAH`s overall appraisal of the current benefit and risk of the medicinal product as used in clinical practice. This should be succinct, and in line with the risks and benefits presented. Any omissions, over bearings, or liberties taken in the MAH`s appraisal of the risk-benefit should be highlighted. ',
+                  },
+                {
                     xtype: 'htmleditor',
-                    name: 'benefit_risk_context',
-                    fieldLabel: 'Benefit-risk context - medical need and important alternatives',
+                    name: 'appraisal_current_benefit_risk',
+                    //fieldLabel: ' Comment on the MAH`s overall appraisal of the current benefit and risk of the medicinal product as used in clinical practice. This should be succinct, and in line with the risks and benefits presented. Any omissions, over bearings, or liberties taken in the MAH`s appraisal of the risk-benefit should be highlighted. ',
+                    columnWidth: 1,
+                    resizable: true,
+                  },
+                   {
+                    xtype: 'htmleditor',
+                    name: 'reviewers_comments_appraisal_current_benefit_risk',
+                    fieldLabel: "Reviewer's Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
+                    columnWidth: 1,
+                    resizable: true,
+                  },
+                
+                  {
+                    xtype: 'htmleditor',
+                    name: 'benefit_risk_additional_comment',
+                    fieldLabel: 'Additional comments',
                     columnWidth: 1,
                     resizable: true,
                   },
                   {
                     xtype: 'htmleditor',
-                    name: 'benefit_risk_analysis',
-                    fieldLabel: 'Benefit-risk analysis evaluation ',
+                    name: 'reviewers_comments_benefit_risk_additional_comment',
+                    fieldLabel: "Reviewer's Additional Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
                     columnWidth: 1,
                     resizable: true,
-                  }, 
+                  },
+
         ]
-        }	,
-        {
-          xtype: 'htmleditor',
-          name: 'draft_response ',
-          fieldLabel: 'Draft Response',
-          columnWidth: 1,
-          resizable: true,
-        }, 
-        {
+        },
+
+
+
+         {
           xtype:'fieldset',
           columnWidth: 1,
-          title: 'Overall Discussion',
+          title: 'Evaluation summary, conclusion and recommendation',
           collapsible: true,
           defaults: {
               labelAlign: 'top',
@@ -393,29 +364,51 @@ Ext.define('Admin.view.psur.views.forms.PsurEvaluationFrm', {
           },
           layout: 'column',
           items :[
+               {
+                   xtype: 'displayfield',
+                   columnWidth:1,
+                   fieldLabel: 'State in brief your considered technical opinion of the product`s safety and efficacy profile and recommend any action points to be communicated to the MAH or to be taken by NDA and any other stakeholders. Comment on whether the report is in agreement with the current local safety impression as per reporting in Uganda or divergent. Suggest any plausible causes of any divergences and measures to reconcile the two safety pictures. ',
+                  },
               {
                   xtype: 'htmleditor',
                   name: 'overall_conclusion',
-                  fieldLabel: 'Overall conclusion',
+                  //fieldLabel: 'State in brief your considered technical opinion of the product`s safety and efficacy profile and recommend any action points to be communicated to the MAH or to be taken by NDA and any other stakeholders. Comment on whether the report is in agreement with the current local safety impression as per reporting in Uganda or divergent. Suggest any plausible causes of any divergences and measures to reconcile the two safety pictures. ',
                   columnWidth: 1,
                   resizable: true,
-                },
-                {
-                  xtype: 'htmleditor',
-                  name: 'questions_comments',
-                  fieldLabel: 'Questions or comments',
-                  columnWidth: 1,
-                  resizable: true,
-                }, 
-                {
-                  xtype: 'htmleditor',
-                  name: 'recommendations',
-                  fieldLabel: 'Recommendations',
-                  columnWidth: 1,
-                  resizable: true,
-                },
-      ]
-      },
+                 },
+                 {
+                    xtype: 'htmleditor',
+                    name: 'reviewers_comments_overall_conclusion',
+                    fieldLabel: "Reviewer's Comments <span style='font-size: 9px; color: blue;'> NOTE: To be filled by Reviewer</span></span>",
+                    columnWidth: 1,
+                    resizable: true,
+                  },
+
+        ]
+        },
+        {
+          xtype: 'htmleditor',
+          name: 'draft_response',
+          fieldLabel: 'Draft Response',
+          columnWidth: 1,
+          resizable: true,
+        }, 
+       
+       {
+          xtype: 'htmleditor',
+          name: 'reviewers_draft_response',
+          fieldLabel: "Reviewer's Draft Response <span style='font-size: 9px; color: blue;'> NOTE: Reviewer required to draft his/her Draft Response</span></span>",
+          columnWidth: 1,
+          resizable: true,
+        },
+
+        {
+          xtype: 'htmleditor',
+          name: 'reviewers_final_response',
+          fieldLabel: "Final Response<span style='font-size: 9px; color: blue;'> NOTE: Final Response by Manager</span></span>",
+          columnWidth: 1,
+          resizable: true,
+        },
      
     ],
     dockedItems: [{
