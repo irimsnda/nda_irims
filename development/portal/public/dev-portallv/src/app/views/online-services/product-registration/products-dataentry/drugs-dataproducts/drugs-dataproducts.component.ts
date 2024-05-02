@@ -70,12 +70,12 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
   recognisedassessmentsCountriesData:any;
 
   approvingAuthorityData:any;
-
+  gmpFPPProductLineData:any;
   product_lineData:any;
   gmpproductTypeData:any;
   manufacturingActivitiesData:any;
   currentRegStatusData:any;
-
+manufacturing_site_id:number;
   prodStatesRegistrationsData:any;
 
    addproductIngredientsModal:boolean = false;
@@ -252,7 +252,6 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
     this.OnLoadProductsCommonName(product_id);
     this.OnLoadProductsPackagingMaterials(product_id);
     this.OnLoadproductManufacturersData(product_id);
-    this.OnLoadfppManufacturersData(product_id);
     this.OnLoadapiManufacturersData(product_id)
     this.OnLoadProductsGMPInspectionDetails(product_id)
     this.OnLoadotherStatesGmpInspectionsData(this.product_id);
@@ -1106,7 +1105,12 @@ OnLoadfppManufacturersData(product_id) {
       });
 }
 
+  onSelectFPPManu($event) {
+    const manufacturing_site_id = $event.selectedItem.manufacturing_site_id;
+    console.log(manufacturing_site_id)
+    this.onLoadgmpFPPProductLineData(manufacturing_site_id);
 
+  }
 
 OnLoadapiManufacturersData(product_id) {
 
@@ -1120,10 +1124,6 @@ OnLoadapiManufacturersData(product_id) {
         return false
       });
 }
-
-
-
-
 
 OnLoadProductsGMPInspectionDetails(product_id) {
 
@@ -1285,7 +1285,29 @@ onLoadgmpProductLineData(manufacturing_site_id) {
       error => {
         return false
       });
-}  
+} 
+onLoadgmpFPPProductLineData(manufacturing_site_id) {
+
+  this.appService.getProductsOtherDetails({ manufacturing_site_id: manufacturing_site_id }, 'getgmpProductLineDatadetails')
+    //.pipe(first())
+    .subscribe(
+      data => {
+        if (data.success) {
+          this.gmpFPPProductLineData = data.data;
+          console.log(this.gmpFPPProductLineData);
+        }
+        else {
+          this.toastr.success(data.message, 'Alert');
+        }
+
+      },
+      error => {
+        return false
+      });
+} 
+
+
+
 onSaveotherProdStatesRegistrations() {
     this.spinner.show();
     this.appService.onSaveProductOtherDetails('wb_otherstates_productregistrations', this.otherProdStatesRegistrationsFrm.value, this.product_id)

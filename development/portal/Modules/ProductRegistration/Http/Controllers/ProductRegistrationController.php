@@ -4129,22 +4129,24 @@ return $man_roles;
 
                                 $man_data = DB::connection('mis_db')
                                     ->table('par_man_sites as t1')
-                                    ->select('t1.*','t1.id as manufacturer_id', 't1.name as manufacturing_site', 't5.name as manufacturer_name','t5.email_address','t2.name as country', 't3.name as region','t4.name as district')
+                                    ->select('t1.*','t6.id as manufacturing_site_id','t1.id as manufacturer_id', 't1.name as manufacturing_site', 't5.name as manufacturer_name','t5.email_address','t2.name as country', 't3.name as region','t4.name as district')
                                     ->leftjoin('par_countries as t2', 't1.country_id', '=','t2.id')
                                     ->leftjoin('par_regions as t3', 't1.region_id', '=','t3.id')
                                     ->leftJoin('par_districts as t4', 't1.district_id', '=','t4.id')
                                     ->leftJoin('tra_manufacturers_information as t5', 't1.manufacturer_id','=','t5.id' )
+                                    ->leftjoin('tra_manufacturing_sites as t6', 't1.manufacturer_id', '=','t6.manufacturer_id')
+
                                     ->where(array('t5.id'=>$manufacturer_id, 't1.manufacturer_id'=>$manufacturer_id))
                                     ->first();
-
                                 if($man_data){
                                     $data[] = array(
-                                            'site_id'=>$rec->manufacturer_id,
-                                            'name'=>$man_data->manufacturer_name,
+                                            'id'=>$rec->id,
+                                            'name'=>$man_data->name,
+                                            'manufacturing_site_id'=>$man_data->manufacturing_site_id,
+                                           
                                         );
-                                }
-                               
-                        }  
+                                }              
+                            }  
                         $res = array(
                             'success' => true,
                             'data' => $data
