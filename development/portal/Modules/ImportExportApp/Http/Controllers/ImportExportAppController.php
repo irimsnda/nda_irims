@@ -43,6 +43,7 @@ class ImportExportAppController extends Controller
                     'module_id'=>$req->module_id,
                     'permit_category_id'=>$req->permit_category_id,
                     'import_typecategory_id'=>$req->import_typecategory_id,
+                    'vc_application_type_id'=>$req->vc_application_type_id,
                     'permit_reason_id'=>$req->permit_reason_id,
                     'has_registered_outlets'=>$req->has_registered_outlets,
                     'reason_fornonregister_outlet'=>$req->reason_fornonregister_outlet,
@@ -66,10 +67,14 @@ class ImportExportAppController extends Controller
                     'physical_address' => $req->physical_address,
                     'email' => $req->email,
                     'company_registration_no' => $req->company_registration_no,
-                    'name' => $req->name,
-                                      
+                    'name' => $req->name,                                      
                     'port_id'=>$req->port_id,
+                    'applicant_as_consignee'=>$req->applicant_as_consignee,
+                    'entry_country_id'=>$req->entry_country_id,
+                    'applicant_contact_person'=>$req->applicant_contact_person,
+                    'contact_person_id'=>$req->contact_person_id,
                     'proforma_invoice_no'=>$req->proforma_invoice_no,
+                    'importation_reason_id'=>$req->importation_reason_id,
                     'proforma_invoice_date'=>formatDate($req->proforma_invoice_date),
                     'paying_currency_id'=>$req->paying_currency_id,
                     'proforma_currency_id'=>$req->proforma_currency_id,
@@ -81,7 +86,7 @@ class ImportExportAppController extends Controller
                     'zone_id'=>$req->zone_id,
                     'trader_id'=>$trader_id
                     );
-                            
+
                         $table_name = 'wb_importexport_applications';
                         $sub_module_id = $req->sub_module_id;
                         if(validateIsNumeric($application_id)){
@@ -184,6 +189,150 @@ class ImportExportAppController extends Controller
 			 return response()->json($res, 200);  
 
     }
+
+public function getTradersRegisteredGMPApplications(Request $req){
+    try{
+        $trader_id = $req->mistrader_id;
+        $section_id = $req->section_id;
+        $validity_status = $req->section_id;
+        $registration_status = $req->registration_status;
+       DB::connection('mis_db')->enableQueryLog();
+       $data = DB::connection('mis_db')->table('tra_manufacturing_sites as t1')
+            ->leftJoin('registered_manufacturing_sites as t4','t1.id','=','t4.tra_site_id')
+            ->leftJoin('tra_approval_recommendations as t2', 't1.permit_id', '=', 't2.id')
+            ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+            ->leftJoin('par_countries as t5', 't1.country_id', '=', 't5.id')
+            ->leftJoin('par_regions as t6', 't1.country_id', '=', 't6.id')
+            ->leftJoin('wb_trader_account as t7', 't1.ltr_id', '=', 't7.id')
+            ->leftJoin('tra_premises as t9', 't1.ltr_id', '=', 't9.id')
+            ->leftJoin('tra_gmp_inspection_dates as t20', 't1.id', '=', 't20.manufacturing_site_id')
+            ->leftJoin('par_validity_statuses as t8', 't4.validity_status', '=', 't8.id')
+            ->leftJoin('par_registration_statuses as t15', 't4.registration_status', '=', 't15.id')
+            ->leftJoin('par_man_sites as t16', 't1.man_site_id', '=', 't16.id')
+            ->leftJoin('tra_manufacturers_information as t17', 't16.manufacturer_id', '=', 't17.id')
+            ->leftJoin('tra_gmp_applications as t18', 't1.id', '=', 't18.manufacturing_site_id')
+
+            ->select('t8.name as validity_status','t1.email', 't1.email as email_address','t15.name as registration_status','t1.name as manufacturing_site_name','t1.ltr_id as premise_id', 't18.gmp_type_id', 't7.name as local_agent_name','t20.start_date', 't9.name as premise_name','t5.name as country', 't6.name as region', 't1.*', 't2.permit_no', 't3.name as applicant_name',
+                't3.id as applicant_id', 't3.name as applicant_name', 't3.contact_person', 't3.tin_no',
+                't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id',
+                't3.physical_address as app_physical_address', 't3.postal_address as app_postal_address','t1.applicant_as_ltr as trader_aslocal_agent', 
+                't3.telephone_no as app_telephone','t17.name as manufacturer_name', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website','t1.id as initial_site_id','t4.id as registered_id')
+            //->whereIn('t4.validity_status', array(2, 4))
+            ->whereIn('t18.gmp_type_id', array(2));
+            //->get();
+            if (validateIsNumeric($validity_status)) {
+                //$data =  $data->where('t4.validity_status', $validity_status);
+            }
+            if (validateIsNumeric($registration_status)) {
+                //$data =   $data->where('t4.registration_status', $registration_status);
+            }
+           $data =  $data->groupBy('t4.id')->get();
+        $res = array('success'=>true, 'data'=>$data);
+
+    }
+    catch (\Exception $e) {
+        $res = array(
+            'success' => false,
+            'message' => $e->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($res);
+
+
+}
+
+public function getTradersRegisteredPremises(Request $req){
+    try{
+        $trader_id = $req->mistrader_id;
+        $business_type_id = $req->business_type_id;
+        $take = $req->take;
+        $module_id=2;
+        $skip = $req->skip;
+        $searchValue = $req->searchValue;
+        $search_value =  '';
+        if($req->searchValue != 'undefined' && $searchValue != ''){
+            $searchValue = explode(',',$searchValue);
+            $search_value =  $searchValue[2];
+        }
+       
+       $validity_status = $req->validity_status;
+       $registration_status = $req->registration_status;
+
+        $data = DB::connection('mis_db')->table('tra_premises_applications as t6')
+                ->join('tra_premises as t1', 't6.premise_id', '=', 't1.id')
+                ->join('tra_approval_recommendations as t2', 't6.application_code', '=', 't2.application_code')
+                ->leftjoin('tra_pharmacist_personnel as t9','t1.pharmacist_id','=','t9.id')
+                ->join('wb_trader_account as t3', 't6.applicant_id', '=', 't3.id')
+                ->leftJoin('registered_premises as t4', 't1.id', '=', 't4.tra_premise_id')
+                ->leftJoin('par_validity_statuses as t5', 't2.appvalidity_status_id', '=', 't5.id')
+                
+                ->leftJoin('par_regions as t7', 't1.region_id', '=', 't7.id')
+                ->leftJoin('par_registration_statuses as t8', 't2.appregistration_status_id', '=', 't8.id')
+                ->select(DB::raw(" DISTINCT t4.tra_premise_id,t6.application_code,t1.id as premise_id, t1.name as manufacturing_site_name,t1.name as premises_name, t1.*, t2.permit_no as premise_no, t3.name as applicant_name,t4.id as registered_id,
+                    t3.id as applicant_id, t3.name as applicant_name, t6.reference_no,t3.contact_person, t3.tin_no,t9.psu_no,t9.name as full_names,t9.country_id as pharmacist_country_id,t9.region_id as pharmacist_region_id,t9.district_id as pharmacist_district_id,t9.telephone as pharmacist_telephone,t9.email as pharmacist_email,t9.qualification_id as pharmacist_qualification,t9.psu_date,
+                    t3.country_id as app_country_id, t3.region_id as app_region_id, t3.district_id as app_district_id,t7.name as region_name,
+                    t3.physical_address as app_physical_address, t3.postal_address as app_postal_address,validity_status as validity_status_id,t8.name as registration_status,
+                    t3.telephone_no as app_telephone, t3.fax as app_fax, t3.email as app_email, t3.website as app_website,t5.name as validity_status, t2.appvalidity_status_id as validity_status_id"))->where('t1.business_type_id',$business_type_id)->whereIn('t2.appvalidity_status_id', array(2, 4));
+    
+
+                if (validateIsNumeric($validity_status)) {
+                  $data =  $data->where('t4.validity_status', $validity_status);
+               
+            
+                }
+                if (validateIsNumeric($registration_status)) {
+                    $data = $data->where('t4.registration_status', $registration_status);
+                }
+                if (validateIsNumeric($trader_id)){
+                   // $data = $data->where(array('t2.appregistration_status_id'=>2,'t6.applicant_id'=> $trader_id));
+                    //$data = $data->where(array('t6.applicant_id'=> $trader_id));
+                }
+                if($search_value != ''){
+                    $whereClauses = array();
+                    $whereClauses[] = "t2.permit_no like '%" . ($search_value) . "%'";
+                     $whereClauses[] = "t1.premise_reg_no like '%" . ($search_value) . "%'";
+                    
+                    $whereClauses[] = "t3.name  like '%" . ($search_value) . "%'";
+                    $whereClauses[] = "t1.name  like '%" . ($search_value) . "%'";
+                    $filter_string = implode(' OR ', $whereClauses);
+                    $data->whereRAW($filter_string);
+                }
+
+        
+            $totalCount = $data->count();
+
+        $data->orderBy('t6.id', 'desc')->where('t6.module_id',$module_id)->groupBy('t6.application_code');
+
+            if(validateIsNumeric($take)){
+                $records = $data->skip($skip)->take($take)->get();
+            }
+            else{
+                $records = $data->get();
+        
+            }
+        $res = array('success'=>true, 'data'=>$records,'totalCount'=>$totalCount );
+
+    }
+    catch (\Exception $e) {
+        $res = array(
+            'success' => false,
+            'message' => $e->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return response()->json($res);
+
+}
+
 	public function getControlledImportPermitsApplicationLoading(Request $req){
         try{
             $trader_id = $req->trader_id;
@@ -210,6 +359,7 @@ class ImportExportAppController extends Controller
                 })
                 ->leftJoin('wb_statuses_actions as t7', 't6.action_id','t7.id')
                 ->where(array('t1.trader_id' => $trader_id))
+                ->groupBy('t1.application_code')
                 ->orderBy('t1.date_added','desc');
                 
                 if(is_array($application_status_ids) && count($application_status_ids) >0 && $application_status_id != ''){
@@ -2319,22 +2469,12 @@ public function onUploadDocuments($req,$document_requirement_id){
         $port_entry_exit_data = getParameterItems('par_ports_information','','mis_db');
         $registrationLevelData = getParameterItems('par_import_registration_level','','mis_db');
         $importReasonData = getParameterItems('par_importexport_reasons','','mis_db');
-     
-
-
         $permitReasonData = getParameterItems('par_permit_reasons','','mis_db');
         
         foreach ($records as $rec) {
            $section = returnParamFromArray($sectionsData,$rec->section_id);
            $premises_name = getSingleRecordColValue('tra_premises', array('id' => $rec->premise_id), 'name','mis_db');
-           $full_names = getSingleRecordColValue('tra_pharmacist_personnel', array('psu_no' => $rec->psu_no), 'name','mis_db');
-           $psu_date = getSingleRecordColValue('tra_pharmacist_personnel', array('psu_no' => $rec->psu_no), 'psu_date','mis_db');
-           $pharmacist_telephone = getSingleRecordColValue('tra_pharmacist_personnel', array('psu_no' => $rec->psu_no), 'telephone','mis_db');
-           $pharmacist_email = getSingleRecordColValue('tra_pharmacist_personnel', array('psu_no' => $rec->psu_no), 'email','mis_db');
-           $pharmacist_qualification = getSingleRecordColValue('tra_pharmacist_personnel', array('psu_no' => $rec->psu_no), 'qualification_id','mis_db');
-           $pharmacist_country_id = getSingleRecordColValue('tra_pharmacist_personnel', array('psu_no' => $rec->psu_no), 'country_id','mis_db');
-           $pharmacist_district_id = getSingleRecordColValue('tra_pharmacist_personnel', array('psu_no' => $rec->psu_no), 'district_id','mis_db');
-           $pharmacist_region_id = getSingleRecordColValue('tra_pharmacist_personnel', array('psu_no' => $rec->psu_no), 'region_id','mis_db');
+
            $sender_receiver = getSingleRecordColValue('tra_permitsenderreceiver_data', array('id' => $rec->sender_receiver_id), 'name','mis_db');
            $consignee_name = getSingleRecordColValue('tra_consignee_data', array('id' => $rec->consignee_id), 'name','mis_db');
            $contact_person = getSingleRecordColValue('tra_personnel_information', array('id' => $rec->contact_person_id), 'name','mis_db');
@@ -2394,13 +2534,6 @@ public function onUploadDocuments($req,$document_requirement_id){
                            'tpin_no'=>$tpin_no,
                            'company_registration_no'=>$company_registration_no,
                            'psu_no'=>$rec->psu_no,
-                           'full_names'=>$full_names,
-                           'pharmacist_telephone'=>$pharmacist_telephone,
-                           'pharmacist_email'=>$pharmacist_email,
-                           'pharmacist_qualification'=>$pharmacist_qualification,
-                           'pharmacist_country_id'=>$pharmacist_country_id,
-                           'pharmacist_district_id'=>$pharmacist_district_id,
-                           'pharmacist_region_id'=>$pharmacist_region_id,
                            //'application_type_id' => $rec->application_type_id,
                            'business_type_id'=>$rec->business_type_id,
                            'product_classification_id'=>$rec->product_classification_id,
@@ -2620,7 +2753,7 @@ public function getManufacturingSiteRegisteredProductsData(Request $req){
         ->leftJoin('par_man_sites as t19', 't14.man_site_id', '=', 't19.id')
          ->leftJoin('par_countries as t20', 't7.product_origin_id', '=', 't20.id')
         ->leftJoin('tra_product_ingredients as t21', 't21.product_id', '=', 't7.id')
-        ->leftJoin('tra_primary_packaging as t22', 't22.product_id', '=', 't7.id')
+        ->leftJoin('tra_product_packaging as t22', 't22.product_id', '=', 't7.id')
         ->leftJoin('tra_secondary_packaging as t23', 't23.product_id', '=', 't22.product_id')
         ->leftJoin('tra_tertiary_packaging as t24', 't24.product_id', '=', 't22.product_id')
         ->leftJoin('par_containers as t25', 't25.id', '=', 't22.container_type_id')

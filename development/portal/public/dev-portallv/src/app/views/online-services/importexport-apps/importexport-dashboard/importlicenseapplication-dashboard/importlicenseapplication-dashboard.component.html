@@ -148,15 +148,12 @@
     </div>
   </dxi-column>
   <dxi-column [width] = 150 dataField="tracking_no"  caption="Application Tracking Number"></dxi-column>
-  <!-- <dxi-column [width] = 90 [groupIndex]="0"  dataField="section"  caption="Product Type"></dxi-column> -->
   <dxi-column [width] = 100 dataField="licence_type" caption="Licence Type"></dxi-column>
   <dxi-column [width] = 100  dataField="business_type" caption="Business Type"></dxi-column>
   <dxi-column [width] = 100  dataField="has_registered_premise" caption="Premise Type"></dxi-column>
-  <!-- <dxi-column [width] = 100  dataField="proforma_invoice_no" caption="Invoice No"></dxi-column>
-  <dxi-column dataField="proforma_invoice_date" caption="Invoice Date"></dxi-column> -->
   <dxi-column [width] = 100 dataField="product_classification" caption="Product Classification"></dxi-column>
-  <!-- <dxi-column dataField="product_type" caption="Product Range"></dxi-column> -->
   <dxi-column [width] = 100 dataField="premises_name" caption="Premises Name"></dxi-column>
+  <dxi-column dataField="manufacturer_name" caption="Manufacturing Site Name"></dxi-column> 
   <dxi-column [width] = 100  [allowFiltering]="false" dataField="date_added"></dxi-column>
   <dxi-column [groupIndex]="1"  dataField="status_name"></dxi-column>
   <dxi-column   dataField="status_name" caption="Application Status"></dxi-column>
@@ -237,7 +234,17 @@
       </div>
     </dx-select-box>
     </div>
-   
+       <div class='apptype-selection' *ngIf="is_registered_premise">
+      <label>Select Business Type</label>
+      <dx-select-box [dataSource]="registeredPremiseBusinessTypeData"  valueExpr="id" displayExpr="name" [searchEnabled]="true"
+        placeholder="Select Business Type"
+        (onSelectionChanged)="onSelectBusinessType($event)" 
+        formControlName="business_type_id">
+        <div *dxTemplate="let name of 'item'">
+          <p>{{name.name}} </p>
+      </div>
+    </dx-select-box>
+    </div>
     <div class='apptype-selection'*ngIf="sub_module_id == 81">
         <label>Select License Type</label>
       <dx-select-box [dataSource]="licenceTypeData"  valueExpr="id" displayExpr="name" [searchEnabled]="true"

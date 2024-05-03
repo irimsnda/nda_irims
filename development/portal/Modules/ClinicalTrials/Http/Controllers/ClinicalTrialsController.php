@@ -232,46 +232,46 @@ public function saveCtrSaeReportingApplication(Request $req){
                 $reg_clinical_trial_id = $req->reg_clinical_trial_id;
                 
                 $reportingapp_data  = array(
-                                            'sourceofpsur_id'=>$req->sourceofpsur_id,
-                                            'report_category_id'=>$req->report_category_id,
-                                            'report_type_id'=>$req->report_type_id,
-                                            'initial_receive_date'=>$req->initial_receive_date,
-                                            'report_date'=>$req->report_date,
-                                            'adr_reporter_category_id'=>$req->adr_reporter_category_id,
-                                            'adr_type_id'=>$req->adr_type_id,
-                                            'species'=>$req->species,
-                                            'breed'=>$req->breed,
-                                            'animal_status_id'=>$req->animal_status_id,
-                                            'humanvet_contact_id'=>$req->humanvet_contact_id,
-                                            'patient_name'=>$req->patient_name,
-                                            'title_id'=>$req->title_id,
-                                            'gender_id'=>$req->gender_id,
-                                            'device_operator_id'=>$req->device_operator_id,
-                                            'local_supplier'=>$req->local_supplier,
-                                            'software_version'=>$req->software_version,
-                                            'catalogue_number'=>$req->catalogue_number,
-                                            'serial_number'=>$req->serial_number,
-                                            'model_number'=>$req->model_number,
-                                            'device_location_id'=>$req->device_location_id,
-                                            'last_menstruation_date'=>$req->last_menstruation_date,
-                                            'is_pregnant'=>$req->is_pregnant,
-                                            'is_lactating'=>$req->is_lactating,
-                                            'date_of_birth'=>$req->date_of_birth,
+                                      'sourceofpsur_id'=>$req->sourceofpsur_id,
+                                      'report_category_id'=>$req->report_category_id,
+                                      'report_type_id'=>$req->report_type_id,
+                                      'initial_receive_date'=>$req->initial_receive_date,
+                                      'report_date'=>$req->report_date,
+                                      'adr_reporter_category_id'=>$req->adr_reporter_category_id,
+                                      'adr_type_id'=>$req->adr_type_id,
+                                      'species'=>$req->species,
+                                      'breed'=>$req->breed,
+                                      'animal_status_id'=>$req->animal_status_id,
+                                      'humanvet_contact_id'=>$req->humanvet_contact_id,
+                                      'patient_name'=>$req->patient_name,
+                                      'title_id'=>$req->title_id,
+                                      'gender_id'=>$req->gender_id,
+                                      'device_operator_id'=>$req->device_operator_id,
+                                      'local_supplier'=>$req->local_supplier,
+                                      'software_version'=>$req->software_version,
+                                      'catalogue_number'=>$req->catalogue_number,
+                                      'serial_number'=>$req->serial_number,
+                                      'model_number'=>$req->model_number,
+                                      'device_location_id'=>$req->device_location_id,
+                                      'last_menstruation_date'=>$req->last_menstruation_date,
+                                      'is_pregnant'=>$req->is_pregnant,
+                                      'is_lactating'=>$req->is_lactating,
+                                      'date_of_birth'=>$req->date_of_birth,
 
-                                            'study_arm'=>$req->study_arm,
-                                             'medra_term_id'=>$req->medra_term_id,
-                                            'sae_onset_date'=>$req->sae_onset_date,
-                                            'stop_date'=>$req->stop_date,
-                                            'ongoing_id'=>$req->ongoing_id,
-                                            'site_awareness_date'=>$req->site_awareness_date,
-                                            'sae_narative'=>$req->sae_narative,
+                                      'study_arm'=>$req->study_arm,
+                                      'medra_term_id'=>$req->medra_term_id,
+                                      'sae_onset_date'=>$req->sae_onset_date,
+                                      'stop_date'=>$req->stop_date,
+                                      'ongoing_id'=>$req->ongoing_id,
+                                      'site_awareness_date'=>$req->site_awareness_date,
+                                      'sae_narative'=>$req->sae_narative,
 
 
-                                            'patient_age'=>$req->patient_age,
-                                            'age_group_id'=>$req->age_group_id,
-                                            'patient_weight'=>$req->patient_weight,
-                                            'patient_height'=>$req->patient_height,
-                                            'bmi'=>$req->bmi
+                                      'patient_age'=>$req->patient_age,
+                                      'age_group_id'=>$req->age_group_id,
+                                      'patient_weight'=>$req->patient_weight,
+                                      'patient_height'=>$req->patient_height,
+                                      'bmi'=>$req->bmi
                                     ); 
                             $sub_module_id = $req->sub_module_id;
                     
@@ -287,7 +287,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                     
                                         $previous_data = getPreviousRecords('wb_clinicaltrial_saereports', $where_app);
                                         
-                                        $resp =   updateRecord('wb_clinicaltrial_saereports', $previous_data, $where_app, $reportingapp_data, $trader_email);
+                                        $resp =   updateRecord('wb_clinicaltrial_saereports', $previous_data, $where_app, $reportingapp_data,$trader_email);
                                         
                                 $where_app = array('id'=>$application_id);
                                         
@@ -372,9 +372,9 @@ public function saveCtrSaeReportingApplication(Request $req){
                                                 }
                                  //save the other details for the clinical trial reporting 
                                  $reportingapp_data['application_id'] = $application_id;
-
-                             insertRecord('wb_clinicaltrial_saereports', $reportingapp_data, $trader_email);
-       
+                                 
+                  insertRecord('wb_clinicaltrial_saereports', $reportingapp_data, $trader_email);
+                                               
                             }
                             if($resp['success']){
                                 $res = array('tracking_no'=>$tracking_no,
@@ -640,74 +640,43 @@ public function saveCtrSaeReportingApplication(Request $req){
             $study_end_date = date('Y-m-d', strtotime($req->study_start_date. " + $study_duration  $timespan_defination"));
               $formattedMeetingTime = date('H:i', strtotime($req->meeting_time));
                         /** Already Saved */ 
-                        $app_data = array(
-
+                         $app_data = array(
                             'study_title' => $req->study_title,
+                            'short_study_title' => $req->short_study_title,
+                            'phase_id' => $req->phase_id,
+                             'other_study'=> $req->other_study,
+                            'clincialtrialfields_type_id'=>$req->clincialtrialfields_type_id,
                             'protocol_no' => $req->protocol_no,
-                            'primary_endpoints' => $req->primary_endpoints,
-                            'secondary_endpoints' => $req->secondary_endpoints,
+                            'date_of_protocol'=>formatDate($req->date_of_protocol),
                             'version_no' => $req->version_no,
-                            'other_study'=>$req->other_study,
-                            'explorator_objective'=>$req->explorator_objective,
-                            'other_objective'=>$req->other_objective,
-                             'date_of_protocol'=>formatDate($req->date_of_protocol),
-                            'study_start_date'=>formatDate($req->study_start_date),
+                            'clinical_prodsection_id' => $req->clinical_prodsection_id,
+                            'clinicaltrial_identification_no' => $req->clinicaltrial_identification_no,
+                            'clinicaltrial_registry_id' => $req->clinicaltrial_registry_id,
+                            //'other_registry' => $req->other_registry,
+                            'sponsor_id' => $req->sponsor_id,
+                            'investigator_id' => $req->investigator_id,
                             'meeting_time' => $formattedMeetingTime, 
                             'brief_description'=>$req->brief_description, 
-                            'uncst_no'=>$req->uncst_no,
-                            'first_final_duration'=>$req->first_final_duration,
-                            'duration_stimate'=>$req->duration_stimate,
                             'meeting_type_id'=>$req->meeting_type_id,
                             'meeting_date'=>$req->meeting_date, 
                             'meeting_venue'=>$req->meeting_venue, 
                             'meeting_invitation_details'=>$req->meeting_invitation_details, 
-                            'study_end_date'=>$study_end_date,
-                            'sponsor_id' => $req->sponsor_id,
-                            'investigator_id' => $req->investigator_id,
-                            'study_duration' => $req->study_duration,
-                            'duration_desc' => $req->duration_desc,
-                            'clearance_no' => $req->clearance_no,
-                            'rec_no'=>$req->rec_no,
-                            'clinical_prodsection_id' => $req->clinical_prodsection_id,
-                            'is_clinicaltrialin_uganda'=>$req->is_clinicaltrialin_uganda,
-                            'phase_id' => $req->phase_id,
-                             'clinicaltrial_registry_id' => $req->clinicaltrial_registry_id,
-                            'clinicaltrial_identification_no' => $req->clinicaltrial_identification_no,
-                            'is_clinicaltrialin_othercountry'=>$req->is_clinicaltrialin_othercountry,
-                            'short_study_title' => $req->short_study_title,
-                            'ctrethics_committee_id' => $req->ctrethics_committee_id,
-                            'trial_design' => $req->trial_design,
-                            'clinicaltrialprimary_objective' => $req->clinicaltrialprimary_objective,
-                            'clinicaltrialsecondary_objective' => $req->clinicaltrialsecondary_objective,
-                            'exclusion_criteria' => $req->exclusion_criteria,
-                            'inclusion_criteria' => $req->inclusion_criteria,
-                            'purpose_of_trial' => $req->purpose_of_trial,
-                            'clinicaltrial_description' => $req->clinicaltrial_description,
-                            'module_id' => $module_id,
-                            'sub_module_id' => $req->sub_module_id,
-                            'section_id' => $req->section_id,
+                            //non clinical
                             'primary_pharmacodynamics'=>$req->primary_pharmacodynamics, 
                             'secondary_pharmacodynamics'=>$req->secondary_pharmacodynamics,
                             'safety_pharmacology'=>$req->safety_pharmacology,
                             'pharmacodynamic_drug_interactions'=>$req->pharmacodynamic_drug_interactions, 
                             'pharmacokinetics'=>$req->pharmacokinetics,
-                            'toxicology'=>$req->toxicology, 
+                            'toxicology'=>$req->toxicology,
                             'First_in_human_trials'=>$req->First_in_human_trials,
                             'glp_aspects'=>$req->glp_aspects,
-                            'participant_no' => $req->participant_no,
-                            'enrolled_worldwide_no' => $req->enrolled_worldwide_no,
-                            'intended_no' => $req->intended_no,
-                            'enrolled_uganda_no' => $req->enrolled_uganda_no,
-                            'sites_no' => $req->sites_no,
-                            'zone_id' => $req->zone_id,
-                            'clinicalin_othercountries_sites' => $req->clinicalin_othercountries_sites,
-                            'clinicalin_otheruganda_sites' => $req->clinicalin_otheruganda_sites,
-                            'clincialtrialfields_type_id' => $req->clincialtrialfields_type_id,
+                            'module_id' => $module_id,
+                            'sub_module_id' => $req->sub_module_id,
+                            'section_id' => $req->section_id,
                             'clincialtrialfunding_source_id' => $req->clincialtrialfunding_source_id,
                             'trader_id' => $trader_id,
                             'applicant_id' => $trader_id
                        );
-
 
                         $sub_module_id = $req->sub_module_id;
                   
@@ -731,7 +700,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                    
                                    $where_app = array('application_code'=>$application_code);
                                     if (!recordExists('tra_application_uploadeddocuments', $where_app,'mis_db')) {
-                                      //  initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
+                                        //initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
                                     }
                             }
                             
@@ -783,7 +752,7 @@ public function saveCtrSaeReportingApplication(Request $req){
                                             if($resp['success']){
                                                     //create all the details
                                                   
-                                                // initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
+                                                 //initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(0,1000), $trader_id);
                                                  saveApplicationSubmissionDetails($application_code,$table_name);
                                              }
                                
@@ -1368,9 +1337,8 @@ public function onsavePatientInformation(Request $req){
         try{
             $trader_id = $req->trader_id;
             $application_status_id = $req->application_status_id;
-            $sub_module_id = $req->sub_module_id;
-            $application_code = $req->application_code;
-                
+                $sub_module_id = $req->sub_module_id;
+                 $application_code = $req->application_code;
             $data = array();
             //get the records 
             $records = DB::table('wb_clinical_trial_applications as t1')
@@ -1387,9 +1355,12 @@ public function onsavePatientInformation(Request $req){
 
                     })
                     
-                    ->leftJoin('wb_statuses_actions as t7', 't6.action_id','t7.id')
-                ->where(array('t1.applicant_id' => $trader_id));
-                
+                    ->leftJoin('wb_statuses_actions as t7', 't6.action_id','t7.id');
+
+
+                  if($trader_id!=1 || $trader_id!=81069){
+                   $records->where(array('t1.applicant_id' => $trader_id));
+                  }
 
                 if(validateIsNumeric($application_status_id)){
                     $records->where(array('t1.application_status_id'=>$application_status_id));
@@ -1397,10 +1368,11 @@ public function onsavePatientInformation(Request $req){
                      $records->where(array('t1.sub_module_id'=>$sub_module_id));
                 }
                  if(validateIsNumeric($application_code)){
-                    $records->where(array('t1.application_code'=>$application_code));
+                $records->where(array('t1.application_code'=>$application_code));
                 }
                 $records =  $records->get();
-
+        
+          
                 $data = $this->getClincialTrialAppsData($records);
                 $res =array('success'=>true,'data'=> $data);
         }
@@ -1420,7 +1392,7 @@ public function onsavePatientInformation(Request $req){
 
     }
     function getClincialTrialAppsData($records){
-
+        
         $actionColumnData = returnContextMenuActions();
         $data = array();
         $subModuleData = getParameterItems('sub_modules','','mis_db');
@@ -1445,6 +1417,7 @@ public function onsavePatientInformation(Request $req){
                 $report_data = getSingleRecord('wb_clinicaltrial_otherreports', array('application_id' => $rec->application_id));
                  }
                 if($report_data){
+               
                     $data[] = array('application_code'=>$rec->application_code,
                                 'module_id'=>$rec->module_id,
                                 'sub_module_id'=>$rec->sub_module_id,
@@ -1484,6 +1457,7 @@ public function onsavePatientInformation(Request $req){
                                 'is_fast_track'=>$rec->is_fast_track,
                                 'clinical_trial_sponsor'=>$clinical_trial_sponsor,
                                 'principal_investigator'=>$principal_investigator,
+
                                 //sae report
                                 'sourceofpsur_id'=>$report_data->sourceofpsur_id,
                                 'report_category_id'=>$report_data->report_category_id,
@@ -1525,7 +1499,6 @@ public function onsavePatientInformation(Request $req){
                                 'site_awareness_date'=>$report_data->site_awareness_date,
                                 'sae_narative'=>$report_data->sae_narative,
                                 //end of sae
-
                                 'primary_endpoints' => $rec->primary_endpoints,
                                         'secondary_endpoints' => $rec->secondary_endpoints,
 
@@ -1580,9 +1553,9 @@ public function onsavePatientInformation(Request $req){
                         'date_added'=>$rec->date_added,
                         'duration_stimate'=>$rec->duration_stimate,
                         'rec_no'=>$rec->rec_no,
-                        'date_of_approved_research'=>$rec->date_of_approved_research,
-                        'date_of_approved_uncst'=>$rec->date_of_approved_uncst,
-                       'date_of_approval'=>$rec->date_of_approval,
+                         'date_of_approved_research'=>$rec->date_of_approved_research,
+                         'date_of_approved_uncst'=>$rec->date_of_approved_uncst,
+                         'date_of_approval'=>$rec->date_of_approval,
                         'trader_id'=>$rec->applicant_id,
                         'data_management_process'=>$rec->data_management_process,
                         'application_type'=>returnParamFromArray($subModuleData,$rec->sub_module_id).' Clinical Trial Application',
@@ -1686,6 +1659,9 @@ public function onsavePatientInformation(Request $req){
                         'status_name'=>$rec->status_name,
                         'clinicalin_othercountries_sites' => $rec->clinicalin_othercountries_sites,
                         'clinicalin_otheruganda_sites' => $rec->clinicalin_otheruganda_sites,
+                        //'is_prevclinicaltrialin_othercountry' => $rec->is_prevclinicaltrialin_othercountry,
+                       // 'prevclinicalin_othercountries_sites' => $rec->prevclinicalin_othercountries_sites,
+
                         'is_fast_track'=>$rec->is_fast_track,
                         'clinical_trial_sponsor'=>$clinical_trial_sponsor,
                         'principal_investigator'=>$principal_investigator,
@@ -2263,7 +2239,7 @@ public function getclinicalStudySitesData(Request $req){
                         $study_site_id = $rec->study_site_id;
 
                         $study_site = getSingleRecordColValue('study_sites', array('id' => $rec->study_site_id), 'name','mis_db');
-                        $investigator_category = getSingleRecordColValue('clinical_investigator_cat', array('id' => $rec->category_id),'category_name','mis_db');
+                        $investigator_category = getSingleRecordColValue('clinical_investigator_cat', array('id' => $rec->category_id),                         'category_name','mis_db');
            
                         $rec_data = DB::connection('mis_db')
                                 ->table('clinicaltrial_investigator_personnel as t1')
@@ -3113,7 +3089,6 @@ public function saveiMPHandlingProductDetailsDetails(Request $req){
     } 
     return $res;
    }
-   
 
 public function onsaveConcomittantDrugDetails(Request $req){
     try{
@@ -3213,11 +3188,12 @@ public function onsaveConcomittantDrugDetails(Request $req){
                 $records = DB::connection('mis_db')->table($table_name)
                         ->where($where_state)
                         ->get();
+                
                 if(count($records) >0){
                         //delete functionality
                         $previous_data = getPreviousRecords($table_name, $where_state,'mis_db');
-                        $resp = deleteRecordNoMisTransaction($table_name, $previous_data, $where_state,  $email_address);
-
+                        $resp = deleteRecordNoTransaction($table_name, $previous_data, $where_state,  $email_address);
+                
                 }
                 if($resp){
                     $res = array('success'=>true, 'message'=>$title.' deleted successfully');
@@ -3312,7 +3288,6 @@ public function onsaveRelevantHistoryDetails(Request $req){
 
 
    }
-
 
 public function saveClinicalCasualityAssessmentDetails(Request $req){
     try{
@@ -3623,8 +3598,7 @@ public function saveClinicalSaeDrugsDetails(Request $req){
 
 
    }
-
-  public function  getClinicaltrailCasualityAssessmentDetails(Request $req){
+public function  getClinicaltrailCasualityAssessmentDetails(Request $req){
 
     
     try{
@@ -3691,6 +3665,7 @@ public function saveClinicalSaeDrugsDetails(Request $req){
     return response()->json($res);
 
   }
+
   public function  getClinicaltrailSeaDrugs(Request $req){
 
     
@@ -3926,6 +3901,7 @@ public function  getClinicaltrailRelevantHistoryDetails(Request $req){
     return response()->json($res);
 
   }
+   
    public function onSaveClinicalPersonnel(Request $req){
     try{
         $trader_id = $req->trader_id;
@@ -3994,8 +3970,7 @@ public function  getClinicaltrailRelevantHistoryDetails(Request $req){
 
 
    }
-
-
+   
    public function onsaveclinicaltrailVariationRequests(Request $req){
     try{
         $resp ="";
@@ -4090,7 +4065,8 @@ public function  getClinicaltrailRelevantHistoryDetails(Request $req){
                 'trial_design'=>$req->trial_design,
                 'clinicaltrialprimary_objective'=>$req->clinicaltrialprimary_objective,
                 'tertiary_objectives'=>$req->tertiary_objectives,
-                'clinicaltrialsecondary_objective'=>$req->clinicaltrialsecondary_objective);
+                'clinicaltrialsecondary_objective'=>$req->clinicaltrialsecondary_objective
+            );
         if(validateIsNumeric($application_id)){
             $where = array('id'=>$application_id);
             if (recordExists($table_name, $where)) {
@@ -4273,7 +4249,7 @@ public function  getClinicaltrailRelevantHistoryDetails(Request $req){
                 'system_used'=>$req->system_used,
                 'action_seriousadverse_event'=>$req->action_seriousadverse_event,
                 'safety_monitoring_board'=>$req->safety_monitoring_board,
-        'data_management_process'=>$req->data_management_process,
+                'data_management_process'=>$req->data_management_process,
                 'estimated_due_report_date'=>$req->estimated_due_report_date, 
                 'interim_report_date'=>$req->interim_report_date
                 );
@@ -4406,9 +4382,10 @@ public function onSaveClincialTrialHistoryApplication(Request $req){
                 'is_clinicaltrialin_uganda'=>$req->is_clinicaltrialin_uganda, 
                 'clinicalin_otheruganda_sites'=>$req->clinicalin_otheruganda_sites,
                 'is_clinicaltrialin_othercountry'=>$req->is_clinicaltrialin_othercountry, 
-                'clinicalin_othercountries_sites'=>$req->clinicalin_othercountries_sites
+                'clinicalin_othercountries_sites'=>$req->clinicalin_othercountries_sites,
+                'is_prevclinicaltrialin_othercountry'=>$req->is_prevclinicaltrialin_othercountry, 
+                'prevclinicalin_othercountries_sites'=>$req->prevclinicalin_othercountries_sites
             );
-            
         if(validateIsNumeric($application_id)){
             $where = array('id'=>$application_id);
             if (recordExists($table_name, $where)) {
@@ -4769,7 +4746,6 @@ public function onSaveClincialTrialHistoryApplication(Request $req){
     return response()->json($res);
 
   }
-
   public function  saveClinicalTrialRegistryApplication(Request $req){
     try {
         $resp= array();

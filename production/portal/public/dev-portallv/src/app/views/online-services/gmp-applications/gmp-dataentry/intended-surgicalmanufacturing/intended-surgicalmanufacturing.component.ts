@@ -531,7 +531,7 @@ funcDeleteDetailMishelper(record_id, manufacturing_site_id, table_name, reload_t
 
   onLoadgmpproductDetailsInformationData(manufacturing_site_id) {
 
-    this.appService.getGMPDataDetails({ manufacturing_site_id: manufacturing_site_id }, 'gmpinspection/getgmpproductDetailsInformationData')
+    this.appService.getGMPDataDetails({ manufacturing_site_id: manufacturing_site_id }, 'gmpinspection/getgmpSurgicalproductDetailsInformationData')
     .subscribe(
       data => {
         if (data.success) {
@@ -647,7 +647,7 @@ updateTotalSum() {
   funcSelectProductDetails(data){
     let productdata = data.data;
     this.prodSurgicalgmpAddinspectionFrm.patchValue({applicant_name:productdata.applicant_name, brand_name:productdata.brand_name, reference_no:productdata.reference_no,product_id:productdata.product_id,reg_product_id:productdata.reg_product_id });
-    this.isgmpAddProductsModalShow = true;
+    this.isManufacturingSiteProductsDetails = false;
 
   }onSaveprodgmpAddinspection(){
 

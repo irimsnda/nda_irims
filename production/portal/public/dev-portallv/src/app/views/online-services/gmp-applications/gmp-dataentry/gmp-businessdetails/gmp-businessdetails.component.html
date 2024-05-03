@@ -212,40 +212,42 @@
   </form>
 </div>
 </dx-popup>
- <dx-popup class="popup"  [width]="funcpopWidth(80)" [height]="600" [showTitle]="true" title="Manufactur Details"
-    [dragEnabled]="false" [closeOnOutsideClick]="true" [(visible)]="isManufacturerPopupVisible">
-    <div *dxTemplate="let data of 'content'">
-          <dx-data-grid class="table row-border hover" [remoteOperations]='true'  [allowColumnResizing]="true"  
-            [columnHidingEnabled]="true" 
-                    [dataSource]="manufacturersSiteData" (onToolbarPreparing)="onManDetailPreparing($event)" keyExpr="id">
-                    <dxo-filter-row [visible]="false"></dxo-filter-row>
-                    <dxo-search-panel [visible]="true">
-                    </dxo-search-panel>
-                    <dxo-paging [enabled]="true">
-                    </dxo-paging>
-                    <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
-                    </dxo-pager>
-                    <dxo-export [enabled]="true" fileName="manufacturingFile" [allowExportSelectedData]="true"></dxo-export>
-                    
-                    <dxo-group-panel [visible]="true"></dxo-group-panel>
-                    <dxi-column [width]="140" caption="Action" name="command-editing" [allowFiltering]="false" [allowSorting]="false"
-                      cellTemplate="cellTemplate">
-                      <div *dxTemplate="let data of 'cellTemplate'">
-                        <a (click)="funcSelectManufacturer(data)" class="action-btn"><i class="fa fa-edit"></i>Select Manufacturer Site</a>&nbsp;
-                      </div>
-                    </dxi-column>
-                    <dxi-column [groupIndex]="1" dataField="manufacturing_site_name"></dxi-column>
-                    <dxi-column dataField="manufacturing_site_name"></dxi-column>
-                    <dxi-column dataField="country"></dxi-column>
-                    <dxi-column dataField="region"></dxi-column>
-                    <dxi-column dataField="district"></dxi-column>
-                    <dxi-column dataField="physical_address"></dxi-column>
-                    <dxi-column dataField="postal_address"></dxi-column>
-                    <dxi-column dataField="email_address"></dxi-column>
-                    
-          </dx-data-grid>
-      </div>
-  </dx-popup>
+
+<dx-popup class="popup" [width]="funcpopWidth(80)" [height]="500" [showTitle]="true" 
+  title="Manufacturer Details" [dragEnabled]="false" [closeOnOutsideClick]="false" [(visible)]="isManufacturerPopupVisible">
+  <div *dxTemplate="let data of 'content'">
+    <dx-data-grid class="table row-border hover"  [height]="450"   [remoteOperations]='true'  
+      [dataSource]="manufacturersSiteData" (onToolbarPreparing)="onManDetailPreparing($event)" keyExpr="id">
+      <dxo-filter-row [visible]="false"></dxo-filter-row>
+      <dxo-search-panel [visible]="true">
+      </dxo-search-panel>
+      <dxo-paging [enabled]="true">
+      </dxo-paging>
+      <dxo-pager [showInfo]="true" infoText="Page #{0}. Total: {1} ({2} items)">
+      </dxo-pager>
+      <dxo-export [enabled]="true" fileName="manufacturingFile" [allowExportSelectedData]="true"></dxo-export>
+      <dxo-selection mode="multiple"></dxo-selection>
+      <dxo-group-panel [visible]="true"></dxo-group-panel>
+      <dxi-column [width]="120" caption="Action" name="command-editing" [allowFiltering]="false" 
+        [allowSorting]="false" cellTemplate="cellTemplate">
+        <div *dxTemplate="let data of 'cellTemplate'">
+          <a (click)="funcSelectManufacturer(data)" class="action-btn">
+            <i class="fa fa-edit"></i>Select Manufacturer Site</a>&nbsp;
+        </div>
+      </dxi-column>
+      <dxi-column dataField="manufacturer_name"></dxi-column>
+      <dxi-column dataField="manufacturing_site_name"></dxi-column>
+      <dxi-column dataField="country"></dxi-column>
+      <dxi-column dataField="region"></dxi-column>
+      <dxi-column dataField="district"></dxi-column>
+      <dxi-column dataField="physical_address"></dxi-column>
+      <dxi-column dataField="postal_address"></dxi-column>
+      <dxi-column dataField="email_address"></dxi-column>
+    </dx-data-grid>
+  </div>
+</dx-popup>
+
+
 
   <dx-popup class="popup" [width]="funcpopWidth(60)" [showTitle]="true"  height=550 title="Manufacturing Site Personnel" [dragEnabled]="false" [closeOnOutsideClick]="true" [(visible)]="isPersonnelPopupVisible">
   

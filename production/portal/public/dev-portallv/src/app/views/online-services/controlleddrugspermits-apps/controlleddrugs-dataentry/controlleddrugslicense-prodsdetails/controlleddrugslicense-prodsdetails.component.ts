@@ -67,6 +67,7 @@ export class ControlleddrugslicenseProdsdetailsComponent extends Controlleddrugs
    manSiteRegisteredProductsData: any={};
    isRegisteredproductsPopupVisible:boolean;
   isUnRegisteredProductsDetails:boolean = false;
+  isManufacturingSiteProductsDetails:boolean = false;
 
    isnewproductAddWinVisible:boolean;
    loading:boolean;
@@ -279,49 +280,23 @@ export class ControlleddrugslicenseProdsdetailsComponent extends Controlleddrugs
   funcSelectProductDetails(data){
     let productdata = data.data;
     this.permitProductsFrm.get('product_registration_no').setValue(productdata.product_registration_no);
-    this.permitProductsFrm.get('common_name_id').setValue(productdata.common_name_id);
-    this.permitProductsFrm.get('product_origin_id').setValue(productdata.product_origin_id);
     this.permitProductsFrm.get('brand_name').setValue(productdata.brand_name);
-    this.permitProductsFrm.get('specification_type_id').setValue(productdata.specification_type_id);
-    this.permitProductsFrm.get('ingredient_id').setValue(productdata.ingredient_id);
     this.permitProductsFrm.get('dosage_form_id').setValue(productdata.dosage_form_id);
-    this.permitProductsFrm.get('product_strength').setValue(productdata.product_strength);
-    this.permitProductsFrm.get('si_unit_id').setValue(productdata.si_unit_id);
-    this.permitProductsFrm.get('no_of_packs_tertiary').setValue(productdata.no_of_packs_tertiary);
-    this.permitProductsFrm.get('no_of_packs_secondary').setValue(productdata.no_of_packs_secondary);
-    this.permitProductsFrm.get('no_of_packs').setValue(productdata.no_of_packs);
-    this.permitProductsFrm.get('no_of_units').setValue(productdata.no_of_units);
-    this.permitProductsFrm.get('container_type_id').setValue(productdata.container_type_id);
-     
-    // this.permitProductsFrm.patchValue({brand_name:productdata.brand_name, product_registration_no:productdata.product_registration_no,specification_type_id:productdata.specification_type_id,unit_cost_per_unit:productdata.unit_cost_per_unit,
-    //   common_name:productdata.common_name,ingredient_id:productdata.ingredient_id, product_strength:productdata.product_strength, weights_units_id:productdata.weights_units_id, standard:productdata.standard, packaging_unit_id: productdata.packaging_unit_id,
-    //   device_type_id:productdata.device_type_id, currency_name:productdata.currency_name,dosage_form:productdata.dosage_form,
-    //   product_id:data.tra_product_id,product_category_id:productdata.product_category_id,product_subcategory_id:productdata.product_subcategory_id,registration_no:productdata.certificate_no,registrant_name:productdata.applicant_name});
-    this.isRegisteredproductsPopupVisible = false;
+    this.permitProductsFrm.get('strength_asgrams').setValue(productdata.product_strength);
+    this.permitProductsFrm.get('unitpack_unit_id').setValue(productdata.si_unit_id);
+    this.permitProductsFrm.get('pack_unit').setValue(productdata.no_of_units);
+    this.permitProductsFrm.get('product_id').setValue(productdata.product_id);
+   this.isRegisteredproductsPopupVisible = false;
 
   }
   funcSelectUnRegisteredProductDetails(data){
     let productdata = data.data;
     this.permitProductsFrm.get('brand_name').setValue(productdata.proprietary_name);
-    this.permitProductsFrm.get('common_name_id').setValue(productdata.common_name_id);
-    this.permitProductsFrm.get('product_type_id').setValue(productdata.product_type_id);
-    this.permitProductsFrm.get('classification').setValue(productdata.classification);
-    this.permitProductsFrm.get('class_category').setValue(productdata.class_category);
-    this.permitProductsFrm.get('atc_code_id').setValue(productdata.atc_code_id);
-    this.permitProductsFrm.get('product_strength').setValue(productdata.product_strength);
-    this.permitProductsFrm.get('si_unit_id').setValue(productdata.si_unit_id);
-    this.permitProductsFrm.get('atc_desciption').setValue(productdata.atc_desciption);
-    this.permitProductsFrm.get('therapeutic_group').setValue(productdata.therapeutic_group);
-    this.permitProductsFrm.get('distribution_category').setValue(productdata.distribution_category);
-    this.permitProductsFrm.get('route_of_administarion').setValue(productdata.route_of_administarion);
+    this.permitProductsFrm.get('pack_unit').setValue(productdata.no_of_units);
+    this.permitProductsFrm.get('strength_asgrams').setValue(productdata.product_strength);
+    this.permitProductsFrm.get('unitpack_unit_id').setValue(productdata.si_unit_id);
+    this.permitProductsFrm.get('product_id').setValue(productdata.product_id);
     this.permitProductsFrm.get('dosage_form_id').setValue(productdata.dosage_form_id);    
-
-     
-    // this.permitProductsFrm.patchValue({brand_name:productdata.brand_name, product_registration_no:productdata.product_registration_no,specification_type_id:productdata.specification_type_id,unit_cost_per_unit:productdata.unit_cost_per_unit,
-    //   common_name:productdata.common_name,ingredient_id:productdata.ingredient_id, product_strength:productdata.product_strength, weights_units_id:productdata.weights_units_id, standard:productdata.standard, packaging_unit_id: productdata.packaging_unit_id,
-    //   device_type_id:productdata.device_type_id, currency_name:productdata.currency_name,dosage_form:productdata.dosage_form,
-    //   product_id:data.tra_product_id,product_category_id:productdata.product_category_id,product_subcategory_id:productdata.product_subcategory_id,registration_no:productdata.certificate_no,registrant_name:productdata.applicant_name});
-
     this.isUnRegisteredProductsDetails = false;
 
   }
@@ -402,6 +377,7 @@ export class ControlleddrugslicenseProdsdetailsComponent extends Controlleddrugs
   }
   funAddPermitProducts() {
     this.isPermitproductsPopupVisible = true;
+    this.permitProductsFrm.reset();
     
   }
   onSearchUnRegisteredRegisteredProductApplication(){
@@ -539,7 +515,7 @@ this.UnRegisteredProductsData.store = new CustomStore({
         
     this.permitProductsFrm.get('product_registration_no').setValue(data.data.certificate_no);
     this.permitProductsFrm.get('brand_name').setValue(data.data.brand_name);
-    this.isRegisteredproductsPopupVisible = false;
+    this.isManufacturingSiteProductsDetails = false;
     this.toastr.success('Product Selection', 'The following product has been selected: ' + data.data.brand_name);
 
 }

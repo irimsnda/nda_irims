@@ -53,6 +53,12 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'importexportapp'], functi
     Route::get('getPermitProductsDetails', 'ImportExportAppController@getPermitProductsDetails');
     Route::get('getDeclaredProductsDetails', 'ImportExportAppController@getDeclaredProductsDetails');
     Route::get('getUnRegisteredProductsDetails', 'ImportExportAppController@getUnRegisteredProductsDetails');
+
+     Route::get('getTradersRegisteredPremises', 'ImportExportAppController@getTradersRegisteredPremises');
+    Route::get('getTradersRegisteredGMPApplications', 'ImportExportAppController@getTradersRegisteredGMPApplications');
+
+
+
     Route::get('getBatchPermitProductsDetails', 'ImportExportAppController@getBatchPermitProductsDetails');
     Route::get('getApprovedProductsDetails', 'ImportExportAppController@getApprovedProductsDetails');
     Route::get('getPermitUploadedProductsDetails', 'ImportExportAppController@getPermitUploadedProductsDetails');

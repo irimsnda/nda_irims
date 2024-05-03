@@ -3966,6 +3966,7 @@ public function getNearestDrugShops(Request $req)
 public function getTradersRegisteredPremises(Request $req){
     try{
         $trader_id = $req->mistrader_id;
+        $business_type_id = $req->business_type_id;
         $take = $req->take;
         $module_id=2;
         $skip = $req->skip;

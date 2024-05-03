@@ -383,7 +383,13 @@ if(!validateIsNumeric($req->product_type_id)){
                         $records = DB::table('wb_otherstates_productgmpinspections as t1')
                             ->join($mis_db.'.par_countries as t2', 't1.country_id', 't2.id')
                             ->leftJoin($mis_db.'.par_recognisedassessments_ctrregions as t3', 't1.recognisedassessments_ctrregion_id', 't3.id')
-                            ->select('t1.*', 't2.name as country', 't3.name as recognisedassessments_ctrregion')
+                            ->join($mis_db.'.par_approving_authority as t4', 't1.approving_authority_id', 't4.id')
+                            ->leftJoin($mis_db.'.gmp_product_lines as t5', 't1.gmp_productline_id', 't5.id')
+                            ->leftJoin($mis_db.'.par_gmpproduct_types as t6', 't1.gmpproduct_type_id', 't6.id')
+                            ->leftJoin($mis_db.'.par_manufacturing_activities as t7', 't1.manufacturing_activity_id', 't7.id')
+
+                            
+                            ->select('t1.*','t1.gmpapplication_reference as application_reference', 't2.name as country','t3.name as recognisedassessments_ctrregion','t4.name as approving_authority','t5.name as approved_productlines','t6.name as product_category','t7.name as manufacturing_activity')
                             ->where('t1.product_id', $product_id)
                             ->get();
                             $res = array('success' => true,
@@ -1891,17 +1897,16 @@ public function onSaveProductQualitySummaryDetails(Request $req){
             $trader_id = $req->trader_id;
             $traderemail_address = $req->traderemail_address;
             $email_address = $req->email_address;
+            $physical_address = $req->physical_address;
             $error_message = 'Error occurred, data not saved successfully';
 
             $data = $req->all();
-            
             $table_name = $req->table_name;
             $record_id = $req->id;
             $manufacturer_role_id = $req->manufacturer_role_id;
             $product_id = $req->product_id;
             
             unset($data['table_name']);
-            unset($data['email_address']);
             unset($data['trader_id']);
             unset($data['manufacturer_role_id']);
             unset($data['product_id']);
@@ -1914,13 +1919,13 @@ public function onSaveProductQualitySummaryDetails(Request $req){
                     $data['altered_by'] = $traderemail_address;
 
                     $previous_data = getPreviousRecords($table_name, $where,'mis_db');
+                    
                     $resp = updateRecord($table_name, $previous_data, $where, $data, $traderemail_address);
-                    $data['manufacturer_id'] = $record_id;
-                    updateRecord('par_man_sites', $previous_data, $where, $data, $traderemail_address);
+                    $data['manufacturer_id'] = $resp['record_id'];
+                    updateRecord('par_man_site', $previous_data, $where, $data, $traderemail_address);
 
                 }
-            }
-            else{
+            }else{
                 //insert 
                 $data['created_by'] = $traderemail_address;
                 $data['created_on'] = Carbon::now();
@@ -1935,11 +1940,16 @@ public function onSaveProductQualitySummaryDetails(Request $req){
                
                 if (!recordExists($table_name, $where,'mis_db')) {
                     $resp = insertRecord($table_name, $data, $traderemail_address,'mis_db');
+                    $record_id = $resp['record_id'];
+        
+                    if($record_id){
+                        $data['manufacturer_id'] = $record_id;
 
-                    $record_id = $resp['record_id'];  
-                    $data['manufacturer_id'] = $record_id;
-                    insertRecord('par_man_sites', $data, $traderemail_address, 'mis_db');
-                 }
+                        insertRecord('par_man_sites', $data, $traderemail_address, 'mis_db');   
+            
+                    }          
+        
+                }
                 else{
                     $error_message = "The Receiver/Sender Information exists with the following email Address: ".$email_address;
 
@@ -1948,6 +1958,7 @@ public function onSaveProductQualitySummaryDetails(Request $req){
             if($resp){
                 $res =  array('success'=>true,
                 'record_id'=>$record_id,
+                'data'=>$data,
                 'message'=>'Saved Successfully');
 
             }
@@ -2159,8 +2170,11 @@ public function onSaveProductQualitySummaryDetails(Request $req){
                 $records = DB::table('wb_otherstates_productregistrations as t1')
                 ->join($mis_db.'.par_countries as t2', 't1.country_id', 't2.id')
                 ->leftJoin($mis_db.'.par_recognisedassessments_ctrregions as t3', 't1.recognisedassessments_ctrregion_id', 't3.id')
-                ->select('t1.*', 't2.name as country', 't3.name as recognisedassessments_ctrregion')
-                ->where('t1.product_id ', $product_id )
+                ->leftJoin($mis_db.'.par_approving_authority as t4', 't1.approving_authority_id', 't4.id')
+                ->leftJoin($mis_db.'.par_current_reg_status as t5', 't1.current_registrationstatus', 't5.id')
+
+                ->select('t1.*', 't2.name as country','t4.name as approving_authority','t5.name as current_status', 't3.name as recognisedassessments_ctrregion')
+                ->where('t1.product_id',$product_id )
                 ->get();
                 $res = array('success' => true,
                                 'data' => $records
@@ -2651,7 +2665,8 @@ public function onSaveProductQualitySummaryDetails(Request $req){
                      $ingredientsData = getParameterItems('par_ingredients_details','','mis_db');
                      $inclusion_reasonData = getParameterItems('par_inclusions_reasons','','mis_db');
                      $ingredientTypeData = getParameterItems('par_ingredients_types','','mis_db');
-                      
+                     $GenericPackedData = getParameterItems('par_common_names','','mis_db');
+
                      foreach ($records as $rec) {
                         //get the array 
                         
@@ -2666,6 +2681,7 @@ public function onSaveProductQualitySummaryDetails(Request $req){
                                         'inclusion_reason_id'=>$rec->inclusion_reason_id,
                                         'ingredient'=>returnParamFromArray($ingredientsData,$rec->ingredient_id),
                                         'ingredient_type'=>returnParamFromArray($ingredientTypeData,$rec->ingredient_type_id),
+                                        'generic_name'=>returnParamFromArray($GenericPackedData,$rec->active_common_name_id),
                                         'specification'=>returnParamFromArray($speficification_typeData,$rec->specification_type_id),
                                         'si_units'=>returnParamFromArray($si_unitData,$rec->si_unit_id),
                                         'reason_of_inclusion'=>returnParamFromArray($inclusion_reasonData,$rec->inclusion_reason_id),
@@ -3824,7 +3840,7 @@ public function getActivePharmaceuticals(Request $req){
                                         'container_id'=>$rec->container_id,
                                         'container_material_id'=>$rec->container_material_id,
                                         'description_of_packaging'=>$rec->description_of_packaging,
-
+                                        'strength'=>$rec->product_strength,
                                         'container_type_id'=>$rec->container_type_id,
                                         'no_of_packs'=>$rec->no_of_packs,
                                         'si_unit_id'=>$rec->si_unit_id,
@@ -4041,20 +4057,20 @@ return $man_roles;
                                 $product_manufacturer_id = $rec->id;
                                 $manufacturer_id = $rec->manufacturer_id;
                                 //$man_site_id = $rec->man_site_id;
-                               
+
+                                $genericNameData = getParameterItems('par_common_names','','mis_db');
                                 $manufacturer_roleData = getParameterItems('par_manufacturing_roles','','mis_db');
-                                $manufacturing_role = $this->getManufacturerRoles($product_manufacturer_id,$manufacturer_roleData);
+                              //  $manufacturing_role = $this->getManufacturerRoles($product_manufacturer_id,$manufacturer_roleData);
 
                                 $man_data = DB::connection('mis_db')
                                     ->table('par_man_sites as t1')
-                                    ->select('t1.*','t1.id as manufacturer_id', 't1.name as manufacturing_site', 't5.name as manufacturer_name', 't2.name as country', 't3.name as region','t4.name as district')
+                                    ->select('t1.*','t1.id as manufacturer_id', 't1.name as manufacturing_site', 't5.name as manufacturer_name','t5.email_address','t2.name as country', 't3.name as region','t4.name as district')
                                     ->leftjoin('par_countries as t2', 't1.country_id', '=','t2.id')
                                     ->leftjoin('par_regions as t3', 't1.region_id', '=','t3.id')
                                     ->leftJoin('par_districts as t4', 't1.district_id', '=','t4.id')
                                     ->leftJoin('tra_manufacturers_information as t5', 't1.manufacturer_id','=','t5.id' )
                                     ->where(array('t5.id'=>$manufacturer_id, 't1.manufacturer_id'=>$manufacturer_id))
                                     ->first();
-                
 
                                 if($man_data){
                                     $data[] = array('id'=>$rec->id,
@@ -4063,10 +4079,12 @@ return $man_roles;
                                             'country'=>$man_data->country,
                                             'region'=>$man_data->region,
                                             'product_id'=>$rec->product_id,
+                                            'generic_name'=>returnParamFromArray($genericNameData,$rec->active_common_name_id),
+                                            'manufacturing_role'=>returnParamFromArray($manufacturer_roleData,$rec->manufacturer_role_id),
                                             'physical_address'=>$man_data->physical_address,
                                             'postal_address'=>$man_data->postal_address,
-                                            'manufacturing_role'=>$manufacturing_role,
-                                            'email_address'=>$man_data->email
+                                          //  'manufacturing_role'=>$manufacturing_role,
+                                            'email_address'=>$man_data->email_address
                                         );
                                 }
                                
@@ -4090,6 +4108,69 @@ return $man_roles;
       return response()->json($res);
 
     }
+
+   public function getproductFPPManufactureringData(Request $req){
+         
+        try{
+            $data = array();
+            $product_id = $req->product_id;
+            $manufacturer_type_id = $req->manufacturer_type_id;
+            $records = DB::table('wb_product_manufacturers as t1')
+                       ->where(array('product_id'=>$product_id,'manufacturer_type_id'=>$manufacturer_type_id))   
+                         ->get();
+
+                         foreach ($records as $rec) {
+                                $product_manufacturer_id = $rec->id;
+                                $manufacturer_id = $rec->manufacturer_id;
+                                //$man_site_id = $rec->man_site_id;
+
+                                $genericNameData = getParameterItems('par_common_names','','mis_db');
+                                $manufacturer_roleData = getParameterItems('par_manufacturing_roles','','mis_db');
+
+                                $man_data = DB::connection('mis_db')
+                                    ->table('par_man_sites as t1')
+                                    ->select('t1.*','t6.id as manufacturing_site_id','t1.id as manufacturer_id', 't1.name as manufacturing_site', 't5.name as manufacturer_name','t5.email_address','t2.name as country', 't3.name as region','t4.name as district')
+                                    ->leftjoin('par_countries as t2', 't1.country_id', '=','t2.id')
+                                    ->leftjoin('par_regions as t3', 't1.region_id', '=','t3.id')
+                                    ->leftJoin('par_districts as t4', 't1.district_id', '=','t4.id')
+                                    ->leftJoin('tra_manufacturers_information as t5', 't1.manufacturer_id','=','t5.id' )
+                                    ->leftjoin('tra_manufacturing_sites as t6', 't1.manufacturer_id', '=','t6.manufacturer_id')
+
+                                    ->where(array('t5.id'=>$manufacturer_id, 't1.manufacturer_id'=>$manufacturer_id))
+                                    ->first();
+                                if($man_data){
+                                    $data[] = array(
+                                            'id'=>$rec->id,
+                                            'name'=>$man_data->name,
+                                            'manufacturing_site_id'=>$man_data->manufacturing_site_id,
+                                           
+                                        );
+                                }              
+                            }  
+                        $res = array(
+                            'success' => true,
+                            'data' => $data
+                        );
+      }
+      catch (\Exception $e) {
+          $res = array(
+              'success' => false,
+              'message' => $e->getMessage()
+          );
+      } catch (\Throwable $throwable) {
+          $res = array(
+              'success' => false,
+              'message' => $throwable->getMessage()
+          );
+      }
+      return response()->json($res);
+
+    }
+
+
+
+
+
     public function getAPIproductManufactureringData(Request $req){
          
         try{
@@ -4101,14 +4182,16 @@ return $man_roles;
                         ->join('wb_product_ingredients as t2', 't1.active_ingredient_id','=','t2.id')
                         ->where(array('t1.product_id'=>$product_id,'manufacturer_type_id'=>$manufacturer_type_id))   
                          ->get();
+
                          foreach ($records as $rec) {
                                 $manufacturer_id = $rec->manufacturer_id;
                                 $ingredient_id = $rec->ingredient_id;
+                                $genericNameData = getParameterItems('par_common_names','','mis_db');
 
                                 $manufacturer_role_id = $rec->manufacturer_role_id;
                                 $manufacturer_roleData = getParameterItems('par_manufacturing_roles','','mis_db');
                                 $manufacturing_role = returnParamFromArray($manufacturer_roleData,$manufacturer_role_id);
-                                
+
                                 $ingredients_Data = getParameterItems('par_ingredients_details','','mis_db');
                                 $active_ingredient = returnParamFromArray($ingredients_Data,$ingredient_id);
                                 
@@ -4124,6 +4207,8 @@ return $man_roles;
                                 $data[] = array('id'=>$rec->id,
                                                  'manufacturer_name'=>$records->manufacturer_name,
                                                  'country'=>$records->country,
+                                             'generic_name'=>returnParamFromArray($genericNameData,$rec->active_common_name_id),
+
                                                  'region'=>$records->region,
                                                  'product_id'=>$rec->product_id,
                                                  'physical_address'=>$records->physical_address,
@@ -4418,7 +4503,7 @@ public function onSearchRegisteredProductApplication(Request $req){
         }
         $portalDb = \DB::getDatabaseName();
        $qry = DB::connection('mis_db')->table('tra_product_applications as t1')
-       ->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+       ->leftjoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
        ->join('tra_product_information as t7', 't1.product_id', '=', 't7.id')
        ->leftJoin('par_common_names as t8', 't7.common_name_id', '=', 't8.id')
        ->leftJoin('wb_trader_account as t9', 't1.local_agent_id', '=', 't9.id')

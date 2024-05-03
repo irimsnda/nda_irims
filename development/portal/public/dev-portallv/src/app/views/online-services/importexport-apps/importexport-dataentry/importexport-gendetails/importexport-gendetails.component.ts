@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { ToastrService } from 'ngx-toastr';
-
+import { GmpApplicationServicesService } from 'src/app/services/gmp-applications/gmp-application-services.service';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { ModalDialogService } from 'ngx-modal-dialog';
 import { takeUntil } from 'rxjs/operators';
@@ -95,13 +95,16 @@ export class ImportexportGendetailsComponent implements OnInit {
   @Input() permitProductsCategoryData: any; 
   @Input() manufacturersSiteData: any = {};
 
-mode_oftransport_id:number;
+  mode_oftransport_id:number;
   proforma_currency_id:number;
   @Output() onProformaInvoiceEvent = new EventEmitter();
   device_type_visible:boolean= false;
   import_typecategory_visible:boolean= false;
+  is_domestic_gmp:boolean= false;
+  is_not_domestic_gmp:boolean= false;
   isproductManufacturerModalShow:boolean=false;
   consignee_options_id:number;
+  mistrader_id:number;
   senderReceiverData:any ={};
   checkifsenderreceiver:boolean;
   isPersonnelPopupVisible:boolean;
@@ -137,8 +140,10 @@ mode_oftransport_id:number;
   productappTypeDta:any;
   applicantTypesData:any;
   governmentGrantDate:any;
+  registered_gmpApplicationData:any;
   isAddNewManufacturingSite:boolean = false;
   is_licensepermit: boolean =false;
+  isLocalGMPSearchWinVisible: boolean =false;
   consignor_title:string = 'Consignor(Supplier/Receiver)';
   eligibleImportersData:any;
   eligibleImportersDocTypes:any;
@@ -155,7 +160,7 @@ mode_oftransport_id:number;
   app_route:any;
   maxDate:any;
   premise_title:string = 'Premises(Licensed Outlet(s))';
-  constructor(public utilityService:Utilities, public premappService: PremisesApplicationsService, public dmsService: DocumentManagementService, public fb: FormBuilder, public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: ImportexportService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public httpClient: HttpClient, private premService: PremisesApplicationsService) {
+  constructor(public utilityService:Utilities,public gmpService: GmpApplicationServicesService, public premappService: PremisesApplicationsService, public dmsService: DocumentManagementService, public fb: FormBuilder, public modalServ: ModalDialogService, public viewRef: ViewContainerRef, public spinner: SpinnerVisibilityService, public configService: ConfigurationsService, public appService: ImportexportService, public router: Router, public formBuilder: FormBuilder, public config: ConfigurationsService, public modalService: NgxSmartModalService, public toastr: ToastrService, public authService: AuthService,public httpClient: HttpClient, private premService: PremisesApplicationsService) {
 
 this.manufacturerFrm = new FormGroup({
       name: new FormControl('', Validators.compose([Validators.required])),
@@ -351,6 +356,24 @@ this.manufacturerFrm = new FormGroup({
 
   onSelectBusinessType($event) {
     this.business_type_id = $event.selectedItem.id;
+    if(this.business_type_id == 5){
+      this.is_domestic_gmp = true;
+      this.is_not_domestic_gmp= false;
+      this.applicationGeneraldetailsfrm.get('manufacturer_name').setValidators([Validators.required]); 
+      this.applicationGeneraldetailsfrm.get('manufacturing_site_id').setValidators([Validators.required]); 
+
+
+    }else if((this.business_type_id == 1 || this.business_type_id == 2 || this.business_type_id == 4)&& this.sub_module_id==81){
+      this.is_domestic_gmp = false;
+      this.is_not_domestic_gmp=true;
+      this.applicationGeneraldetailsfrm.get('premises_name').setValidators([Validators.required]); 
+      this.applicationGeneraldetailsfrm.get('premise_id').setValidators([Validators.required]);
+      this.onRegisteredPremisesSearch(this.business_type_id);
+
+    }else{
+      this.is_domestic_gmp = false;
+      this.is_not_domestic_gmp=true;
+    }
     this.onLoadLicenceProductRangeData(this.business_type_id, this.licence_type_id, this.product_classification_id);
 
   }
@@ -1067,7 +1090,34 @@ onLoadconfirmDataParm() {
           return false
         });
   }//23000
-  onRegisteredPremisesSearch() {
+
+  funcSelectManufacturerSite(data) {
+      let resp_data = data.data;
+      this.applicationGeneraldetailsfrm.get('manufacturing_site_name').setValue(resp_data.manufacturing_site_name);
+      this.applicationGeneraldetailsfrm.get('manufacturing_site_id').setValue(resp_data.manufacturing_site_id);
+      this.applicationGeneraldetailsfrm.get('pharmacist_id').setValue(resp_data.pharmacist_id);
+      this.isLocalGMPSearchWinVisible = false;
+  }
+
+
+  onRegisteredGMPSearch() {
+    this.isLocalGMPSearchWinVisible = true;
+    this.gmpService.getGMPDataDetails({ mistrader_id:this.mistrader_id},'importexportapp/getTradersRegisteredGMPApplications')
+    .subscribe(
+      data => {
+        if (data.success) {
+          this.registered_gmpApplicationData = data.data;
+        }
+        else {
+          this.toastr.success(data.message, 'Alert');
+        }
+      },
+      error => {
+        return false
+      });
+  }
+
+  onRegisteredPremisesSearch(business_type_id) {
     this.ispremisesSearchWinVisible = true;
     let me = this;
     this.registered_premisesData.store = new CustomStore({
@@ -1081,12 +1131,18 @@ onLoadconfirmDataParm() {
             "Authorization": "Bearer " + me.authService.getAccessToken(),
           });
 
-          this.configData = {
-              headers: headers,
-              params: {skip: loadOptions.skip,take:loadOptions.take, searchValue:loadOptions.filter,table_name:'tra_premises_applications'}
-          };
+        this.configData = {
+            headers: headers,
+            params: { 
+                skip: loadOptions.skip, 
+                take: loadOptions.take, 
+                searchValue: loadOptions.filter, 
+                table_name: 'tra_premises_applications', 
+                business_type_id:business_type_id 
+            }
+        };
 
-          return me.httpClient.get(AppSettings.base_url + 'premisesregistration/getTradersRegisteredPremises',this.configData)
+          return me.httpClient.get(AppSettings.base_url + 'importexportapp/getTradersRegisteredPremises',this.configData)
               .toPromise()
               .then((data: any) => {
                   return {
@@ -1099,6 +1155,9 @@ onLoadconfirmDataParm() {
   });
 
 }
+
+
+
 
   onRegisteredClinicalTrialSearch() {
       this.isclinicalTrialSearchWinVisible = true;

@@ -70,12 +70,12 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
   recognisedassessmentsCountriesData:any;
 
   approvingAuthorityData:any;
-
+  gmpFPPProductLineData:any;
   product_lineData:any;
   gmpproductTypeData:any;
   manufacturingActivitiesData:any;
   currentRegStatusData:any;
-
+manufacturing_site_id:number;
   prodStatesRegistrationsData:any;
 
    addproductIngredientsModal:boolean = false;
@@ -110,6 +110,7 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
   manufacturingRoleDataSource: any;
   manufacturingRoleData:any;
   countries: any;
+  gmpfppManufacturerData:any;
   regions: any;
   districts: any;
   country_id:number;
@@ -142,10 +143,12 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
       approval_date: new FormControl('', Validators.compose([Validators.required])),
       approving_authority_id: new FormControl('', Validators.compose([Validators.required])),
       gmp_productline_id: new FormControl('', Validators.compose([])),
+      fpp_manufacturer_id: new FormControl('', Validators.compose([Validators.required])),
       gmpproduct_type_id: new FormControl('', Validators.compose([Validators.required])),
       manufacturing_activity_id: new FormControl('', Validators.compose([Validators.required])),      
       active_common_name_id: new FormControl('', Validators.compose([])),
       approved_productlines: new FormControl('', Validators.compose([])),
+      site_id: new FormControl('', Validators.compose([])),
       id: new FormControl('', Validators.compose([])),
 
     });
@@ -730,6 +733,8 @@ onLoadcurrentRegStatusData() {
     
     this.otherStatesGmpInspections = true;
     this.otherStatesGmpInspectionsFrm.reset();
+    this.OnLoadfppManufacturersData(this.product_id);
+
   }
 
   onProdStatesRegistrationsPreparing(e) {
@@ -1087,7 +1092,25 @@ OnLoadproductManufacturersData(product_id) {
         return false
       });
 }
+OnLoadfppManufacturersData(product_id) {
 
+  this.appService.getProductsOtherDetails({ product_id: product_id, manufacturer_type_id: 1 }, 'getproductFPPManufactureringData')
+    //.pipe(first())
+    .subscribe(
+      data => {
+        this.gmpfppManufacturerData = data.data;
+      },
+      error => {
+        return false
+      });
+}
+
+  onSelectFPPManu($event) {
+    const manufacturing_site_id = $event.selectedItem.manufacturing_site_id;
+    console.log(manufacturing_site_id)
+    this.onLoadgmpFPPProductLineData(manufacturing_site_id);
+
+  }
 
 OnLoadapiManufacturersData(product_id) {
 
@@ -1101,10 +1124,6 @@ OnLoadapiManufacturersData(product_id) {
         return false
       });
 }
-
-
-
-
 
 OnLoadProductsGMPInspectionDetails(product_id) {
 
@@ -1266,7 +1285,29 @@ onLoadgmpProductLineData(manufacturing_site_id) {
       error => {
         return false
       });
-}  
+} 
+onLoadgmpFPPProductLineData(manufacturing_site_id) {
+
+  this.appService.getProductsOtherDetails({ manufacturing_site_id: manufacturing_site_id }, 'getgmpProductLineDatadetails')
+    //.pipe(first())
+    .subscribe(
+      data => {
+        if (data.success) {
+          this.gmpFPPProductLineData = data.data;
+          console.log(this.gmpFPPProductLineData);
+        }
+        else {
+          this.toastr.success(data.message, 'Alert');
+        }
+
+      },
+      error => {
+        return false
+      });
+} 
+
+
+
 onSaveotherProdStatesRegistrations() {
     this.spinner.show();
     this.appService.onSaveProductOtherDetails('wb_otherstates_productregistrations', this.otherProdStatesRegistrationsFrm.value, this.product_id)

@@ -135,14 +135,21 @@ export class GmpBusinessdetailsComponent implements OnInit {
   
   }  
     funcSelectManufacturer(data) {
-    if (this.gmp_type_id == 2) {
       let resp_data = data.data;
+    if (this.gmp_type_id == 2) {
       this.contractManufacturingDetailsfrm.patchValue({manufacturer_name:resp_data.manufacturer_name,man_site_id:resp_data.man_site_id});
       this.contractManufacturingDetailsfrm.patchValue({section_id:this.section_id,gmp_type_id:2});
     }
     else {
       this.gmp_type_id = 1
-      this.contractManufacturingDetailsfrm.patchValue(data.data);
+      this.contractManufacturingDetailsfrm.patchValue({
+        manufacturer_name:resp_data.manufacturer_name,
+        man_site_id:resp_data.man_site_id,
+        country_id:resp_data.country_id,
+        region_id:resp_data.region_id,
+        physical_address:resp_data.physical_address,
+
+      });
       
       this.contractManufacturingDetailsfrm.patchValue({section_id:this.section_id,gmp_type_id:1});
      
@@ -444,7 +451,7 @@ export class GmpBusinessdetailsComponent implements OnInit {
         });
   }  
 
-  onSearchManufacturingSite() {
+onSearchManufacturingSite() {
     this.isManufacturerPopupVisible = true;
     let me = this;
     this.manufacturersSiteData.store = new CustomStore({

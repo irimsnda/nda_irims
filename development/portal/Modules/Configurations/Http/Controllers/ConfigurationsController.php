@@ -344,7 +344,111 @@ public function getProductsQualitySummaryDetails(Request $req){
 
     }
 
-   
+// public function getGMDNDetails(Request $req){
+//     try {
+//         $take = $req->has('take') ? (int)$req->take : 50;
+//         $skip = $req->has('skip') ? (int)$req->skip : 0;
+//         $searchValue = $req->input('searchValue', null);
+
+//         $query = DB::connection('mis_db')->table('par_gmdn_codes');
+
+//         if (!is_null($searchValue) && $searchValue !== 'undefined') {
+//             $query->where(function ($subQuery) use ($searchValue) {
+//                 $subQuery->where('name', 'LIKE', '%' . $searchValue . '%')
+//                          ->orWhere('code', 'LIKE', '%' . $searchValue . '%')
+//                          ->orWhere('description', 'LIKE', '%' . $searchValue . '%');
+//             });
+//         }
+
+//         $totalCount = $query->count(); // Get total count before pagination
+
+//         // Apply pagination
+//         $records = $query->skip($skip)->take($take)->get(['id', 'name', 'code', 'description']);
+
+//         $data = $records->map(function ($item) {
+//             return [
+//                 'id' => $item->id,
+//                 'name' => $item->name,
+//                 'code' => $item->code,
+//                 'description' => $item->description,
+//             ];
+//         })->toArray();
+
+//         return response()->json([
+//             'success' => true,
+//             'data' => $data,
+//             'totalCount' => $totalCount,
+//         ]);
+
+//     } catch (\Exception $e) {
+//         return response()->json([
+//             'success' => false,
+//             'message' => $e->getMessage(),
+//         ]);
+//     }
+// }
+
+
+   public function getGMDNDetails(Request $req){
+                    //the details 
+            try{
+                $search_value  = '';
+                $take = $req->has('take') ? (int)$req->take : 50;
+                $skip = $req->has('skip') ? (int)$req->skip : 0;
+                $searchValue = $req->searchValue;
+                $data = array();
+
+               $query = DB::connection('mis_db')->table('par_gmdn_codes as t1');
+
+                    if($req->searchValue != 'undefined'){
+                        
+                        $searchValue = explode(',',$searchValue);
+                        $search_value = '';
+                        if(isset($searchValue[2])){
+                            $search_value =  $searchValue[2];
+                        }
+                        
+                        
+                    }
+                    if($search_value != ''){
+                        $whereClauses = array();
+                        $whereClauses[] = "t1.name like '%" . ($search_value) . "%'";
+                        $whereClauses[] = "t1.code like '%" . ($search_value) . "%'";
+                        $whereClauses[] = "t1.description  like '%" . ($search_value) . "%'";
+
+                        $filter_string = implode(' OR ', $whereClauses);
+                        $query->whereRAW($filter_string);
+                    }
+                    $totalCount = $query->count(); // Get total count before pagination
+
+            // Apply pagination
+            $records = $query->skip($skip)->take($take)->get(['id', 'name', 'code', 'description']);
+
+            $data = $records->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'code' => $item->code,
+                    'description' => $item->description,
+                ];
+            })->toArray();
+
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+                'totalCount' => $totalCount,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+}
+
+
+
     function returnNavigationChilds($navigation_type_id,$parent_id){
         $nav_children = array();
         $data = DB::table('wb_navigation_items')
@@ -437,12 +541,7 @@ public function getProductsQualitySummaryDetails(Request $req){
 
                 
  
-            } if($table_name == 'par_business_types'){
-                    $sql =  $sql->whereNotIn('id',[3,5,7]);
-
-                
- 
-            }
+            } 
             if($table_name == 'par_classifications'){
                 $prodclass_category_id = $req->prodclass_category_id;
                 $sql->join('par_prodcat_classifications as t2', 't1.id', '=', 't2.classification_id')->where(array('t2.prodclass_category_id'=>$prodclass_category_id));
@@ -549,12 +648,14 @@ public function getProductsQualitySummaryDetails(Request $req){
                 $sql =  $sql->leftJoin('par_atc_codes as t2', 't1.atc_code_id', '=', 't2.id');
                 $res = $sql->select('t1.*', 't2.name as atc_code', 't2.description as atc_code_description');
             
-            }else  if($table_name == 'par_product_classificationrules'){
+            }
+            // else  if($table_name == 'par_product_classificationrules'){
                 
-                $sql =  $sql->leftJoin('par_classification_rules as t2', 't1.class_rule_id', '=', 't2.id');
-                $res = $sql->select('t1.*', 't2.name as classification_rule', 't2.description as rule_description');
+            //     $sql =  $sql->leftJoin('par_classification_rules as t2', 't1.class_rule_id', '=', 't2.id');
+            //     $res = $sql->select('t1.*', 't2.name as classification_rule', 't2.description as rule_description');
             
-            }else if($table_name == 'wb_formfields_definations'){
+            // }
+            else if($table_name == 'wb_formfields_definations'){
                 $res = $sql->select('t1.*', 't2.field_name');
                 
             }else{
