@@ -9,7 +9,14 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsOtherI
     defaults:{
         margin: 3
     },
-    items: [{
+    items: [
+    // {
+    //      xtype: 'copackedproductsgrid',
+    //      autoScroll:true,
+    //      title: 'Product Details for Co-Packed Products'
+        
+    // },
+    {
         xtype: 'drugsIngredientsGrid',
         title: 'Product Ingredients',
         autoScroll:true,
@@ -21,11 +28,15 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsOtherI
                     storeId: 'drugproductIngredientsstr',
                     proxy: {
                         url: 'productregistration/onLoadproductIngredients',
+                    },grouper: {
+                    groupFn: function (item) {
+                        return item.get('generic_atc_name');
                     }
                 },
+               },
                 isLoad: true
             }
-        },
+        }
     }, 
 
     {
@@ -83,13 +94,16 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsOtherI
                     storeId: 'productManuctureringStr',
                     proxy: {
                         url: 'productregistration/onLoadproductManufacturer',
+                    },grouper: {
+                    groupFn: function (item) {
+                        return item.get('generic_atc_name');
                     }
                 },
+               },
                 isLoad: true
             }
-        },
-
-    }, {
+        }
+    },  {
         xtype: 'productApiManuctureringGrid',
         title: 'Product API Manufacturer',
         autoScroll:true,
@@ -101,12 +115,16 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsOtherI
                     storeId: 'productApiManuctureringStr',
                     proxy: {
                         url: 'productregistration/onLoadproductApiManufacturer',
+                    },grouper: {
+                    groupFn: function (item) {
+                        return item.get('generic_atc_name');
                     }
                 },
+               },
                 isLoad: true
             }
-        },
-    }, {
+        }
+    },  {
         xtype: 'productGmpInspectionDetailsGrid',
         hidden: true,
         autoScroll:true,

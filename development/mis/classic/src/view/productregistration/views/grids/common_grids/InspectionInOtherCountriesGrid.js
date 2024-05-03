@@ -55,6 +55,15 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.InspectionIn
         minChars: 2,
         mode: 'local'
     }],
+    features:[
+        {
+            ftype: 'grouping',
+            startCollapsed: false,
+            groupHeaderTpl: '{[values.rows[0].data.generic_atc_name]} [{rows.length} {[values.rows.length > 1 ? "Items" : "Item"]}]',
+            hideGroupedHeader: true,
+            enableGroupingMenu: false
+        }
+    ],
     listeners: {
         beforerender: {
             fn: 'setConfigGridsStore',
@@ -67,8 +76,12 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.InspectionIn
                     	is_config: 1,
                         table_name: 'tra_otherstates_productgmpinspections'
                     }
-                }
-            },
+                },grouper: {
+                    groupFn: function (item) {
+                        return item.get('generic_atc_name');
+                    }
+                },
+               },
             isLoad: true
         }
     },
@@ -153,6 +166,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.InspectionIn
                     storeID: 'inspectioninothercountriesStr',
                     action_url: 'configurations/deleteConfigRecord',  
                     action: 'actual_delete',
+                    handler: 'doDeleteConfigWidgetParam',
                     bind: {
                         disabled: '{hideDeleteButton}'
                     },

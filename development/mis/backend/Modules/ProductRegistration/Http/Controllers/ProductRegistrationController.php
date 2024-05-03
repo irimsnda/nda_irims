@@ -1771,7 +1771,7 @@ if(validateIsNumeric($section_id)){
 
         return response()->json($res);
     }
-    public function onSaveProductOtherDetails(Request $req)
+     public function onSaveProductOtherDetails(Request $req)
     {
         try {
             $resp = "";
@@ -1801,7 +1801,86 @@ if(validateIsNumeric($section_id)){
                 //insert
                 $data['created_by'] = $user_id;
                 $data['created_on'] = Carbon::now();
+                if($table_name=='tra_product_packaging'){
+                    $product_id = $req->product_id;
+                    $packaging_category_id = $req->packaging_category_id;
+                    $container_type_id = $req->container_type_id;
+                    if ($packaging_category_id ==2 || $packaging_category_id===2) {
+                        if (!recordExists($table_name, array('packaging_category_id' => 1,'product_id' => $product_id))) {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Please add FPP Packaging Details First!!'
+                            );
+                            echo json_encode($res);
+                            exit();
+                        }
+                    }
 
+                    if ($container_type_id == 2) {
+                        if (!recordExists($table_name, array('container_type_id' => 1,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Please add Primary Packaging Details First!!'
+                            );
+                            echo json_encode($res);
+                            exit();
+                        }
+
+
+                       if (recordExists($table_name, array('container_type_id' => 2,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Please note Secondary Packaging Details already exists!!'
+                            );
+                            echo json_encode($res);
+                            exit();
+                        }
+                    }
+
+
+                    if ($container_type_id == 3) {
+                        if (!recordExists($table_name, array('container_type_id' => 2,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Please add Secondary Packaging Details First!!'
+                            );
+                            echo json_encode($res);
+                            exit();
+                        }
+
+
+                       if (recordExists($table_name, array('container_type_id' => 3,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Please note Tertiary Packaging Details already exists!!'
+                            );
+                            echo json_encode($res);
+                            exit();
+                        }
+                    }
+
+                    if ($container_type_id == 4) {
+                        if (!recordExists($table_name, array('container_type_id' => 3,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Please add Tertiary Packaging Details First!!'
+                            );
+                            echo json_encode($res);
+                            exit();
+                        }
+
+
+                       if (recordExists($table_name, array('container_type_id' => 3,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Please note Shipper Packaging Details already exists!!'
+                            );
+                            echo json_encode($res);
+                            exit();
+                        }
+                    }
+                
+                }
                 $resp = insertRecord($table_name, $data, $user_id);
 
             }
@@ -2318,13 +2397,46 @@ if(validateIsNumeric($section_id)){
             $data = array();
             //get the records
             $data = DB::table('tra_product_ingredients as t1')
-                ->select('t1.*', 't6.name as reason_for_inclusion', 't2.name as ingredient_specification', 't3.name as si_unit', 't4.name as ingredient_name', 't5.name as ingredient_type','t7.name as excipient_name')
+                ->select('t1.*', 't6.name as reason_for_inclusion', 't2.name as ingredient_specification', 't3.name as si_unit', 't4.name as ingredient_name', 't5.name as ingredient_type','t7.name as excipient_name','t8.description as generic_atc_name')
                 ->leftJoin('par_specification_types as t2', 't1.specification_type_id', '=', 't2.id')
                 ->leftJoin('par_si_units as t3', 't1.ingredientssi_unit_id', '=', 't3.id')
                 ->leftJoin('par_ingredients_details as t4', 't1.ingredient_id', '=', 't4.id')
                 ->leftJoin('par_ingredients_types as t5', 't1.ingredient_type_id', '=', 't5.id')
                 ->leftJoin('par_inclusions_reasons as t6', 't1.inclusion_reason_id', '=', 't6.id')
                 ->leftJoin('par_excipients_details as t7', 't1.excipient_id', '=', 't7.id')
+                ->leftJoin('par_atc_codes as t8', 't1.active_common_name_id', '=', 't8.id')
+                ->where(array('t1.product_id' => $product_id))
+                ->get();
+            $res = array('success' => true, 'results' => $data);
+        } catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+
+
+    }
+
+    public function onLoadCopackedProductDetails(Request $req)
+    {
+
+        try {
+            $product_id = $req->product_id;
+            $data = array();
+            //get the records
+            $data = DB::table('tra_copacked_products as t1')
+                ->leftJoin('par_atc_codes as t2', 't1.common_name_id', '=', 't2.id')
+                ->leftJoin('par_atc_codes as t3', 't1.atc_code_id', '=', 't3.id')
+                ->leftJoin('par_therapeutic_group as t4', 't1.therapeutic_group', '=', 't4.id')
+                ->leftJoin('par_dosage_forms as t5', 't1.dosage_form_id', '=', 't5.id')
+                 ->select('t1.*', 't2.name as generic_name','t2.description as generic_name','t2.name as atc_code','t4.name as therapeutic_group_name','t5.name as dosage_form')
                 ->where(array('t1.product_id' => $product_id))
                 ->get();
             $res = array('success' => true, 'results' => $data);
@@ -2489,17 +2601,71 @@ if(validateIsNumeric($section_id)){
             $data = array();
             //get the records
             $data = DB::table('tra_product_packaging as t1')
-                ->select(DB::raw("t1.*, t2.name as container_type, t3.name as container_name, t4.name as container_material, t5.name as closure_materials, t4.name as container_material, t5.name as closure_material, t6.name as seal_type, t7.name as packaging_units, retail_packaging_size as retail_packaging,t8.name as si_unit"))
+                ->select(DB::raw("t1.*, t2.name as container_type, t3.name as container_name, t4.name as container_material, t5.name as closure_materials, t4.name as container_material, t5.name as closure_material, t6.name as seal_type, t7.name as packaging_units, retail_packaging_size as retail_packaging,t8.name as si_unit,t9.name as packaging_category,t10.name as diluent"))
                 ->leftJoin('par_containers_types as t2', 't1.container_type_id', '=', 't2.id')
                 ->leftJoin('par_containers as t3', 't1.container_id', '=', 't3.id')
                 ->leftJoin('par_containers_materials as t4', 't1.container_material_id', '=', 't4.id')
                 ->leftJoin('par_closure_materials as t5', 't1.closure_material_id', '=', 't5.id')
                 ->leftJoin('par_seal_types as t6', 't1.seal_type_id', '=', 't6.id')
                 ->leftJoin('par_packaging_units as t7', 't1.packaging_units_id', '=', 't7.id')
-                ->leftJoin('par_si_units as t8', 't1.si_unit_id', '=', 't8.id')
+                ->leftJoin('si_units as t8', 't1.si_unit_id', '=', 't8.id')
+                ->leftJoin('par_container_categories as t9', 't1.packaging_category_id', '=', 't9.id')
+                ->leftJoin('par_diluents as t10', 't1.diluent_id', '=', 't10.id')
                 ->where(array('t1.product_id' => $product_id))
                 ->get();
 
+
+              // First loop to calculate pack_size
+            $packSize = '';
+            $packSizediluent= '';
+            foreach ($data as $record) {
+                $record->pack_size = " ";
+             if ($record->packaging_category_id == 1) {
+                if ($record->container_type_id == 1) {
+                    // Concatenate pack_size normally
+                    if(isset($record->no_of_packs)){
+                       $packSize = "{$record->no_of_units}*{$record->no_of_packs}{$record->si_unit} {$record->container_name}";
+                    }else{
+                        $packSize = "{$record->no_of_units} {$record->container_name}";
+                    }
+                   
+                } if ($record->container_type_id == 2) {
+                    // Add no_of_units as a prefix to the existing pack_size
+                    $packSize = "{$record->no_of_units}*" . $packSize;
+                } 
+                if ($record->container_type_id == 3) {
+                    // Add no_of_units as a prefix to the existing pack_size
+                    $packSize = "{$record->no_of_units}*" . $packSize;
+                }
+                if ($record->container_type_id == 4) {
+                    // Add no_of_units as a prefix to the existing pack_size
+                    $packSize = "{$record->no_of_units}*" . $packSize;
+                } 
+              }
+
+               if ($record->packaging_category_id == 2) {
+                if ($record->container_type_id == 1) {
+                    // Concatenate pack_size normally
+                        $packSizediluent = "{$record->no_of_units}*{$record->no_of_packs}{$record->si_unit} {$record->container_name} {$record->diluent}";
+                    }
+                    if ($record->container_type_id == 2) {
+                        // Add no_of_units as a prefix to the existing pack_size
+                        $packSizediluent = "{$record->no_of_units}*" . $packSize;
+                    } 
+                    if ($record->container_type_id == 3) {
+                        // Add no_of_units as a prefix to the existing pack_size
+                        $packSizediluent = "{$record->no_of_units}*" . $packSize;
+                    }
+
+                      $packSize=$packSize.' + '.$packSizediluent;
+                }
+
+            }
+
+            // Second loop to append pack_size to all records
+            foreach ($data as &$record) {
+                $record->pack_size = $packSize;
+            }
             $res = array('success' => true, 'results' => $data);
 
         } catch (\Exception $e) {
@@ -2534,7 +2700,8 @@ if(validateIsNumeric($section_id)){
                 ->leftJoin('gmp_product_lines as t8', 't7.product_line_id', '=', 't8.id')
                 ->leftJoin('par_gmpproduct_types  as t9', 't7.category_id', '=', 't9.id')
                 ->leftJoin('par_manufacturing_activities as t10', 't7.manufacturing_activity_id', '=', 't10.id')
-                ->select('t1.*', 't2.email as email_address', 't6.name as manufacturing_role', 't2.physical_address', 't2.name as manufacturer_name', 't3.name as country_name', 't4.name as region_name', 't5.name as district_name','prodline_inspectionstatus_id',DB::raw("CONCAT(t8.name, '<b>Product Line Category</b>', t9.name, '<b> Manufacturing Activity </b>', t10.name) AS product_line_details"))
+                ->leftJoin('par_atc_codes as t11', 't1.active_common_name_id', '=', 't11.id')
+                ->select('t1.*', 't2.email as email_address', 't6.name as manufacturing_role', 't2.physical_address', 't2.name as manufacturer_name', 't3.name as country_name', 't4.name as region_name', 't11.description as generic_atc_name','t5.name as district_name','prodline_inspectionstatus_id',DB::raw("CONCAT(t8.name, '<b>Product Line Category</b>', t9.name, '<b> Manufacturing Activity </b>', t10.name) AS product_line_details"))
                 ->where(array('t1.product_id' => $product_id, 'manufacturer_type_id' => 1))
                ->groupBy('t1.id')->get();
 
@@ -2556,6 +2723,7 @@ if(validateIsNumeric($section_id)){
 
     }
 
+
     public function onLoadproductApiManufacturer(Request $req)
     {
 
@@ -2564,13 +2732,14 @@ if(validateIsNumeric($section_id)){
             $records = array();
             //get the records
             $records = DB::table('tra_product_manufacturers as t1')
-                ->select('t1.*', 't2.email as email_address', 't2.id as manufacturer_id', 't7.name as ingredient_name', 't2.physical_address', 't2.name as manufacturer_name', 't3.name as country_name', 't4.name as region_name', 't5.name as district_name')
+                ->select('t1.*', 't2.email as email_address', 't2.id as manufacturer_id', 't7.name as ingredient_name', 't2.physical_address', 't2.name as manufacturer_name', 't3.name as country_name', 't4.name as region_name', 't5.name as district_name','t8.description as generic_atc_name')
                 ->join('tra_manufacturing_sites as t2', 't1.manufacturer_id', '=', 't2.id')
                 ->join('par_countries as t3', 't2.country_id', '=', 't3.id')
                 ->join('par_regions as t4', 't2.region_id', '=', 't4.id')
                 ->leftJoin('par_districts as t5', 't2.district_id', '=', 't5.id')
                 ->join('tra_product_ingredients as t6', 't1.active_ingredient_id', '=', 't6.id')
                 ->join('par_ingredients_details as t7', 't6.ingredient_id', '=', 't7.id')
+                 ->leftJoin('par_atc_codes as t8', 't1.active_common_name_id', '=', 't8.id')
                 ->where(array('t1.product_id' => $product_id, 'manufacturer_type_id' => 2))
                 ->get();
 

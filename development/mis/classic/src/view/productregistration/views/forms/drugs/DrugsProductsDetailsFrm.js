@@ -16,7 +16,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
         columnWidth: 0.33,
         margin: 5,
         labelAlign: 'top',
-        allowBlank: false,
+        allowBlank: true,
        
     }, autoScroll: true,
    
@@ -240,11 +240,11 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             collapsible: true,
             defaults: {
                 labelAlign: 'top',
-                allowBlank: false,
+                allowBlank: true,
                 labelAlign: 'top',
                 margin: 5,
                 xtype: 'textfield',
-                allowBlank: false,
+                allowBlank: true,
                 columnWidth: 0.33,
             },
             layout: 'column',
@@ -253,7 +253,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             fieldLabel: 'Classification',
             name: 'classification_id',
             forceSelection: true,
-            allowBlank:false,
+            allowBlank:true,
             queryMode: 'local',
             valueField: 'id',
             displayField: 'name',
@@ -281,7 +281,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             name: 'assessment_procedure_id',
             forceSelection: true,
             queryMode: 'local',
-            allowBlank:false,
+            allowBlank:true,
             valueField: 'id',labelWidth: 110,
             displayField: 'name',
             listeners: {
@@ -306,7 +306,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             name: 'prodclass_category_id',
             forceSelection: true,
             queryMode: 'local',
-            allowBlank:false,
+            allowBlank:true,
             valueField: 'id',
             displayField: 'name',
             listeners: {
@@ -332,7 +332,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             fieldLabel: 'Product Type',
             name: 'product_type_id',
             forceSelection: true,
-            allowBlank:false,
+            allowBlank:true,
             queryMode: 'local',
             valueField: 'id',
             displayField: 'name',
@@ -357,7 +357,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
         },{
             xtype: 'textfield',
             name: 'brand_name',
-            allowBlank:false,
+            allowBlank:true,
             fieldLabel: 'Proprietary Name', bind: {
                 readOnly: '{isReadOnly}'  // negated
             }
@@ -366,7 +366,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             xtype: 'combo',
             fieldLabel: ' ATC Code',
             name: 'atc_code_id',
-            allowBlank:false,
+            allowBlank:true,
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
@@ -405,7 +405,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             xtype: 'combo',
             fieldLabel: 'Therapeutic Group',
             name: 'therapeutic_group',
-            allowBlank:false,
+            allowBlank:true,
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
@@ -497,7 +497,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
-            allowBlank: false,
+            allowBlank: true,
             displayField: 'name',
             listeners: {
                 afterrender: {
@@ -702,6 +702,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             xtype: 'textarea',
             name: 'intended_use', 
             columnWidth: 0.99,
+            hidden:true,
             allowBlank: true,
             fieldLabel: 'Indication for use as given on the pack/literature/Manufacturers instructions)', bind: {
                 readOnly: '{isReadOnly}'  // negated
@@ -741,7 +742,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
         {
             xtype: 'textarea',
             name: 'physical_description',
-            allowBlank: false,
+            allowBlank: true,
             columnWidth: 0.99,
             fieldLabel: 'Visual description', bind: {
                 readOnly: '{isReadOnly}'  // negated

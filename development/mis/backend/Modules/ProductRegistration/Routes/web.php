@@ -104,6 +104,7 @@ Route::post('/saveQualityReport', [ProductRegistrationController::class,'saveQua
     Route::get('getproductregistrationAppsApproval', [ProductRegistrationController::class,'getproductregistrationAppsApproval']);
    
     Route::get('getProductApplicationMoreDetails', [ProductRegistrationController::class,'getProductApplicationMoreDetails']);
+     Route::get('onLoadCopackedProductDetails', [ProductRegistrationController::class,'onLoadCopackedProductDetails']);
    
     Route::get('getEValuationComments', [ProductRegistrationController::class,'getEValuationComments']);
     

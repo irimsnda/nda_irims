@@ -22,7 +22,7 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.PromotiomMaterialProd
     features:[
         {
             ftype: 'grouping',
-            startCollapsed: true,
+            startCollapsed: false,
             groupHeaderTpl: '{[values.rows[0].data.promotion_material_name]} [{rows.length} {[values.rows.length > 1 ? "Items" : "Item"]}]',
             hideGroupedHeader: true,
             enableGroupingMenu: false
@@ -44,27 +44,6 @@ Ext.define('Admin.view.view.promotionmaterials.views.grids.PromotiomMaterialProd
             store.load();
         }
     }],
-    // listeners: {
-        // afterrender: function () {
-        //     var store = this.store;
-        //     store.removeAll();
-        //     store.load();
-        // }
-    // },
-    listeners: {
-            beforerender: {
-                fn: 'setConfigGridsStore',
-                config: {
-                    pageSize: 1000,
-                    storeId: 'promotiommaterialproductgridstr',
-                    proxy: {
-                        url: 'promotionmaterials/getPromotionMaterialsProductParticular',
-                    }
-                },
-                isLoad: true
-            }
-    },
-
 
     listeners: {
         beforerender: {

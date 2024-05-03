@@ -27,6 +27,27 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
             xtype: 'hiddenfield',
             name: 'table_name',
             value: 'tra_product_ingredients'
+        },{
+            xtype: 'combo',
+            name: 'active_common_name_id',
+            allowBlank: true,
+            hidden:true,
+            fieldLabel: 'Generic ATC Name',
+            queryMode: 'local',
+            valueField: 'common_name_id',
+            displayField: 'generic_name',
+            listeners: {
+                    afterrender: {
+                        fn: 'setConfigCombosProductfilterStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'productregistration/onLoadCopackedProductDetails'
+                            }
+                        },
+                        isLoad: true
+                    }
+                }
         }, {
             xtype:'fieldcontainer',
             layout: {
@@ -103,22 +124,23 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
          {
             xtype: 'textfield',
             name: 'strength',
-            fieldLabel: 'strength'
+            fieldLabel: 'Strength'
 
         },  {
             xtype:'fieldcontainer',
             layout: {
                 type: 'hbox'
             },
-            items:[{
+            items:[
+            {
                 xtype: 'combo',
                 name: 'ingredientssi_unit_id',
                 allowBlank: false,
-
                 labelAlign: 'top',
-                queryMode: 'local',width: '85%',
+                queryMode: 'local',
                 fieldLabel: 'SI Units',
                 valueField: 'id',
+                width: '85%',
                 displayField: 'name',
                 listeners: {
                     afterrender: {
@@ -184,7 +206,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
                 xtype: 'button',
                 iconCls:'x-fa fa-plus',
                 handler:'funcAddProductApplicationParamter',
-                section_id: 2,
+                //section_id: 2,
                 childXtype:'productexcipientsfrm',
                 width: '15%', margin:'28 0 0',
                 table_name: 'par_excipients_details',

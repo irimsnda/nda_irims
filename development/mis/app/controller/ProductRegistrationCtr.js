@@ -202,6 +202,9 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             'drugsProductPackagingGrid': {
                 refresh: 'refreshProductsOtherDetailsGrid'
             },
+            'copackedproductsgrid': {
+                refresh: 'refreshProductsOtherDetailsGrid'
+            },
             'drugsMaximumResidueLimitsGrid': {
                 refresh: 'refreshProductsOtherDetailsGrid'
             },
@@ -566,7 +569,21 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                 click: 'funcAddProductApplicationParamter'
             },'#productsDetailsFrm button[name=btn_addtobaccoflavous]': {
                 click: 'funcAddProductApplicationParamter'
-            }
+            },'drugsIngredientsFrm': {
+                afterrender: 'drugsProductsOtherDetailsFormDefinition'
+            },'productManuctureringFrm': {
+                afterrender: 'drugsProductsOtherDetailsFormDefinition'
+            },'productApiManuctureringFrm': {
+                afterrender: 'drugsProductsOtherDetailsFormDefinition'
+            },'productgmpinspectiondetailsFrm': {
+                afterrender: 'drugsProductsOtherDetailsFormDefinition'
+            },
+            // 'productreginothercountriesfrm': {
+            //     afterrender: 'drugsProductsOtherDetailsFormDefinition'
+            // },'inspectioninothercountriesfrm': {
+            //     afterrender: 'drugsProductsOtherDetailsFormDefinition'
+            // },
+            
             
         }
 
@@ -841,7 +858,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
         
 
     },
-    addApplicationCodetoForm: function(pnl){
+    addApplicationCodetoForm: function(frm){
         var me = this,
              mainTabPanel = me.getMainTabPanel(),
              activeTab = mainTabPanel.getActiveTab();
@@ -851,11 +868,24 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
              console(grid.up('customizablewindow'));
          }
          if(application_code){
-             pnl.down('hiddenfield[name=application_code]').setValue(application_code);
+             frm.down('hiddenfield[name=application_code]').setValue(application_code);
          }else{
              toastr.error('Failed to fetch application details', 'Error Response');
          }
-     },
+
+           if (activeTab.down('combo[name=product_type_id]')) {
+                product_type_id = activeTab.down('combo[name=product_type_id]').getValue();
+
+                if(product_type_id==3 || product_type_id===3){
+                  frm.down('combo[name=active_common_name_id]').setVisible(true);
+                  frm.down('combo[name=active_common_name_id]').allowBlank = false;
+                  frm.down('combo[name=active_common_name_id]').validate();
+               }else{
+                  frm.down('combo[name=active_common_name_id]').setVisible(false);
+                  frm.down('combo[name=active_common_name_id]').allowBlank = true;
+               }
+            }
+         },
      addApplicationCodetoGridStore: function(grid){
         var me = this,
              mainTabPanel = me.getMainTabPanel(),
@@ -1528,6 +1558,27 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             // }
 
     },
+
+     drugsProductsOtherDetailsFormDefinition: function (frm) {
+
+        var mainTabPnl = this.getMainTabPanel(),
+            activeTab = mainTabPnl.getActiveTab();
+
+       
+        if (activeTab.down('combo[name=product_type_id]')) {
+            product_type_id = activeTab.down('combo[name=product_type_id]').getValue();
+
+            if(product_type_id==3 || product_type_id===3){
+              frm.down('combo[name=active_common_name_id]').setVisible(true);
+              frm.down('combo[name=active_common_name_id]').allowBlank = false;
+              frm.down('combo[name=active_common_name_id]').validate();
+           }else{
+              frm.down('combo[name=active_common_name_id]').setVisible(false);
+              frm.down('combo[name=active_common_name_id]').allowBlank = true;
+           }
+        }
+
+    },
     saveProductInformation: function (btn) {
         var me = this,
             mainTabPnl = this.getMainTabPanel(),
@@ -1535,7 +1586,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             table = btn.table_name,
             activeTab = mainTabPnl.getActiveTab();
         if (activeTab.down('#productsDetailsFrm')) {
-            form = activeTab.down('#productsDetailsFrm'),
+            var form = activeTab.down('#productsDetailsFrm'),
                 product_id = activeTab.down('hiddenfield[name=product_id]').getValue(),
                 application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue();
         } else {
@@ -1981,6 +2032,23 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                 product_id = panel.down('hiddenfield[name=product_id]').getValue();
 
         }
+        if (activeTab.down('combo[name=product_type_id]')) {
+            product_type_id = activeTab.down('combo[name=product_type_id]').getValue();
+
+            if(product_type_id==3 || product_type_id===3){
+             if(activeTab.down('drugsProductsOtherInformationFrm')){
+                 if (!activeTab.down('copackedproductsgrid')) {
+                    // activeTab.down('copackedproductsgrid').destroy();
+                   activeTab.down('drugsProductsOtherInformationFrm').add(0, {title: 'Product Details for Co-Packed Products', xtype: 'copackedproductsgrid'});
+                 }
+                }
+           }else{
+              if(activeTab.down('copackedproductsgrid')){
+                activeTab.down('copackedproductsgrid').destroy();
+             }
+           }
+        }
+
         if (product_id == '') {
 
             tab.setActiveTab(0);

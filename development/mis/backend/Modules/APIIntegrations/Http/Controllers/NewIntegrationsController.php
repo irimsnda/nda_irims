@@ -1018,7 +1018,7 @@ public function generateUsernameToken($username, $password)
 
         return $token;
     }
-function receivePayRemittanceNotification (Request $req){
+function receivePayRemittanceNotification111 (Request $req){
       $myXMLData = $req->getContent();
 
 
@@ -1131,6 +1131,175 @@ function receivePayRemittanceNotification (Request $req){
       
           $notify_resp='<?xml version="1.0" encoding="utf-16"?><PaymentResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><StatusMessage xmlns="http://livendaapi.org/">SUCCESS</StatusMessage><StatusCode xmlns="http://livendaapi.org/">0</StatusCode></PaymentResponse>';
           return $notify_resp;  
+     }
+
+    function receivePayRemittanceNotification (Request $req){
+      $myXMLData = $req->getContent();
+      $user_id = 0;
+      $myXMLData =preg_replace('/encoding="utf-16"/', '', $myXMLData);
+
+
+        if(!isset($myXMLData)){
+            $notify_resp='<?xml version="1.0" encoding="utf-16"?><PaymentResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><StatusMessage xmlns="http://livendaapi.org/">ERROR ! BODY CAN NOT BE NULL</StatusMessage><StatusCode xmlns="http://livendaapi.org/">4001</StatusCode></PaymentResponse>';
+             print_r($notify_resp); 
+             exit();
+
+        }
+        $notify_resp='<?xml version="1.0" encoding="utf-16"?><PaymentResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><StatusMessage xmlns="http://livendaapi.org/">ERROR PARSING XML</StatusMessage><StatusCode xmlns="http://livendaapi.org/">4001</StatusCode></PaymentResponse>';
+        
+        $xml=simplexml_load_string($myXMLData) or die($notify_resp);
+        $json_string = json_encode($xml);
+        $result_array = json_decode($json_string, TRUE);
+          //check ack status
+
+        
+        $log_data = serialize($myXMLData);
+        $log_data = array(
+          'log' => $log_data,
+          'function_id' =>"receivePayRemittanceNotification"
+        );
+        $log_data = DB::table('tra_stanbicbankapi_log')->insert($log_data);
+
+        $receipt_no = generateReceiptNo($user_id);
+        
+        $invoice_no= $result_array['CustRef'];
+        $Currency= $result_array['Currency'];
+
+        $currency_id=1;
+        $currency_details = DB::table('par_currencies')->where(function ($query) use ($Currency) {
+                        $query->where('name', $Currency)
+                              ->orWhereRaw("name = '".trim($Currency)."'");
+                    })->first();
+        if($currency_details){
+                $currency_id = $currency_details->id;
+                   
+            }
+
+        $exchange_rate = getSingleRecordColValue('par_exchange_rates', array('currency_id' => $currency_id ), 'exchange_rate');
+       
+        
+
+        if(isset($invoice_no)){
+            $invoice_record = DB::table('tra_application_invoices')->where(function ($query) use ($invoice_no) {
+                        $query->where('invoice_no', $invoice_no)
+                              ->orWhereRaw("invoice_no = '".trim($invoice_no)."'");
+                    })->first();
+
+            
+            
+            if($invoice_record){
+                    $invoice_id = $invoice_record->id;
+                    $module_id = $invoice_record->module_id;
+                    $sub_module_id = $invoice_record->sub_module_id;
+                    $section_id = $invoice_record->section_id;
+                    $application_code = $invoice_record->application_code;
+                    $application_id = $invoice_record->application_id;
+                    $applicant_id = $invoice_record->applicant_id;
+                    $applicant_name = $invoice_record->applicant_name;
+                    $invoice_type_id = $invoice_record->invoice_type_id;
+                    $due_date = $invoice_record->due_date;
+            }
+         }
+
+       
+          $params = array(
+            'application_id' => $application_id,
+            'application_code' => $application_code,
+            'applicant_name' => $applicant_name,
+            'amount_paid' => $result_array['TransactionAmount'],
+            'invoice_id' => $invoice_id,
+            'receipt_no' => $receipt_no,
+            'trans_date' => $result_array['PaymentDate'],
+            'currency_id' => $currency_id,
+            'applicant_id' => $applicant_id,
+            'section_id' => $section_id,
+            'module_id' => $module_id,
+            'payment_type_id' => 1,
+            'sub_module_id' => $sub_module_id,
+            'receipt_type_id' =>1,
+            'payment_mode_id' =>1,
+            'trans_ref' => $result_array['VendorTransactionRef'],
+            'bank_id' => 0,
+            'drawer' => $result_array['CustName'],
+            'exchange_rate' => $exchange_rate,
+            'created_on' => Carbon::now(),
+            'created_by' => $user_id
+        );
+
+          
+           $res = insertRecord('tra_payments', $params, $user_id);
+           
+        
+           generatePaymentRefDistribution($invoice_id, $res['record_id'], $result_array['TransactionAmount'], $currency_id, $user_id);
+            $payment_details = getApplicationPaymentsRunningBalance($application_id, $application_code, $invoice_id);
+            $res['balance'] = $payment_details['running_balance'];
+            $res['invoice_amount'] = $payment_details['invoice_amount'];
+
+
+            if($res['success']){
+                $receipt_id = $res['record_id'];
+                                                    
+                $payment_record = DB::table('tra_payments')->where('id',$receipt_id)->first();
+                                                
+                if($payment_record){
+                    $receipt_no = $payment_record->receipt_no;
+                    $applicant_id = $payment_record->applicant_id;
+                    $payment_id = $payment_record->id;
+                    $module_id = $payment_record->module_id;
+                    $application_code = $payment_record->application_code;
+                    $application_id = $payment_record->application_id;
+                                                        
+                    $message = "Kindly find attached Payment Receipt as per the following details:";
+                    $message .= "<br/>Application No:".$invoice_record->tracking_no;
+                    $message .= "<br/>Receipt No:".$receipt_no;
+                    $message .= "<br/>Payment Date:".Carbon::now();
+
+                    $subject='Payment Receipt';
+                                                                            
+                    $trader_record = getSingleRecord('wb_trader_account', array('id'=>$applicant_id),'mysql');
+                                                        
+                    if($trader_record){
+                            $attachement_name = 'Payment Receipt.pdf';
+                            $document_root = $_SERVER['DOCUMENT_ROOT'];
+                            $attachement =  $document_root.'/'.Config('constants.dms.system_uploaddirectory').date('Y-m-d H:i:s').'Receipt'.'.pdf';
+                             $request = new Request([
+                                        'table_name'   => 'unit test',
+                                        'application_code' => $application_code,
+                                        'application_id' => $application_id,
+                                        'module_id' => $module_id
+                            ]);
+                            $this->printApplicationReceipt($payment_id,$invoice_id,$request, 'notify',$attachement);
+
+
+                            // $this->submitPaymentNextProcessAutoSubmissions($application_code);
+                                                            
+                             //$response = sendMailNotification($trader_record->name, $trader_record->email,$subject,$message,'','',$attachement,$attachement_name);
+                            
+                            $response = sendMailNotification($trader_record->name, 'kenedymuthui1@gmail.com',$subject,$message,'','',$attachement,$attachement_name);
+                                                        
+                            $data = array('receipt_no'=>$receipt_no, 
+                                    'application_code'=>$application_code,
+                                    'trader_name'=>$trader_record->name,
+                                    'notification_sent_on'=>Carbon::now(),
+                                    'notification_sent_to'=>$trader_record->email,
+                                    'notification_status_id'=>2,
+                                    'created_on'=>Carbon::now()
+                            );
+                                                                       
+                            DB::table('tra_paymentinvoices_notifications')->insert($data);
+
+                                $where = array('id'=>$payment_id);
+                                $data_update = array('notification_status_id'=>2, 'dola'=>Carbon::now());
+                        DB::table('tra_payments as t')->where($where)->update($data_update);
+                        unlink($attachement);
+                    }
+                                                        
+                                                        
+               }
+            }
+
+            $notify_resp='<?xml version="1.0" encoding="utf-16"?><PaymentResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><StatusMessage xmlns="http://livendaapi.org/">SUCCESS</StatusMessage><StatusCode xmlns="http://livendaapi.org/">0</StatusCode></PaymentResponse>';
+            return $notify_resp; 
      }
 public function test()
 {

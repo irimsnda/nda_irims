@@ -878,7 +878,8 @@ class CommonParameterController extends BaseController
                         ->leftJoin('par_gmpproduct_types  as t9', 't7.category_id', '=', 't9.id')
                         ->leftJoin('par_manufacturing_activities as t10', 't7.manufacturing_activity_id', '=', 't10.id')
                         ->leftJoin('tra_manufacturing_sites as t12', 't1.fpp_manufacturer_id', '=', 't12.id')
-                        ->select('t1.*', 't4.name as country', 't5.name as recognisedassessments_ctrregion','t6.name as current_registrationstatus_name','t11.name as approving_authority','t12.name as fpp_manufacturer',DB::raw("CONCAT(t8.name, '<b>Product Line Category</b>', t9.name, '<b> Manufacturing Activity </b>', t10.name) AS approved_productlines"))
+                        ->leftJoin('par_atc_codes as t13', 't1.active_common_name_id', '=', 't13.id')
+                        ->select('t1.*','t13.description as generic_atc_name','t4.name as country', 't5.name as recognisedassessments_ctrregion','t6.name as current_registrationstatus_name','t11.name as approving_authority','t12.name as fpp_manufacturer',DB::raw("CONCAT(t8.name, '<b>Product Line Category</b>', t9.name, '<b> Manufacturing Activity </b>', t10.name) AS approved_productlines"))
                         ->where('t1.application_code', $filters['application_code']);
                         unset($filters['application_code']);
                

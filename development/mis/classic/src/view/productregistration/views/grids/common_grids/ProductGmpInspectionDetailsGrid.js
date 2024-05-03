@@ -41,8 +41,12 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductGmpIn
                 storeId: 'productGmpInspectionDetailsStr',
                 proxy: {
                     url: 'productregistration/onLoadproductGmpInspectionDetailsStr',
-                }
-            },
+                },grouper: {
+                    groupFn: function (item) {
+                        return item.get('generic_atc_name');
+                    }
+                },
+               },
             isLoad: true
         }
     },
@@ -62,6 +66,15 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductGmpIn
         minChars: 2,
         mode: 'local'
     }],
+     features:[
+        {
+            ftype: 'grouping',
+            startCollapsed: false,
+            groupHeaderTpl: '{[values.rows[0].data.generic_atc_name]} [{rows.length} {[values.rows.length > 1 ? "Items" : "Item"]}]',
+            hideGroupedHeader: true,
+            enableGroupingMenu: false
+        }
+    ],
     columns: [{
         xtype: 'gridcolumn',
         dataIndex: 'gmp_certificate_no',

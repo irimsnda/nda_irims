@@ -76,6 +76,15 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManuc
         minChars: 2,
         mode: 'local'
     }],
+    features:[
+        {
+            ftype: 'grouping',
+            startCollapsed: false,
+            groupHeaderTpl: '{[values.rows[0].data.generic_atc_name]} [{rows.length} {[values.rows.length > 1 ? "Items" : "Item"]}]',
+            hideGroupedHeader: true,
+            enableGroupingMenu: false
+        }
+    ],
 
     columns: [ {
         xtype: 'gridcolumn',

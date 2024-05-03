@@ -54,7 +54,6 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsProductPackagi
         displayMsg: 'Showing {0} - {1} of {2} total records',
         emptyMsg: 'No Records',
         beforeLoad: function () {
-            
             this.up('drugsProductPackagingGrid').fireEvent('refresh', this);
         }
     }],
@@ -62,92 +61,110 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsProductPackagi
         ftype: 'searching',
         minChars: 2,
         mode: 'local'
+    }, {
+        ftype: 'summary',
+        dock: 'bottom',
+        style: 'width: 100%;'
     }],
-    
+    columnLines: true,
     columns: [{
-        xtype: 'gridcolumn',
-        dataIndex: 'container_type',
-        text: 'Container',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'container_name',
-        text: 'Container',
-        flex: 1
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'container_material',
-        text: 'Container Material',
+        text:'',
+        itemId: 'packsize',
         flex: 1,
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'closure_material',
-        text: 'Closure Material',
-        flex: 1,
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'retail_packaging',
-        hidden:true,
-        text: 'Retail Packaging Size',
-        flex: 1,
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'no_of_units',
-        text: 'No Of Units',
-        flex: 1,
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'no_of_packs',
-        text: 'No of Packs',
-        flex: 1,
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'si_unit',
-        text: 'SI Unit',
-        flex: 1,
-    }, {
-        text: 'Options',
-        xtype: 'widgetcolumn',
-        width: 90,
-        widget: {
-            width: 75,
-            textAlign: 'left',
-            xtype: 'splitbutton',
-            iconCls: 'x-fa fa-th-list',
-            ui: 'gray',
-            menu: {
-                xtype: 'menu',
-                items: [{
-                    text: 'Edit',
-                    iconCls: 'x-fa fa-edit',
-                    tooltip: 'Edit Record',
-                    action: 'edit',
-                    childXtype: 'drugsProductPackagingFrm',
-                    winTitle: 'Product Packaging',
-                    winWidth: '60%',
-                    /*  bind: {
-                        hidden: '{isReadOnly}'  // negated
-                    },
-                    */
-                    handler: 'showEditProductOtherdetailWinFrm',
-                    stores: '[]'
-                   
-                }, {
-                    text: 'Delete',
-                    iconCls: 'x-fa fa-trash',
-                    tooltip: 'Delete Record',
-                    table_name: 'tra_product_packaging',
-                    storeID: 'drugproductPackagingdetailsstr',
-                    action_url: 'productregistration/onDeleteProductOtherDetails',
-                    action: 'actual_delete',
-                    /*  bind: {
-                        hidden: '{isReadOnly}'  // negated
-                    },
-                    */
-                    handler: 'doDeleteProductOtherdetails',
-                   
-                }]
+        align: 'center',
+        columns: [{
+            xtype: 'gridcolumn',
+            dataIndex: 'packaging_category',
+            text: 'Pack Category',
+            flex: 1
+        }, {
+            xtype: 'gridcolumn',
+            dataIndex: 'container_type',
+            text: 'Packaging Type',
+            flex: 1
+        }, {
+            xtype: 'gridcolumn',
+            dataIndex: 'container_name',
+            text: 'Pack Type',
+            flex: 1
+        }, {
+            xtype: 'gridcolumn',
+            dataIndex: 'container_material',
+            text: 'Pack Material',
+            flex: 1
+        },{
+            xtype: 'gridcolumn',
+            dataIndex: 'diluent',
+            text: 'Diluent',
+            flex: 1
+        },  {
+            xtype: 'gridcolumn',
+            dataIndex: 'no_of_units',
+            text: 'No Of Units',
+            flex: 1,
+            summaryType: function (records, values) {
+              var packSizeColumn = Ext.ComponentQuery.query("#packsize")[0];
+                if (records.length > 0) {
+                    let firstRecord = records[0];
+                    console.log(firstRecord);
+                    packSizeColumn.setText(firstRecord.get('pack_size'));
+                    return'';
+                    
+                }
+                packSizeColumn.setText('');
+                return'';
+                
             }
-        }
+        }, {
+            xtype: 'gridcolumn',
+            dataIndex: 'no_of_packs',
+            text: 'Quantity/Volume Per',
+            flex: 1
+        }, {
+            xtype: 'gridcolumn',
+            dataIndex: 'si_unit',
+            text: 'Unit of Quantity/Volume',
+            flex: 1
+        }, {
+            xtype: 'gridcolumn',
+            dataIndex: 'description',
+            text: 'Pack Description',
+            flex: 1
+        }, {
+            text: 'Options',
+            xtype: 'widgetcolumn',
+            width: 90,
+            widget: {
+                width: 75,
+                textAlign: 'left',
+                xtype: 'splitbutton',
+                iconCls: 'x-fa fa-th-list',
+                ui: 'gray',
+                menu: {
+                    xtype: 'menu',
+                    items: [{
+                        text: 'Edit',
+                        iconCls: 'x-fa fa-edit',
+                        tooltip: 'Edit Record',
+                        action: 'edit',
+                        childXtype: 'drugsProductPackagingFrm',
+                        winTitle: 'Product Packaging',
+                        winWidth: '60%',
+                        handler: 'showEditProductOtherdetailWinFrm',
+                        stores: '[]'
+                    }, {
+                        text: 'Delete',
+                        iconCls: 'x-fa fa-trash',
+                        tooltip: 'Delete Record',
+                        table_name: 'tra_product_packaging',
+                        storeID: 'drugproductPackagingdetailsstr',
+                        action_url: 'productregistration/onDeleteProductOtherDetails',
+                        action: 'actual_delete',
+                        handler: 'doDeleteProductOtherdetails'
+                    }]
+                }
+            }
+        }]
     }]
 });
+
