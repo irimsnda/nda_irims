@@ -72,6 +72,7 @@ export class DrugsDataproductsComponent extends SharedProductregistrationclassCo
   approvingAuthorityData:any;
   gmpFPPProductLineData:any;
   product_lineData:any;
+  gmpFFProductLineData:any;
   gmpproductTypeData:any;
   manufacturingActivitiesData:any;
   currentRegStatusData:any;
@@ -148,7 +149,7 @@ manufacturing_site_id:number;
       manufacturing_activity_id: new FormControl('', Validators.compose([Validators.required])),      
       active_common_name_id: new FormControl('', Validators.compose([])),
       approved_productlines: new FormControl('', Validators.compose([])),
-      site_id: new FormControl('', Validators.compose([])),
+      manufacturing_site_id: new FormControl('', Validators.compose([])),
       id: new FormControl('', Validators.compose([])),
 
     });
@@ -256,7 +257,6 @@ manufacturing_site_id:number;
     this.OnLoadProductsGMPInspectionDetails(product_id)
     this.OnLoadotherStatesGmpInspectionsData(this.product_id);
     this.OnLoadprodStatesRegistrationsData(this.product_id);
-    this.onLoadmanufacturingActivities();
     this.onLoadgmpproductTypeData();
     this.onLoadgmpproductTypeData();
     this.onLoadcurrentRegStatusData();
@@ -324,17 +324,27 @@ onLoadgmpproductTypeData(){
         this.gmpproductTypeData = data;
       });
 }   
-onLoadmanufacturingActivities() {
-  var data = {
-    table_name: 'par_manufacturing_activities',
-  };
 
-  this.config.onLoadConfigurationData(data)
+
+onLoadmanufacturingActivities(manufacturing_site_id) {
+
+  this.appService.getProductsOtherDetails({ manufacturing_site_id: manufacturing_site_id }, 'getgmpProductLineDatadetails')
+    //.pipe(first())
     .subscribe(
       data => {
-        this.manufacturingActivitiesData = data;
+        if (data.success) {
+          this.manufacturingActivitiesData = data.data;
+        }
+        else {
+          this.toastr.success(data.message, 'Alert');
+        }
+
+      },
+      error => {
+        return false
       });
 } 
+
 onLoadcurrentRegStatusData() {
   var data = {
     table_name: 'par_current_reg_status',
@@ -1107,8 +1117,10 @@ OnLoadfppManufacturersData(product_id) {
 
   onSelectFPPManu($event) {
     const manufacturing_site_id = $event.selectedItem.manufacturing_site_id;
-    console.log(manufacturing_site_id)
     this.onLoadgmpFPPProductLineData(manufacturing_site_id);
+    this.onLoadmanufacturingActivities(manufacturing_site_id);
+    this.otherStatesGmpInspectionsFrm.patchValue({ manufacturing_site_id }); 
+
 
   }
 
@@ -1293,8 +1305,7 @@ onLoadgmpFPPProductLineData(manufacturing_site_id) {
     .subscribe(
       data => {
         if (data.success) {
-          this.gmpFPPProductLineData = data.data;
-          console.log(this.gmpFPPProductLineData);
+          this.gmpFFProductLineData = data.data;
         }
         else {
           this.toastr.success(data.message, 'Alert');

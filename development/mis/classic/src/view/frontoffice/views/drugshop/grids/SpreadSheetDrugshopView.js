@@ -1,13 +1,13 @@
- Ext.define('Admin.view.frontoffice.premise.grids.SpreadSheetPremiseView', {
+ Ext.define('Admin.view.frontoffice.premise.grids.SpreadSheetDrugshopView', {
     extend: 'Ext.grid.Panel',  
     scroll: true,
     width: '100%',
-    xtype: 'spreadsheetpremiseview',
+    xtype: 'spreadsheetdrugshopview',
     layout: 'fit',
-    store: 'spreadsheetpremiseapplicationcolumnsstr',
-    title: 'Premise Application SpreadSheet',
+    store: 'spreadsheetdrugshopapplicationcolumnsstr',
+    title: 'Drug Shop Application SpreadSheet',
     referenceHolder: true,
-    reference:'premisegridpanel',
+    reference:'drugshopgridpanel',
    
     plugins: [{
             ptype: 'filterfield'
@@ -79,8 +79,40 @@
         filter: {
                 xtype: 'textfield',
             }
-    },
-    {
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'BsnType',
+        name: 'BsnType',
+        text: 'Business Type',
+        width: 200, hidden: true,
+         filter: {
+            xtype: 'combobox',
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    name: 'BsnType_id',
+                    listeners:
+                     {
+                         beforerender: {//getConfigParamFromTable
+                            fn: 'setConfigCombosStore',
+                            config: {
+                                pageSize: 10000,
+                                proxy: {
+                                    url: 'configurations/getConfigParamFromTable',
+                                     extraParams: {
+                                        table_name: 'par_business_types'
+                                    }
+                                }
+                            },
+                            isLoad: true
+                        },
+                     change: function() {
+                        Ext.data.StoreManager.lookup('spreadsheetdrugshopapplicationcolumnsstr').reload();
+                     }
+                 }
+                
+            }
+    },{
         xtype: 'gridcolumn',
         dataIndex: 'PremiseCategory',
         name: 'PremiseCategory',
@@ -108,7 +140,7 @@
                             isLoad: true
                         },
                      change: function() {
-                        Ext.data.StoreManager.lookup('spreadsheetpremiseapplicationcolumnsstr').reload();
+                        Ext.data.StoreManager.lookup('spreadsheetdrugshopapplicationcolumnsstr').reload();
                      }
                  }
                 
@@ -172,40 +204,6 @@
         filter: {
                 xtype: 'textfield',
                 }
-    },
-     {
-        xtype: 'gridcolumn',
-        dataIndex: 'BsnType',
-        name: 'BsnType',
-        text: 'Business Type',
-        width: 200, hidden: true,
-         filter: {
-            xtype: 'combobox',
-                    queryMode: 'local',
-                    displayField: 'name',
-                    valueField: 'id',
-                    name: 'BsnType_id',
-                    listeners:
-                     {
-                         beforerender: {//getConfigParamFromTable
-                            fn: 'setConfigCombosStore',
-                            config: {
-                                pageSize: 10000,
-                                proxy: {
-                                    url: 'configurations/getConfigParamFromTable',
-                                     extraParams: {
-                                        table_name: 'par_business_types'
-                                    }
-                                }
-                            },
-                            isLoad: true
-                        },
-                     change: function() {
-                        Ext.data.StoreManager.lookup('spreadsheetpremiseapplicationcolumnsstr').reload();
-                     }
-                 }
-                
-            }
     },{
         xtype: 'gridcolumn',
         dataIndex: 'BsnCategory',
@@ -234,7 +232,7 @@
                             isLoad: true
                         },
                      change: function() {
-                        Ext.data.StoreManager.lookup('spreadsheetpremiseapplicationcolumnsstr').reload();
+                        Ext.data.StoreManager.lookup('spreadsheetdrugshopapplicationcolumnsstr').reload();
                      }
                  }
                 
@@ -267,7 +265,7 @@
                             isLoad: true
                         },
                      change: function() {
-                        Ext.data.StoreManager.lookup('spreadsheetpremiseapplicationcolumnsstr').reload();
+                        Ext.data.StoreManager.lookup('spreadsheetdrugshopapplicationcolumnsstr').reload();
                      }
                  }
                 
@@ -442,7 +440,7 @@
                             isLoad: true
                         },
                      change: function() {
-                        Ext.data.StoreManager.lookup('spreadsheetpremiseapplicationcolumnsstr').reload();
+                        Ext.data.StoreManager.lookup('spreadsheetdrugshopapplicationcolumnsstr').reload();
                      }
                  }
                 
@@ -574,7 +572,7 @@
                                    
                      
                      change: function() {
-                        Ext.data.StoreManager.lookup('spreadsheetpremiseapplicationcolumnsstr').reload();
+                        Ext.data.StoreManager.lookup('spreadsheetdrugshopapplicationcolumnsstr').reload();
                      }
                  }                
             }
@@ -653,7 +651,7 @@
      // }
     ],bbar: [{
         xtype: 'pagingtoolbar',
-        store: 'spreadsheetpremiseapplicationcolumnsstr',
+        store: 'spreadsheetdrugshopapplicationcolumnsstr',
         width: '100%',
         displayInfo: true,
         displayMsg: 'Showing {0} - {1} out of {2}',
@@ -672,7 +670,7 @@
 
                      
                //acquire original filters
-               var filter = {'t1.section_id':sectionid,'t1.sub_module_id':sub_module,'t1.module_id':2};
+               var filter = {'t1.section_id':sectionid,'t1.sub_module_id':sub_module,'t1.module_id': 29 };
               var   filters = JSON.stringify(filter);
 
               //pass to store
@@ -681,8 +679,8 @@
                     BsnCategory: BsnCategory_id,
                     BsnType: BsnType_id,
                     Category: Category_id,
+                    module_id: 29,
                     BsnScale: BsnScale_id,
-                    module_id: 2,
                     issueplace:zone_id,
                     registration_status:registration_status,
                     validity_status: validity_status,

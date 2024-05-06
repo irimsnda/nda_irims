@@ -708,6 +708,7 @@ public function getProductNutrients(request $request){
      public function getPremiseApplicationColumns(request $request){
         try{
            $filters = $request->input('filters');
+           $module_id = $request->input('module_id');
            $BsnCategory = $request->input('BsnCategory');
            $BsnType = $request->input('BsnType');
            $Category = $request->input('Category');
@@ -726,7 +727,7 @@ public function getProductNutrients(request $request){
            ->LeftJoin('par_districts as t4','t1b.district_id','t4.id')
            ->LeftJoin('par_business_types as t5','t1b.business_type_id','t5.id')
            ->LeftJoin('par_business_scales as t6','t1b.business_scale_id','t6.id')
-           ->LeftJoin('par_business_categories as t7','t1b.business_category_id','t7.id')
+           ->LeftJoin('par_premise_class as t7','t1b.product_classification_id','t7.id')
            ->LeftJoin('wb_trader_account as t8','t1.applicant_id','t8.id')
            ->LeftJoin('tra_personnel_information as t9','t1b.contact_person_id','t9.id')
            ->LeftJoin('tra_premises_otherdetails as t10','t1b.id','t10.premise_id')
@@ -739,9 +740,8 @@ public function getProductNutrients(request $request){
            ->LeftJoin('par_approval_decisions as t17','t15.decision_id','t17.id')
            ->LeftJoin('par_registration_statuses as t23','t15.appregistration_status_id','t23.id')
             ->LeftJoin('par_validity_statuses as t24','t15.appvalidity_status_id','t24.id')
-
-
-          ->select('t1.application_code','t1b.id as premise_id','t1.reference_no','t1.tracking_no','t1b.name','t1b.email','t1b.postal_address','t1b.physical_address','t1b.telephone','t1b.mobile_no','t1b.contact_person_startdate','t1b.contact_person_enddate','t1b.gps_coordinate','t2.name as Precountry','t3.name as PreRegion','t4.name as PreDistrict','t5.name as BsnType','t7.name as BsnCategory','t6.name as BsnScale','t8.name as Trader','t8.postal_address as TraderPostalA','t8.physical_address as TraderPhysicalA','t8.email_address as TraderEmail','t8.telephone_no as TraderTell','t8.mobile_no as TraderMobile','t9.name as ContactPerson','t9.telephone_no as ContactTell','t9.email_address as ContactEmail','t11.name as BsnTypeDetails','t12.name as issueplace','t13.name as TraderCountry','t14.name as TraderRegion','t15.expiry_date as CertExpiryDate','t15.certificate_issue_date as CertIssueDate','t16.name as PremiseCategory','t15.certificate_issue_date as IssueFrom','t15.certificate_issue_date as IssueTo','t1.date_added as ReceivedFrom','t1.date_added as ReceivedTo','t15.permit_no as certificate_no','t23.name as registration_status', 't24.name as validity_status');
+          ->select('t1.id','t1.application_code','t1.module_id','t1b.id as premise_id','t1.reference_no','t1.tracking_no','t1b.name','t1b.email','t1b.postal_address','t1b.physical_address','t1b.telephone','t1b.mobile_no','t1b.contact_person_startdate','t1b.contact_person_enddate','t1b.gps_coordinate','t2.name as Precountry','t3.name as PreRegion','t4.name as PreDistrict','t5.name as BsnType','t7.name as BsnCategory','t6.name as BsnScale','t8.name as Trader','t8.postal_address as TraderPostalA','t8.physical_address as TraderPhysicalA','t8.email_address as TraderEmail','t8.telephone_no as TraderTell','t8.mobile_no as TraderMobile','t9.name as ContactPerson','t9.telephone_no as ContactTell','t9.email_address as ContactEmail','t11.name as BsnTypeDetails','t12.name as issueplace','t13.name as TraderCountry','t14.name as TraderRegion','t15.expiry_date as CertExpiryDate','t15.certificate_issue_date as CertIssueDate','t16.name as PremiseCategory','t15.certificate_issue_date as IssueFrom','t15.certificate_issue_date as IssueTo','t1.date_added as ReceivedFrom','t1.date_added as ReceivedTo','t15.permit_no as certificate_no','t23.name as registration_status', 't24.name as validity_status')
+            ->where('t1.module_id',$module_id);
 
           $qry->groupBy('t1.application_code');
 

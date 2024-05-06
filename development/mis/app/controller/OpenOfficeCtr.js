@@ -2,6 +2,7 @@ Ext.define('Admin.controller.OpenOfficeCtr', {
     extend: 'Ext.app.Controller',
     stores: [
         'Admin.store.frontOffice.SpreadSheetApplicationTypesStr',
+        'Admin.store.frontOffice.SpreadSheetApplicationBusinessTypesStr',
         'Admin.store.frontOffice.product.SpreadSheetProductApplicationColumnsStr',
         'Admin.store.frontOffice.product.SpreadSheetApplicationColumnsStr',
         'Admin.store.frontOffice.product.SpreadSheetManInfoStr',
@@ -13,6 +14,9 @@ Ext.define('Admin.controller.OpenOfficeCtr', {
         'Admin.store.frontOffice.premise.SpreadSheetPremiseApplicationColumnsStr',
         'Admin.store.frontOffice.premise.SpreadSheetPremiseBsnInfoStr',
         'Admin.store.frontOffice.premise.SpreadSheetPremisePersonnelInfoStr',
+        'Admin.store.frontOffice.drugshop.SpreadSheetDrugshopApplicationColumnsStr',
+        'Admin.store.frontOffice.drugshop.SpreadSheetDrugshopBsnInfoStr',
+        'Admin.store.frontOffice.drugshop.SpreadSheetDrugshopPersonnelInfoStr',
         'Admin.store.frontOffice.gmp.SpreadSheetGmpApplicationColumnsStr',
         'Admin.store.frontOffice.gmp.SpreadSheetFacilityLocationStr',
         'Admin.store.frontOffice.gmp.SpreadSheetGmpManBlockStr',
