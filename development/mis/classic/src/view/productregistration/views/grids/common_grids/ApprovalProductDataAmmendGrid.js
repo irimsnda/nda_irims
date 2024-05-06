@@ -118,6 +118,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ApprovalProd
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'common_name',
+        hidden:true,
         text: 'Common Name',
         flex: 1
     }, {
@@ -169,7 +170,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ApprovalProd
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Product Ammendment Request Information',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly:1,
                     handler: 'editpreviewProductInformation'
                 }]

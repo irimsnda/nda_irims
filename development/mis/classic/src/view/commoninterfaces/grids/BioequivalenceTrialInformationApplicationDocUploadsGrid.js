@@ -276,6 +276,7 @@ Ext.define('Admin.view.commoninterfaces.grids.BioequivalenceTrialInformationAppl
                     winTitle: 'Update Document',
                     childXtype: 'applicationDocUploadsFrm',
                     winWidth: '35%',
+                    hidden:true,
                     handler: 'updateApplicationDocUploadWin',
                     stores: '[]',
                     bind: {

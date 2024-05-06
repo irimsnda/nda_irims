@@ -60,6 +60,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRevie
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'common_name',
+        hidden:true,
         text: 'Common Name',
         flex: 1
     }, {
@@ -74,11 +75,13 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRevie
         flex: 1
     }, {
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'evaluator_recommendation',
         text: 'Assessment Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'auditor_recommendation',
         text: 'Quality Review Recommendation',
         flex: 1
@@ -114,7 +117,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRevie
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Product Information',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     handler: 'editpreviewProductInformation'
                 }, {
@@ -132,7 +135,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRevie
                                 action: 'edit',
                                 childXtype: '',
                                 winTitle: 'Application Documents',
-                                winWidth: '40%',
+                                winWidth: '90%',
                                 isReadOnly: 1,
                                 handler: 'funcPrevEvaluationReportUpload'
                             },
@@ -175,7 +178,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRevie
                                 action: 'edit',
                                 childXtype: '',
                                 winTitle: 'Quality Review report',
-                                winWidth: '40%',
+                                winWidth: '90%',
                                 isReadOnly: 1,
                                 document_type_id: 9,
                                 winTitle: '2nd Assessment Reports/Upload',
@@ -215,7 +218,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRevie
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Preview Application Queries',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     handler: 'previewproductApplicationQueries'
                 },, {
@@ -226,7 +229,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRevie
                     childXtype: '',
                     hidden: true,
                     winTitle: 'Product Information',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     handler: 'printpreviewProductInformation'
                 }, {
                     text: 'Application Documents',
@@ -235,7 +238,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductRevie
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Application Documents',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     handler: 'funcPrevGridApplicationDocuments'
                 }

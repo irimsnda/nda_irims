@@ -237,6 +237,82 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
 
     },
 
+     saveQualitySummaryReport:function(btn){
+        var  grid = btn.up('grid'),
+        activeTab = Ext.ComponentQuery.query("#main_processpanel")[0],
+        product_id = activeTab.down('hiddenfield[name=product_id]').getValue(),
+        application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+        table_name=grid.down('hiddenfield[name=table_name]').getValue(),
+        qualitySummaryGrid = btn.up('grid'),
+        qualitysummarysstr = qualitySummaryGrid.getStore(),
+        store = qualitySummaryGrid.getStore(),
+        report_sections = []; 
+        for (var i = 0; i < store.data.items.length; i++) {
+            var record = store.data.items [i],
+                 query = record.get('query'),
+                 asessor_comment = record.get('asessor_comment'),
+                 reviewer_comment = record.get('reviewer_comment'),
+                 id = record.get('id');
+
+            var obj = {
+                id: id,
+                product_id: product_id,
+                application_code: application_code,
+                asessor_comment: asessor_comment,
+                reviewer_comment: reviewer_comment,
+                query: query,
+                created_by: user_id
+            };
+            if (record.dirty) {
+                report_sections.push(obj);
+            }
+        }
+        if (report_sections.length < 1) {
+            btn.setLoading(false);
+            toastr.warning('No records to save!!', 'Warning Response');
+            return false;
+        }
+        report_sections = JSON.stringify(report_sections);
+        Ext.Ajax.request({
+            url: 'productregistration/saveQualityReportdetails',
+            params: {
+                application_code:application_code,
+                //table_name:table_name,
+                report_sections: report_sections
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+            },
+            success: function (response) {
+                btn.setLoading(false);
+                var resp = Ext.JSON.decode(response.responseText),
+                    success = resp.success,
+                    message = resp.message;
+                if (success == true || success === true) {
+                    toastr.success(message, 'Success Response');
+                    store.load();
+                    qualitysummarysstr.load();
+
+                } else {
+                    toastr.error(message, 'Failure Response');
+                }
+            },
+            failure: function (response) {
+                btn.setLoading(false);
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                btn.setLoading(false);
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+
+
+    },
+
 
     doDeleteApplicationRegWidgetParam: function (item) {
         //if (this.fireEvent('checkFullAccess')) {

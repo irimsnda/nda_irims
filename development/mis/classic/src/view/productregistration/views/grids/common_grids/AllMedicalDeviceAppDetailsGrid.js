@@ -61,6 +61,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AllMedicalDe
         xtype: 'gridcolumn',
         dataIndex: 'common_name',
         text: 'Common Name',
+        hidden:true,
         width:150,
         filter: {
                 xtype: 'textfield',
@@ -114,7 +115,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AllMedicalDe
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Product Information',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     handler: 'editpreviewProductInformation'
                 }, {
@@ -124,7 +125,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AllMedicalDe
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Application Documents',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     handler: 'funcPrevGridApplicationDocuments'
                 }, {
@@ -134,7 +135,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AllMedicalDe
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Product Information',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     handler: 'printpreviewProductInformation'
                 }
                 ]

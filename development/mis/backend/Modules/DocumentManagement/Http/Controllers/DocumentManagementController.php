@@ -250,7 +250,6 @@ class DocumentManagementController extends Controller
         return response()->json($res);
     }
    function getApplicationDocumentsUploads($req){
-        
             $application_code =  $req->input('application_code');//20412100
             $workflow_stage = $req->input('workflow_stage');
             $doc_type_id = $req->input('document_type_id');
@@ -309,7 +308,14 @@ class DocumentManagementController extends Controller
             $docTypes = convertAssArrayToSimpleArray($docTypes, 'doctype_id');
     
             if (validateIsNumeric($doc_type_id)) {
-               // $where['t1.document_type_id'] = $doc_type_id;
+               $where['t1.document_type_id'] = $doc_type_id;
+            }
+
+            if($module_id ==1){
+                if (!validateIsNumeric($doc_type_id)) {
+                    $where['t1.document_type_id NOT IN'] = array(34, 35); 
+                }
+
             }
                 
             if(validateIsNumeric($parent_id)){

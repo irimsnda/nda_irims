@@ -125,6 +125,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManag
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'common_name',
+        hidden:true,
         text: 'Common Name',
         flex: 1
     }, {
@@ -176,7 +177,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManag
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Product Information',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly:1,
                     handler: 'editpreviewProductInformation'
                 },{
@@ -186,19 +187,32 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManag
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Application Documents',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     document_type_id: '',
                     handler: 'showPreviousUploadedDocs'
                 }, {
-                    text: 'Print Application Details',
-                    iconCls: 'x-fa fa-edit',
-                    tooltip: 'Print Record',
+                    text: 'Quality Overall Summary Dossier',
+                    iconCls: 'x-fa fa-file',
+                    tooltip: 'Quality Overall Summary Dossier',
                     action: 'edit',
-                    childXtype: '',
-                    winTitle: 'Product Information',
-                    winWidth: '40%',
-                    handler: 'printpreviewProductInformation'
+                    childXtype: 'productqualityassessmentDocUploadsGrid',
+                    winTitle: 'Quality Overall Summary Dossier',
+                    winWidth: '90%',
+                    isReadOnly: 1,
+                    document_type_id: '',
+                    handler: 'showQualitySumaryDocs'
+                }, {
+                    text: 'Bioequivalence Trial Information',
+                    iconCls: 'x-fa fa-file',
+                    tooltip: 'Bioequivalence Trial Information',
+                    action: 'edit',
+                    childXtype: 'productbioequivalencetrialinformationDocUploadsGrid',
+                    winTitle: 'Bioequivalence Trial Information',
+                    winWidth: '90%',
+                    isReadOnly: 1,
+                    document_type_id: '',
+                    handler: 'showQualitySumaryDocs'
                 }]
             }
         }

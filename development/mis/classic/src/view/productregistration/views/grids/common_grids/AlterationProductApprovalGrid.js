@@ -134,6 +134,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AlterationPr
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'common_name',
+        hidden:true,
         text: 'Common Name',
         width: 150
     }, {
@@ -212,7 +213,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AlterationPr
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Product Information',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     handler: 'editpreviewProductInformation'
                 }, {
@@ -230,14 +231,14 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AlterationPr
                                 action: 'edit',
                                 childXtype: '',
                                 winTitle: 'Application Documents',
-                                winWidth: '40%',
+                                winWidth: '90%',
                                 isReadOnly: 1,
                                 handler: 'funcPrevEvaluationReportUpload'
                             },
                             {
                                 text: 'Documents',
                                 iconCls: 'x-fa fa-upload',
-                                winWidth: '60%',
+                                winWidth: '90%',
                                 document_type_id: 8,
                                 winTitle: 'Evaluation Reports/Upload',
                                 handler: 'showPreviousUploadedDocs',
@@ -250,7 +251,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AlterationPr
                                 iconCls: 'x-fa fa-weixin',
                                 childXtype: 'evaluationcommentspnl',
                                 winTitle: 'Inspection Comments',
-                                winWidth: '60%',
+                                winWidth: '90%',
                                 handler: 'showPreviousComments',
                                 stores: '[]',
                                 target_stage: 17,
@@ -271,7 +272,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AlterationPr
                                 action: 'edit',
                                 childXtype: '',
                                 winTitle: 'Audit report',
-                                winWidth: '40%',
+                                winWidth: '90%',
                                 isReadOnly: 1,
                                 document_type_id: 9,
                                 winTitle: 'Audit Reports/Upload',
@@ -293,7 +294,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AlterationPr
                                 iconCls: 'x-fa fa-weixin',
                                 childXtype: 'evaluationcommentspnl',
                                 winTitle: 'Auditors Comments',
-                                winWidth: '60%',
+                                winWidth: '90%',
                                 handler: 'showProductPreviousComments',
                                 stores: '[]',
                                 target_stage: 9,
@@ -315,7 +316,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AlterationPr
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Application Documents',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
 
                     document_type_id: '',
@@ -327,7 +328,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AlterationPr
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Preview Application Queries',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     handler: 'previewproductApplicationQueries'
                 },{

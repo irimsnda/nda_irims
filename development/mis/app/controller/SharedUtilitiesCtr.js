@@ -216,12 +216,30 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
 
             'qualityassessmentapplicationdocuploadsgrid': {
-                refresh: 'refreshApplicationDocUploadsGrid'
+                refresh: 'refreshQualitySummaryDocUploadsGrid'
+            },
+
+
+            'qualityevaluationapplicationdocuploadsgrid': {
+                refresh: 'refreshQualitySummaryDocUploadsGrid'
+            },
+
+            'qualityreviewapplicationdocuploadsgrid': {
+                refresh: 'refreshQualitySummaryDocUploadsGrid'
             },
 
             'bioequivalencetrialinformationapplicationdocuploadsgrid': {
-                refresh: 'refreshApplicationDocUploadsGrid'
+                refresh: 'refreshQualitySummaryDocUploadsGrid'
             },
+
+            'bioequivalencetrialevaluationapplicationdocuploadsgrid': {
+                refresh: 'refreshQualitySummaryDocUploadsGrid'
+            },
+
+            'bioequivalencetrialreviewapplicationdocuploadsgrid': {
+                refresh: 'refreshQualitySummaryDocUploadsGrid'
+            },
+
 
 
 
@@ -1104,7 +1122,15 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'showApplicationDocUploadWin'
             },
 
+            'productqualityevaluationDocUploadsGrid button[name=add_upload]': {
+                click: 'showApplicationDocUploadWin'
+            },
+
             'productbioequivalencetrialinformationDocUploadsGrid button[name=add_upload]': {
+                click: 'showApplicationDocUploadWin'
+            },
+
+            'productbioequivalencetrialevaluationDocUploadsGrid button[name=add_upload]': {
                 click: 'showApplicationDocUploadWin'
             },
            
@@ -4338,15 +4364,16 @@ setCompStore: function (me, options) {
     refreshApplicationDocUploadsGrid: function (me) {
         var store = me.store,
             grid = me.up('grid'),
-            document_type_id = grid.down('combo[name=applicable_documents]').getValue(),
-            application_code = grid.down('hiddenfield[name=application_code]').getValue(),
+            document_type_id = grid.down('combo[name=applicable_documents]').getValue();
+             console.log(document_type_id);
+            var application_code = grid.down('hiddenfield[name=application_code]').getValue(),
             mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),   
             premise_type_id,prodclass_category_id;
 
             if(application_code >0){
                 
-                application_code = grid.down('hiddenfield[name=application_code]').getValue(),
+               var  application_code = grid.down('hiddenfield[name=application_code]').getValue(),
                 process_id = grid.down('hiddenfield[name=process_id]').getValue(),
                 section_id = grid.down('hiddenfield[name=section_id]').getValue(),
                 query_ref_id = grid.down('hiddenfield[name=query_ref_id]').getValue(),
@@ -4358,7 +4385,73 @@ setCompStore: function (me, options) {
             }
             else{
 
-                application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+                var application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+                process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+                section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+                query_ref_id = '',
+                module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+                document_type = activeTab.down('hiddenfield[name=document_type_id]').getValue(),
+                sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+                workflow_stage = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+                if(module_id == 1){
+                    if(!prodclass_category_id){
+                        if(activeTab.down('hiddenfield[name=prodclass_category_id]')){
+                            prodclass_category_id = activeTab.down('hiddenfield[name=prodclass_category_id]').getValue();
+                        }
+                    }
+                }
+                if(module_id == 2){
+                        if(activeTab.down('hiddenfield[name=premise_type_id]')){
+                            premise_type_id = activeTab.down('hiddenfield[name=premise_type_id]').getValue();
+                        }
+                }
+            }
+           
+            
+           
+            
+            if(document_type_id < 1){
+                document_type_id =document_type;
+            }
+            store.getProxy().extraParams = {
+                application_code: application_code,
+                // table_name: table_name,
+                document_type_id: document_type_id,
+                query_ref_id: query_ref_id,
+                process_id: process_id,
+                section_id: section_id,
+                module_id: module_id,
+                sub_module_id: sub_module_id,
+                workflow_stage: workflow_stage,
+                prodclass_category_id: prodclass_category_id,
+                premise_type_id: premise_type_id
+            };
+    },
+
+    refreshQualitySummaryDocUploadsGrid: function (me) {
+        var store = me.store,
+            grid = me.up('grid'),
+            document_type_id = grid.down('hiddenfield[name=document_type_id]').getValue(),
+            application_code = grid.down('hiddenfield[name=application_code]').getValue(),
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),   
+            premise_type_id,prodclass_category_id;
+
+            if(application_code >0){
+                
+               var  application_code = grid.down('hiddenfield[name=application_code]').getValue(),
+                process_id = grid.down('hiddenfield[name=process_id]').getValue(),
+                section_id = grid.down('hiddenfield[name=section_id]').getValue(),
+                query_ref_id = grid.down('hiddenfield[name=query_ref_id]').getValue(),
+                module_id = grid.down('hiddenfield[name=module_id]').getValue(),
+                document_type = grid.down('hiddenfield[name=document_type_id]').getValue(),
+                sub_module_id = grid.down('hiddenfield[name=sub_module_id]').getValue(),
+                workflow_stage = grid.down('hiddenfield[name=workflow_stage_id]').getValue();
+                
+            }
+            else{
+
+                var application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
                 process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
                 section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
                 query_ref_id = '',

@@ -285,7 +285,7 @@ Ext.define('Admin.Application', {
         //             userCls: 'big-40 small-100',
         //     }],
         // });
-        // confirmationWindow.show();
+        //confirmationWindow.show();
          Ext.create({
                     xtype: 'main-app'
             });

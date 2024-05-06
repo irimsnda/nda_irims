@@ -127,10 +127,10 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                 xtype: 'tabpanel',
                 layout:'fit', margin:5,
                 items:[{
-                    xtype: 'productqualityassessmentDocUploadsGrid',
+                    xtype: 'productqualityevaluationDocUploadsGrid',
                     title: 'Quality Overall Summary Dossier',
                 },{
-                    xtype: 'productbioequivalencetrialinformationDocUploadsGrid',
+                    xtype: 'productbioequivalencetrialevaluationDocUploadsGrid',
                     title: 'Bioequivalence Trial Information'
                 },{
                     xtype: 'productEvaluationUploadsGrid',

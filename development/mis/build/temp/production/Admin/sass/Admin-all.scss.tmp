@@ -156,6 +156,7 @@ $include-admin-store-disposal-disposalapplicationsdashgridstr: dynamic(true);;
 $include-admin-store-email-friends: dynamic(true);;
 $include-admin-store-email-inbox: dynamic(true);;
 $include-admin-store-faq-faq: dynamic(true);;
+$include-admin-store-frontoffice-spreadsheetapplicationbusinesstypesstr: dynamic(true);;
 $include-admin-store-frontoffice-spreadsheetapplicationtypesstr: dynamic(true);;
 $include-admin-store-frontoffice-clinicaltrial-clinicaltrialimpproductsstr: dynamic(true);;
 $include-admin-store-frontoffice-clinicaltrial-clinicaltrialinvestigatorsstr: dynamic(true);;

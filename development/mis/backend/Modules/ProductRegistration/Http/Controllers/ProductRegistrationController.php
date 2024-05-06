@@ -2623,8 +2623,10 @@ if(validateIsNumeric($section_id)){
              if ($record->packaging_category_id == 1) {
                 if ($record->container_type_id == 1) {
                     // Concatenate pack_size normally
-                    if(isset($record->no_of_packs)){
-                       $packSize = "{$record->no_of_units}*{$record->no_of_packs}{$record->si_unit} {$record->container_name}";
+                    $is_quantity_category = $this->belongsToQuantityCategory($record->container_id);
+                    if($is_quantity_category){
+                    //if(isset($record->no_of_packs)){
+                       $packSize = "{$record->no_of_packs}{$record->si_unit} {$record->container_name}";
                     }else{
                         $packSize = "{$record->no_of_units} {$record->container_name}";
                     }
@@ -2681,6 +2683,28 @@ if(validateIsNumeric($section_id)){
         }
         return response()->json($res);
 
+    }
+
+    static function getQuantityCategoryIds()
+    {
+        $quantity_category_obj = DB::table('par_containers')
+            ->where('has_quantity', 1)
+            ->get();
+        $quantity_categories_ass = convertStdClassObjToArray($quantity_category_obj);
+        $quantity_categories_simp = convertAssArrayToSimpleArray($quantity_categories_ass, 'id');
+        return $quantity_categories_simp;
+    }
+
+    static function belongsToQuantityCategory($container_id)
+    {
+        $QuantityCategoryIDs = self::getQuantityCategoryIds();
+        $container_id_array = is_array($container_id) ? $container_id : [$container_id];
+        $arr_intersect = array_intersect($QuantityCategoryIDs, $container_id_array);
+        if (count($arr_intersect) > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function onLoadproductManufacturer(Request $req)
@@ -4796,24 +4820,23 @@ $response =  array(
 
      public function saveQualityReportdetails(Request $request)
     {
-        $product_id = $request->input('product_id');
+        $application_code = $request->input('application_code');
         $report_sections = $request->input('report_sections');
         $report_sections = json_decode($report_sections);
-        $table_name = $request->input('table_name');
+        $table_name = 'tra_application_documents';
         $user_id = $this->user_id;
         $res=array();
         try {
             $insertreportsections_data = array();
             foreach ($report_sections as $report_section) {
                 $report_section_data = array(
-                    'recommendation' => $report_section->recommendation,
-                    'has_query' => $report_section->has_query,
-                    'is_recommended' => $report_section->is_recommended,
-                    'query' => $report_section->query
+                    'asessor_comment' =>  isset($report_section->asessor_comment) ? $report_section->asessor_comment : '',
+                    'reviewer_comment' => isset($report_section->reviewer_comment) ? $report_section->reviewer_comment : '',
+                    'query' => isset($report_section->query) ? $report_section->query : ''
                 );
-                if (validateIsNumeric($product_id) ) {
+                if (validateIsNumeric($application_code) ) {
                     $where = array(
-                        'product_id' => $product_id
+                        'application_code' => $application_code
                     );
                     $report_section_data['dola'] = Carbon::now();
                     $report_section_data['altered_by'] = $user_id;
