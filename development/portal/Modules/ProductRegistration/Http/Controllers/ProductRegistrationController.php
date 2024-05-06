@@ -384,11 +384,13 @@ if(!validateIsNumeric($req->product_type_id)){
                             ->join($mis_db.'.par_countries as t2', 't1.country_id', 't2.id')
                             ->leftJoin($mis_db.'.par_recognisedassessments_ctrregions as t3', 't1.recognisedassessments_ctrregion_id', 't3.id')
                             ->join($mis_db.'.par_approving_authority as t4', 't1.approving_authority_id', 't4.id')
-                            ->leftJoin($mis_db.'.gmp_product_lines as t5', 't1.gmp_productline_id', 't5.id')
                             ->leftJoin($mis_db.'.par_gmpproduct_types as t6', 't1.gmpproduct_type_id', 't6.id')
-                            ->leftJoin($mis_db.'.par_manufacturing_activities as t7', 't1.manufacturing_activity_id', 't7.id')
 
-                            
+
+                             ->leftJoin($mis_db.'.gmp_productline_details as t9', 't1.gmp_productline_id', 't9.id')
+                            ->leftJoin($mis_db.'.gmp_product_lines as t5', 't9.product_line_id', 't5.id')
+
+                            ->leftJoin($mis_db.'.par_manufacturing_activities as t7', 't9.manufacturing_activity_id', 't7.id')
                             ->select('t1.*','t1.gmpapplication_reference as application_reference', 't2.name as country','t3.name as recognisedassessments_ctrregion','t4.name as approving_authority','t5.name as approved_productlines','t6.name as product_category','t7.name as manufacturing_activity')
                             ->where('t1.product_id', $product_id)
                             ->get();
@@ -3760,12 +3762,16 @@ public function getActivePharmaceuticals(Request $req){
     }
     function getGMPProductLineDetails($product_line_id){
         $records = DB::connection('mis_db')->table('gmp_productline_details as t1')
-                    ->select('t1.*', 't2.name as product_line', 't1.id as product_id')
+                    ->select('t1.*', 't2.name as product_line','t3.name as manufacturing_activity', 't4.name as product_category','t1.id as product_id')
                     ->leftJoin('gmp_product_lines as t2', 't1.product_line_id','=','t2.id')
-                    //->leftJoin('gmp_product_categories as t3', 't1.category_id','=','t3.id')
+                    ->leftJoin('par_manufacturing_activities as t3', 't1.manufacturing_activity_id', '=', 't3.id')
+                    ->leftJoin('par_gmpproduct_types as t4', 't1.gmpproduct_type_id', '=', 't4.id')
+
                     //->leftJoin('gmp_product_descriptions as t4', 't1.prodline_description_id','=','t4.id')
                     ->where(array('t1.id' => $product_line_id))
                     ->first();
+                                        dd($records);
+
            
             if(  $records){
                 //return  $records->product_line.' '.$records->product_category;
@@ -3780,10 +3786,10 @@ public function getActivePharmaceuticals(Request $req){
             $data = array();
             //get the records 
             $records = DB::connection('mis_db')->table('gmp_productline_details as t1')
-                    ->select('t1.*', 't2.name as product_line', 't1.id as product_id')
+                    ->select('t1.*', 't2.name as product_line','t3.name as manufacturing_activity', 't4.name as product_category', 't1.id as product_id')
                     ->join('gmp_product_lines as t2', 't1.product_line_id','=','t2.id')
-                    //->join('gmp_product_categories as t3', 't1.category_id','=','t3.id')
-                   // ->join('gmp_product_descriptions as t4', 't1.prodline_description_id','=','t4.id')
+                    ->leftJoin('par_manufacturing_activities as t3', 't1.manufacturing_activity_id', '=', 't3.id')
+                    ->leftJoin('par_gmpproduct_types as t4', 't1.gmpproduct_type_id', '=', 't4.id')
                     ->where(array('t1.manufacturing_site_id' => $manufacturing_site_id))
                     ->get();
                      $res =array('success'=>true,'data'=> $records);

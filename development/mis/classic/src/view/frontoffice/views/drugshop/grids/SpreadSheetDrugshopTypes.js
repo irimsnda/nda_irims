@@ -1,12 +1,12 @@
-Ext.define('Admin.view.frontoffice.premise.grids.SpreadSheetPremiseTypes', {
+Ext.define('Admin.view.frontoffice.drugshop.grids.SpreadSheetDrugshopTypes', {
     extend: 'Ext.grid.Panel',  
     scroll: true,
     titleCollapse: true,
     width: '100%',
-    xtype: 'spreadsheetpremisetypes',
+    xtype: 'spreadsheetdrugshoptypes',
     layout: 'fit',
     store: 'spreadsheetapplicationbusinesstypesstr',
-    title: 'Select premise Application Sections',
+    title: 'Select Drug Shop Application Types',
     columns: [{
         xtype: 'gridcolumn',
         dataIndex: 'business_type_id',

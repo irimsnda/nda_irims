@@ -1289,11 +1289,12 @@
                displayExpr="name" placeholder="Manufacturing Site Name"(onSelectionChanged)="onSelectFPPManu($event)" 
               [searchEnabled]="true" formControlName="fpp_manufacturer_id">
               </dx-select-box>
+
             </div>
 
             <div class="col-lg-12" style="margin:1px;">
                 <label for="ti" class="control-label">Manufacturing Product Line</label>
-                <dx-select-box [dataSource]="gmpProductLineData" valueExpr="id" placeholder="Product Line" displayExpr="product_line" [searchEnabled]="true" formControlName="gmp_productline_id">
+                <dx-select-box [dataSource]="gmpFFProductLineData" valueExpr="id" placeholder="Product Line" displayExpr="product_line" [searchEnabled]="true" formControlName="gmp_productline_id">
                         <div *dxTemplate="let data of 'item'">
                             <div class="custom-item">
                                 {{data.product_line}} {{data.product_category}}
@@ -1311,13 +1312,13 @@
             </div>
             <div class="col-lg-12" style="margin:1px;">
               <label>Manufacturing Activities</label>
-              <dx-select-box [items]="manufacturingActivitiesData" [searchEnabled]="true" valueExpr="id" displayExpr="name" formControlName="manufacturing_activity_id" placeholder="Select Manufacturing Activities">
+              <dx-select-box [items]="manufacturingActivitiesData" [searchEnabled]="true" valueExpr="id" displayExpr="manufacturing_activity" formControlName="manufacturing_activity_id" placeholder="Select Manufacturing Activities">
               </dx-select-box>
             </div>
 
             <div class="col-lg-12">
-                <input type="hidden" formControlName="id" />
-                <input type="hidden" formControlName="site_id"/>
+                <input type="hidden" formControlName="id"/>
+                <input type="hidden" formControlName="manufacturing_site_id"/>
                 <input type="hidden" value="application_code" formControlName="application_code" />
               <button type="submit" (submit)="onSaveotherStatesGmpInspections()" [disabled]="!otherStatesGmpInspectionsFrm.valid"
                 class="btn btn-primary  pull-right" style="margin:5px;"><i class="fa fa-save"></i>&nbsp;Save Details

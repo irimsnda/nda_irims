@@ -1,8 +1,8 @@
 var sectionid="";
 var sub_module="";
-Ext.define('Admin.view.openOffice.premise.Controller.SpreadSheetPremiseCtr', {
+Ext.define('Admin.view.openOffice.drugshop.Controller.SpreadSheetDrugshopCtr', {
     extend: 'Ext.app.ViewController',
-    alias: 'controller.spreadsheetpremisectr',
+    alias: 'controller.spreadsheetdrugshopctr',
 
          reloadSheetStore: function(combo,newValue,old,eOpts) {
            var form=combo.up('form'),
@@ -22,7 +22,7 @@ Ext.define('Admin.view.openOffice.premise.Controller.SpreadSheetPremiseCtr', {
               //load filters to other depedent stores
               var filter = {'t1.section_id':sectionid};
               var   filters = JSON.stringify(filter);
-              var form =this.lookupReference('premisegridpanel'),
+              var form =this.lookupReference('drugshopgridpanel'),
                BsnTypestore=form.down('combo[name=BsnType_id]').getStore();
              
                BsnTypestore.removeAll();
@@ -33,31 +33,31 @@ Ext.define('Admin.view.openOffice.premise.Controller.SpreadSheetPremiseCtr', {
               //add filters
               var filter = {'t1.section_id':sectionid,'t1.sub_module_id':sub_module};
               var   filters = JSON.stringify(filter);
-              Ext.data.StoreManager.lookup('spreadsheetpremiseapplicationcolumnsstr').load({params:{filters:filters}});
+              Ext.data.StoreManager.lookup('spreadsheetdrugshopapplicationcolumnsstr').load({params:{filters:filters}});
 
             },
           loadadditionalinfo:  function(sender,record) {
               var premiseid=record.data['premise_id'];
               var filter = { 't1.premise_id':premiseid };
               var   filters = JSON.stringify(filter);
-              Ext.data.StoreManager.lookup('spreadsheetpremisebsninfostr').reload({params:{filters:filters}});
-              Ext.data.StoreManager.lookup('spreadsheetpremisepersonnelinfostr').reload({params:{filters:filters}});
+              Ext.data.StoreManager.lookup('spreadsheetdrugshopbsninfostr').reload({params:{filters:filters}});
+              Ext.data.StoreManager.lookup('spreadsheetdrugshoppersonnelinfostr').reload({params:{filters:filters}});
     
             },
           funcReloadspreadSheetStrs: function() {
             console.log('dd00');
-                   Ext.data.StoreManager.lookup('spreadsheetpremiseapplicationcolumnsstr').reload();
+                   Ext.data.StoreManager.lookup('spreadsheetdrushopapplicationcolumnsstr').reload();
                  }, 
           func_showhideSpreasheetColumn: function (chk, value) {
                   var  chk_name = chk.name;
-                  var grid =this.lookupReference('premisegridpanel');
+                  var grid =this.lookupReference('drugshopgridpanel');
                   grid.columns[chk_name].setVisible(value);
             },
             
              func_exportpremisespreadsheet: function (btn) {
 
                  var name=btn.name;
-                  var grid = this.lookupReference('premisegridpanel'),
+                  var grid = this.lookupReference('drugshopgridpanel'),
                   filterfield = grid.getPlugin('filterfield');
                   //filters
                      var filter_array =Ext.pluck( filterfield.getgridFilters(grid), 'config');
@@ -70,7 +70,7 @@ Ext.define('Admin.view.openOffice.premise.Controller.SpreadSheetPremiseCtr', {
                       BsnCategory_id=grid.down('combo[name=BsnCategory_id]').getValue();
 
 
-                      var Originalfilter = {'t1.section_id':sectionid,'t1.sub_module_id':sub_module,'t1.module_id':2};
+                      var Originalfilter = {'t1.section_id':sectionid,'t1.sub_module_id':sub_module,'t1.module_id':29};
                       var filters = JSON.stringify(Originalfilter);
 
                    //headers
@@ -91,8 +91,10 @@ Ext.define('Admin.view.openOffice.premise.Controller.SpreadSheetPremiseCtr', {
                      x++;
                    }
                  }
-                   //xheading = 'PREMISE APPLICATIONS SPREADSHEET';
-                   //print_report('openoffice/exportall?header='+encodeURIComponent(JSON.stringify(header2))+'&filters='+encodeURIComponent(filters)+'&filter='+encodeURIComponent(JSON.stringify(filter_array))+'&function=getPremiseApplicationColumns&filename=PremiseProdductsSpreadsheet&headingText='+xheading+'&Category='+ Category_id+'&module_id='+ module_id+'&BsnType='+ BsnType_id+'&BsnCategory='+ BsnCategory_id+'&BsnScale_id='+ BsnScale_id+'&issueplace='+zone_id+'&registration_status='+registration_status+'&validity_status='+validity_status);
+                   // xheading = 'DRUG SHOP APPLICATIONS SPREADSHEET';
+                   // print_report('openoffice/exportall?header='+encodeURIComponent(JSON.stringify(header2))+'&filters='+encodeURIComponent(filters)+'&filter='+encodeURIComponent(JSON.stringify(filter_array))+'&function=getPremiseApplicationColumns&filename=DrugshopProdductsSpreadsheet&headingText='+xheading+'&Category='+ Category_id+'&module_id='+ module_id+'&BsnType='+ BsnType_id+'&BsnCategory='+ BsnCategory_id+'&BsnScale_id='+ BsnScale_id+'&issueplace='+zone_id+'&registration_status='+registration_status+'&validity_status='+validity_status);
+                  
+
                    var header= Ext.encode(header2);
                    Ext.getBody().mask('Exporting Records Please wait...');
                    filter_array = Ext.JSON.encode(filter_array);
@@ -106,13 +108,13 @@ Ext.define('Admin.view.openOffice.premise.Controller.SpreadSheetPremiseCtr', {
                                   'filter':filter_array,
                                   'Category': Category_id,
                                   'BsnType': BsnType_id,
-                                  'module_id': 2,
                                   'BsnCategory': BsnCategory_id,
+                                   'module_id':29,
                                   'BsnScale_id':BsnScale_id,
                                   'issueplace':zone_id,
-                                  'headingText': 'PREMISE APPLICATIONS SPREADSHEET',
+                                  'headingText': 'DRUG SHOP APPLICATIONS SPREADSHEET',
                                   'function':'getPremiseApplicationColumns',
-                                  'filename':'PremiseProdductsSpreadsheet'
+                                  'filename':'DrugshopProdductsSpreadsheet'
                     },
                       
                        success: function (response, textStatus, request) {
@@ -136,7 +138,7 @@ Ext.define('Admin.view.openOffice.premise.Controller.SpreadSheetPremiseCtr', {
 
              },
              func_clearfilters: function(btn) {
-               grid = this.lookupReference('premisegridpanel');
+               grid = this.lookupReference('drugshopgridpanel');
                 
                  var t=grid.down('headercontainer').getGridColumns();
 
@@ -161,7 +163,7 @@ Ext.define('Admin.view.openOffice.premise.Controller.SpreadSheetPremiseCtr', {
              setPageSize: function(combo, newValue){
                var pagesize=combo.getValue();
                 console.log('reser');
-               Ext.apply(Ext.getStore('spreadsheetpremiseapplicationcolumnsstr'), {pageSize: pagesize});
+               Ext.apply(Ext.getStore('spreadsheetdrugshopapplicationcolumnsstr'), {pageSize: pagesize});
              },
              setConfigCombosStore: function (obj, options) {
                 this.fireEvent('setConfigCombosStore', obj, options);

@@ -43,6 +43,7 @@ export class CoPackedproductDetailsComponent extends SharedProductregistrationcl
    product_resp:any;
    ATCCodesData:any;
    dosageFormsData:any;
+   commonNameData:any;
    therapeuticGroupData:any;
    packagingUnitsData:any;
    ingredientsData:any;
@@ -135,6 +136,7 @@ export class CoPackedproductDetailsComponent extends SharedProductregistrationcl
     this.onLoadCountries();
     this.onLoaddosageForms();
     this.onLoadSiUnits();
+    this.onLoadCommonNameData();
   } 
   autoLoadProductsOtherDetails(product_id) {
     this.OnLoadGeneralProperties(product_id);
@@ -214,7 +216,6 @@ onATCCboSelect($event) {
   onLoadtherapeuticGroupData(common_name_id) {
     var data = {
       table_name: 'par_therapeutic_group',
-      common_name_id: common_name_id
 
     };
     this.config.onLoadConfigurationData(data)
@@ -226,7 +227,6 @@ onATCCboSelect($event) {
 onLoadATCCodesData(common_name_id) {
   var data = {
     table_name: 'par_atc_codes',
-    common_name_id: common_name_id
   };
 
   this.config.onLoadConfigurationData(data)
@@ -234,6 +234,27 @@ onLoadATCCodesData(common_name_id) {
       data => {
         //this.commonNamesData = data;
         this.ATCCodesData = new DataSource({
+            paginate: true,
+            pageSize: 200,
+            store: {
+              type: "array",
+                data: data,
+                key: "id"
+            }
+        });
+      });
+     
+}
+
+onLoadCommonNameData() {
+  var data = {
+    table_name: 'par_atc_codes',
+  };
+
+  this.config.onLoadConfigurationData(data)
+    .subscribe(
+      data => {
+        this.commonNameData = new DataSource({
             paginate: true,
             pageSize: 200,
             store: {
