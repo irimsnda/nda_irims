@@ -24,7 +24,7 @@ Ext.define('Admin.view.reports.appsreport.controlleddrugsregister.form.ApprovalC
                    labelAlign : 'top',
                    format: 'Y-m-d',
                    name: 'released_from',
-                   allowBlank: false,
+                   allowBlank: true,
                   // minValue: new Date(2020, 6),
                    maxValue: new Date()
                  },{
@@ -34,7 +34,7 @@ Ext.define('Admin.view.reports.appsreport.controlleddrugsregister.form.ApprovalC
                    format: 'Y-m-d',
                    emptyText: 'Released To',
                    abelAlign : 'top',
-                   allowBlank: false,
+                   allowBlank: true,
                  //  minValue: new Date(2020, 6),
                    maxValue: new Date()
                   },{ 

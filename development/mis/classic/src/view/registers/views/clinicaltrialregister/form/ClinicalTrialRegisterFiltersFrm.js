@@ -69,7 +69,7 @@ fieldStyle: {
         format: 'Y-m-d',
         emptyText: 'Approved To',
         labelAlign : 'top',
-        allowBlank: false,
+        allowBlank: true,
         //minValue: new Date(2020, 6),
         maxValue: new Date()
     },{ 

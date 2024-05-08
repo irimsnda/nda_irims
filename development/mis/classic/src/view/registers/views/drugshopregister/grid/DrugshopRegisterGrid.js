@@ -1,7 +1,7 @@
-Ext.define('Admin.view.registers.views.premisesregister.grid.PremisesRegisterGrid', {
+Ext.define('Admin.view.registers.views.drugshopregister.grid.DrugshopRegisterGrid', {
     extend: 'Ext.grid.Panel',
     controller: 'registerctr',
-    xtype: 'premisesregistergrid',
+    xtype: 'drugshopregistergrid',
     autoScroll: true,
     autoHeight: true,
     width: '100%',
@@ -237,7 +237,6 @@ Ext.define('Admin.view.registers.views.premisesregister.grid.PremisesRegisterGri
                                         panel = grid.up('panel'),
                                         sub_module_id = panel.down('combo[name=sub_module_id]').getValue(),
                                         product_classification_id=panel.down('combo[name=product_classification_id]').getValue(),
-                                        business_type_details=panel.down('combo[name=business_type_details]').getValue();  
                                         approved_from = panel.down('datefield[name=approved_from]').getValue(),
                                         approved_to = panel.down('datefield[name=approved_to]').getValue();
 
@@ -250,7 +249,7 @@ Ext.define('Admin.view.registers.views.premisesregister.grid.PremisesRegisterGri
                                       sub_module_id:sub_module_id,
                                       product_classification_id:product_classification_id,
                                       module_id: module_id,
-                                      business_type_details: business_type_details,
+                                      business_type_details: 7,
                                       approved_from: approved_from,
                                       approved_to: approved_to
                                      
