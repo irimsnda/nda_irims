@@ -1,6 +1,6 @@
-Ext.define('Admin.view.reports.appsreport.premisesreport.form.PremisesReportFiltersFrm', {
+Ext.define('Admin.view.reports.appsreport.drugshopreport.form.DrugshopReportFiltersFrm', {
     extend: 'Ext.form.Panel',
-    xtype: 'premisesreportfiltersfrm',
+    xtype: 'drugshopreportfiltersfrm',
     layout: 'column',
     defaults:{
         bodyPadding: 1,
@@ -12,7 +12,12 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.PremisesReportFilt
       items:[{
         xtype: 'hiddenfield',
         name: 'module_id',
-        value: 2,
+        value: 29,
+        hidden: true
+    },{
+        xtype: 'hiddenfield',
+        name: 'business_type_id',
+        value: 7,
         hidden: true
     },{
             xtype: 'combo',
@@ -38,7 +43,7 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.PremisesReportFilt
                             url: 'workflow/getSystemSubModules',
                             extraParams: {
                                 model_name: 'SubModule',
-                                module_id: 2
+                                module_id: 29
                             }
                         }
                     },
@@ -57,14 +62,14 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.PremisesReportFilt
         
         },{
             xtype: 'combo',
-            emptyText: 'Select Premise Category Type',
+            emptyText: 'Select Premise Product Category',
              margin: 2,
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
             labelAlign : 'top',
             displayField: 'name',
-            name: 'business_type_details',
+            name: 'product_classification_id',
             allowBlank: false,
             fieldStyle: {
                 'color': 'green',
@@ -78,47 +83,6 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.PremisesReportFilt
                         proxy: {
                         url: 'newreports/getSectionParams',
                         extraParams: {
-                            table_name: 'par_business_types'
-                        }
-                       }
-                    },
-                    isLoad: true
-                },
-                beforequery: function() {
-                    var store=this.getStore();
-                    
-                    var all={name: 'All',id:0};
-                      store.insert(0, all);
-                    }, 
-                afterrender: function(combo) {
-                            combo.select(combo.getStore().getAt(0));    
-                        },
-                change: 'loadBusinessTypeDetailsCombo',
-
-            }
-        },{
-            xtype: 'combo',
-            emptyText: 'Select Product Category',
-             margin: 2,
-            forceSelection: true,
-            queryMode: 'local',
-            valueField: 'id',
-            labelAlign : 'top',
-            displayField: 'name',
-            name: 'product_classification_id',
-            allowBlank: false,
-            fieldStyle: {
-                'color': 'green',
-                'font-weight': 'bold'
-            },
-               listeners: {
-                beforerender: {
-                    fn: 'setOrgConfigCombosStore',
-                    config: {
-                        pageSize: 100,
-                        proxy: {
-                        url: 'configurations/getConfigParamFromTable',
-                        extraParams: {
                             table_name: 'par_premise_class'
                         }
                        }
@@ -130,7 +94,7 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.PremisesReportFilt
                     
                     var all={name: 'All',id:0};
                       store.insert(0, all);
-                    },
+                    }, 
                 afterrender: function(combo) {
                             combo.select(combo.getStore().getAt(0));    
                         },
@@ -161,7 +125,7 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.PremisesReportFilt
             name: 'filter_SummaryReport',
             ui: 'soft-green',
             iconCls: 'fa fa-search',
-            handler: 'loadPremisesReportFilters',
+            handler: 'loadDrugshopReportFilters',
             formBind: true,
         }
        ]

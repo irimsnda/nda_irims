@@ -461,6 +461,88 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
             });
                
     },
+
+     loadDrugshopReportFilters: function (btn) {
+      var grid = btn.up('form'),
+        sub_module_id = grid.down('combo[name=sub_module_id]').getValue(),
+        product_classification_id = grid.down('combo[name=product_classification_id]').getValue(),
+        from_date = grid.down('datefield[name=from_date]').getValue(),
+        to_date = grid.down('datefield[name=to_date]').getValue(),
+        panel = grid.up('panel');
+        tabs = panel.down('drugshoptabpnl');
+        gridStr = tabs.down('drugshoptabularrepresentationgrid').getStore(),
+        graphStr = tabs.down('cartesian').getStore();  
+        module_id=panel.down('hiddenfield[name=module_id]').getValue();
+
+        gridStr.removeAll();
+        gridStr.load({
+            params:{
+                sub_module_id:sub_module_id,
+                product_classification_id:product_classification_id,
+                module_id: module_id,
+                from_date: from_date,
+                to_date: to_date
+                
+
+                },
+                  
+            });
+
+        graphStr.removeAll();
+        graphStr.load({
+            params:{
+                sub_module_id:sub_module_id,
+                module_id: module_id,
+                product_classification_id:product_classification_id,
+                business_type_details: 7,
+                from_date: from_date,
+                to_date: to_date
+                
+
+                },
+                  
+            });
+               
+    },
+
+    reloadDrugshopCartesianFilters: function (btn) {
+        var chart = btn.up('panel'), 
+        tabs = chart.up('drugshoptabpnl'),
+        panelmain=tabs.up('panel'),
+        form=panelmain.down('form'),
+        sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
+        product_classification_id = form.down('combo[name=product_classification_id]').getValue(),
+        product_classification_id = form.down('combo[name=product_classification_id]').getValue(),
+        from_date = form.down('datefield[name=from_date]').getValue(),
+        to_date = form.down('datefield[name=to_date]').getValue(),
+        panel = chart.up('panel'),
+        tabs = panel.down('drugshoptabpnl'),
+        graphStr = chart.down('cartesian').getStore();  
+
+        module_id=panelmain.down('hiddenfield[name=module_id]').getValue();
+        frm = form.getForm();
+        if (frm.isValid()) {
+        graphStr.removeAll();
+        graphStr.load({
+            params:{
+                sub_module_id:sub_module_id,
+                module_id: module_id,
+                product_classification_id:product_classification_id,
+                business_type_details:7,
+                from_date: from_date,
+                to_date: to_date
+                
+
+                },
+                  
+            });
+
+        } else {
+        toastr.error('Please select Filters first ', 'Failure Response');
+        }
+               
+    },
+
     reloadPremisesCartesianFilters: function (btn) {
         var chart = btn.up('panel'), 
         tabs = chart.up('premisestabpnl'),
@@ -648,6 +730,63 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
         toastr.error('Please select Filters first ', 'Failure Response');
         }
                
+    },
+   exportDrugshopSummaryReport: function(btn) {
+    var panel=btn.up('panel'),
+    filter=panel.down('form'),
+    sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
+    section_id = filter.down('combo[name=section_id]').getValue(),
+    business_type_details = filter.down('combo[name=business_type_details]').getValue(),
+    from_date = filter.down('datefield[name=from_date]').getValue(),
+    to_date = filter.down('textfield[name=to_date]').getValue();
+    from_date = Ext.Date.format(from_date,'Y-m-d');   
+    to_date = Ext.Date.format(to_date,'Y-m-d'); 
+    var tab = panel.down('drugshoptabpnl'),
+    activeTab = tab.getActiveTab(),
+    index = tab.items.indexOf(activeTab);
+         //hidden value
+    module_id=panel.down('hiddenfield[name=module_id]').getValue();
+    frm = filter.getForm();
+     if (frm.isValid()) {
+    Ext.getBody().mask('Exporting...Please wait...');
+            
+    Ext.Ajax.request({
+        url: 'newreports/exportPremiseSummaryReport',
+        method: 'GET',
+        headers: {
+             'Authorization':'Bearer '+access_token
+                 },
+        params : {
+            'sub_module_id':sub_module_id,
+            'section_id':section_id,
+            'module_id': module_id,
+            'business_type_details': business_type_details,
+            'from_date': from_date,
+            'to_date': to_date,
+             },
+                      
+        success: function (response, textStatus, request) {
+            Ext.getBody().unmask();
+
+            var t = JSON.parse(response.responseText);
+            var a = document.createElement("a");
+            a.href = t.file; 
+            a.download = t.name;
+            document.body.appendChild(a);
+
+            a.click();
+                     
+            a.remove();
+      
+        },
+        failure: function(conn, response, options, eOpts) {
+            Ext.getBody().unmask();
+            Ext.Msg.alert('Error', 'please try again');
+        }
+       });
+    } else {
+        toastr.error('Please select Filters first ', 'Failure Response');
+        }
     },
 
     exportPremiseSummaryReport: function(btn) {
@@ -960,7 +1099,7 @@ ExpPremiseWinShow: function(item) {
     child.down('textfield[name=from_date]').setValue(grid.down('datefield[name=from_date]').getValue());
     child.down('datefield[name=to_date]').setValue(grid.down('datefield[name=to_date]').getValue());
     child.down('textfield[name=sub_module_id]').setValue(grid.down('combo[name=sub_module_id]').getValue());
-    child.down('textfield[name=section_id]').setValue(grid.down('combo[name=section_id]').getValue());
+    child.down('textfield[name=product_classification_id]').setValue(grid.down('combo[name=product_classification_id]').getValue());
 
     child.down('textfield[name=grid]').setValue(item.xspreadsheet);
     child.down('textfield[name=process_class]').setValue(grid.down('combo[name=classification_process]').getValue());
@@ -987,7 +1126,7 @@ ExpPremiseWinShow: function(item) {
                                 
                         business_type_details = form.down('textfield[name=business_type_details]').getValue(), 
                         sub_module_id = form.down('textfield[name=sub_module_id]').getValue(), 
-                        section_id = form.down('textfield[name=section_id]').getValue(), 
+                        product_classification_id = form.down('textfield[name=product_classification_id]').getValue(), 
                         from_date = form.down('datefield[name=from_date]').getValue(),
                         to_date = form.down('datefield[name=to_date]').getValue(),
                         process_class = form.down('textfield[name=process_class]').getValue(); 
@@ -995,7 +1134,7 @@ ExpPremiseWinShow: function(item) {
                     store.getProxy().extraParams = {
                         'business_type_details': business_type_details,
                         'sub_module_id': sub_module_id,
-                        'section_id':section_id,
+                        'product_classification_id':product_classification_id,
                         'from_date': from_date,
                         'to_date': to_date, 
                         'process_class':process_class
@@ -1053,7 +1192,7 @@ ExpPremiseWinShow: function(item) {
   },
  loadExportPremiseWinStoreReload: function(btn) {
     var sub_module_id = btn.down('textfield[name=sub_module_id]').getValue(),
-    section_id = btn.down('textfield[name=section_id]').getValue(),
+    product_classification_id = btn.down('textfield[name=product_classification_id]').getValue(),
     from_date = btn.down('datefield[name=from_date]').getValue(),
     module_name = btn.down('textfield[name=module_name]').getValue(),
     action_url = btn.down('textfield[name=action_url]').getValue(),
@@ -1072,7 +1211,7 @@ ExpPremiseWinShow: function(item) {
     store.load({params:{
         'business_type_details': business_type_details,
         'sub_module_id': sub_module_id,
-        'section_id':section_id,
+        'product_classification_id':product_classification_id,
         'from_date': from_date,
         'to_date': to_date, 
         'process_class':process_class
@@ -1324,11 +1463,11 @@ ExpPremiseWinShow: function(item) {
      loadBusinessTypeDetailsCombo: function(combo,newValue,old,eopt) {
 
       var form=combo.up('form'),
-      businessCombo=form.down('combo[name=business_type_details]'),
-      section_id= form.down('combo[name=section_id]').getValue();
+      businessCombo=form.down('combo[name=product_classification_id]'),
+      business_type_details= form.down('combo[name=business_type_details]').getValue();
       
-        if(section_id !=0){
-          var filter = {'section_id':section_id};
+        if(business_type_details !=0){
+          var filter = {'business_type_details':business_type_details};
           var filters = JSON.stringify(filter);
           var filters = JSON.stringify(filter);
           var store=businessCombo.getStore();
@@ -1341,6 +1480,8 @@ ExpPremiseWinShow: function(item) {
           store.load();
          }
      },
+
+
 
    func_LoadClassificationCombo: function(combo,newValue,old,eopt) {
       var form=combo.up('form'),
@@ -1594,6 +1735,33 @@ ExpPremiseWinShow: function(item) {
         toastr.error('Please select Filters first ', 'Failure Response');
         }
      },
+      printDrugshopSummary: function(btn) {
+        var panel=btn.up('panel'),
+        filter=panel.down('form'),
+        sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
+        section_id = filter.down('combo[name=section_id]').getValue(),
+        business_type_details = filter.down('combo[name=business_type_details]').getValue(),
+        from_date = filter.down('datefield[name=from_date]').getValue(),
+        to_date = filter.down('textfield[name=to_date]').getValue();
+        from_date = Ext.Date.format(from_date,'Y-m-d');   
+        to_date = Ext.Date.format(to_date,'Y-m-d'); 
+        var tab = panel.down('drugshoptabpnl'),
+        activeTab = tab.getActiveTab(),
+        index = tab.items.indexOf(activeTab);
+         //hidden value
+        module_id=panel.down('hiddenfield[name=module_id]').getValue();
+
+        frm = filter.getForm();
+        if (frm.isValid()) {
+
+           print_report('newreports/printPremiseSummaryReport?sub_module_id='+sub_module_id+'&business_type_details='+business_type_details+'&section_id='+section_id+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id);
+      
+
+        }else {
+        toastr.error('Please select Filters first ', 'Failure Response');
+        }
+     },
+
      printImportExportSummary: function(btn) {
         var panel=btn.up('panel'),
         filter=panel.down('form'),
@@ -1695,7 +1863,7 @@ ExpPremiseWinShow: function(item) {
      var elem = btn.up('form'),
      grid=elem.down(btn.xspreadsheet),
      sub_module_id = elem.down('textfield[name=sub_module_id]').getValue(),
-     section_id = elem.down('textfield[name=section_id]').getValue(),
+     product_classification_id = elem.down('textfield[name=product_classification_id]').getValue(),
      to_date = elem.down('datefield[name=to_date]').getValue(),
      from_date = elem.down('datefield[name=from_date]').getValue(),
      filterfield = grid.getPlugin('filterfield');
@@ -1736,7 +1904,7 @@ ExpPremiseWinShow: function(item) {
                     'header':JSON.stringify(header),
                     'business_type_details': business_type_details,
                     'sub_module_id': sub_module_id,
-                    'section_id':section_id,
+                    'product_classification_id':product_classification_id,
                     'from_date': from_date,
                     'to_date': to_date, 
                     'filter': JSON.stringify(filter_array),

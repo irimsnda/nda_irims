@@ -1,14 +1,15 @@
-Ext.define('Admin.view.registers.views.disposalregister.form.DisposalRegisterFiltersFrm', {
+Ext.define('Admin.view.registers.views.drugshopregister.form.DrugshopRegisterFiltersFrm', {
     extend: 'Ext.form.Panel',
-    xtype: 'disposalregisterfiltersfrm',
-    layout: 'column',
+    xtype: 'drugshopregisterfiltersFrm',
+    style: 'margin:0px',
+            layout: 'column',
             defaults: {
                 columnWidth: 0.2
             },
    items: [ {
     xtype: 'hiddenfield',
     name: 'module_id',
-    value: 15,
+    value: 29,
     hidden: true
 },{
 xtype: 'combo',
@@ -34,7 +35,7 @@ fieldStyle: {
                         url: 'workflow/getSystemSubModules',
                         extraParams: {
                             model_name: 'SubModule',
-                            module_id: 15
+                            module_id: 29
                         }
                     }
                 },
@@ -53,14 +54,14 @@ fieldStyle: {
     
     },{
             xtype: 'combo',
-            emptyText: 'Select Disposal Product Type(Sections)',
+            emptyText: 'Select Drug Shop Product Category',
              margin: 2,
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
             labelAlign : 'top',
             displayField: 'name',
-            name: 'section_id',
+            name: 'product_classification_id',
             allowBlank: false,
             fieldStyle: {
                 'color': 'green',
@@ -74,7 +75,7 @@ fieldStyle: {
                         proxy: {
                         url: 'newreports/getSectionParams',
                         extraParams: {
-                            table_name: 'par_sections'
+                            table_name: 'par_premise_class'
                         }
                        }
                     },
@@ -100,7 +101,7 @@ fieldStyle: {
         format: 'Y-m-d',
         name: 'approved_from',
         allowBlank: true,
-       // minValue: new Date(2020, 6),
+        //minValue: new Date(2020, 6),
         maxValue: new Date()
     },{
         xtype: 'datefield',
@@ -118,7 +119,7 @@ fieldStyle: {
         margin: 2,
         ui: 'soft-green',
         iconCls: 'fa fa-search',
-        handler: 'loadDisposalReportFilters',
+        handler: 'loaddrugshopRegisterFilters',
         formBind: true,
     }
           ]

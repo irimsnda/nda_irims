@@ -54,14 +54,14 @@ fieldStyle: {
     
     },{
             xtype: 'combo',
-            emptyText: 'Select Premise Product Type(Sections)',
+            emptyText: 'Select Premise Product Category',
              margin: 2,
             forceSelection: true,
             queryMode: 'local',
             valueField: 'id',
             labelAlign : 'top',
             displayField: 'name',
-            name: 'section_id',
+            name: 'product_classification_id',
             allowBlank: false,
             fieldStyle: {
                 'color': 'green',
@@ -75,7 +75,7 @@ fieldStyle: {
                         proxy: {
                         url: 'newreports/getSectionParams',
                         extraParams: {
-                            table_name: 'par_sections'
+                            table_name: 'par_premise_class'
                         }
                        }
                     },
@@ -90,7 +90,6 @@ fieldStyle: {
                 afterrender: function(combo) {
                             combo.select(combo.getStore().getAt(0));    
                         },
-                change: 'loadBusinessTypeDetailsCombo',
 
             }
         },{
@@ -141,7 +140,7 @@ fieldStyle: {
         labelAlign : 'top',
         format: 'Y-m-d',
         name: 'approved_from',
-        allowBlank: false,
+        allowBlank: true,
         //minValue: new Date(2020, 6),
         maxValue: new Date()
     },{
@@ -151,7 +150,7 @@ fieldStyle: {
         format: 'Y-m-d',
         emptyText: 'Approved To',
         labelAlign : 'top',
-        allowBlank: false,
+        allowBlank: true,
        // minValue: new Date(2020, 6),
         maxValue: new Date()
     },{ 

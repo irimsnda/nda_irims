@@ -1,6 +1,6 @@
-Ext.define('Admin.view.reports.appsreport.premisesreport.form.DetailedPremiseReportFiltersFrm', {
+Ext.define('Admin.view.reports.appsreport.drugshopreport.form.DetailedDrugshopReportFiltersFrm', {
 	extend: 'Ext.form.Panel',
-	xtype: 'detailedpremisereportfrm',
+	xtype: 'detaileddrugshopreportfiltersfrm',
 	margin: 2,
 	height: 500,
 	layout: 'fit',

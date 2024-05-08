@@ -181,7 +181,7 @@ listeners: {
         labelAlign : 'top',
         format: 'Y-m-d',
         name: 'approved_from',
-        allowBlank: false,
+        allowBlank: true,
         minValue: new Date(2020, 6),
         maxValue: new Date()
     },{
@@ -191,7 +191,7 @@ listeners: {
         format: 'Y-m-d',
         emptyText: 'Approved To',
         labelAlign : 'top',
-        allowBlank: false,
+        allowBlank: true,
         minValue: new Date(2020, 6),
         maxValue: new Date()
     },{ 

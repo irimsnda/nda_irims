@@ -1,7 +1,6 @@
 Ext.define('Admin.view.registers.viewcontroller.RegisterCtr', {
     extend: 'Ext.app.ViewController',
     alias: 'controller.registerctr',
-   
 
     init: function () {
     
@@ -68,10 +67,10 @@ Ext.define('Admin.view.registers.viewcontroller.RegisterCtr', {
 
       var form=combo.up('form'),
       businessCombo=form.down('combo[name=business_type_details]'),
-      section_id= form.down('combo[name=section_id]').getValue();
+      product_classification_id= form.down('combo[name=product_classification_id]').getValue();
       
-        if(section_id !=0){
-          var filter = {'section_id':section_id};
+        if(product_classification_id !=0){
+          var filter = {'product_classification_id':product_classification_id};
           var filters = JSON.stringify(filter);
           var filters = JSON.stringify(filter);
           var store=businessCombo.getStore();
@@ -276,12 +275,39 @@ Ext.define('Admin.view.registers.viewcontroller.RegisterCtr', {
 
 
 
-  
+loaddrugshopRegisterFilters: function (btn) {
+    
+      var grid = btn.up('form'),
+        sub_module_id = grid.down('combo[name=sub_module_id]').getValue(),
+        product_classification_id = grid.down('combo[name=product_classification_id]').getValue(),
+        approved_from = grid.down('datefield[name=approved_from]').getValue(),
+        approved_to = grid.down('datefield[name=approved_to]').getValue(),
+        panel = grid.up('panel'),
+        gridStr = panel.down('drugshopregistergrid').getStore();
+
+        module_id=panel.down('hiddenfield[name=module_id]').getValue();
+
+        gridStr.removeAll();
+        gridStr.load({
+            params:{
+                sub_module_id:sub_module_id,
+                product_classification_id:product_classification_id,
+                module_id: module_id,
+                business_type_details: 7,
+                approved_from: approved_from,
+                approved_to: approved_to,
+                
+
+                },
+                  
+            });
+               
+    },
 loadPremisesRegisterFilters: function (btn) {
     
       var grid = btn.up('form'),
         sub_module_id = grid.down('combo[name=sub_module_id]').getValue(),
-        section_id = grid.down('combo[name=section_id]').getValue(),
+        product_classification_id = grid.down('combo[name=product_classification_id]').getValue(),
         business_type_details=grid.down('combo[name=business_type_details]').getValue(),
         approved_from = grid.down('datefield[name=approved_from]').getValue(),
         approved_to = grid.down('datefield[name=approved_to]').getValue(),
@@ -294,7 +320,7 @@ loadPremisesRegisterFilters: function (btn) {
         gridStr.load({
             params:{
                 sub_module_id:sub_module_id,
-                section_id:section_id,
+                product_classification_id:product_classification_id,
                 module_id: module_id,
                 business_type_details: business_type_details,
                 approved_from: approved_from,
@@ -306,20 +332,19 @@ loadPremisesRegisterFilters: function (btn) {
             });
                
     },
-    exportPremiseRegister: function(btn) {
+
+    exportDrugshopRegister: function(btn) {
         var panel=btn.up('panel'),
         filter=panel.down('form'),
-        grid = panel.down('premisesregistergrid'),
+        grid = panel.down('drugshopregistergrid'),
         filterfield = grid.getPlugin('filterfield');       
         var filter_array =Ext.pluck(filterfield.getgridFilters(grid), 'config'),
         sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
-        section_id = filter.down('combo[name=section_id]').getValue(),
-        business_type_details=filter.down('combo[name=business_type_details]').getValue(),
+        product_classification_id = filter.down('combo[name=product_classification_id]').getValue(),
         approved_from = filter.down('datefield[name=approved_from]').getValue(),
         approved_to = filter.down('textfield[name=approved_to]').getValue();
         approved_from = Ext.Date.format(approved_from,'Y-m-d');   
         approved_to = Ext.Date.format(approved_to,'Y-m-d'); 
-        console.log(section_id);
              //hidden value
         module_id=panel.down('hiddenfield[name=module_id]').getValue();
 
@@ -335,7 +360,127 @@ loadPremisesRegisterFilters: function (btn) {
             params : {
                  'module_id': module_id,
                  'sub_module_id': sub_module_id,
-                 'section_id':section_id,
+                 'product_classification_id':product_classification_id,
+                 'business_type_details': 7,
+                 'approved_from': approved_from,
+                 'approved_to': approved_to,
+                 'filter': JSON.stringify(filter_array)
+        
+                 },
+                          
+            success: function (response, textStatus, request) {
+                Ext.getBody().unmask();
+                var t = JSON.parse(response.responseText);
+                console.log(t.status);
+                if (t.status == 'sucesss' || t.status === 'success' ) {
+                var a = document.createElement("a");
+                a.href = t.file; 
+                a.download = t.name;
+                document.body.appendChild(a);
+
+                a.click();
+                         
+                a.remove();
+
+                } else {
+            toastr.error(t.message, 'Warning Response');
+            }
+          
+            },
+            failure: function(conn, response, options, eOpts) {
+                Ext.getBody().unmask();
+                Ext.Msg.alert('Error', 'please try again');
+            }
+           });
+     
+        },
+    printDrugshopRegister: function(btn) {
+        var panel=btn.up('panel'),
+        filter=panel.down('form'),
+        grid = panel.down('drugshopregistergrid'),
+        filterfield = grid.getPlugin('filterfield');       
+        var filter_array =Ext.pluck(filterfield.getgridFilters(grid), 'config'),
+        sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
+        product_classification_id = filter.down('combo[name=product_classification_id]').getValue(),
+        approved_from = filter.down('datefield[name=approved_from]').getValue(),
+        approved_to = filter.down('textfield[name=approved_to]').getValue();
+        approved_from = Ext.Date.format(approved_from,'Y-m-d');   
+        approved_to = Ext.Date.format(approved_to,'Y-m-d'); 
+       
+             //hidden value
+        module_id=panel.down('hiddenfield[name=module_id]').getValue();
+
+        Ext.Ajax.request({
+           url: 'registers/checkPrintPremisesRegister',
+            method: 'GET',
+            headers: {
+                 'Authorization':'Bearer '+access_token
+                     },
+            params : {
+                 'module_id': module_id,
+                 'sub_module_id': sub_module_id,
+                 'product_classification_id':product_classification_id,
+                 'business_type_details': 7,
+                 'approved_from': approved_from,
+                 'approved_to': approved_to,
+                 'filter': JSON.stringify(filter_array)
+        
+                 },
+            success: function (response) {
+                var resp = JSON.parse(response.responseText);
+                 if (resp.status == 'sucesss' || resp.status === 'success' ) {
+                  console.log('WE HAVE TO PRINT');
+                   print_report('registers/printPremisesRegister?sub_module_id='+sub_module_id+'&product_classification_id='+product_classification_id+'&business_type_details='+7+'&filename='+btn.filename+'&heading='+btn.heading+'$title='+btn.title+'&approved_to='+approved_to+'&approved_from='+approved_from+'&module_id='+module_id+'&filename='+btn.filename+'&heading='+btn.heading+'&title='+btn.title+'&filter='+encodeURIComponent(JSON.stringify(filter_array)));
+    
+               }
+                else{
+                    console.log('Nothing to Print');
+                     toastr.error(resp.message, 'Warning Response');
+                }
+               
+            },
+            failure: function (response) {
+                 
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              
+            }
+        });
+       
+         
+     },
+
+
+
+    exportPremiseRegister: function(btn) {
+        var panel=btn.up('panel'),
+        filter=panel.down('form'),
+        grid = panel.down('premisesregistergrid'),
+        filterfield = grid.getPlugin('filterfield');       
+        var filter_array =Ext.pluck(filterfield.getgridFilters(grid), 'config'),
+        sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
+        product_classification_id = filter.down('combo[name=product_classification_id]').getValue(),
+        business_type_details=filter.down('combo[name=business_type_details]').getValue(),
+        approved_from = filter.down('datefield[name=approved_from]').getValue(),
+        approved_to = filter.down('textfield[name=approved_to]').getValue();
+        approved_from = Ext.Date.format(approved_from,'Y-m-d');   
+        approved_to = Ext.Date.format(approved_to,'Y-m-d'); 
+             //hidden value
+        module_id=panel.down('hiddenfield[name=module_id]').getValue();
+
+       
+        Ext.getBody().mask('Exporting...Please wait...');
+                
+        Ext.Ajax.request({
+            url: 'registers/exportPremiseRegister',
+            method: 'GET',
+            headers: {
+                 'Authorization':'Bearer '+access_token
+                     },
+            params : {
+                 'module_id': module_id,
+                 'sub_module_id': sub_module_id,
+                 'product_classification_id':product_classification_id,
                  'business_type_details': business_type_details,
                  'approved_from': approved_from,
                  'approved_to': approved_to,
@@ -376,7 +521,7 @@ loadPremisesRegisterFilters: function (btn) {
         filterfield = grid.getPlugin('filterfield');       
         var filter_array =Ext.pluck(filterfield.getgridFilters(grid), 'config'),
         sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
-        section_id = filter.down('combo[name=section_id]').getValue(),
+        product_classification_id = filter.down('combo[name=product_classification_id]').getValue(),
         business_type_details=filter.down('combo[name=business_type_details]').getValue(),
         approved_from = filter.down('datefield[name=approved_from]').getValue(),
         approved_to = filter.down('textfield[name=approved_to]').getValue();
@@ -395,7 +540,7 @@ loadPremisesRegisterFilters: function (btn) {
             params : {
                  'module_id': module_id,
                  'sub_module_id': sub_module_id,
-                 'section_id':section_id,
+                 'product_classification_id':product_classification_id,
                  'business_type_details': business_type_details,
                  'approved_from': approved_from,
                  'approved_to': approved_to,
@@ -406,7 +551,7 @@ loadPremisesRegisterFilters: function (btn) {
                 var resp = JSON.parse(response.responseText);
                  if (resp.status == 'sucesss' || resp.status === 'success' ) {
                   
-                   print_report('registers/printPremisesRegister?sub_module_id='+sub_module_id+'&section_id='+section_id+'&business_type_details='+business_type_details+'&filename='+btn.filename+'&heading='+btn.heading+'$title='+btn.title+'&approved_to='+approved_to+'&approved_from='+approved_from+'&module_id='+module_id+'&filename='+btn.filename+'&heading='+btn.heading+'&title='+btn.title+'&filter='+encodeURIComponent(JSON.stringify(filter_array)));
+                   print_report('registers/printPremisesRegister?sub_module_id='+sub_module_id+'&product_classification_id='+product_classification_id+'&business_type_details='+business_type_details+'&filename='+btn.filename+'&heading='+btn.heading+'$title='+btn.title+'&approved_to='+approved_to+'&approved_from='+approved_from+'&module_id='+module_id+'&filename='+btn.filename+'&heading='+btn.heading+'&title='+btn.title+'&filter='+encodeURIComponent(JSON.stringify(filter_array)));
     
                }
                 else{
