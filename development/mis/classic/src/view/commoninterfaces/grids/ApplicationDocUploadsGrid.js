@@ -52,7 +52,7 @@ Ext.define('Admin.view.commoninterfaces.grids.ApplicationDocUploadsGrid', {
         name: 'reference_table_name'           
     },{
         xtype: 'button',
-        text: 'Upload Document/Report1111111111111',
+        text: 'Upload Document/Report',
         name: 'add_upload',
         iconCls: 'x-fa fa-plus',
         ui: 'soft-blue',

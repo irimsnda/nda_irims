@@ -854,12 +854,12 @@ prepareAssesmentDetails: function (me) {
     },
     funcsaveClinicalTrialRegDetails:function(btn){
         var me = this,
-        toaster = 1
+        toaster = 1,
          activeTab = btn.up('#clinicaltrialregistrypreviewpnl'),
        
         applicantDetailsForm = activeTab.down('applicantdetailsfrm'),
         applicant_id = applicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue(),
-        application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue();
+        application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
         detailsForm = activeTab.down('clinicaltrialregistrydetailsfrm'),
         detailsFrm = detailsForm.getForm();
     

@@ -4365,7 +4365,6 @@ setCompStore: function (me, options) {
         var store = me.store,
             grid = me.up('grid'),
             document_type_id = grid.down('combo[name=applicable_documents]').getValue();
-             console.log(document_type_id);
             var application_code = grid.down('hiddenfield[name=application_code]').getValue(),
             mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),   
@@ -4411,7 +4410,10 @@ setCompStore: function (me, options) {
            
             
             if(document_type_id < 1){
-                document_type_id =document_type;
+               if (document_type != 34 && document_type != 35) {
+                     document_type_id =document_type;
+                }
+               
             }
             store.getProxy().extraParams = {
                 application_code: application_code,
