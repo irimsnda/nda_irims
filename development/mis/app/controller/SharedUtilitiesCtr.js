@@ -1117,6 +1117,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'productDocUploadsGrid button[name=add_upload]': {
                 click: 'showApplicationDocUploadWin'
             },
+             'psurDocUploadsGrid button[name=add_upload]': {
+                click: 'showApplicationDocUploadWin'
+            },
+
 
             'productqualityassessmentDocUploadsGrid button[name=add_upload]': {
                 click: 'showApplicationDocUploadWin'

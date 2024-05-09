@@ -109,7 +109,7 @@ Ext.define('Admin.view.psur.views.panels.PsurAssessmentPnl', {
     ],
     items: [
                 {
-                    title: 'Report & Evaluation Uploads',
+                  //  title: 'Report & Evaluation Uploads',
                     region: 'center',
                     xtype:'tabpanel', 
                     autoScroll: true,

@@ -420,21 +420,20 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
       var grid = btn.up('form'),
         sub_module_id = grid.down('combo[name=sub_module_id]').getValue(),
         business_type_details = grid.down('combo[name=business_type_details]').getValue(),
-        section_id = grid.down('combo[name=section_id]').getValue(),
+       // section_id = grid.down('combo[name=section_id]').getValue(),
         from_date = grid.down('datefield[name=from_date]').getValue(),
         to_date = grid.down('datefield[name=to_date]').getValue(),
-        panel = grid.up('panel'),
-        tabs = panel.down('premisestabpnl'),
-        gridStr = tabs.down('premisestabularrepresentationgrid').getStore(),
-        graphStr = tabs.down('cartesian').getStore();  
-
-        module_id=panel.down('hiddenfield[name=module_id]').getValue();
+        panel = grid.up('panel');
+        var tabs =Ext.ComponentQuery.query("#premisestabpnl")[0];
+        var gridStr = Ext.ComponentQuery.query("#premisestabularrepresentationgrid")[0].getStore();
+        graphStr =Ext.getStore('premiseReportCartesianStr');
+        module_id=Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue();
 
         gridStr.removeAll();
         gridStr.load({
             params:{
                 sub_module_id:sub_module_id,
-                section_id:section_id,
+               // section_id:section_id,
                 module_id: module_id,
                 business_type_details: business_type_details,
                 from_date: from_date,
@@ -450,7 +449,7 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
             params:{
                 sub_module_id:sub_module_id,
                 module_id: module_id,
-                section_id:section_id,
+               // section_id:section_id,
                 business_type_details: business_type_details,
                 from_date: from_date,
                 to_date: to_date

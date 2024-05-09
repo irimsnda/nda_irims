@@ -4216,6 +4216,9 @@ $include-admin-view-registers-views-controlledrugsregister-panel-orderlocalsuppl
 $include-admin-view-registers-views-disposalregister-form-disposalregisterfiltersfrm: dynamic(true);;
 $include-admin-view-registers-views-disposalregister-grid-disposalregistergrid: dynamic(true);;
 $include-admin-view-registers-views-disposalregister-panel-disposalregisterpnl: dynamic(true);;
+$include-admin-view-registers-views-drugshopregister-form-drugshopregisterfiltersfrm: dynamic(true);;
+$include-admin-view-registers-views-drugshopregister-grid-drugshopregistergrid: dynamic(true);;
+$include-admin-view-registers-views-drugshopregister-panel-drugshopregisterpnl: dynamic(true);;
 $include-admin-view-registers-views-gmpregister-form-gmpregisterfiltersfrm: dynamic(true);;
 $include-admin-view-registers-views-gmpregister-grid-gmpregistergrid: dynamic(true);;
 $include-admin-view-registers-views-gmpregister-panel-gmpregisterpnl: dynamic(true);;
@@ -4266,6 +4269,11 @@ $include-admin-view-reports-appsreport-disposalreport-form-detaileddisposalrepor
 $include-admin-view-reports-appsreport-disposalreport-form-disposalreportfiltersfrm: dynamic(true);;
 $include-admin-view-reports-appsreport-disposalreport-panel-disposalreportpnl: dynamic(true);;
 $include-admin-view-reports-appsreport-disposalreport-panel-disposaltabpnl: dynamic(true);;
+$include-admin-view-reports-appsreport-drugshopreport-form-detaileddrugshopcolumnsfrm: dynamic(true);;
+$include-admin-view-reports-appsreport-drugshopreport-form-detaileddrugshopreportfiltersfrm: dynamic(true);;
+$include-admin-view-reports-appsreport-drugshopreport-form-drugshopreportfiltersfrm: dynamic(true);;
+$include-admin-view-reports-appsreport-drugshopreport-panel-drugshopreportpnl: dynamic(true);;
+$include-admin-view-reports-appsreport-drugshopreport-panel-drugshoptabpnl: dynamic(true);;
 $include-admin-view-reports-appsreport-gmpreport-form-detailedgmpcolumnsfrm: dynamic(true);;
 $include-admin-view-reports-appsreport-gmpreport-form-detailedgmpreportfiltersfrm: dynamic(true);;
 $include-admin-view-reports-appsreport-gmpreport-form-gmpreportfiltersfrm: dynamic(true);;
@@ -4307,6 +4315,9 @@ $include-admin-view-reports-appsreports-controlleddrugsreport-grid-localsupplyta
 $include-admin-view-reports-appsreports-disposalreport-graph-disposalgraphicalrepresentationgraph: dynamic(true);;
 $include-admin-view-reports-appsreports-disposalreport-grid-detaileddisposalviewgrid: dynamic(true);;
 $include-admin-view-reports-appsreports-disposalreport-grid-disposaltabularrepresentationgrid: dynamic(true);;
+$include-admin-view-reports-appsreports-drugshopreport-graph-drugshopgraphicalrepresentationgraph: dynamic(true);;
+$include-admin-view-reports-appsreports-drugshopreport-grid-detaileddrugshopviewgrid: dynamic(true);;
+$include-admin-view-reports-appsreports-drugshopreport-grid-drugshoptabularrepresentationgrid: dynamic(true);;
 $include-admin-view-reports-appsreports-gmpreport-graph-gmpgraphicalrepresentationgraph: dynamic(true);;
 $include-admin-view-reports-appsreports-gmpreport-grid-detailedgmpviewgrid: dynamic(true);;
 $include-admin-view-reports-appsreports-gmpreport-grid-gmptabularrepresentationgrid: dynamic(true);;
