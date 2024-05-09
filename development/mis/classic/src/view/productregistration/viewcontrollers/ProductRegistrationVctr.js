@@ -57,6 +57,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
         
     },
 
+  
 	showAddProductGmpInspectionStatusWin: function (btn) {
         var me = this,
         childXtype = btn.childXtype,
@@ -1855,7 +1856,13 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
     },
     showPreviousUploadedDocs: function (item) {
         this.fireEvent('showPreviousUploadedDocs', item);
-    },showPreviousNonGridPanelUploadedDocs: function (item) {
+    },
+
+    showQualitySumaryDocs: function (item) {
+        this.fireEvent('showQualitySumaryDocs', item);
+    },
+
+    showPreviousNonGridPanelUploadedDocs: function (item) {
         this.fireEvent('showPreviousNonGridPanelUploadedDocs', item);
     },
     
@@ -3129,7 +3136,8 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
         var  grid = btn.up('grid'),
         activeTab = Ext.ComponentQuery.query("#main_processpanel")[0],
         product_id = activeTab.down('hiddenfield[name=product_id]').getValue(),
-        table_name=grid.down('hiddenfield[name=table_name]').getValue();
+        application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+        table_name=grid.down('hiddenfield[name=table_name]').getValue(),
         qualitySummaryGrid = btn.up('grid'),
         qualitysummarysstr = qualitySummaryGrid.getStore(),
         store = qualitySummaryGrid.getStore(),
@@ -3137,20 +3145,18 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
         for (var i = 0; i < store.data.items.length; i++) {
             var record = store.data.items [i],
                  query = record.get('query'),
-                 recommendation = record.get('recommendation'),
-                 has_query = record.get('has_query'),
-                 query = record.get('query'),
-                 is_recommended = record.get('is_recommended'),
+                 asessor_comment = record.get('asessor_comment'),
+                 reviewer_comment = record.get('reviewer_comment'),
                  id = record.get('id');
 
             var obj = {
                 id: id,
                 product_id: product_id,
-                recommendation: recommendation,
+                application_code: application_code,
+                asessor_comment: asessor_comment,
+                reviewer_comment: reviewer_comment,
                 query: query,
-                created_by: user_id,
-                has_query: has_query,
-                is_recommended: is_recommended
+                created_by: user_id
             };
             if (record.dirty) {
                 report_sections.push(obj);
@@ -3165,7 +3171,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
         Ext.Ajax.request({
             url: 'productregistration/saveQualityReportdetails',
             params: {
-                product_id:product_id,
+                application_code:application_code,
                 table_name:table_name,
                 report_sections: report_sections
             },

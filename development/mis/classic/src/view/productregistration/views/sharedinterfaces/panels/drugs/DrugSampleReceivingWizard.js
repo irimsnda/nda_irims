@@ -107,6 +107,12 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
             items: [{
                 xtype: 'productDocUploadsGrid',
                 title: 'Product Application Documents Submission'
+            },{
+                xtype: 'productqualityassessmentDocUploadsGrid',
+                title: 'Quality Overall Summary Dossier'
+            },{
+                xtype: 'productbioequivalencetrialinformationDocUploadsGrid',
+                title: 'Bioequivalence Trial Information'
             }]
         },{
             xtype: 'productscreeninggrid',
@@ -173,7 +179,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                 step: 2,
                 iconCls: 'fa fa-home',
                 enableToggle: true,
-                text: 'DOCUMENTS UPLOAD',
+                text: 'DOCUMENTS & QUALITY SUMMARY UPLOAD',
                 action: 'quickNav', 
                 iconAlign: 'top',
                 wizard:'drugsamplereceivingwizard',

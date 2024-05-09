@@ -114,6 +114,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'common_name',
+        hidden:true,
         text: 'Common Name',
         flex: 1
     }, {
@@ -129,11 +130,13 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
         flex: 1
     }, {
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'evaluator_recommendation',
         text: 'Assessment Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'auditor_recommendation',
         text: 'Quality Review Recommendation',
         flex: 1
@@ -225,7 +228,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
                                 action: 'edit',
                                 childXtype: '',
                                 winTitle: 'Application Documents',
-                                winWidth: '40%',
+                                winWidth: '90%',
                                 isReadOnly: 1,
                                 handler: 'funcPrevEvaluationReportUpload'
                             }, {
@@ -235,7 +238,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
                                 action: 'edit',
                                 childXtype: '',
                                 winTitle: 'Audit report',
-                                winWidth: '40%',
+                                winWidth: '90%',
                                 isReadOnly: 1,
                                 handler: 'funcPrevAuditReportUpload'
                             }
@@ -248,7 +251,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
                         action: 'edit',
                         childXtype: '',
                         winTitle: 'Product Information',
-                        winWidth: '40%',
+                        winWidth: '90%',
                         isReadOnly: 1,
                         handler: 'editpreviewProductInformation'
                     }, {
@@ -258,7 +261,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
                         action: 'edit',
                         childXtype: '',
                         winTitle: 'Application Documents',
-                        winWidth: '40%',
+                        winWidth: '90%',
                         isReadOnly: 1,
                         handler: 'funcPrevGridApplicationDocuments'
                     },{
@@ -268,7 +271,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
                         action: 'edit',
                         childXtype: '',
                         winTitle: 'Preview Application Queries',
-                        winWidth: '40%',
+                        winWidth: '90%',
                         isReadOnly: 1,
                         handler: 'previewproductApplicationQueries'
                     },{
@@ -279,7 +282,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
                         childXtype: '',
                         hidden: true,
                         winTitle: 'Product Information',
-                        winWidth: '40%',
+                        winWidth: '90%',
                         handler: 'printpreviewProductInformation'
                     }, {
                         xtype: 'button',

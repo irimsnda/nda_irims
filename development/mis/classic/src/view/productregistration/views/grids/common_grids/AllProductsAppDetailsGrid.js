@@ -63,6 +63,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AllProductsA
         dataIndex: 'common_name',
         text: 'Common Name',
         width:150,
+        hidden:true,
         filter: {
                 xtype: 'textfield',
             }
@@ -115,7 +116,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AllProductsA
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Product Information',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     handler: 'editpreviewProductInformation'
                 }, {
@@ -125,7 +126,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AllProductsA
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Application Documents',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     handler: 'funcPrevGridApplicationDocuments'
                 }, {
@@ -135,7 +136,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.AllProductsA
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Product Information',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     handler: 'printpreviewProductInformation'
                 }
                 ]

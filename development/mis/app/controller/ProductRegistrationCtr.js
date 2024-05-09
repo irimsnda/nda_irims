@@ -623,6 +623,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                 funcPrevAuditReportUpload: 'funcPrevAuditReportUpload',
                 onRenAltProductRegistration: 'onNewProductRegApplication',
                 showPreviousUploadedDocs: 'showPreviousUploadedDocs',
+                showQualitySumaryDocs: 'showQualitySumaryDocs',
                 showPreviousNonGridPanelUploadedDocs:'showPreviousNonGridPanelUploadedDocs',
                 showUploadEvaluationDocuments:'showUploadEvaluationDocuments',
                 previewProductOnlineApplication:'previewProductOnlineApplication',
@@ -1508,7 +1509,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             frm.submit({
                 url: 'productregistration/saveProductRegistrationComments',
                 params: {
-                    application_code: 345,//application_code,
+                    application_code: application_code,
                     table_name:'tra_auditing_overralcomments' //table_name
                 },
                 headers: {
@@ -1821,7 +1822,35 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
         funcShowOnlineCustomizableWindow(winTitle + ' :' + ref_no, winWidth, grid, 'customizablewindow');
         
 
-    },showPreviousNonGridPanelUploadedDocs: function (btn) {
+    },
+
+
+     showQualitySumaryDocs: function (item) {
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord(),
+            document_type_id = item.document_type_id,
+            winTitle = item.winTitle,
+            winWidth = item.winWidth,
+            childXtype = item.childXtype,
+            mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab();
+
+        ref_no = record.get('reference_no');
+        childObject = Ext.widget(childXtype);
+        childObject.down('hiddenfield[name=process_id]').setValue(record.get('process_id'));
+        childObject.down('hiddenfield[name=section_id]').setValue(record.get('section_id'));
+        childObject.down('hiddenfield[name=module_id]').setValue(record.get('module_id'));
+        childObject.down('hiddenfield[name=sub_module_id]').setValue(record.get('sub_module_id'));
+        childObject.down('hiddenfield[name=application_code]').setValue(record.get('application_code'));
+
+        funcShowOnlineCustomizableWindow(winTitle + ' :' + ref_no, winWidth, childObject, 'customizablewindow');
+        
+
+    },
+
+
+
+    showPreviousNonGridPanelUploadedDocs: function (btn) {
         var document_type_id = btn.document_type_id,
             winTitle = btn.winTitle,
             winWidth = btn.winWidth,
@@ -2168,6 +2197,32 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                     documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
                     documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);
                     //documents_grid.down('combo[name=applicable_documents]').setValue(document_type_id);
+
+
+                    productdetails_panel.add({xtype:'productqualityassessmentDocUploadsGrid',title: 'Quality Overall Summary Dossier'});
+
+
+                    documents_grid = productdetails_panel.down('productqualityassessmentDocUploadsGrid');
+                    documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+                    documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+                    documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+                    documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);
+
+
+
+
+                    productdetails_panel.add({xtype:'productbioequivalencetrialinformationDocUploadsGrid',title: 'Bioequivalence Trial Information'});
+
+
+                    documents_grid = productdetails_panel.down('productbioequivalencetrialinformationDocUploadsGrid');
+                    documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
+                    documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);
+                    documents_grid.down('hiddenfield[name=module_id]').setValue(module_id);
+                    documents_grid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
+                    documents_grid.down('hiddenfield[name=application_code]').setValue(application_code);
+
+                    
                     
                     if (isReadOnly == 1) {
 

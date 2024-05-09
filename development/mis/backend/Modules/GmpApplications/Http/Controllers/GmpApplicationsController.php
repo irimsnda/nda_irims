@@ -1888,36 +1888,98 @@ $applicant_id = $siteDetails->applicant_id;
                         ->where('manufacturing_site_id', $init_site_id)
                         ->get();
                     $init_businessDetails = convertStdClassObjToArray($init_businessDetails);
-                    $init_blockDetails = DB::table('tra_manufacturing_sites_blocks as t3')
-                        ->select(DB::raw("t3.portal_id,t3.manufacturing_site_id as init_site_id,t3.name,t3.activities,
-                           $user_id as created_by,$site_id as manufacturing_site_id"))
+
+
+
+                     DB::table('tra_manufacturing_sites_blocks')
+                        ->where('manufacturing_site_id', $site_id)
+                        ->delete();
+
+                    $init_blockDetails = DB::table('tra_manufacturing_sites_blocks')
                         ->where('manufacturing_site_id', $init_site_id)
                         ->get();
-                    $init_blockDetails = convertStdClassObjToArray($init_blockDetails);
-                    $init_productLineDetails = DB::table('gmp_productline_details as t4')//t4.prodline_inspectionstatus_id,t4.prodline_tcmeetingstatus_id,t4.prodline_dgstatus_id,t4.product_line_status_id
-                    ->select(DB::raw("t4.product_line_id,t4.category_id,t4.prodline_description,t4.manufacturingsite_block_id,
-                               $user_id as created_by,t4.manufacturing_site_id as init_site_id,$site_id as manufacturing_site_id"))
-                        ->where('manufacturing_site_id', $init_site_id)
+
+                    foreach ($init_blockDetails as $init_blockDetail) {
+                        $data = get_object_vars($init_blockDetail);
+                        $init_site_id = $data['manufacturing_site_id'];
+                        $init_block_id = $data['id'];
+                        unset($data['manufacturing_site_id']);
+                        unset($data['id']);
+                        unset($data['init_site_id']);
+                        unset($data['created_by']);
+                        unset($data['created_on']);
+                        unset($data['altered_by']);
+                        unset($data['dola']);
+                        unset($data['portal_id']);
+                        $data['manufacturing_site_id'] = $site_id;
+                        $data['created_by'] = $user_id;
+                        $data['init_site_id'] = $init_site_id;
+                        $block_id=DB::table('tra_manufacturing_sites_blocks')->insertGetId($data);
+
+                        DB::table('gmp_productline_details')
+                        ->where('manufacturingsite_block_id', $block_id)
+                        ->delete();
+
+                       $init_productLineDetails = DB::table('gmp_productline_details')
+                        ->where('manufacturingsite_block_id', $init_block_id)
                         ->get();
-                    $init_productLineDetails = convertStdClassObjToArray($init_productLineDetails);
-                    $init_gmpProductDetails = DB::table('tra_product_gmpinspectiondetails as t5')
-                        ->select(DB::raw("t5.product_id,t5.reg_product_id,$user_id as created_by,t5.gmp_productline_id,
-                           t5.reg_site_id,t5.manufacturing_site_id as init_site_id,$site_id as manufacturing_site_id"))
-                        ->where('manufacturing_site_id', $init_site_id)
-                        ->get();
-                    $init_gmpProductDetails = convertStdClassObjToArray($init_gmpProductDetails);
+
+                         foreach ($init_productLineDetails as $init_productLineDetail) {
+                            $data = get_object_vars($init_productLineDetail);
+                            $init_site_id = $data['manufacturing_site_id'];
+                            $init_gmp_productline_id = $data['id'];
+                            unset($data['manufacturingsite_block_id']);
+                            unset($data['id']);
+                            unset($data['init_site_id']);
+                            unset($data['created_by']);
+                            unset($data['created_on']);
+                            unset($data['altered_by']);
+                            unset($data['dola']);
+                            unset($data['portal_id']);
+                            $data['manufacturing_site_id'] = $site_id;
+                            $data['manufacturingsite_block_id'] = $block_id;
+                            $data['created_by'] = $user_id;
+                            $data['init_site_id'] = $init_site_id;
+                            $gmp_productline_id=DB::table('gmp_productline_details')->insertGetId($data);
+
+                           
+                           DB::table('tra_product_gmpinspectiondetails')
+                            ->where('gmp_productline_id', $gmp_productline_id)
+                            ->delete();
+
+                           $init_gmpProductDetails = DB::table('tra_product_gmpinspectiondetails')
+                            ->where('gmp_productline_id', $init_gmp_productline_id)
+                            ->get();
+
+                              foreach ($init_gmpProductDetails as $init_gmpProductDetail) {
+                                  $data = get_object_vars($init_gmpProductDetail);
+                                  $init_site_id = $data['manufacturing_site_id'];
+                                  unset($data['gmp_productline_id']);
+                                  unset($data['id']);
+                                  unset($data['init_site_id']);
+                                  unset($data['created_by']);
+                                  unset($data['created_on']);
+                                  unset($data['altered_by']);
+                                  unset($data['status_id']);
+                                  unset($data['dola']);
+                                  unset($data['portal_id']);
+                                  $data['manufacturing_site_id'] = $site_id;
+                                  $data['gmp_productline_id'] = $gmp_productline_id;
+                                  $data['created_by'] = $user_id;
+                                  $data['init_site_id'] = $init_site_id;
+                                  $gmp_productinspection_id=DB::table('tra_product_gmpinspectiondetails')->insertGetId($data);
+
+                          }
+                      }
+                    }
+
+
+
                     DB::table('tra_manufacturing_sites_personnel')
                         ->insert($init_personnelDetails);
                     DB::table('tra_mansite_otherdetails')
                         ->insert($init_businessDetails);
-                    DB::table('tra_manufacturing_sites_blocks')
-                        ->insert($init_blockDetails);
-                    DB::table('gmp_productline_details')
-                        ->insert($init_productLineDetails);
-                    DB::table('tra_product_gmpinspectiondetails')
-                        ->insert($init_gmpProductDetails);
-
-                    //Application_create
+                    //Applcation_create
                     $appCodeDetails = array(
                         'section_id' => $section_id,
                         'zone_id' => $zone_id,
@@ -1990,7 +2052,7 @@ $applicant_id = $siteDetails->applicant_id;
                     }
                     $application_id = $res['record_id'];
                     //DMS
-                    initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no, $user_id);
+                   // initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no, $user_id);
                     //add to submissions table
                     $submission_params = array(
                         'application_id' => $application_id,
