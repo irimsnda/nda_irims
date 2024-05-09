@@ -74,7 +74,7 @@ listeners: {
                     config: {
                         pageSize: 100,
                         proxy: {
-                        url: 'newreports/getSectionParams',
+                        url: 'configurations/getConfigParamFromTable',
                         extraParams: {
                             table_name: 'par_sections'
                         }

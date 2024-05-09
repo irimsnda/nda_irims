@@ -49,7 +49,7 @@ Ext.define('Admin.view.registers.views.drugshopregister.grid.DrugshopRegisterGri
         xtype: 'gridcolumn',
         dataIndex: 'certificate_no',
         name: 'certificate_no',
-        text: 'Certificate Number',
+        text: 'Premise Number',
         width: 150,
         filter: {
                 xtype: 'textfield',
@@ -72,8 +72,48 @@ Ext.define('Admin.view.registers.views.drugshopregister.grid.DrugshopRegisterGri
         filter: {
                 xtype: 'textfield',
             }
+    },{
+    xtype: 'gridcolumn',
+    dataIndex: 'region_name',
+    name: 'region_name',
+    text: 'Premise Region',
+    width: 200, 
+    filter: {
+        xtype: 'combobox',
+        queryMode: 'local',
+        displayField: 'name',
+        valueField: 'name',
+        name: 'id',
+        listeners: {
+            beforerender: {
+                fn: 'setConfigCombosStore',
+                config: {
+                    pageSize: 10000,
+                    proxy: {
+                        url: 'configurations/getConfigParamFromTable',
+                        extraParams: {
+                            table_name: 'par_premise_regions'
+                        }
+                    }
+                },
+                isLoad: true
+            },
+                change: function(combo, newValue, oldValue) {
+                    var grid = combo.up('grid');  
+                    var store = grid.getStore();
+                    store.clearFilter(); // Clear existing filters
+                    if (newValue) {
+                        store.addFilter({
+                            property: 'region_name',
+                            value: newValue,
+                            exactMatch: true // Ensure an exact match
+                        });
+                    }
+                }       
+            }
+        }
     },
-     {
+    {
         xtype: 'gridcolumn',
         dataIndex: 'email',
         name: 'email',
@@ -154,7 +194,7 @@ Ext.define('Admin.view.registers.views.drugshopregister.grid.DrugshopRegisterGri
                     xtype: 'combobox',
                     queryMode: 'local',
                     displayField: 'name',
-                    valueField: 'id',
+                    valueField: 'name',
                     name: 'registration_status',
                     listeners:
                      {
@@ -172,10 +212,18 @@ Ext.define('Admin.view.registers.views.drugshopregister.grid.DrugshopRegisterGri
                            isLoad: true
                         },
                                    
-                     
-                     change: function() {
-                        Ext.data.StoreManager.lookup('spreadsheetpremiseapplicationcolumnsstr').reload();
-                     }
+                    change: function(combo, newValue, oldValue) {
+                        var grid = combo.up('grid');  
+                        var store = grid.getStore();
+                        store.clearFilter(); // Clear existing filters
+                        if (newValue) {
+                            store.addFilter({
+                                property: 'registration_status',
+                                value: newValue,
+                                exactMatch: true // Ensure an exact match
+                            });
+                        }
+                    }
                  }                
             }
     },
@@ -189,7 +237,7 @@ Ext.define('Admin.view.registers.views.drugshopregister.grid.DrugshopRegisterGri
                     xtype: 'combobox',
                     queryMode: 'local',
                     displayField: 'name',
-                    valueField: 'id',
+                    valueField: 'name',
                     name: 'validity_status',
                     listeners:
                      {
@@ -208,10 +256,18 @@ Ext.define('Admin.view.registers.views.drugshopregister.grid.DrugshopRegisterGri
                         },
                                    
                      
-                     change: function(cmb, newValue, oldValue, eopts) {
-                        var grid = cmb.up('grid');
-                            grid.getStore().reload();
-                     }
+                     change: function(combo, newValue, oldValue) {
+                        var grid = combo.up('grid');  
+                        var store = grid.getStore();
+                        store.clearFilter(); // Clear existing filters
+                        if (newValue) {
+                            store.addFilter({
+                                property: 'validity_status',
+                                value: newValue,
+                                exactMatch: true // Ensure an exact match
+                            });
+                        }
+                    }
                  }                
             }
      }, 

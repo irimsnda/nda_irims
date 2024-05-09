@@ -85,7 +85,7 @@ export class SharedClinicaltrialComponent implements OnInit {
 
   sponsorInvestigatorData: any;
   clinicaltrailIMPProdData: any;
-
+  clinicaltrailHandlingProdData: any;
   sponsor_investigatortitle: any;
   checkifsponsor: any = false;
   checkifAllInvestigatorsponsor: any = false;
@@ -126,6 +126,7 @@ export class SharedClinicaltrialComponent implements OnInit {
   documentsUploadRequirementData: any;
   document_previewurl: any;
   registeredProductsData:any;
+  clinicaltrailComparatorPProdData:any;
   isDocumentPreviewDownloadwin: boolean = false;
 
   documentsVersionsUploadData: any;
@@ -538,9 +539,9 @@ export class SharedClinicaltrialComponent implements OnInit {
     this.onLoadClinicalTrialOtherdetails();
     
     this.onLoadinvestigatorCategoryData();
-
+    this.onLoadclinicaltrailComparatorProdData();
     this.onLoadclinicalProductCategoryData();
-
+    this.onLoadclinicaltrailHandlingProdData();
     this.onLoadcommonNameData();
     this.onLoadrouteOfAdminData();
     this.onLoadsiUnitsData();
@@ -600,7 +601,40 @@ export class SharedClinicaltrialComponent implements OnInit {
         data => {
           this.sectionsData = data;
         });
+  }  onLoadclinicaltrailComparatorProdData() {
+    //onLoadClinicalTrialOtherdetails
+    this.appService.getClinicalTrialOtherdetails({ table_name: 'wb_clinical_comparatorproducts', application_id: this.application_id }, 'getClinicaltrailIMPProdData')
+      .subscribe(
+        data => {
+          if (data.success) {
+            this.clinicaltrailComparatorPProdData = data.data;
+          }
+          else {
+            this.toastr.success(data.message, 'Alert');
+          }
+        },
+        error => {
+          return false
+        });
   }
+    onLoadclinicaltrailHandlingProdData() {
+    //onLoadClinicalTrialOtherdetails
+    this.appService.getClinicalTrialOtherdetails({ table_name: 'wb_clinicaltrial_Producthandling', application_id: this.application_id }, 'getClinicaltrailIMPHandlingProdData')
+      .subscribe(
+        data => {
+          if (data.success) {
+            this.clinicaltrailHandlingProdData = data.data;
+          }
+          else {
+            this.toastr.success(data.message, 'Alert');
+          }
+        },
+        error => {
+          return false
+        });
+  }
+
+
   onLoadctrethicsCommitteesData() {
     var data = {
       table_name: 'par_ctrethics_committees',
