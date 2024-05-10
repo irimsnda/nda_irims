@@ -98,7 +98,7 @@ export class CoPackedproductDetailsComponent extends SharedProductregistrationcl
     
     this.onLoadSampleSubmissionData();
     this.onLoadActivePharmaceuticalData();
-
+    this.onLoadtherapeuticGroupData(this.product_id);
 
     this.productcopackedDetailsFrm = new FormGroup({
       common_name_id: new FormControl('', Validators.compose([Validators.required])),
@@ -173,7 +173,6 @@ export class CoPackedproductDetailsComponent extends SharedProductregistrationcl
 onCommonNameCboSelect($event) {
   let common_namedetails =$event.selectedItem;
   this.onLoadATCCodesData(common_namedetails.id);
-  this.onLoadtherapeuticGroupData(common_namedetails.id);
 
 } 
   onLoaddosageForms() {
@@ -209,7 +208,7 @@ onCommonNameCboSelect($event) {
 
 onATCCboSelect($event) {
   let atccode_details =$event.selectedItem;
- this.productcopackedDetailsFrm.get('atc_code_id').setValue(atccode_details.id);
+  this.onLoadATCCodesData(atccode_details.id);
  this.productcopackedDetailsFrm.get('atc_code_description').setValue(atccode_details.description);
 }
 
@@ -227,6 +226,7 @@ onATCCboSelect($event) {
 onLoadATCCodesData(common_name_id) {
   var data = {
     table_name: 'par_atc_codes',
+    id: common_name_id 
   };
 
   this.config.onLoadConfigurationData(data)

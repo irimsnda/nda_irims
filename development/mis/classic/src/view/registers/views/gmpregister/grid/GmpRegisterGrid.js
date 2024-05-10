@@ -63,17 +63,7 @@ Ext.define('Admin.view.registers.views.gmpregister.grid.GmpRegisterGrid', {
         filter: {
                 xtype: 'textfield',
             }
-    },
-    {
-        xtype: 'gridcolumn',
-        dataIndex: 'manufacturing_site',
-        name: 'manufacturing_site',
-        text: 'Manufacturing Site',
-        width: 200,
-        filter: {
-                xtype: 'textfield',
-            }
-    }, {
+    },{
         xtype: 'gridcolumn',
         dataIndex: 'country',
         name: 'country',
