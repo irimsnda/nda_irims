@@ -8,7 +8,7 @@ Ext.define('Admin.view.research_operations.views.forms.GrantApplicationWizardFrm
         'Ext.layout.container.*',
         'Ext.toolbar.Fill'
     ],
-    title: 'Grant Application Form',
+    //title: 'Grant Application Form',
     layout: 'card',
     //bodyPadding: 3,
     flex: 1,
