@@ -125,8 +125,25 @@ Ext.define('Admin.view.authentication.Login', {
                             bind: '{password}',
                             allowBlank: false,
                             triggers: {
-                                glyphed: {
-                                    cls: 'trigger-glyph-noop auth-password-trigger'
+                                reveal: {
+                                    cls: 'x-fa fa-eye password-trigger',
+                                    handler: function(field) {
+                                        var inputEl = field.inputEl.dom;
+                                        var currentType = inputEl.getAttribute('type');
+                                        var newType = currentType === 'password' ? 'text' : 'password';
+                                        inputEl.setAttribute('type', newType);
+                                        var iconCls = newType === 'password' ? 'x-fa fa-eye-slash' : 'x-fa fa-eye';
+                                        this.setIconCls(iconCls);
+                                        field.inputEl.focus(); // Keep focus on the input field after toggling
+                                    }
+                                }
+                            },
+                            listeners: {
+                                afterrender: function(field) {
+                                    var triggerEl = field.getTrigger('reveal').getEl();
+                                    triggerEl.on('click', function() {
+                                        field.triggers.reveal.handler(field);
+                                    });
                                 }
                             }
                         },
