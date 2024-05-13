@@ -40,5 +40,6 @@
     "Workflow": true,
     "Enforcement": true,
     "Psur": true,
-    "PersonnelManagement": true
+    "PersonnelManagement": true,
+    "ResearchOperations": true
 }
