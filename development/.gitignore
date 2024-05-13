@@ -1,0 +1,14 @@
+mis/backend/storage/logs/laravel.log
+.vscode
+mis/backend/bootstrap/cache/config.php
+
+mis/backend/storage/api-docs/api-docs.json
+mis/bootstrap.js
+mis/classic.json
+mis/classic.jsonp
+mis/modern.json
+mis/modern.jsonp
+mis/backend/bootstrap/
+production/*
+mis/build/*
+*.json
