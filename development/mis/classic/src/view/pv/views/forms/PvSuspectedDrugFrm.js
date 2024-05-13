@@ -503,8 +503,32 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
         {
             xtype: 'textfield',
             name: 'dosage',
+            hidden:true,
             allowBlank:true,
             fieldLabel: 'Dosage'
+        },{
+            xtype: 'combo', anyMatch: true,
+            fieldLabel: 'Dosage',
+            name: 'dosage_form_id',
+            forceSelection: true,
+            allowBlank:true,
+            queryMode: 'local',
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                beforerender: {
+                    fn: 'setCompStore',
+                    config: {
+                        pageSize: 1000,
+                        proxy: {
+                            extraParams: {
+                                table_name: 'par_dosage_forms'
+                            }
+                        }
+                    },
+                    isLoad: true
+                }
+            }
         },
 
         {
@@ -669,7 +693,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                             name: 'indication_meddra_level_id',
                             forceSelection: true,
                             columnWidth: 0.5,
-                            hideLabel:true,
+                            //hideLabel:true,
                             allowBlank:false,
                             queryMode: 'local',
                             valueField: 'id',
@@ -706,7 +730,7 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                             forceSelection: true,
                             columnWidth: 0.5,
                             allowBlank:false,
-                            hideLabel:true,
+                            //hideLabel:true,
                             queryMode: 'local',
                             valueField: 'name',
                             displayField: 'name',
@@ -1145,9 +1169,10 @@ Ext.define('Admin.view.pv.views.forms.PvSuspectedDrugFrm', {
                     table_name: 'tra_pv_suspected_drugs',
                     storeID: 'pvSuspectedDrugStr',
                     //formBind: true,
+                    handler: 'doCreatePvWin',
                     ui: 'soft-green',
-                    action_url: 'configurations/saveConfigCommonData',
-                    handler: 'doCreatePvWin'
+                    action_url: 'configurations/saveConfigCommonData'
+                   
                 }
             ]
         }
