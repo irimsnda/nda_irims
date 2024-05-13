@@ -119,6 +119,7 @@ Ext.define('Admin.view.productregistration.views.grids.ManagerPrecheckingQueryPr
   }, {
       xtype: 'gridcolumn',
       dataIndex: 'common_name',
+      hidden:true,
       text: 'Common Name',
       flex: 1
   }, {
@@ -170,7 +171,7 @@ Ext.define('Admin.view.productregistration.views.grids.ManagerPrecheckingQueryPr
                   action: 'edit',
                   childXtype: '',
                   winTitle: 'Preview Application Queries',
-                  winWidth: '40%',
+                  winWidth: '90%',
                   isReadOnly: 1,
                   handler: 'previewproductApplicationQueries'
               }, {
@@ -180,7 +181,7 @@ Ext.define('Admin.view.productregistration.views.grids.ManagerPrecheckingQueryPr
                   action: 'edit',
                   childXtype: '',
                   winTitle: 'Product Information',
-                  winWidth: '40%',
+                  winWidth: '90%',
                   isReadOnly: 1,
                   handler: 'editpreviewProductInformation'
               },  {
@@ -190,7 +191,7 @@ Ext.define('Admin.view.productregistration.views.grids.ManagerPrecheckingQueryPr
                   action: 'edit',
                   childXtype: '',
                   winTitle: 'Product Information',
-                  winWidth: '40%',
+                  winWidth: '90%',
                   handler: 'printpreviewProductInformation'
               }, {
                   text: 'Application Documents',
@@ -199,7 +200,7 @@ Ext.define('Admin.view.productregistration.views.grids.ManagerPrecheckingQueryPr
                   action: 'edit',
                   childXtype: '',
                   winTitle: 'Application Documents',
-                  winWidth: '40%',
+                  winWidth: '90%',
                   isReadOnly: 1,
                   document_type_id: '',
                   handler: 'showPreviousUploadedDocs'

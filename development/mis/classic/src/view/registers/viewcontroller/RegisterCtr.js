@@ -429,12 +429,10 @@ loadPremisesRegisterFilters: function (btn) {
             success: function (response) {
                 var resp = JSON.parse(response.responseText);
                  if (resp.status == 'sucesss' || resp.status === 'success' ) {
-                  console.log('WE HAVE TO PRINT');
                    print_report('registers/printPremisesRegister?sub_module_id='+sub_module_id+'&product_classification_id='+product_classification_id+'&business_type_details='+7+'&filename='+btn.filename+'&heading='+btn.heading+'$title='+btn.title+'&approved_to='+approved_to+'&approved_from='+approved_from+'&module_id='+module_id+'&filename='+btn.filename+'&heading='+btn.heading+'&title='+btn.title+'&filter='+encodeURIComponent(JSON.stringify(filter_array)));
     
                }
                 else{
-                    console.log('Nothing to Print');
                      toastr.error(resp.message, 'Warning Response');
                 }
                

@@ -3,7 +3,7 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.DetailedPremiseRep
 	xtype: 'detailedpremisereportfrm',
 	margin: 2,
 	height: 500,
-	layout: 'fit',
+	//layout: 'fit',
 	referenceHolder: true,
 	reference: 'ReportDetailedExportWin',
     controller: 'productreportctr',

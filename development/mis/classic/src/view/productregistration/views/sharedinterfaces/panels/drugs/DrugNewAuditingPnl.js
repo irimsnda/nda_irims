@@ -112,7 +112,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
         }
     ],
     items: [{
-            title: 'Product Application & Quality Review Uploads',
+           // title: 'Product Application & Quality Review Uploads',
             region: 'center',
             xtype:'tabpanel', autoScroll: true,
             items: [{
@@ -120,20 +120,41 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                 autoScroll: true,
                 margin:5,
                 title: 'Preview Product Details'
-             },{ 
-                title: 'Quality Review',
-                itemId:'auditing_panel',
+             },
+
+            //  { 
+            //     title: 'Quality Review',
+            //     itemId:'auditing_panel',
+            //     layout:'fit', margin:5,
+            //     items:[{
+            //         xtype: 'qualitysummaryfrm',
+            //         title: 'Quality Overall Summary Dossier',
+            //         }
+            //     //     ,{
+            //     //     xtype: 'productAuditingUploadsGrid',
+                    
+            //     // }
+            //     ]
+            // },
+
+            {
+                title: 'Assessment Report',
+                itemId:'evaluation_panel',
+                xtype: 'tabpanel',
                 layout:'fit', margin:5,
                 items:[{
-                    xtype: 'qualitysummaryfrm',
+                    xtype: 'productqualityreviewDocUploadsGrid',
                     title: 'Quality Overall Summary Dossier',
-                    }
-                //     ,{
-                //     xtype: 'productAuditingUploadsGrid',
-                    
-                // }
-                ]
-            },{
+                },{
+                    xtype: 'productbioequivalencetrialreviewDocUploadsGrid',
+                    title: 'Bioequivalence Trial Information'
+                },{
+                    xtype: 'productEvaluationUploadsGrid',
+                    title: 'Assessment Report Uploads',
+                }]
+            },
+
+            {
                 title: 'Requests for Additional Information',
                 xtype: 'applicationqueriesgrid'
             }]
@@ -193,7 +214,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Product Application Documents',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     document_type_id: '',
                     handler: 'showPreviousNonGridPanelUploadedDocs'

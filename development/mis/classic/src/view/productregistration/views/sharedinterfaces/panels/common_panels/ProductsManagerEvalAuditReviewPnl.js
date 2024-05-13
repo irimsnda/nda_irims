@@ -3,7 +3,7 @@
  */
 Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.common_panels.ProductsManagerEvalAuditReviewPnl', {
     extend: 'Ext.panel.Panel',
-    title: 'Pending Applications',
+    //title: 'Pending Applications',
     xtype: 'productsmanagerevalauditreviewpnl',
     layout: 'fit',
     dockedItems: [{

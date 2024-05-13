@@ -1,6 +1,7 @@
 Ext.define('Admin.view.reports.appsreport.premisesreport.form.PremisesReportFiltersFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'premisesreportfiltersfrm',
+    itemId: 'premisesreportfiltersfrm',
     layout: 'column',
     defaults:{
         bodyPadding: 1,

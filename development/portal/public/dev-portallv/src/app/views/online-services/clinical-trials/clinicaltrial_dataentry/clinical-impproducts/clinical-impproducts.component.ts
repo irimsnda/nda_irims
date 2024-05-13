@@ -27,6 +27,7 @@ export class ClinicalImpproductsComponent implements OnInit {
   @Input() application_id: any;
   @Input() countries: any;
   @Input() clinicalProductCategoryData: any;
+  @Input() clinicaltrailComparatorPProdData: any;
   @Input() commonNameData: any;
   @Input() dosagFormData: any;
   @Input() routeOfAdminData: any;
@@ -39,8 +40,7 @@ export class ClinicalImpproductsComponent implements OnInit {
   iMPHandlingProductDetailsFrm:FormGroup;
   addproductCommonNameModal:boolean;
   clinicaltrailPlaceboProdData:any;
-  clinicaltrailComparatorPProdData:any;
-  clinicaltrailHandlingProdData:any;
+  @Input() clinicaltrailHandlingProdData:any;
   isClinicalSitesDetailsVisible:boolean=false;
   isReadOnlyProduct:boolean=false;
   district_id:number;

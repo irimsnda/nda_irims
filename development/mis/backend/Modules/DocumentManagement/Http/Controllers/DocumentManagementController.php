@@ -250,7 +250,6 @@ class DocumentManagementController extends Controller
         return response()->json($res);
     }
    function getApplicationDocumentsUploads($req){
-        
             $application_code =  $req->input('application_code');//20412100
             $workflow_stage = $req->input('workflow_stage');
             $doc_type_id = $req->input('document_type_id');
@@ -309,8 +308,10 @@ class DocumentManagementController extends Controller
             $docTypes = convertAssArrayToSimpleArray($docTypes, 'doctype_id');
     
             if (validateIsNumeric($doc_type_id)) {
-               // $where['t1.document_type_id'] = $doc_type_id;
+               $where['t1.document_type_id'] = $doc_type_id;
             }
+
+           
                 
             if(validateIsNumeric($parent_id)){
                 $qry = DB::table('tra_application_uploadeddocuments as t1')
@@ -325,11 +326,16 @@ class DocumentManagementController extends Controller
             }else{
 
                 $doc_requirments = DB::table('tra_documentupload_requirements as t1')
-                                ->where($where)
-                                ->whereIn('document_type_id', $docTypes)
-                                ->get();
+                    ->where($where);
 
-               
+                if ($module_id == 1) {
+                    if (!validateIsNumeric($doc_type_id)) {
+                        // Remove the condition where document_type_id not in 34 and 35
+                        $doc_requirments->whereNotIn('document_type_id', [34, 35]);
+                    }
+                }
+
+                 $doc_requirments = $doc_requirments->whereIn('document_type_id', $docTypes)->get();
                 foreach ($doc_requirments as $doc_req) {
                     $qry = DB::table('tra_application_documents as t1')
                         ->join('tra_documentupload_requirements as t2', 't1.document_requirement_id', 't2.id')
@@ -350,7 +356,16 @@ class DocumentManagementController extends Controller
                         t4.node_ref,t4.initial_file_name,t4.file_name,t4.initial_file_name as file_name, t2.module_id,t2.sub_module_id,t2.section_id,t4.file_type,t1.uploaded_on,CONCAT_WS(' ',decrypt(t5.first_name),decrypt(t5.last_name)) as uploaded_by,t2.is_mandatory,
                          t2.document_type_id,t3.name as document_type, t2.name as document_requirement, t4.id,t4.is_directory, case when (select count(id) from tra_application_uploadeddocuments q where q.parent_id = t4.id) = 0 then false else true end leaf"))
                         ->where([ 't1.application_code'=>$application_code]);
-                       // ->where('t4.parent_id', 0);
+
+                        
+                        // ->where($where);
+
+                        // if ($module_id == 1) {
+                        //     if (!validateIsNumeric($doc_type_id)) {
+                        //         // Remove the condition where document_type_id not in 34 and 35
+                        //         $qry->whereNotIn('t2.document_type_id', [34, 35]);
+                        //     }
+                        // }
 
                     $res = $qry->get();
 

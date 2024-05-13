@@ -72,7 +72,7 @@ Ext.define('Admin.view.registers.views.gmpregister.form.GmpRegisterFiltersFrm', 
                     config: {
                         pageSize: 100,
                         proxy: {
-                        url: 'newreports/getSectionParams',
+                        url: 'configurations/getConfigParamFromTable',
                         extraParams: {
                             table_name: 'par_sections'
                         }

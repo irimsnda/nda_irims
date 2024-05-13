@@ -116,6 +116,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.MedWithdrawa
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'common_name',
+        hidden:true,
         text: 'Common Name',
         width: 150
     }, {

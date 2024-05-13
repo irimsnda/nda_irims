@@ -126,15 +126,19 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductPackagi
                          if (record && record.get('has_quantity') === 1) { 
                                form.down('textfield[name=no_of_packs]').setVisible(true);
                                form.down('combo[name=si_unit_id]').setVisible(true);
-                                form.down('combo[name=si_unit_id]').allowBlank = false;
+                               form.down('combo[name=si_unit_id]').allowBlank = false;
                                form.down('combo[name=si_unit_id]').validate();
-                                form.down('textfield[name=no_of_packs]').allowBlank = false;
+                               form.down('textfield[name=no_of_packs]').allowBlank = false;
                                form.down('textfield[name=no_of_packs]').validate();
+                               form.down('textfield[name=no_of_units]').setValue(1);
+                               form.down('textfield[name=no_of_units]').setReadOnly(true);
                         }else{
                             form.down('textfield[name=no_of_packs]').setVisible(false);
                             form.down('combo[name=si_unit_id]').setVisible(false);
                             form.down('textfield[name=no_of_packs]').allowBlank = true;
                             form.down('combo[name=si_unit_id]').allowBlank = true;
+                            form.down('textfield[name=no_of_units]').setValue('');
+                            form.down('textfield[name=no_of_units]').setReadOnly(false);
                     }
             }
         }

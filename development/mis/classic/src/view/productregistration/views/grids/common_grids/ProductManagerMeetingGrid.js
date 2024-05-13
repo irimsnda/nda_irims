@@ -53,6 +53,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManag
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'common_name',
+        hidden:true,
         text: 'Common Name',
         flex: 1
     }, {
@@ -67,11 +68,13 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManag
         flex: 1
     }, {
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'evaluator_recommendation',
         text: '1st Assessment Recommendation',
         flex: 1
     }, {
         xtype: 'gridcolumn',
+        hidden:true,
         dataIndex: 'auditor_recommendation',
         text: 'Quality Review Recommendation',
         flex: 1
@@ -94,7 +97,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManag
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Product Information',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     handler: 'editpreviewProductInformation'
                 }, {
@@ -112,7 +115,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManag
                                 action: 'edit',
                                 childXtype: '',
                                 winTitle: 'Application Documents',
-                                winWidth: '40%',
+                                winWidth: '90%',
                                 isReadOnly: 1,
                                 handler: 'funcPrevEvaluationReportUpload'
                             },
@@ -154,7 +157,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManag
                                 tooltip: 'Quality Review Reports/Upload',
                                 action: 'edit',
                                 childXtype: '',
-                                winWidth: '40%',
+                                winWidth: '90%',
                                 isReadOnly: 1,
                                 document_type_id: 9,
                                 winTitle: 'Quality Review Reports/Upload',
@@ -194,7 +197,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManag
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Preview Application Queries',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     handler: 'previewproductApplicationQueries'
                 }, {
@@ -204,7 +207,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductManag
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Application Documents',
-                    winWidth: '40%',
+                    winWidth: '90%',
                     isReadOnly: 1,
                     handler: 'funcPrevGridApplicationDocuments'
                 }, {

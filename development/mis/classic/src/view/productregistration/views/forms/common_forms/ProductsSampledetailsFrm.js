@@ -107,7 +107,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.ProductsSamp
     // },
     {
         xtype:'fieldcontainer',
-        columnWidth: 0.5,
+        columnWidth: 1,
         layout: {
             type: 'hbox'
         },
