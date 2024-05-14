@@ -336,7 +336,7 @@ class ResearchOperationsController extends Controller
                 'application_code' => $req->input('application_code')
             );
 
-            $qry = DB::TABLE($table_name . ' as t1')
+            $qry = DB::table($table_name . ' as t1')
             ->where('t1.application_code', $application_code);
             $res = array(
                 'success' => true,
@@ -387,6 +387,7 @@ class ResearchOperationsController extends Controller
         try{
             $id=$req->input('id');
             $table_name = $req ->input('table_name'); 
+            $user_id = \Auth::user()->id;
             $grant_application_params = array( 
                 'name' => $req->input('name'),
                 'email' => $req->input('email'),
@@ -403,32 +404,43 @@ class ResearchOperationsController extends Controller
                 'follow_up_actions' => $req->input('follow_up_actions'),
                 );
 
-            function updateRecord($table_name, $id, $params){
-                DB::table($table_name)->where('id', $id)->update($params);
-                return array("success" => true,
-                "message" => "Data updated successfully");
-            }
-
                    
-            $res = ($id) ? updateRecord($table_name, $id, $grant_application_params) : insertRecord($table_name, $grant_application_params);
+            $where = array(
+                'id' => $id
+            );
+            $res = array();
+            if (isset($id) && $id != "") {
+                if (recordExists($table_name, $where)) {
+                    $grant_application_params['dola'] = Carbon::now();
+                    $grant_application_params['altered_by'] = $user_id;
+                    $previous_data = getPreviousRecords($table_name, $where);
+                    if ($previous_data['success'] == false) {
+                        return $previous_data;
+                    }
+                    $previous_data = $previous_data['results'];
+                    $res = updateRecord($table_name, $previous_data, $where, $grant_application_params, $user_id);
+                }
+            } else {
+                $res = insertRecord($table_name, $grant_application_params, $user_id);
+            }
             
 
         }
-        catch(\Exception $exception){
+         catch(\Exception $exception){
             $res = array(
-              'success' => false,
-              'message' => $exception->getMessage()
-            );
-
-        } catch (\Throwable $throwable) {
-            $res = array(
-              'success' => false,
-              'message' => $throwable->getMessage()
+                "success" => false,
+                "message" => $exception->getMessage()
             );
         }
-
+        catch(\Throwable $throwable) {
+            $res = array(
+                "success" => false,
+                "message" => $throwable->getMessage()
+            );
+        }    
         return \response()->json($res);
     }
+
 
     public function deleteGrantApplication(Request $req){
         try {

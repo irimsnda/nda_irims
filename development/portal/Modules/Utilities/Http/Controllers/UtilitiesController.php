@@ -245,8 +245,8 @@ class UtilitiesController extends Controller
                              $view_id = $this->generateApplicationViewID(); 
                              $tracking_no = $records->tracking_no;
                              $zone_id = 1;
-                             if(isset($record->zone_id)){
-                                 $zone_id = $record->zone_id;
+                             if(isset($records->zone_id)){
+                                 $zone_id = $records->zone_id;
                              }
                              
                              $onlinesubmission_data  = array('application_code'=>$records->application_code,
