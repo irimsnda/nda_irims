@@ -1,6 +1,7 @@
 Ext.define('Admin.view.reports.appsreport.productreport.form.DetailedProductReportFiltersFrm', {
 	extend: 'Ext.form.Panel',
 	xtype: 'detailedproductreportfrm',
+    itemId: 'detailedproductreportfrm',
 	margin: 2,
 	height: 500,
 	layout: 'fit',

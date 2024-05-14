@@ -613,7 +613,11 @@ public function getProductsQualitySummaryDetails(Request $req){
                   ->where(array('t3.module_id'=>$module_id));
                 $sql = $sql->where($requestData);
 
-            } 
+            }
+            if($table_name == 'par_inclusions_reasons'){
+                $ingredient_id = $req->ingredient_id;
+                $sql->join('par_inclusions_ingredients as t2', 't1.id', '=', 't2.inclusion_reason_id')->where(array('t2.ingredient_id'=>$ingredient_id));
+            }
 
             if($table_name == 'par_variation_reportingtypes'){
                     

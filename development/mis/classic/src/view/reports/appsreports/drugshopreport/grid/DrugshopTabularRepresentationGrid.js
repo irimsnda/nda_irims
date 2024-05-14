@@ -2,6 +2,7 @@ Ext.define('Admin.view.reports.appsreports.drugshopreport.grid.DrugshopTabularRe
     extend: 'Ext.grid.Panel',
     controller: 'productreportctr',
     xtype: 'drugshoptabularrepresentationgrid',
+    itemId: 'drugshoptabularrepresentationgrid',
     autoScroll: true,
     autoHeight: true,
     width: '100%',
@@ -175,20 +176,20 @@ Ext.define('Admin.view.reports.appsreports.drugshopreport.grid.DrugshopTabularRe
                         var grid=this.up('grid'),
                         tab = grid.up('tabpanel'),
                         panel = tab.up('panel'),
-                        filter=panel.down('form'),
+                        form=Ext.ComponentQuery.query("#drugshopreportfiltersfrm")[0],
                                 
-                                   sub_module_id = panel.down('combo[name=sub_module_id]').getValue(),  
-                                   from_date = panel.down('datefield[name=from_date]').getValue(),
-                                  product_classification_id = panel.down('combo[name=product_classification_id]').getValue(), 
-                                   to_date = panel.down('textfield[name=to_date]').getValue(),
-                                   module_id=panel.down('hiddenfield[name=module_id]').getValue();
+                                   sub_module_id = form.down('combo[name=sub_module_id]').getValue(),  
+                                   from_date = form.down('datefield[name=from_date]').getValue(),
+                                   product_classification_id = form.down('combo[name=product_classification_id]').getValue(), 
+                                   to_date = form.down('textfield[name=to_date]').getValue(),
+                                   module_id=form.down('hiddenfield[name=module_id]').getValue();
                               
-                              frm = filter.getForm();
+                              frm = form.getForm();
                               if (frm.isValid()) {
                              store.getProxy().extraParams = {
 
                                 module_id: module_id,
-                                section_id:section_id,
+                                product_classification_id:product_classification_id,
                                 sub_module_id: sub_module_id,
                                 business_type_details:7,
                                 from_date: from_date,

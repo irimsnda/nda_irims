@@ -65,7 +65,7 @@ Ext.define('Admin.view.reports.appsreports.productreport.grid.DetailedProductVie
         xtype: 'gridcolumn',
         dataIndex: 'commonName',
         name: 'commonName',
-        text: 'CommonName',
+        text: 'Common Name',
         width: 200,
          filter: {
                 xtype: 'textfield',
@@ -140,88 +140,18 @@ Ext.define('Admin.view.reports.appsreports.productreport.grid.DetailedProductVie
                      }
                  }                
             }
-    },
-    
-    {
-        xtype: 'gridcolumn',
-        dataIndex: 'SubCategory',
-        name: 'SubCategory',
-        text: 'SubCategory',
-        width: 200, hidden: true,
-        filter: {
-            xtype: 'combobox',
-                    queryMode: 'local',
-                    displayField: 'name',
-                    valueField: 'id',
-                    name: 'SubCategory_id',
-                    listeners:
-                     {
-                         afterrender: {//getConfigParamFromTable
-                            fn: 'setConfigCombosStore',
-                            config: {
-                                pageSize: 10000,
-                                proxy: {
-                                    url: 'configurations/getConfigParamFromTable',
-                                     extraParams: {
-                                        table_name: 'par_subproduct_categories'
-                                    }
-                                }
-                            },
-                            isLoad: true
-                         },
-                     change: function() {
-                        Ext.data.StoreManager.lookup('spreadsheetproductapplicationcolumnsstr').reload();
-                     }
-                 }
-               }
-
-     },
-     {
-        xtype: 'gridcolumn',
-        dataIndex: 'SpecialCategory',
-        name: 'SpecialCategory',
-        text: 'SpecialCategory',
-        width: 200, hidden: true,
-        filter: {
-            xtype: 'combobox',
-                    queryMode: 'local',
-                    displayField: 'name',
-                    valueField: 'id',
-                    name: 'SpecialCategory_id',
-                    listeners:
-                     {
-                         afterrender: {//getConfigParamFromTable
-                            fn: 'setConfigCombosStore',
-                            config: {
-                                pageSize: 10000,
-                                proxy: {
-                                    url: 'configurations/getConfigParamFromTable',
-                                     extraParams: {
-                                        table_name: 'par_productspecial_categories'
-                                    }
-                                }
-                            },
-                             isLoad: true
-                         },
-                     change: function() {
-                        Ext.data.StoreManager.lookup('spreadsheetproductapplicationcolumnsstr').reload();
-                     }
-                 }
-                
-            }
-    },
-     {
+    },{
         xtype: 'gridcolumn',
         dataIndex: 'ProductType',
         name: 'ProductType',
-        text: 'ProductType',
+        text: 'Product Type',
         width: 200, hidden: true,
          filter: {
             xtype: 'combobox',
                     queryMode: 'local',
                     displayField: 'name',
                     valueField: 'id',
-                    name: 'ProductType_id',
+                    name: 'product_origin_id',
                     listeners:
                      {
                          afterrender: {//getConfigParamFromTable
@@ -248,13 +178,13 @@ Ext.define('Admin.view.reports.appsreports.productreport.grid.DetailedProductVie
         xtype: 'gridcolumn',
         dataIndex: 'ProductForm',
         name: 'ProductForm',
-        text: 'ProductForm',
+        text: 'Product Form',
         width: 150, hidden: true,
         filter: {
             xtype: 'combobox',
                     queryMode: 'local',
                     displayField: 'name',
-                    name: 'ProductForm_id',
+                    name: 'dosage_form_id',
                     valueField: 'id',
                     listeners:
                      {
@@ -277,21 +207,44 @@ Ext.define('Admin.view.reports.appsreports.productreport.grid.DetailedProductVie
                  }
                 
             }
-    },
-    {
-        xtype: 'gridcolumn',
-        dataIndex: 'physical_description',
-        name: 'physical_description',
-        text: 'Physical Description',
-        width: 150, hidden: true,
-        filter: {
-                xtype: 'textfield',
-                }
-    },{
+    }, {
         xtype: 'gridcolumn',
         dataIndex: 'StorageCondition',
         name: 'StorageCondition',
         text: 'Storage Condition',
+        width: 150, hidden: true,
+        filter: {
+            xtype: 'combobox',
+                    queryMode: 'local',
+                    displayField: 'name',
+                    name: 'storage_condition',
+                    valueField: 'id',
+                    listeners:
+                     {
+                         afterrender: {//getConfigParamFromTable
+                           fn: 'setConfigCombosStore',
+                            config: {
+                                pageSize: 10000,
+                                proxy: {
+                                    url: 'configurations/getConfigParamFromTable',
+                                    extraParams: {
+                                        table_name: 'par_storage_conditions'
+                                    }
+                                }
+                            },
+                            isLoad: true
+                        },
+                     change: function() {
+                        Ext.data.StoreManager.lookup('spreadsheetproductapplicationcolumnsstr').reload();
+                     }
+                 }
+                
+            }
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'physical_description',
+        name: 'physical_description',
+        text: 'Physical Description',
         width: 150, hidden: true,
         filter: {
                 xtype: 'textfield',
@@ -495,39 +448,6 @@ Ext.define('Admin.view.reports.appsreports.productreport.grid.DetailedProductVie
         filter: {
                 xtype: 'textfield',
             }
-    },  {
-        xtype: 'gridcolumn',
-        dataIndex: 'issueplace',
-        name: 'issueplace',
-        text: 'Place of Issue',
-        width: 210, hidden: true,
-         filter: {
-            xtype: 'combobox',
-                    queryMode: 'local',
-                    displayField: 'name',
-                    valueField: 'id',
-                    name: 'zone_id',
-                    listeners:
-                     {
-                         beforerender: {//getConfigParamFromTable
-                            fn: 'setConfigCombosStore',
-                            config: {
-                                pageSize: 10000,
-                                proxy: {
-                                    url: 'configurations/getConfigParamFromTable',
-                                    extraParams: {
-                                        table_name: 'par_zones'
-                                    }
-                                }
-                            },
-                            isLoad: true
-                        },
-                     change: function() {
-                        Ext.data.StoreManager.lookup('spreadsheetproductapplicationcolumnsstr').reload();
-                     }
-                 }
-                
-            }
     },{
         xtype: 'datecolumn',
         dataIndex: 'submission_date',
@@ -708,13 +628,20 @@ Ext.define('Admin.view.reports.appsreports.productreport.grid.DetailedProductVie
         filter: {
                 xtype: 'textfield',
             }
-    },
-  
-    {
+    }, {
         xtype: 'gridcolumn',
-        dataIndex: 'therapeutic_code',
-        name: 'therapeutic_code',
-        text: 'Therapeutic  Code',
+        dataIndex: 'route_of_administration',
+        name: 'route_of_administration',
+        text: 'Route of Administration',
+        width: 150,
+        filter: {
+            xtype: 'textfield',
+        }
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'atc_code',
+        name: 'atc_code',
+        text: 'ATC Code',
         width: 150,
         filter: {
             xtype: 'textfield',

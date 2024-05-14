@@ -82,7 +82,7 @@ Ext.define('Admin.view.reports.appsreport.drugshopreport.panel.DrugshopReportPnl
                         url: 'configurations/getConfigParamFromTable',
                         extraParams: {
                             table_name: 'par_process_classifications',
-                            filters: JSON.stringify({'module_id':29})
+                           // filters: JSON.stringify({'module_id':29})
                         }
                        }
                     },
@@ -101,7 +101,7 @@ Ext.define('Admin.view.reports.appsreport.drugshopreport.panel.DrugshopReportPnl
             xtype:'button',
             ui: 'soft-green',
             text: 'Preview & Export Detailed Report',
-            handler: 'ExpPremiseWinShow',
+            handler: 'ExpDrugshopWinShow',
             childXtype: 'detaileddrugshopreportfiltersfrm',
             winTitle: 'Export Detailed Report',
             name: 'DetailedExport',

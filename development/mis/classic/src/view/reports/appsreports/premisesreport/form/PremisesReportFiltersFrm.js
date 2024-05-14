@@ -79,7 +79,8 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.PremisesReportFilt
                         proxy: {
                         url: 'newreports/getSectionParams',
                         extraParams: {
-                            table_name: 'par_business_types'
+                            table_name: 'par_business_types',
+                            is_online: 1
                         }
                        }
                     },
@@ -94,7 +95,6 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.PremisesReportFilt
                 afterrender: function(combo) {
                             combo.select(combo.getStore().getAt(0));    
                         },
-                change: 'loadBusinessTypeDetailsCombo',
 
             }
         },{
@@ -145,7 +145,7 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.PremisesReportFilt
             labelAlign : 'top',
             format: 'Y-m-d',
             name: 'from_date',
-            allowBlank: false,
+            allowBlank: true,
             minValue: new Date(2020, 6)
         },{
             xtype: 'datefield',
@@ -153,7 +153,7 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.PremisesReportFilt
             format: 'Y-m-d',
             emptyText: 'Date To',
             labelAlign : 'top',
-            allowBlank: false,
+            allowBlank: true,
             minValue: new Date(2020, 6),
             maxValue: new Date()
         },{ 

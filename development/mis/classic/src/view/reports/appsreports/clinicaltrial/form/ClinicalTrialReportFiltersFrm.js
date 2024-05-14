@@ -1,6 +1,7 @@
 Ext.define('Admin.view.reports.appsreport.clinicaltrialreport.form.ClinicalTrialReportFiltersFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'clinicaltrialreportfiltersfrm',
+    itemId: 'clinicaltrialreportfiltersfrm',
     layout: 'fit',
     defaults:{
         bodyPadding: 1,
@@ -67,7 +68,7 @@ Ext.define('Admin.view.reports.appsreport.clinicaltrialreport.form.ClinicalTrial
                     labelAlign : 'top',
                     format: 'Y-m-d',
                     name: 'from_date',
-                    allowBlank: false,
+                    allowBlank: true,
                     minValue: new Date(2020, 6)
                 },{
                     xtype: 'datefield',
@@ -75,7 +76,7 @@ Ext.define('Admin.view.reports.appsreport.clinicaltrialreport.form.ClinicalTrial
                     format: 'Y-m-d',
                     emptyText: 'Date To',
                     labelAlign : 'top',
-                    allowBlank: false,
+                    allowBlank: true,
                     minValue: new Date(2020, 6),
                     maxValue: new Date()
                 },{ 

@@ -69,65 +69,42 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
           
    },
    
-
     loadProductReportFilters: function (btn) {
-      var grid = btn.up('form'),
-        sub_module_id = grid.down('combo[name=sub_module_id]').getValue(),
-        prodclass_category = grid.down('combo[name=prodclass_category]').getValue(),
-        section_id = grid.down('combo[name=section_id]').getValue(),
-        classification_category = grid.down('combo[name=classification_category]').getValue(),
-        product_origin_id = grid.down('combo[name=product_origin_id]').getValue(),
-        from_date = grid.down('datefield[name=from_date]').getValue(),
-        to_date = grid.down('datefield[name=to_date]').getValue(),
-        panel = grid.up('panel'),
-        tabs = panel.down('producttabpnl'),
-        gridStr = tabs.down('producttabularrepresentationgrid').getStore(),
+        var grid = btn.up('form'),
+            sub_module_id = grid.down('combo[name=sub_module_id]').getValue(),
+            prodclass_category = grid.down('combo[name=prodclass_category]').getValue(),
+            section_id = grid.down('combo[name=section_id]').getValue(),
+            classification_category = grid.down('combo[name=classification_category]').getValue(),
+            product_origin_id = grid.down('combo[name=product_origin_id]').getValue(),
+            from_date = grid.down('datefield[name=from_date]').getValue(),
+            to_date = grid.down('datefield[name=to_date]').getValue(),
+            panel = grid.up('panel'),
+            tabs = Ext.ComponentQuery.query("#producttabpnl")[0]; // Removed 'var' before 'tabs'
+            var gridStr = Ext.ComponentQuery.query("#producttabularrepresentationgrid")[0].getStore();
+            var graphStr = Ext.getStore('productReportCartesianStr'); 
+            var module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
+            gridStr.removeAll();
+            gridStr.load({
+                params:{
+                    sub_module_id:sub_module_id,
+                    module_id: module_id,
+                    section_id: section_id,
+                    classification_category: classification_category,
+                    from_date: from_date,
+                    to_date: to_date,
+                    prodclass_category: prodclass_category,
+                    product_origin_id: product_origin_id
 
-        //graphStr = tabs.down('cartesian').getStore();
+                    },
+                      
+                });
 
-           
-
-        module_id=panel.down('hiddenfield[name=module_id]').getValue();
-
-        gridStr.removeAll();
-        gridStr.load({
-            params:{
-                sub_module_id:sub_module_id,
-                module_id: module_id,
-                section_id: section_id,
-                classification_category: classification_category,
-                from_date: from_date,
-                to_date: to_date,
-                prodclass_category: prodclass_category,
-                product_origin_id: product_origin_id
-
-                },
-                  
-            });
-
-         
-        // graphStr.removeAll();
-        // graphStr.load({
-        //     params:{
-        //         sub_module_id:sub_module_id,
-        //         module_id: module_id,
-        //         section_id: section_id,
-        //         classification_category: classification_category,
-        //         from_date: from_date,
-        //         to_date: to_date,
-        //         prodclass_category: prodclass_category,
-        //         product_origin_id: product_origin_id
-
-        //         },
-                  
-        //     });
                
     },
      reloadProductCartesianFilters: function (btn) {
+
         var chart = btn.up('panel'), 
-        tabs = chart.up('producttabpnl'),
-        panelmain=tabs.up('panel'),
-        form=panelmain.down('form'),
+        form=Ext.ComponentQuery.query("#productreportfiltersfrm")[0],
         sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
         prodclass_category = form.down('combo[name=prodclass_category]').getValue(),
         section_id = form.down('combo[name=section_id]').getValue(),
@@ -135,11 +112,8 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
         product_origin_id = form.down('combo[name=product_origin_id]').getValue(),
         from_date = form.down('datefield[name=from_date]').getValue(),
         to_date = form.down('datefield[name=to_date]').getValue(),
-        panel = chart.up('panel'),
-        tabs = panel.down('producttabpnl'),
-        graphStr = chart.down('cartesian').getStore();  
-
-        module_id=panelmain.down('hiddenfield[name=module_id]').getValue();
+        graphStr = Ext.getStore('productReportCartesianStr'); 
+        module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
         frm = form.getForm();
         if (frm.isValid()) {
         graphStr.removeAll();
@@ -415,51 +389,45 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
         }
                
     },
-    
-     loadPremisesReportFilters: function (btn) {
-      var grid = btn.up('form'),
-        sub_module_id = grid.down('combo[name=sub_module_id]').getValue(),
-        business_type_details = grid.down('combo[name=business_type_details]').getValue(),
-       // section_id = grid.down('combo[name=section_id]').getValue(),
-        from_date = grid.down('datefield[name=from_date]').getValue(),
-        to_date = grid.down('datefield[name=to_date]').getValue(),
-        panel = grid.up('panel');
-        var tabs =Ext.ComponentQuery.query("#premisestabpnl")[0];
-        var gridStr = Ext.ComponentQuery.query("#premisestabularrepresentationgrid")[0].getStore();
-        graphStr =Ext.getStore('premiseReportCartesianStr');
-        module_id=Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue();
+        
+    loadPremisesReportFilters: function (btn) {
+        var grid = btn.up('form'),
+            sub_module_id = grid.down('combo[name=sub_module_id]').getValue(),
+            business_type_details = grid.down('combo[name=business_type_details]').getValue(),
+            product_classification_id = grid.down('combo[name=product_classification_id]').getValue(),
+            from_date = grid.down('datefield[name=from_date]').getValue(),
+            to_date = grid.down('datefield[name=to_date]').getValue(),
+            panel = grid.up('panel'),
+            tabs = Ext.ComponentQuery.query("#premisestabpnl")[0]; // Removed 'var' before 'tabs'
+            var gridStr = Ext.ComponentQuery.query("#premisestabularrepresentationgrid")[0].getStore();
+            var graphStr = Ext.getStore('premiseReportCartesianStr'); 
+            var module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
 
-        gridStr.removeAll();
-        gridStr.load({
-            params:{
-                sub_module_id:sub_module_id,
-               // section_id:section_id,
-                module_id: module_id,
-                business_type_details: business_type_details,
-                from_date: from_date,
-                to_date: to_date
-                
-
+            gridStr.removeAll();
+            gridStr.load({
+                params:{
+                    sub_module_id: sub_module_id,
+                    product_classification_id: product_classification_id,
+                    module_id: module_id,
+                    business_type_details: business_type_details,
+                    from_date: from_date,
+                    to_date: to_date
                 },
-                  
             });
 
-        graphStr.removeAll();
-        graphStr.load({
-            params:{
-                sub_module_id:sub_module_id,
-                module_id: module_id,
-               // section_id:section_id,
-                business_type_details: business_type_details,
-                from_date: from_date,
-                to_date: to_date
-                
-
+            graphStr.removeAll();
+            graphStr.load({
+                params:{
+                    sub_module_id: sub_module_id,
+                    module_id: module_id,
+                    product_classification_id: product_classification_id,
+                    business_type_details: business_type_details,
+                    from_date: from_date,
+                    to_date: to_date
                 },
-                  
             });
-               
     },
+
 
      loadDrugshopReportFilters: function (btn) {
       var grid = btn.up('form'),
@@ -468,12 +436,13 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
         from_date = grid.down('datefield[name=from_date]').getValue(),
         to_date = grid.down('datefield[name=to_date]').getValue(),
         panel = grid.up('panel');
-        tabs = panel.down('drugshoptabpnl');
-        gridStr = tabs.down('drugshoptabularrepresentationgrid').getStore(),
-        graphStr = tabs.down('cartesian').getStore();  
-        module_id=panel.down('hiddenfield[name=module_id]').getValue();
-
+        tabs = Ext.ComponentQuery.query("#drugshoptabpnl")[0]; // Removed 'var' before 'tabs'
+        gridStr = Ext.ComponentQuery.query("#drugshoptabularrepresentationgrid")[0].getStore();
+        graphStr = Ext.getStore('drugshopReportCartesianStr'); 
+        module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
         gridStr.removeAll();
+
+        console.log(graphStr);
         gridStr.load({
             params:{
                 sub_module_id:sub_module_id,
@@ -493,7 +462,7 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
                 sub_module_id:sub_module_id,
                 module_id: module_id,
                 product_classification_id:product_classification_id,
-                business_type_details: 7,
+                business_type_details:7,
                 from_date: from_date,
                 to_date: to_date
                 
@@ -506,19 +475,14 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
 
     reloadDrugshopCartesianFilters: function (btn) {
         var chart = btn.up('panel'), 
-        tabs = chart.up('drugshoptabpnl'),
-        panelmain=tabs.up('panel'),
-        form=panelmain.down('form'),
+        form=Ext.ComponentQuery.query("#drugshopreportfiltersfrm")[0],
         sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
-        product_classification_id = form.down('combo[name=product_classification_id]').getValue(),
         product_classification_id = form.down('combo[name=product_classification_id]').getValue(),
         from_date = form.down('datefield[name=from_date]').getValue(),
         to_date = form.down('datefield[name=to_date]').getValue(),
-        panel = chart.up('panel'),
-        tabs = panel.down('drugshoptabpnl'),
-        graphStr = chart.down('cartesian').getStore();  
-
-        module_id=panelmain.down('hiddenfield[name=module_id]').getValue();
+        
+        graphStr = Ext.getStore('drugshopReportCartesianStr'); 
+        module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
         frm = form.getForm();
         if (frm.isValid()) {
         graphStr.removeAll();
@@ -544,19 +508,14 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
 
     reloadPremisesCartesianFilters: function (btn) {
         var chart = btn.up('panel'), 
-        tabs = chart.up('premisestabpnl'),
-        panelmain=tabs.up('panel'),
-        form=panelmain.down('form'),
+        form=Ext.ComponentQuery.query("#premisesreportfiltersfrm")[0],
         sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
-        section_id = form.down('combo[name=section_id]').getValue(),
+        product_classification_id = form.down('combo[name=product_classification_id]').getValue(),
         business_type_details = form.down('combo[name=business_type_details]').getValue(),
         from_date = form.down('datefield[name=from_date]').getValue(),
         to_date = form.down('datefield[name=to_date]').getValue(),
-        panel = chart.up('panel'),
-        tabs = panel.down('premisestabpnl'),
-        graphStr = chart.down('cartesian').getStore();  
-
-        module_id=panelmain.down('hiddenfield[name=module_id]').getValue();
+        graphStr = Ext.getStore('premiseReportCartesianStr'); 
+        module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
         frm = form.getForm();
         if (frm.isValid()) {
         graphStr.removeAll();
@@ -564,7 +523,7 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
             params:{
                 sub_module_id:sub_module_id,
                 module_id: module_id,
-                section_id:section_id,
+                product_classification_id:product_classification_id,
                 business_type_details: business_type_details,
                 from_date: from_date,
                 to_date: to_date
@@ -580,6 +539,7 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
                
     },
      loadGmpReportFilters: function (btn) {
+
       var grid = btn.up('form'),
         sub_module_id = grid.down('combo[name=sub_module_id]').getValue(),
         section_id = grid.down('combo[name=section_id]').getValue(),
@@ -587,12 +547,10 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
         from_date = grid.down('datefield[name=from_date]').getValue(),
         to_date = grid.down('datefield[name=to_date]').getValue(),
         panel = grid.up('panel'),
-        tabs = panel.down('gmptabpnl'),
-        gridStr = tabs.down('gmptabularrepresentationgrid').getStore();
-        graphStr = tabs.down('cartesian').getStore();  
-
-        module_id=panel.down('hiddenfield[name=module_id]').getValue();
-
+        tabs = Ext.ComponentQuery.query("#gmptabpnl")[0]; // Removed 'var' before 'tabs'
+        gridStr = Ext.ComponentQuery.query("#gmptabularrepresentationgrid")[0].getStore();
+        graphStr = Ext.getStore('gmpReportCartesianStr'); 
+        module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
         gridStr.removeAll();
         gridStr.load({
             params:{
@@ -624,56 +582,49 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
                
     },
     loadClinicalTrialReportFilters: function (btn) {
-      var grid = btn.up('form'),
-        sub_module_id = grid.down('combo[name=sub_module_id]').getValue(),
-        from_date = grid.down('datefield[name=from_date]').getValue(),
-        to_date = grid.down('datefield[name=to_date]').getValue(),
-        panel = grid.up('panel'),
-        tabs = panel.down('clinicaltrialtabpnl'),
-        gridStr = tabs.down('clinicaltrialtabularrepresentationgrid').getStore();
-        graphStr = tabs.down('cartesian').getStore();  
+        var grid = btn.up('form'),
+            sub_module_id = grid.down('combo[name=sub_module_id]').getValue(),
+            from_date = grid.down('datefield[name=from_date]').getValue(),
+            to_date = grid.down('datefield[name=to_date]').getValue(),
+            panel = grid.up('panel'),
+            tabs = Ext.ComponentQuery.query("#clinicaltrialtabpnl")[0]; // Removed 'var' before 'tabs'
+            var gridStr = Ext.ComponentQuery.query("#clinicaltrialtabularrepresentationgrid")[0].getStore();
+            var graphStr = Ext.getStore('clinicalTrialReportCartesianStr'); 
+            var module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
+            gridStr.removeAll();
+            gridStr.load({
+                params:{
+                    sub_module_id:sub_module_id,
+                    module_id: module_id,
+                    from_date: from_date,
+                    to_date: to_date
+                    
 
-        module_id=panel.down('hiddenfield[name=module_id]').getValue();
+                    },
+                      
+                });
+            graphStr.removeAll();
+            graphStr.load({
+                params:{
+                    sub_module_id:sub_module_id,
+                    module_id: module_id,
+                    from_date: from_date,
+                    to_date: to_date
+                    
 
-        gridStr.removeAll();
-        gridStr.load({
-            params:{
-                sub_module_id:sub_module_id,
-                module_id: module_id,
-                from_date: from_date,
-                to_date: to_date
-                
-
-                },
-                  
-            });
-        graphStr.removeAll();
-        graphStr.load({
-            params:{
-                sub_module_id:sub_module_id,
-                module_id: module_id,
-                from_date: from_date,
-                to_date: to_date
-                
-
-                },
-                  
-            });
+                    },
+                      
+                });
                
     },
      reloadClinicalTrialCartesianFilters: function (btn) {
         var chart = btn.up('panel'), 
-        tabs = chart.up('clinicaltrialtabpnl'),
-        panelmain=tabs.up('panel'),
-        form=panelmain.down('form'),
+        form=Ext.ComponentQuery.query("#clinicaltrialreportfiltersfrm")[0],
         sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
         from_date = form.down('datefield[name=from_date]').getValue(),
         to_date = form.down('datefield[name=to_date]').getValue(),
-        panel = chart.up('panel'),
-        tabs = panel.down('clinicaltrialtabpnl'),
-        graphStr = chart.down('cartesian').getStore();  
-
-        module_id=panelmain.down('hiddenfield[name=module_id]').getValue();
+        graphStr = Ext.getStore('clinicalTrialReportCartesianStr'); 
+        module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
         frm = form.getForm();
         if (frm.isValid()) {
         graphStr.removeAll();
@@ -696,186 +647,173 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
     },
     reloadGmpCartesianFilters: function (btn) {
         var chart = btn.up('panel'), 
-        tabs = chart.up('gmptabpnl'),
-        panelmain=tabs.up('panel'),
-        form=panelmain.down('form'),
+        form=Ext.ComponentQuery.query("#gmpreportfiltersfrm")[0],
         sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
         section_id = form.down('combo[name=section_id]').getValue(),
         gmp_location = form.down('combo[name=gmp_location]').getValue(),
         from_date = form.down('datefield[name=from_date]').getValue(),
         to_date = form.down('datefield[name=to_date]').getValue(),
-        panel = chart.up('panel'),
-        tabs = panel.down('gmptabpnl'),
-        graphStr = chart.down('cartesian').getStore();  
-
-        module_id=panelmain.down('hiddenfield[name=module_id]').getValue();
+        graphStr = Ext.getStore('gmpReportCartesianStr'); 
+        module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
         frm = form.getForm();
         if (frm.isValid()) {
-        graphStr.removeAll();
-        graphStr.load({
-            params:{
-                sub_module_id:sub_module_id,
-                section_id:section_id,
-                module_id: module_id,
-                gmp_location: gmp_location,
-                from_date: from_date,
-                to_date: to_date
-                
+            graphStr.removeAll();
+            graphStr.load({
+                params:{
+                    sub_module_id:sub_module_id,
+                    section_id:section_id,
+                    module_id: module_id,
+                    gmp_location: gmp_location,
+                    from_date: from_date,
+                    to_date: to_date
+                    
                 },
-                  
+                      
             });
-        
-        } else {
-        toastr.error('Please select Filters first ', 'Failure Response');
-        }
-               
-    },
-   exportDrugshopSummaryReport: function(btn) {
-    var panel=btn.up('panel'),
-    filter=panel.down('form'),
-    sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
-    section_id = filter.down('combo[name=section_id]').getValue(),
-    business_type_details = filter.down('combo[name=business_type_details]').getValue(),
-    from_date = filter.down('datefield[name=from_date]').getValue(),
-    to_date = filter.down('textfield[name=to_date]').getValue();
-    from_date = Ext.Date.format(from_date,'Y-m-d');   
-    to_date = Ext.Date.format(to_date,'Y-m-d'); 
-    var tab = panel.down('drugshoptabpnl'),
-    activeTab = tab.getActiveTab(),
-    index = tab.items.indexOf(activeTab);
-         //hidden value
-    module_id=panel.down('hiddenfield[name=module_id]').getValue();
-    frm = filter.getForm();
-     if (frm.isValid()) {
-    Ext.getBody().mask('Exporting...Please wait...');
             
-    Ext.Ajax.request({
-        url: 'newreports/exportPremiseSummaryReport',
-        method: 'GET',
-        headers: {
+        } else {
+            toastr.error('Please select Filters first ', 'Failure Response');
+        }
+                   
+    },
+    exportDrugshopSummaryReport: function(btn) {
+        var panel = btn.up('panel'),
+            form = Ext.ComponentQuery.query("#drugshopreportfiltersfrm")[0],
+            sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
+            product_classification_id = form.down('combo[name=product_classification_id]').getValue(),
+            from_date = form.down('datefield[name=from_date]').getValue(),
+            to_date = form.down('textfield[name=to_date]').getValue(),
+            tabs = Ext.ComponentQuery.query("#drugshoptabpnl")[0];
+            from_date = Ext.Date.format(from_date, 'Y-m-d');   
+            to_date = Ext.Date.format(to_date, 'Y-m-d'); 
+            module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
+
+            var frm = form.getForm();
+        if (frm.isValid()) {
+        Ext.getBody().mask('Exporting...Please wait...');
+            
+        Ext.Ajax.request({
+            url: 'newreports/exportPremiseSummaryReport',
+            method: 'GET',
+            headers: {
              'Authorization':'Bearer '+access_token
                  },
-        params : {
-            'sub_module_id':sub_module_id,
-            'section_id':section_id,
-            'module_id': module_id,
-            'business_type_details': business_type_details,
-            'from_date': from_date,
-            'to_date': to_date,
+            params : {
+                'sub_module_id':sub_module_id,
+                'product_classification_id':product_classification_id,
+                'module_id': module_id,
+                'business_type_details':7,
+                'from_date': from_date,
+                 'to_date': to_date,
              },
                       
-        success: function (response, textStatus, request) {
-            Ext.getBody().unmask();
+            success: function (response, textStatus, request) {
+                Ext.getBody().unmask();
 
-            var t = JSON.parse(response.responseText);
-            var a = document.createElement("a");
-            a.href = t.file; 
-            a.download = t.name;
-            document.body.appendChild(a);
+                var t = JSON.parse(response.responseText);
+                var a = document.createElement("a");
+                a.href = t.file; 
+                a.download = t.name;
+                document.body.appendChild(a);
 
-            a.click();
+                a.click();
                      
-            a.remove();
+                a.remove();
       
-        },
-        failure: function(conn, response, options, eOpts) {
-            Ext.getBody().unmask();
-            Ext.Msg.alert('Error', 'please try again');
-        }
-       });
-    } else {
-        toastr.error('Please select Filters first ', 'Failure Response');
+            },
+            failure: function(conn, response, options, eOpts) {
+                Ext.getBody().unmask();
+                Ext.Msg.alert('Error', 'please try again');
+            }
+            });
+        } else {
+            toastr.error('Please select Filters first ', 'Failure Response');
         }
     },
 
     exportPremiseSummaryReport: function(btn) {
-    var panel=btn.up('panel'),
-    filter=panel.down('form'),
-    sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
-    section_id = filter.down('combo[name=section_id]').getValue(),
-    business_type_details = filter.down('combo[name=business_type_details]').getValue(),
-    from_date = filter.down('datefield[name=from_date]').getValue(),
-    to_date = filter.down('textfield[name=to_date]').getValue();
-    from_date = Ext.Date.format(from_date,'Y-m-d');   
-    to_date = Ext.Date.format(to_date,'Y-m-d'); 
-    var tab = panel.down('premisestabpnl'),
-    activeTab = tab.getActiveTab(),
-    index = tab.items.indexOf(activeTab);
-         //hidden value
-    module_id=panel.down('hiddenfield[name=module_id]').getValue();
-    frm = filter.getForm();
-     if (frm.isValid()) {
-    Ext.getBody().mask('Exporting...Please wait...');
-            
-    Ext.Ajax.request({
-        url: 'newreports/exportPremiseSummaryReport',
-        method: 'GET',
-        headers: {
-             'Authorization':'Bearer '+access_token
+
+        var panel = btn.up('panel'),
+            form = Ext.ComponentQuery.query("#premisesreportfiltersfrm")[0],
+            sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
+            product_classification_id = form.down('combo[name=product_classification_id]').getValue(),
+            business_type_details = form.down('combo[name=business_type_details]').getValue(),
+            from_date = form.down('datefield[name=from_date]').getValue(),
+            to_date = form.down('textfield[name=to_date]').getValue(),
+            tabs = Ext.ComponentQuery.query("#drugshoptabpnl")[0];
+            from_date = Ext.Date.format(from_date, 'Y-m-d');   
+            to_date = Ext.Date.format(to_date, 'Y-m-d'); 
+            module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
+
+            var frm = form.getForm();
+
+         if (frm.isValid()) {
+        Ext.getBody().mask('Exporting...Please wait...');
+                
+        Ext.Ajax.request({
+            url: 'newreports/exportPremiseSummaryReport',
+            method: 'GET',
+            headers: {
+                 'Authorization':'Bearer '+access_token
+                     },
+            params : {
+                'sub_module_id':sub_module_id,
+                'product_classification_id':product_classification_id,
+                'module_id': module_id,
+                'business_type_details': business_type_details,
+                'from_date': from_date,
+                'to_date': to_date,
                  },
-        params : {
-            'sub_module_id':sub_module_id,
-            'section_id':section_id,
-            'module_id': module_id,
-            'business_type_details': business_type_details,
-            'from_date': from_date,
-            'to_date': to_date,
-             },
-                      
-        success: function (response, textStatus, request) {
-            Ext.getBody().unmask();
+                          
+            success: function (response, textStatus, request) {
+                Ext.getBody().unmask();
 
-            var t = JSON.parse(response.responseText);
-            var a = document.createElement("a");
-            a.href = t.file; 
-            a.download = t.name;
-            document.body.appendChild(a);
+                var t = JSON.parse(response.responseText);
+                var a = document.createElement("a");
+                a.href = t.file; 
+                a.download = t.name;
+                document.body.appendChild(a);
 
-            a.click();
-                     
-            a.remove();
-      
-        },
-        failure: function(conn, response, options, eOpts) {
-            Ext.getBody().unmask();
-            Ext.Msg.alert('Error', 'please try again');
-        }
-       });
-    } else {
-        toastr.error('Please select Filters first ', 'Failure Response');
-        }
+                a.click();
+                         
+                a.remove();
+          
+            },
+            failure: function(conn, response, options, eOpts) {
+                Ext.getBody().unmask();
+                Ext.Msg.alert('Error', 'please try again');
+            }
+           });
+        } else {
+            toastr.error('Please select Filters first ', 'Failure Response');
+            }
     },
    
    printProductSummary: function(btn) {
-        var panel=btn.up('panel'),
-        filter=panel.down('form'),
-        sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
-        section_id = filter.down('combo[name=section_id]').getValue(),
-        classification_category = filter.down('combo[name=classification_category]').getValue(),
-        prodclass_category = filter.down('combo[name=prodclass_category]').getValue(),
-        product_origin_id = filter.down('combo[name=product_origin_id]').getValue(),
-        from_date = filter.down('datefield[name=from_date]').getValue(),
-        to_date = filter.down('textfield[name=to_date]').getValue();
-        from_date = Ext.Date.format(from_date,'Y-m-d');   
-        to_date = Ext.Date.format(to_date,'Y-m-d'); 
-        var tab = panel.down('producttabpnl'),
-        activeTab = tab.getActiveTab(),
-        index = tab.items.indexOf(activeTab);
-         //hidden value
-        module_id=panel.down('hiddenfield[name=module_id]').getValue();
+       var panel = btn.up('panel'),
+            form = Ext.ComponentQuery.query("#productreportfiltersfrm")[0],
+            sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
+            section_id = form.down('combo[name=section_id]').getValue(),
+            classification_category = form.down('combo[name=classification_category]').getValue(),
+            prodclass_category = form.down('combo[name=prodclass_category]').getValue(),
+            product_origin_id = form.down('combo[name=product_origin_id]').getValue(),
+            from_date = form.down('datefield[name=from_date]').getValue(),
+            to_date = form.down('textfield[name=to_date]').getValue();
+            from_date = Ext.Date.format(from_date,'Y-m-d');   
+            to_date = Ext.Date.format(to_date,'Y-m-d'); 
+            tabs = Ext.ComponentQuery.query("#producttabpnl")[0];
+            from_date = Ext.Date.format(from_date, 'Y-m-d');   
+            to_date = Ext.Date.format(to_date, 'Y-m-d'); 
+            module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
+            var frm = form.getForm();
 
-        frm = filter.getForm();
-        if (frm.isValid()) {
+            if (frm.isValid()) {
 
-        if(index == 0){
-           print_report('newreports/printProductSummaryReport?sub_module_id='+sub_module_id+'&section_id='+section_id+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id+'&prodclass_category='+prodclass_category+'&classification_category='+classification_category+'&product_origin_id='+product_origin_id);
-        }
-        else{
-           print_report('newreports/printProductSummaryReport?sub_module_id='+sub_module_id+'&section_id='+section_id+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id+'&prodclass_category='+prodclass_category+'&classification_category='+classification_category+'&product_origin_id='+product_origin_id);
-       }
-        } else {
-        toastr.error('Please select Filters first ', 'Failure Response');
-        }
+            print_report('newreports/printProductSummaryReport?sub_module_id='+sub_module_id+'&section_id='+section_id+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id+'&prodclass_category='+prodclass_category+'&classification_category='+classification_category+'&product_origin_id='+product_origin_id);
+
+            } else {
+                toastr.error('Please select Filters first ', 'Failure Response');
+            }
      },
 
   printProductDetailed: function(btn) {
@@ -914,30 +852,24 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
     winTitle=item.winTitle,
     winWidth=item.winWidth,
     child = Ext.widget(childXtype);
-    
-            
-    var grid = item.up('panel');
-    var elem = item.up('form');
-    var panel=item.up('panel'),
-    filter=panel.down('form'),
-    frm = filter.getForm();
-    var comb=grid.down('combo[name=classification_process]').getValue();
-    if (comb!= null){
-    if (frm.isValid()) {
-    child.down('textfield[name=from_date]').setValue(grid.down('datefield[name=from_date]').getValue());
-    child.down('datefield[name=to_date]').setValue(grid.down('datefield[name=to_date]').getValue());
-    child.down('textfield[name=section_id]').setValue(grid.down('combo[name=section_id]').getValue());
-    child.down('textfield[name=sub_module_id]').setValue(grid.down('combo[name=sub_module_id]').getValue());
-    child.down('textfield[name=grid]').setValue(item.xspreadsheet);
-    child.down('textfield[name=process_class]').setValue(grid.down('combo[name=classification_process]').getValue());
-           
-`   `
+    var grid = Ext.ComponentQuery.query("#productreportfiltersfrm")[0];
+    form = Ext.ComponentQuery.query("#detailedproductreportfrm")[0];
+    frm = form.getForm();
+    classification_process = Ext.ComponentQuery.query('combo[name=classification_process]')[0].getValue(); 
+    if (classification_process!= null){
+     if (frm.isValid()) {
+        form.down('textfield[name=from_date]').setValue(grid.down('datefield[name=from_date]').getValue());
+        form.down('datefield[name=to_date]').setValue(grid.down('datefield[name=to_date]').getValue());
+        form.down('textfield[name=section_id]').setValue(grid.down('combo[name=section_id]').getValue());
+        form.down('textfield[name=sub_module_id]').setValue(grid.down('combo[name=sub_module_id]').getValue());
+        form.down('textfield[name=grid]').setValue(item.xspreadsheet);
+        form.down('textfield[name=process_class]').setValue(classification_process);
+        
     if(item.module=='productWin'){
-        child.down('textfield[name=classification_category]').setValue(grid.down('combo[name=classification_category]').getValue());
-        child.down('textfield[name=prodclass_category]').setValue(grid.down('combo[name=prodclass_category]').getValue());
-        child.down('textfield[name=product_origin_id]').setValue(grid.down('combo[name=product_origin_id]').getValue());
+        form.down('textfield[name=classification_category]').setValue(grid.down('combo[name=classification_category]').getValue());
+        form.down('textfield[name=prodclass_category]').setValue(grid.down('combo[name=prodclass_category]').getValue());
+        form.down('textfield[name=product_origin_id]').setValue(grid.down('combo[name=product_origin_id]').getValue());
     }
-          
     var dPrint=child.down('button[name=detailed]');
     dPrint.xFileName=item.xFileName;
     dPrint.xPrintFunc=item.xPrintFunc;
@@ -1079,36 +1011,134 @@ Ext.define('Admin.view.reports.appsreport.productreport.viewcontroller.ProductRe
                    
     }
   },
+
+
+ExpDrugshopWinShow: function(item) {
+    var me = this,
+    childXtype = item.childXtype,
+    winTitle=item.winTitle,
+    winWidth=item.winWidth,
+    child = Ext.widget(childXtype);
+    var grid = Ext.ComponentQuery.query("#drugshopreportfiltersfrm")[0];
+    form = Ext.ComponentQuery.query("#detaileddrugshopreportfiltersfrm")[0];
+    frm = form.getForm();
+    classification_process = Ext.ComponentQuery.query('combo[name=classification_process]')[0].getValue(); 
+    if (classification_process!= null){
+     if (frm.isValid()) {
+    form.down('textfield[name=from_date]').setValue(grid.down('datefield[name=from_date]').getValue());
+    form.down('datefield[name=to_date]').setValue(grid.down('datefield[name=to_date]').getValue());
+    form.down('textfield[name=sub_module_id]').setValue(grid.down('combo[name=sub_module_id]').getValue());
+    form.down('textfield[name=product_classification_id]').setValue(grid.down('combo[name=product_classification_id]').getValue());
+    form.down('textfield[name=grid]').setValue(item.xspreadsheet);
+    form.down('textfield[name=process_class]').setValue(classification_process);
+        
+    
+    if(item.module=='premiseWin'){
+        form.down('textfield[name=business_type_details]').setValue(7);
+      //  child.down('textfield[name=section_id]').setValue(grid.down('combo[name=section_id]').getValue());
+    }
+          
+    var dPrint=form.down('button[name=detailed]');
+    dPrint.xFileName=item.xFileName;
+    dPrint.xPrintFunc=item.xPrintFunc;
+    dPrint.xspreadsheet=item.xspreadsheet;
+    dPrint.xheading=item.xheading;
+     
+    var center = Ext.create({
+        xtype: item.xspreadsheet,
+        region: 'center',
+        bbar: [{
+             beforeLoad: function() {
+                    var grid=this.up('grid'),
+                        form=grid.up('form'),
+                        sub_module_id = form.down('textfield[name=sub_module_id]').getValue(),
+                        product_classification_id = form.down('textfield[name=product_classification_id]').getValue(), 
+                        from_date = form.down('datefield[name=from_date]').getValue(),
+                        to_date = form.down('datefield[name=to_date]').getValue(),
+                        process_class = form.down('textfield[name=process_class]').getValue(); 
+                   
+                    store.getProxy().extraParams = {
+                        'business_type_details': 7,
+                        'sub_module_id': sub_module_id,
+                        'product_classification_id':product_classification_id,
+                        'from_date': from_date,
+                        'to_date': to_date, 
+                        'process_class':process_class
+                       
+                        }
+                            
+                    }, 
+            xtype: 'pagingtoolbar',
+                    width: '90%',
+                    displayInfo: true,
+                    hidden: false,
+                    displayMsg: 'Showing {0} - {1} out of {2}',
+                    emptyMsg: 'No Records',
+                                               
+        }]
+    });
+    var storeConfig = {
+        proxy: {
+             url: 'newreports/premiseDetailedReportPreview',
+             reader: {
+               type: 'json',
+               rootProperty: 'results',
+               totalProperty: 'totalResults'
+         }
+        }
+    };
+    store = Ext.create('Admin.store.reports.ReportsGlobalAbstractStr', storeConfig);
+    center.down('pagingtoolbar').setStore(store);
+    center.setStore(store);
+
+    var west = Ext.create({
+        xtype: item.xvisibleColumns,
+        region: 'west',
+        width: 200
+    });
+
+    child.add(center);
+    child.add(west);
+
+    //hide the action column of the grid
+    var x=child.down(item.xspreadsheet),
+    y=x.getView().grid;
+    y.columns[0].setVisible(0);
+
+
+    //display window
+    funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+    } else {
+        toastr.error('Please select Filters first ', 'Failure Response');
+        }
+    } else {
+        toastr.error('Please select Process ', 'Failure Response');
+        }
+    
+  },
+
 ExpPremiseWinShow: function(item) {
     var me = this,
     childXtype = item.childXtype,
     winTitle=item.winTitle,
     winWidth=item.winWidth,
     child = Ext.widget(childXtype);
-    
-            
-    var grid = item.up('panel');
-    var elem = item.up('form');
-     var panel=item.up('panel'),
-    filter=panel.down('form'),
-    frm = filter.getForm();
-    var comb=grid.down('combo[name=classification_process]').getValue();
-    if (comb!= null){
+    var grid = Ext.ComponentQuery.query("#premisesreportfiltersfrm")[0];
+    form = Ext.ComponentQuery.query("#detailedpremisereportfrm")[0];
+    frm = form.getForm();
+    classification_process = Ext.ComponentQuery.query('combo[name=classification_process]')[0].getValue(); 
+    if (classification_process!= null){
      if (frm.isValid()) {
-    child.down('textfield[name=from_date]').setValue(grid.down('datefield[name=from_date]').getValue());
-    child.down('datefield[name=to_date]').setValue(grid.down('datefield[name=to_date]').getValue());
-    child.down('textfield[name=sub_module_id]').setValue(grid.down('combo[name=sub_module_id]').getValue());
-    child.down('textfield[name=product_classification_id]').setValue(grid.down('combo[name=product_classification_id]').getValue());
-
-    child.down('textfield[name=grid]').setValue(item.xspreadsheet);
-    child.down('textfield[name=process_class]').setValue(grid.down('combo[name=classification_process]').getValue());
-           
-`   `
+    form.down('textfield[name=from_date]').setValue(grid.down('datefield[name=from_date]').getValue());
+    form.down('datefield[name=to_date]').setValue(grid.down('datefield[name=to_date]').getValue());
+    form.down('textfield[name=sub_module_id]').setValue(grid.down('combo[name=sub_module_id]').getValue());
+    form.down('textfield[name=product_classification_id]').setValue(grid.down('combo[name=product_classification_id]').getValue());
+    form.down('textfield[name=grid]').setValue(item.xspreadsheet);
+    form.down('textfield[name=process_class]').setValue(classification_process);
     if(item.module=='premiseWin'){
-        child.down('textfield[name=business_type_details]').setValue(grid.down('combo[name=business_type_details]').getValue());
-      //  child.down('textfield[name=section_id]').setValue(grid.down('combo[name=section_id]').getValue());
+        form.down('textfield[name=business_type_details]').setValue(grid.down('combo[name=business_type_details]').getValue());
     }
-          
+   
     var dPrint=child.down('button[name=detailed]');
     dPrint.xFileName=item.xFileName;
     dPrint.xPrintFunc=item.xPrintFunc;
@@ -1189,6 +1219,10 @@ ExpPremiseWinShow: function(item) {
         }
     
   },
+
+
+
+
  loadExportPremiseWinStoreReload: function(btn) {
     var sub_module_id = btn.down('textfield[name=sub_module_id]').getValue(),
     product_classification_id = btn.down('textfield[name=product_classification_id]').getValue(),
@@ -1423,15 +1457,17 @@ ExpPremiseWinShow: function(item) {
       console.log(combo.getStore().getAt(1));
            combo.setValue(combo.getStore().getAt(0));
    },
-  func_toggleExportBtn(combo, newValue, old, eopt){
-    var form=combo.up('panel'),
-        btn=form.down('button[name=DetailedExport]');    
-    if(newValue==0){
-        btn.setDisabled(true);
-    }else{
-      btn.setDisabled(false);
-    }
-   },
+    func_toggleExportBtn: function(combo, newValue, old, eopt) {
+        var form = combo.up('panel');
+        var btn = Ext.ComponentQuery.query('button[name=DetailedExport]')[0]; // Removed getValue() method
+        
+        if (newValue == 0) {
+            btn.setDisabled(true);
+        } else {
+            btn.setDisabled(false);
+        }
+    },
+
 
   loadClassAndCategoryCombo: function(combo,newValue,old,eopt) {
      var form = combo.up('form'),
@@ -1709,56 +1745,53 @@ ExpPremiseWinShow: function(item) {
         }
     },
       printPremiseSummary: function(btn) {
-        var panel=btn.up('panel'),
-        filter=panel.down('form'),
-        sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
-        section_id = filter.down('combo[name=section_id]').getValue(),
-        business_type_details = filter.down('combo[name=business_type_details]').getValue(),
-        from_date = filter.down('datefield[name=from_date]').getValue(),
-        to_date = filter.down('textfield[name=to_date]').getValue();
-        from_date = Ext.Date.format(from_date,'Y-m-d');   
-        to_date = Ext.Date.format(to_date,'Y-m-d'); 
-        var tab = panel.down('premisestabpnl'),
-        activeTab = tab.getActiveTab(),
-        index = tab.items.indexOf(activeTab);
-         //hidden value
-        module_id=panel.down('hiddenfield[name=module_id]').getValue();
+       var panel = btn.up('panel'),
+            form = Ext.ComponentQuery.query("#premisesreportfiltersfrm")[0],
+            sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
+            product_classification_id = form.down('combo[name=product_classification_id]').getValue(),
+            business_type_details = form.down('combo[name=business_type_details]').getValue(),
+            from_date = form.down('datefield[name=from_date]').getValue(),
+            to_date = form.down('textfield[name=to_date]').getValue(),
+            tabs = Ext.ComponentQuery.query("#premisestabpnl")[0];
 
-        frm = filter.getForm();
+            from_date = Ext.Date.format(from_date, 'Y-m-d');   
+            to_date = Ext.Date.format(to_date, 'Y-m-d'); 
+
+            module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
+
+            var frm = form.getForm();
         if (frm.isValid()) {
 
-           print_report('newreports/printPremiseSummaryReport?sub_module_id='+sub_module_id+'&business_type_details='+business_type_details+'&section_id='+section_id+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id);
+           print_report('newreports/printPremiseSummaryReport?sub_module_id='+sub_module_id+'&business_type_details='+business_type_details+'&product_classification_id='+product_classification_id+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id);
       
 
         }else {
         toastr.error('Please select Filters first ', 'Failure Response');
         }
      },
-      printDrugshopSummary: function(btn) {
-        var panel=btn.up('panel'),
-        filter=panel.down('form'),
-        sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
-        section_id = filter.down('combo[name=section_id]').getValue(),
-        business_type_details = filter.down('combo[name=business_type_details]').getValue(),
-        from_date = filter.down('datefield[name=from_date]').getValue(),
-        to_date = filter.down('textfield[name=to_date]').getValue();
-        from_date = Ext.Date.format(from_date,'Y-m-d');   
-        to_date = Ext.Date.format(to_date,'Y-m-d'); 
-        var tab = panel.down('drugshoptabpnl'),
-        activeTab = tab.getActiveTab(),
-        index = tab.items.indexOf(activeTab);
-         //hidden value
-        module_id=panel.down('hiddenfield[name=module_id]').getValue();
+    printDrugshopSummary: function(btn) {
+        var panel = btn.up('panel'),
+            form = Ext.ComponentQuery.query("#drugshopreportfiltersfrm")[0],
+            sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
+            product_classification_id = form.down('combo[name=product_classification_id]').getValue(),
+            from_date = form.down('datefield[name=from_date]').getValue(),
+            to_date = form.down('textfield[name=to_date]').getValue(),
+            tabs = Ext.ComponentQuery.query("#drugshoptabpnl")[0];
 
-        frm = filter.getForm();
-        if (frm.isValid()) {
+            from_date = Ext.Date.format(from_date, 'Y-m-d');   
+            to_date = Ext.Date.format(to_date, 'Y-m-d'); 
 
-           print_report('newreports/printPremiseSummaryReport?sub_module_id='+sub_module_id+'&business_type_details='+business_type_details+'&section_id='+section_id+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id);
+            module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
+
+            var frm = form.getForm();
+            if (frm.isValid()) {
+
+                print_report('newreports/printPremiseSummaryReport?sub_module_id='+sub_module_id+'&business_type_details='+7+'&product_classification_id='+product_classification_id+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id);
       
 
-        }else {
-        toastr.error('Please select Filters first ', 'Failure Response');
-        }
+            }else {
+                toastr.error('Please select Filters first ', 'Failure Response');
+            }
      },
 
      printImportExportSummary: function(btn) {
@@ -1791,70 +1824,67 @@ ExpPremiseWinShow: function(item) {
         }
      },
   exportProductSummaryReport: function(btn) {
-    var panel=btn.up('panel'),
-    filter=panel.down('form'),
-    sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
-    section_id = filter.down('combo[name=section_id]').getValue(),
-    classification_category = filter.down('combo[name=classification_category]').getValue(),
-    prodclass_category = filter.down('combo[name=prodclass_category]').getValue(),
-    product_origin_id = filter.down('combo[name=product_origin_id]').getValue(),
-    from_date = filter.down('datefield[name=from_date]').getValue(),
-    to_date = filter.down('textfield[name=to_date]').getValue();
-    from_date = Ext.Date.format(from_date,'Y-m-d');   
-    to_date = Ext.Date.format(to_date,'Y-m-d'); 
-    var tab = panel.down('producttabpnl'),
-    activeTab = tab.getActiveTab(),
-    index = tab.items.indexOf(activeTab);
-         //hidden value
-    module_id=panel.down('hiddenfield[name=module_id]').getValue();
-    frm = filter.getForm();
-     if (frm.isValid()) {
-    Ext.getBody().mask('Exporting...Please wait...');
-            
-    Ext.Ajax.request({
-        url: 'newreports/exportProductSummaryReport',
-        method: 'GET',
-        headers: {
-             'Authorization':'Bearer '+access_token
-                 },
-        params : {
-            'sub_module_id':sub_module_id,
-            'module_id': module_id,
-            'section_id': section_id,
-            'classification_category': classification_category,
-            'from_date': from_date,
-            'to_date': to_date,
-            'prodclass_category': prodclass_category,
-            'product_origin_id': product_origin_id,
-             },
-                      
-        success: function (response, textStatus, request) {
-            Ext.getBody().unmask();
+        var panel = btn.up('panel'),
+            form = Ext.ComponentQuery.query("#productreportfiltersfrm")[0],
+            sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
+            section_id = form.down('combo[name=section_id]').getValue(),
+            classification_category = form.down('combo[name=classification_category]').getValue(),
+            prodclass_category = form.down('combo[name=prodclass_category]').getValue(),
+            product_origin_id = form.down('combo[name=product_origin_id]').getValue(),
+            from_date = form.down('datefield[name=from_date]').getValue(),
+            to_date = form.down('textfield[name=to_date]').getValue();
+            from_date = Ext.Date.format(from_date,'Y-m-d');   
+            to_date = Ext.Date.format(to_date,'Y-m-d');  
+            module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
+            var frm = form.getForm();
 
-            var t = JSON.parse(response.responseText);
-            var a = document.createElement("a");
-            a.href = t.file; 
-            a.download = t.name;
-            document.body.appendChild(a);
+         if (frm.isValid()) {
+            Ext.getBody().mask('Exporting...Please wait...');
+                    
+            Ext.Ajax.request({
+                url: 'newreports/exportProductSummaryReport',
+                method: 'GET',
+                headers: {
+                     'Authorization':'Bearer '+access_token
+                         },
+                params : {
+                    'sub_module_id':sub_module_id,
+                    'module_id': module_id,
+                    'section_id': section_id,
+                    'classification_category': classification_category,
+                    'from_date': from_date,
+                    'to_date': to_date,
+                    'prodclass_category': prodclass_category,
+                    'product_origin_id': product_origin_id,
+                     },
+                              
+                success: function (response, textStatus, request) {
+                    Ext.getBody().unmask();
 
-            a.click();
-                     
-            a.remove();
-      
-        },
-        failure: function(conn, response, options, eOpts) {
-            Ext.getBody().unmask();
-            Ext.Msg.alert('Error', 'please try again');
-        }
-       });
-    } else {
-        toastr.error('Please select Filters first ', 'Failure Response');
+                    var t = JSON.parse(response.responseText);
+                    var a = document.createElement("a");
+                    a.href = t.file; 
+                    a.download = t.name;
+                    document.body.appendChild(a);
+
+                    a.click();
+                             
+                    a.remove();
+              
+                },
+                failure: function(conn, response, options, eOpts) {
+                    Ext.getBody().unmask();
+                    Ext.Msg.alert('Error', 'please try again');
+                }
+               });
+        } else {
+            toastr.error('Please select Filters first ', 'Failure Response');
         }
     },
 
     exportPremiseDetailedReport: function (btn) {
 
-             var filter_array='';
+    var filter_array='';
      var name=btn.name,
      xPrintFunc=btn.xPrintFunc,
      xFileName=btn.xFileName;
@@ -2016,90 +2046,78 @@ ExpPremiseWinShow: function(item) {
 
      },
     printGmpSummary: function(btn) {
-        var panel=btn.up('panel'),
-        filter=panel.down('form'),
-        sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
-        section_id = filter.down('combo[name=section_id]').getValue(),
-        gmp_location = filter.down('combo[name=gmp_location]').getValue(),
-        from_date = filter.down('datefield[name=from_date]').getValue(),
-        to_date = filter.down('textfield[name=to_date]').getValue();
-        from_date = Ext.Date.format(from_date,'Y-m-d');   
-        to_date = Ext.Date.format(to_date,'Y-m-d'); 
-        var tab = panel.down('gmptabpnl'),
-        activeTab = tab.getActiveTab(),
-        index = tab.items.indexOf(activeTab);
-        //hidden value
-         module_id=panel.down('hiddenfield[name=module_id]').getValue();
 
-        frm = filter.getForm();
-        if (frm.isValid()) {
+        var panel = btn.up('panel'),
+            form = Ext.ComponentQuery.query("#gmpreportfiltersfrm")[0],
+            sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
+            section_id = form.down('combo[name=section_id]').getValue(),
+            gmp_location = form.down('combo[name=gmp_location]').getValue(),
+            from_date = form.down('datefield[name=from_date]').getValue(),
+            to_date = form.down('textfield[name=to_date]').getValue();
+            from_date = Ext.Date.format(from_date,'Y-m-d');   
+            to_date = Ext.Date.format(to_date,'Y-m-d'); 
+            module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
+            var frm = form.getForm();
+            if (frm.isValid()) {
 
-        if(index == 0){
-            print_report('newreports/printGmpSummaryReport?sub_module_id='+sub_module_id+'&section_id='+section_id+'&gmp_location='+gmp_location+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id);
-        }
-         else{
-            print_report('newreports/printGmpSummaryReport?sub_module_id='+sub_module_id+'&section_id='+section_id+'&gmp_location='+gmp_location+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id);
-        }
-        } else {
-            toastr.error('Please select Filters first ', 'Failure Response');
-            }
+                print_report('newreports/printGmpSummaryReport?sub_module_id='+sub_module_id+'&section_id='+section_id+'&gmp_location='+gmp_location+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id);
+
+            } else {
+                toastr.error('Please select Filters first ', 'Failure Response');
+                }
      },
     func_gmpSummaryReport: function(btn) {
-        var panel=btn.up('panel'),
-        filter=panel.down('form'),
-        sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
-        section_id = filter.down('combo[name=section_id]').getValue(),
-        gmp_location = filter.down('combo[name=gmp_location]').getValue(),
-        from_date = filter.down('datefield[name=from_date]').getValue(),
-        to_date = filter.down('textfield[name=to_date]').getValue();
-        from_date = Ext.Date.format(from_date,'Y-m-d');   
-        to_date = Ext.Date.format(to_date,'Y-m-d'); 
-        var tab = panel.down('gmptabpnl'),
-        activeTab = tab.getActiveTab(),
-        index = tab.items.indexOf(activeTab);
-             //hidden value
-        module_id=panel.down('hiddenfield[name=module_id]').getValue();
-        frm = filter.getForm();
-         if (frm.isValid()) {
-        Ext.getBody().mask('Exporting...Please wait...');
-                
-        Ext.Ajax.request({
-            url: 'newreports/gmpSummaryReportExport',
-            method: 'GET',
-            headers: {
-                 'Authorization':'Bearer '+access_token
+        var panel = btn.up('panel'),
+            form = Ext.ComponentQuery.query("#gmpreportfiltersfrm")[0],
+            sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
+            section_id = form.down('combo[name=section_id]').getValue(),
+            gmp_location = form.down('combo[name=gmp_location]').getValue(),
+            from_date = form.down('datefield[name=from_date]').getValue(),
+            to_date = form.down('textfield[name=to_date]').getValue();
+            from_date = Ext.Date.format(from_date,'Y-m-d');   
+            to_date = Ext.Date.format(to_date,'Y-m-d'); 
+            module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
+            var frm = form.getForm();
+             if (frm.isValid()) {
+            Ext.getBody().mask('Exporting...Please wait...');
+                    
+            Ext.Ajax.request({
+                url: 'newreports/gmpSummaryReportExport',
+                method: 'GET',
+                headers: {
+                     'Authorization':'Bearer '+access_token
+                         },
+                params : {
+                    'sub_module_id':sub_module_id,
+                    'section_id':section_id,
+                    'module_id': module_id,
+                    'gmp_location': gmp_location,
+                    'from_date': from_date,
+                    'to_date': to_date,
                      },
-            params : {
-                'sub_module_id':sub_module_id,
-                'section_id':section_id,
-                'module_id': module_id,
-                'gmp_location': gmp_location,
-                'from_date': from_date,
-                'to_date': to_date,
-                 },
-                          
-            success: function (response, textStatus, request) {
-                Ext.getBody().unmask();
+                              
+                success: function (response, textStatus, request) {
+                    Ext.getBody().unmask();
 
-                var t = JSON.parse(response.responseText);
-                var a = document.createElement("a");
-                a.href = t.file; 
-                a.download = t.name;
-                document.body.appendChild(a);
+                    var t = JSON.parse(response.responseText);
+                    var a = document.createElement("a");
+                    a.href = t.file; 
+                    a.download = t.name;
+                    document.body.appendChild(a);
 
-                a.click();
-                         
-                a.remove();
-          
-            },
-            failure: function(conn, response, options, eOpts) {
-                Ext.getBody().unmask();
-                Ext.Msg.alert('Error', 'please try again');
-            }
-           });
-        } else {
-            toastr.error('Please select Filters first ', 'Failure Response');
-            }
+                    a.click();
+                             
+                    a.remove();
+              
+                },
+                failure: function(conn, response, options, eOpts) {
+                    Ext.getBody().unmask();
+                    Ext.Msg.alert('Error', 'please try again');
+                }
+               });
+            } else {
+                toastr.error('Please select Filters first ', 'Failure Response');
+                }
     },
     func_ExpGmpWinShow: function(item) {
         var me = this,
@@ -2107,30 +2125,24 @@ ExpPremiseWinShow: function(item) {
         winTitle=item.winTitle,
         winWidth=item.winWidth,
         child = Ext.widget(childXtype);
-        
-                
-        var grid = item.up('panel');
-        var elem = item.up('form');
-         var panel=item.up('panel'),
-        filter=panel.down('form'),
-        frm = filter.getForm();
-        var comb=grid.down('combo[name=classification_process]').getValue();
-        if (comb!= null)
-       {
+        var grid = Ext.ComponentQuery.query("#gmpreportfiltersfrm")[0];
+        form = Ext.ComponentQuery.query("#detailedgmpreportfrm")[0];
+        frm = form.getForm();
+        classification_process = Ext.ComponentQuery.query('combo[name=classification_process]')[0].getValue(); 
+        if (classification_process!= null){
          if (frm.isValid()) {
-        child.down('textfield[name=from_date]').setValue(grid.down('datefield[name=from_date]').getValue());
-        child.down('datefield[name=to_date]').setValue(grid.down('datefield[name=to_date]').getValue());
-        child.down('textfield[name=sub_module_id]').setValue(grid.down('combo[name=sub_module_id]').getValue());
-        child.down('textfield[name=section_id]').setValue(grid.down('combo[name=section_id]').getValue());
-        child.down('textfield[name=grid]').setValue(item.xspreadsheet);
-        child.down('textfield[name=process_class]').setValue(grid.down('combo[name=classification_process]').getValue());
-               
-    `   `
-        if(item.module=='gmpWin'){
-            child.down('textfield[name=gmp_location]').setValue(grid.down('combo[name=gmp_location]').getValue());
+            form.down('textfield[name=from_date]').setValue(grid.down('datefield[name=from_date]').getValue());
+            form.down('datefield[name=to_date]').setValue(grid.down('datefield[name=to_date]').getValue());
+            form.down('textfield[name=sub_module_id]').setValue(grid.down('combo[name=sub_module_id]').getValue());
+            form.down('textfield[name=section_id]').setValue(grid.down('combo[name=section_id]').getValue());
+            form.down('textfield[name=grid]').setValue(item.xspreadsheet);
+            form.down('textfield[name=process_class]').setValue(classification_process);
+                   
+        `   `
+            if(item.module=='gmpWin'){
+                form.down('textfield[name=gmp_location]').setValue(grid.down('combo[name=gmp_location]').getValue());
 
-        }
-              
+            }
         var dPrint=child.down('button[name=detailed]');
         dPrint.xFileName=item.xFileName;
         dPrint.xPrintFunc=item.xPrintFunc;
@@ -2342,178 +2354,158 @@ ExpPremiseWinShow: function(item) {
 
      },
     printClinicalTrialSummary: function(btn) {
-        var panel=btn.up('panel'),
-        filter=panel.down('form'),
-        sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
-        from_date = filter.down('datefield[name=from_date]').getValue(),
-        to_date = filter.down('textfield[name=to_date]').getValue();
-        from_date = Ext.Date.format(from_date,'Y-m-d');   
-        to_date = Ext.Date.format(to_date,'Y-m-d'); 
-        var tab = panel.down('clinicaltrialtabpnl'),
-        activeTab = tab.getActiveTab(),
-        index = tab.items.indexOf(activeTab);
-        //hidden value
-         module_id=panel.down('hiddenfield[name=module_id]').getValue();
 
-        frm = filter.getForm();
-        if (frm.isValid()) {
-
-
-        if(index == 0){
-            print_report('newreports/printClinicalTrialSummaryReport?sub_module_id='+sub_module_id+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id);
-        }
-         else{
-            print_report('newreports/printClinicalTrialSummaryReport?sub_module_id='+sub_module_id+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id);
-        }
-        } else {
-            toastr.error('Please select Filters first ', 'Failure Response');
+        var panel = btn.up('panel'),
+            form = Ext.ComponentQuery.query("#clinicaltrialreportfiltersfrm")[0],
+            sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
+            from_date = form.down('datefield[name=from_date]').getValue(),
+            to_date = form.down('textfield[name=to_date]').getValue(),
+            tabs = Ext.ComponentQuery.query("#clinicaltrialtabpnl")[0];
+            from_date = Ext.Date.format(from_date, 'Y-m-d');   
+            to_date = Ext.Date.format(to_date, 'Y-m-d'); 
+            module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
+            var frm = form.getForm();
+            if (frm.isValid()) {
+                print_report('newreports/printClinicalTrialSummaryReport?sub_module_id='+sub_module_id+'&to_date='+to_date+'&from_date='+from_date+'&module_id='+module_id);
+            
+            } else {
+                toastr.error('Please select Filters first ', 'Failure Response');
             }
-         },
+    },
    func_clinicalTrialSummaryReport: function(btn) {
-        var panel=btn.up('panel'),
-        filter=panel.down('form'),
-        sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
-        from_date = filter.down('datefield[name=from_date]').getValue(),
-        to_date = filter.down('textfield[name=to_date]').getValue();
-        from_date = Ext.Date.format(from_date,'Y-m-d');   
-        to_date = Ext.Date.format(to_date,'Y-m-d'); 
-        var tab = panel.down('clinicaltrialtabpnl'),
-        activeTab = tab.getActiveTab(),
-        index = tab.items.indexOf(activeTab);
-             //hidden value
-        module_id=panel.down('hiddenfield[name=module_id]').getValue();
-        frm = filter.getForm();
+       var panel = btn.up('panel'),
+            form = Ext.ComponentQuery.query("#clinicaltrialreportfiltersfrm")[0],
+            sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
+            from_date = form.down('datefield[name=from_date]').getValue(),
+            to_date = form.down('textfield[name=to_date]').getValue(),
+            tabs = Ext.ComponentQuery.query("#clinicaltrialtabpnl")[0];
+            from_date = Ext.Date.format(from_date, 'Y-m-d');   
+            to_date = Ext.Date.format(to_date, 'Y-m-d'); 
+            module_id = Ext.ComponentQuery.query('hiddenfield[name=module_id]')[0].getValue(); 
+            frm = filter.getForm();
          if (frm.isValid()) {
-        Ext.getBody().mask('Exporting...Please wait...');
-                
-        Ext.Ajax.request({
-            url: 'newreports/clinicalTrialSummaryReportExport',
-            method: 'GET',
-            headers: {
-                 'Authorization':'Bearer '+access_token
+            Ext.getBody().mask('Exporting...Please wait...');
+                    
+            Ext.Ajax.request({
+                url: 'newreports/clinicalTrialSummaryReportExport',
+                method: 'GET',
+                headers: {
+                     'Authorization':'Bearer '+access_token
+                         },
+                params : {
+                    'sub_module_id':sub_module_id,
+                    'module_id': module_id,
+                    'from_date': from_date,
+                    'to_date': to_date,
                      },
-            params : {
-                'sub_module_id':sub_module_id,
-                'module_id': module_id,
-                'from_date': from_date,
-                'to_date': to_date,
-                 },
-                          
-            success: function (response, textStatus, request) {
-                Ext.getBody().unmask();
+                              
+                success: function (response, textStatus, request) {
+                    Ext.getBody().unmask();
 
-                var t = JSON.parse(response.responseText);
-                var a = document.createElement("a");
-                a.href = t.file; 
-                a.download = t.name;
-                document.body.appendChild(a);
+                    var t = JSON.parse(response.responseText);
+                    var a = document.createElement("a");
+                    a.href = t.file; 
+                    a.download = t.name;
+                    document.body.appendChild(a);
 
-                a.click();
-                         
-                a.remove();
-          
-            },
-            failure: function(conn, response, options, eOpts) {
-                Ext.getBody().unmask();
-                Ext.Msg.alert('Error', 'please try again');
-            }
-           });
+                    a.click();
+                             
+                    a.remove();
+              
+                },
+                failure: function(conn, response, options, eOpts) {
+                    Ext.getBody().unmask();
+                    Ext.Msg.alert('Error', 'please try again');
+                }
+               });
         } else {
             toastr.error('Please select Filters first ', 'Failure Response');
             }
         },
     func_ExpClinicalTrialWinShow: function(item) {
-        var me = this,
+       var me = this,
         childXtype = item.childXtype,
         winTitle=item.winTitle,
         winWidth=item.winWidth,
         child = Ext.widget(childXtype);
-        
-                
-        var grid = item.up('panel');
-        var elem = item.up('form');
-         var panel=item.up('panel'),
-        filter=panel.down('form'),
-        frm = filter.getForm();
-        var comb=grid.down('combo[name=classification_process]').getValue();
-         if (comb!= null){
+        var grid = Ext.ComponentQuery.query("#clinicaltrialreportfiltersfrm")[0];
+        form = Ext.ComponentQuery.query("#detailedclinicaltrialreportfrm")[0];
+        frm = form.getForm();
+        classification_process = Ext.ComponentQuery.query('combo[name=classification_process]')[0].getValue(); 
+        if (classification_process!= null){
          if (frm.isValid()) {
-        child.down('textfield[name=from_date]').setValue(grid.down('datefield[name=from_date]').getValue());
-        child.down('datefield[name=to_date]').setValue(grid.down('datefield[name=to_date]').getValue());
-        child.down('textfield[name=sub_module_id]').setValue(grid.down('combo[name=sub_module_id]').getValue());
-        child.down('textfield[name=grid]').setValue(item.xspreadsheet);
-        child.down('textfield[name=process_class]').setValue(grid.down('combo[name=classification_process]').getValue());
-               
-              
-        var dPrint=child.down('button[name=detailed]');
-        dPrint.xFileName=item.xFileName;
-        dPrint.xPrintFunc=item.xPrintFunc;
-        dPrint.xspreadsheet=item.xspreadsheet;
-        dPrint.xheading=item.xheading;
-         
-        var center = Ext.create({
-            xtype: item.xspreadsheet,
-            region: 'center',
-            bbar: [{
-                 beforeLoad: function() {
-                        var grid=this.up('grid'),
-                        form=grid.up('form'),
-                                    
-                            category = form.down('textfield[name=category]').getValue(), 
-                            sub_module_id = form.down('textfield[name=sub_module_id]').getValue(),  
-                            from_date = form.down('datefield[name=from_date]').getValue(),
-                            to_date = form.down('datefield[name=to_date]').getValue(),
-                            process_class = form.down('textfield[name=process_class]').getValue(); 
-                       
-                        store.getProxy().extraParams = {
-                            'sub_module_id': sub_module_id,
-                            'from_date': from_date,
-                            'to_date': to_date, 
-                            'process_class':process_class
+            form.down('textfield[name=from_date]').setValue(grid.down('datefield[name=from_date]').getValue());
+            form.down('datefield[name=to_date]').setValue(grid.down('datefield[name=to_date]').getValue());
+            form.down('textfield[name=sub_module_id]').setValue(grid.down('combo[name=sub_module_id]').getValue());
+            form.down('textfield[name=grid]').setValue(item.xspreadsheet);
+            form.down('textfield[name=process_class]').setValue(classification_process);
+            var dPrint=child.down('button[name=detailed]');
+            dPrint.xFileName=item.xFileName;
+            dPrint.xPrintFunc=item.xPrintFunc;
+            dPrint.xspreadsheet=item.xspreadsheet;
+            dPrint.xheading=item.xheading;
+             
+            var center = Ext.create({
+                xtype: item.xspreadsheet,
+                region: 'center',
+                bbar: [{
+                     beforeLoad: function() {
+                            var grid=this.up('grid'),
+                            form=grid.up('form'),  
+                                sub_module_id = form.down('textfield[name=sub_module_id]').getValue(),  
+                                from_date = form.down('datefield[name=from_date]').getValue(),
+                                to_date = form.down('datefield[name=to_date]').getValue(),
+                                process_class = form.down('textfield[name=process_class]').getValue(); 
                            
-                            }
-                                
-                        }, 
-                xtype: 'pagingtoolbar',
-                        width: '90%',
-                        displayInfo: true,
-                        hidden: false,
-                        displayMsg: 'Showing {0} - {1} out of {2}',
-                        emptyMsg: 'No Records',
-                                                   
-            }]
-        });
-        var storeConfig = {
-            proxy: {
-                 url: 'newreports/gmpDetailedReportPreview',
-            reader: {
-             type: 'json',
-             rootProperty: 'results',
-             totalProperty: 'totalResults'
-              }
-            }
-        };
-        store = Ext.create('Admin.store.reports.ReportsGlobalAbstractStr', storeConfig);
-        center.down('pagingtoolbar').setStore(store);
-        center.setStore(store);
+                            store.getProxy().extraParams = {
+                                'sub_module_id': sub_module_id,
+                                'from_date': from_date,
+                                'to_date': to_date, 
+                                'process_class':process_class
+                               
+                                }
+                                    
+                            }, 
+                    xtype: 'pagingtoolbar',
+                            width: '90%',
+                            displayInfo: true,
+                            hidden: false,
+                            displayMsg: 'Showing {0} - {1} out of {2}',
+                            emptyMsg: 'No Records',
+                                                       
+                }]
+            });
+            var storeConfig = {
+                proxy: {
+                     url: 'newreports/gmpDetailedReportPreview',
+                reader: {
+                 type: 'json',
+                 rootProperty: 'results',
+                 totalProperty: 'totalResults'
+                  }
+                }
+            };
+            store = Ext.create('Admin.store.reports.ReportsGlobalAbstractStr', storeConfig);
+            center.down('pagingtoolbar').setStore(store);
+            center.setStore(store);
 
-        var west = Ext.create({
-            xtype: item.xvisibleColumns,
-            region: 'west',
-            width: 200
-        });
+            var west = Ext.create({
+                xtype: item.xvisibleColumns,
+                region: 'west',
+                width: 200
+            });
 
-        child.add(center);
-        child.add(west);
+            child.add(center);
+            child.add(west);
 
-        //hide the action column of the grid
-        var x=child.down(item.xspreadsheet),
-        y=x.getView().grid;
-        y.columns[0].setVisible(0);
+            //hide the action column of the grid
+            var x=child.down(item.xspreadsheet),
+            y=x.getView().grid;
+            y.columns[0].setVisible(0);
 
 
-        //display window
-        funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+            //display window
+            funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         } else {
             toastr.error('Please select Filters first ', 'Failure Response');
             }

@@ -1,6 +1,7 @@
 Ext.define('Admin.view.reports.appsreport.drugshopreport.form.DrugshopReportFiltersFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'drugshopreportfiltersfrm',
+    itemId: 'drugshopreportfiltersfrm',
     layout: 'column',
     defaults:{
         bodyPadding: 1,
@@ -108,7 +109,7 @@ Ext.define('Admin.view.reports.appsreport.drugshopreport.form.DrugshopReportFilt
             labelAlign : 'top',
             format: 'Y-m-d',
             name: 'from_date',
-            allowBlank: false,
+            allowBlank: true,
             minValue: new Date(2020, 6)
         },{
             xtype: 'datefield',
@@ -116,7 +117,7 @@ Ext.define('Admin.view.reports.appsreport.drugshopreport.form.DrugshopReportFilt
             format: 'Y-m-d',
             emptyText: 'Date To',
             labelAlign : 'top',
-            allowBlank: false,
+            allowBlank: true,
             minValue: new Date(2020, 6),
             maxValue: new Date()
         },{ 

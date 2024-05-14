@@ -2,6 +2,7 @@ Ext.define('Admin.view.reports.appsreports.gmpreport.grid.GmpTabularRepresentati
     extend: 'Ext.grid.Panel',
     controller: 'productreportctr',
     xtype: 'gmptabularrepresentationgrid',
+    itemId: 'gmptabularrepresentationgrid',
     autoScroll: true,
     autoHeight: true,
     width: '100%',
@@ -167,15 +168,15 @@ Ext.define('Admin.view.reports.appsreports.gmpreport.grid.GmpTabularRepresentati
                         var grid=this.up('grid'),
                         tab = grid.up('tabpanel'),
                         panel = tab.up('panel'),
-                        filter=panel.down('form'),
-                                    sub_module_id = panel.down('combo[name=sub_module_id]').getValue(),
-                                    section_id = panel.down('combo[name=section_id]').getValue(),  
-                                   from_date = panel.down('datefield[name=from_date]').getValue(),
-                                   to_date = panel.down('textfield[name=to_date]').getValue(),
-                                   gmp_location = panel.down('combo[name=gmp_location]').getValue(),  
-                                   module_id=panel.down('hiddenfield[name=module_id]').getValue();
+                        form = Ext.ComponentQuery.query("#gmpreportfiltersfrm")[0],
+                                sub_module_id = form.down('combo[name=sub_module_id]').getValue(),
+                                section_id = form.down('combo[name=section_id]').getValue(),  
+                                from_date = form.down('datefield[name=from_date]').getValue(),
+                                to_date = form.down('textfield[name=to_date]').getValue(),
+                                gmp_location = form.down('combo[name=gmp_location]').getValue(),  
+                                module_id=form.down('hiddenfield[name=module_id]').getValue();
                               
-                              frm = filter.getForm();
+                              frm = form.getForm();
                               if (frm.isValid()) {
                              store.getProxy().extraParams = {
 
