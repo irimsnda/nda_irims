@@ -2,28 +2,28 @@
 
 namespace Modules\APIIntegrations\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Carbon;
+use Modules\APIIntegrations\App\Models\PvPersonnel;
+use PDF;
 use DateTime;
 use DateTimeZone;
-use Illuminate\Support\Facades\DB;
-use PDF;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 use \Mpdf\Mpdf as mPDF;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Modules\Reports\Traits\ReportsTrait;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Modules\Reports\Providers\PdfProvider;
 use Modules\Reports\Providers\PdfLettersProvider;
-use Modules\Reports\Traits\ReportsTrait;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class NewIntegrationsController extends Controller
 {
-
-
     public function getApplicationInvoiceDetails(Request $req)
     {
         try {
@@ -555,6 +555,7 @@ public function getCompanyDetails(Request $req){
 
       //vigiflow
     public function generateUploadableE2BFile(Request $req){
+        
         try {
              $patientonsetageunit=''; //to be removed
             // $application_code = $req->application_code;
@@ -566,16 +567,23 @@ public function getCompanyDetails(Request $req){
             }else{
                 $reference = 'NDA-IRIMS-Export-001';
             }
+
+            
+
             $data = array(
                 'date_generated' => Carbon::now(),
                 'application_codes' => json_encode($selected),
                 'reference' => $reference,
                 'generated_by' =>1
             );
+
+            
+
             $log_res = insertRecord('tra_pv_vigiflow_export_log', $data);
             if(!isset($log_res['record_id'])){
                 return $log_res;
             }
+
             //messagedate recieved
             $messagedate =strtotime(date("Y/m/d h:i:sa")); //gets dates instance
             $year = date("Y", $messagedate);
@@ -614,6 +622,15 @@ public function getCompanyDetails(Request $req){
                     ->select('t1.*', DB::raw("CASE WHEN t2.id IS NUll THEN 2 ELSE 1 End has_documents, t3.name as patient_title,CASE WHEN t1.seriousness_id IS NUll THEN 2 ELSE 3 End termhighlighted"))
                     ->where('t1.application_code', $application_code)
                     ->first();
+                
+                $primarysource = PvPersonnel::from('tra_pv_personnel as t1')
+                ->leftJoin('par_titles as t2', 't1.title_id', 't2.id')
+                ->leftJoin('par_pv_reporter_qualifications as t3', 't1.qualification_id', 't3.id')
+                ->leftJoin('par_cities as t4','t1.city_id','t4.id')
+                ->where('application_code', $application_code)
+                ->select('t1.*', 't2.name as reportertitle', 't3.name as qualification', 't4.name as city')
+                ->firstOrFail();
+
                 //seriousness
                 if(validateIsNumeric($report->seriousness_id)){
                     $serious = 1;
@@ -714,13 +731,14 @@ public function getCompanyDetails(Request $req){
 
                 }
 
+                
+
                 //mentration end date
                 $last_menstruation_date =strtotime($report->last_menstruation_date); //gets dates instance
                 $year = date("Y", $last_menstruation_date);
                 $month = date("m", $last_menstruation_date);
                 $day = date("d", $last_menstruation_date);
                 $last_menstruation_date_fmt = $year."".$month."".$day;
-
                 //report refs
                 $reportid = $report->tracking_no;
                 /*
@@ -750,21 +768,21 @@ public function getCompanyDetails(Request $req){
                     <fulfillexpeditecriteria>1</fulfillexpeditecriteria>
                     <companynumb>".$reportid."</companynumb>
                     <primarysource>
-                        <reportertitle>".$report->professional_title."</reportertitle>
-                        <reportergivename>PRIVACY</reportergivename>
-                        <reporterfamilyname>PRIVACY</reporterfamilyname>
-                        <reporterorganization>PRIVACY</reporterorganization>
+                        <reportertitle>".$primarysource->reportertitle."</reportertitle>
+                        <reportergivename>".$primarysource->first_name."</reportergivename>
+                        <reporterfamilyname>".$primarysource->last_name."</reporterfamilyname>
+                        <reporterorganization>".$primarysource->organisation."</reporterorganization>
                         <reportercountry>UG</reportercountry>
-                        <qualification>".$report->professional_qualification_id."</qualification>
+                        <qualification>".$primarysource->qualification."</qualification>
                     </primarysource>
                     <sender>
                         <sendertype>2</sendertype>
-                        <senderorganization>NDA</senderorganization>
+                        <senderorganization>".$primarysource->organisation."</senderorganization>
                         <senderdepartment>Product-Safety</senderdepartment>
-                        <senderstreetaddress>NDA HQ</senderstreetaddress>
-                        <sendercity>Kampala</sendercity>
+                        <senderstreetaddress>".$primarysource->physical_address."</senderstreetaddress>
+                        <sendercity>".$primarysource->city."</sendercity>
                         <sendercountrycode>UG</sendercountrycode>
-                        <sendertel></sendertel>
+                        <sendertel>".$primarysource->telephone_no."</sendertel>
                         <sendertelextension></sendertelextension>
                         <sendertelcountrycode></sendertelcountrycode>
                     </sender>
