@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->call(function () {
-            $environment = 'sandbox';
+            $environment = 'production';
             //$environment='production';
             $whodrugapi_configs = $this->getWHODrugAPIConfigurations($environment);
             $queryParams = http_build_query([
@@ -218,7 +218,7 @@ class Kernel extends ConsoleKernel
                 }
             }
 
-        })->everyMinute();
+        })->everyFiveMinutes();
 
     }
 
