@@ -1473,7 +1473,7 @@ class NewIntegrationsController extends Controller
 
     public function whoDrugDownloadApi(Request $request)
     {
-        $limit = $request->input('limit', 10000); // Default limit is 10000 if not provided
+        $limit = $request->input('limit', 1000); // Default limit is 10000 if not provided
         $page = $request->input('page', 1); // Default page is 1 if not provided
 
         $offset = ($page - 1) * $limit;
