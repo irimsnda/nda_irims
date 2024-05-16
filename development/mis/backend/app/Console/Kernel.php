@@ -34,10 +34,10 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
 
         // Schedule to Export WHO Drug Data
-        $schedule->call([NewIntegrationsController::class, 'exportwhodata'])->monthly()->runInBackground();
+        $schedule->call([NewIntegrationsController::class, 'exportwhodata'])->monthly();
 
         // Schedule to Import WHO Drug Data
-        $schedule->call([NewIntegrationsController::class, 'syncwhodata'])->monthlyOn(1, '00:00')->runInBackground();
+        $schedule->call([NewIntegrationsController::class, 'syncwhodata'])->monthlyOn(1, '00:00');
     }
 
     /**
