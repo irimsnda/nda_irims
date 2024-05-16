@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Modules\APIIntegrations\Http\Controllers\NewIntegrationsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/apiintegrations', function (Request $request) {
     return $request->user();
 });
+
+//Handle Intial Sync
+Route::get('exportwhodata', [NewIntegrationsController::class, 'exportwhodata']);
+Route::get('syncwhodata', [NewIntegrationsController::class, 'syncwhodata']);

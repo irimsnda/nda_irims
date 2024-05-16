@@ -5,6 +5,7 @@ namespace Modules\APIIntegrations\Http\Controllers;
 use PDF;
 use DateTime;
 use DateTimeZone;
+use GuzzleHttp\Client;
 use \Mpdf\Mpdf as mPDF;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -12,11 +13,12 @@ use Illuminate\Support\Carbon;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Modules\Reports\Traits\ReportsTrait;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
 use Modules\Reports\Providers\PdfProvider;
 use Modules\Reports\Providers\PdfLettersProvider;
 use Modules\APIIntegrations\App\Models\PvPersonnel;
@@ -412,10 +414,13 @@ class NewIntegrationsController extends Controller
                 } else {
                     $token = $this->generateAccessToken();
                     $obrs_configs = $this->getObrsConfigurations();
-                    $company_details = $this->curl_post($token, $obrs_configs->companydetails_url, array(
-                        'brn' => trim($company_registration_no)
-                        //'brn'=> '80034506867656'
-                    )
+                    $company_details = $this->curl_post(
+                        $token,
+                        $obrs_configs->companydetails_url,
+                        array(
+                            'brn' => trim($company_registration_no)
+                            //'brn'=> '80034506867656'
+                        )
                     );
                     $company_details = json_decode($company_details, true);
                     if (!isset($company_details['company'])) {
@@ -475,9 +480,12 @@ class NewIntegrationsController extends Controller
     {
         $token = $this->generateAccessToken();
         $obrs_configs = $this->getObrsConfigurations();
-        $company_shareholder = $this->curl_post($token, $obrs_configs->shareholders_url, array(
-            'brn' => '80034447904226'
-        )
+        $company_shareholder = $this->curl_post(
+            $token,
+            $obrs_configs->shareholders_url,
+            array(
+                'brn' => '80034447904226'
+            )
         );
         return $company_shareholder;
     }
@@ -505,16 +513,18 @@ class NewIntegrationsController extends Controller
         );
 
         $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $baseurl . $endpoint,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => json_encode($payload),
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_HTTPHEADER => $headers,
+        curl_setopt_array(
+            $curl,
+            array(
+                CURLOPT_URL => $baseurl . $endpoint,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => json_encode($payload),
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_HTTPHEADER => $headers,
 
-        )
+            )
         );
 
         $curl_response = curl_exec($curl);
@@ -544,16 +554,18 @@ class NewIntegrationsController extends Controller
             'Accept: application/json'
         );
         $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $baseurl . $endpoint,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => json_encode($payload),
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_HTTPHEADER => $headers
+        curl_setopt_array(
+            $curl,
+            array(
+                CURLOPT_URL => $baseurl . $endpoint,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => json_encode($payload),
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_HTTPHEADER => $headers
 
-        )
+            )
         );
         $curl_response = curl_exec($curl);
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
@@ -1402,10 +1414,13 @@ class NewIntegrationsController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $soapRequest);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: text/xml; charset=utf-8',
-            'Content-Length: ' . strlen($soapRequest),
-        )
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type: text/xml; charset=utf-8',
+                'Content-Length: ' . strlen($soapRequest),
+            )
         );
 
         // Execute cURL request
@@ -1464,7 +1479,7 @@ class NewIntegrationsController extends Controller
             'message' => 'All is well!!',
             'results' => $WHODrugInformation
         );
-        
+
         return response()->json($res);
     }
 
@@ -1798,6 +1813,221 @@ class NewIntegrationsController extends Controller
               </xml>';
             return $notify_resp;
         }
+
+    }
+
+    //Export DATA
+    public function exportwhodata(Request $req)
+    {
+        // Increase maximum execution time to 10 minutes (600 seconds)
+        set_time_limit(600);
+        // $environment = 'sandbox';
+        $environment = 'production';
+        $whodrugapi_configs = $this->getWHODrugAPIConfigurations($environment);
+        $queryParams = http_build_query([
+            'MedProdLevel' => 0,
+            'IncludeAtc' => 'true',
+            'IngredientTranslations' => 'false'
+        ]);
+
+        $headers = [
+            'umc-license-key: ' . $whodrugapi_configs->license_key,
+            'Cache-Control: no-cache',
+            'umc-client-key: ' . $whodrugapi_configs->client_key,
+
+        ];
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $whodrugapi_configs->request_url . '?' . $queryParams);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $file = base_path("whodrugdata.json");
+        file_put_contents($file, curl_exec($ch));
+
+        if (curl_errno($ch)) {
+            $res = array(
+                'success' => false,
+                'message' => 'Curl error: ' . curl_error($ch) . '!!'
+            );
+            echo json_encode($res);
+            exit();
+        }
+        curl_close($ch);
+        $res = array(
+            'success' => true,
+            'message' => 'Data Exported Successfully!!',
+        );
+        return response()->json($res);
+    }
+
+    //SYNC WHO DATA
+    public function syncwhodata(Request $req)
+    {
+        // Increase maximum execution time to 10 minutes (600 seconds)
+        set_time_limit(600);
+
+        ini_set('memory_limit', '1G'); // Adjust the memory limit as needed
+
+        $file = base_path("whodrugdata.json");        
+
+        // Check if the file exists
+        if (file_exists($file)) {
+            // Read the file content
+            $jsonContent = file_get_contents($file);
+            
+            // Handle the data
+        if ($jsonContent) {
+            // Decode the JSON data
+            $decodedResponse = json_decode($jsonContent, true);
+            if ($decodedResponse) {
+                // Flatten the array structure
+                $flattenedDrugs = [];
+
+                foreach ($decodedResponse as $drug) {
+                    $activeIngredients = array_map(function ($active) {
+                        return $active['ingredient'];
+                    }, $drug['activeIngredients']);
+
+                    // Concatenate activeIngredients with commas and "and" for the last one
+                    $concatenatedIngredients = implode(', ', array_slice($activeIngredients, 0, -1));
+                    if (count($activeIngredients) > 1) {
+                        $concatenatedIngredients .= ' and ' . end($activeIngredients);
+                    } else {
+                        $concatenatedIngredients = reset($activeIngredients);
+                    }
+
+                    // Handle countryOfSales and maHolders
+                    if (!empty($drug['countryOfSales'])) {
+                        foreach ($drug['countryOfSales'] as $country) {
+                            $countryCode = $country['iso3Code'];
+                            if (!empty($country['maHolders'])) {
+                                foreach ($country['maHolders'] as $maHolder) {
+                                    $flattenedDrug = [
+                                        'drugName' => $drug['drugName'],
+                                        'drugCode' => $drug['drugCode'],
+                                        'medicinalProductID' => $drug['medicinalProductID'],
+                                        'isGeneric' => $drug['isGeneric'],
+                                        'isPreferred' => $drug['isPreferred'],
+                                        'countryOfSales' => $countryCode,
+                                        'activeIngredients' => $concatenatedIngredients,
+                                        'atc_code' => null,
+                                        'atc_text' => null,
+                                        'atc_official_flag' => null,
+                                        'maHolder_name' => $maHolder['name'],
+                                        'maHolder_medicinalProductID' => $maHolder['medicinalProductID'],
+                                    ];
+
+                                    // Check if 'atcs' array is present
+                                    if (!empty($drug['atcs'])) {
+                                        foreach ($drug['atcs'] as $atc) {
+                                            $flattenedDrug['atc_code'] = $atc['code'];
+                                            $flattenedDrug['atc_text'] = $atc['text'];
+                                            $flattenedDrug['atc_official_flag'] = $atc['officialFlag'];
+                                            $flattenedDrugs[] = $flattenedDrug;
+                                        }
+                                    } else {
+                                        $flattenedDrugs[] = $flattenedDrug;
+                                    }
+                                }
+                            } else {
+                                // No maHolders, add a record with empty maHolder details
+                                $flattenedDrug = [
+                                    'drugName' => $drug['drugName'],
+                                    'drugCode' => $drug['drugCode'],
+                                    'medicinalProductID' => $drug['medicinalProductID'],
+                                    'isGeneric' => $drug['isGeneric'],
+                                    'isPreferred' => $drug['isPreferred'],
+                                    'countryOfSales' => $countryCode,
+                                    'activeIngredients' => $concatenatedIngredients,
+                                    'atc_code' => null,
+                                    'atc_text' => null,
+                                    'atc_official_flag' => null,
+                                    'maHolder_name' => null,
+                                    'maHolder_medicinalProductID' => null,
+                                ];
+
+                                // Check if 'atcs' array is present
+                                if (!empty($drug['atcs'])) {
+                                    foreach ($drug['atcs'] as $atc) {
+                                        $flattenedDrug['atc_code'] = $atc['code'];
+                                        $flattenedDrug['atc_text'] = $atc['text'];
+                                        $flattenedDrug['atc_official_flag'] = $atc['officialFlag'];
+                                        $flattenedDrugs[] = $flattenedDrug;
+                                    }
+                                } else {
+                                    $flattenedDrugs[] = $flattenedDrug;
+                                }
+                            }
+                        }
+                    } else {
+                        // No countryOfSales, handle as before
+                        $flattenedDrug = [
+                            'drugName' => $drug['drugName'],
+                            'drugCode' => $drug['drugCode'],
+                            'medicinalProductID' => $drug['medicinalProductID'],
+                            'isGeneric' => $drug['isGeneric'],
+                            'isPreferred' => $drug['isPreferred'],
+                            'countryOfSales' => null,
+                            'activeIngredients' => $concatenatedIngredients,
+                            'atc_code' => null,
+                            'atc_text' => null,
+                            'atc_official_flag' => null,
+                        ];
+
+                        // Check if 'atcs' array is present
+                        if (!empty($drug['atcs'])) {
+                            foreach ($drug['atcs'] as $atc) {
+                                $flattenedDrug['atc_code'] = $atc['code'];
+                                $flattenedDrug['atc_text'] = $atc['text'];
+                                $flattenedDrug['atc_official_flag'] = $atc['officialFlag'];
+                                $flattenedDrugs[] = $flattenedDrug;
+                            }
+                        } else {
+                            $flattenedDrugs[] = $flattenedDrug;
+                        }
+                    }
+                }
+
+                $res = array(
+                    'success' => true,
+                    'message' => 'All is well!!',
+                    'results' => $flattenedDrugs
+                );
+
+                foreach ($flattenedDrugs as $flattenedDrug) {
+                    // Check if Drug Exists
+                    $WHODrugInformation = WHODrugInformation::where('drugCode', $flattenedDrug['drugCode'])->first();
+                    if (!empty ($WHODrugInformation)) {
+                        print ('Already Exists!!');
+                    } else {
+                        $WHODrugInformation = WHODrugInformation::create($flattenedDrug);
+                        print ('Inserted!!');
+                    }
+                }
+
+                // Return the flattened array as JSON response
+                return response()->json($res);
+            } else {
+                $res = array(
+                    'success' => false,
+                    'message' => 'Problem encountered while decoding JSON response!!'
+                );
+                return response()->json($res);
+                exit();
+
+            }
+        } else {
+            $res = array(
+                'success' => false,
+                'message' => 'No response from the API!!'
+            );
+            return response()->json($res);
+            exit();
+        }
+        } else {
+            return response()->json(['error' => 'File not found'], 404);
+        }       
 
     }
 }
