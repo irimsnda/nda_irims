@@ -2399,7 +2399,7 @@ if(validateIsNumeric($section_id)){
             $data = array();
             //get the records
             $data = DB::table('tra_product_ingredients as t1')
-                ->select('t1.*', 't6.name as reason_for_inclusion', 't2.name as ingredient_specification', 't3.name as si_unit', 't4.name as ingredient_name', 't5.name as ingredient_type','t7.name as excipient_name','t8.description as generic_atc_name')
+                ->select('t1.*', 't2.name as ingredient_specification', 't3.name as si_unit', 't4.name as ingredient_name', 't5.name as ingredient_type','t7.name as excipient_name','t8.description as generic_atc_name')
                 ->leftJoin('par_specification_types as t2', 't1.specification_type_id', '=', 't2.id')
                 ->leftJoin('par_si_units as t3', 't1.ingredientssi_unit_id', '=', 't3.id')
                 ->leftJoin('par_ingredients_details as t4', 't1.ingredient_id', '=', 't4.id')
@@ -2409,6 +2409,11 @@ if(validateIsNumeric($section_id)){
                 ->leftJoin('par_atc_codes as t8', 't1.active_common_name_id', '=', 't8.id')
                 ->where(array('t1.product_id' => $product_id))
                 ->get();
+
+            foreach ($data as $ingredient) {
+                $ingredient->reason_for_inclusion = getNamesFromIds('par_inclusions_reasons',$ingredient->inclusion_reason_id);
+            }
+
             $res = array('success' => true, 'results' => $data);
         } catch (\Exception $e) {
             $res = array(

@@ -1646,6 +1646,30 @@ static function getPermitSignatoryDetails()
 
     }
 
+ static function getNamesFromIds($table_name,$param_ids)
+    {
+        $paramdatasets = DB::table($table_name)
+                ->select('id', 'name')
+                ->get()
+                ->keyBy('id')
+                ->toArray(); 
+
+        $reasonIds = json_decode($param_ids);
+        if (!is_array($reasonIds)){
+             $reasonIds = [$param_ids];
+        }
+        $names = [];
+        if (is_array($reasonIds)) {
+            foreach ($reasonIds as $id) {
+                if (isset($paramdatasets[$id])) {
+                    $names[] = $paramdatasets[$id]->name;
+                }
+            }
+        }
+        return implode(', ', $names);
+    }
+
+
     static function funcSaveOnlineImportExportOtherdetails($application_code, $user_id)
     {
 		$record = DB::table('tra_permits_products')->where(array('application_code' => $application_code))->count();

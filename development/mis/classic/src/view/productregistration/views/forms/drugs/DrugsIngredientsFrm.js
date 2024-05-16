@@ -216,15 +216,44 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
     },
 
 
+     // {
+     //        xtype: 'combo',
+     //        name: 'inclusion_reason_id',
+     //        allowBlank: true,
+     //        //hidden:true,
+     //        fieldLabel: 'Reason for Inclusion',
+     //        valueField: 'id',
+     //        displayField: 'name',
+     //        queryMode: 'local',
+     //        listeners: {
+     //            afterrender: {
+     //                fn: 'setConfigCombosStore',
+     //                config: {
+     //                    pageSize: 10000,
+     //                    proxy: {
+     //                        url: 'configurations/getRegistrationApplicationParameters',
+     //                        extraParams:{
+     //                            table_name: 'par_inclusions_reasons'
+     //                        }
+     //                    }
+     //                },
+     //                isLoad: true
+     //            }
+     //        }
+     //    }
      {
-            xtype: 'combo',
+            xtype: 'tagfield',
+            fieldLabel: 'Reason for Inclusion',
             name: 'inclusion_reason_id',
             allowBlank: true,
-            //hidden:true,
-            fieldLabel: 'Reason for Inclusion',
+            forceSelection: true,
+            filterPickList: true,
+            encodeSubmitValue: true,
+            growMax: 100,
+            multiSelect: true,
+            queryMode: 'local',
             valueField: 'id',
             displayField: 'name',
-            queryMode: 'local',
             listeners: {
                 afterrender: {
                     fn: 'setConfigCombosStore',
@@ -232,7 +261,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
                         pageSize: 10000,
                         proxy: {
                             url: 'configurations/getRegistrationApplicationParameters',
-                            extraParams:{
+                            extraParams: {
                                 table_name: 'par_inclusions_reasons'
                             }
                         }
@@ -241,6 +270,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
                 }
             }
         }
+
     ],
     dockedItems: [{
         xtype: 'toolbar',

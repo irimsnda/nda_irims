@@ -1264,6 +1264,13 @@ if (!function_exists('returnParamFromArray')) {
     }
 }
 
+if (!function_exists('getNamesFromIds')) {
+    function getNamesFromIds($table_name,$param_ids)
+    {
+        return UtilityHelper::getNamesFromIds($table_name,$param_ids);
+    }
+}
+
 if (!function_exists('funcSaveOnlineProductOtherdetails')) {
     function funcSaveOnlineProductOtherdetails($portal_product_id, $product_id, $reg_product_id, $user_id)
     {
