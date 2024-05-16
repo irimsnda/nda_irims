@@ -27,7 +27,15 @@ Ext.define('Admin.view.gmpapplications.views.toolbars.VeterinaryMedicinesGmpTb',
             iconCls: 'x-fa fa-plus-square',
             menu:{
                 xtype: 'menu',
-                items:[
+                items:[{
+                        text: 'Pre Inspection GMP(Local Manufacturers)',
+                        iconCls: 'x-fa fa-check',
+                        handler:'showNewGmpApplication',
+                        gmp_type: 2,
+                        wrapper_xtype: 'drugsgmpdashwrapper',
+                        app_type: 117
+                    },
+                    '-',
                     {
                         text: 'New GMP',
                         iconCls: 'x-fa fa-check',

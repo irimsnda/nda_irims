@@ -189,6 +189,8 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             winTitle = btn.winTitle,
             winWidth = btn.winWidth;
             childObject.down('hiddenfield[name=reaction_id]').setValue(record.get('id'));
+            childObject.down('combo[name=giagnosis_medra_id]').setValue(record.get('giagnosis_medra_id'));
+            childObject.down('combo[name=diagnosis_meddra_level_id]').setValue(record.get('diagnosis_meddra_level_id'));
             funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
 
@@ -273,6 +275,12 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
         if(casualityevaluationgrid.down('hiddenfield[name=reaction_id]')){
             reaction_id = casualityevaluationgrid.down('hiddenfield[name=reaction_id]').getValue();   
         }
+        if(casualityevaluationgrid.down('combo[name=diagnosis_meddra_level_id]')){
+            diagnosis_meddra_level_id = casualityevaluationgrid.down('combo[name=diagnosis_meddra_level_id]').getValue();   
+        }
+        if(casualityevaluationgrid.down('combo[name=giagnosis_medra_id]')){
+            giagnosis_medra_id = casualityevaluationgrid.down('combo[name=giagnosis_medra_id]').getValue();   
+        }
         for (var i = 0; i < store.data.items.length; i++) {
             var record = store.data.items [i],
                  question_id = record.get('question_id'),
@@ -301,6 +309,12 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
                 report_questions.push(obj);
             }
         }
+         if (!giagnosis_medra_id) {
+            btn.setLoading(false);
+            toastr.warning('Diagnosis Medra term missing!!', 'Warning Response');
+            return false;
+        }
+
         if (report_questions.length < 1) {
             btn.setLoading(false);
             toastr.warning('No records to save!!', 'Warning Response');
@@ -317,7 +331,9 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             url: 'pv/saveAssessmentReportdetails',
             params: {
                 application_code: application_code,
-                report_questions: report_questions
+                report_questions: report_questions,
+                diagnosis_meddra_level_id: diagnosis_meddra_level_id,
+                giagnosis_medra_id: giagnosis_medra_id
             },
             headers: {
                 'Authorization': 'Bearer ' + access_token,
@@ -372,6 +388,12 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
         if(casualityevaluationgrid.down('hiddenfield[name=reaction_id]')){
             reaction_id = casualityevaluationgrid.down('hiddenfield[name=reaction_id]').getValue();   
         }
+        if(casualityevaluationgrid.down('combo[name=diagnosis_meddra_level_id]')){
+            diagnosis_meddra_level_id = casualityevaluationgrid.down('combo[name=diagnosis_meddra_level_id]').getValue();   
+        }
+        if(casualityevaluationgrid.down('combo[name=giagnosis_medra_id]')){
+            giagnosis_medra_id = casualityevaluationgrid.down('combo[name=giagnosis_medra_id]').getValue();   
+        }
         for (var i = 0; i < store.data.items.length; i++) {
             var record = store.data.items [i],
                  question_id = record.get('question_id'),
@@ -405,6 +427,11 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             toastr.warning('No records to save!!', 'Warning Response');
             return false;
         }
+         if (!giagnosis_medra_id) {
+            btn.setLoading(false);
+            toastr.warning('Diagnosis Medra term missing!!', 'Warning Response');
+            return false;
+        }
 
         if (hasEmptyScore) {
             btn.setLoading(false);
@@ -416,7 +443,9 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             url: 'pv/saveWHOAssessmentReportdetails',
             params: {
                 application_code: application_code,
-                report_questions: report_questions
+                report_questions: report_questions,
+                diagnosis_meddra_level_id: diagnosis_meddra_level_id,
+                giagnosis_medra_id: giagnosis_medra_id
             },
             headers: {
                 'Authorization': 'Bearer ' + access_token,

@@ -26,9 +26,9 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsProductPackagi
         iconCls: 'x-fa fa-plus',
         action: 'add',
         ui: 'soft-green',
-        childXtype: 'drugsProductPackagingFrm',
+        childXtype: 'productpackagingtabpnl',
         winTitle: 'Product Packaging Details',
-        winWidth: '60%',
+        winWidth: '90%',
         handler: 'showAddProductOtherdetailsWinFrm',
         stores: '[]',
         bind: {
@@ -68,68 +68,84 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsProductPackagi
     }],
     columnLines: true,
     columns: [{
-        text:'',
-        itemId: 'packsize',
-        flex: 1,
-        align: 'center',
-        columns: [{
-            xtype: 'gridcolumn',
-            dataIndex: 'packaging_category',
-            text: 'Pack Category',
-            flex: 1
-        }, {
-            xtype: 'gridcolumn',
-            dataIndex: 'container_type',
-            text: 'Packaging Type',
-            flex: 1
-        }, {
-            xtype: 'gridcolumn',
-            dataIndex: 'container_name',
-            text: 'Pack Type',
-            flex: 1
-        }, {
-            xtype: 'gridcolumn',
-            dataIndex: 'container_material',
-            text: 'Pack Material',
-            flex: 1
-        },{
-            xtype: 'gridcolumn',
-            dataIndex: 'diluent',
-            text: 'Diluent',
-            flex: 1
-        },  {
-            xtype: 'gridcolumn',
-            dataIndex: 'no_of_units',
-            text: 'No Of Units',
-            flex: 1,
-            summaryType: function (records, values) {
-              var packSizeColumn = Ext.ComponentQuery.query("#packsize")[0];
-                if (records.length > 0) {
-                    let firstRecord = records[0];
-                    console.log(firstRecord);
-                    packSizeColumn.setText(firstRecord.get('pack_size'));
-                    return'';
+        // text:'',
+        // itemId: 'packsize',
+        // flex: 1,
+        // align: 'center',
+        // columns: [{
+        //     xtype: 'gridcolumn',
+        //     dataIndex: 'packaging_category',
+        //     text: 'Pack Category',
+        //     flex: 1
+        // }, {
+        //     xtype: 'gridcolumn',
+        //     dataIndex: 'container_type',
+        //     text: 'Packaging Type',
+        //     flex: 1
+        // }, {
+        //     xtype: 'gridcolumn',
+        //     dataIndex: 'container_name',
+        //     text: 'Pack Type',
+        //     flex: 1
+        // }, {
+        //     xtype: 'gridcolumn',
+        //     dataIndex: 'container_material',
+        //     text: 'Pack Material',
+        //     flex: 1
+        // },{
+        //     xtype: 'gridcolumn',
+        //     dataIndex: 'diluent',
+        //     text: 'Diluent',
+        //     flex: 1
+        // },  {
+        //     xtype: 'gridcolumn',
+        //     dataIndex: 'no_of_units',
+        //     text: 'No Of Units',
+        //     flex: 1,
+        //     summaryType: function (records, values) {
+        //       var packSizeColumn = Ext.ComponentQuery.query("#packsize")[0];
+        //         if (records.length > 0) {
+        //             let firstRecord = records[0];
+        //             console.log(firstRecord);
+        //             packSizeColumn.setText(firstRecord.get('pack_size'));
+        //             return'';
                     
-                }
-                packSizeColumn.setText('');
-                return'';
+        //         }
+        //         packSizeColumn.setText('');
+        //         return'';
                 
+        //     }
+        // }, {
+        //     xtype: 'gridcolumn',
+        //     dataIndex: 'no_of_packs',
+        //     text: 'Quantity/Volume Per',
+        //     flex: 1
+        // }, {
+        //     xtype: 'gridcolumn',
+        //     dataIndex: 'si_unit',
+        //     text: 'Unit of Quantity/Volume',
+        //     flex: 1
+        // }, 
+        //{
+            xtype: 'gridcolumn',
+            dataIndex: 'pack_size',
+            text: 'Pack Size',
+            flex: 1,
+            align: 'center' 
+        },{
+        xtype: 'widgetcolumn',
+        name:'view_sites',
+        width: 160,
+        widget:{
+            xtype: 'button',
+            text: 'View all Details',
+            childXtype: 'productpackagingtabpnl',
+            winTitle: 'Product Packaging',
+            winWidth: '90%',
+            ui: 'soft-green',
+            iconCls: 'fa fa-eye',
+            handler: 'viewProductPackagingdetailWinFrm'
             }
-        }, {
-            xtype: 'gridcolumn',
-            dataIndex: 'no_of_packs',
-            text: 'Quantity/Volume Per',
-            flex: 1
-        }, {
-            xtype: 'gridcolumn',
-            dataIndex: 'si_unit',
-            text: 'Unit of Quantity/Volume',
-            flex: 1
-        }, {
-            xtype: 'gridcolumn',
-            dataIndex: 'description',
-            text: 'Pack Description',
-            flex: 1
         }, {
             text: 'Options',
             xtype: 'widgetcolumn',
@@ -147,10 +163,10 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsProductPackagi
                         iconCls: 'x-fa fa-edit',
                         tooltip: 'Edit Record',
                         action: 'edit',
-                        childXtype: 'drugsProductPackagingFrm',
+                        childXtype: 'productpackagingtabpnl',
                         winTitle: 'Product Packaging',
-                        winWidth: '60%',
-                        handler: 'showEditProductOtherdetailWinFrm',
+                        winWidth: '90%',
+                        handler: 'showEditProductPackagingdetailWinFrm',
                         stores: '[]'
                     }, {
                         text: 'Delete',
@@ -164,7 +180,7 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsProductPackagi
                     }]
                 }
             }
-        }]
+        // }]
     }]
 });
 

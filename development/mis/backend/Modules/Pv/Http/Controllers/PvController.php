@@ -317,6 +317,8 @@ public function getWHOCasaultyAssessment(Request $request)
         {
             $application_code = $request->input('application_code');
             $report_questions = $request->input('report_questions');
+            $diagnosis_meddra_level_id = $request->input('diagnosis_meddra_level_id');
+            $giagnosis_medra_id = $request->input('giagnosis_medra_id');
             $report_questions = json_decode($report_questions);
             $table_name = 'tra_pv_causality_assessment';
             $user_id = $this->user_id;
@@ -474,6 +476,16 @@ public function getWHOCasaultyAssessment(Request $request)
                             'message' => 'Causality Assessment report saved successfully!!'
                         );
                     }
+
+                     $update_data = array(
+                            'diagnosis_meddra_level_id' => $diagnosis_meddra_level_id,
+                            'giagnosis_medra_id' => $giagnosis_medra_id,
+                        );
+                        $where = array(
+                        'application_code' => $application_code,
+                        'id' => $reaction_id
+                        );
+                        $res = updateRecordNoPrevious('tra_pv_reaction', $where, $update_data);
                 }
 
               
@@ -498,6 +510,8 @@ public function getWHOCasaultyAssessment(Request $request)
         {
             $application_code = $request->input('application_code');
             $report_questions = $request->input('report_questions');
+            $diagnosis_meddra_level_id = $request->input('diagnosis_meddra_level_id');
+            $giagnosis_medra_id = $request->input('giagnosis_medra_id');
             $report_questions = json_decode($report_questions);
             $table_name = 'tra_pv_who_causality_assessment';
             $user_id = $this->user_id;
@@ -564,6 +578,17 @@ public function getWHOCasaultyAssessment(Request $request)
                             'message' => 'Causality Assessment report saved successfully!!'
                         );
                     }
+
+
+                      $update_data = array(
+                            'diagnosis_meddra_level_id' => $diagnosis_meddra_level_id,
+                            'giagnosis_medra_id' => $giagnosis_medra_id,
+                        );
+                        $where = array(
+                        'application_code' => $application_code,
+                        'id' => $reaction_id
+                        );
+                        $res = updateRecordNoPrevious('tra_pv_reaction', $where, $update_data);
                 }
 
               

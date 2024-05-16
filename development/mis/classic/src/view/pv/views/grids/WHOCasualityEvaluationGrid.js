@@ -26,7 +26,78 @@ Ext.define('Admin.view.pv.views.grids.WHOCasualityEvaluationGrid', {
         ui: 'soft-green',
         winWidth: '35%',
         stores: '[]'
-    },{
+    }, {
+        xtype: 'tbspacer',
+        width: 5
+     },
+        {
+                xtype: 'combo',
+                anyMatch: true,
+                fieldLabel: 'Diagnosis MedDRA Level',
+                name: 'diagnosis_meddra_level_id',
+                forceSelection: true,
+                //hideLabel:true,
+                width: 200,
+                labelAlign: 'top',
+                allowBlank:false,
+                queryMode: 'local',
+                valueField: 'id',
+                displayField: 'name',
+                listeners: {
+                    beforerender: {
+                        fn: 'setCompStore',
+                            config: {
+                                pageSize: 10000,
+                                proxy: {
+                                    extraParams: {
+                                        table_name: 'par_pv_medra_levels'
+                                    }
+                                }
+                        },
+                        isLoad: true
+                        },
+                    change: function (cmbo, newVal) {
+                         var grid = cmbo.up('grid'),
+                         giagnosis_medraStore = grid.down('combo[name=giagnosis_medra_id]').getStore(),
+                         filterObj = {meddra_level_id: newVal},
+                         filterStr = JSON.stringify(filterObj);
+                         giagnosis_medraStore.removeAll();
+                         giagnosis_medraStore.load({params: {filter: filterStr}});
+                        }
+                          
+                        }
+                     },
+                {
+                    xtype: 'tbspacer',
+                    width: 5
+                 },
+                {
+                    xtype: 'combo',
+                    anyMatch: true,
+                    fieldLabel: 'Diagnosis',
+                    name: 'giagnosis_medra_id',
+                    forceSelection: true,
+                    width: 200,
+                    allowBlank:false,
+                    labelAlign: 'top',
+                            //hideLabel:true,
+                    queryMode: 'local',
+                    valueField: 'name',
+                    displayField: 'name',
+                    listeners: {
+                        beforerender: {
+                            fn: 'setOrgConfigCombosStore',
+                             config: {
+                                pageSize: 100,
+                              proxy: {
+                                 url: 'configurations/getMedDRAtearm'
+                                }
+                                },
+                            isLoad: false
+                        }
+                }
+            }
+    ,{
         xtype: 'hiddenfield',
         name: 'isReadOnly'
     },

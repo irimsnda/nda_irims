@@ -2001,10 +2001,7 @@ class CommonController extends Controller
                          exit();
                     }
 
-                   
-
                
-                     
                     if (!recordExists('tra_pv_reporter_initial_notification_logs', array('application_code' => $application_code))) {
                         
                         $email_address = $reporter->email_address;

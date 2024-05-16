@@ -109,6 +109,7 @@ Route::post('/saveQualityReport', [ProductRegistrationController::class,'saveQua
     Route::get('getEValuationComments', [ProductRegistrationController::class,'getEValuationComments']);
     
     Route::get('getAuditingComments', [ProductRegistrationController::class,'getAuditingComments']);
+    Route::get('onLoaddiluentPackagingDetails', [ProductRegistrationController::class,'onLoaddiluentPackagingDetails']);
     
     
     Route::get('getOnlineApplications', [ProductRegistrationController::class,'getOnlineApplications']);

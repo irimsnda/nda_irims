@@ -25,7 +25,36 @@ Ext.define('Admin.view.gmpapplications.views.toolbars.MedDevicesGmpTb', {
             iconCls: 'x-fa fa-plus-square',
             menu:{
                 xtype: 'menu',
-                items:[
+                items:[{
+                        text: 'Pre Inspection GMP(Local Manufacturers)',
+                        iconCls: 'x-fa fa-check',
+                        handler:'showNewGmpApplication',
+                        gmp_type: 2,
+                        wrapper_xtype: 'meddevicesgmpdashwrapper',
+                        app_type: 117
+                       /* menu:{
+                            xtype: 'menu',
+                            items:[
+                                {
+                                    text: 'Oversea GMP',
+                                    iconCls: 'x-fa fa-check',
+                                    handler:'showNewGmpApplication',
+                                    wrapper_xtype: 'meddevicesgmpdashwrapper',
+                                    app_type: 5,
+                                    gmp_type: 1
+                                },
+                                {
+                                    text: 'Domestic GMP',
+                                    iconCls: 'x-fa fa-check',
+                                    handler:'showNewGmpApplication',
+                                    wrapper_xtype: 'meddevicesgmpdashwrapper',
+                                    app_type: 5,
+                                    gmp_type: 2
+                                }
+                            ]
+                        }*/
+                    },
+                    '-',
                     {
                         text: 'New Surgical Instrument & Appliances GMP',
                         iconCls: 'x-fa fa-check',

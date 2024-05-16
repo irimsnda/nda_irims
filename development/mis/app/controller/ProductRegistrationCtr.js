@@ -202,6 +202,10 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             'drugsProductPackagingGrid': {
                 refresh: 'refreshProductsOtherDetailsGrid'
             },
+             'diluentProductPackagingGrid': {
+                refresh: 'refreshProductsOtherDetailsGrid'
+            },
+
             'copackedproductsgrid': {
                 refresh: 'refreshProductsOtherDetailsGrid'
             },
@@ -1634,6 +1638,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
     showAddProductOtherdetailsWinFrm: function (btn) {
 
         var me = this,
+            grid = btn.up('grid'),
             mainTabPnl = this.getMainTabPanel(),
             activeTab = mainTabPnl.getActiveTab();
 
@@ -1648,18 +1653,41 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
 
         var childXtype = btn.childXtype,
             winTitle = btn.winTitle,
-            winWidth = btn.winWidth,
-            child = Ext.widget(childXtype),
+            winWidth = btn.winWidth;
+            var child = Ext.widget(childXtype),
             storeArray = eval(btn.stores),
-            arrayLength = storeArray.length;
+            arrayLength = storeArray.length,
+            primarydrugsProductPackagingFrm=child.down('primarydrugsProductPackagingFrm'),
+            secondarydrugsProductPackagingFrm=child.down('secondarydrugsProductPackagingFrm'),
+            tertiarydrugsProductPackagingFrm=child.down('tertiarydrugsProductPackagingFrm'),
+            shipperdrugsProductPackagingFrm=child.down('shipperdrugsProductPackagingFrm'),
+            diluentProductPackagingGrid=child.down('diluentProductPackagingGrid');
+           
 
             if (child.down('hiddenfield[name=section_id]')){
 
                 child.down('hiddenfield[name=section_id]').setValue(section_id);
                 
             }
-
-
+            if(primarydrugsProductPackagingFrm){
+                primarydrugsProductPackagingFrm.down('hiddenfield[name=product_id]').setValue(product_id);
+            }
+            if(secondarydrugsProductPackagingFrm){
+                 secondarydrugsProductPackagingFrm.down('hiddenfield[name=product_id]').setValue(product_id);
+            }
+            if(tertiarydrugsProductPackagingFrm){
+                tertiarydrugsProductPackagingFrm.down('hiddenfield[name=product_id]').setValue(product_id);
+            }
+            if(tertiarydrugsProductPackagingFrm){
+                shipperdrugsProductPackagingFrm.down('hiddenfield[name=product_id]').setValue(product_id);
+            }
+          
+            if(child.down('hiddenfield[name=pack_id]')){
+                if(grid.down('hiddenfield[name=pack_id]')){
+                  child.down('hiddenfield[name=pack_id]').setValue(grid.down('hiddenfield[name=pack_id]').getValue());
+                }
+            }
+            
         funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
         child.down('hiddenfield[name=product_id]').setValue(product_id);
        
@@ -1667,6 +1695,8 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             me.fireEvent('refreshStores', storeArray);
         }
     },
+
+    
     showSamplerecApplicationSubmissionWinInvalidated: function (btn) {
         
         var me = this,
@@ -1679,7 +1709,7 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             var win = btn.up('window'),
                 product_id = win.down('hiddenfield[name=product_id]').getValue();
         }
-        childXtype = btn.childXtype,
+       var  childXtype = btn.childXtype,
             winTitle = btn.winTitle,
             winWidth = btn.winWidth,
             child = Ext.widget(childXtype),
@@ -3049,12 +3079,17 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
         } else {
 
             var panel = me.up('window'),
-                product_id = panel.down('hiddenfield[name=product_id]').getValue();
+            product_id = panel.down('hiddenfield[name=product_id]').getValue();
 
         }
-
+        if(grid.down('hiddenfield[name=pack_id]')){ 
+         pack_id = grid.down('hiddenfield[name=pack_id]').getValue();
+        }else{
+           pack_id='' ; 
+        }
         store.getProxy().extraParams = {
-            product_id: product_id
+            product_id: product_id,
+            pack_id:pack_id
         };
     },
 

@@ -38,8 +38,7 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                     width: 400,
                     name: 'gmp_type_id',
                     valueField: 'id',
-                    value:1,
-                    readOnly:true,
+                    //readOnly:true,
                     displayField: 'name',
                     queryMode: 'local',
                     allowBlank: false,
@@ -83,15 +82,16 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                                 inspection_activities.setVisible(false);
                                 inspection_activities.allowBlank = true;
                                 licence_no.allowBlank = true;
-                                psu_no.allowBlank = false;
-                                psu_no.validate();
-                                county_id.setVisible(true);
+                                psu_no.allowBlank = true;
+                                // psu_no.allowBlank = false;
+                                // psu_no.validate();
+                              //  county_id.setVisible(true);
                                 licence_no.setVisible(false);
-                                county_id.allowBlank = false;
-                                county_id.validate();
-                                sub_county_id.setVisible(true);
-                                parish_id.setVisible(true);
-                                village_id.setVisible(true);
+                               // county_id.allowBlank = false;
+                                // county_id.validate();
+                                // sub_county_id.setVisible(true);
+                                // parish_id.setVisible(true);
+                                // village_id.setVisible(true);
                                 region_id.allowBlank = false;
                                 region_id.validate();
                                 countryStore.removeAll();
@@ -106,11 +106,11 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                                 inspection_activities.validate();
                                 psu_no.allowBlank = true;
                                 licence_no.setVisible(true);
-                                county_id.setVisible(false);
-                                county_id.allowBlank = true;
-                                sub_county_id.setVisible(false);
-                                parish_id.setVisible(false);
-                                village_id.setVisible(false);
+                                //county_id.setVisible(false);
+                               // county_id.allowBlank = true;
+                                //sub_county_id.setVisible(false);
+                               // parish_id.setVisible(false);
+                               // village_id.setVisible(false);
                                 region_id.allowBlank = true;
                                 // countryStore.removeAll();
                                 // countryStore.load();
