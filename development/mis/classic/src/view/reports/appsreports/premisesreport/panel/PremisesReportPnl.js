@@ -101,7 +101,7 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.panel.PremisesReportPnl
             xtype:'button',
             ui: 'soft-green',
             text: 'Preview & Export Detailed Report',
-             handler: 'ExpPremiseWinShow',
+            handler: 'ExpPremiseWinShow',
             childXtype: 'detailedpremisereportfrm',
             winTitle: 'Export Detailed Report',
             name: 'DetailedExport',

@@ -2,6 +2,7 @@ Ext.define('Admin.view.reports.appsreports.clinicaltrialreport.grid.ClinicalTria
     extend: 'Ext.grid.Panel',
     controller: 'productreportctr',
     xtype: 'clinicaltrialtabularrepresentationgrid',
+    itemId: 'clinicaltrialtabularrepresentationgrid',
     autoScroll: false,
     autoHeight: true,
     width: '100%',
@@ -158,14 +159,13 @@ Ext.define('Admin.view.reports.appsreports.clinicaltrialreport.grid.ClinicalTria
                         var grid=this.up('grid'),
                         tab = grid.up('tabpanel'),
                         panel = tab.up('panel'),
-                        filter=panel.down('form'),
-                                
-                                   sub_module_id = panel.down('combo[name=sub_module_id]').getValue(),  
-                                   from_date = panel.down('datefield[name=from_date]').getValue(),
-                                   to_date = panel.down('textfield[name=to_date]').getValue(), 
-                                   module_id=panel.down('hiddenfield[name=module_id]').getValue();
+                        form = Ext.ComponentQuery.query("#clinicaltrialreportfiltersfrm")[0],
+                                   sub_module_id = form.down('combo[name=sub_module_id]').getValue(),  
+                                   from_date = form.down('datefield[name=from_date]').getValue(),
+                                   to_date = form.down('textfield[name=to_date]').getValue(), 
+                                   module_id=form.down('hiddenfield[name=module_id]').getValue();
                               
-                              frm = filter.getForm();
+                              frm = form.getForm();
                               if (frm.isValid()) {
                              store.getProxy().extraParams = {
 

@@ -26,7 +26,7 @@ Ext.define('Admin.view.reports.appsreports.drugshopreport.graph.DrugshopGraphica
                             fn: 'func_setStore',
                             config: {
                                 pageSize: 1000,
-                                storeId: 'premiseReportCartesianStr',
+                                storeId: 'drugshopReportCartesianStr',
                                 proxy: {
                                    url: 'newreports/getPremiseSummaryCartesianReport',
                                     extraParams: {

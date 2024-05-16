@@ -1,9 +1,10 @@
 Ext.define('Admin.view.reports.appsreport.premisesreport.form.DetailedPremiseReportFiltersFrm', {
 	extend: 'Ext.form.Panel',
 	xtype: 'detailedpremisereportfrm',
+    itemId: 'detailedpremisereportfrm',
 	margin: 2,
 	height: 500,
-	//layout: 'fit',
+	layout: 'fit',
 	referenceHolder: true,
 	reference: 'ReportDetailedExportWin',
     controller: 'productreportctr',

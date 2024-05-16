@@ -2,11 +2,27 @@
 
 namespace App\Console;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Promise;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Modules\APIIntegrations\App\Models\WHODrugInformation;
+use Modules\APIIntegrations\Http\Controllers\NewIntegrationsController;
 
 class Kernel extends ConsoleKernel
 {
+
+    public function getWHODrugAPIConfigurations($environment)
+    {
+        if ($environment == 'production') {
+            $whodrugapi_configs = DB::table('tra_whodrugproductionapi_configurations')->first();
+        } else {
+            $whodrugapi_configs = DB::table('tra_whodrugapi_configurations')->first();
+        }
+        return $whodrugapi_configs;
+
+    }
     /**
      * Define the application's command schedule.
      *
@@ -16,6 +32,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+
+        // Schedule to Export WHO Drug Data
+        $schedule->call([NewIntegrationsController::class, 'exportwhodata'])->monthly();
+
+        // Schedule to Import WHO Drug Data
+        $schedule->call([NewIntegrationsController::class, 'syncwhodata'])->monthlyOn(1, '00:00');
     }
 
     /**
@@ -25,7 +47,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

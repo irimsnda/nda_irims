@@ -1,6 +1,8 @@
 Ext.define('Admin.view.reports.appsreport.gmpreport.form.GmpReportFiltersFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'gmpreportfiltersfrm',
+    itemId: 'gmpreportfiltersfrm',
+
     layout: 'column',
     defaults: {
         columnWidth: 0.25
@@ -138,7 +140,7 @@ Ext.define('Admin.view.reports.appsreport.gmpreport.form.GmpReportFiltersFrm', {
             labelAlign : 'top',
             format: 'Y-m-d',
             name: 'from_date',
-            allowBlank: false,
+            allowBlank: true,
             minValue: new Date(2020, 6)
         },{
             xtype: 'datefield',
@@ -146,7 +148,7 @@ Ext.define('Admin.view.reports.appsreport.gmpreport.form.GmpReportFiltersFrm', {
             format: 'Y-m-d',
             emptyText: 'Date To',
             labelAlign : 'top',
-            allowBlank: false,
+            allowBlank: true,
             minValue: new Date(2020, 6),
             maxValue: new Date()
         },{ 

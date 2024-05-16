@@ -1,7 +1,6 @@
 Ext.define('Admin.view.reports.appsreport.premisesreport.panel.PremisesTabPnl', {
 	extend: 'Ext.tab.Panel',
 	xtype: 'premisestabpnl',
-    itemId: 'premisestabpnl',
 	margin: 2,
     controller: 'productreportctr',
     defaults: {

@@ -1,6 +1,7 @@
 Ext.define('Admin.view.reports.appsreport.drugshopreport.form.DetailedDrugshopReportFiltersFrm', {
 	extend: 'Ext.form.Panel',
 	xtype: 'detaileddrugshopreportfiltersfrm',
+    itemId: 'detaileddrugshopreportfiltersfrm',
 	margin: 2,
 	height: 500,
 	layout: 'fit',
@@ -16,6 +17,7 @@ Ext.define('Admin.view.reports.appsreport.drugshopreport.form.DetailedDrugshopRe
         },{
     		xtype: 'textfield',
     		name: 'business_type_details',
+            value:7,
     		hidden: true
     	},{
             xtype: 'textfield',

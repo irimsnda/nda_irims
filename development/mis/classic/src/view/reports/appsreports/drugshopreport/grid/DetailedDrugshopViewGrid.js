@@ -2,13 +2,13 @@ Ext.define('Admin.view.reports.appsreports.drugshopreport.grid.DetailedDrugshopV
     extend: 'Ext.grid.Panel',  
     scroll: true,
     width: '100%',
-    xtype: 'detaileddrugshopviewGrid',
+    xtype: 'detaileddrugshopviewgrid',
+    itemId: 'detaileddrugshopviewgrid',
     layout: 'fit',
     store: 'spreadsheetpremiseapplicationcolumnsstr',
     title: 'Drug Shop Application Detailed Report',
     referenceHolder: true,
     reference:'drugshopgridpanel',
-   
     plugins: [{
             ptype: 'filterfield'
         }],
@@ -56,82 +56,6 @@ Ext.define('Admin.view.reports.appsreports.drugshopreport.grid.DetailedDrugshopV
                 xtype: 'textfield',
             }
     },{
-        xtype: 'gridcolumn',
-        dataIndex: 'BsnType',
-        name: 'BsnType',
-        text: 'Business Type',
-        width: 200, hidden: true,
-         filter: {
-            xtype: 'combobox',
-                    queryMode: 'local',
-                    displayField: 'name',
-                    valueField: 'id',
-                    name: 'business_type_id',
-                    listeners:
-                     {
-                         beforerender: {//getConfigParamFromTable
-                            fn: 'setConfigCombosStore',
-                            config: {
-                                pageSize: 10000,
-                                proxy: {
-                                    url: 'configurations/getConfigParamFromTable',
-                                     extraParams: {
-                                        table_name: 'par_business_types'
-                                    }
-                                }
-                            },
-                            isLoad: true
-                        },
-                     change: function() {
-                        Ext.data.StoreManager.lookup('spreadsheetpremiseapplicationcolumnsstr').reload();
-                     }
-                 }
-                
-            }
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'BsnCategory',
-        name: 'BsnCategory',
-        text: 'Product Category',
-        width: 200, hidden: true,
-         filter: {
-            xtype: 'combobox',
-                    queryMode: 'local',
-                    displayField: 'name',
-                    valueField: 'id',
-                    name: 'product_classification_id',
-                    listeners:
-                     {
-                         beforerender: {//getConfigParamFromTable
-                            fn: 'setConfigCombosStore',
-                            config: {
-                                pageSize: 10000,
-                                proxy: {
-                                    url: 'configurations/getConfigParamFromTable',
-                                     extraParams: {
-                                        table_name: 'par_premise_class'
-                                    }
-                                }
-                            },
-                            isLoad: true
-                        },
-                     change: function() {
-                        Ext.data.StoreManager.lookup('spreadsheetpremiseapplicationcolumnsstr').reload();
-                     }
-                 }
-                
-            }
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'postal_address',
-        name: 'postal_address',
-        text: 'Postal Address',
-        width: 200,
-        filter: {
-                xtype: 'textfield',
-            }
-    },
-      {
         xtype: 'gridcolumn',
         dataIndex: 'physical_address',
         name: 'physical_address',
@@ -197,18 +121,19 @@ Ext.define('Admin.view.reports.appsreports.drugshopreport.grid.DetailedDrugshopV
         filter: {
                 xtype: 'textfield',
                 }
-    }, {
+    },
+     {
         xtype: 'gridcolumn',
-        dataIndex: 'BsnScale',
-        name: 'BsnScale',
-        text: 'Business Scale',
+        dataIndex: 'BsnType',
+        name: 'BsnType',
+        text: 'Business Type',
         width: 200, hidden: true,
          filter: {
             xtype: 'combobox',
                     queryMode: 'local',
                     displayField: 'name',
                     valueField: 'id',
-                    name: 'business_scale_id',
+                    name: 'business_type_id',
                     listeners:
                      {
                          beforerender: {//getConfigParamFromTable
@@ -218,7 +143,7 @@ Ext.define('Admin.view.reports.appsreports.drugshopreport.grid.DetailedDrugshopV
                                 proxy: {
                                     url: 'configurations/getConfigParamFromTable',
                                      extraParams: {
-                                        table_name: 'par_business_scales'
+                                        table_name: 'par_business_types'
                                     }
                                 }
                             },
@@ -232,13 +157,37 @@ Ext.define('Admin.view.reports.appsreports.drugshopreport.grid.DetailedDrugshopV
             }
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'BsnTypeDetails',
-        name: 'BsnTypeDetails',
-        text: 'Business Type Details',
+        dataIndex: 'BsnCategory',
+        name: 'BsnCategory',
+        text: 'Product Category',
         width: 200, hidden: true,
-        filter: {
-                xtype: 'textfield',
-                }
+         filter: {
+            xtype: 'combobox',
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    name: 'product_classification_id',
+                    listeners:
+                     {
+                         beforerender: {//getConfigParamFromTable
+                            fn: 'setConfigCombosStore',
+                            config: {
+                                pageSize: 10000,
+                                proxy: {
+                                    url: 'configurations/getConfigParamFromTable',
+                                     extraParams: {
+                                        table_name: 'par_premise_class'
+                                    }
+                                }
+                            },
+                            isLoad: true
+                        },
+                     change: function() {
+                        Ext.data.StoreManager.lookup('spreadsheetpremiseapplicationcolumnsstr').reload();
+                     }
+                 }
+                
+            }
     },{
         xtype: 'gridcolumn',
         dataIndex: 'ContactPerson',
@@ -371,39 +320,6 @@ Ext.define('Admin.view.reports.appsreports.drugshopreport.grid.DetailedDrugshopV
         filter: {
                 xtype: 'textfield',
             }
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'issueplace',
-        name: 'issueplace',
-        text: 'Place of Issue',
-        width: 200, hidden: true,
-        filter: {
-            xtype: 'combobox',
-                    queryMode: 'local',
-                    displayField: 'name',
-                    valueField: 'id',
-                    name: 'zone_id',
-                    listeners:
-                     {
-                         beforerender: {//getConfigParamFromTable
-                            fn: 'setConfigCombosStore',
-                            config: {
-                                pageSize: 10000,
-                                proxy: {
-                                    url: 'configurations/getConfigParamFromTable',
-                                    extraParams: {
-                                        table_name: 'par_zones'
-                                    }
-                                }
-                            },
-                            isLoad: true
-                        },
-                     change: function() {
-                        Ext.data.StoreManager.lookup('spreadsheetpremiseapplicationcolumnsstr').reload();
-                     }
-                 }
-                
-            }
     },{
         xtype: 'datecolumn',
         dataIndex: 'CertIssueDate',
@@ -491,42 +407,7 @@ Ext.define('Admin.view.reports.appsreports.drugshopreport.grid.DetailedDrugshopV
                 format: 'Y-m-d'
             }
     },
-     {
-        xtype: 'gridcolumn',
-        dataIndex: 'PremiseCategory',
-        name: 'PremiseCategory',
-        text: 'Premises Type',
-        width: 150,
-        filter: {
-            xtype: 'combobox',
-            queryMode: 'local',
-            displayField: 'name',
-            valueField: 'id',
-            name: 'premise_type_id',
-            listeners:
-             {
-                 afterrender: {//getConfigParamFromTable
-                    fn: 'setConfigCombosStore',
-                    config: {
-                        pageSize: 10000,
-                        proxy: {
-                            url: 'configurations/getConfigParamFromTable',
-                             extraParams: {
-                                table_name: 'par_premises_types'
-                            }
-                        }
-                    },
-                   isLoad: true
-                },
-                           
-             
-             change: function(cmb, newValue, oldValue, eopts) {
-                var grid = cmb.up('grid');
-                    grid.getStore().reload();
-             }
-         }                
-    }
-    },
+
     ],
      listeners:{
        select: 'loadadditionalinfo'

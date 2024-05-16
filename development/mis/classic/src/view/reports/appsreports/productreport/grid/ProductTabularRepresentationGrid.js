@@ -2,6 +2,7 @@ Ext.define('Admin.view.reports.appsreports.productreport.grid.ProductTabularRepr
     extend: 'Ext.grid.Panel',
     controller: 'productreportctr',
     xtype: 'producttabularrepresentationgrid',
+    itemId: 'producttabularrepresentationgrid',
     autoScroll: true,
     autoHeight: true,
     width: '100%',
@@ -182,20 +183,20 @@ Ext.define('Admin.view.reports.appsreports.productreport.grid.ProductTabularRepr
                     var grid=this.up('grid'),
                         tab = grid.up('tabpanel'),
                         panel = tab.up('panel'),
-                        filter=panel.down('form'),   
-                        section_id = panel.down('combo[name=section_id]').getValue(), 
-                        sub_module_id = panel.down('combo[name=sub_module_id]').getValue(),  
-                        from_date = panel.down('datefield[name=from_date]').getValue(),
-                        to_date = panel.down('textfield[name=to_date]').getValue(),
-                        classification_category = panel.down('combo[name=classification_category]').getValue(),
-                        prodclass_category = panel.down('combo[name=prodclass_category]').getValue(), 
-                        product_origin_id = panel.down('combo[name=product_origin_id]').getValue(), 
-                        module_id=panel.down('hiddenfield[name=module_id]').getValue();
+                        form = Ext.ComponentQuery.query("#productreportfiltersfrm")[0],
+                        section_id = form.down('combo[name=section_id]').getValue(), 
+                        sub_module_id = form.down('combo[name=sub_module_id]').getValue(),  
+                        from_date = form.down('datefield[name=from_date]').getValue(),
+                        to_date = form.down('textfield[name=to_date]').getValue(),
+                        classification_category = form.down('combo[name=classification_category]').getValue(),
+                        prodclass_category = form.down('combo[name=prodclass_category]').getValue(), 
+                        product_origin_id = form.down('combo[name=product_origin_id]').getValue(), 
+                        module_id=form.down('hiddenfield[name=module_id]').getValue();
 
                     // var grid=this.up('grid'),
                     //  panel=grid.up('panel'),
                     //  filter=panel.down('form'),
-                     frm = filter.getForm();
+                     frm = form.getForm();
                      if (frm.isValid()) {
                     store.getProxy().extraParams = {
                         module_id: module_id,

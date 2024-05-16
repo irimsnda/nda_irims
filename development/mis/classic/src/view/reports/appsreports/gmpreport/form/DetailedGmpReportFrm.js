@@ -1,6 +1,8 @@
 Ext.define('Admin.view.reports.appsreport.gmpreport.form.DetailedGmpReportFiltersFrm', {
 	extend: 'Ext.form.Panel',
 	xtype: 'detailedgmpreportfrm',
+    itemId: 'detailedgmpreportfrm',
+
 	margin: 2,
 	height: 500,
 	layout: 'fit',

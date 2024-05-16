@@ -49,11 +49,11 @@ Ext.define('Admin.view.reports.appsreports.premisesreport.grid.PremisesTabularRe
                     }
                 ],
     columns: [{
-                text: 'Premises Type',
+                text: 'Product Category',
                 sortable: false,
                 flex: 1,
                 tdCls:'wrap-text',
-                dataIndex: 'section_name',
+                dataIndex: 'product_category',
                 summaryRenderer: function(){
                         return '<b>Grand Total:</b>';
                     }
@@ -180,7 +180,7 @@ Ext.define('Admin.view.reports.appsreports.premisesreport.grid.PremisesTabularRe
                                 
                                    sub_module_id = form.down('combo[name=sub_module_id]').getValue(),  
                                    from_date = form.down('datefield[name=from_date]').getValue(),
-                                    //section_id = form.down('combo[name=section_id]').getValue(), 
+                                   product_classification_id = form.down('combo[name=product_classification_id]').getValue(), 
                                    to_date = form.down('textfield[name=to_date]').getValue(),
                                    business_type_details = form.down('combo[name=business_type_details]').getValue(),  
                                    module_id=form.down('hiddenfield[name=module_id]').getValue();
@@ -190,7 +190,7 @@ Ext.define('Admin.view.reports.appsreports.premisesreport.grid.PremisesTabularRe
                              store.getProxy().extraParams = {
 
                                 module_id: module_id,
-                               // section_id:section_id,
+                                product_classification_id:product_classification_id,
                                 sub_module_id: sub_module_id,
                                 business_type_details: business_type_details,
                                 from_date: from_date,

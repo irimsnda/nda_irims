@@ -1,6 +1,7 @@
 Ext.define('Admin.view.reports.appsreport.productreport.form.ProductReportFiltersFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'productreportfiltersfrm',
+    itemId: 'productreportfiltersfrm',
     layout: 'column',
     defaults:{
         bodyPadding: 1,
@@ -223,7 +224,7 @@ Ext.define('Admin.view.reports.appsreport.productreport.form.ProductReportFilter
             labelAlign : 'top',
             format: 'Y-m-d',
             name: 'from_date',
-            allowBlank: false,
+            allowBlank: true,
             minValue: new Date(2020, 6)
         },{
             xtype: 'datefield',
@@ -231,7 +232,7 @@ Ext.define('Admin.view.reports.appsreport.productreport.form.ProductReportFilter
             format: 'Y-m-d',
             emptyText: 'Date To',
             labelAlign : 'top',
-            allowBlank: false,
+            allowBlank: true,
             minValue: new Date(2020, 6),
             maxValue: new Date()
         },{ 

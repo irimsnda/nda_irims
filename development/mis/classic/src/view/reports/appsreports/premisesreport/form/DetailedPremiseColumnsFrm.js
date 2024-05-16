@@ -16,16 +16,9 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.DetailedPremiseCol
             labelSeparator: ':',
             hideLabel: true
         },
-              items:[ {
-                        boxLabel: 'Tracking No',
-                        name: 33,
-                        checked: true,
-                        listeners: {
-                            change: 'func_showhideSpreasheetColumn'
-                        }
-                    },{
+              items:[{
                         boxLabel: 'Reference No',
-                        name: 34,
+                        name: 1,
                         checked: true,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
@@ -38,21 +31,21 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.DetailedPremiseCol
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Postal Address',
+                        boxLabel: 'Physical Address',
                         name: 3,
                         checked: true,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Physical Address',
+                        boxLabel: 'Business Type',
                         name: 4,
-                        checked: true,
+                        checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Premise Category',
+                        boxLabel: 'Product Category',
                         name: 5,
                         checked: false,
                         listeners: {
@@ -101,148 +94,120 @@ Ext.define('Admin.view.reports.appsreport.premisesreport.form.DetailedPremiseCol
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Business Type',
+                        boxLabel: 'Contact Person',
                         name: 12,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Business Category',
+                        boxLabel: 'Contact Telephone No',
                         name: 13,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Business Scale',
+                        boxLabel: 'Contact Email',
                         name: 14,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Business Type Details',
+                        boxLabel: 'Contact Startdate',
                         name: 15,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Contact Person',
+                        boxLabel: 'Contact EndDate',
                         name: 16,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Contact Telephone No',
+                        boxLabel: 'Trader',
                         name: 17,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Contact Email',
+                        boxLabel: 'Trader Postal Address',
                         name: 18,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Contact Startdate',
+                        boxLabel: 'Trader Physical Address',
                         name: 19,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Contact EndDate',
+                        boxLabel: 'Trader Telephone No.',
                         name: 20,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Trader',
+                        boxLabel: 'Trader Mobile No.',
                         name: 21,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Trader Postal Address',
+                        boxLabel: 'Trader Email',
                         name: 22,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Trader Physical Address',
+                        boxLabel: 'Trader Country',
                         name: 23,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Trader Telephone No.',
+                        boxLabel: 'Trader Region',
                         name: 24,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Trader Mobile No.',
+                        boxLabel: 'Premise Geo Coordinates',
                         name: 25,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Trader Email',
+                        boxLabel: 'Place of Issue',
                         name: 26,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Trader Country',
+                        boxLabel: 'Certificate Issue Date',
                         name: 27,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'
                         }
                     },{
-                        boxLabel: 'Trader Region',
-                        name: 28,
-                        checked: false,
-                        listeners: {
-                            change: 'func_showhideSpreasheetColumn'
-                        }
-                    },{
-                        boxLabel: 'Premise Geo Coordinates',
-                        name: 29,
-                        checked: false,
-                        listeners: {
-                            change: 'func_showhideSpreasheetColumn'
-                        }
-                    },{
-                        boxLabel: 'Place of Issue',
-                        name: 30,
-                        checked: false,
-                        listeners: {
-                            change: 'func_showhideSpreasheetColumn'
-                        }
-                    },{
-                        boxLabel: 'Certificate Issue Date',
-                        name: 31,
-                        checked: false,
-                        listeners: {
-                            change: 'func_showhideSpreasheetColumn'
-                        }
-                    },{
                         boxLabel: 'Certificate Expiry Date',
-                        name: 32,
+                        name: 28,
                         checked: false,
                         listeners: {
                             change: 'func_showhideSpreasheetColumn'

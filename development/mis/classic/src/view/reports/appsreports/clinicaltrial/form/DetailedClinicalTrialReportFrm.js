@@ -1,6 +1,7 @@
 Ext.define('Admin.view.reports.appsreport.clinicaltrialreport.form.DetailedClinicalTrialReportFiltersFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'detailedclinicaltrialreportfrm',
+    itemId: 'detailedclinicaltrialreportfrm',
     margin: 2,
     height: 500,
     layout: 'fit',
