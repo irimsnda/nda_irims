@@ -1473,7 +1473,13 @@ class NewIntegrationsController extends Controller
 
     public function whoDrugDownloadApi(Request $request)
     {
-        $WHODrugInformation = WHODrugInformation::all();
+        $limit = $request->input('limit', 10000); // Default limit is 10000 if not provided
+        $page = $request->input('page', 1); // Default page is 1 if not provided
+
+        $offset = ($page - 1) * $limit;
+
+        $WHODrugInformation = WHODrugInformation::offset($offset)->limit($limit)->get();
+
         $res = array(
             'success' => true,
             'message' => 'All is well!!',
@@ -2007,11 +2013,11 @@ class NewIntegrationsController extends Controller
                         foreach ($flattenedDrugs as $flattenedDrug) {
                             // Check if Drug Exists
                             $WHODrugInformation = WHODrugInformation::where('drugCode', $flattenedDrug['drugCode'])->where('atc_code', $flattenedDrug['atc_code'])->first();
-                            
+
                             if (!empty($WHODrugInformation)) {
                                 // print ('Already Exists!!');
                             } else {
-                                
+
                                 $WHODrugInformation = WHODrugInformation::create($flattenedDrug);
                                 // print ('Inserted!!');
                             }
