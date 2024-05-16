@@ -1801,96 +1801,98 @@ if(validateIsNumeric($section_id)){
                 //insert
                 $data['created_by'] = $user_id;
                 $data['created_on'] = Carbon::now();
-                if($table_name=='tra_product_packaging'){
-                    $product_id = $req->product_id;
-                    $packaging_category_id = $req->packaging_category_id;
-                    $container_type_id = $req->container_type_id;
-                    if ($packaging_category_id ==2 || $packaging_category_id===2) {
-                        if (!recordExists($table_name, array('packaging_category_id' => 1,'product_id' => $product_id))) {
-                            $res = array(
-                                'success' => false,
-                                'message' => 'Please add FPP Packaging Details First!!'
-                            );
-                            echo json_encode($res);
-                            exit();
-                        }
-                    }
+                // if($table_name=='tra_product_packaging'){
+                //     $product_id = $req->product_id;
+                //     $packaging_category_id = $req->packaging_category_id;
+                //     $container_type_id = $req->container_type_id;
+                //     if ($packaging_category_id ==2 || $packaging_category_id===2) {
+                //         if (!recordExists($table_name, array('packaging_category_id' => 1,'product_id' => $product_id))) {
+                //             $res = array(
+                //                 'success' => false,
+                //                 'message' => 'Please add FPP Packaging Details First!!'
+                //             );
+                //             echo json_encode($res);
+                //             exit();
+                //         }
+                //     }
 
-                    if ($container_type_id == 2) {
-                        if (!recordExists($table_name, array('container_type_id' => 1,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
-                            $res = array(
-                                'success' => false,
-                                'message' => 'Please add Primary Packaging Details First!!'
-                            );
-                            echo json_encode($res);
-                            exit();
-                        }
-
-
-                       if (recordExists($table_name, array('container_type_id' => 2,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
-                            $res = array(
-                                'success' => false,
-                                'message' => 'Please note Secondary Packaging Details already exists!!'
-                            );
-                            echo json_encode($res);
-                            exit();
-                        }
-                    }
+                //     if ($container_type_id == 2) {
+                //         if (!recordExists($table_name, array('container_type_id' => 1,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
+                //             $res = array(
+                //                 'success' => false,
+                //                 'message' => 'Please add Primary Packaging Details First!!'
+                //             );
+                //             echo json_encode($res);
+                //             exit();
+                //         }
 
 
-                    if ($container_type_id == 3) {
-                        if (!recordExists($table_name, array('container_type_id' => 2,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
-                            $res = array(
-                                'success' => false,
-                                'message' => 'Please add Secondary Packaging Details First!!'
-                            );
-                            echo json_encode($res);
-                            exit();
-                        }
+                //        if (recordExists($table_name, array('container_type_id' => 2,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
+                //             $res = array(
+                //                 'success' => false,
+                //                 'message' => 'Please note Secondary Packaging Details already exists!!'
+                //             );
+                //             echo json_encode($res);
+                //             exit();
+                //         }
+                //     }
 
 
-                       if (recordExists($table_name, array('container_type_id' => 3,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
-                            $res = array(
-                                'success' => false,
-                                'message' => 'Please note Tertiary Packaging Details already exists!!'
-                            );
-                            echo json_encode($res);
-                            exit();
-                        }
-                    }
-
-                    if ($container_type_id == 4) {
-                        if (!recordExists($table_name, array('container_type_id' => 3,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
-                            $res = array(
-                                'success' => false,
-                                'message' => 'Please add Tertiary Packaging Details First!!'
-                            );
-                            echo json_encode($res);
-                            exit();
-                        }
+                //     if ($container_type_id == 3) {
+                //         if (!recordExists($table_name, array('container_type_id' => 2,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
+                //             $res = array(
+                //                 'success' => false,
+                //                 'message' => 'Please add Secondary Packaging Details First!!'
+                //             );
+                //             echo json_encode($res);
+                //             exit();
+                //         }
 
 
-                       if (recordExists($table_name, array('container_type_id' => 3,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
-                            $res = array(
-                                'success' => false,
-                                'message' => 'Please note Shipper Packaging Details already exists!!'
-                            );
-                            echo json_encode($res);
-                            exit();
-                        }
-                    }
+                //        if (recordExists($table_name, array('container_type_id' => 3,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
+                //             $res = array(
+                //                 'success' => false,
+                //                 'message' => 'Please note Tertiary Packaging Details already exists!!'
+                //             );
+                //             echo json_encode($res);
+                //             exit();
+                //         }
+                //     }
+
+                //     if ($container_type_id == 4) {
+                //         if (!recordExists($table_name, array('container_type_id' => 3,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
+                //             $res = array(
+                //                 'success' => false,
+                //                 'message' => 'Please add Tertiary Packaging Details First!!'
+                //             );
+                //             echo json_encode($res);
+                //             exit();
+                //         }
+
+
+                //        if (recordExists($table_name, array('container_type_id' => 3,'packaging_category_id' => $packaging_category_id,'product_id' => $product_id))) {
+                //             $res = array(
+                //                 'success' => false,
+                //                 'message' => 'Please note Shipper Packaging Details already exists!!'
+                //             );
+                //             echo json_encode($res);
+                //             exit();
+                //         }
+                //     }
                 
-                }
+                // }
                 $resp = insertRecord($table_name, $data, $user_id);
 
             }
             if ($resp['success']) {
                 $res = array('success' => true,
+                    'record_id' => $resp['record_id'],
                     'message' => 'Saved Successfully');
 
             } else {
                 $res = array('success' => false,
-                    'message' => $resp['message']);
+                    'message' => $resp['message']
+                );
 
             }
         } catch (\Exception $exception) {
@@ -2601,73 +2603,68 @@ if(validateIsNumeric($section_id)){
             $data = array();
             //get the records
             $data = DB::table('tra_product_packaging as t1')
-                ->select(DB::raw("t1.*, t2.name as container_type, t3.name as container_name, t4.name as container_material, t5.name as closure_materials, t4.name as container_material, t5.name as closure_material, t6.name as seal_type, t7.name as packaging_units, retail_packaging_size as retail_packaging,t8.name as si_unit,t9.name as packaging_category,t10.name as diluent"))
-                ->leftJoin('par_containers_types as t2', 't1.container_type_id', '=', 't2.id')
-                ->leftJoin('par_containers as t3', 't1.container_id', '=', 't3.id')
-                ->leftJoin('par_containers_materials as t4', 't1.container_material_id', '=', 't4.id')
-                ->leftJoin('par_closure_materials as t5', 't1.closure_material_id', '=', 't5.id')
-                ->leftJoin('par_seal_types as t6', 't1.seal_type_id', '=', 't6.id')
-                ->leftJoin('par_packaging_units as t7', 't1.packaging_units_id', '=', 't7.id')
-                ->leftJoin('si_units as t8', 't1.si_unit_id', '=', 't8.id')
-                ->leftJoin('par_container_categories as t9', 't1.packaging_category_id', '=', 't9.id')
-                ->leftJoin('par_diluents as t10', 't1.diluent_id', '=', 't10.id')
+                ->select(DB::raw("t1.*,t2.name as container_name,t3.name as secondary_container_name,t4.name as tertiary_container_name,t5.name as shipper_container_name,t6.name as si_unit,t7.name as secondary_si_unit,t8.name as tertiary_si_unit,t9.name as shipper_si_unit"))
+                ->leftJoin('par_containers as t2', 't1.container_id', '=', 't2.id')
+                ->leftJoin('par_containers as t3', 't1.secondary_container_id', '=', 't3.id')
+                ->leftJoin('par_containers as t4', 't1.tertiary_container_id', '=', 't4.id')
+                ->leftJoin('par_containers as t5', 't1.shipper_container_id', '=', 't5.id')
+                ->leftJoin('si_units as t6', 't1.si_unit_id', '=', 't6.id')
+                ->leftJoin('si_units as t7', 't1.secondary_si_unit_id', '=', 't7.id')
+                ->leftJoin('si_units as t8', 't1.tertiary_si_unit_id', '=', 't8.id')
+                ->leftJoin('si_units as t9', 't1.shipper_si_unit_id', '=', 't9.id')
                 ->where(array('t1.product_id' => $product_id))
                 ->get();
 
 
-              // First loop to calculate pack_size
-            $packSize = '';
-            $packSizediluent= '';
-            foreach ($data as $record) {
-                $record->pack_size = " ";
-             if ($record->packaging_category_id == 1) {
-                if ($record->container_type_id == 1) {
-                    // Concatenate pack_size normally
+             foreach ($data as $record) {
+                    $packSize = '';
+                    $packSizediluent = '';
+                    $pack_id = $record->id;
                     $is_quantity_category = $this->belongsToQuantityCategory($record->container_id);
-                    if($is_quantity_category){
-                    //if(isset($record->no_of_packs)){
-                       $packSize = "{$record->no_of_packs}{$record->si_unit} {$record->container_name}";
-                    }else{
+
+                    // Calculate pack size
+                    if ($is_quantity_category) {
+                        $packSize = "{$record->no_of_packs}{$record->si_unit} {$record->container_name}";
+                    } else {
                         $packSize = "{$record->no_of_units} {$record->container_name}";
                     }
-                   
-                } if ($record->container_type_id == 2) {
-                    // Add no_of_units as a prefix to the existing pack_size
-                    $packSize = "{$record->no_of_units}*" . $packSize;
-                } 
-                if ($record->container_type_id == 3) {
-                    // Add no_of_units as a prefix to the existing pack_size
-                    $packSize = "{$record->no_of_units}*" . $packSize;
-                }
-                if ($record->container_type_id == 4) {
-                    // Add no_of_units as a prefix to the existing pack_size
-                    $packSize = "{$record->no_of_units}*" . $packSize;
-                } 
-              }
 
-               if ($record->packaging_category_id == 2) {
-                if ($record->container_type_id == 1) {
-                    // Concatenate pack_size normally
-                        $packSizediluent = "{$record->no_of_units}*{$record->no_of_packs}{$record->si_unit} {$record->container_name} {$record->diluent}";
+                    // Add secondary, tertiary, and shipper units if they exist
+                    if ($record->secondary_no_of_units) {
+                        $packSize = "{$record->secondary_no_of_units}*" . $packSize;
                     }
-                    if ($record->container_type_id == 2) {
-                        // Add no_of_units as a prefix to the existing pack_size
-                        $packSizediluent = "{$record->no_of_units}*" . $packSize;
-                    } 
-                    if ($record->container_type_id == 3) {
-                        // Add no_of_units as a prefix to the existing pack_size
-                        $packSizediluent = "{$record->no_of_units}*" . $packSize;
+                    if ($record->tertiary_no_of_units) {
+                        $packSize = "{$record->tertiary_no_of_units}*" . $packSize;
+                    }
+                    if ($record->shipper_no_of_units) {
+                        $packSize = "{$record->shipper_no_of_units}*" . $packSize;
                     }
 
-                      $packSize=$packSize.' + '.$packSizediluent;
+                    // Retrieve diluent data
+                    $diluent_data = DB::table('tra_product_diluent_packaging as t1')
+                        ->select(DB::raw("t1.*, t2.name as container_type, t3.name as container_name, t4.name as container_material, t5.name as closure_materials, t4.name as container_material, t5.name as closure_material, t6.name as seal_type, t7.name as packaging_units, retail_packaging_size as retail_packaging,t8.name as si_unit,t9.name as packaging_category,t10.name as diluent"))
+                        ->leftJoin('par_containers_types as t2', 't1.container_type_id', '=', 't2.id')
+                        ->leftJoin('par_containers as t3', 't1.container_id', '=', 't3.id')
+                        ->leftJoin('par_containers_materials as t4', 't1.container_material_id', '=', 't4.id')
+                        ->leftJoin('par_closure_materials as t5', 't1.closure_material_id', '=', 't5.id')
+                        ->leftJoin('par_seal_types as t6', 't1.seal_type_id', '=', 't6.id')
+                        ->leftJoin('par_packaging_units as t7', 't1.packaging_units_id', '=', 't7.id')
+                        ->leftJoin('si_units as t8', 't1.si_unit_id', '=', 't8.id')
+                        ->leftJoin('par_container_categories as t9', 't1.packaging_category_id', '=', 't9.id')
+                        ->leftJoin('par_diluents as t10', 't1.diluent_id', '=', 't10.id')
+                        ->where(['t1.product_id' => $product_id, 't1.pack_id' => $pack_id])
+                        ->get();
+
+                    // Process each diluent record
+                    foreach ($diluent_data as $diluent_record) {
+                        $packSizediluent = "{$diluent_record->no_of_units}*{$diluent_record->no_of_packs}{$diluent_record->si_unit} {$diluent_record->container_name} {$diluent_record->diluent}";
+                        $packSize .= ' + ' . $packSizediluent;
+                    }
+
+                    // Assign the calculated pack size to the record
+                    $record->pack_size = $packSize;
                 }
 
-            }
-
-            // Second loop to append pack_size to all records
-            foreach ($data as &$record) {
-                $record->pack_size = $packSize;
-            }
             $res = array('success' => true, 'results' => $data);
 
         } catch (\Exception $e) {
@@ -2684,6 +2681,48 @@ if(validateIsNumeric($section_id)){
         return response()->json($res);
 
     }
+
+    public function onLoaddiluentPackagingDetails(Request $req)
+    {
+
+        try {
+            //
+            $product_id = $req->product_id;
+            $pack_id = $req->pack_id;
+            $data = array();
+            //get the records
+            $data = DB::table('tra_product_diluent_packaging as t1')
+                ->select(DB::raw("t1.*, t2.name as container_type, t3.name as container_name, t4.name as container_material, t5.name as closure_materials, t4.name as container_material, t5.name as closure_material, t6.name as seal_type, t7.name as packaging_units, retail_packaging_size as retail_packaging,t8.name as si_unit,t9.name as packaging_category,t10.name as diluent"))
+                ->leftJoin('par_containers_types as t2', 't1.container_type_id', '=', 't2.id')
+                ->leftJoin('par_containers as t3', 't1.container_id', '=', 't3.id')
+                ->leftJoin('par_containers_materials as t4', 't1.container_material_id', '=', 't4.id')
+                ->leftJoin('par_closure_materials as t5', 't1.closure_material_id', '=', 't5.id')
+                ->leftJoin('par_seal_types as t6', 't1.seal_type_id', '=', 't6.id')
+                ->leftJoin('par_packaging_units as t7', 't1.packaging_units_id', '=', 't7.id')
+                ->leftJoin('si_units as t8', 't1.si_unit_id', '=', 't8.id')
+                ->leftJoin('par_container_categories as t9', 't1.packaging_category_id', '=', 't9.id')
+                ->leftJoin('par_diluents as t10', 't1.diluent_id', '=', 't10.id')
+                ->where(array('t1.product_id' => $product_id))
+                ->where(array('t1.pack_id' => $pack_id))
+                ->get();
+
+            $res = array('success' => true, 'results' => $data);
+
+        } catch (\Exception $e) {
+            $res = array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return response()->json($res);
+
+    }
+
 
     static function getQuantityCategoryIds()
     {

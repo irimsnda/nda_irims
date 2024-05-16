@@ -1411,13 +1411,13 @@ return $data;
 
 public function getWHODrugAPIConfigurations($environment){
     if($environment=='production'){
-      $whodrugapi_configs = DB::table('tra_whodrugproductionapi_configurations')->first();
+       $whodrugapi_configs = DB::table('tra_whodrugproductionapi_configurations')->first();
     }else{
        $whodrugapi_configs = DB::table('tra_whodrugapi_configurations')->first();  
     }
-     return $whodrugapi_configs;
+    return $whodrugapi_configs;
 
-    }
+}
 
 
 public function whoDrugDownloadApi (Request $req){
@@ -1439,7 +1439,6 @@ public function whoDrugDownloadApi (Request $req){
         ];
 
         $ch = curl_init();
-
         curl_setopt($ch, CURLOPT_URL, $whodrugapi_configs->request_url . '?' . $queryParams);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -1927,5 +1926,74 @@ public function test1111 (Request $req){
              return $notify_resp; 
            } 
         
+     }
+
+     public function validateInvoiceNDAMIS (Request $req){
+        $xmlRequest = <<<XML
+            <?xml version="1.0"?>
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://wsi.nda.or.ug" xmlns:ns2="http://service.nda.or.ug">
+               <soapenv:Header/>
+                  <ns1:password>Ug4DaNDApR0D</ns1:password>
+                  <ns1:systemID>CFCS2S</ns1:systemID>
+                  <ns1:systemToken>5cab72d20a81341e4ff46f07cd2a4fc5</ns1:systemToken>
+                  <ns1:username>cfcTeller</ns1:username>
+               <soapenv:Body>
+    
+               </soapenv:Body>
+            </soapenv:Envelope>
+            XML;
+
+             $xmlRequest = <<<XML
+                <?xml version="1.0"?>
+                <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://wsi.nda.or.ug" xmlns:ns2="http://service.nda.or.ug">
+                   <soapenv:Header/>
+                   <soapenv:Body>
+                      <ns2:invoiceNo>
+                         <!-- Input parameters for the invoiceNo operation -->
+                         <ns2:arg0>
+                            <!-- Invoice number -->
+                            <ns1:invoiceNo>Ug4DaNDApR0D</ns1:invoiceNo>
+                            <!-- Request header -->
+                            <ns1:requestHeader>
+                               <ns1:password>CFCS2S</ns1:password>
+                               <ns1:systemID>YOUR_SYSTEM_ID</ns1:systemID>
+                               <ns1:systemToken>5cab72d20a81341e4ff46f07cd2a4fc5</ns1:systemToken>
+                               <ns1:username>YOUR_USERNAME</ns1:username>
+                            </ns1:requestHeader>
+                         </ns2:arg0>
+                      </ns2:invoiceNo>
+                   </soapenv:Body>
+                </soapenv:Envelope>
+                XML;
+
+            $url = 'https://mis.nda.or.ug/broker/invoice/validation/v1.0?wsd';
+
+            // cURL initialization
+            $ch = curl_init();
+
+            // Set cURL options
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlRequest);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: text/xml',
+                'Content-Length: ' . strlen($xmlRequest)
+            ));
+
+            // Execute cURL request
+            $response = curl_exec($ch);
+
+            // Check for errors
+            if(curl_errno($ch)) {
+                echo 'Error: ' . curl_error($ch);
+            } else {
+                // Print the response
+                echo $response;
+            }
+
+            // Close cURL session
+            curl_close($ch);
      }
 }

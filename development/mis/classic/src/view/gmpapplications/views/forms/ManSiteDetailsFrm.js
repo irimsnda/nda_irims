@@ -242,14 +242,17 @@ Ext.define('Admin.view.gmpapplications.views.forms.ManSiteDetailsFrm', {
                     valueField: 'id',
                     displayField: 'name',
                     listeners: {
-                        beforerender: {
-                            fn: 'setParamCombosStore',
-                            config: {
-                                pageSize: 10000,
-                                proxy: {
-                                    url: 'parameters/region'
-                                }
-                            },
+                                    beforerender: {
+                                        fn: 'setParamCombosStore',
+                                        config: {
+                                            pageSize: 10000,
+                                            proxy: {
+                                                 url: 'commonparam/getCommonParamFromTable',
+                                                 extraParams: {
+                                                 table_name: 'par_regions'
+                                        }
+                                       }
+                                    },
                             isLoad: false
                         },
                         change: function (cmbo, newVal) {

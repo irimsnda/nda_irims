@@ -60,7 +60,7 @@ Route::group(['middleware' => 'web', 'prefix' => 'integration'], function () {
     Route::get('getCompanyShareholders', [NewIntegrationsController::class, 'getCompanyShareholders']);
     Route::get('whoDrugDownloadApi', [NewIntegrationsController::class, 'whoDrugDownloadApi']);
     Route::get('generateUploadableE2BFile', [NewIntegrationsController::class, 'generateUploadableE2BFile']);
-
+    Route::get('validateInvoiceNDAMIS', [NewIntegrationsController::class, 'validateInvoiceNDAMIS']);
     Route::get('test', [NewIntegrationsController::class, 'test']);
 });
 

@@ -49,6 +49,8 @@ trait PremiseRegistrationTrait
             echo json_encode($res);
             exit();
         }
+
+        
         $zone_id = $application_details->zone_id;
         $refno_generated = $application_details->refno_generated;
         $reference_no = $application_details->reference_no;
@@ -153,6 +155,801 @@ trait PremiseRegistrationTrait
         } else {
             $this->processNormalManagersApplicationSubmission($request, $keep_status);
         }
+    }
+
+     public function updateApplicationSubmission($request, $application_details, $application_status_id)
+    {
+       
+        $application_id = $request->input('application_id');
+        $process_id = $request->input('process_id');
+        $action = $request->input('action');
+        $table_name = $request->input('table_name');
+        $external_user_id= $request->input('external_user_id');
+        
+        $sub_module_id= $request->input('sub_module_id');
+        $user_id = $this->user_id;
+        try {
+            //get process other details
+            $process_details = DB::table('wf_tfdaprocesses')
+                ->where('id', $process_id)
+                ->first();
+            if (is_null($process_details)) {
+                DB::rollBack();
+                $res = array(
+                    'success' => false,
+                    'message' => 'Problem encountered while fetching process details!!'
+                );
+                echo json_encode($res);
+                exit();
+            }
+            $from_stage = $request->input('curr_stage_id');
+            $to_stage = $request->input('next_stage');
+            $responsible_user = $request->input('responsible_user');
+            $remarks = $request->input('remarks');
+            $urgency = $request->input('urgency');
+            $directive_id = $request->input('directive_id');
+            //application details
+            $application_code = $application_details->application_code;
+            $ref_no = $application_details->reference_no;
+            $view_id = $application_details->view_id;
+            $tracking_no = $application_details->tracking_no;
+            $applicant_id = $application_details->applicant_id;
+            $zone_id = (isset($application_details->zone_id) && $process_details->module_id == 18)?$application_details->zone_id:2;
+            $sub_module_id = $application_details->sub_module_id;
+            //process other details
+            $module_id = $process_details->module_id;
+           // $sub_module_id = $process_details->sub_module_id;
+            $section_id = $process_details->section_id;
+            
+            //transitions
+            //process inforamtion 
+            $action_details = $this->getApplicationWorkflowActionDetails($action);
+            $keep_status = $action_details->keep_status;
+            $has_process_defination = $action_details->has_process_defination;
+            $appprocess_defination_id = $action_details->appprocess_defination_id;
+
+            $has_appdate_defination = $action_details->has_appdate_defination;
+            $appdate_defination_id = $action_details->appdate_defination_id;
+            //for inspection submissions
+            $is_inspection_submission = 0;
+           if(isset($action_details->is_inspection_submission)){
+                 $is_inspection_submission = $action_details->is_inspection_submission;
+            }
+            $appdate_defination = getSingleRecordColValue('par_appprocess_definations', array('id'=>$appdate_defination_id),'code');
+            $application_processdefdata = array();
+            if($has_appdate_defination == 1){
+                        $application_processdefdata =   array('application_code'=>$application_code,
+                                                    'appprocess_defination_id'=>$appprocess_defination_id, 
+                                                    'process_date'=>Carbon::NOW(), 
+                                                    'created_by'=>$user_id, 
+                                                    'created_on'=>Carbon::NOW());
+            }
+            $processtransition_data = $this->getActionTransitionDetails($action);
+            $is_multi_submission = $processtransition_data->is_multi_submission;
+            $multinextstage_id = $processtransition_data->multinextstage_id;
+
+            //end 
+            $transition_params = array(
+                'application_id' => $application_id,
+                'application_code' => $application_code,
+                'application_status_id' => $application_status_id,
+                'process_id' => $process_id,
+                'from_stage' => $from_stage,
+                'to_stage' => $to_stage,
+                'author' => $user_id,
+                'remarks' => $remarks,
+                'directive_id' => $directive_id,
+                'created_on' => Carbon::now(),
+                'created_by' => $user_id
+            );
+            
+            DB::table('tra_applications_transitions')
+                ->insert($transition_params);
+            //submissions
+            $submission_params = array(
+                'application_id' => $application_id,
+                'process_id' => $process_id,
+                'view_id' => $view_id,
+                'application_code' => $application_code,
+                'reference_no' => $ref_no,
+                'tracking_no' => $tracking_no,
+                'usr_from' => $user_id,
+                'usr_to' => $responsible_user,
+                'previous_stage' => $from_stage,
+                'current_stage' => $to_stage,
+                'module_id' => $module_id,
+                'external_user_id'=>$external_user_id,
+                'sub_module_id' => $sub_module_id,
+                'section_id' => $section_id,
+                'application_status_id' => $application_status_id,
+                'urgency' => $urgency,
+                'applicant_id' => $applicant_id,
+                'zone_id' => $zone_id,
+                'remarks' => $remarks,
+                'directive_id' => $directive_id,
+                'date_received' => Carbon::now(),
+                'created_on' => Carbon::now(),
+                'created_by' => $user_id
+            );
+            
+            if(validateIsNumeric($external_user_id)){
+                $submission_params['usr_to'] = $external_user_id;
+                //send and email to the Extrenal user
+                $module_name = getSingleRecordColValue('modules', array('id'=>$module_id), 'name');
+                $process_name = getSingleRecordColValue('wf_tfdaprocesses', array('id'=>$process_id), 'name');
+                $process_stage = getSingleRecordColValue('wf_workflow_stages', array('id'=>$to_stage), 'name');
+                $email_address = aes_decrypt(getSingleRecordColValue('users', array('id'=>$external_user_id), 'email'));
+                $vars = array(
+                    '{module_name}' => $module_name,
+                    '{process_name}' => $process_name,
+                    '{process_stage}' => $process_stage,
+                 );
+                sendTemplatedApplicationNotificationEmail(16, $email_address,$vars);
+                //send an email to the rest of the users 
+
+            }
+            if($is_inspection_submission == 1){
+                
+                  $inspectors = $this->getInspectorsIDList($module_id, $application_code);
+               
+                //loop through while updating submissions data
+                 foreach ($inspectors as $inspector) {
+                    //change usr_to
+                    $submission_params['usr_to'] = $inspector->inspector_id;
+                    //update submissions
+                    DB::table('tra_submissions')->insert($submission_params);
+                 }
+             } else {
+            
+                    DB::table('tra_submissions')
+                        ->insert($submission_params);
+             }
+          if ($action_details->update_portal_status == 1) {
+                    $portal_status_id = $action_details->portal_status_id;
+                    $table_name = getSingleRecordColValue('modules', array('id' => $module_id), 'table_name');
+                $portal_table = getPortalApplicationsTable($module_id);
+         
+                    $proceed = updatePortalApplicationStatus($application_id, $portal_status_id, $table_name, $portal_table);
+                    
+                }
+                if($has_appdate_defination == 1){
+
+                    $appdate_defination = array($appdate_defination=>Carbon::now(),'dola'=>Carbon::now());
+                   /* $app_update = DB::table($table_name . ' as t1')
+                                    ->where('application_code', $application_code)
+                                    ->update($appdate_defination);
+                                    */
+                }
+                if(count($application_processdefdata) >0){
+    
+                    DB::table('tra_applications_processdefinations')
+                             ->insert($application_processdefdata);
+    
+                }
+                
+            //check if Application is from inspection Submission
+             $this->setIsDoneIFInspectionApplicationSubmission($application_code, $from_stage);
+             
+            updateInTraySubmissions($application_id, $application_code, $from_stage, $user_id);
+
+            if($is_multi_submission == 1){
+                $submission_params['current_stage'] =  $multinextstage_id;
+                $submission_params['usr_to'] =  '';
+                DB::table('tra_submissions')->insert($submission_params);
+            }
+            DB::commit();
+            $res = array(
+                'success' => true,
+                'message' => 'Application Submitted Successfully!!'
+            );
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            DB::rollBack();
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        echo json_encode($res);
+        return true;
+    }
+
+    public function processNormalApplicationSubmission(Request $request, $keep_status = false)
+    {
+        $application_id = $request->input('application_id');
+        $table_name = $request->input('table_name');
+        $module_id = $request->input('module_id');
+        $prev_stage = $request->input('curr_stage_id');
+        $action = $request->input('action');
+        $to_stage = $request->input('next_stage');
+        
+        $is_dataammendment_request = $request->input('is_dataammendment_request');
+        $is_inspection_submission = $request->input('is_inspection_submission');
+        $user_id = $this->user_id;
+        DB::beginTransaction();
+        try {
+            //get application_details
+            
+        $module_id = $request->input('module_id');
+            if($table_name == ''){
+                $table_name = getSingleRecordColValue('modules', array('id' => $module_id), 'table_name');
+            }
+            if($table_name == 'tra_product_notifications'){
+                $table_name = 'tra_product_applications';
+            }
+            $application_details = DB::table($table_name)
+                ->where('id', $application_id)
+                ->first();
+            if (is_null($application_details)) {
+                $res = array(
+                    'success' => false,
+                    'message' => 'Problem encountered while fetching application details!!'
+                );
+                echo json_encode($res);
+                exit();
+            }
+           
+            $application_status_id = getApplicationTransitionStatus($prev_stage, $action, $to_stage); 
+            if ($keep_status == true) {//for approvals
+                $application_status_id = $application_details->application_status_id;
+            }
+            $where = array(
+                'id' => $application_id
+            );
+            if($is_dataammendment_request != 1){
+                $app_update = array(
+                    'workflow_stage_id' => $to_stage,
+                    'application_status_id' => $application_status_id
+                );
+                $prev_data = getPreviousRecords($table_name, $where);
+                if ($prev_data['success'] == false) {
+                    echo json_encode($prev_data);
+                    exit();
+                }
+                $update_res = updateRecord($table_name, $prev_data['results'], $where, $app_update, $user_id);
+    
+                if ($update_res['success'] == false) {
+                    echo json_encode($update_res);
+                    exit();
+                }
+            }
+            //check the surveillace 
+            if($module_id == 5){
+                if($to_stage == 364){
+                    $samples_nextstage = 1;
+                    DB::table('tra_surveillance_sample_details as t1')
+                        ->where('t1.application_id', $application_id)
+                         ->where('t1.stage_id','<>', $samples_nextstage)
+                         ->update(array('stage_id'=>$samples_nextstage));
+                }
+                else if($to_stage == 365){
+                    $samples_nextstage = 2;
+                    DB::table('tra_surveillance_sample_details as t1')
+                        ->where('t1.application_id', $application_id)
+                         ->where('t1.stage_id','<>', $samples_nextstage)
+                         ->update(array('stage_id'=>$samples_nextstage));
+                }
+                
+            }
+            
+            $this->updateApplicationSubmission($request, $application_details, $application_status_id);
+           
+ 
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+            echo json_encode($res);
+            exit();
+        } catch (\Throwable $throwable) {
+            DB::rollBack();
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+            echo json_encode($res);
+            exit();
+        }
+    }
+
+    public function processNormalManagersApplicationSubmission(Request $request, $keep_status = false,$action_type= 0)
+    {
+        $process_id = $request->input('process_id');
+        $table_name = $request->input('table_name');
+        $selected = $request->input('selected');
+        $application_code = $request->input('application_code');
+        $module_id = $request->input('module_id');
+        $selected_appCodes = $request->input('selected_appCodes');
+        $selected_appCodes = json_decode($selected_appCodes);
+        $selected_ids = json_decode($selected);
+        $user_id = $this->user_id;
+        DB::beginTransaction();
+if($table_name == ''){
+                $table_name = getSingleRecordColValue('modules', array('id' => $module_id), 'table_name');
+                $request->table_name = $table_name;
+                
+            }
+        try {
+            //get application_details
+            if(count($selected_appCodes) >0){
+                $application_details = DB::table($table_name)
+                        ->whereIn('application_code', $selected_appCodes)
+                        ->get();
+            }
+            else{
+                $application_details = DB::table($table_name)
+                            ->whereIn('id', $selected_ids)
+                            ->get();
+            }
+            
+            if (is_null($application_details)) {
+                $res = array(
+                    'success' => false,
+                    'message' => 'Problem encountered while fetching application details!!'
+                );
+                echo json_encode($res);
+                exit();
+            }
+            //get process other details
+            $process_details = DB::table('wf_tfdaprocesses')
+                ->where('id', $process_id)
+                ->first();
+            if (is_null($process_details)) {
+                $res = array(
+                    'success' => false,
+                    'message' => 'Problem encountered while fetching process details!!'
+                );
+                echo json_encode($res);
+                exit();
+            }
+            // DB::transaction(function () use ($request, $selected_ids, &$res, $table_name, $user_id, $application_id, $process_id, $application_details, $process_details) {
+            $application_codes = array();
+            $is_manager_submission = $request->input('is_manager_submission');
+            $expected_start_date = $request->input('expected_start_date');
+            $expected_end_date = $request->input('expected_end_date');
+            $external_user_id = $request->input('external_user_id');
+            $is_dataammendment_request = $request->input('is_dataammendment_request');
+            
+             
+            $from_stage = $request->input('curr_stage_id');
+            $action = $request->input('action');
+            $to_stage = $request->input('next_stage');
+           
+            $responsible_user = $request->input('responsible_user');
+            $remarks = $request->input('remarks');
+            $directive_id = $request->input('directive_id');
+            $urgency = $request->input('urgency');
+            $transition_params = array();
+            $submission_params = array();
+            $multisubmission_params = array();
+            $multiassignment_params = array();
+            //process other details
+
+            $module_id = $process_details->module_id;
+            $sub_module_id = $process_details->sub_module_id;
+            $section_id = $process_details->section_id;
+            $application_status_id = getApplicationTransitionStatus($from_stage, $action, $to_stage);
+
+            //todo get workflow action details
+            $action_details = $this->getApplicationWorkflowActionDetails($action);
+            $keep_status = $action_details->keep_status;
+            $has_process_defination = $action_details->has_process_defination;
+            $appprocess_defination_id = $action_details->appprocess_defination_id;
+            //meeting inivitation
+            $has_technicalmeeting_notification = $action_details->has_technicalmeeting_notification;
+            $technicalmeetinemail_msg_id = $action_details->technicalmeetinemail_msg_id;
+            
+            $has_preminsp_notification = $action_details->has_preminsp_notification;
+            $preminspmail_msg_id = $action_details->preminspmail_msg_id;
+            $has_email_notification = $action_details->has_email_notification;
+            $email_message_id = $action_details->email_message_id;
+
+            $has_appdate_defination = $action_details->has_appdate_defination;
+            $appdate_defination_id = $action_details->appdate_defination_id;
+             $is_inspection_submission = 0;
+            if(isset($action_details->is_inspection_submission)){
+                 $is_inspection_submission = $action_details->is_inspection_submission;
+            }
+           
+            $appdate_defination = getSingleRecordColValue('par_appprocess_definations', array('id'=>$appdate_defination_id),'code');
+            
+            $processtransition_data = $this->getActionTransitionDetails($action);
+            $is_multi_submission = $processtransition_data->is_multi_submission;
+            $multinextstage_id = $processtransition_data->multinextstage_id;
+            
+            $portal_table = getPortalApplicationsTable($module_id);
+            
+            $application_processdefdata = array();
+            $multisubmission_params = array();
+            $inspectors = array();
+            //application details
+            foreach ($application_details as $key => $application_detail) {
+                
+                if ($keep_status == true) {
+                    $application_status_id = $application_detail->application_status_id;
+                }
+                if ($action_details->update_portal_status == 1) {
+                    $portal_status_id = $action_details->portal_status_id;
+                    $proceed = updatePortalApplicationStatus($application_detail->id, $portal_status_id, $table_name, $portal_table);
+                    
+                    if ($proceed == false) {
+                        echo json_encode($proceed);
+                        exit();
+                    }
+                }
+                //transitions
+                $transition_params[] = array(
+                    'application_id' => $application_detail->id,
+                    'application_code' => $application_detail->application_code,
+                    'application_status_id' => $application_status_id,
+                    'process_id' => $process_id,
+                    'from_stage' => $from_stage,
+                    'to_stage' => $to_stage,
+                    'author' => $user_id,
+                    'directive_id' => $directive_id,
+                    'remarks' => $remarks,
+                    'created_on' => Carbon::now(),
+                    'created_by' => $user_id
+                );
+                //submissions
+                if($action_type == 11){
+                    $responsible_user = $this->getApplicationInspEvaUsers($application_detail->application_code);
+                }
+                $application_code = $application_detail->application_code;
+                
+                $submission_data = array(
+                    'application_id' => $application_detail->id,
+                    'view_id' => $application_detail->view_id,
+                    'process_id' => $process_id,
+                    'application_code' => $application_detail->application_code,
+                    'reference_no' => $application_detail->reference_no,
+                    'tracking_no' => $application_detail->tracking_no,
+                    'zone_id' => $application_detail->zone_id,
+                    'usr_from' => $user_id,
+                    'usr_to' => $responsible_user,
+                    'previous_stage' => $from_stage,
+                    'current_stage' => $to_stage,
+                    'module_id' => $module_id,
+                    'sub_module_id' => $application_detail->sub_module_id,
+                    'zone_id' => $application_detail->zone_id,
+                    'section_id' => $section_id,
+                    'application_status_id' => $application_status_id,
+                    'urgency' => $urgency,
+                    'applicant_id' => $application_detail->applicant_id,
+                    'remarks' => $remarks,
+                    'directive_id' => $directive_id,
+                    'external_user_id' => $external_user_id,
+                    'date_received' => Carbon::now(),
+                    'created_on' => Carbon::now(),
+                    'created_by' => $user_id
+                );
+                if(validateIsNumeric($request->screening_stage_id)){
+
+                    $multiassignment_params[] = $this->funcReturnMultiAsignment($request->screening_stage_id,$request->screening_respuser_id,$application_detail,$user_id); 
+                }
+               
+                if(validateIsNumeric($request->inspection_schedulingstage_id)){
+                    $multiassignment_params[] = $this->funcReturnMultiAsignment($request->inspection_schedulingstage_id,$request->inspectionscheduling_respuser_id,$application_detail,$user_id); 
+                    
+                  
+                }if(validateIsNumeric($request->inspection_stage_id)){
+                    $multiassignment_params[] = $this->funcReturnMultiAsignment($request->inspection_stage_id,$request->inspection_respuser_id,$application_detail,$user_id); 
+
+                }if(validateIsNumeric($request->firstassessment_stage_id)){
+                    $multiassignment_params[] = $this->funcReturnMultiAsignment($request->firstassessment_stage_id,$request->firstassessment_respuser_id,$application_detail,$user_id); 
+
+                }if(validateIsNumeric($request->secondassessment_stage_id)){
+                    $multiassignment_params[] = $this->funcReturnMultiAsignment($request->secondassessment_stage_id,$request->secondassessment_respuser_id,$application_detail,$user_id); 
+
+                }if(validateIsNumeric($request->assessmentreport_reviewstage_id)){
+                    $multiassignment_params[] = $this->funcReturnMultiAsignment($request->assessmentreport_reviewstage_id,$request->assessmentreportreview_respuser_id,$application_detail,$user_id); 
+
+                }
+              
+                if(validateIsNumeric($external_user_id)){
+                    $submission_data['usr_to'] = $external_user_id;
+                    //send and email to the Extrenal user
+                    $module_name = getSingleRecordColValue('modules', array('id'=>$module_id), 'name');
+                    $process_name = getSingleRecordColValue('wf_tfdaprocesses', array('id'=>$process_id), 'name');
+                    $process_stage = getSingleRecordColValue('wf_workflow_stages', array('id'=>$to_stage), 'name');
+                    $email_address = aes_decrypt(getSingleRecordColValue('users', array('id'=>$external_user_id), 'email'));
+                    $vars = array(
+                        '{module_name}' => $module_name,
+                        '{process_name}' => $process_name,
+                        '{process_stage}' => $process_stage,
+                     );
+                    sendTemplatedApplicationNotificationEmail(16, $email_address,$vars);
+                    //send an email to the rest of the users 
+
+                }
+                if($is_manager_submission == 1){
+                    $submission_data['expected_start_date'] = $expected_start_date;
+                    $submission_data['expected_end_date'] = $expected_end_date;
+                }
+                if($has_appdate_defination == 1){
+                         $application_processdefdata[] =   array('application_code'=>$application_code,
+                                                        'appprocess_defination_id'=>$appprocess_defination_id, 
+                                                        'process_date'=>Carbon::NOW(), 
+                                                        'created_by'=>$user_id, 
+                                                        'created_on'=>Carbon::NOW());
+                }
+                
+
+                $submission_params[] = $submission_data;
+                $application_codes[] = array($application_detail->application_code);
+               
+                if($is_multi_submission == 1){
+                    $submission_data['current_stage'] =  $multinextstage_id;
+                    $submission_data['usr_to'] =  '';
+                    $multisubmission_params[] = $submission_data;
+                }
+
+                if($is_inspection_submission == 1){
+                  //get Inspectors
+                  $inspectors[] = $this->getInspectorsIDList($module_id, $application_detail->application_code);
+                }
+
+                //check if Application is from inspection Submission
+                $this->setIsDoneIFInspectionApplicationSubmission($application_detail->application_code, $from_stage);
+            }
+          
+            //application update
+            $update_params = array(
+                'workflow_stage_id' => $to_stage,
+                'application_status_id' => $application_status_id,
+                'dola'=>Carbon::now()
+            );
+            if($has_appdate_defination == 1){
+
+                $appdate_defination = array($appdate_defination=>Carbon::now(),'dola'=>Carbon::now());
+               /* $app_update = DB::table($table_name . ' as t1')
+                                ->whereIn('application_code', $selected_appCodes)
+                                ->update($appdate_defination);
+                                */
+            }
+            if(count($application_processdefdata) >0){
+
+                DB::table('tra_applications_processdefinations')
+                         ->insert($application_processdefdata);
+
+            }
+            if($is_dataammendment_request != 1){
+                if(count($selected_appCodes) >0){
+                        
+                            $app_update = DB::table($table_name . ' as t1')
+                    ->whereIn('application_code', $selected_appCodes)
+                    ->update($update_params);
+
+                }
+                else{
+                    
+                    $app_update = DB::table($table_name . ' as t1')
+                    ->whereIn('id', $selected_ids)
+                    ->update($update_params);
+
+                }
+             
+            }
+            
+            //transitions update
+            DB::table('tra_applications_transitions')
+                ->insert($transition_params);
+            //submissions update
+            if($is_inspection_submission == 1){
+                //loop through while updating submissions data
+                 foreach ($inspectors as $inspector_array) {
+                    foreach ($inspector_array as $inspector) {
+                        foreach ($submission_params as $submission_param) {
+                            //change usr_to
+                            $submission_param['usr_to'] = $inspector->inspector_id;
+                            //update submissions
+                            DB::table('tra_submissions')->insert($submission_param);
+                        }
+                    } 
+                 }
+             } else {
+
+                    DB::table('tra_submissions')
+                        ->insert($submission_params);
+             }
+
+            updateInTraySubmissionsBatch($selected_ids, $application_codes, $from_stage, $user_id);
+
+            if(count($multisubmission_params) >0){
+               
+                DB::table('tra_submissions')->insert($multisubmission_params);
+                //print_r(($multisubmission_params));
+            
+            }
+            if(count($multiassignment_params) >0){
+               
+                DB::table('tra_appmultiassessment_userassignment')->insert($multiassignment_params);
+               
+            }
+            //for the email notification and more so the meeting details 
+          //  $has_technicalmeeting_notification $has_email_notification $email_message_id
+          
+          if($has_preminsp_notification == 1){
+                 $application_code = $application_detail->application_code;
+                //get the inspectors email
+                $inspection_details = $this->getPremisesInspectionDetails($application_code);
+                $inspectors_email = $this->getPremInspectorsEmail($application_code);
+
+                $vars = array(
+                    '{start_date}'=>$inspection_details->start_date,
+                    '{end_date}'=>$inspection_details->end_date,
+                    '{description}'=>$inspection_details->description,
+                    '{lead_inspector}'=>$inspection_details->lead_inspector
+                );
+                sendTemplatedApplicationNotificationEmail($preminspmail_msg_id, $inspectors_email,$vars);
+
+          }
+          if($has_technicalmeeting_notification == 1){
+              //get the emails 
+
+             //meeting participants emails 
+             if(validateIsNumeric($application_detail->application_code)){
+                    $app_description = '';
+                    $application_code = $application_detail->application_code;
+                    //var_dump($application_detail);
+                    $meeting_details = $this->getMeetingDetails($application_code);
+                    
+                    //var_dump($meeting_details);exit;
+                    $meeting_attendantsemail = $this->getMeetingAttendantsEmails($application_code);
+                    $directorate_details = $this->getDirectorateInformation($section_id);
+                    if($directorate_details){
+                        $meeting_id = $meeting_details->id;
+                        //->select(DB::raw("t2.name as directorate_name, CONCAT_WS(' ',decrypt(t4.first_name),decrypt(t4.last_name)) as director_name"))
+                        $directorate_name = $directorate_details->directorate_name;
+                        $director_name = $directorate_details->director_name;
+                        $section_name = $directorate_details->section_name;
+                    } else {
+                        $meeting_id ="" ;
+                        $directorate_name ="";
+                        $director_name ="" ;
+                        $section_name = "";
+                    }
+                    
+                    $module_name = getSingleRecordColValue('modules', array('id'=>$module_id), 'name');
+                   
+                    $vars = array(
+                        '{meeting_name}' => $meeting_details->meeting_name,
+                        '{app_description}' => $app_description,
+                        '{meeting_time}' => $meeting_details->meeting_time,
+                        '{date_requested}' => $meeting_details->date_requested,
+                        '{meeting_venue}' => $meeting_details->meeting_venue,
+                        '{directorate_name}' => $directorate_name,
+                        '{director_name}' => $director_name,
+                        '{section_name}' => $section_name,
+                        '{module_name}' => $module_name
+                     );
+                     
+                      //check for the external users and 
+                    //sendTemplatedApplicationNotificationEmail($technicalmeetinemail_msg_id, $meeting_attendantsemail,$vars);
+                    /*$participantEmails = explode(';',$meeting_attendantsemail);
+                    foreach($participantEmails as $participantEmail){
+                        sendTemplatedApplicationNotificationEmail($technicalmeetinemail_msg_id, $participantEmail,$vars);
+                   }*/
+                    //send an email to the rest of the users 
+                    $records = DB::table('tc_meeting_participants')
+                                    ->select('*')
+                                    ->where(array('meeting_id'=>$meeting_id))
+                                    ->get();
+                                    
+
+                    if($records){
+                        
+                        foreach ($records as $rec) {
+                            
+                            $user_id = $rec->user_id;
+                            $email_address = $rec->email;
+                            $participant_id = $rec->id;
+                            //print_r($user_id);
+
+                            /*if(!validateIsNumeric($user_id)){
+                                
+                                $participant_id = $rec->id;
+                                //users details 
+                                $table_data = array(
+                                    'first_name' => $rec->participant_name,
+                                    'mobile' => $rec->phone,
+                                    'phone' => $rec->phone,
+                                    'user_category_id' => 2
+                                );
+                                $this->createExternalUserAccountDetails($table_data,$email_address,$participant_id,$vars);
+                            }*///endif
+
+                            $table_data = array(
+                                'first_name' => $rec->participant_name,
+                                'mobile' => $rec->phone,
+                                'phone' => $rec->phone,
+                                'user_category_id' => 2
+                            );
+                            $this->createExternalUserAccountDetails($table_data,$email_address,$participant_id,$vars);
+
+
+                        }//endforeach
+                    }//endif
+
+             }
+            
+
+          }
+          
+
+
+            DB::commit();
+            $res = array(
+                'success' => true,
+                'message' => 'Application Submitted Successfully!!'
+            );
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            DB::rollBack();
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        echo json_encode($res);
+        exit();
+    }
+
+    public function createExternalUserAccountDetails($table_data,$email_address,$participant_id,$vars){
+        $skipArray = array('user_category_id');
+        $table_data = encryptArray($table_data, $skipArray);
+        
+        $encryptedEmail = aes_encrypt($email_address);
+        $email_exists = DB::table('users')
+            ->where('email', $encryptedEmail)
+            ->first();
+
+
+        if (!$email_exists){
+            
+            $password = str_random(8);
+            $uuid = generateUniqID();//unique user ID
+            $pwd = hashPwd($encryptedEmail, $uuid, $password);
+            //add extra params
+            $table_data['email'] = $encryptedEmail;
+            $table_data['password'] = $pwd;
+            $table_data['uuid'] = $uuid;
+
+            $base_url = url('/');
+            $vars['email_address'] = $email_address;
+            $vars['user_password'] = $password;
+            $vars['base_url'] = $base_url;
+            
+            $email_res = sendTemplatedApplicationNotificationEmail(15,$email_address ,$vars);
+            
+                $results = insertRecord('users', $table_data, $this->user_id);
+                if ($results['success'] == true) {
+                    $insertId = $results['record_id'];
+                    DB::table('tc_meeting_participants')->where(array('id'=>$participant_id))->update(array('user_id'=>$insertId));
+                }//endif            
+        }//endif
+        else{
+            
+            $base_url = url('/');
+            $vars['email_address'] = $email_address;
+            $vars['user_password'] = "Please use your current password, If forgotten or do not know, please request a new password to be sent through your email by using the (Forgot password) option";
+            $vars['base_url'] = $base_url;
+            
+            $email_res = sendTemplatedApplicationNotificationEmail(15,$email_address ,$vars);
+        }//endelse
+
     }
 
     public function updateQueriedPremiseApplicationPortal(Request $request, $application_details)

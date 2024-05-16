@@ -1856,6 +1856,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             activeTab = mainTabPanel.getActiveTab(),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             applicantFrm = activeTab.down('applicantdetailsfrm'),
             manufacturingSiteFrm = activeTab.down('mansitedetailsfrm'),
             wizardPanel = activeTab.down('newgmpreceivingwizard'),
@@ -1891,12 +1892,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         });
 
         if (section_id==5 || section_id===5) {
-          if(wizardPanel.down('productlinedetailsgrid')){
-                wizardPanel.down('productlinedetailsgrid').destroy();
-            }
-            wizardPanel.add(2, { xtype: 'mdproductlinedetailsgrid'});
-            var mdproductLinesGrid = wizardPanel.down('mdproductlinedetailsgrid'),
-            mdproductline_store = mdproductLinesGrid.getStore();
+          
         }
        
         if (section_id != 2) {
@@ -1965,22 +1961,19 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                         gmpproducts_store.removeAll();
                         gmpproducts_store.load();
                         if (results) {
-                            mdproductline_store=mdproductLinesGrid.getStore();
-                            if(mdproductline_store){
-                                mdproductline_store.getProxy().extraParams={
-                                manufacturing_site_id: results.manufacturing_site_id
-                                };
-                                if (mdproductline_store) {
-                                        mdproductline_store.removeAll();
-                                        mdproductline_store.load();
-                                }
-                            }
                             if (results.gmp_type_id == 2 || results.gmp_type_id === 2) {//domestic
-                                manufacturingSiteFrm.getForm().getFields().each(function (field) {
-                                    // field.setReadOnly(true);
-                                });
+                                if(sub_module_id !=117){
+                                   manufacturingSiteFrm.getForm().getFields().each(function (field) {
+                                        field.setReadOnly(true);
+                                    }); 
+                                }
                                 //manufacturingSiteFrm.down('textfield[name=premise_reg_no]').setVisible(true);
                                 //premiseFrm.down('button[action=search_premise]').setDisabled(false);
+                            }
+
+                            if (sub_module_id ==117) {
+                               activeTab.down('combo[name=gmp_type_id]').setValue(2);
+                               activeTab.down('combo[name=gmp_type_id]').setReadOnly(true);
                             }
                         }
                     } else {
@@ -2003,15 +1996,23 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             //It's a new application
             var gmp_type_id = gmp_type_id_fld.getValue();
             if (gmp_type_id == 2 || gmp_type_id === 2) {//domestic
-                manufacturingSiteFrm.getForm().getFields().each(function (field) {
+
+            if(sub_module_id !=117){
+               manufacturingSiteFrm.getForm().getFields().each(function (field) {
                     field.setReadOnly(true);
-                });
+                }); 
+            }
+                
                 //manufacturingSiteFrm.down('textfield[name=premise_reg_no]').setVisible(true);
                 //premiseFrm.down('textfield[name=permit_no]').setVisible(true);
-                manufacturingSiteFrm.down('button[action=search_premise]').setDisabled(false);
+                //manufacturingSiteFrm.down('button[action=search_premise]').setDisabled(false);
                 if (section_id ==5) {
                     activeTab.down('combo[name=device_type_id]').setVisible(true);
                     activeTab.down('combo[name=device_type_id]').setReadOnly(false);
+                }
+                if (sub_module_id ==117 || sub_module_id ==117) {
+                    activeTab.down('combo[name=gmp_type_id]').setValue(2);
+                    activeTab.down('combo[name=gmp_type_id]').setReadOnly(true);
                 }
             }
             Ext.getBody().unmask();
@@ -3203,10 +3204,10 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         applicantFrm.down('button[action=link_applicant]').setDisabled(true);
         
         if (section_id != 2) {
-            productlinedetailsgrid.columns[4].setHidden(true);
-            productlinedetailsgrid.columns[5].setHidden(true);
-            productlinedetailsgrid.columns[6].setHidden(true);
-            productlinedetailsgrid.columns[7].setHidden(true);
+            // productlinedetailsgrid.columns[4].setHidden(true);
+            // productlinedetailsgrid.columns[5].setHidden(true);
+            // productlinedetailsgrid.columns[6].setHidden(true);
+            // productlinedetailsgrid.columns[7].setHidden(true);
         }
         if (application_id) {
             siteFrm.down('button[name=search_site]').setDisabled(true);
@@ -3451,7 +3452,6 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             applicant_as_billingperson = billingForm.down('combo[name=applicant_as_billingperson]').getValue(),
             billing_person_id = billingForm.down('hiddenfield[name=id]').getValue(),
             manufacturing_site_id = contractManufactureForm.down('hiddenfield[name=manufacturing_site_id]').getValue();
-            console.log(manufacturing_site_id);
             var contract_manufacturing_id = contractManufactureForm.down('combo[name=contract_manufacturing_id]').getValue(),
             contract_manufacturer_name = contractManufactureForm.down('textfield[name=contract_manufacturer_name]').getValue(),
             contract_physical_address = contractManufactureForm.down('textfield[name=contract_physical_address]').getValue(),
@@ -3641,23 +3641,21 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 toastr.warning('Please select Local Technical Representative!!', 'Warning Response');
                 return false;
             }
-             if (!applicant_as_billingperson) {
-                toastr.warning('Please select Billing Address!!', 'Warning Response');
-                return false;
-            } else if (applicant_as_billingperson == 2 && !billing_person_id) {
-                toastr.warning('Please select Billing Address!!', 'Warning Response');
-                return false;
-            }
-             if (!contract_manufacturing_id) {
-                toastr.warning('Please select Contract Manufacturing Acitivity!!', 'Warning Response');
-                return false;
-            }
+            //  if (!applicant_as_billingperson) {
+            //     toastr.warning('Please select Billing Address!!', 'Warning Response');
+            //     return false;
+            // } else if (applicant_as_billingperson == 2 && !billing_person_id) {
+            //     toastr.warning('Please select Billing Address!!', 'Warning Response');
+            //     return false;
+            // }
+            //  if (!contract_manufacturing_id) {
+            //     toastr.warning('Please select Contract Manufacturing Acitivity!!', 'Warning Response');
+            //     return false;
+            // }
             //  else if(contract_manufacturing_id == 1 || contract_manufacturing_id == 2 && !manufacturing_site_id) {
             //     toastr.warning('Please note application can not be received until all manufacturing parties have applied for an inspection!!', 'Warning Response');
             //     return false;
             // }
-
-
 
             manSiteDetailsFrm.submit({
                 url: action_url,
@@ -4051,11 +4049,12 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
            //      }
            //      else{
 
-                    var mainTabPanel = grid.up('#contentPanel'),
-                    activeTab = mainTabPanel.getActiveTab(),
-                    site_id = activeTab.down('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue(),
-                    section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
-                    application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+            var mainTabPanel = grid.up('#contentPanel'),
+            activeTab = mainTabPanel.getActiveTab(),
+            site_id = activeTab.down('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue(),
+            gmp_type_id = activeTab.down('combo[name=gmp_type_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue();
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
 
                // }
                
@@ -4080,6 +4079,11 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             //     childObject.columns[6].setHidden(true);
             //     childObject.columns[7].setHidden(true);
             // }
+            if(gmp_type_id==2 || gmp_type_id===2){
+                 form.down('combo[name=general_manufacturing_activity_id]').setVisible(true);
+                 form.down('combo[name=general_manufacturing_activity_id]').allowBlank = false;
+                 form.down('combo[name=general_manufacturing_activity_id]').validate();
+            }
            form.down('hiddenfield[name=manufacturing_site_id]').setValue(site_id);
             // childObject.down('hiddenfield[name=section_id]').setValue(section_id);
             // childObject.down('hiddenfield[name=application_code]').setValue(application_code);
@@ -4891,12 +4895,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         siteFrm.down('hiddenfield[name=isReadOnly]').setValue(siteReadOnly);
 
         if (section_id==5 || section_id===5) {
-          if(wizardPnl.down('productlinedetailsgrid')){
-                wizardPnl.down('productlinedetailsgrid').destroy();
-            }
-            var wizardPanel = Ext.ComponentQuery.query("#mansiteappmoredetailswizard")[0];
-            wizardPanel.add(2, { xtype: 'mdproductlinedetailsgrid'});
-            var mdproductLinesGrid = wizardPanel.down('mdproductlinedetailsgrid');
+         
         }
         if (section_id != 2) {
             if(wizardPnl.down('productlinedetailsgrid')){

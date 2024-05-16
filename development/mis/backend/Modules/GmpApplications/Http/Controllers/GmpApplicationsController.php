@@ -1300,6 +1300,7 @@ $applicant_id = $siteDetails->applicant_id;
                 'telephone' => $request->input('telephone'),
                 'fax' => $request->input('fax'),
                 'email' => $request->input('email'),
+                'psu_no' => $request->input('psu_no'),
                 'website' => $request->input('website'),
                 'physical_address' => $request->input('physical_address'),
                 'postal_address' => $request->input('postal_address'),
@@ -2797,7 +2798,7 @@ $applicant_id = $siteDetails->applicant_id;
         $qry = DB::table('tra_manufacturing_sites_blocks as t1')
             ->leftJoin('par_manufacturinginspection_category as t2', 't1.inspection_category_id', '=', 't2.id')
            // ->leftJoin('par_manufacturinginspection_activities as t3', 't1.inspection_activities_id', '=', 't3.id')
-            ->Join('gmp_productline_details as t4', 't4.manufacturingsite_block_id', '=', 't1.id')
+            ->leftJoin('gmp_productline_details as t4', 't4.manufacturingsite_block_id', '=', 't1.id')
 
             // ->Join('gmp_productline_details as t4', function ($join) use ($site_id) {
             //         $join->on('t1.id', '=', 't4.manufacturingsite_block_id')

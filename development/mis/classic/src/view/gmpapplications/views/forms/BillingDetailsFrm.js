@@ -101,7 +101,7 @@ Ext.define('Admin.view.gmpapplications.views.forms.BillingDetailsFrm', {
         },
         {
             xtype: 'fieldset',
-            title: 'Billing Address Details',
+            title: 'Billing Recipient Details',
             collapsible: false,
             name: 'billing_person',
             columnWidth: 1,

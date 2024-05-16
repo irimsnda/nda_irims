@@ -1636,8 +1636,63 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
                     if (success == true || success === true) {
                         toastr.success(message, "Success Response");
                         store.removeAll();
+                        console.log(store);
                         store.load({ params: { product_id: product_id } });
                         win.close();
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (form, action) {
+                    var resp = action.result;
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        }
+    },
+
+
+     saveproductPackagingdetails: function (btn) {
+        var me = this,
+            url = btn.action_url,
+            table = btn.table_name,
+            form = btn.up('form'),
+            product_id = form.down('hiddenfield[name=product_id]').getValue(),
+            win = form.up('window'),
+            primarydrugsProductPackagingFrm=win.down('primarydrugsProductPackagingFrm'),
+            secondarydrugsProductPackagingFrm=win.down('secondarydrugsProductPackagingFrm'),
+            tertiarydrugsProductPackagingFrm=win.down('tertiarydrugsProductPackagingFrm'),
+            shipperdrugsProductPackagingFrm=win.down('shipperdrugsProductPackagingFrm'),
+            diluentProductPackagingGrid=win.down('diluentProductPackagingGrid'),
+            storeID = btn.storeID,
+            store = Ext.getStore(storeID),
+            frm = form.getForm();
+
+        if (frm.isValid()) {
+            frm.submit({
+                 url: url,
+                 params: { 
+                    _token:token
+                },
+                waitMsg: 'Please wait...',
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (form, action) {
+                    var response = Ext.decode(action.response.responseText),
+                        success = response.success,
+                        message = response.message;
+                        record_id = response.record_id;
+                    if (success == true || success === true) {
+                        toastr.success(message, "Success Response");
+                        store.removeAll();
+                        store.load({ params: { product_id: product_id } });
+                        primarydrugsProductPackagingFrm.down('hiddenfield[name=id]').setValue(record_id);
+                        secondarydrugsProductPackagingFrm.down('hiddenfield[name=id]').setValue(record_id);
+                        tertiarydrugsProductPackagingFrm.down('hiddenfield[name=id]').setValue(record_id);
+                        shipperdrugsProductPackagingFrm.down('hiddenfield[name=id]').setValue(record_id);
+                        diluentProductPackagingGrid.down('hiddenfield[name=pack_id]').setValue(record_id);
+                        //win.close();
                     } else {
                         toastr.error(message, 'Failure Response');
                     }
@@ -1821,6 +1876,93 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
 
         form.loadRecord(record);
         funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+
+    },
+
+    showEditProductPackagingdetailWinFrm: function (item) {
+
+        var me = this,
+            btn = item.up('button'),
+            record = btn.getWidgetRecord(),
+            childXtype = item.childXtype,
+            winTitle = item.winTitle,
+            winWidth = item.winWidth,
+            child = Ext.widget(childXtype),
+            primarydrugsProductPackagingFrm=child.down('primarydrugsProductPackagingFrm'),
+            secondarydrugsProductPackagingFrm=child.down('secondarydrugsProductPackagingFrm'),
+            tertiarydrugsProductPackagingFrm=child.down('tertiarydrugsProductPackagingFrm'),
+            shipperdrugsProductPackagingFrm=child.down('shipperdrugsProductPackagingFrm'),
+            diluentProductPackagingGrid=child.down('diluentProductPackagingGrid');
+
+            if(primarydrugsProductPackagingFrm){
+                primarydrugsProductPackagingFrm.loadRecord(record);
+            }
+            if(secondarydrugsProductPackagingFrm){
+                 secondarydrugsProductPackagingFrm.loadRecord(record);
+            }
+            if(tertiarydrugsProductPackagingFrm){
+                tertiarydrugsProductPackagingFrm.loadRecord(record);
+            }
+            if(tertiarydrugsProductPackagingFrm){
+                shipperdrugsProductPackagingFrm.loadRecord(record);
+            } 
+            if(diluentProductPackagingGrid){
+                diluentProductPackagingGrid.down('hiddenfield[name=pack_id]').setValue(record.get('id'));
+            }
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
+
+    },
+
+      viewProductPackagingdetailWinFrm: function(btn) {
+           var me = this,
+            record = btn.getWidgetRecord(),
+            childXtype = btn.childXtype,
+            winTitle = btn.winTitle,
+            winWidth = btn.winWidth,
+            child = Ext.widget(childXtype),
+            primarydrugsProductPackagingFrm=child.down('primarydrugsProductPackagingFrm'),
+            secondarydrugsProductPackagingFrm=child.down('secondarydrugsProductPackagingFrm'),
+            tertiarydrugsProductPackagingFrm=child.down('tertiarydrugsProductPackagingFrm'),
+            shipperdrugsProductPackagingFrm=child.down('shipperdrugsProductPackagingFrm'),
+            diluentProductPackagingGrid=child.down('diluentProductPackagingGrid');
+
+            if(primarydrugsProductPackagingFrm){
+                primarydrugsProductPackagingFrm.loadRecord(record);
+                 primarydrugsProductPackagingFrm.getForm().getFields().each(function (field) {
+                    field.setReadOnly(true);
+                });
+            }
+            if(secondarydrugsProductPackagingFrm){
+                 secondarydrugsProductPackagingFrm.loadRecord(record);
+                 secondarydrugsProductPackagingFrm.getForm().getFields().each(function (field) {
+                    field.setReadOnly(true);
+                });
+            }
+            if(tertiarydrugsProductPackagingFrm){
+                tertiarydrugsProductPackagingFrm.loadRecord(record);
+                tertiarydrugsProductPackagingFrm.getForm().getFields().each(function (field) {
+                    field.setReadOnly(true);
+                });
+            }
+            if(tertiarydrugsProductPackagingFrm){
+                shipperdrugsProductPackagingFrm.loadRecord(record);
+                shipperdrugsProductPackagingFrm.getForm().getFields().each(function (field) {
+                    field.setReadOnly(true);
+                });
+            } 
+            if(diluentProductPackagingGrid){
+                diluentProductPackagingGrid.down('hiddenfield[name=pack_id]').setValue(record.get('id'));
+                var add_btn = diluentProductPackagingGrid.down('button[action=add]'),
+                widgetCol = diluentProductPackagingGrid.columns[diluentProductPackagingGrid.columns.length - 1];
+         
+                add_btn.setVisible(false);
+                widgetCol.setHidden(true);
+                widgetCol.widget.menu.items = [];
+            }
+
+            
+
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
 
     },
     productPreviewEditProductsDetails: function (item) {
