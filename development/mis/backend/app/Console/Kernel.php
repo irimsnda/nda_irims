@@ -12,17 +12,6 @@ use Modules\APIIntegrations\Http\Controllers\NewIntegrationsController;
 
 class Kernel extends ConsoleKernel
 {
-
-    public function getWHODrugAPIConfigurations($environment)
-    {
-        if ($environment == 'production') {
-            $whodrugapi_configs = DB::table('tra_whodrugproductionapi_configurations')->first();
-        } else {
-            $whodrugapi_configs = DB::table('tra_whodrugapi_configurations')->first();
-        }
-        return $whodrugapi_configs;
-
-    }
     /**
      * Define the application's command schedule.
      *
