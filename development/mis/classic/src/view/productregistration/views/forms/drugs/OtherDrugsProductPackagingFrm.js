@@ -4,9 +4,9 @@
  * User robinson odhiambo
  * on 9/24/2018.
  */
-Ext.define('Admin.view.productregistration.views.forms.drugs.SecondaryDrugsProductPackagingFrm', {
+Ext.define('Admin.view.productregistration.views.forms.drugs.OtherDrugsProductPackagingFrm', {
     extend: 'Ext.form.Panel',
-    xtype: 'secondarydrugsProductPackagingFrm',
+    xtype: 'otherdrugsProductPackagingFrm',
     
     layout: {
         type: 'vbox'
@@ -34,7 +34,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.SecondaryDrugsProdu
         value: 'tra_product_packaging'
     },{
         xtype: 'combo',
-        name: 'secondary_container_id',
+        name: 'other_container_id',
         allowBlank: false,
         fieldLabel: 'Pack Type',
         queryMode: 'local',
@@ -57,28 +57,28 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.SecondaryDrugsProdu
                          var form = combo.up('form');
                          var record = combo.getSelection(); // Get the selected record from the combo box
                          if (record && record.get('has_quantity') === 1) { 
-                               form.down('textfield[name=secondary_no_of_packs]').setVisible(true);
-                               form.down('combo[name=secondary_si_unit_id]').setVisible(true);
-                               form.down('combo[name=secondary_si_unit_id]').allowBlank = false;
-                               form.down('combo[name=secondary_si_unit_id]').validate();
-                               form.down('textfield[name=secondary_no_of_packs]').allowBlank = false;
-                               form.down('textfield[name=secondary_no_of_packs]').validate();
-                               form.down('textfield[name=secondary_no_of_units]').setValue(1);
-                               form.down('textfield[name=secondary_no_of_units]').setVisible(false);
+                               form.down('textfield[name=other_no_of_packs]').setVisible(true);
+                               form.down('combo[name=other_si_unit_id]').setVisible(true);
+                               form.down('combo[name=other_si_unit_id]').allowBlank = false;
+                               form.down('combo[name=other_si_unit_id]').validate();
+                               form.down('textfield[name=other_no_of_packs]').allowBlank = false;
+                               form.down('textfield[name=other_no_of_packs]').validate();
+                               form.down('textfield[name=other_no_of_units]').setValue(1);
+                               form.down('textfield[name=other_no_of_units]').setVisible(false);
                         }else{
-                            form.down('textfield[name=secondary_no_of_packs]').setVisible(false);
-                            form.down('combo[name=secondary_si_unit_id]').setVisible(false);
-                            form.down('textfield[name=secondary_no_of_packs]').allowBlank = true;
-                            form.down('combo[name=secondary_si_unit_id]').allowBlank = true;
-                            //form.down('textfield[name=secondary_no_of_units]').setValue('');
-                            form.down('textfield[name=secondary_no_of_units]').setVisible(true);
+                            form.down('textfield[name=other_no_of_packs]').setVisible(false);
+                            form.down('combo[name=other_si_unit_id]').setVisible(false);
+                            form.down('textfield[name=other_no_of_packs]').allowBlank = true;
+                            form.down('combo[name=other_si_unit_id]').allowBlank = true;
+                            //form.down('textfield[name=other_no_of_units]').setValue('');
+                             form.down('textfield[name=other_no_of_units]').setVisible(true);
                     }
             }
         }
     },
     {
         xtype: 'combo',
-        name: 'secondary_container_material_id',
+        name: 'other_container_material_id',
         allowBlank: true,
         queryMode: 'local',
         fieldLabel: 'Pack Material',
@@ -104,7 +104,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.SecondaryDrugsProdu
    {
         xtype: 'textfield',
         fieldLabel: 'No of Units in Pack',
-        name: 'secondary_no_of_units',
+        name: 'other_no_of_units',
         columnWidth: 1,
         allowBlank: false
     },
@@ -124,13 +124,13 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.SecondaryDrugsProdu
                     {
                         xtype: 'textfield',
                         fieldLabel: 'Quantity/Volume Per',
-                        name: 'secondary_no_of_packs',
+                        name: 'other_no_of_packs',
                         hidden:true,
                         allowBlank: true
                     },
                     {
                         xtype: 'combo',
-                        name: 'secondary_si_unit_id',
+                        name: 'other_si_unit_id',
                         fieldLabel: "Unit of Quantity/Volume",
                         queryMode: 'local',
                         forceSelection: true,
@@ -162,7 +162,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.SecondaryDrugsProdu
             growMax: 200,
             allowBlank:true, 
             fieldLabel: 'Pack Description',
-            name: 'secondary_description',
+            name: 'other_description',
             columnWidth: 1
         },
 

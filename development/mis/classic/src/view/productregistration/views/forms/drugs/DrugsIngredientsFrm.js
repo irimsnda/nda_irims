@@ -58,7 +58,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
                 name: 'ingredient_id',
                // allowBlank: true,
                 labelAlign: 'top',
-                fieldLabel: 'Active Ingredient',
+                fieldLabel: 'Ingredient',
                 queryMode: 'local',
                 valueField: 'id', width: '85%',
                 displayField: 'name',
@@ -124,7 +124,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
          {
             xtype: 'textfield',
             name: 'strength',
-            fieldLabel: 'Strength'
+            fieldLabel: 'Quantity per Dosage Unit'
 
         },  {
             xtype:'fieldcontainer',
@@ -176,7 +176,7 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsIngredientsFrm
             layout: {
                 type: 'hbox'
             },
-            //hidden:true,
+            hidden:true,
             items:[{
                 xtype: 'combo',
                 name: 'excipient_id',

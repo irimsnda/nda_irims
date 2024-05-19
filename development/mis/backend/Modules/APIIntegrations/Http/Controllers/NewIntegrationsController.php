@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Modules\Reports\Traits\ReportsTrait;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-
+use SoapClient;
+use SoapFault;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Modules\Reports\Providers\PdfProvider;
@@ -1388,7 +1389,7 @@ class NewIntegrationsController extends Controller
                           <wsse:Username>' . $user . '</wsse:Username>
                           <wsse:Password Type="PasswordDigest">' . $base64PasswordDigest . '</wsse:Password>
                           <wsse:Nonce>' . $base64Nonce . '</wsse:Nonce>
-                          <wsse:Created>' . $dateForCreated . '</wsse:Created>
+                          <wsse:Created>2024-05-19</wsse:Created>
                         </wsse:UsernameToken>
                       </soapenv:Header>
                       <soapenv:Body>
@@ -1407,7 +1408,6 @@ class NewIntegrationsController extends Controller
 
         // cURL setup
         $ch = curl_init();
-
         // dd($soapRequest);
         // Set cURL options
         curl_setopt($ch, CURLOPT_URL, $wsdlUrl);
@@ -1431,7 +1431,7 @@ class NewIntegrationsController extends Controller
             dd('cURL error: ' . curl_error($ch));
         } else {
             // Output the SOAP response
-            dd($response);
+            echo $response;
         }
 
         // Close cURL session
@@ -2051,4 +2051,87 @@ class NewIntegrationsController extends Controller
         }
 
     }
+
+ public function getNDAMISBankAPIConfigurations()
+    {
+        $ndamis_configs = DB::table('tra_ndamisbankapi_configurations')->first();
+        return $ndamis_configs;
+
+    }
+
+
+public function validateInvoiceNDAMIS(Request $req){
+         // Data from the form
+    $invoiceNo = 'INV2405136866';
+    //$invoiceNo = 'INV2405136418';
+    $ndamis_configs = $this->getNDAMISBankAPIConfigurations();
+    // SOAP request body
+    $requestBody = <<<XML
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsi="http://services.nda.or.ug" xmlns:ns1="http://wsi.nda.or.ug">
+       <soapenv:Header/>
+       <soapenv:Body>
+          <wsi:validateInvoice>
+             <arg0>
+                <invoiceNo>$invoiceNo</invoiceNo>
+                <requestHeader>
+                   <password>$ndamis_configs->password</password>
+                   <systemID>$ndamis_configs->system_id</systemID>
+                   <systemToken>$ndamis_configs->system_token</systemToken>
+                   <username>$ndamis_configs->username</username>
+                </requestHeader>
+             </arg0>
+          </wsi:validateInvoice>
+       </soapenv:Body>
+    </soapenv:Envelope>
+    XML;
+
+    // SOAP headers
+    $headers = array(
+        "Content-type: text/xml;charset=\"utf-8\"",
+        "Accept: text/xml",
+        "Cache-Control: no-cache",
+        "Pragma: no-cache",
+        "Content-length: " . strlen($requestBody),
+    );
+
+    $ch = curl_init($ndamis_configs->request_url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $requestBody);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+    // Execute cURL request and capture response
+    $response = curl_exec($ch);
+
+    // Check for errors
+    if ($response === false) {
+        $error = curl_error($ch);
+        // Handle error
+        echo "cURL Error: $error";
+    } else {
+            $xml = simplexml_load_string($response);
+            $statusCode = (string) $xml->xpath('//statusCode')[0];
+            $statusMessage = (string) $xml->xpath('//statusMessage')[0];
+            if(!validateisNumeric($statusCode)){
+                $amount = (string) $xml->xpath('//amount')[0];
+                $currencyCode = (string) $xml->xpath('//currencyCode')[0];
+                $customerName = (string) $xml->xpath('//customerName')[0];
+                $description = (string) $xml->xpath('//description')[0];
+                $dueDate = (string) $xml->xpath('//dueDate')[0];
+                $invoiceNo = (string) $xml->xpath('//invoiceNo')[0];
+                $paymentExists = (string) $xml->xpath('//paymentExists')[0];
+                $reference1 = (string) $xml->xpath('//reference1')[0];
+                $status = (string) $xml->xpath('//status')[0];
+                $systemMessage = (string) $xml->xpath('//systemMessage')[0];
+            }
+            
+
+            echo $statusMessage;
+    }
+
+    // Close cURL session
+    curl_close($ch);
+  }
 }

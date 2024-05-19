@@ -1636,8 +1636,53 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
                     if (success == true || success === true) {
                         toastr.success(message, "Success Response");
                         store.removeAll();
-                        console.log(store);
                         store.load({ params: { product_id: product_id } });
+                        win.close();
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (form, action) {
+                    var resp = action.result;
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        }
+    },
+
+     saveproductDiluentsdetails: function (btn) {
+        var me = this,
+            url = btn.action_url,
+            table = btn.table_name,
+            form = btn.up('form'),
+            product_id = form.down('hiddenfield[name=product_id]').getValue(),
+            pack_id = form.down('hiddenfield[name=pack_id]').getValue(),
+            win = form.up('window'),
+            storeID = btn.storeID,
+            store = Ext.getStore(storeID),
+            packaginggridstr = Ext.getStore('drugproductPackagingdetailsstr'),
+            frm = form.getForm();
+
+        if (frm.isValid()) {
+            frm.submit({
+                 url: url,
+                 params: { 
+                    _token:token
+                },
+                waitMsg: 'Please wait...',
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (form, action) {
+                    var response = Ext.decode(action.response.responseText),
+                        success = response.success,
+                        message = response.message;
+                    if (success == true || success === true) {
+                        toastr.success(message, "Success Response");
+                        store.removeAll();
+                        store.load({ params: { product_id: product_id,pack_id:pack_id } });
+                        packaginggridstr.removeAll();
+                        packaginggridstr.load({ params: { product_id: product_id } });
                         win.close();
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -1663,6 +1708,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             secondarydrugsProductPackagingFrm=win.down('secondarydrugsProductPackagingFrm'),
             tertiarydrugsProductPackagingFrm=win.down('tertiarydrugsProductPackagingFrm'),
             shipperdrugsProductPackagingFrm=win.down('shipperdrugsProductPackagingFrm'),
+            otherdrugsProductPackagingFrm=win.down('otherdrugsProductPackagingFrm'),
             diluentProductPackagingGrid=win.down('diluentProductPackagingGrid'),
             storeID = btn.storeID,
             store = Ext.getStore(storeID),
@@ -1691,6 +1737,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
                         secondarydrugsProductPackagingFrm.down('hiddenfield[name=id]').setValue(record_id);
                         tertiarydrugsProductPackagingFrm.down('hiddenfield[name=id]').setValue(record_id);
                         shipperdrugsProductPackagingFrm.down('hiddenfield[name=id]').setValue(record_id);
+                        otherdrugsProductPackagingFrm.down('hiddenfield[name=id]').setValue(record_id);
                         diluentProductPackagingGrid.down('hiddenfield[name=pack_id]').setValue(record_id);
                         //win.close();
                     } else {
@@ -1892,6 +1939,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             secondarydrugsProductPackagingFrm=child.down('secondarydrugsProductPackagingFrm'),
             tertiarydrugsProductPackagingFrm=child.down('tertiarydrugsProductPackagingFrm'),
             shipperdrugsProductPackagingFrm=child.down('shipperdrugsProductPackagingFrm'),
+            otherdrugsProductPackagingFrm=child.down('otherdrugsProductPackagingFrm'),
             diluentProductPackagingGrid=child.down('diluentProductPackagingGrid');
 
             if(primarydrugsProductPackagingFrm){
@@ -1903,8 +1951,11 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             if(tertiarydrugsProductPackagingFrm){
                 tertiarydrugsProductPackagingFrm.loadRecord(record);
             }
-            if(tertiarydrugsProductPackagingFrm){
+            if(shipperdrugsProductPackagingFrm){
                 shipperdrugsProductPackagingFrm.loadRecord(record);
+            } 
+            if(otherdrugsProductPackagingFrm){
+                otherdrugsProductPackagingFrm.loadRecord(record);
             } 
             if(diluentProductPackagingGrid){
                 diluentProductPackagingGrid.down('hiddenfield[name=pack_id]').setValue(record.get('id'));
@@ -1924,6 +1975,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             secondarydrugsProductPackagingFrm=child.down('secondarydrugsProductPackagingFrm'),
             tertiarydrugsProductPackagingFrm=child.down('tertiarydrugsProductPackagingFrm'),
             shipperdrugsProductPackagingFrm=child.down('shipperdrugsProductPackagingFrm'),
+            otherdrugsProductPackagingFrm=child.down('otherdrugsProductPackagingFrm'),
             diluentProductPackagingGrid=child.down('diluentProductPackagingGrid');
 
             if(primarydrugsProductPackagingFrm){
@@ -1944,12 +1996,18 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
                     field.setReadOnly(true);
                 });
             }
-            if(tertiarydrugsProductPackagingFrm){
+            if(shipperdrugsProductPackagingFrm){
                 shipperdrugsProductPackagingFrm.loadRecord(record);
                 shipperdrugsProductPackagingFrm.getForm().getFields().each(function (field) {
                     field.setReadOnly(true);
                 });
-            } 
+            }
+            if(otherdrugsProductPackagingFrm){
+                otherdrugsProductPackagingFrm.loadRecord(record);
+                otherdrugsProductPackagingFrm.getForm().getFields().each(function (field) {
+                    field.setReadOnly(true);
+                });
+            }  
             if(diluentProductPackagingGrid){
                 diluentProductPackagingGrid.down('hiddenfield[name=pack_id]').setValue(record.get('id'));
                 var add_btn = diluentProductPackagingGrid.down('button[action=add]'),
@@ -1957,10 +2015,8 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
          
                 add_btn.setVisible(false);
                 widgetCol.setHidden(true);
-                widgetCol.widget.menu.items = [];
+                //widgetCol.widget.menu.items = [];
             }
-
-            
 
         funcShowOnlineCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
 

@@ -67,14 +67,14 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DiluentsProductPack
                                form.down('textfield[name=no_of_packs]').allowBlank = false;
                                form.down('textfield[name=no_of_packs]').validate();
                                form.down('textfield[name=no_of_units]').setValue(1);
-                               form.down('textfield[name=no_of_units]').setReadOnly(true);
+                               form.down('textfield[name=no_of_units]').setVisible(false);
                         }else{
                             form.down('textfield[name=no_of_packs]').setVisible(false);
                             form.down('combo[name=si_unit_id]').setVisible(false);
                             form.down('textfield[name=no_of_packs]').allowBlank = true;
                             form.down('combo[name=si_unit_id]').allowBlank = true;
                             //form.down('textfield[name=no_of_units]').setValue('');
-                            form.down('textfield[name=no_of_units]').setReadOnly(false);
+                            form.down('textfield[name=no_of_units]').setVisible(true);
                     }
             }
         }
@@ -129,8 +129,15 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DiluentsProductPack
             }
         }
     }, 
+    {
+        xtype: 'textfield',
+        fieldLabel: 'No of Units in Secondary Pack',
+        name: 'secondary_no_of_units',
+        columnWidth: 1,
+        allowBlank: false
+    },
 
-   {
+    {
         xtype: 'textfield',
         fieldLabel: 'No of Units in Pack',
         name: 'no_of_units',
@@ -206,11 +213,11 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DiluentsProductPack
                 iconCls: 'x-fa fa-save',
                 action: 'save',
                 table_name: 'tra_product_diluent_packaging',
-                storeID: 'drugproductPackagingdetailsstr',
+                storeID: 'diluentProductPackagingGridstr',
                 formBind: true,
                 ui: 'soft-purple',
                 action_url: 'productregistration/onSaveProductOtherDetails',
-                handler: 'saveproductOtherdetails'
+                handler: 'saveproductDiluentsdetails'
             }
         ]
     }

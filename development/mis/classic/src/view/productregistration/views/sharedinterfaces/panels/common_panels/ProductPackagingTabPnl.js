@@ -7,11 +7,11 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.common_
     listeners: {
         beforetabchange: function(tabPanel, newCard, oldCard) {
             const selectedIndex = tabPanel.items.indexOf(newCard);
-            if (selectedIndex === 4) {
+            if (selectedIndex === 5) {
                 var grid = tabPanel.down('diluentProductPackagingGrid'),
                     pack_id = grid.down('hiddenfield[name=pack_id]').getValue();
                 if (pack_id ==='' || pack_id=='') {
-                    toastr.warning('Please add FPP Packaging Details first!!', 'Warning Response');
+                    toastr.warning('Please add Primary Packaging Details first!!', 'Warning Response');
                     return false; // Prevent tab change
                 }
             }
@@ -38,6 +38,13 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.common_
                     toastr.warning('Please add Primary Packaging Details first!!', 'Warning Response');
                     return false; // Prevent tab change
                 }
+            }if (selectedIndex === 4) {
+                var grid = tabPanel.down('diluentProductPackagingGrid'),
+                    pack_id = grid.down('hiddenfield[name=pack_id]').getValue();
+                if (pack_id ==='' || pack_id=='') {
+                    toastr.warning('Please add Primary Packaging Details first!!', 'Warning Response');
+                    return false; // Prevent tab change
+                }
             }
         }
     },
@@ -57,9 +64,13 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.common_
             autoScroll:true,
             xtype: 'tertiarydrugsProductPackagingFrm'
         },{
-            title: 'Other Packaging Details(Optional)',
+            title: 'Other(i) (Optional)',
             autoScroll:true,
             xtype: 'shipperdrugsProductPackagingFrm'
+        },{
+            title: 'Other(ii) (Optional)',
+            autoScroll:true,
+            xtype: 'otherdrugsProductPackagingFrm'
         },
         {
             title: 'Diluents(Optional',

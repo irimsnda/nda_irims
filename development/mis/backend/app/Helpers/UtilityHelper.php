@@ -1654,13 +1654,13 @@ static function getPermitSignatoryDetails()
                 ->keyBy('id')
                 ->toArray(); 
 
-        $reasonIds = json_decode($param_ids);
-        if (!is_array($reasonIds)){
-             $reasonIds = [$param_ids];
+        $paramIds = json_decode($param_ids);
+        if (!is_array($paramIds)){
+             $paramIds = [$param_ids];
         }
         $names = [];
-        if (is_array($reasonIds)) {
-            foreach ($reasonIds as $id) {
+        if (is_array($paramIds)) {
+            foreach ($paramIds as $id) {
                 if (isset($paramdatasets[$id])) {
                     $names[] = $paramdatasets[$id]->name;
                 }

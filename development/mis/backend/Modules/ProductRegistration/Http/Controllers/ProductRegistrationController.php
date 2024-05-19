@@ -2412,6 +2412,7 @@ if(validateIsNumeric($section_id)){
 
             foreach ($data as $ingredient) {
                 $ingredient->reason_for_inclusion = getNamesFromIds('par_inclusions_reasons',$ingredient->inclusion_reason_id);
+                $ingredient->inclusion_reason_id = json_decode($ingredient->inclusion_reason_id);
             }
 
             $res = array('success' => true, 'results' => $data);
@@ -2637,6 +2638,8 @@ if(validateIsNumeric($section_id)){
                     // Add secondary, tertiary, and shipper units if they exist
                     if ($record->secondary_no_of_units) {
                         $packSize = "{$record->secondary_no_of_units}*" . $packSize;
+                    }else{
+                       $packSize = "1*" . $packSize;  
                     }
                     if ($record->tertiary_no_of_units) {
                         $packSize = "{$record->tertiary_no_of_units}*" . $packSize;

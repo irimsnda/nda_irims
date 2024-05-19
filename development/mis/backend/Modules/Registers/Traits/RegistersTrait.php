@@ -131,6 +131,7 @@ public function DateFilterImportExport(request $req){
            ->leftJoin($table2.' as t3','t1.'.$field,'t3.id')
            ->join('par_approval_decisions as t4','t2.decision_id','t4.id')
            ->where($subfilterdata)
+           ->where('t1.module_id',2)
            ->where('t2.decision_id',1);
         //filter by submodule and section
         if($filterdata!=''){

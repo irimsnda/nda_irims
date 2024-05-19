@@ -191,7 +191,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PersonalUseP
                         hideLabel: true,
                         allowBlank:true,
                         name: 'product_strength',
-                        emptyText: 'e.g., 125| 30',
+                        //emptyText: 'e.g., 125| 30',
                         allowBlank: true,
                         listeners: {
                             render: function (field) {

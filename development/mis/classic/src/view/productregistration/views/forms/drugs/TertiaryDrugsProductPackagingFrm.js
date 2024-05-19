@@ -64,14 +64,14 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.TertiaryDrugsProduc
                                form.down('textfield[name=tertiary_no_of_packs]').allowBlank = false;
                                form.down('textfield[name=tertiary_no_of_packs]').validate();
                                form.down('textfield[name=tertiary_no_of_units]').setValue(1);
-                               form.down('textfield[name=tertiary_no_of_units]').setReadOnly(true);
+                               form.down('textfield[name=tertiary_no_of_units]').setVisible(false);
                         }else{
                             form.down('textfield[name=tertiary_no_of_packs]').setVisible(false);
                             form.down('combo[name=tertiary_si_unit_id]').setVisible(false);
                             form.down('textfield[name=tertiary_no_of_packs]').allowBlank = true;
                             form.down('combo[name=tertiary_si_unit_id]').allowBlank = true;
                             //form.down('textfield[name=tertiary_no_of_units]').setValue('');
-                            form.down('textfield[name=tertiary_no_of_units]').setReadOnly(false);
+                             form.down('textfield[name=tertiary_no_of_units]').setVisible(true);
                     }
             }
         }

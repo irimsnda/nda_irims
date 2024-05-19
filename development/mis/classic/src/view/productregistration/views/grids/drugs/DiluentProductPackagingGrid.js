@@ -98,7 +98,12 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DiluentProductPacka
             dataIndex: 'diluent',
             text: 'Diluent',
             flex: 1
-        },  {
+        }, {
+            xtype: 'gridcolumn',
+            dataIndex: 'secondary_no_of_units',
+            text: 'Secondary No Of Units',
+            flex: 1
+        }, {
             xtype: 'gridcolumn',
             dataIndex: 'no_of_units',
             text: 'No Of Units',
