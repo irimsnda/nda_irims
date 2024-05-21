@@ -233,9 +233,17 @@ Ext.define('Admin.controller.ConfigurationsCtr', {
         var config = options.config,
             isLoad = options.isLoad,
             mainTabPanel = this.getMainTabPanel(),
-            activeTab = mainTabPanel.getActiveTab(),
-            product_id = activeTab.down('hiddenfield[name=product_id]').getValue(),
-            filters = {product_id:product_id},
+            activeTab = mainTabPanel.getActiveTab();
+          
+             if(activeTab.down('hiddenfield[name=product_id]')){
+                 var product_id = activeTab.down('hiddenfield[name=product_id]').getValue();
+             }else if(Ext.ComponentQuery.query("#product_detailspanel")[0]){
+                product_id = Ext.ComponentQuery.query("#product_detailspanel")[0].down('hiddenfield[name=product_id]').getValue();
+             }else{
+                 product_id = Ext.ComponentQuery.query("#product_detailspanel")[0].down('hiddenfield[name=product_id]').getValue();
+             }
+
+            var filters = {product_id:product_id},
             filters = JSON.stringify(filters),
 
             store = Ext.create('Admin.store.configurations.ConfigComboAbstractStore', config);

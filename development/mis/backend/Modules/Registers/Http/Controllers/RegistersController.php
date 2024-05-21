@@ -401,6 +401,10 @@ class RegistersController extends Controller
    
         return $response;
    }
+
+   
+
+
    public function checkPrintProductGazzete(Request $req){
      
       $sub_module_id=$req->sub_module_id;

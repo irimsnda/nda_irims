@@ -33,6 +33,27 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.PrimaryDrugsProduct
         name: 'table_name',
         value: 'tra_product_packaging'
     },{
+            xtype: 'combo',
+            name: 'active_common_name_id',
+            allowBlank: true,
+            hidden:true,
+            fieldLabel: 'Generic ATC Name',
+            queryMode: 'local',
+            valueField: 'common_name_id',
+            displayField: 'generic_name',
+            listeners: {
+                    afterrender: {
+                        fn: 'setConfigCombosProductfilterStore',
+                        config: {
+                            pageSize: 10000,
+                            proxy: {
+                                url: 'productregistration/onLoadCopackedProductDetails'
+                            }
+                        },
+                        isLoad: true
+                    }
+                }
+        },{
         xtype: 'combo',
         name: 'container_id',
         allowBlank: false,

@@ -575,6 +575,8 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                 click: 'funcAddProductApplicationParamter'
             },'drugsIngredientsFrm': {
                 afterrender: 'drugsProductsOtherDetailsFormDefinition'
+            },'primarydrugsProductPackagingFrm': {
+                afterrender: 'drugsProductsOtherDetailsFormDefinition'
             },'productManuctureringFrm': {
                 afterrender: 'drugsProductsOtherDetailsFormDefinition'
             },'productApiManuctureringFrm': {
@@ -617,6 +619,8 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                 editpreviewGmpProductInformation:'editpreviewGmpProductInformation',
                 previewproductApplicationQueries:'previewproductApplicationQueries',
                 saveProductInformation: 'saveProductInformation',
+                exportCNFProductList: 'exportCNFProductList',
+                printCNFProductList: 'printCNFProductList',
                 getApplicationApprovalDetails: 'getApplicationApprovalDetails',
                 getBatchApplicationApprovalDetails:'getBatchApplicationApprovalDetails',
                 showProductApplicationMoreDetails: 'showProductApplicationMoreDetails',
@@ -1581,9 +1585,152 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
               frm.down('combo[name=active_common_name_id]').setVisible(false);
               frm.down('combo[name=active_common_name_id]').allowBlank = true;
            }
+        }else{
+            product_type_id = Ext.ComponentQuery.query("#product_detailspanel")[0].down('combo[name=product_type_id]').getValue();
+            if(product_type_id==3 || product_type_id===3){
+              frm.down('combo[name=active_common_name_id]').setVisible(true);
+              frm.down('combo[name=active_common_name_id]').allowBlank = false;
+              frm.down('combo[name=active_common_name_id]').validate();
+           }else{
+              frm.down('combo[name=active_common_name_id]').setVisible(false);
+              frm.down('combo[name=active_common_name_id]').allowBlank = true;
+           }
+
         }
 
     },
+
+    exportCNFProductList: function (btn) {
+        var mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+      
+            if(btn.up('grid')){
+              grid = btn.up('grid'); 
+            }else{
+            grid = btn.up('panel').down('grid');
+            }
+            var sm = grid.getSelectionModel(),
+            selected_records = sm.getSelection();
+            var selected_appcodes = [];
+            var selected_appIds = [];
+
+            
+
+            if (selected_records.length===0 || selected_records.length==0) {
+                        Ext.getBody().unmask();
+                        toastr.error('Please ensure you have selected application(s) to proceed!!', 'Warning Response');
+                        return false;
+            }
+            
+            // Assuming selected_records is an array of records
+            try {
+                Ext.each(selected_records, function (item) {
+                    selected_appcodes.push(item.data.application_code);
+                    selected_appIds.push(item.data.active_application_id);
+                });
+            }catch (e) {
+                if (e === 'BreakLoopException') {
+                    return false; 
+                } else {
+                    throw e;
+                }
+            }
+
+
+             Ext.getBody().mask('Exporting...Please wait...');
+                
+            Ext.Ajax.request({
+                url: 'productregistration/exportProductCNFList',
+                method: 'GET',
+                headers: {
+                     'Authorization':'Bearer '+access_token
+                         },
+                params : {
+                     'selected_appcodes': selected_appcodes,
+                     'selected_appIds': selected_appIds,
+                     'sub_module_id': sub_module_id,
+                     'workflow_stage_id': workflow_stage_id
+                     },
+                              
+              success: function (response, textStatus, request) {
+                    Ext.getBody().unmask();
+                    var t = JSON.parse(response.responseText);
+                    if (t.status == 'sucesss' || t.status === 'success' ) {
+                    var a = document.createElement("a");
+                    a.href = t.file; 
+                    a.download = t.name;
+                    document.body.appendChild(a);
+
+                    a.click();
+                             
+                    a.remove();
+
+                    } else {
+                toastr.error(t.message, 'Warning Response');
+                }
+              
+                },
+                failure: function(conn, response, options, eOpts) {
+                    Ext.getBody().unmask();
+                    Ext.Msg.alert('Error', 'please try again');
+                }
+               });
+    },
+
+    printCNFProductList: function (btn) {
+            var mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+            
+            if(btn.up('grid')){
+              grid = btn.up('grid'); 
+            }else{
+            grid = btn.up('panel').down('grid');
+            }
+            var sm = grid.getSelectionModel(),
+            selected_records = sm.getSelection();
+            var selected_appcodes = [];
+            var selected_appIds = [];
+
+            
+
+            if (selected_records.length===0 || selected_records.length==0) {
+                        Ext.getBody().unmask();
+                        toastr.error('Please ensure you have selected application(s) to proceed!!', 'Warning Response');
+                        return false;
+            }
+            
+            // Assuming selected_records is an array of records
+            try {
+                Ext.each(selected_records, function (item) {
+                    selected_appcodes.push(item.data.application_code);
+                    selected_appIds.push(item.data.active_application_id);
+                });
+            }catch (e) {
+                if (e === 'BreakLoopException') {
+                    return false; 
+                } else {
+                    throw e;
+                }
+            }
+
+            print_report('productregistration/printProductCNFList?selected_appcodes='+selected_appcodes+'&workflow_stage_id='+workflow_stage_id+'&selected_appIds='+selected_appIds);
+                 
+    },
+
     saveProductInformation: function (btn) {
         var me = this,
             mainTabPnl = this.getMainTabPanel(),
@@ -1758,8 +1905,8 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
     //preview product information 
     editpreviewProductInformation: function (item) {
         var btn = item.up('button'),
-            record = btn.getWidgetRecord();
-        isReadOnly = item.isReadOnly,
+            record = btn.getWidgetRecord(),
+            isReadOnly = item.isReadOnly,
             is_temporal = btn.is_temporal,
             mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),

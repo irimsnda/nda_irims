@@ -230,9 +230,17 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.common_
                         handler: 'showAddTcMeetingParticipants',
                         childXtype: 'parmeetingparticipantsgrid',
                         winTitle: 'Meeting Participants',
-                        winWidth: '50%',
+                        winWidth: '70%',
                         stores: '[]'
-                    }
+                    },
+                    {
+                    xtype: 'button',
+                    text: 'Update/Add Role',
+                    iconCls: 'x-fa fa-plus',
+                    handler:'updateParticipantRole',
+                    ui: 'soft-red',
+                    stores: '[]'
+                }
                 ],
             },{
                 xtype: 'tcmeetingagendasgrid',

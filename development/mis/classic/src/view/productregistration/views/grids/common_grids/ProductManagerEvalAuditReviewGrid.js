@@ -29,6 +29,11 @@ Ext.define('Admin.view.productregistration.views.grids.ProductManagerEvalAuditRe
     selModel: {
         selType: 'checkboxmodel'
     },
+    plugins: [
+        {
+            ptype: 'gridexporter'
+        }
+    ],
     tbar: [
         {
             xtype: 'displayfield',
@@ -36,6 +41,35 @@ Ext.define('Admin.view.productregistration.views.grids.ProductManagerEvalAuditRe
             fieldStyle: {
                 'color': 'green'
             }
+        },
+       //   {
+       //  xtype: 'exportbtn'
+       // },
+    //    {
+    //     xtype: 'button',
+    //     text: 'Update/Save',
+    //     iconCls: 'x-fa fa-plus',
+    //     name:'update_report',
+    //     handler:'saveCausalityAssessmentReport',
+    //     ui: 'soft-green',
+    //     winWidth: '35%',
+    //     stores: '[]'
+    // },
+    {
+            xtype:'button',
+            ui: 'soft-green',
+            text: 'Export List',
+            iconCls: 'x-fa fa-cloud-upload', 
+            handler: 'exportCNFProductList'   
+        },
+        {
+            xtype:'button',
+            ui: 'soft-green',
+            text: 'Print List',
+            iconCls: 'x-fa fa-print',
+            handler: 'printCNFProductList'
+            
+            
         }
     ],
     dockedItems: [
@@ -109,64 +143,95 @@ Ext.define('Admin.view.productregistration.views.grids.ProductManagerEvalAuditRe
         flex: 1
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'reference_no',
-        text: 'Ref Number',
+        dataIndex: 'file_no',
+        text: 'File No',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'fpp_manufacturer',
+        text: 'FPP Manufacturer',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'product_name',
         text: 'Product Name',
         flex: 1
-    }, {
+    },{
         xtype: 'gridcolumn',
-        dataIndex: 'common_name',
-        hidden:true,
-        text: 'Common Name',
+        dataIndex: 'generic_atc_name',
+        text: 'Generic ATC Name',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'classification_name',
-        text: 'Class Name',
+        dataIndex: 'strength',
+        text: 'Strength',
         flex: 1
     }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'dosage_form',
+        text: 'Dosage Form',
+        flex: 1
+    }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'pack_size',
+        text: 'Pack Size',
+        flex: 1
+    },{
         xtype: 'gridcolumn',
         dataIndex: 'applicant_name',
-        text: 'Applicant',
+        text: 'License Holder',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'country_of_origin',
+        text: 'Manufacturing Country',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'ltr_name',
+        text: 'LTR',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'product_class',
+        text: 'Class',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'shelf_life',
+        text: 'Shelf Life',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'distrubution_category',
+        text: 'Distribution Category',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'atc_code',
+        text: 'ATC Code',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'date_added',
-        text: 'Date Received',
+        dataIndex: 'api_manufacturer',
+        text: 'API Manufacturer',
         flex: 1
-    }, {
+    },{
         xtype: 'gridcolumn',
-        dataIndex: 'submitted_by',
-        text: 'Submitted By',
+        dataIndex: 'visual_description',
+        text: 'Visual Description',
         flex: 1
-    }, {
+    },{
         xtype: 'gridcolumn',
-        dataIndex: 'submitted_on',
-        text: 'Submitted On',
+        dataIndex: 'storage_condition',
+        text: 'Storage Condition',
         flex: 1
-    }, {
+    },{
         xtype: 'gridcolumn',
-        hidden:true,
-        dataIndex: 'evaluator_recommendation',
-        text: 'Assessment Recommendation',
+        dataIndex: 'indication',
+        text: 'Indication',
         flex: 1
-    }, {
-        xtype: 'gridcolumn',
-        hidden:true,
-        dataIndex: 'auditor_recommendation',
-        text: 'Quality Review Recommendation',
-        flex: 1
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'laboratory_analysis_recommendation',
-        text: 'Laboratory Analysis Recommendation',
-        hidden:true,
-        flex: 1
-    }, {
+    },{
         text: 'Options',
         xtype: 'widgetcolumn',
         width: 90,
@@ -179,14 +244,14 @@ Ext.define('Admin.view.productregistration.views.grids.ProductManagerEvalAuditRe
             menu: {
                 xtype: 'menu',
                 items: [{
-                    text: 'Preview Application Details',
+                    text: 'Preview/Update Application Details',
                     iconCls: 'x-fa fa-edit',
                     tooltip: 'Preview Record',
                     action: 'edit',
                     childXtype: '',
                     winTitle: 'Product Information',
                     winWidth: '90%',
-                    isReadOnly: 1,
+                    isReadOnly: 0,
                     handler: 'editpreviewProductInformation'
                 }, {
                     text: 'Assessment Report',

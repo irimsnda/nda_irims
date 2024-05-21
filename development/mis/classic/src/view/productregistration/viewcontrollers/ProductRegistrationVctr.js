@@ -10,6 +10,9 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
     setParamCombosStore: function (obj, options) {
         this.fireEvent('setParamCombosStore', obj, options);
     },
+     setCompStore: function (obj, options) {
+        this.fireEvent('setCompStore', obj, options);
+    },
 
     setGridStore: function (obj, options) {
         this.fireEvent('setGridStore', obj, options);
@@ -55,6 +58,69 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
 
         this.fireEvent('saveSampleSubmissionRemarks', btn);
         
+    },
+
+     updateParticipantRole: function(btn){
+        btn.setLoading(true);
+        var grid = btn.up('grid'),
+            pnl = grid.up('panel'),
+            mainTabPnl = pnl.up('#contentPanel'),
+            activeTab = mainTabPnl.getActiveTab(),
+            meeting_id = activeTab.down('hiddenfield[name=id]').getValue(),
+            store = grid.getStore(),
+            selected = [];
+        for (var i = 0; i < store.data.items.length; i++) {
+            var record = store.data.items [i],
+                role_id = record.get('role_id'),
+                personnel_id = record.get('id');
+            var obj = {
+                role_id: role_id,
+                personnel_id: personnel_id
+            };
+            if (record.dirty) {
+                selected.push(obj);
+            }
+        }
+        if (selected.length < 1) {
+            btn.setLoading(false);
+            toastr.warning('No records to save!!', 'Warning Response');
+            return false;
+        }
+           grid.mask('Updating Role....');
+           Ext.Ajax.request({
+                url: 'common/updateParticipantRole',
+                method: 'POST',
+                params: {
+                    selected: JSON.stringify(selected),
+                    meeting_id: meeting_id,
+                    _token: token
+                },
+                success: function (response) {
+                    btn.setLoading(false);
+                    grid.unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        success = resp.success;
+                        if (success == true || success === true) {
+                            store.load();
+                            toastr.success(resp.message, 'Success');
+                        } else {
+                            grid.unmask();
+                            toastr.error(resp.message, 'Failure Response');
+                        }
+                },
+                failure: function (response) {
+                    grid.unmask();
+                    btn.setLoading(false);
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    grid.unmask();
+                    btn.setLoading(false);
+                    toastr.error('Error downloading data: ' + errorThrown, 'Error Response');
+                }
+            });
     },
 
   
@@ -1585,9 +1651,20 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
             function (data) {
                 var meetingBtn = wizardPnl.down("*[name=meeting_next_btn]").setDisabled(false);
             });
-    }, saveProductInformation: function (btn) {
+    }, 
+    exportCNFProductList: function (btn) {
+
+        this.fireEvent('exportCNFProductList', btn);
+
+    },
+    saveProductInformation: function (btn) {
 
         this.fireEvent('saveProductInformation', btn);
+
+    },
+    printCNFProductList: function (btn) {
+
+        this.fireEvent('printCNFProductList', btn);
 
     },
 

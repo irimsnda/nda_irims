@@ -51,12 +51,17 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsOtherI
                     storeId: 'drugproductPackagingdetailsstr',
                     proxy: {
                         url: 'productregistration/onLoadproductPackagingDetails',
+                    },grouper: {
+                    groupFn: function (item) {
+                        return item.get('generic_atc_name');
                     }
                 },
+               },
                 isLoad: true
             }
-        },
-    }, {
+        }
+    },  
+    {
         xtype: 'drugsMaximumResidueLimitsGrid',
         title: 'Maximum Residue Limits (MRLs)',
         autoScroll:true,

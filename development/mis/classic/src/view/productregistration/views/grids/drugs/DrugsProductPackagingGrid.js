@@ -66,6 +66,16 @@ Ext.define('Admin.view.productregistration.views.grids.drugs.DrugsProductPackagi
         dock: 'bottom',
         style: 'width: 100%;'
     }],
+     features:[
+        {
+            ftype: 'grouping',
+            startCollapsed: false,
+            groupHeaderTpl: '{[values.rows[0].data.generic_atc_name]} [{rows.length} {[values.rows.length > 1 ? "Items" : "Item"]}]',
+            hideGroupedHeader: true,
+            enableGroupingMenu: false
+        }
+     ],
+    
     columnLines: true,
     columns: [{
         // text:'',

@@ -538,6 +538,7 @@ public function DateFilterImportExport(request $req){
             //headers 
             $sheet->getStyle('A7:'.$letter.'7')->applyFromArray($styleHeaderArray);
 
+            $sheet->getDefaultColumnDimension()->setWidth(30); //modified by Mulinge function owner on 2024/05/21
 
             //set autosize\wrap true for all columns
             $size=count($sortedData)+7;

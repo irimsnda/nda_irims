@@ -22,6 +22,7 @@ Route::group(['middleware' => ['web'], 'prefix' => 'registers'], function(){
     Route::get('printProductGazzete', [RegistersController::class,'printProductGazzete']);
     Route::get('checkPrintProductGazzete', [RegistersController::class,'checkPrintProductGazzete']);
 
+
     //medicines routes
     Route::get('getMedicinesRegister', [RegistersController::class,'getMedicinesRegister']);
     Route::get('exportMedicinesRegister', [RegistersController::class,'exportMedicinesRegister']);

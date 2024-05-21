@@ -12,10 +12,12 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use Modules\Registers\Traits\RegistersTrait;
 
 class ProductRegistrationController extends Controller
 {
      protected $user_id;
+     use RegistersTrait;
 
     public function __construct(Request $req)
     {
@@ -1131,12 +1133,86 @@ if(validateIsNumeric($section_id)){
                         ->where('t13.comment_type_id', 3);
                 })
                 ->leftJoin('par_evaluation_recommendations as t14', 't13.recommendation_id', '=', 't14.id')
-               
-                ->select('t1.*', 't12.name as evaluator_recommendation', 't14.name as auditor_recommendation', 't2.brand_name as product_name', 't7.name as classification_name', 't10.username as submitted_by', 't9.date_received as submitted_on', 't8.name as common_name', 't3.name as applicant_name', 't4.name as application_status','t2.classification_id','t2.prodclass_category_id',
+                ->leftJoin('par_prodclass_categories as t15', 't2.prodclass_category_id', '=', 't15.id')
+                ->leftJoin('par_dosage_forms as t16', 't2.dosage_form_id', '=', 't16.id')
+                ->leftJoin('par_atc_codes as t17', 't2.atc_code_id', '=', 't17.id')
+                ->leftJoin('par_atc_codes as t18', 't2.atc_code_id', '=', 't18.id')
+                ->leftJoin('par_distribution_categories as t19', 't2.distribution_category_id', '=', 't19.id')
+                ->leftJoin('par_storage_conditions as t20', 't2.storage_condition', '=', 't20.id')
+                ->leftJoin('tra_sample_information as t21', 't1.product_id', '=', 't21.product_id')
+                ->select('t1.*','t1.local_agent_id','t21.sample_tracking_no as file_no','t2.manufacturing_country_id','t2.physical_description as visual_description','t2.indication','t15.name as product_class','t16.name as dosage_form','t2.shelf_life','t19.name as distrubution_category','t18.description as generic_atc_name','t17.name as atc_code','t20.name as storage_condition','t12.name as evaluator_recommendation', 't14.name as auditor_recommendation', 't2.brand_name as product_name', 't7.name as classification_name', 't10.username as submitted_by', 't9.date_received as submitted_on', 't8.name as common_name', 't3.name as applicant_name', 't4.name as application_status','t2.classification_id','t2.prodclass_category_id',
                     't5.decision_id', 't1.id as active_application_id')
                 ->where(array('t9.current_stage'=>$workflow_stage,'isDone'=>0) );
+            $results = $qry->orderBy('t9.id','desc')->groupBy('t1.id')->get();
+            foreach ($results as $result) {
+                $ltrDetails=$this->getProducTLTR($result->local_agent_id);
+                $result->ltr_name = $ltrDetails->ltr_name;
+                $result->country_of_origin = getNamesFromIds('par_countries',$result->manufacturing_country_id);
+                $request = new \Illuminate\Http\Request();
+                $request->merge(['product_id' => $result->product_id]);
+                $pack_sizes = $this->onLoadproductPackagingDetails($request);
+                $responseContent = $pack_sizes->getContent();
+                $pack_size_details = json_decode($responseContent, true);  
+                $pack_size=[];
+                if ($pack_size_details['success']) {
+                   $pack_size_list = $pack_size_details['results'];
+                   foreach ($pack_size_list as $pack_sizes) {
+                        if (isset($pack_sizes['pack_size'])) {
+                            $pack_size[] = $pack_sizes['pack_size'];
+                        }
+                        
+                    }
+                    $result->pack_size=implode(', ', $pack_size);
+               }
 
-            $results = $qry->orderBy('t9.id','desc')->get();
+                $api_manufacturers= $this->onLoadproductApiManufacturer($request);
+                $responseContent = $api_manufacturers->getContent(); 
+                $api_manufactures_details = json_decode($responseContent, true);
+                $api_manufacturer=[];
+                if ($api_manufactures_details['success']) {
+                   $api_manufacturers_list = $api_manufactures_details['results'];
+                   foreach ($api_manufacturers_list as $api_manufacturers) {
+                        if (isset($api_manufacturers['manufacturer_name'])) {
+                            $api_manufacturer[] = $api_manufacturers['manufacturer_name'].' '.$api_manufacturers['physical_address'].' '.$api_manufacturers['country_name'];
+                        }
+                        
+                    }
+                    $result->api_manufacturer=implode(', ', $api_manufacturer);
+               }
+
+                $fpp_manufacturers= $this->onLoadproductManufacturer($request);
+                $responseContent = $fpp_manufacturers->getContent(); 
+                $fpp_manufactures_details = json_decode($responseContent, true);
+                $fpp_manufacturer=[];
+                if ($fpp_manufactures_details['success']) {
+                   $fpp_manufacturers_list = $fpp_manufactures_details['results'];
+                   foreach ($fpp_manufacturers_list as $fpp_manufacturers) {
+                        if (isset($fpp_manufacturers['manufacturer_name'])) {
+                            $fpp_manufacturer[] = $fpp_manufacturers['manufacturer_name'].' '.$fpp_manufacturers['physical_address'].' '.$fpp_manufacturers['country_name'];
+                        }
+                        
+                    }
+                    $result->fpp_manufacturer=implode(', ', $fpp_manufacturer);
+               }
+
+                $product_ingredients= $this->onLoadproductIngredients($request);
+                $responseContent = $product_ingredients->getContent(); 
+                $product_ingredients_details = json_decode($responseContent, true);
+                $product_ingredient=[];
+                if ($product_ingredients_details['success']) {
+                   $product_ingredientspp_manufacturers_list = $product_ingredients_details['results'];
+                   foreach ($product_ingredientspp_manufacturers_list as $product_ingredients) {
+                        if (isset($product_ingredients['ingredient_name'])) {
+                            $product_ingredient[] = $product_ingredients['ingredient_name'].'- '.$product_ingredients['strength'].' '.$product_ingredients['si_unit'];
+                        }
+                        
+                    }
+                    $result->strength=implode(', ', $product_ingredient);
+               }
+
+
+            }
+
             $res = array(
                 'success' => true,
                 'results' => $results,
@@ -1460,6 +1536,7 @@ if(validateIsNumeric($section_id)){
         $application_id = $req->input('application_id');
         $application_code = $req->input('application_code');
         $table_name = $req->input('table_name');
+
         try {
             $main_qry = DB::table('tra_product_applications as t1')
                 ->leftJoin('tra_product_information as t2', 't1.product_id', '=', 't2.id')
@@ -1482,15 +1559,6 @@ if(validateIsNumeric($section_id)){
             $results = $qry1->first();
             $results->route_of_administration_id=json_decode($results->route_of_administration_id);
             $results->manufacturing_country_id=json_decode($results->manufacturing_country_id);
-            
- 
-            $qry2 = clone $main_qry;
-            $qry2->join('tra_premises as t3a', 't1.local_agent_id', '=', 't3a.id')
-                 ->Join('tra_premises_applications as t3b', 't3b.premise_id', '=', 't3a.id')
-                ->Join('tra_approval_recommendations as t3c', 't3b.application_code', '=', 't3c.application_code')
-                 ->select('t3a.id as ltr_id', 't3c.permit_no as link_permit_no','t3a.name as ltr_name','t3a.tpin_no as ltr_tin_no', 't3a.physical_address as link_physical_address','t3a.telephone as link_telephone');
-            $ltrDetails = $qry2->first();
-
 
             $qualityReport_main = DB::table('tra_quality_overrallsummaryreport as t1')
                 ->where('t1.application_code', $application_code)
@@ -1505,6 +1573,8 @@ if(validateIsNumeric($section_id)){
             }else{
                  $qualityReport=$qualityReport_main; 
            }
+
+            $ltrDetails=$this->getProducTLTR($results->local_agent_id);
 
             $res = array(
                 'success' => true,
@@ -1526,6 +1596,17 @@ if(validateIsNumeric($section_id)){
             );
         }
         return \response()->json($res);
+    }
+    public function getProducTLTR($local_agent_id){
+
+        $qry = DB::table('tra_premises as t1')
+                 ->Join('tra_premises_applications as t2', 't2.premise_id', '=', 't1.id')
+                ->Join('tra_approval_recommendations as t3', 't2.application_code', '=', 't3.application_code')
+                 ->select('t1.id as ltr_id', 't3.permit_no as link_permit_no','t1.name as ltr_name','t1.tpin_no as ltr_tin_no', 't1.physical_address as link_physical_address','t1.telephone as link_telephone')
+                 ->where('t1.id', $local_agent_id);
+          $ltrDetails = $qry->first();
+          return  $ltrDetails;
+
     }
     public function prepareNewProductAmmendMentReceivingStage(Request $req)
     {
@@ -2609,7 +2690,7 @@ if(validateIsNumeric($section_id)){
             $data = array();
             //get the records
             $data = DB::table('tra_product_packaging as t1')
-                ->select(DB::raw("t1.*,t2.name as container_name,t3.name as secondary_container_name,t4.name as tertiary_container_name,t5.name as shipper_container_name,t6.name as si_unit,t7.name as secondary_si_unit,t8.name as tertiary_si_unit,t9.name as shipper_si_unit"))
+                ->select(DB::raw("t1.*,t2.name as container_name,t3.name as secondary_container_name,t4.name as tertiary_container_name,t5.name as shipper_container_name,t6.name as si_unit,t7.name as secondary_si_unit,t8.name as tertiary_si_unit,t9.name as shipper_si_unit,t10.description as generic_atc_name"))
                 ->leftJoin('par_containers as t2', 't1.container_id', '=', 't2.id')
                 ->leftJoin('par_containers as t3', 't1.secondary_container_id', '=', 't3.id')
                 ->leftJoin('par_containers as t4', 't1.tertiary_container_id', '=', 't4.id')
@@ -2618,9 +2699,9 @@ if(validateIsNumeric($section_id)){
                 ->leftJoin('si_units as t7', 't1.secondary_si_unit_id', '=', 't7.id')
                 ->leftJoin('si_units as t8', 't1.tertiary_si_unit_id', '=', 't8.id')
                 ->leftJoin('si_units as t9', 't1.shipper_si_unit_id', '=', 't9.id')
+                 ->leftJoin('par_atc_codes as t10', 't1.active_common_name_id', '=', 't10.id')
                 ->where(array('t1.product_id' => $product_id))
                 ->get();
-
 
              foreach ($data as $record) {
                     $packSize = '';
@@ -2898,7 +2979,8 @@ if(validateIsNumeric($section_id)){
                 ->where('t1.id', $product_id);
 
             $product_details = $qryProducts->first();
-
+            $product_details->route_of_administration_id=json_decode($product_details->route_of_administration_id);
+            $product_details->manufacturing_country_id=json_decode($product_details->manufacturing_country_id);
             $res = array(
                 'success' => true,
                 //  'applicant_details' => $applicantDetails,
@@ -4910,5 +4992,278 @@ $response =  array(
         }
         return \response()->json($res);
     }
+
+    public function exportProductCNFList(request $req){
+    $selected_appcodes = $req->selected_appcodes;
+    $selected_appIds = $req->selected_appIds;
+    $workflow_stage_id = $req->workflow_stage_id;
+    $sub_module_id = $req->sub_module_id;
+
+    $filename = 'PRODUCT REGISTRATION CNF LIST';
+    $heading = 'PRODUCT REGISTRATION CNF LIST';
+    $data = array();
+    $qry = DB::table('tra_product_applications as t1')
+                ->join('tra_product_information as t2', 't1.product_id', '=', 't2.id')
+                ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->leftJoin('par_system_statuses as t4', function ($join) {
+                    $join->on('t1.application_status_id', '=', 't4.id');
+                })
+                ->leftJoin('tra_approval_recommendations as t5', 't5.application_code', '=', 't1.application_code')
+                ->leftJoin('par_classifications as t7', 't2.classification_id', '=', 't7.id')
+                ->leftJoin('par_common_names as t8', 't2.common_name_id', '=', 't8.id')
+                ->leftJoin('tra_submissions as t9', 't9.application_code', '=', 't1.application_code')
+                ->leftJoin('users as t10', 't9.usr_from', '=', 't10.id')
+                ->leftJoin('tra_applications_comments as t11', function ($join) {
+                    $join->on('t1.application_code', '=', 't11.application_code')
+                        ->where('t11.is_current', 1)
+                        ->where('t11.comment_type_id', 2);
+                })
+                ->leftJoin('par_evaluation_recommendations as t12', 't11.recommendation_id', '=', 't12.id')
+                ->leftJoin('tra_applications_comments as t13', function ($join) {
+                    $join->on('t1.application_code', '=', 't13.application_code')
+                        ->where('t13.is_current', 1)
+                        ->where('t13.comment_type_id', 3);
+                })
+                ->leftJoin('par_evaluation_recommendations as t14', 't13.recommendation_id', '=', 't14.id')
+                ->leftJoin('par_prodclass_categories as t15', 't2.prodclass_category_id', '=', 't15.id')
+                ->leftJoin('par_dosage_forms as t16', 't2.dosage_form_id', '=', 't16.id')
+                ->leftJoin('par_atc_codes as t17', 't2.atc_code_id', '=', 't17.id')
+                ->leftJoin('par_atc_codes as t18', 't2.atc_code_id', '=', 't18.id')
+                ->leftJoin('par_distribution_categories as t19', 't2.distribution_category_id', '=', 't19.id')
+                ->leftJoin('par_storage_conditions as t20', 't2.storage_condition', '=', 't20.id')
+                ->leftJoin('tra_sample_information as t21', 't1.product_id', '=', 't21.product_id')
+                ->select('t1.*','t1.local_agent_id','t21.sample_tracking_no as file_no','t2.manufacturing_country_id','t2.physical_description as visual_description','t2.indication','t15.name as product_class','t16.name as dosage_form','t2.shelf_life','t19.name as distrubution_category','t18.description as generic_atc_name','t17.name as atc_code','t20.name as storage_condition','t12.name as evaluator_recommendation', 't14.name as auditor_recommendation', 't2.brand_name as product_name', 't7.name as classification_name', 't10.username as submitted_by', 't9.date_received as submitted_on', 't8.name as common_name', 't3.name as applicant_name', 't4.name as application_status','t2.classification_id','t2.prodclass_category_id',
+                    't5.decision_id', 't1.id as active_application_id')
+                ->where(array('t9.current_stage' => $workflow_stage_id, 'isDone' => 0) )
+                ->groupBy('t1.id')
+                ->get();  // Added get() to execute the query
+
+    foreach ($qry as $result) {
+        $ltrDetails = $this->getProducTLTR($result->local_agent_id);
+        $result->ltr_name = $ltrDetails->ltr_name;
+        $result->country_of_origin = getNamesFromIds('par_countries', $result->manufacturing_country_id);
+        $request = new \Illuminate\Http\Request();
+        $request->merge(['product_id' => $result->product_id]);
+        
+        $pack_sizes = $this->onLoadproductPackagingDetails($request);
+        $responseContent = $pack_sizes->getContent();
+        $pack_size_details = json_decode($responseContent, true);  
+        $pack_size = [];
+        if ($pack_size_details['success']) {
+            $pack_size_list = $pack_size_details['results'];
+            foreach ($pack_size_list as $pack_size_item) {
+                if (isset($pack_size_item['pack_size'])) {
+                    $pack_size[] = $pack_size_item['pack_size'];
+                }
+            }
+            $result->pack_size = implode(', ', $pack_size);
+        }
+
+        $api_manufacturers = $this->onLoadproductApiManufacturer($request);
+        $responseContent = $api_manufacturers->getContent(); 
+        $api_manufactures_details = json_decode($responseContent, true);
+        $api_manufacturer = [];
+        if ($api_manufactures_details['success']) {
+            $api_manufacturers_list = $api_manufactures_details['results'];
+            foreach ($api_manufacturers_list as $api_manufacturer_item) {
+                if (isset($api_manufacturer_item['manufacturer_name'])) {
+                    $api_manufacturer[] = $api_manufacturer_item['manufacturer_name'] . ' ' . $api_manufacturer_item['physical_address'] . ' ' . $api_manufacturer_item['country_name'];
+                }
+            }
+            $result->api_manufacturer = implode(', ', $api_manufacturer);
+        }
+
+        $fpp_manufacturers = $this->onLoadproductManufacturer($request);
+        $responseContent = $fpp_manufacturers->getContent(); 
+        $fpp_manufactures_details = json_decode($responseContent, true);
+        $fpp_manufacturer = [];
+        if ($fpp_manufactures_details['success']) {
+            $fpp_manufacturers_list = $fpp_manufactures_details['results'];
+            foreach ($fpp_manufacturers_list as $fpp_manufacturer_item) {
+                if (isset($fpp_manufacturer_item['manufacturer_name'])) {
+                    $fpp_manufacturer[] = $fpp_manufacturer_item['manufacturer_name'] . ' ' . $fpp_manufacturer_item['physical_address'] . ' ' . $fpp_manufacturer_item['country_name'];
+                }
+            }
+            $result->fpp_manufacturer = implode(', ', $fpp_manufacturer);
+        }
+
+        $product_ingredients = $this->onLoadproductIngredients($request);
+        $responseContent = $product_ingredients->getContent(); 
+        $product_ingredients_details = json_decode($responseContent, true);
+        $product_ingredient = [];
+        if ($product_ingredients_details['success']) {
+            $product_ingredients_list = $product_ingredients_details['results'];
+            foreach ($product_ingredients_list as $product_ingredient_item) {
+                if (isset($product_ingredient_item['ingredient_name'])) {
+                    $product_ingredient[] = $product_ingredient_item['ingredient_name'] . '- ' . $product_ingredient_item['strength'] . ' ' . $product_ingredient_item['si_unit'];
+                }
+            }
+            $result->strength = implode(', ', $product_ingredient);
+        }
+
+        $data[] = [   
+            'Tracking No' => $result->tracking_no,
+            'File No' => $result->file_no,
+            'FPP Manufacturer' => $result->fpp_manufacturer,
+            'Product Name' => $result->product_name,
+            'Generic ATC Name' => $result->generic_atc_name,
+            'Strength' => $result->strength,
+            'Dosage Form' => $result->dosage_form,
+            'Pack Size' => $result->pack_size,
+            'License Holder' => $result->applicant_name,
+            'Manufacturing Country' => $result->country_of_origin,
+            'LTR' => $result->ltr_name,
+            'Class' => $result->product_class,
+            'Shelf Life' => $result->shelf_life,
+            'Distribution Category' => $result->distrubution_category,
+            'ATC Code' => $result->atc_code,
+            'API Manufacturer' => $result->api_manufacturer,
+            'Visual Description' => $result->visual_description,
+            'Storage Condition' => $result->storage_condition,
+            'Indication' => $result->indication,
+        ]; 
+    }
+
+    if (empty($data)) {
+        $response = array(
+            'status' => 'failure',
+            'message' => 'Currently there is no data to Export! Make sure you have loaded data you want to export'
+        );
+    } else {
+        $response = $this->generateExcell($data, $filename, $heading);  
+    }
+
+    return $response;
+}
+
+ public function printProductCNFList(request $req){
+    $selected_appcodes = $req->selected_appcodes;
+    $selected_appIds = $req->selected_appIds;
+    $workflow_stage_id = $req->workflow_stage_id;
+    $sub_module_id = $req->sub_module_id;
+
+    $filename = 'PRODUCT REGISTRATION CNF LIST';
+    $heading = 'PRODUCT REGISTRATION CNF LIST';
+    $data = array();
+    $qry = DB::table('tra_product_applications as t1')
+                ->join('tra_product_information as t2', 't1.product_id', '=', 't2.id')
+                ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
+                ->leftJoin('par_system_statuses as t4', function ($join) {
+                    $join->on('t1.application_status_id', '=', 't4.id');
+                })
+                ->leftJoin('tra_approval_recommendations as t5', 't5.application_code', '=', 't1.application_code')
+                ->leftJoin('par_classifications as t7', 't2.classification_id', '=', 't7.id')
+                ->leftJoin('par_common_names as t8', 't2.common_name_id', '=', 't8.id')
+                ->leftJoin('tra_submissions as t9', 't9.application_code', '=', 't1.application_code')
+                ->leftJoin('users as t10', 't9.usr_from', '=', 't10.id')
+                ->leftJoin('tra_applications_comments as t11', function ($join) {
+                    $join->on('t1.application_code', '=', 't11.application_code')
+                        ->where('t11.is_current', 1)
+                        ->where('t11.comment_type_id', 2);
+                })
+                ->leftJoin('par_evaluation_recommendations as t12', 't11.recommendation_id', '=', 't12.id')
+                ->leftJoin('tra_applications_comments as t13', function ($join) {
+                    $join->on('t1.application_code', '=', 't13.application_code')
+                        ->where('t13.is_current', 1)
+                        ->where('t13.comment_type_id', 3);
+                })
+                ->leftJoin('par_evaluation_recommendations as t14', 't13.recommendation_id', '=', 't14.id')
+                ->leftJoin('par_prodclass_categories as t15', 't2.prodclass_category_id', '=', 't15.id')
+                ->leftJoin('par_dosage_forms as t16', 't2.dosage_form_id', '=', 't16.id')
+                ->leftJoin('par_atc_codes as t17', 't2.atc_code_id', '=', 't17.id')
+                ->leftJoin('par_atc_codes as t18', 't2.atc_code_id', '=', 't18.id')
+                ->leftJoin('par_distribution_categories as t19', 't2.distribution_category_id', '=', 't19.id')
+                ->leftJoin('par_storage_conditions as t20', 't2.storage_condition', '=', 't20.id')
+                ->leftJoin('tra_sample_information as t21', 't1.product_id', '=', 't21.product_id')
+                ->select('t1.*','t1.local_agent_id','t21.sample_tracking_no as file_no','t2.manufacturing_country_id','t2.physical_description as visual_description','t2.indication','t15.name as product_class','t16.name as dosage_form','t2.shelf_life','t19.name as distrubution_category','t18.description as generic_atc_name','t17.name as atc_code','t20.name as storage_condition','t12.name as evaluator_recommendation', 't14.name as auditor_recommendation', 't2.brand_name as product_name', 't7.name as classification_name', 't10.username as submitted_by', 't9.date_received as submitted_on', 't8.name as common_name', 't3.name as applicant_name', 't4.name as application_status','t2.classification_id','t2.prodclass_category_id',
+                    't5.decision_id', 't1.id as active_application_id')
+                ->where(array('t9.current_stage' => $workflow_stage_id, 'isDone' => 0) )
+                ->groupBy('t1.id')
+                ->get();  // Added get() to execute the query
+
+    foreach ($qry as $result) {
+        $ltrDetails = $this->getProducTLTR($result->local_agent_id);
+        $result->ltr_name = $ltrDetails->ltr_name;
+        $result->country_of_origin = getNamesFromIds('par_countries', $result->manufacturing_country_id);
+        $request = new \Illuminate\Http\Request();
+        $request->merge(['product_id' => $result->product_id]);
+        
+        $pack_sizes = $this->onLoadproductPackagingDetails($request);
+        $responseContent = $pack_sizes->getContent();
+        $pack_size_details = json_decode($responseContent, true);  
+        $pack_size = [];
+        if ($pack_size_details['success']) {
+            $pack_size_list = $pack_size_details['results'];
+            foreach ($pack_size_list as $pack_size_item) {
+                if (isset($pack_size_item['pack_size'])) {
+                    $pack_size[] = $pack_size_item['pack_size'];
+                }
+            }
+            $result->pack_size = implode(', ', $pack_size);
+        }
+
+        $api_manufacturers = $this->onLoadproductApiManufacturer($request);
+        $responseContent = $api_manufacturers->getContent(); 
+        $api_manufactures_details = json_decode($responseContent, true);
+        $api_manufacturer = [];
+        if ($api_manufactures_details['success']) {
+            $api_manufacturers_list = $api_manufactures_details['results'];
+            foreach ($api_manufacturers_list as $api_manufacturer_item) {
+                if (isset($api_manufacturer_item['manufacturer_name'])) {
+                    $api_manufacturer[] = $api_manufacturer_item['manufacturer_name'] . ' ' . $api_manufacturer_item['physical_address'] . ' ' . $api_manufacturer_item['country_name'];
+                }
+            }
+            $result->api_manufacturer = implode(', ', $api_manufacturer);
+        }
+
+        $fpp_manufacturers = $this->onLoadproductManufacturer($request);
+        $responseContent = $fpp_manufacturers->getContent(); 
+        $fpp_manufactures_details = json_decode($responseContent, true);
+        $fpp_manufacturer = [];
+        if ($fpp_manufactures_details['success']) {
+            $fpp_manufacturers_list = $fpp_manufactures_details['results'];
+            foreach ($fpp_manufacturers_list as $fpp_manufacturer_item) {
+                if (isset($fpp_manufacturer_item['manufacturer_name'])) {
+                    $fpp_manufacturer[] = $fpp_manufacturer_item['manufacturer_name'] . ' ' . $fpp_manufacturer_item['physical_address'] . ' ' . $fpp_manufacturer_item['country_name'];
+                }
+            }
+            $result->fpp_manufacturer = implode(', ', $fpp_manufacturer);
+        }
+
+        $product_ingredients = $this->onLoadproductIngredients($request);
+        $responseContent = $product_ingredients->getContent(); 
+        $product_ingredients_details = json_decode($responseContent, true);
+        $product_ingredient = [];
+        if ($product_ingredients_details['success']) {
+            $product_ingredients_list = $product_ingredients_details['results'];
+            foreach ($product_ingredients_list as $product_ingredient_item) {
+                if (isset($product_ingredient_item['ingredient_name'])) {
+                    $product_ingredient[] = $product_ingredient_item['ingredient_name'] . '- ' . $product_ingredient_item['strength'] . ' ' . $product_ingredient_item['si_unit'];
+                }
+            }
+            $result->strength = implode(', ', $product_ingredient);
+        }
+
+        $data[] = [   
+            'Application Details' => 'Tracking No: ' . $result->tracking_no . "\n\nFile No: " . $result->file_no. "\n\nProduct Name:". $result->product_name . "\n\nGeneric ATC Name: " . $result->generic_atc_name. "\n\nStrength: " . $result->strength. "\n\nDosage Form: " . $result->dosage_form,
+            'Product Details' => 'License Holder: ' . $result->applicant_name. "\n\nLTR: " . $result->ltr_name. "\n\nClass: " . $result->product_class. "\n\nShelf Life: " . $result->shelf_life. "\nDistribution Category: " . $result->distrubution_category. "\n\nATC Code: " . $result->atc_code. "\n\nStorage Condition: " . $result->storage_condition. "\n\nIndication: " . $result->indication. "\n\nVisual Description: " . $result->visual_description,
+            'Pack Size' => $result->pack_size,
+            'Manufacturing Details' => 'Manufacturing Country: ' . $result->country_of_origin . "\n\nFPP Manufacturer: " . $result->fpp_manufacturer. "\n\nAPI Manufacturer: " . $result->api_manufacturer
+
+        ]; 
+    }
+
+    if (empty($data)) {
+        $response = array(
+            'status' => 'failure',
+            'message' => 'Currently there is no data to Print! Make sure you have loaded data you want to Print'
+        );
+    } else {
+        $response = $response=$this->generatePdf($data,$filename,$heading,$width = 60,$height=7,$header_height = 12,  $align='L'); 
+    }
+
+    return $response;
+}
+
 
 }

@@ -8493,9 +8493,13 @@ else{
         var mainTabPanel = this.getMainTabPanel(),
             winWidth = btn.winWidth,
             activeTab = mainTabPanel.getActiveTab(),
-            gridXtype = btn.gridXtype,
-            participantsGrid = activeTab.down('tcmeetingparticipantsgrid'),
-            participantsStore = participantsGrid.getStore(),
+            gridXtype = btn.gridXtype;
+            if(activeTab.down('tcmeetingparticipantsgrid')){
+              participantsGrid = activeTab.down('tcmeetingparticipantsgrid');
+            }else{
+                participantsGrid = activeTab.down('productTcMeetingParticipantsGrid');
+            }
+            var participantsStore = participantsGrid.getStore(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),

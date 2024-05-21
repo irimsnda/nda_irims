@@ -18,6 +18,9 @@ Route::post('/saveQualityReport', [ProductRegistrationController::class,'saveQua
     Route::post('/onSaveProductOtherDetails', [ProductRegistrationController::class,'onSaveProductOtherDetails']);
     Route::post('/saveNewProductReceivingBaseDetails', [ProductRegistrationController::class,'saveNewProductReceivingBaseDetails']);
     Route::post('/saveRenAltProductReceivingBaseDetails', [ProductRegistrationController::class,'saveRenAltProductReceivingBaseDetails']);
+
+        Route::get('exportProductCNFList', [ProductRegistrationController::class,'exportProductCNFList']);
+    Route::get('printProductCNFList', [ProductRegistrationController::class,'printProductCNFList']);
     Route::post('/onSaveProductinformation', [ProductRegistrationController::class,'onSaveProductinformation']);
 
     Route::post('/onSaveProductSampleDetails', [ProductRegistrationController::class,'onSaveProductSampleDetails']);

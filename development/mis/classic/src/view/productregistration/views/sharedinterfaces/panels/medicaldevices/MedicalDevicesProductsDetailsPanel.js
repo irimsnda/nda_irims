@@ -4,6 +4,7 @@
 Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.MedicalDevicesProductsDetailsPanel', {
     extend: 'Admin.view.productregistration.views.sharedinterfaces.panels.medicaldevices.MedicalDevicesProductsDetailsPnl',
     xtype: 'medicaldevicesproductsdetailspanel',
+    itemId: 'product_detailspanel',
     controller: 'productregistrationvctr',
     // layout: {
     //     type: 'fit'
