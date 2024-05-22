@@ -75,9 +75,20 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
             margin: 5
         
   },'->',{
-        xtype: 'exportbtn'
-    }, {
-        xtype: 'tbspacer'
+            xtype:'button',
+            ui: 'soft-green',
+            text: 'Export List',
+            iconCls: 'x-fa fa-cloud-upload', 
+            handler: 'exportCNFProductList'   
+        },
+        {
+            xtype:'button',
+            ui: 'soft-green',
+            text: 'Print List',
+            iconCls: 'x-fa fa-print',
+            handler: 'printCNFProductList'
+            
+            
     }],
     features:[{
         ftype: 'searching',
@@ -217,31 +228,116 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
                         backend_function: 'generateProductRegCertificate',
                         handler: 'generateProductRegCertificate'
                     },  {
-                        text: 'Reports',
-                        iconCls: 'x-fa fa-exchange',
-                        menu: {
-                            xtype: 'menu',
-                            items: [{
-                                text: 'Assessment  Reports/Upload',
+                    text: 'Assessment Report',
+                    iconCls: 'x-fa fa-exchange',
+                    menu: {
+                        xtype: 'menu',
+                        items: [{
+                                text: 'Quality Overall Summary Dossier',
                                 iconCls: 'x-fa fa-file',
-                                tooltip: 'Assessment  Reports/Upload',
+                                tooltip: 'Quality Overall Summary Dossier',
+                                action: 'edit',
+                                childXtype: 'productqualityevaluationDocUploadsGrid',
+                                winTitle: 'Quality Overall Summary Dossier',
+                                winWidth: '90%',
+                                isReadOnly: 1,
+                                document_type_id: '',
+                                handler: 'showQualitySumaryDocs'
+                            }, {
+                                text: 'Bioequivalence Trial Information',
+                                iconCls: 'x-fa fa-file',
+                                tooltip: 'Bioequivalence Trial Information',
+                                action: 'edit',
+                                childXtype: 'productbioequivalencetrialevaluationDocUploadsGrid',
+                                winTitle: 'Bioequivalence Trial Information',
+                                winWidth: '90%',
+                                isReadOnly: 1,
+                                document_type_id: '',
+                                handler: 'showQualitySumaryDocs'
+                            },
+                            {
+                                text: '1st Assessment Reports/Upload',
+                                iconCls: 'x-fa fa-file',
+                                tooltip: '1st Assessment Reports/Upload',
+                                winTitle: '1st Assessment Reports/Upload',
+                                document_type_id: 8,
                                 action: 'edit',
                                 childXtype: '',
                                 winTitle: 'Application Documents',
                                 winWidth: '90%',
                                 isReadOnly: 1,
                                 handler: 'funcPrevEvaluationReportUpload'
-                            }, {
-                                text: 'Quality Review Reports/Upload',
-                                iconCls: 'x-fa fa-file',
-                                tooltip: 'Quality Review Reports/Upload',
-                                action: 'edit',
-                                childXtype: '',
-                                winTitle: 'Audit report',
+                            },
+                            {
+                                text: 'Comments/Recommendation',
+                                iconCls: 'x-fa fa-weixin',
+                                childXtype: 'evaluationcommentspnl',
+                                winTitle: '1st Assessment Comments',
                                 winWidth: '90%',
-                                isReadOnly: 1,
-                                handler: 'funcPrevAuditReportUpload'
+                                handler: 'showApplicationCommentsGeneric',
+                                childXtype: 'applicationprevcommentsgrid',
+                                winWidth: '60%',
+                                comment_type_id: 2,
+                                stores: '[]',
+                                isWin: 1
                             }
+                        ]
+                    }
+                    }, {
+                        text: 'Quality Review Report',
+                        iconCls: 'x-fa fa-exchange',
+                        menu: {
+                            xtype: 'menu',
+                            items: [{
+                                    text: 'Quality Overall Summary Dossier',
+                                    iconCls: 'x-fa fa-file',
+                                    tooltip: 'Quality Overall Summary Dossier',
+                                    action: 'edit',
+                                    childXtype: 'productqualityreviewDocUploadsGrid',
+                                    winTitle: 'Quality Overall Summary Dossier',
+                                    winWidth: '90%',
+                                    isReadOnly: 1,
+                                    document_type_id: '',
+                                    handler: 'showQualitySumaryDocs'
+                                }, {
+                                    text: 'Bioequivalence Trial Information',
+                                    iconCls: 'x-fa fa-file',
+                                    tooltip: 'Bioequivalence Trial Information',
+                                    action: 'edit',
+                                    childXtype: 'productbioequivalencetrialreviewDocUploadsGrid',
+                                    winTitle: 'Bioequivalence Trial Information',
+                                    winWidth: '90%',
+                                    isReadOnly: 1,
+                                    document_type_id: '',
+                                    handler: 'showQualitySumaryDocs'
+                                },
+                                {
+                                    text: 'Quality Review  Reports/Upload',
+                                    iconCls: 'x-fa fa-file',
+                                    tooltip: 'Audit Reports/Upload',
+                                    action: 'edit',
+                                    childXtype: '',
+                                    winTitle: 'Audit report',
+                                    winWidth: '90%',
+                                    isReadOnly: 1,
+                                    document_type_id: 9,
+                                    winTitle: 'Audit Reports/Upload',
+                                    handler: 'funcPrevAuditReportUpload'
+                                },
+                                {
+                                    text: 'Comments',
+                                    iconCls: 'x-fa fa-weixin',
+                                    childXtype: 'evaluationcommentspnl',
+                                    winTitle: 'Quality Review Final Recommendation',
+                                    winWidth: '90%',
+                                    isReadOnly: 1,
+                                    handler: 'showApplicationCommentsGeneric',
+                                    childXtype: 'applicationprevcommentsgrid',
+                                    winWidth: '60%',
+                                    comment_type_id: 3,
+                                    stores: '[]',
+                                    isWin: 1
+                                }
                             ]
                         }
                     }, {
@@ -284,6 +380,28 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductAppro
                         winTitle: 'Product Information',
                         winWidth: '90%',
                         handler: 'printpreviewProductInformation'
+                    },{
+                        text: 'Quality Overall Summary Dossier',
+                        iconCls: 'x-fa fa-file',
+                        tooltip: 'Quality Overall Summary Dossier',
+                        action: 'edit',
+                        childXtype: 'productqualityassessmentDocUploadsGrid',
+                        winTitle: 'Quality Overall Summary Dossier',
+                        winWidth: '90%',
+                        isReadOnly: 1,
+                        document_type_id: '',
+                        handler: 'showQualitySumaryDocs'
+                    }, {
+                        text: 'Bioequivalence Trial Information',
+                        iconCls: 'x-fa fa-file',
+                        tooltip: 'Bioequivalence Trial Information',
+                        action: 'edit',
+                        childXtype: 'productbioequivalencetrialinformationDocUploadsGrid',
+                        winTitle: 'Bioequivalence Trial Information',
+                        winWidth: '90%',
+                        isReadOnly: 1,
+                        document_type_id: '',
+                        handler: 'showQualitySumaryDocs'
                     }, {
                         xtype: 'button',
                         text: 'Return Back Application(s)',

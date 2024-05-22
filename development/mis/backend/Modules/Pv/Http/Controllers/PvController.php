@@ -1352,97 +1352,133 @@ public function getWHOCasaultyAssessment(Request $request)
         }
         return \response()->json($res);
     }
-    public function sendReporterNotification(Request $request)
-    {
+  public function sendReporterNotification(Request $request){
+    $application_code = $request->input('application_code');
+    $subject = $request->input('subject');
+    $response = $request->input('response');
+    $attachment = $request->file('uploaded_doc');
+    $attachment_path = null;
+    $selected_appcodes = $request->input('selected_appcodes');
+
+    // Handle the attachment once
+    if ($attachment) {
+        $attachment_path = $this->handleAttachment($attachment);
+    }
+
+    if ($selected_appcodes != '') {
+        $selected_appcodes = json_decode($selected_appcodes);
+
+        foreach ($selected_appcodes as $application_code) {
+            $this->sendMailAndLogNotification($application_code, $subject, $response, $attachment_path, $attachment);
+        }
+    } else {
+        $this->sendMailAndLogNotification($application_code, $subject, $response, $attachment_path, $attachment);
+    }
+
+    // Clean up the attachment after all notifications are sent
+    if ($attachment_path && file_exists($attachment_path)) {
+        unlink($attachment_path);
+    }
+
+
+    return response()->json(['success' => true, 'message' => 'Feedback sent successfully']);
+}
+
+
+public function handleAttachment($attachment)
+{
+    if ($attachment) {
+        $attachment_name = $attachment->getClientOriginalName();
+        $extension = $attachment->getClientOriginalExtension();
+        $document_rootupload = Config('constants.dms.doc_rootupload');
+        $destination = getcwd() . $document_rootupload;
+        $savedName = str_random(3) . time() . '.' . $extension;
+        $attachment->move($destination, $savedName);
+        return $destination . $savedName;
+    }
+    return null;
+}
+
+public function sendMailAndLogNotification($application_code, $subject, $response, $attachment_path, $attachment)
+{
+    try {
+        $reporter = DB::table('tra_pv_applications as t1')
+            ->join('tra_pv_personnel as t2', 't1.application_code', '=', 't2.application_code')
+            ->leftJoin('par_titles as t3', 't2.title_id', '=', 't3.id')
+            ->select(DB::raw("t2.email_address as reporter_email, CONCAT_WS(' ',t2.first_name,t2.last_name,'(',t3.name ,')') as reporter_name"))
+            ->where('t1.application_code', $application_code)
+            ->first();
+
+        if (isset($reporter->reporter_email)) {
+            if ($attachment_path) {
+                sendMailNotification($reporter->reporter_name, $reporter->reporter_email, $subject, $response, '', '', $attachment_path, $attachment->getClientOriginalName());
+            } else {
+                sendMailFromNotification($reporter->reporter_name, $reporter->reporter_email, $subject, $response, '', '');
+            }
+        }
+
+        // Update DB
+        $where = ['application_code' => $application_code];
+        $update = ['is_reporter_notified' => 1];
+        $res = updateRecordNoPrevious('tra_pv_applications', $where, $update);
+
+        // Log notification
+        if ($res['success']) {
+            $data = [
+                'application_code' => $application_code,
+                'subject' => $subject,
+                'response' => $response
+            ];
+            insertRecord('tra_pv_reporter_notification_logs', $data);
+            }
+
+        } catch (\Exception $exception) {
+            sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+        }
+    }
+
+
+   public function publishReport(Request $request){
         $application_code = $request->input('application_code');
-        $subject = $request->input('subject');
-        $response = $request->input('response');
+        $selected = $request->input('selected');
 
         try {
-            //send mail
-            $reporter = DB::table('tra_pv_applications as t1')
-                        ->join('tra_pv_personnel as t2', 't1.application_code', 't2.application_code')
-                        ->leftJoin('par_titles as t3', 't2.title_id', '=', 't3.id')
-                        ->select(DB::raw("t2.email_address as reporter_email, CONCAT_WS(' ',t2.first_name,t2.last_name,'(',t3.name ,')') as reporter_name "))
-                        ->where('t1.application_code', $application_code)
-                        ->first();
-            if(isset($reporter->reporter_email)){
-                //reporter and cc contact person
-                sendMailFromNotification($reporter->reporter_name, $reporter->reporter_email,$subject, $response,'', '');
-                // //their contact person
-                // sendMailFromNotification($applicant->contact_person, $applicant->contact_person_email,$subject, $response,'pv@nda.or.ug', '');
+            if (!empty($selected)) {
+                $selected_appcodes = json_decode($selected);
+
+                foreach ($selected_appcodes as $application_code) {
+                    $this->publishAndLog($application_code);
+                }
+            } else {
+                $this->publishAndLog($application_code);
             }
 
-
-            //  $email_address = 'kenedymuthui1@gmail.com';
-            //  $vars = array(
-            //     '{module_name}' => $module_name,
-            //     '{process_name}' => $process_name,
-            //     '{process_stage}' => $process_stage,
-            //     '{application_no}' => $rec->reference_no .' '.$rec->tracking_no
-            // );
-            // $email_res =sendTemplatedApplicationNotificationEmail(36, $email_address,$vars);
-                              
-
-
-            //update db
-            $where = array(
-                'application_code' => $application_code
-            );
-            $update = ['is_reporter_notified' => 1];
-            $res = updateRecordNoPrevious('tra_pv_applications', $where, $update);
-            //log notification
-            if($res['success']){
-                $data = array(
-                    'application_code' => $application_code,
-                    'subject' => $subject,
-                    'response' => $response
-                );
-                insertRecord('tra_pv_reporter_notification_logs', $data);
-            }
+            return response()->json(['success' => true, 'message' => 'Report published successfully.']);
         } catch (\Exception $exception) {
-            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
-
+            return response()->json(sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id));
         } catch (\Throwable $throwable) {
-            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+            return response()->json(sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id));
         }
-        return \response()->json($res);
     }
-    public function publishReport(Request $request)
-    {
-        $application_code = $request->input('application_code');
 
-        try {
-            //update registers
+public function publishAndLog($application_code){
+        $where = ['application_code' => $application_code];
+        $update = ['is_published' => 1];
 
+        $res = updateRecordNoPrevious('tra_pv_applications', $where, $update);
 
-            //update db
-            $where = array(
-                'application_code' => $application_code
-            );
-            $update = ['is_published' => 1];
-            $res = updateRecordNoPrevious('tra_pv_applications', $where, $update);
-
-
-
-            //log publishing
-            if($res['success']){
-                $data = array(
-                    'application_code' => $application_code,
-                    'published_by' => $this->user_id,
-                    'published_on' => Carbon::now()
-                );
-                $res =insertRecord('tra_pv_published_logs', $data);
-
-            }
-        } catch (\Exception $exception) {
-            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
-
-        } catch (\Throwable $throwable) {
-            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        if ($res['success']) {
+            $data = [
+                'application_code' => $application_code,
+                'published_by' => $this->user_id,
+                'published_on' => Carbon::now()
+            ];
+            insertRecord('tra_pv_published_logs', $data);
         }
-        return \response()->json($res);
     }
+
     public function exportAdrReport(Request $req)
     {
         $selected = json_decode($req->selected);

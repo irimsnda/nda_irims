@@ -21,6 +21,14 @@ Ext.define('Admin.view.pv.views.forms.PvResponseFrm', {
         },
         {
             xtype: 'hiddenfield',
+            name: 'selected_appcodes'
+        },
+         {
+            xtype: 'hiddenfield',
+            name: 'selected_appIds'
+        },
+        {
+            xtype: 'hiddenfield',
             name: 'application_code'
         },
         {
@@ -30,15 +38,20 @@ Ext.define('Admin.view.pv.views.forms.PvResponseFrm', {
         },{
             xtype: 'textfield',
             name: 'subject',
-            fieldLabel: 'Response Subject'
+            fieldLabel: 'Feedback Subject'
         },
         {
             xtype: 'htmleditor',
-            fieldLabel: 'Response Body',
+            fieldLabel: 'Feedback Body',
             columnWidth: 1,
             resizable: true,
             name: 'response',
-        }
+        },{
+            xtype: 'filefield',
+            fieldLabel: 'File/Document',
+            allowBlank: true,
+            name: 'uploaded_doc'
+        },
     ],
     dockedItems:[
         {
@@ -47,7 +60,7 @@ Ext.define('Admin.view.pv.views.forms.PvResponseFrm', {
             dock: 'bottom',
             items:[
                 '->',{
-                    text: 'Send Response',
+                    text: 'Send Feedback',
                     iconCls: 'x-fa fa-paper-plane',
                     action: 'send',
                     table_name: 'tra_pv_applications',

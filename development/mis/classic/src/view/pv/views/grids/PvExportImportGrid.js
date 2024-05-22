@@ -63,8 +63,10 @@ Ext.define('Admin.view.pv.views.grids.PvExportImportGrid', {
                 selCount = grid.getSelectionModel().getCount();
             if (selCount > 0) {
                 panel.down('button[name=process_submission_btn]').setDisabled(false);
+                panel.down('button[name=batch_feedback]').setDisabled(false);
             }else{
                 panel.down('button[name=process_submission_btn]').setDisabled(true);
+                panel.down('button[name=batch_feedback]').setDisabled(true);
             }
     
          }
@@ -84,7 +86,26 @@ Ext.define('Admin.view.pv.views.grids.PvExportImportGrid', {
 		winWidth: '50%',
     	storeId: 'pvManagerAllocationGridStr',
     	handler: 'showExcelImportFrm'
-    }],
+    },{
+        text:'Batch Feedback',
+        name:'batch_feedback',
+        iconCls: 'fa fa-mail-bulk',
+        ui: 'soft-purple',
+        table_name: 'tra_pv_applications',
+        handler:'getBatnotifyReporter',
+        childXtype: 'pvResponseFrm',
+        margin: 5
+        
+      },{
+        text:'Batch Publish',
+        name:'batch_publish',
+        iconCls: 'fa fa-bullhorn',
+        ui: 'soft-green',
+        table_name: 'tra_pv_applications',
+        handler:'batchpublishReport',
+        margin: 5
+        
+      }],
     columns: [{
 	    	xtype: 'rownumberer'
 	    },{

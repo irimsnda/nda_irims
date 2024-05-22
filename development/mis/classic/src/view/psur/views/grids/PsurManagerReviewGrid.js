@@ -149,7 +149,7 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
 	                    stores: '[]'
 	                },
 					{
-	                    text: 'Preview PSUR/PBRER Assessment Details',
+	                    text: 'Preview Assessment Details',
 	                    iconCls: 'fa fa-medkit',
 	                    tooltip: 'Preview Assessment Details',
 	                    childXtype: 'psurEvaluationFrm',

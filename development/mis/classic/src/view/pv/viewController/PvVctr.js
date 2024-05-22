@@ -1155,6 +1155,122 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
 
         funcShowOnlineCustomizableWindow('Share Notification', '60%', form, 'customizablewindow', item);
     }, 
+
+    getBatnotifyReporter:function(btn){
+           var me = this,
+            grid = btn.up('grid'),
+            form = Ext.widget(btn.childXtype),
+            store = grid.getStore(),
+            sm = grid.getSelectionModel(),
+            selected_records = sm.getSelection(),
+            selected= [],
+            selected_appIds= [];
+            if (selected_records.length===0 || selected_records.length==0) {
+                toastr.error('Please ensure you have report(s) to proceed!!', 'Warning Response');
+                 return false;
+            }
+
+            Ext.each(selected_records, function (item) {
+                selected.push(item.data.application_code);
+                selected_appIds.push(item.data.active_application_id);
+            });
+
+        // Assuming selected_records is an array of records
+            try {
+                Ext.each(selected_records, function (item) {
+                        var response = item.data.response;
+                        if (response) {
+                            Ext.getBody().unmask();
+                            toastr.error('Notification Already send for some selected Reports. Kindly ensure no notification already send for selected Reports!!', 'Warning Response');
+                            throw 'BreakLoopException'; // Throw an exception to break out of the loop
+                        }
+                });
+            }catch (e) {
+                if (e === 'BreakLoopException') {
+                    return false; 
+                } else {
+                    throw e;
+                }
+            }
+
+        
+        var selected = JSON.stringify(selected);
+        var selected_appIds = JSON.stringify(selected_appIds);
+        form.down('hiddenfield[name=selected_appIds]').setValue(selected_appIds);
+        form.down('hiddenfield[name=selected_appcodes]').setValue(selected);
+
+        funcShowOnlineCustomizableWindow('Share Notification', '60%', form, 'customizablewindow', btn);
+    },
+
+    batchpublishReport: function(btn){
+            var me = this,
+            grid = btn.up('grid'),
+            store = grid.getStore(),
+            sm = grid.getSelectionModel(),
+            selected_records = sm.getSelection(),
+            selected= [],
+            selected_appIds= [];
+            if (selected_records.length===0 || selected_records.length==0) {
+                toastr.error('Please ensure you have report(s) to proceed!!', 'Warning Response');
+                 return false;
+            }
+
+            Ext.each(selected_records, function (item) {
+                selected.push(item.data.application_code);
+                selected_appIds.push(item.data.active_application_id);
+            });
+
+             // Assuming selected_records is an array of records
+            try {
+                Ext.each(selected_records, function (item) {
+                        var is_published = item.data.is_published;
+                        if (is_published === 1 || is_published == 1) {
+                            Ext.getBody().unmask();
+                            toastr.error('Some of the reports selected are already published. Kindly ensure no selected report which is already published!!', 'Warning Response');
+                            throw 'BreakLoopException'; // Throw an exception to break out of the loop
+                        }
+                });
+            }catch (e) {
+                if (e === 'BreakLoopException') {
+                    return false; 
+                } else {
+                    throw e;
+                }
+            }
+
+         Ext.MessageBox.confirm('Confirm', 'Are you sure the report(s) are ready for publishing ?', function (btn) {
+            if (btn === 'yes') {
+                Ext.getBody().mask('Publishing Report...');
+                Ext.Ajax.request({
+                    url: 'pv/publishReport',
+                    params: {
+                        selected: JSON.stringify(selected),
+                        _token: token
+                    },
+                    headers: {
+                            'Authorization': 'Bearer ' + access_token,
+                            'Accept': 'application/json'
+                        },
+                    success: function (response) {
+                        Ext.getBody().unmask();
+                        var resp = Ext.JSON.decode(response.responseText);
+                        toastr.success(resp.message, 'Success Response');
+                        store.removeAll();
+                        store.load();
+                    },
+                    failure: function (response) {
+                        Ext.getBody().unmask();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        Ext.getBody().unmask();
+                        toastr.error('Error: ' + errorThrown, 'Error Response');
+                    }
+                });
+            } else {
+                toastr.warning('Operation has been cancelled', 'Cancelled');
+            }
+        });
+    },
     publishReport: function(item){
         var me = this,
             btn = item.up('button'),
@@ -1224,14 +1340,43 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
             toastr.warning('Please select at least one report!!', 'Warning Response');
             return false;
         }
-        else{
             Ext.each(selected_records, function (item) {
                 selected.push(item.data.application_code);
-            });
-            var url = 'integration/generateUploadableE2BFile?selected=' + encodeURIComponent(JSON.stringify(selected));
-            print_report(url);
-        }
-        
+            }); 
+            Ext.getBody().mask('Generating xml file...Please wait...');             
+            Ext.Ajax.request({
+                url: 'integration/generateUploadableE2BFile',
+                method: 'GET',
+                headers: {
+                     'Authorization':'Bearer '+access_token
+                         },
+                params : {
+                     'selected': JSON.stringify(selected)
+                     },
+                              
+              success: function (response, textStatus, request) {
+                    Ext.getBody().unmask();
+                    var t = JSON.parse(response.responseText);
+                    if (t.status == 'sucesss' || t.status === 'success' ) {
+                    var a = document.createElement("a");
+                    a.href = t.file; 
+                    a.download = t.name;
+                    document.body.appendChild(a);
+
+                    a.click();
+                             
+                    a.remove();
+
+                    } else {
+                toastr.error(t.message, 'Warning Response');
+                }
+              
+                },
+                failure: function(conn, response, options, eOpts) {
+                    Ext.getBody().unmask();
+                    Ext.Msg.alert('Error', 'please try again');
+                }
+               });
     },
     showExcelImportFrm: function(btn){
         this.fireEvent('showExcelImportFrm', btn);

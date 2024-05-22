@@ -2533,11 +2533,7 @@ Ext.define('Admin.view.productregistration.viewcontrollers.ProductRegistrationVc
      generateProductRegCertificate: function (item) {
         var record = item.getWidgetRecord(),
             application_code = record.get('application_code');
-            module_id = record.get('module_id');
-            sub_module_id = record.get('sub_module_id');
-            report_type_id = 3;
-            isPreview = 0;
-        this.fireEvent('generateProductRegCertificate', application_code,module_id,sub_module_id,report_type_id,isPreview);
+        this.fireEvent('generateProductRegCertificate', application_code);
     },
     newGenerateProductRegCertificate: function (item) {
         var record = item.getWidgetRecord(),

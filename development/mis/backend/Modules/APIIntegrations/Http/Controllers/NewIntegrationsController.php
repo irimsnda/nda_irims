@@ -953,20 +953,13 @@ class NewIntegrationsController extends Controller
 
                 }
 
-
-
             }
             $xml_string .= "</ichicsr>";
-
-
-            //create a file and add content
-            // file_put_contents(storage_path().'/file.xml', $xml_string);
-            $response = response($xml_string, 200)
-                ->header('Content-Type', 'text/xml')
-                ->header('Cache-Control', 'public')
-                ->header('Content-Description', 'File Transfer')
-                ->header('Content-Disposition', 'attachment; filename=' . $reportid . '.xml')
-                ->header('Content-Transfer-Encoding', 'binary');
+            $response = array(
+                'status' => 'success',
+                'name' => $reportid . '.xml',
+                'file' => "data:application/xml;base64," . base64_encode($xml_string) 
+            );
 
             return $response;
 

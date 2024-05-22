@@ -20,9 +20,20 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.ProductCerti
         }
     },
     tbar: [{
-        xtype: 'exportbtn'
-    }, {
-        xtype: 'tbspacer'
+            xtype:'button',
+            ui: 'soft-green',
+            text: 'Export List',
+            iconCls: 'x-fa fa-cloud-upload', 
+            handler: 'exportCNFProductList'   
+        },
+        {
+            xtype:'button',
+            ui: 'soft-green',
+            text: 'Print List',
+            iconCls: 'x-fa fa-print',
+            handler: 'printCNFProductList'
+            
+            
     }],
     features: [{
         ftype: 'searching',

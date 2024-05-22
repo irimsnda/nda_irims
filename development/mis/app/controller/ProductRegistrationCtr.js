@@ -1653,8 +1653,8 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                      'Authorization':'Bearer '+access_token
                          },
                 params : {
-                     'selected_appcodes': selected_appcodes,
-                     'selected_appIds': selected_appIds,
+                     'selected_appcodes': JSON.stringify(selected_appcodes),
+                     'selected_appIds': JSON.stringify(selected_appIds),
                      'sub_module_id': sub_module_id,
                      'workflow_stage_id': workflow_stage_id
                      },
@@ -1727,8 +1727,9 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                 }
             }
 
-            print_report('productregistration/printProductCNFList?selected_appcodes='+selected_appcodes+'&workflow_stage_id='+workflow_stage_id+'&selected_appIds='+selected_appIds);
-                 
+
+            print_report('productregistration/printProductCNFList?selected_appcodes=' + JSON.stringify(selected_appcodes) + '&workflow_stage_id=' + workflow_stage_id + '&selected_appIds=' + JSON.stringify(selected_appIds));
+      
     },
 
     saveProductInformation: function (btn) {
