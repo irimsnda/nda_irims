@@ -56,6 +56,77 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
             },
             isLoad: true
         },
+       afterrender: function(grid) {
+                var pnl = grid.up('panel'),
+                subModuleId = pnl.down('hiddenfield[name=sub_module_id]').getValue();
+                grid.columns.forEach(function(column) {
+            	if(subModuleId==116 || subModuleId===116){
+		                    if (column.dataIndex === 'from_date') {
+		                        column.setHidden(false);
+		                    } 
+		                    if (column.dataIndex === 'to_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'report_approval_date') {
+		                        column.setHidden(true);
+		                    }
+		                    if (column.dataIndex === 'international_birth_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'data_log_point') {
+		                        column.setHidden(false);
+		                    }   
+		              }else if(subModuleId==128 || subModuleId===128){
+		                    if (column.dataIndex === 'from_date') {
+		                        column.setHidden(true);
+		                    } 
+		                    if (column.dataIndex === 'to_date') {
+		                        column.setHidden(true);
+		                    }
+		                    if (column.dataIndex === 'report_approval_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'international_birth_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'data_log_point') {
+		                        column.setHidden(false);
+		                    } 
+		                  }else if(subModuleId==129 || subModuleId===129){
+		                    if (column.dataIndex === 'from_date') {
+		                        column.setHidden(false);
+		                    } 
+		                    if (column.dataIndex === 'to_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'report_approval_date') {
+		                        column.setHidden(true);
+		                    }
+		                    if (column.dataIndex === 'international_birth_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'data_log_point') {
+		                        column.setHidden(true);
+		                    } 
+		                  }else{
+		                    if (column.dataIndex === 'from_date') {
+		                        column.setHidden(false);
+		                    } 
+		                    if (column.dataIndex === 'to_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'report_approval_date') {
+		                        column.setHidden(true);
+		                    }
+		                    if (column.dataIndex === 'international_birth_date') {
+		                        column.setHidden(false);
+		                    }
+		                    if (column.dataIndex === 'data_log_point') {
+		                        column.setHidden(false);
+		                    }  
+		                  }
+		            });
+        },
         select: function(sel, record, index, eOpts) {
             var me = this,
                 grid = sel.view.grid,
@@ -78,40 +149,50 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
 	        flex: 1
 	    },{
 	        xtype: 'gridcolumn',
-	        dataIndex: 'reference_no',
-	        text: 'Ref Number',
+	        dataIndex: 'applicant_name',
+	        text: 'Applicant',
 	        flex: 1
-	    },  {
+	    }, {
 	        xtype: 'gridcolumn',
 	        dataIndex: 'report_type',
 	        text: 'Report Type',
 	        flex: 1
 	    },  {
-	        xtype: 'gridcolumn',
-	        dataIndex: 'from_date',
-	        text: 'Reporting Period From',
-	        flex: 1
-	    }, {
-	        xtype: 'gridcolumn',
-	        dataIndex: 'to_date',
-	        text: 'Reporting Period To',
-	        flex: 1
-	    },  {
-	        xtype: 'gridcolumn',
-	        dataIndex: 'date_added',
-	        text: 'Date Received',
-	        flex: 1
-	    }, {
-	        xtype: 'gridcolumn',
-	        dataIndex: 'submitted_by',
-	        text: 'Submitted By',
-	        flex: 1
-	    }, {
-	        xtype: 'gridcolumn',
-	        dataIndex: 'submitted_on',
-	        text: 'Submitted On',
-	        flex: 1
-	    },{
+		    xtype: 'gridcolumn',
+		    dataIndex: 'from_date',
+		    text: 'Reporting Period From',
+		    flex: 1
+		},
+		{
+		    xtype: 'gridcolumn',
+		    dataIndex: 'to_date',
+		    text: 'Reporting Period To',
+		    flex: 1
+		},
+		{
+		    xtype: 'gridcolumn',
+		    dataIndex: 'report_approval_date',
+		    text: 'Approval Date',
+		    flex: 1
+		},
+		{
+		    xtype: 'gridcolumn',
+		    dataIndex: 'international_birth_date',
+		    text: 'International Birth Date',
+		    flex: 1
+		},
+		{
+		    xtype: 'gridcolumn',
+		    dataIndex: 'data_log_point',
+		    text: 'Data lock point',
+		    flex: 1
+		},
+		{
+		    xtype: 'gridcolumn',
+		    dataIndex: 'version_no',
+		    text: 'Version No',
+		    flex: 1
+		},{
 	        text: 'Options',
 	        xtype: 'widgetcolumn',
 	        width: 90,
@@ -151,11 +232,12 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
 					{
 	                    text: 'Preview Assessment Details',
 	                    iconCls: 'fa fa-medkit',
+	                    storeID:'psurManagerReviewGridStr',
 	                    tooltip: 'Preview Assessment Details',
-	                    childXtype: 'psurEvaluationFrm',
-	                    winTitle: 'PSUR/PBRER Assessment Details',
-	                    winWidth: '70%',
-	                    isReadOnly: 1,
+	                    childXtype: 'psurpreviewEvaluationFrm',
+	                    winTitle: 'Assessment Details',
+	                    winWidth: '90%',
+	                    isReadOnly: 0,
 	                    handler: 'previewpsureAssessmentDetails'
 	                }
 	                ]

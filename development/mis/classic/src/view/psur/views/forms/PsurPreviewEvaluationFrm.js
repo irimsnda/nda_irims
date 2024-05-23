@@ -1,6 +1,6 @@
-Ext.define('Admin.view.psur.views.forms.PsurEvaluationFrm', {
+Ext.define('Admin.view.psur.views.forms.PsurPreviewEvaluationFrm', {
     extend: 'Ext.form.Panel',
-    xtype: 'psurEvaluationFrm',
+    xtype: 'psurpreviewEvaluationFrm',
     controller: 'psurVctr',
     height: Ext.Element.getViewportHeight() - 118,
     layout: {
@@ -16,7 +16,7 @@ Ext.define('Admin.view.psur.views.forms.PsurEvaluationFrm', {
     },
     scrollable: true,
     autoScroll: true,
-     items: [
+    items: [
         {
           xtype: 'hiddenfield',
           name: 'assessment_id'
@@ -465,11 +465,11 @@ Ext.define('Admin.view.psur.views.forms.PsurEvaluationFrm', {
                 action: 'save',
                 name:'save_btn',
                 table_name: 'tra_psur_evaluation_details',
-                storeID: 'psurAssessmentStr',
+                storeID: 'psurManagerReviewGridStr',
                 formBind: true,
                 ui: 'soft-blue',
                 action_url: 'psur/onSavePsurAssessmentDetails',
-                handler: 'savepsurAssessmentdetails'
+                handler: 'saveprviewpsurAssessmentdetails'
             }
         ]
     }

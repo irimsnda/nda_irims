@@ -264,7 +264,7 @@ class PsurController extends Controller
              $res['application_code'] = $application_code;
              $res['tracking_no'] = $tracking_no;
              $res['reference_no'] = $reference_no;
-             $res['msg'] = 'Record Saved Successfully';
+             $res['message'] = 'Record Saved Successfully';
              $res['success']=true;
                 
                 } catch (\Exception $exception) {
@@ -294,8 +294,10 @@ public function preparenewPsurReceiving(Request $req)
         $application_id = $req->input('application_id');
         try {
             $qry = DB::table('tra_psur_pbrer_applications as t1')
-
-                ->select('t1.*', 't1.id as active_application_id')
+                  ->leftJoin('wb_trader_account as t2', 't1.applicant_id', '=', 't2.id')
+                ->select('t1.*', 't1.id as active_application_id','t2.name as applicant_name', 't2.contact_person',
+                    't2.tpin_no', 't2.country_id as app_country_id', 't2.region_id as app_region_id', 't2.district_id as app_district_id', 't2.physical_address as app_physical_address',
+                    't2.postal_address as app_postal_address', 't2.telephone_no as app_telephone', 't2.fax as app_fax', 't2.email as app_email', 't2.website as app_website')
                 ->where('t1.id', $application_id);
             $results = $qry->first();
 
@@ -338,7 +340,7 @@ public function preparenewPsurReceiving(Request $req)
                     't3.name as applicant_name', 't3.contact_person',
                     't3.tpin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
                     't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website',
-                    't2.*', 't4.id as invoice_id', 't4.invoice_no', 't1.product_id as tra_product_id');
+                     't4.id as invoice_id', 't4.invoice_no', 't1.product_id as tra_product_id');
             $results = $qry1->first();
             $qry2 = clone $main_qry;
             $qry2->join('wb_trader_account as t3', 't1.local_agent_id', '=', 't3.id')
@@ -389,46 +391,6 @@ public function preparenewPsurReceiving(Request $req)
             unset($post_data['active_application_id']);
             unset($post_data['assessment_id']);
             $app_data = $post_data;
-            // $app_data = array(
-            //     'application_code'=> $active_application_code,
-            //     'application_id'=>$active_application_id,
-            //     'product_id'=>$product_id,
-            //     'introduction'=>$request->introduction,
-            //     'marketing_approval_status'=>$request->marketing_approval_status,
-            //     'actions_reporting_interval'=>$request->actions_reporting_interval,
-            //     'reference_safety_information'=>$request->reference_safety_information,
-            //     'cumulative_exposure_clinical'=>$request->cumulative_exposure_clinical,
-            //     'cumulative_exposure_marketing'=>$request->cumulative_exposure_marketing,
-            //     'cumulative_summary_clinical'=>$request->cumulative_summary_clinical,
-            //     'cumulative_summary_marketing'=>$request->cumulative_summary_marketing,
-            //     'completed_clinical_trials'=>$request->completed_clinical_trials,
-            //     'ongoing_clinical_trials'=>$request->ongoing_clinical_trials,
-            //     'long_time_followup'=>$request->long_time_followup,
-            //     'other_therapeutic_product_use'=>$request->other_therapeutic_product_use,
-            //     'safety_data_related_to_fixed_combination_therapies'=>$request->safety_data_related_to_fixed_combination_therapies,
-            //     'other_clinical_trials'=>$request->other_clinical_trials,
-            //     'medication_errors'=>$request->medication_errors,
-            //     'findings_non_interventional_studies'=>$request->findings_non_interventional_studies,
-            //     'non_clinical_data'=>$request->non_clinical_data,
-            //     'literature'=>$request->literature,
-            //     'other_periodic_reports'=>$request->other_periodic_reports,
-            //     'Lack_of_efficacy_in_controlled_ct'=>$request->Lack_of_efficacy_in_controlled_ct,
-            //     'late_breaking_information'=>$request->late_breaking_information,
-            //     'overview_of_signals'=>$request->overview_of_signals,
-            //     'summary_of_safety_concerns'=>$request->summary_of_safety_concerns,
-            //     'signal_evaluation'=>$request->signal_evaluation,
-            //     'evaluation_risks_and_new_information'=>$request->evaluation_risks_and_new_information,
-            //     'characterization_of_risks'=>$request->characterization_of_risks,
-            //     'effectiveness_of_risk_minimization'=>$request->effectiveness_of_risk_minimization,
-            //     'important_baseline_efficacy'=>$request->important_baseline_efficacy,
-            //     'newly_identified_information'=>$request->newly_identified_information,
-            //     'characterization_of_benefits'=>$request->characterization_of_benefits,
-            //     'benefit_risk_context'=>$request->benefit_risk_context,
-            //     'benefit_risk_analysis'=>$request->benefit_risk_analysis,
-            //     'questions_comments'=>$request->questions_comments,
-            //     'draft_response'=>$request->draft_response,
-            //     'recommendations'=>$request->recommendations,
-            // );
             if(validateIsNumeric($record_id)){
                 $app_data['dola'] = Carbon::now();
                 $app_data['altered_by'] = $user_id;
@@ -468,18 +430,11 @@ public function preparenewPsurReceiving(Request $req)
                 ->leftJoin('par_common_names as t8', 't2.common_name_id', '=', 't8.id')
                 ->leftJoin('tra_submissions as t9', 't9.application_code', '=', 't1.application_code')
                 ->leftJoin('users as t10', 't9.usr_from', '=', 't10.id')
-                //->leftJoin('tra_product_screening_approvals as t11', 't1.application_code', 't11.application_code')
-                //->leftJoin('tra_listing_approvals as t15', 't1.application_code', 't15.application_code')
                 ->leftJoin('wf_workflow_stages as t12', 't9.current_stage', 't12.id')
-                // ->leftJoin('tra_evaluation_recommendations as t13', function ($join) use($workflow_stage) {
-                //     $join->on('t1.application_code', '=', 't13.application_code')
-                //         ->on('t12.stage_category_id', '=', 't13.stage_category_id')
-                //         ->where('t9.current_stage', $workflow_stage);
-                // })
                 ->leftJoin('tra_approval_recommendations as t14', 't1.application_code', 't14.application_code')
                 ->leftJoin('tra_psur_evaluation_details as t25', 't1.application_code', 't25.application_code')
                 ->leftJoin('par_psur_type as t26', 't1.psur_type_id', 't26.id')
-                ->select('t1.*','t1.from_date as reporting_from','t1.to_date as reporting_to','t2.product_origin_id', 't2.brand_name as product_name', DB::raw("CONCAT_WS(' ',decrypt(t10.first_name),decrypt(t10.last_name)) as submitted_by"), 't9.date_received as submitted_on', 't8.name as common_name', 't3.name as applicant_name', 't4.name as application_status',
+                ->select('t1.*','t3.name as applicant_name','t1.application_code as active_application_code','t1.id as active_application_id','t1.from_date as reporting_from','t1.to_date as reporting_to','t2.product_origin_id', 't2.brand_name as product_name', DB::raw("CONCAT_WS(' ',decrypt(t10.first_name),decrypt(t10.last_name)) as submitted_by"), 't9.date_received as submitted_on', 't8.name as common_name', 't3.name as applicant_name', 't4.name as application_status',
                      't1.id as active_application_id', 't5.decision_id','t5.approval_date','t5.expiry_date', 't5.id as approval_id', 't12.stage_category_id','t14.decision_id as approval_decision_id'
                     ,'t26.name as report_type')
                 ->where(array('t9.current_stage'=>$workflow_stage,'isDone'=>0) );
@@ -542,8 +497,10 @@ public function preparenewPsurReceiving(Request $req)
 
         try {
             $qry = DB::table('tra_psur_pbrer_applications as t1')
-                ->leftJoin('tra_product_information as t2', 't1.product_id', '=', 't2.id')
-                ->select('t1.*','t2.*')
+                  ->leftJoin('wb_trader_account as t2', 't1.applicant_id', '=', 't2.id')
+                ->select('t1.*', 't1.id as active_application_id','t2.name as applicant_name', 't2.contact_person',
+                    't2.tpin_no', 't2.country_id as app_country_id', 't2.region_id as app_region_id', 't2.district_id as app_district_id', 't2.physical_address as app_physical_address',
+                    't2.postal_address as app_postal_address', 't2.telephone_no as app_telephone', 't2.fax as app_fax', 't2.email as app_email', 't2.website as app_website')
                 ->where('t1.application_code', $application_code);
 
             $psur_details = $qry->first();
@@ -552,6 +509,33 @@ public function preparenewPsurReceiving(Request $req)
                 'success' => true,
                 'psur_details' => $psur_details,
                 'branch_id' => 1,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
+    public function getPsurApplicationsAssessmentDetails(Request $request)
+    {
+        $application_code = $request->input('application_code');
+
+        try {
+            $qry = DB::table('tra_psur_pbrer_applications as t1')
+                  ->leftJoin('tra_psur_evaluation_details as t2', 't1.application_code', '=', 't2.application_code')
+                ->select('t2.*', 't2.id as assessment_id','t1.id as active_application_id')
+                  
+                ->where('t1.application_code', $application_code);
+
+            $psur_details = $qry->first();
+
+            $res = array(
+                'success' => true,
+                'results' => $psur_details,
                 'message' => 'All is well'
             );
         } catch (\Exception $exception) {
@@ -628,6 +612,46 @@ public function preparenewPsurReceiving(Request $req)
         return \response()->json($res);
 
     }
+
+    public function shareFeedBack(Request $request){
+        $application_code = $request->input('application_code');
+        $selected = $request->input('selected');
+
+        try {
+            if (!empty($selected)) {
+                $selected_appcodes = json_decode($selected);
+
+                foreach ($selected_appcodes as $application_code) {
+                    $this->shareFeedBackAndLog($application_code);
+                }
+            } else {
+                $this->shareFeedBackAndLog($application_code);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Report FeedBack shared successfully.']);
+        } catch (\Exception $exception) {
+            return response()->json(sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id));
+        } catch (\Throwable $throwable) {
+            return response()->json(sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id));
+        }
+    }
+
+public function shareFeedBackAndLog($application_code){
+        $where = ['application_code' => $application_code];
+        $update = ['is_notified' => 1];
+
+        $res = updateRecordNoPrevious('tra_psur_pbrer_applications', $where, $update);
+
+        if ($res['success']) {
+            $data = [
+                'application_code' => $application_code,
+                'feedback_shared_by' => $this->user_id,
+                'feedback_shared_on' => Carbon::now()
+            ];
+            insertRecord('tra_psur_published_logs', $data);
+        }
+    }
+
 
     public function getPreviousPsurReportApplications(Request $request)
     {

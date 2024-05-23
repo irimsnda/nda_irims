@@ -115,9 +115,9 @@ Ext.define('Admin.view.pv.views.forms.PvDetailsFrm', {
                     var reportDateField = field.up('form').down('datefield[name=report_date]');
                     var reportDateValue = reportDateField.getValue();
 
-                    if (reportDateValue && newValue > reportDateValue) {
+                    if (reportDateValue && newValue < reportDateValue) {
                         reportDateField.setValue(null);
-                        toastr.error('Validation Error', 'Date of report must be later than the Initial received date(NDA)', 'Warning Response');
+                        toastr.error('Validation Error', 'Initial received date(NDA) must be later than the Date of report', 'Warning Response');
                     }
                 }
             }
@@ -134,9 +134,9 @@ Ext.define('Admin.view.pv.views.forms.PvDetailsFrm', {
                     var initialReceiveDateField = field.up('form').down('datefield[name=initial_receive_date]');
                     var initialReceiveDateValue = initialReceiveDateField.getValue();
 
-                    if (initialReceiveDateValue && newValue < initialReceiveDateValue) {
+                    if (initialReceiveDateValue && newValue > initialReceiveDateValue) {
                         field.setValue(null);
-                        toastr.error('Validation Error', 'Date of report must be later than the Initial received date(NDA)', 'Warning Response');
+                        toastr.error('Validation Error', 'Initial received date(NDA) must be later than the Date of report', 'Warning Response');
                     }
                 }
             }

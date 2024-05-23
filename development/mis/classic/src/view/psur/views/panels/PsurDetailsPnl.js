@@ -14,6 +14,9 @@ Ext.define('Admin.view.mir.views.panels.PsurDetailsPnl', {
     },
 
     items: [{
+        xtype: 'productapplicantdetailsfrm',
+        title: 'Applicant Details'
+    },{
         xtype: 'panel',
         scrollable: true,
         autoScroll: true,

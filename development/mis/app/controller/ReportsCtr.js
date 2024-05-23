@@ -89,7 +89,8 @@ Ext.define('Admin.controller.ReportsCtr', {
                 printReceipt: 'printApplicationReceipt',
                 generatePremiseCert: 'generatePremiseCertificate',
                 generatePremisePermit: 'generatePremisePermit',
-                generateTCPDPremisePermit: 'generateTCPDPremisePermit',
+                generateTCPDPsurPermit: 'generateTCPDPsurPermit',
+                 generateTCPDPremisePermit: 'generateTCPDPremisePermit',
                 generatePremiseInspectionReport: 'generatePremiseInspectionReport',
                 generateProductRegCertificate: 'generateProductRegCertificate',
                 generatePromotionalRegCertificate:'generatePromotionalRegCertificate',
@@ -361,6 +362,11 @@ Ext.define('Admin.controller.ReportsCtr', {
     },
 
      generateTCPDPremisePermit: function (application_code) {
+        var action_url = 'reports/generatePremisePermit?application_code=' + application_code;
+        print_report(action_url);
+    },
+
+     generateTCPDPsurPermit: function (application_code) {
         var action_url = 'reports/generatePremisePermit?application_code=' + application_code;
         print_report(action_url);
     },

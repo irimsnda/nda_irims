@@ -106,13 +106,13 @@ Ext.define('Admin.controller.PsurCtr', {
                 ltrDetails = resp.ltrDetails;
                 if (success == true || success === true) {
                     var psurdetailsFrm = details_panel.down('psurdetailsFrm');
-                        // productapplicantdetailsfrm = details_panel.down('productapplicantdetailsfrm'),
+                        productapplicantdetailsfrm = details_panel.down('productapplicantdetailsfrm'),
                         // productlocalapplicantdetailsfrm = details_panel.down('productlocalapplicantdetailsfrm'),
                         funcShowOnlineCustomizableWindow(ref_no, '85%', details_panel, 'customizablewindow');
                     if (psur_details) {
                         var model2 = Ext.create('Ext.data.Model', psur_details);
                         psurdetailsFrm.loadRecord(model2);
-                        // productapplicantdetailsfrm.loadRecord(model2);
+                        productapplicantdetailsfrm.loadRecord(model2);
                         // details_panel.getViewModel().set('model', model2);
                     }
                     
@@ -521,7 +521,7 @@ Ext.define('Admin.controller.PsurCtr', {
             application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
 
             app_doc_types_store = activeTab.down('combo[name=applicable_documents]').getStore(),
-            //applicantFrm = activeTab.down('productapplicantdetailsfrm'),
+            applicantFrm = activeTab.down('productapplicantdetailsfrm'),
             // localagentFrm = activeTab.down('productlocalapplicantdetailsfrm'),
             detailsFrm = activeTab.down('#DetailsFrm'),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
@@ -566,9 +566,9 @@ Ext.define('Admin.controller.PsurCtr', {
 
                     if (success == true || success === true) {
                         detailsFrm.loadRecord(model);
-                        //applicantFrm.loadRecord(model);
+                        applicantFrm.loadRecord(model);
                         // localagentFrm.loadRecord(ltr_model);
-                        activeTab.down('hiddenfield[name=invoice_id]').setValue(results.invoice_id);
+                        //activeTab.down('hiddenfield[name=invoice_id]').setValue(results.invoice_id);
 
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -614,26 +614,24 @@ Ext.define('Admin.controller.PsurCtr', {
     preparenewPsurReceiving: function () {
         Ext.getBody().mask('Please wait...');
         var me = this,
-            mainTabPanel = me.getMainTabPanel(),
-            activeTab = mainTabPanel.getActiveTab(),
+        mainTabPanel = me.getMainTabPanel(),
+        activeTab = mainTabPanel.getActiveTab(),
         application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
-  
         app_doc_types_store = activeTab.down('combo[name=applicable_documents]').getStore(),
-            psurdetailsFrm = activeTab.down('psurdetailsFrm'),
+        psurdetailsFrm = activeTab.down('psurdetailsFrm'),
+        applicantFrm = activeTab.down('productapplicantdetailsfrm'),
            // app_check_types_store = activeTab.down('combo[name=applicable_checklist]').getStore(),
-            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
-            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
-            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
-            
-            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
-            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
-            
+        application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+        application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+        sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+        process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+        section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
         filter = {section_id: section_id},
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
 
         app_doc_types_store.removeAll();
         app_doc_types_store.load({
-            params: {
+        params: {
                 process_id: process_id,
                 workflow_stage: workflow_stage_id
             }
@@ -667,8 +665,8 @@ Ext.define('Admin.controller.PsurCtr', {
                     ltr_model = Ext.create('Ext.data.Model', ltrResults);
 
                     if (success == true || success === true) {
-
-                        psurdetailsFrm.loadRecord(model)
+                        psurdetailsFrm.loadRecord(model);
+                        applicantFrm.loadRecord(model);
                    
                         if(is_populate_primaryappdata ==1){
                             activeTab.down('hiddenfield[name=sub_module_id]').setValue(results.sub_module_id);
@@ -704,7 +702,7 @@ Ext.define('Admin.controller.PsurCtr', {
             // stores = '[]',
             // storeArray = eval(stores),
             app_doc_types_store = activeTab.down('combo[name=applicable_documents]').getStore(),
-            // applicantFrm = activeTab.down('productapplicantdetailsfrm'),
+            applicantFrm = activeTab.down('productapplicantdetailsfrm'),
             // localagentFrm = activeTab.down('productlocalapplicantdetailsfrm'),
            // products_detailsfrm = activeTab.down('drugsProductsDetailsFrm'),
             psurdetailsFrm = activeTab.down('psurdetailsFrm'),
@@ -757,7 +755,7 @@ Ext.define('Admin.controller.PsurCtr', {
                         assessment_model = Ext.create('Ext.data.Model', psurAssessmentDetails);
                     if (success == true || success === true) {
 
-                        // applicantFrm.loadRecord(model);
+                        applicantFrm.loadRecord(model);
                         // localagentFrm.loadRecord(ltr_model);
                        // products_detailsfrm.loadRecord(model);
                         psurdetailsFrm.loadRecord(model);

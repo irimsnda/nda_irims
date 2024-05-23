@@ -10,4 +10,6 @@ Route::post('/onSavePsurAssessmentDetails', [PsurController::class, 'onSavePsurA
 Route::get('/getStagePsurApplications', [PsurController::class, 'getStagePsurApplications']);
 Route::get('/getPsurApplicationMoreDetails', [PsurController::class, 'getPsurApplicationMoreDetails']);
 Route::get('/onPsurProductDetails', [PsurController::class, 'onPsurProductDetails']);
+Route::post('/getPsurApplicationsAssessmentDetails', [PsurController::class, 'getPsurApplicationsAssessmentDetails']);
+Route::post('/shareFeedBack', [PsurController::class, 'shareFeedBack']);
 });

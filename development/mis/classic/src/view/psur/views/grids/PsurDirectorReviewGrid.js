@@ -1,6 +1,6 @@
-Ext.define('Admin.view.psur.views.grids.PsurManagerAllocationGrid', {
+Ext.define('Admin.view.psur.views.grids.PsurDirectorReviewGrid', {
     extend: 'Ext.grid.Panel',
-    xtype: 'psurManagerAllocationGrid',
+    xtype: 'psurdirectorreviewGrid',
     cls: 'dashboard-todo-list',
     // header: false,
     controller: 'psurVctr',
@@ -22,7 +22,6 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerAllocationGrid', {
             var grid = this.up('grid'),
                 pnl = grid.up('panel'),
                 module_id = pnl.down('hiddenfield[name=module_id]').getValue(),
-                sub_module_id = pnl.down('hiddenfield[name=sub_module_id]').getValue(),
                 application_code = pnl.down('hiddenfield[name=active_application_code]').getValue(),
                 workflow_stage_id = pnl.down('hiddenfield[name=workflow_stage_id]').getValue(),
                 store = this.getStore();
@@ -30,11 +29,23 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerAllocationGrid', {
             store.getProxy().extraParams = {
                 application_code: application_code,
                 module_id: module_id,
-                sub_module_id: sub_module_id,
                 workflow_stage_id: workflow_stage_id
             }
         }
     }],
+     tbar: [{
+        xtype: 'tbspacer',
+        width: 5
+     },{
+        text:'Batch Share Feedback',
+        name:'share_feedback',
+        iconCls: 'fa fa-mail-bulk',
+        ui: 'soft-green',
+        table_name: 'tra_psur_pbrer_applications',
+        handler:'batchfeedbackReport',
+        margin: 5
+        
+      }],
 
     selModel:{
         selType: 'checkboxmodel',
@@ -50,7 +61,7 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerAllocationGrid', {
             fn: 'setGridStore',
             config: {
                 pageSize: 100,
-                storeId: 'psurManagerAllocationGridStr',
+                storeId: 'psurDirectorGridStr',
                 proxy: {
                     url: 'psur/getStagePsurApplications',
                     
@@ -58,7 +69,7 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerAllocationGrid', {
             },
             isLoad: true
         },
-        afterrender: function(grid) {
+       afterrender: function(grid) {
                 var pnl = grid.up('panel'),
                 subModuleId = pnl.down('hiddenfield[name=sub_module_id]').getValue();
                 grid.columns.forEach(function(column) {
@@ -143,8 +154,24 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerAllocationGrid', {
          }
     },
     columns: [{
-	    	xtype: 'rownumberer'
-	    },{
+         xtype: 'widgetcolumn',
+         width: 120,
+         widget: {
+            width: 120,
+            textAlign: 'left',
+            xtype: 'button',
+            itemId: 'prints',
+            ui: 'soft-green',
+            text: 'Print Letter',
+            iconCls: 'x-fa fa-certificate',
+            backend_function: 'printPremiseRegistrationCertificate',
+            handler: 'printTCPDFColumnPsurPermit',
+            // bind: {
+            //     disabled: '{record.is_notified <= 0 || record.is_notified === null}'
+            //     //disabled: '{record.decision_id !== 1}'
+            // }
+        }
+    },{
 	        xtype: 'gridcolumn',
 	        dataIndex: 'tracking_no',
 	        text: 'Tracking No',
@@ -194,8 +221,35 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerAllocationGrid', {
 		    dataIndex: 'version_no',
 		    text: 'Version No',
 		    flex: 1
-		}, {
-	        text: 'Options',
+		},{
+	        xtype: 'gridcolumn',
+	        dataIndex: 'is_notified',
+	        text: 'Feedback Shared',
+	        width: 120,
+	        renderer: function (value, metaData) {
+	            if (value == 1) {
+	                metaData.tdStyle = 'color:white;background-color:green';
+	                return "Yes";
+	            }
+	            metaData.tdStyle = 'color:white;background-color:gray';
+	            return "Pending";
+	        }
+	    },{
+	        xtype: 'widgetcolumn',
+	        width: 150,
+	        widget: {
+	            width: 150,
+	            textAlign: 'left',
+	            xtype: 'button',
+	            ui: 'soft-red',
+	            text: 'Share Feedback',
+	            iconCls: 'fa fa-mail-bulk',
+	            handler: 'shareReportFeedback',
+	            stores: '["psurDirectorGridStr"]',
+	            table_name: 'tra_psur_pbrer_applications'
+	        }
+	    }, {
+		        text: 'Options',
 	        xtype: 'widgetcolumn',
 	        width: 90,
 	        widget: {
@@ -221,7 +275,27 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerAllocationGrid', {
 	                    winWidth: '70%',
 	                    handler: 'showApplicationUploadedDocument',
 	                    stores: '[]'
+	                },{
+	                    text: 'View Assessment Recommendations and Comments',
+	                    iconCls: 'fa fa-clipboard-check',
+	                    tooltip: 'view Assessment Recommendations and Comments',
+	                    name: 'view_recommendation',
+	                    winWidth: '70%',
+	                    ui: 'soft-blue',
+	                    handler: 'viewApplicationRecommendationLogs',
+	                    stores: '[]'
 	                },
+					{
+	                    text: 'Preview Assessment Details',
+	                    iconCls: 'fa fa-medkit',
+	                    storeID:'psurManagerReviewGridStr',
+	                    tooltip: 'Preview Assessment Details',
+	                    childXtype: 'psurpreviewEvaluationFrm',
+	                    winTitle: 'PSUR/PBRER Assessment Details',
+	                    winWidth: '90%',
+	                    isReadOnly: 1,
+	                    handler: 'previewpsureAssessmentDetails'
+	                }
 	                ]
 	            }
 	        }

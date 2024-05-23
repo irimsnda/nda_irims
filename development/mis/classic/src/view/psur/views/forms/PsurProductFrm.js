@@ -274,7 +274,7 @@ Ext.define('Admin.view.pv.views.forms.PsurProductFrm', {
                         hideLabel: true,
                         allowBlank:true,
                         name: 'product_strength',
-                        emptyText: 'e.g., 125| 30',
+                        //emptyText: 'e.g., 125| 30',
                         allowBlank: true,
                         listeners: {
                             render: function (field) {
@@ -425,7 +425,7 @@ Ext.define('Admin.view.pv.views.forms.PsurProductFrm', {
             forceSelection: true,
             filterPickList: true,
             encodeSubmitValue: true,
-            emptyText: 'Route of Administration',
+            //emptyText: 'Route of Administration',
             growMax: 100,
             columnWidth: 0.33,
             multiSelect: true,

@@ -194,6 +194,17 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
     onViewPsurProductApplication: function (grid, record) {
         this.fireEvent('viewApplicationDetails', record);
     },
+
+    showApplicantSelectionList: function (btn) {
+        var grid = Ext.widget('productapplicantselectiongrid');
+        if (btn.applicantType == 'local') {
+            grid.applicantType = btn.applicantType;
+        } else {
+            grid.applicantType = 'nonlocal';
+        }
+        funcShowOnlineCustomizableWindow('Applicant Selection List', '90%', grid, 'customizablewindow');
+    },
+
     // savePsurReceivingBaseDetails: function (btn) {
     //     console.log( btn.action_url);
     //     var wizard = btn.wizardpnl,
@@ -222,10 +233,10 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
     //         productDetailsForm = containerPnl.down('#productsDetailsFrm'),
     //         productDetailsFrm = productDetailsForm.getForm();
 
-    //     if (!applicant_id) {
-    //         toastr.warning('Please select applicant!!', 'Warning Response');
-    //         return false;
-    //     }
+        // if (!applicant_id) {
+        //     toastr.warning('Please select applicant!!', 'Warning Response');
+        //     return false;
+        // }
     //     if (!local_applicant_id) {
     //         toastr.warning('Please select Local Agent!!', 'Warning Response');
     //         return false;
@@ -300,14 +311,20 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             detailsForm = activeTab.down('psurdetailsFrm'),
+            applicantDetailsForm = activeTab.down('productapplicantdetailsfrm'),
             detailsFrm = detailsForm.getForm(),
+            applicant_id = applicantDetailsForm.down('hiddenfield[name=applicant_id]').getValue(),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue();
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
 
+
+        if (!applicant_id) {
+            toastr.warning('Please select applicant!!', 'Warning Response');
+            return false;
+        }
+
         Ext.getBody().mask('Please wait...');
-        
         if (detailsFrm.isValid()) {
-                    
                     detailsFrm.submit({
                         url: 'psur/saveNewPsurReceivingBaseDetails',
                         headers: {
@@ -318,6 +335,7 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
                             process_id: process_id,
                             workflow_stage_id: workflow_stage_id,
                             application_id: application_id,
+                            applicant_id: applicant_id,
                             application_code: application_code,
                             module_id: module_id,
                             sub_module_id: sub_module_id,
@@ -364,8 +382,7 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
     savepsurAssessmentdetails: function (btn) {
         var me = this,
             mainTabPnl = btn.up('#contentPanel'),
-            containerPnl = mainTabPnl.getActiveTab();
-            console.log(containerPnl);
+            containerPnl = mainTabPnl.getActiveTab(),
             process_id = containerPnl.down('hiddenfield[name=process_id]').getValue(),
             module_id = containerPnl.down('hiddenfield[name=module_id]').getValue(),
             active_application_code = containerPnl.down('hiddenfield[name=active_application_code]').getValue(),
@@ -373,7 +390,6 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
             url = btn.action_url,
             table = btn.table_name,
             form = btn.up('form'),
-            product_id = containerPnl.down('hiddenfield[name=product_id]').getValue(),
             win = form.up('window'),
             storeID = btn.storeID,
             store = Ext.getStore(storeID),
@@ -387,7 +403,7 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
                 params: {
                     active_application_code: active_application_code,
                     active_application_id: active_application_id,
-                    product_id:product_id,
+                  
                     '_token': token
                 },
                 headers: {
@@ -401,8 +417,49 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
                     if (success == true || success === true) {
                         toastr.success(message, "Success Response");
                         assessment_id.setValue(record_id);
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (form, action) {
+                    var resp = action.result;
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        }
+    },
+
+    saveprviewpsurAssessmentdetails: function (btn) {
+        var me = this,
+            url = btn.action_url,
+            table = btn.table_name,
+            form = btn.up('form'),
+            active_application_code = form.down('hiddenfield[name=application_code]').getValue(),
+            win = form.up('window'),
+            storeID = btn.storeID,
+            store = Ext.getStore(storeID),
+            frm = form.getForm();
+
+        if (frm.isValid()) {
+            frm.submit({
+                url: url,
+                waitMsg: 'Please wait...',
+                params: {
+                    active_application_code: active_application_code,
+                    '_token': token
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (form, action) {
+                    var response = Ext.decode(action.response.responseText),
+                        success = response.success,
+                        message = response.message;
+                        record_id = response.record_id;
+                    if (success == true || success === true) {
+                        toastr.success(message, "Success Response");
                         store.removeAll();
-                        store.load({ params: { product_id: product_id } });
+                        store.load();
                         win.close();
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -595,19 +652,74 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
     // showPreviousNonGridPanelUploadedDocs: function (item) {
     //     this.fireEvent('showPreviousNonGridPanelUploadedDocs', item);
     // },
-    previewpsureAssessmentDetails: function (item) {
-        var me = this,
-            btn = item.up('button'),
-            record = btn.getWidgetRecord(),
-            childXtype = item.childXtype,
-            winTitle=item.winTitle,
-            winWidth=item.winWidth,
-            form = Ext.widget(childXtype);
-            form.loadRecord(record);
-            form.down('button[name=save_btn]').setDisabled(true);
-        funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+    // previewpsureAssessmentDetails: function (item) {
+        // var me = this,
+        //     btn = item.up('button'),
+        //     record = btn.getWidgetRecord(),
+        //     childXtype = item.childXtype,
+        //     winTitle=item.winTitle,
+        //     winWidth=item.winWidth,
+        //     form = Ext.widget(childXtype);
+    //         form.loadRecord(record);
+    //         form.down('button[name=save_btn]').setDisabled(true);
+    //     funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     
-    },
+    // },
+
+    previewpsureAssessmentDetails: function(item){
+        var me = this,
+        btn = item.up('button'),
+        record = btn.getWidgetRecord(),
+        application_code = record.get('application_code'),
+        childXtype = item.childXtype,
+        winTitle=item.winTitle,
+        winWidth=item.winWidth,
+        isReadOnly=item.isReadOnly,
+        form = Ext.widget(childXtype);
+
+         Ext.getBody().mask('Please wait...');
+         Ext.Ajax.request({
+            url: 'psur/getPsurApplicationsAssessmentDetails',
+            params: {
+                application_code: application_code,
+                _token: token
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            success: function (response) {
+                var resp = Ext.JSON.decode(response.responseText),
+                    success = resp.success,
+                    message = resp.message;
+                    results = resp.results;
+                if (success || success == true || success === true) {
+                   Ext.getBody().unmask();
+                   var model = Ext.create('Ext.data.Model', results);
+                    form.loadRecord(model);
+                    if(isReadOnly==1 || isReadOnly===1){
+                        form.getForm().getFields().each(function (field) {
+                            field.setReadOnly(true);
+                        });
+                      form.down('button[name=save_btn]').setVisible(false);
+                    }
+                  
+                    funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
+                } else {
+                    Ext.getBody().unmask();
+                    toastr.error(message, 'Failure Response!!');
+                }
+            },
+            failure: function (response) {
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.warning(message, 'Failure Response!!');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error('Error: ' + errorThrown, 'Error Response');
+            }
+        });
+
+    },  
     viewApplicationRecommendationLogs:function(btn) {
         var button = btn.up('button'),
             grid = button.up('grid'),
@@ -623,11 +735,128 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
         funcShowCustomizableWindow('Assement Comments', '60%', grid, 'customizablewindow', btn);
         
     },
+
+    shareReportFeedback: function(btn){
+        var me = this,
+            record = btn.getWidgetRecord(),
+            application_code = record.get('application_code'),
+            store = btn.up('grid').getStore();
+
+         Ext.MessageBox.confirm('Confirm', 'Are you sure you want to share Feedback for this Report ?', function (btn) {
+            if (btn === 'yes') {
+                Ext.getBody().mask('Publishing Report...');
+                Ext.Ajax.request({
+                    url: 'psur/shareFeedBack',
+                    params: {
+                        application_code: application_code,
+                        _token: token
+                    },
+                    headers: {
+                            'Authorization': 'Bearer ' + access_token,
+                            'Accept': 'application/json'
+                        },
+                    success: function (response) {
+                        Ext.getBody().unmask();
+                        var resp = Ext.JSON.decode(response.responseText);
+                        toastr.success(resp.message, 'Success Response');
+                        store.removeAll();
+                        store.load();
+                    },
+                    failure: function (response) {
+                        Ext.getBody().unmask();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        Ext.getBody().unmask();
+                        toastr.error('Error: ' + errorThrown, 'Error Response');
+                    }
+                });
+            } else {
+                toastr.warning('Operation has been cancelled', 'Cancelled');
+            }
+        });
+    },
+
+    batchfeedbackReport: function(btn){
+            var me = this,
+            grid = btn.up('grid'),
+            store = grid.getStore(),
+            sm = grid.getSelectionModel(),
+            selected_records = sm.getSelection(),
+            selected= [],
+            selected_appIds= [];
+            if (selected_records.length===0 || selected_records.length==0) {
+                toastr.error('Please ensure you have report(s) to proceed!!', 'Warning Response');
+                 return false;
+            }
+
+            Ext.each(selected_records, function (item) {
+                selected.push(item.data.application_code);
+                selected_appIds.push(item.data.active_application_id);
+            });
+
+             // Assuming selected_records is an array of records
+            try {
+                Ext.each(selected_records, function (item) {
+                        var is_published = item.data.is_published;
+                        if (is_published === 1 || is_published == 1) {
+                            Ext.getBody().unmask();
+                            toastr.error('Feedback already shared for selected Reports. Kindly ensure no selected report which Feedback has already been shared!!', 'Warning Response');
+                            throw 'BreakLoopException'; // Throw an exception to break out of the loop
+                        }
+                });
+            }catch (e) {
+                if (e === 'BreakLoopException') {
+                    return false; 
+                } else {
+                    throw e;
+                }
+            
+            }   
+         Ext.MessageBox.confirm('Confirm', 'Are you sure the report(s) are ready for Feedback ?', function (btn) {
+            if (btn === 'yes') {
+                Ext.getBody().mask('Publishing Report...');
+                Ext.Ajax.request({
+                    url: 'psur/shareFeedBack',
+                    params: {
+                        selected: JSON.stringify(selected),
+                        _token: token
+                    },
+                    headers: {
+                            'Authorization': 'Bearer ' + access_token,
+                            'Accept': 'application/json'
+                        },
+                    success: function (response) {
+                        Ext.getBody().unmask();
+                        var resp = Ext.JSON.decode(response.responseText);
+                        toastr.success(resp.message, 'Success Response');
+                        store.removeAll();
+                        store.load();
+                    },
+                    failure: function (response) {
+                        Ext.getBody().unmask();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        Ext.getBody().unmask();
+                        toastr.error('Error: ' + errorThrown, 'Error Response');
+                    }
+                });
+            } else {
+                toastr.warning('Operation has been cancelled', 'Cancelled');
+            }
+        });
+    },  
+
+
+
+    printTCPDFColumnPsurPermit: function (item) {
+        var record = item.getWidgetRecord(),
+            application_code = record.get('application_code');
+        this.fireEvent('generateTCPDPsurPermit', application_code);
+    },
     previewPreviousPsurDetails: function (item) {
-        var me = this
+        var me = this,
             mainTabPnl = item.up('#contentPanel'),
-            containerPnl = mainTabPnl.getActiveTab();
-            console.log(containerPnl);
+            containerPnl = mainTabPnl.getActiveTab(),
             product_id = containerPnl.down('hiddenfield[name=product_id]').getValue(),
             childXtype = item.childXtype,
             winTitle=item.winTitle,
