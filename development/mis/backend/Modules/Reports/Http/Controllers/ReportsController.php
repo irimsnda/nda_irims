@@ -282,6 +282,7 @@ public function getModuleName($module_id)
         }
 
 
+        //cost_item
         //check the paymetn Control Number 
         $rec = DB::table('tra_application_invoices as t1')
                     ->join('wb_trader_account as t2','t1.applicant_id', 't2.id')
@@ -291,7 +292,10 @@ public function getModuleName($module_id)
                     ->leftJoin('sub_modules as t6', 't1.sub_module_id','t6.id')
                     ->leftJoin('tra_premises_applications as t7', 't7.application_code','t1.application_code')
                     ->leftJoin('tra_premises as t8', 't7.premise_id','t8.id')
-                    ->select('t1.*','t2.identification_no','t2.name as applicant_name','t2.postal_address', 't2.email','t3.name as country_name','t4.name as region_name', 't5.name as module_name', 't6.name as sub_module','t8.name as premise_name','t8.physical_address as premise_physical_address')
+                    ->leftJoin('tra_gmp_applications as t9', 't9.application_code','t1.application_code')
+                    ->leftJoin('tra_manufacturing_sites as t10', 't9.manufacturing_site_id', '=', 't10.id')
+                    ->leftJoin('tra_personnel_information as t11', 't10.billing_person_id', '=', 't11.id')
+                    ->select('t1.*','t2.identification_no','t2.name as applicant_name','t2.postal_address', 't2.email','t3.name as country_name','t4.name as region_name', 't5.name as module_name', 't6.name as sub_module','t8.name as premise_name','t8.physical_address as premise_physical_address','t10.billing_person_id','t10.applicant_as_billingperson','t11.name as billing_recipient_name','t11.telephone_no as billing_recipient_telephone_no','t11.email_address as billing_recipient_email_address')
                     ->where(array('t1.id'=>$invoice_id))->first();
         if($rec){
             $PayCntrNum = $rec->PayCntrNum;
@@ -321,19 +325,43 @@ public function getModuleName($module_id)
                 $logo = getcwd() . '/resources/images/org-logo.jpg';
                 $pdf->SetFont('times', 'B', 11);
 
-                $this->returnInvoiceReportHeader($pdf,$org_rec,$rec, 'PROFORMA INVOICE');
+                 $this->returnInvoiceReportHeader($pdf,$org_rec,$rec, 'PROFORMA INVOICE',1);
             
 
                 $pdf->Cell(0,7,'To:',0,1);
                 $pdf->SetFont('times', '', 10);
-                $pdf->Cell(0,7,'Customer No:'. $rec->identification_no,0,1);
+
+                 //
                 if($module_id==2 || $module_id===2 || $module_id==29 || $module_id===29){
+                    $pdf->Cell(0,7,'Customer No:'. $rec->identification_no,0,1);
                     $pdf->Cell(0,7,'Applicant Name:'. $rec->applicant_name,0,1);
                     $pdf->Cell(0,7,'Premise Name:'. $rec->premise_name,0,1);
                      $pdf->Cell(0,7,'Physical Address:'. $rec->premise_physical_address,0,1);
-                }else{
+                }else if($module_id ==3 || $module_id===3) {
+
+                    if($rec->applicant_as_billingperson == 2 || $rec->applicant_as_billingperson === 2){
+                     if($rec->billing_recipient_name){
+                        $pdf->Cell(0,7,'Billing Recipient:'. $rec->billing_recipient_name,0,1);
+                        $pdf->Cell(0,7,'Telephone:'. $rec->billing_recipient_telephone_no,0,1);
+                        $pdf->Cell(0,7,'Physical Address:'. $rec->billing_recipient_email_address,0,1);   
+                      }else{
+                        $pdf->Cell(0,7,'Customer No:'. $rec->identification_no,0,1);
+                        $pdf->Cell(0,7,$rec->applicant_name,0,1);
+                        $pdf->Cell(0,7,$rec->postal_address.', '.$rec->region_name.', '.$rec->country_name,0,1);
+                     }
+                       
+                    }else{
+                        $pdf->Cell(0,7,'Customer No:'. $rec->identification_no,0,1);
+                        $pdf->Cell(0,7,$rec->applicant_name,0,1);
+                        $pdf->Cell(0,7,$rec->postal_address.', '.$rec->region_name.', '.$rec->country_name,0,1);
+
+                    }
+                    
+                }
+                else{
+                    $pdf->Cell(0,7,'Customer No:'. $rec->identification_no,0,1);
                     $pdf->Cell(0,7,$rec->applicant_name,0,1);
-                     $pdf->Cell(0,7,$rec->postal_address.', '.$rec->region_name.', '.$rec->country_name,0,1);
+                    $pdf->Cell(0,7,$rec->postal_address.', '.$rec->region_name.', '.$rec->country_name,0,1);
                 }
                 
                 $pdf->Cell(0,7,$rec->email,0,1);
@@ -344,7 +372,7 @@ public function getModuleName($module_id)
                
                 $pdf->SetLineWidth(0.1);
                 //invoice details 
-                $pdf->Cell(15,10,'QTY',1,0);
+                $pdf->Cell(15,10,'NO',1,0);
                 $pdf->Cell(100,10,'IN RESPECT OF',1,0,'C');
                 $pdf->Cell(40,10,'RATE',1,0,'C');
                 $pdf->Cell(0,10,'AMOUNT',1,1,'C');
@@ -354,7 +382,7 @@ public function getModuleName($module_id)
                                 ->leftJoin('par_cost_elements as t4','t3.element_id','t4.id')
                                 ->leftJoin('par_fee_types as t5','t3.feetype_id','t5.id')
                                 ->leftJoin('par_cost_categories as t6','t3.cost_category_id','t6.id')
-                                ->select(DB::raw(" t4.name AS cost_element, t5.name AS fee_type, t6.name AS cost_category, t1.total_element_amount AS invoice_amount, t1.paying_currency_id,t2.name as currency_name"))
+                                ->select(DB::raw("t1.element_costs_id,t4.name AS cost_element, t5.name AS fee_type, t6.name AS cost_category, t1.total_element_amount AS invoice_amount, t1.paying_currency_id,t2.name as currency_name"))
                                 ->where(array('t1.invoice_id'=>$invoice_id))
                                 ->get();
 
@@ -369,6 +397,10 @@ public function getModuleName($module_id)
                     foreach($inv_rec as $inv){
                         $currency_name = $inv->currency_name;
                         $cost_item = $inv->fee_type." ".$inv->cost_category." ".$inv->cost_element;
+                        // if($module_id==3 || $module_id===3){
+                        //   $cost_item_desc=$this->returnCostItemDesc($application_code,$inv->element_costs_id);
+                        //   $cost_item = $inv->fee_type." ".$inv->cost_category." ".$inv->cost_element." ".$cost_item_desc;
+                        // }
                         $paying_currency_id = $inv->paying_currency_id;
                             $rowcount = max($pdf->getNumLines($cost_item, 92),$pdf->getNumLines($inv->invoice_amount, 40));
                         $pdf->MultiCell(15,7*$rowcount,$i,1,'',0,0);
@@ -440,13 +472,14 @@ public function getModuleName($module_id)
                         $i = 1;
                     foreach($bank_rec as $bank){
 
-                    $pdf->MultiCell(0,7,$i.'.'.$bank->currency_name." "."A/C No.".$bank->account_no.'('.$bank->bank_name.')'.'-'.$bank->account_name,0,'',0,1);   
+                   $pdf->MultiCell(0,7,$i.". A/C No.".$bank->account_no.' , '.$bank->account_name.' , '.$bank->bank_name,0,'',0,1); 
+                   // $pdf->MultiCell(0,7,$bank->bank_name,0,'',0,1);  
                        $i++;        
                     }
                 }  
                 //$pdf->ln();
                 $pdf->SetFont('times', '', 10);
-                $pdf->MultiCell(0,7,'Payments to National Drug Authority (NDA] must be net invoice figures',0,'',0,1); 
+                $pdf->MultiCell(0,7,'Payments to National Drug Authority (NDA) must be net invoice figures',0,'',0,1); 
                  $pdf->SetFont('times', 'B', 10);
                 $pdf->MultiCell(0,7,'All Bank Charges shall be met by the payer',0,'',0,1);   
 
@@ -554,7 +587,7 @@ public function getModuleName($module_id)
                 $logo = getcwd() . '/resources/images/org-logo.jpg';
                 $pdf->SetFont('times', 'B', 12);
 
-                $this->returnInvoiceReportHeader($pdf,$org_rec,$rec, 'PROFORMA INVOICE');
+               $this->returnInvoiceReportHeader($pdf,$org_rec,$rec, 'PROFORMA INVOICE',0);
             
 
                 $pdf->Cell(0,7,'To:',0,1);
@@ -570,7 +603,7 @@ public function getModuleName($module_id)
                
                 $pdf->SetLineWidth(0.1);
                 //invoice details 
-                $pdf->Cell(15,10,'QTY',1,0);
+                $pdf->Cell(15,10,'NO',1,0);
                 $pdf->Cell(100,10,'IN RESPECT OF',1,0,'C');
                 $pdf->Cell(40,10,'RATE',1,0,'C');
                 $pdf->Cell(0,10,'AMOUNT',1,1,'C');
@@ -663,13 +696,14 @@ public function getModuleName($module_id)
                         $i = 1;
                     foreach($bank_rec as $bank){
 
-                    $pdf->MultiCell(0,7,$i.'.'.$bank->currency_name." "."A/C No.".$bank->account_no.'('.$bank->bank_name.')'.'-'.$bank->account_name,0,'',0,1);   
+                      $pdf->MultiCell(0,7,$i.". A/C No.".$bank->account_no.' , '.$bank->account_name.' , '.$bank->bank_name,0,'',0,1); 
+                   // $pdf->MultiCell(0,7,$bank->bank_name,0,'',0,1); 
                        $i++;        
                     }
                 }  
                 //$pdf->ln();
                 $pdf->SetFont('times', '', 11);
-                $pdf->MultiCell(0,7,'Payments to National Drug Authority (NDA] must be net invoice figures',0,'',0,1); 
+                $pdf->MultiCell(0,7,'Payments to National Drug Authority (NDA) must be net invoice figures',0,'',0,1); 
                 $pdf->SetFont('times', 'B', 10);
                 $pdf->MultiCell(0,7,'All Bank Charges shall be met by the payer',0,'',0,1);    
 
@@ -704,12 +738,12 @@ public function getModuleName($module_id)
         }
         
         if(validateIsNumeric($application_code)){
-            $reference_no = getSingleRecordColValue($table_name, array('application_code' => $application_code), 'reference_no');
+            $reference_no = getSingleRecordColValue($table_name, array('application_code' => $application_code), 'tracking_no');
            // $payment_id = getSingleRecordColValue('tra_payments', array('application_code' => $application_code), 'id');
         }
         else{
             
-            $reference_no = getSingleRecordColValue($table_name, array('id' => $application_id), 'reference_no');
+            $reference_no = getSingleRecordColValue($table_name, array('id' => $application_id), 'tracking_no');
             $application_code = getSingleRecordColValue($table_name, array('id' => $application_id), 'application_code');
             
         }
@@ -780,7 +814,7 @@ public function getModuleName($module_id)
                 
                 $pdf->SetFont('times', 'b', 10);
                 
-                $pdf->Cell(0,7,strtoupper('Ref No:'. $rec->tracking_no .' '.$rec->reference_no),0,1, 'R');
+                $pdf->Cell(0,7,strtoupper('Ref No:'. $reference_no),0,1, 'R');
                 
                 $pdf->ln();
                 
@@ -902,7 +936,7 @@ public function getModuleName($module_id)
                     $logo = getcwd() . '/resources/images/org-logo.jpg';
                     $pdf->SetFont('times', 'B', 11);
 
-                    $this->returnInvoiceReportHeader($pdf,$org_rec,$rec, 'TAX INVOICE');
+                     $this->returnInvoiceReportHeader($pdf,$org_rec,$rec, 'TAX INVOICE',0);
                 
 
                     $pdf->Cell(0,7,'To:',0,1);
@@ -925,7 +959,7 @@ public function getModuleName($module_id)
                    
                     $pdf->SetLineWidth(0.1);
                     //invoice details 
-                    $pdf->Cell(15,10,'QTY',1,0);
+                    $pdf->Cell(15,10,'NO',1,0);
                     $pdf->Cell(100,10,'IN RESPECT OF',1,0,'C');
                     $pdf->Cell(40,10,'RATE',1,0,'C');
                     $pdf->Cell(0,10,'AMOUNT',1,1,'C');
@@ -1020,13 +1054,14 @@ public function getModuleName($module_id)
                             $i = 1;
                         foreach($bank_rec as $bank){
 
-                        $pdf->MultiCell(0,7,$i.'.'.$bank->currency_name." "."A/C No.".$bank->account_no.'('.$bank->bank_name.')'.'-'.$bank->account_name,0,'',0,1);   
+                            $pdf->MultiCell(0,7,$i.". A/C No.".$bank->account_no.' , '.$bank->account_name.' , '.$bank->bank_name,0,'',0,1); 
+                            //$pdf->MultiCell(0,7,$bank->bank_name,0,'',0,1);  
                            $i++;        
                         }
                     }  
                     //$pdf->ln();
                     $pdf->SetFont('times', '', 10);
-                    $pdf->MultiCell(0,7,'Payments to National Drug Authority (NDA] must be net invoice figures',0,'',0,1); 
+                    $pdf->MultiCell(0,7,'Payments to National Drug Authority (NDA) must be net invoice figures',0,'',0,1); 
                      $pdf->SetFont('times', 'B', 10);
                     $pdf->MultiCell(0,7,'All Bank Charges shall be met by the payer',0,'',0,1);   
 
@@ -1257,6 +1292,10 @@ public function getModuleName($module_id)
             PDF::StopTransform();
             PDF::SetTextColor(0, 0, 0);
         }
+        public function generateProductNotificationLetter (Request $request){
+            $res = $this->printProductNotificationLetter($request);
+            print_r($res);
+       }
 
        public function generatePremisePermit(Request $request)
        {
@@ -1472,7 +1511,7 @@ public function getModuleName($module_id)
                         PDF::Cell(0,8,'FOR THE AUTHORITY',0,1,'C');
 
 
-                        $data = "Premises Registration: Premise No:".$premise_reg_no."; Premises Name:".$premise_name.";Issued Date:".$permit_issue_date.";Valid up to:".$expiry_date;
+                        $data = "Premises Registration: Premise No:".$premise_reg_no.", Premises Name:".$premise_name.", Physical Address:".$premise_physical_address.",Issued Date:".$permit_issue_date.",Valid up to:".$license_expiry_date;
                                 $styleQR = array('border' => false, 'padding' => 0, 'fgcolor' => array(0, 0, 0), 'bgcolor' => false);
                          // QRCODE,H : QR-CODE Best error correction
                         $qrCodeX = 10; // X coordinate
@@ -1633,7 +1672,7 @@ public function getModuleName($module_id)
                         PDF::Cell(0,8,'FOR THE AUTHORITY',0,1,'C');
 
 
-                         $data = "Premises Registration: Premise No:".$premise_reg_no."; Premises Name:".$premise_name.";Issued Date:".$permit_issue_date.";Valid up to:".$expiry_date;
+                         $data = "Premises Registration: Premise No:".$premise_reg_no.", Premises Name:".$premise_name.", Physical Address:".$premise_physical_address.",Issued Date:".$permit_issue_date.",Valid up to:".$license_expiry_date;
                                 $styleQR = array('border' => false, 'padding' => 0, 'fgcolor' => array(0, 0, 0), 'bgcolor' => false);
                          // QRCODE,H : QR-CODE Best error correction
                         $qrCodeX = 10; // X coordinate
@@ -2442,14 +2481,15 @@ public function getModuleName($module_id)
         $permit_watermark = $request->input('permit_watermark');
         $is_permitupdate = $request->input('is_permitupdate');
         
-        $approvalGrant = DB::table('tra_managerpermits_review')->where('application_code',$application_code)->first();
+
+        $approvalGrant = DB::table('tra_permitsrelease_recommendation')->where('application_code',$application_code)->first();
         if(!empty($approvalGrant) && $approvalGrant->decision_id == 1){
             $record = DB::table('tra_importexport_applications as t1')
                         ->join('sub_modules as t2','t1.sub_module_id','t2.id')
                         ->select('t2.title', 't1.sub_module_id')
                         ->where('application_code',$application_code)->first();
                         $sub_module_id = $record->sub_module_id;
-            if($sub_module_id == 78){
+            if($sub_module_id == 81){
 
                 $this->printImportExportLicense($application_code,$record,$permit_watermark);
             }
@@ -2590,7 +2630,7 @@ public function getModuleName($module_id)
              $product_id = $rec->product_id;
              $sub_module_id = $approvalGrant->sub_module_id;
                  
-            if($section_id == 2){
+            if($section_id == 1){
                 $document_number = 'BVS/099/45';
                 $certificate_name = 'DRUGS CERTIFICATE';
                 $report_name = 'DrugsCertificateReport';
@@ -2628,8 +2668,8 @@ public function getModuleName($module_id)
                             ->leftJoin('tra_product_information as t7', 't1.product_id', '=', 't7.id')
                             ->leftJoin('par_common_names as t8', 't7.common_name_id', '=', 't8.id')
                             ->leftJoin('par_classifications as t14', 't7.classification_id', '=', 't14.id')
-                            ->select('t1.*','t18.name as dosage_form', 't3.name as trader_name','t3.physical_address as trader_address','t10.name as region_name' , 't9.name as country_name','t4.name as application_status', 't6.name as dg_recommendation', 't5.decision_id as recommendation_id','t7.gmdn_term as gmdn_name','t7.gmdn_code','t15.name as storage_condition','t7.physical_description','t7.shelf_life',
-                                't1.id as active_application_id','t5.permit_signatory','t7.contraindication', 't7.brand_name as brandName', 't8.name as common_names', 't14.name as classification','t5.expiry_date','t11.name as localAgentName','t11.physical_address as local_agent_address', 't5.certificate_no', 't5.approval_date', 't13.name as manufacturer','t5.certificate_issue_date', 't16.name as distribution_category',
+                            ->select('t1.*','t18.name as dosage_form', 't3.name as trader_name','t3.physical_address as trader_address','t10.name as region_name' , 't9.name as country_name','t4.name as application_status', 't6.name as dg_recommendation', 't5.decision_id as recommendation_id','t7.gmdn_term as gmdn_name','t23.name as therapeutic_category','t24.pack_id','t7.gmdn_code','t15.name as storage_condition','t7.physical_description','t7.shelf_life',
+                                't1.id as active_application_id','t20.strength','t5.permit_signatory','t7.indication', 't7.brand_name as brandName', 't22.name as product_category','t21.name as common_names', 't14.name as classification','t5.expiry_date','t11.name as localAgentName','t11.physical_address as local_agent_address', 't5.certificate_no', 't5.approval_date', 't13.name as manufacturer','t5.certificate_issue_date', 't16.name as distribution_category',
                                 DB::raw("concat(decrypt(t17.first_name),' ',decrypt(t17.last_name)) as permit_signatoryname, t19.certificate_title"))
                             
                             ->leftJoin('tra_approval_recommendations as t5', 't1.application_code', '=', 't5.application_code')
@@ -2639,17 +2679,17 @@ public function getModuleName($module_id)
                             ->leftJoin('wb_trader_account as t11', 't1.local_agent_id', '=', 't11.id')
                             ->leftJoin('tra_product_manufacturers as t12', 't1.product_id', '=', 't12.product_id')
                             ->leftJoin('tra_manufacturers_information as t13', 't12.manufacturer_id', '=', 't13.id')
-                            ->leftJoin('par_storage_conditions as t15', 't7.storage_condition_id', '=', 't15.id')
+                            ->leftJoin('par_storage_conditions as t15', 't7.storage_conditionafter_opening', '=', 't15.id')
                             ->leftJoin('par_distribution_categories as t16', 't7.distribution_category_id', '=', 't16.id')
                             ->leftJoin('par_dosage_forms as t18', 't7.dosage_form_id', '=', 't18.id')
                             ->leftJoin('par_sections as t19', 't1.section_id', '=', 't19.id')
                             ->leftJoin('users as t17', 't5.permit_signatory', '=', 't17.id')
-                            
-                            
+                            ->leftJoin('tra_product_ingredients as t20', 't1.product_id', '=', 't20.id')
+                            ->leftJoin('par_ingredients_details as t21', 't20.ingredient_id', '=', 't21.id')
+                            ->leftJoin('par_prodclass_categories as t22', 't7.prodclass_category_id', '=', 't22.id')
+                            ->leftJoin('par_therapeutic_group as t23', 't7.therapeutic_group', '=', 't23.id')
+                            ->leftJoin('tra_product_diluent_packaging as t24', 't1.product_id', '=', 't24.product_id')
                             ->where(array('t1.application_code' => $application_code));
-
-
-
 
                         $record = $qry->first();
                         
@@ -7545,7 +7585,7 @@ function returnReportHeader($pdf,$org_rec,$rec,$title){
                 $pdf->SetFont('times', 'B', 11);
         
     }
-function returnInvoiceReportHeader($pdf,$org_rec,$rec,$title){
+function returnInvoiceReportHeader($pdf,$org_rec,$rec,$title,$isProforma){
                $pdf->Cell(0,25,'',0,1);
                $pdf->SetFont('times', 'B', 9);
                 // Left column content
@@ -7560,7 +7600,13 @@ function returnInvoiceReportHeader($pdf,$org_rec,$rec,$title){
                 $pdf->SetX(150);
                 $pdf->SetFont('times', 'B', 9);
                 $date_of_invoicing = date('F d\\, Y',strtotime($rec->date_of_invoicing));
-                $invoice_no='Invoice No: '.$rec->invoice_no;
+
+                if(validateisNumeric($isProforma)){
+                  $invoice_no='Proforma Invoice No: '.$rec->invoice_no;
+                }else{
+                   $invoice_no = 'Invoice No: ' . str_replace('PF', 'INV', $rec->invoice_no);
+                }
+                
                 if($rec->module_id==2 || $rec->module_id===2 || $rec->module_id==29 || $rec->module_id===29){
 
                     $premise_ref_no= getSingleRecordColValue('tra_premises_applications', array('application_code' => $rec->application_code), 'premise_ref_no');
@@ -7568,16 +7614,30 @@ function returnInvoiceReportHeader($pdf,$org_rec,$rec,$title){
                     if($premise_ref_no==''){
                       $premise_ref_no= getSingleRecordColValue('wb_premises_applications', array('application_code'=>$rec->application_code), 'premise_ref_no', 'portal_db');
                      }
-                    $ref_no='Premise Ref No: '.$premise_ref_no.' '.$rec->tracking_no;
+                    //$ref_no='Premise Ref No: '.$premise_ref_no.'Tracking No'.$rec->tracking_no;
+                      $ref_no = 'Premise Ref No: ' . $premise_ref_no . "\n" . 'Tracking No: ' . $rec->tracking_no;
                 }else{
                  $ref_no='Application No: '.$rec->tracking_no.' '.$rec->reference_no;   
                 }
-                $invoice_date = 'Invoice Date: ' . $date_of_invoicing;
+
+                if(validateisNumeric($isProforma)){
+                   $invoice_date = 'PF Date: ' . $date_of_invoicing;
+                }else{
+                    $invoice_date = 'Invoice Date: ' . $date_of_invoicing; 
+                }
+               
               
                 // Calculate 3 months from the invoice date
                // $expiry_date_timestamp = strtotime($date_of_invoicing . ' +3 months');
                  $expiry_date_timestamp = strtotime($rec->due_date);
-                $invoice_expiry_date = 'Invoice Expiry Date: ' . date('F j, Y', $expiry_date_timestamp);
+                
+                if(validateisNumeric($isProforma)){
+                   $invoice_expiry_date = 'PF Expiry Date: ' . date('F j, Y', $expiry_date_timestamp);
+                }else{
+                   $invoice_expiry_date = 'Invoice Expiry Date: ' . date('F j, Y', $expiry_date_timestamp);
+                }
+
+
                 $pdf->MultiCell(60, 10,"\n\n\n$invoice_no\n$ref_no\n$invoice_date\n$invoice_expiry_date", 0, 'L', false, 1, '', '', true);
 
                $pdf->SetFont('times', 'B', 13);
@@ -7595,6 +7655,40 @@ function returnInvoiceReportHeader($pdf,$org_rec,$rec,$title){
                 $pdf->SetFont('times', 'B', 11);
         
     }
+
+
+
+  function returnCostItemDesc($application_code,$element_costs_id){
+
+     $lines_rec = DB::table('tra_gmp_applications as t1')
+                ->join('tra_manufacturing_sites as t2', 't1.manufacturing_site_id', '=', 't2.id')
+                 ->leftJoin('gmp_productline_details as t3', 't1.manufacturing_site_id', '=', 't3.manufacturing_site_id')
+                ->select('t1.*','t2.inspection_activities_id',DB::raw('COUNT(DISTINCT t3.id) as lines_no'))
+                ->groupBy('t1.id')
+                 ->where('t1.application_code',$application_code)
+                ->first();
+
+        $additional_no_of_lines = $lines_rec->lines_no - 5;
+        $total_lines_no=$lines_rec->lines_no;
+        $inspection_activities_id=$lines_rec->inspection_activities_id;
+
+        if($inspection_activities_id==1 && validateIsNumeric($additional_no_of_lines)){
+
+            //application_feetype_id
+          // element_costs_id
+            $application_feetype_id= getSingleRecordColValue('tra_appmodules_feesconfigurations', array('element_costs_id' => $element_costs_id), 'application_feetype_id');
+           if($application_feetype_id==6 || $application_feetype_id===6){
+               $cost_item_desc='(for' .$additional_no_of_lines .'additional production lines)';
+           }else{
+             $cost_item_desc='(for Maximum of 5 production lines)';
+           }
+        }else{
+            $cost_item_desc=' ';
+        }
+
+        return $cost_item_desc;
+
+  }
 
 public function printSpecialRequestScreeningfrm(Request $req){
     try{

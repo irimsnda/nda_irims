@@ -34,7 +34,7 @@ Route::group(['middleware' => 'web', 'prefix' => 'reports'], function () {
 
     Route::get('getReportUrl',[ReportsController::class,'getReportUrl']);
 
-    
+    Route::get('generateProductNotificationLetter',[ReportsController::class,'generateProductNotificationLetter']);
 
     Route::get('generateProductNotificationCertificate',[ReportsController::class,'generateProductNotificationCertificate']);
     Route::get('generateProductNotificationApprovalLetter',[ReportsController::class,'generateProductNotificationApprovalLetter']);

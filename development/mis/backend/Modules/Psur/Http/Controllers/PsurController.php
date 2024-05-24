@@ -376,7 +376,7 @@ public function preparenewPsurReceiving(Request $req)
             $active_application_code = $request->active_application_code;
             $active_application_id = $request->active_application_id;
             $product_id = $request->product_id;
-            $user_id = $this->user_id;
+            $user_id = \Auth::user()->id;
             $post_data = $request->all();  
             $record_id = $request->assessment_id;
             unset($post_data['_token']);
@@ -444,6 +444,14 @@ public function preparenewPsurReceiving(Request $req)
             }
 
             $results = $qry->orderBy('t9.id','desc')->groupBy('t1.id')->get();
+
+             foreach ($results as $result) {
+                $result->from_date = formatDateWithSuffix($result->from_date);
+                $result->to_date = formatDateWithSuffix($result->to_date);
+                $result->report_approval_date = formatDateWithSuffix($result->report_approval_date);
+                $result->international_birth_date = formatDateWithSuffix($result->international_birth_date);
+                $result->data_log_point = formatDateWithSuffix($result->data_log_point);
+            }
 
 
             $res = array(
@@ -552,7 +560,7 @@ public function preparenewPsurReceiving(Request $req)
         $section_id = $request->input('section_id');
         $sub_module_id = $request->input('sub_module_id');
         $workflow_stage_id = $request->input('workflow_stage_id');
-        $user_id = $this->user_id;
+        $user_id = \Auth::user()->id;
         $assigned_groups = getUserGroups($user_id);
         $is_super = belongsToSuperGroup($assigned_groups);
         try {
@@ -637,6 +645,7 @@ public function preparenewPsurReceiving(Request $req)
     }
 
 public function shareFeedBackAndLog($application_code){
+        $user_id= \Auth::user()->id;
         $where = ['application_code' => $application_code];
         $update = ['is_notified' => 1];
 
@@ -645,7 +654,7 @@ public function shareFeedBackAndLog($application_code){
         if ($res['success']) {
             $data = [
                 'application_code' => $application_code,
-                'feedback_shared_by' => $this->user_id,
+                'feedback_shared_by' =>$user_id,
                 'feedback_shared_on' => Carbon::now()
             ];
             insertRecord('tra_psur_published_logs', $data);

@@ -367,7 +367,7 @@ Ext.define('Admin.controller.ReportsCtr', {
     },
 
      generateTCPDPsurPermit: function (application_code) {
-        var action_url = 'reports/generatePremisePermit?application_code=' + application_code;
+        var action_url = 'reports/generateProductNotificationLetter?application_code=' + application_code;
         print_report(action_url);
     },
 

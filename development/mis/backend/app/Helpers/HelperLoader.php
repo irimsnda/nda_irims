@@ -687,6 +687,14 @@ if (!function_exists('validateIsNumeric')) {
         return UtilityHelper::validateIsNumeric($value);
     }
 }
+
+if (!function_exists('formatDateWithSuffix')) {
+    function formatDateWithSuffix($date)
+    {
+        return UtilityHelper::formatDateWithSuffix($date);
+    }
+}  
+
 if (!function_exists('updateRenewalPermitDetails')) {
     function updateRenewalPermitDetails($primary_id, $current_permit_id, $table_name)
     {

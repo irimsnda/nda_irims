@@ -1466,6 +1466,25 @@ static function getPermitSignatoryDetails()
 
     }
 
+    static function getOrdinalSuffix($day) {
+            //code by Mulinge
+            if (!in_array(($day % 100), array(11, 12, 13))) {
+                switch ($day % 10) {
+                    case 1: return 'st';
+                    case 2: return 'nd';
+                    case 3: return 'rd';
+                }
+            }
+            return 'th';
+        }
+   static function formatDateWithSuffix($date) {
+            //code by Mulinge
+            $timestamp = strtotime($date);
+            $day = date('j', $timestamp);
+            $suffix = self::getOrdinalSuffix($day);
+            return date('j', $timestamp) . '<sup>' . $suffix . '</sup> ' . date('F, Y', $timestamp);
+        }
+
     static function getPermitExpiryDate($approval_date, $duration, $duration_mode)
     {
 		
