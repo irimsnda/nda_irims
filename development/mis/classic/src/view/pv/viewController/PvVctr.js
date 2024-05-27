@@ -1362,10 +1362,11 @@ Ext.define('Admin.view.pv.viewcontrollers.PvVctr', {
                     a.href = t.file; 
                     a.download = t.name;
                     document.body.appendChild(a);
-
-                    a.click();
-                             
+                    a.click();       
                     a.remove();
+                    store.removeAll();
+                    store.load();
+                    toastr.success(t.message, 'Success Response');
 
                     } else {
                 toastr.error(t.message, 'Warning Response');

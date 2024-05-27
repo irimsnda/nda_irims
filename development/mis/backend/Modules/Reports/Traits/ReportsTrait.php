@@ -2472,7 +2472,7 @@ public function printImportPersonalUseLette11($req){
 							                   ->select('t1.*')
 							                    ->where('t1.application_code', $application_code);
 							            $product_results = $product_qry->get();
-                                   
+                                        
                                         $product_desc ='';
 							            foreach ($product_results as $product_result) {
 							            	if($product_result->product_registration_no){
@@ -2489,7 +2489,6 @@ public function printImportPersonalUseLette11($req){
 										} else {
 										    $product_desc = implode('', $brand_name); // Only one element, no need for 'and'
 										}
-							            $product_desc = '';
 										if ($record->version_no) {
 										    $product_desc = $product_desc . " Version {$record->version_no}";
 										}
@@ -2504,13 +2503,13 @@ public function printImportPersonalUseLette11($req){
 										}
 										if ($record->data_log_point) {
 										    $data_log_point = formatDateWithSuffix($record->data_log_point);
-										    $product_desc = $product_desc . " for Data log Point {$data_log_point}";
+										    $product_desc = $product_desc . " for Data log Point on {$data_log_point}";
 										}
 
                                         $submitted_on = formatDateWithSuffix($record->submitted_on);
                                         $pdf->writeHTMLCell(0, 5, '', '', "We acknowledge receipt of the {$record->notification_type} for {$product_desc}, which was submitted on {$submitted_on}. We appreciate your prompt submission in accordance with regulatory requirements and timelines.", 0, 1, 0, true, 'J', true);
 												            
-                                        $pdf->ln();
+                                        //$pdf->ln();
 									
 										$pdf->writeHTML($record->reviewers_final_response, true, false, true, false, '');
 

@@ -49,7 +49,7 @@ Ext.define('Admin.view.psur.views.forms.PsurDetailsFrm', {
                 queryMode: 'local',
                 forceSelection: true,
                 valueField: 'id',
-                allowBlank:false,
+                //allowBlank:false,
                 displayField: 'name',
                 fieldLabel: 'Report Type',
                 name: 'psur_type_id',

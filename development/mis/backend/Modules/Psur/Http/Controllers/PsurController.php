@@ -420,6 +420,7 @@ public function preparenewPsurReceiving(Request $req)
         $module_id = $request->input('module_id');
         $sub_module_id = $request->input('sub_module_id');
         $workflow_stage = $request->input('workflow_stage_id');
+        $process_id = $request->input('process_id');
         $table_name = getTableName($module_id);
         try {  
             $qry = DB::table('tra_psur_pbrer_applications as t1')
@@ -434,13 +435,17 @@ public function preparenewPsurReceiving(Request $req)
                 ->leftJoin('tra_approval_recommendations as t14', 't1.application_code', 't14.application_code')
                 ->leftJoin('tra_psur_evaluation_details as t25', 't1.application_code', 't25.application_code')
                 ->leftJoin('par_psur_type as t26', 't1.psur_type_id', 't26.id')
-                ->select('t1.*','t3.name as applicant_name','t1.application_code as active_application_code','t1.id as active_application_id','t1.from_date as reporting_from','t1.to_date as reporting_to','t2.product_origin_id', 't2.brand_name as product_name', DB::raw("CONCAT_WS(' ',decrypt(t10.first_name),decrypt(t10.last_name)) as submitted_by"), 't9.date_received as submitted_on', 't8.name as common_name', 't3.name as applicant_name', 't4.name as application_status',
+                ->select('t1.*','t25.reviewers_final_response','t3.name as applicant_name','t1.application_code as active_application_code','t1.id as active_application_id','t1.from_date as reporting_from','t1.to_date as reporting_to','t2.product_origin_id', 't2.brand_name as product_name', DB::raw("CONCAT_WS(' ',decrypt(t10.first_name),decrypt(t10.last_name)) as submitted_by"), 't9.date_received as submitted_on', 't8.name as common_name', 't3.name as applicant_name', 't4.name as application_status',
                      't1.id as active_application_id', 't5.decision_id','t5.approval_date','t5.expiry_date', 't5.id as approval_id', 't12.stage_category_id','t14.decision_id as approval_decision_id'
                     ,'t26.name as report_type')
                 ->where(array('t9.current_stage'=>$workflow_stage,'isDone'=>0) );
 
-          if (validateIsNumeric($sub_module_id)) {
+            if (validateIsNumeric($sub_module_id)) {
                 $qry->where('t1.sub_module_id', $sub_module_id);
+            }
+
+             if (validateIsNumeric($process_id)) {
+                $qry->where('t9.process_id', $process_id);
             }
 
             $results = $qry->orderBy('t9.id','desc')->groupBy('t1.id')->get();

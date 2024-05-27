@@ -20,13 +20,18 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.Manufacturin
         columnWidth: 0.5,
         allowBlank: false,
     },
+
     items: [{
         xtype: 'hiddenfield',
         name: 'id'
+    },{
+        xtype: 'hiddenfield',
+        name: '_token',
+        value: token
     }, {
         xtype: 'hiddenfield',
         name: 'model',
-        value: 'tra_manufacturers_information'
+        value: 'tra_manufacturing_sites'
     }, {
         xtype: 'textfield',
         name: 'name',
@@ -121,7 +126,7 @@ Ext.define('Admin.view.productregistration.views.forms.common_forms.Manufacturin
         items: ['->', {
             text: 'Save Details',
             iconCls: 'x-fa fa-save',
-            table_name: 'tra_manufacturers_information',
+            table_name: 'tra_manufacturing_sites',
             storeID: 'manufacturingDetailsStr',
             formBind: true,
             ui: 'soft-purple',

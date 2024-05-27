@@ -612,10 +612,16 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'gmpmanagerevaluation': {
                 afterrender: 'prepareManagersInterfaceGeneric'
             },
+            'applicationcommentspnl combo[name=recommendation_id]': {
+                afterrender: 'afterRecommendationComboRender'
+            },
 
             //  'pvDetailsFrm': {
             //     beforerender: 'prepareInterfaceBasedonConfig'
             // },
+
+
+            
 
 
             'gmpmanagerreview': {
@@ -643,6 +649,17 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
 
             'psurManagerAllocationPnl button[name=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'psurManagerreviewAllocationPnl button[name=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
+            'psurDirectorReviewPnl button[name=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+            'psurcommunicationPnl button[name=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
 
@@ -918,6 +935,9 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'psurAssessmentPnl toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
+            'psurreviewPnl toolbar menu menuitem[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
 
             'importexportlicencevaluationpnl toolbar menu menuitem[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
@@ -1120,7 +1140,11 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
              'psurDocUploadsGrid button[name=add_upload]': {
                 click: 'showApplicationDocUploadWin'
             },
-
+             
+             'psurAssessmentUploadsGrid button[name=add_upload]': {
+                click: 'showApplicationDocUploadWin'
+            },
+              
 
             'productqualityassessmentDocUploadsGrid button[name=add_upload]': {
                 click: 'showApplicationDocUploadWin'
@@ -1419,6 +1443,9 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'showApplicationCommentsWin'
             },
             'psurAssessmentPnl button[name=prev_comments]': {
+                click: 'showApplicationCommentsWin'
+            },
+            'psurreviewPnl button[name=prev_comments]': {
                 click: 'showApplicationCommentsWin'
             },
 
@@ -3359,6 +3386,15 @@ setCompStore: function (me, options) {
                         if (!release_recommendation_id) {
                             Ext.getBody().unmask();
                             toastr.error('Please ensure all selected applications have an approval decision to proceed!!', 'Warning Response');
+                            throw 'BreakLoopException'; // Throw an exception to break out of the loop
+                        }
+                    }
+
+                    if (btn.isNotificationSubmission) {
+                        var is_notified = item.data.is_notified;
+                        if (!is_notified) {
+                            Ext.getBody().unmask();
+                            toastr.error('Please ensure Feedback is shared for the selected Report(s) to proceed!!', 'Warning Response');
                             throw 'BreakLoopException'; // Throw an exception to break out of the loop
                         }
                     }
@@ -11496,6 +11532,18 @@ else{
 
 
     },
+
+
+    afterRecommendationComboRender: function (cmbo) {
+                    var mainTabPnl = this.getMainTabPanel(),
+                    activeTab = mainTabPnl.getActiveTab(),
+                    module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+                    store = cmbo.getStore(),
+                    filterObj = {module_id: module_id},
+                    filterStr = JSON.stringify(filterObj);
+                store.removeAll();
+                store.load({params: {filters: filterStr}});
+     },
 
 
 

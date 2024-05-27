@@ -30,13 +30,21 @@ Ext.define('Admin.controller.PsurCtr', {
             'psurAssessmentPnl button[name=process_submission_btn]': {
                 click: 'showReceivingApplicationSubmissionWin'
             },
+
+            'psurreviewPnl button[name=process_submission_btn]': {
+                click: 'showReceivingApplicationSubmissionWin'
+            },  
+
             'newPsurReceivingPnl': {
                 afterrender: 'preparenewPsurReceiving'
             },
             'psurAssessmentPnl': {
                 afterrender: 'preparenewPsurAssessment'
             },
-               'psurdetailsFrm': {
+            'psurreviewPnl': {
+                afterrender: 'preparenewPsurReview'
+            },
+            'psurdetailsFrm': {
                 afterrender: 'psurdetailsDetailsFrmDefination'
             },
             'psurdetailsFrm combo[name=psur_type_id]': {
@@ -597,8 +605,7 @@ Ext.define('Admin.controller.PsurCtr', {
             storeID = btn.storeID,
             table_name = btn.table_name,
             winWidth = btn.winWidth,
-            activeTab = mainTabPanel.getActiveTab();
-            console.log(activeTab);
+            activeTab = mainTabPanel.getActiveTab(),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
@@ -609,8 +616,54 @@ Ext.define('Admin.controller.PsurCtr', {
             if(activeTab.down('hiddenfield[name=is_dataammendment_request]')){
                 is_dataammendment_request = activeTab.down('hiddenfield[name=is_dataammendment_request]').getValue();
             }
+
+
+        valid = this.validateNewPsurReceivingSubmission();
+        if (valid) {
             showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsreceivingfrm', winWidth, storeID,'','','',workflow_stage_id,is_dataammendment_request);
+          
+        } else {
+            Ext.getBody().unmask();
+            // toastr.warning('Please Enter All the required Request Details!!', 'Warning Response');
+            return;
+        }
     },
+
+     validateNewPsurReceivingSubmission: function (btn) {
+        var mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            applicantFrm = activeTab.down('productapplicantdetailsfrm'),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
+
+
+            psurdetailsFrm = activeTab.down('psurdetailsFrm'),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue();
+
+         
+
+        if (!application_id) {
+            toastr.warning('Please Save Application Details!!', 'Warning Response');
+            return false;
+        }
+        if (!applicantFrm.isValid()) {
+            toastr.warning('Please Enter  required Applicant Details!!', 'Warning Response');
+            return false;
+        }
+
+        if (!psurdetailsFrm.isValid()) {
+            toastr.warning('Please Enter All the required Required Report Details!!', 'Warning Response');
+            return false;
+        }
+
+        var  validate_appdetails = validateApplicationDetails(application_code,module_id);
+        if(!validate_appdetails){
+                return false;
+        }
+
+        return true;
+    }, 
     preparenewPsurReceiving: function () {
         Ext.getBody().mask('Please wait...');
         var me = this,
@@ -693,6 +746,120 @@ Ext.define('Admin.controller.PsurCtr', {
             //It's a new application
         }
     },
+
+     preparenewPsurReview: function () {
+        Ext.getBody().mask('Please wait...');
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+           application_status_id = activeTab.down('hiddenfield[name=application_status_id]').getValue(),
+            // stores = '[]',
+            // storeArray = eval(stores),
+            app_doc_types_store = activeTab.down('combo[name=applicable_documents]').getStore(),
+            applicantFrm = activeTab.down('productapplicantdetailsfrm'),
+            // localagentFrm = activeTab.down('productlocalapplicantdetailsfrm'),
+           // products_detailsfrm = activeTab.down('drugsProductsDetailsFrm'),
+            psurdetailsFrm = activeTab.down('psurdetailsFrm'),
+            psurEvaluationFrm = activeTab.down('psurEvaluationFrm'),
+           // app_check_types_store = activeTab.down('combo[name=applicable_checklist]').getStore(),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
+            section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
+        filter = {section_id: section_id},
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
+
+        app_doc_types_store.removeAll();
+        app_doc_types_store.load({
+            params: {
+                process_id: process_id,
+                workflow_stage: workflow_stage_id
+            }
+        });
+        is_populate_primaryappdata= 0;
+        if(activeTab.down('hiddenfield[name=is_populate_primaryappdata]')){
+            is_populate_primaryappdata= activeTab.down('hiddenfield[name=is_populate_primaryappdata]').getValue();
+        }
+        if (application_status_id == 4 || application_status_id === 4) {
+            activeTab.down('button[name=queries_responses]').setVisible(true);
+        }
+
+        psurEvaluationFrm.getForm().getFields().each(function (field) {
+            if (field.category ==1 ||field.category ===1) {
+                field.setReadOnly(true);
+            }
+            if (field.category ==3 || field.category ===3) {
+                field.setHidden(true);
+            }
+        });
+
+        if (sub_module_id == 129 || sub_module_id === 129) {
+             psurEvaluationFrm.query('fieldset').forEach(function (fieldset) {
+                if (fieldset.isnotlinelisting == 1 || fieldset.isnotlinelisting === 1) {
+                    fieldset.setHidden(true);
+                }
+            });
+         }
+
+        if (application_id) {
+            Ext.Ajax.request({
+                method: 'GET',
+                url: 'psur/preparenewPsurAssessment',
+                params: {
+                    application_id: application_id
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token
+                },
+                success: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        results = resp.results,
+                        ltrResults = resp.ltrDetails,
+                        psurAssessmentDetails = resp.psurAssessmentDetails,
+                        product_id = results.product_id,
+                        model = Ext.create('Ext.data.Model', results);
+                        ltr_model = Ext.create('Ext.data.Model', ltrResults);
+                        assessment_model = Ext.create('Ext.data.Model', psurAssessmentDetails);
+                    if (success == true || success === true) {
+
+                        applicantFrm.loadRecord(model);
+                        // localagentFrm.loadRecord(ltr_model);
+                       // products_detailsfrm.loadRecord(model);
+                        psurdetailsFrm.loadRecord(model);
+                        psurEvaluationFrm.loadRecord(assessment_model)
+                        // zone_cbo.setReadOnly(true);
+                        //zone_cbo.setValue(branch_id);
+                        activeTab.down('hiddenfield[name=product_id]').setValue(product_id);
+                        if(is_populate_primaryappdata ==1){
+                            activeTab.down('hiddenfield[name=sub_module_id]').setValue(results.sub_module_id);
+                        }
+                       
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
+                    toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
+                }
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+    },
     preparenewPsurAssessment: function () {
         Ext.getBody().mask('Please wait...');
         var me = this,
@@ -731,6 +898,24 @@ Ext.define('Admin.controller.PsurCtr', {
         if (application_status_id == 4 || application_status_id === 4) {
             activeTab.down('button[name=queries_responses]').setVisible(true);
         }
+
+        psurEvaluationFrm.getForm().getFields().each(function (field) {
+            if (field.category ==2 ||field.category ===2) {
+                field.setHidden(true);
+            }
+            if (field.category ==3 || field.category ===3) {
+                field.setHidden(true);
+             }
+
+          });
+         if (sub_module_id == 129 || sub_module_id === 129) {
+             psurEvaluationFrm.query('fieldset').forEach(function (fieldset) {
+                if (fieldset.isnotlinelisting == 1 || fieldset.isnotlinelisting === 1) {
+                    fieldset.setHidden(true);
+                }
+            });
+         }
+
         if (application_id) {
             Ext.Ajax.request({
                 method: 'GET',

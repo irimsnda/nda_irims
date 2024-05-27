@@ -56,6 +56,7 @@ Ext.define('Admin.view.trader_accounts.views.forms.AbstractAccountsManagementFrm
         }, {
             fieldLabel: 'Email Address',
             name: 'email',
+            allowBlank:true,
             vtype: 'email'
         },{
             fieldLabel: 'Trader Name',
@@ -186,15 +187,18 @@ Ext.define('Admin.view.trader_accounts.views.forms.AbstractAccountsManagementFrm
             }
         }, {
             fieldLabel: 'Postal Address',
+            allowBlank:true,
             name: 'postal_address'
     
         }, {
             fieldLabel: 'Telephone NO',
+            allowBlank:true,
             name: 'telephone_no'
     
         }, {
             fieldLabel: 'Mobile NO',
             name: 'mobile_no',
+            allowBlank:true,
             xtype: 'textfield',
             labelAlign: 'top'
         },{

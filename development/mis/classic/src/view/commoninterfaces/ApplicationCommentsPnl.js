@@ -49,7 +49,7 @@ Ext.define('Admin.view.commoninterfaces.ApplicationCommentsPnl', {
 									}
 								}
 							},
-							isLoad: true
+							isLoad: false
 						}
 					}
 				},

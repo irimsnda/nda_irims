@@ -25,13 +25,15 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerAllocationGrid', {
                 sub_module_id = pnl.down('hiddenfield[name=sub_module_id]').getValue(),
                 application_code = pnl.down('hiddenfield[name=active_application_code]').getValue(),
                 workflow_stage_id = pnl.down('hiddenfield[name=workflow_stage_id]').getValue(),
+                process_id = pnl.down('hiddenfield[name=process_id]').getValue(),
                 store = this.getStore();
             store.removeAll();
             store.getProxy().extraParams = {
                 application_code: application_code,
                 module_id: module_id,
                 sub_module_id: sub_module_id,
-                workflow_stage_id: workflow_stage_id
+                workflow_stage_id: workflow_stage_id,
+                process_id: process_id
             }
         }
     }],

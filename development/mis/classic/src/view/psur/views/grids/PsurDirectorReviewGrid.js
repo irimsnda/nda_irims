@@ -24,12 +24,14 @@ Ext.define('Admin.view.psur.views.grids.PsurDirectorReviewGrid', {
                 module_id = pnl.down('hiddenfield[name=module_id]').getValue(),
                 application_code = pnl.down('hiddenfield[name=active_application_code]').getValue(),
                 workflow_stage_id = pnl.down('hiddenfield[name=workflow_stage_id]').getValue(),
+                process_id = pnl.down('hiddenfield[name=process_id]').getValue(),
                 store = this.getStore();
             store.removeAll();
             store.getProxy().extraParams = {
                 application_code: application_code,
                 module_id: module_id,
-                workflow_stage_id: workflow_stage_id
+                workflow_stage_id: workflow_stage_id,
+                process_id: process_id
             }
         }
     }],
@@ -37,7 +39,7 @@ Ext.define('Admin.view.psur.views.grids.PsurDirectorReviewGrid', {
         xtype: 'tbspacer',
         width: 5
      },{
-        text:'Batch Share Feedback',
+        text:'Batch Feedback Sharing',
         name:'share_feedback',
         iconCls: 'fa fa-mail-bulk',
         ui: 'soft-green',
@@ -275,23 +277,28 @@ Ext.define('Admin.view.psur.views.grids.PsurDirectorReviewGrid', {
 	                    winWidth: '70%',
 	                    handler: 'showApplicationUploadedDocument',
 	                    stores: '[]'
-	                },{
-	                    text: 'View Assessment Recommendations and Comments',
-	                    iconCls: 'fa fa-clipboard-check',
-	                    tooltip: 'view Assessment Recommendations and Comments',
-	                    name: 'view_recommendation',
-	                    winWidth: '70%',
-	                    ui: 'soft-blue',
-	                    handler: 'viewApplicationRecommendationLogs',
-	                    stores: '[]'
 	                },
+
+	                {
+                        text: 'Comments/Recommendation',
+                        iconCls: 'fa fa-clipboard-check',
+                        childXtype: 'evaluationcommentspnl',
+                        winTitle: '1st Assessment Comments',
+                        winWidth: '90%',
+                        handler: 'showApplicationCommentsGeneric',
+                        childXtype: 'applicationprevcommentsgrid',
+                        winWidth: '80%',
+                        comment_type_id: 2,
+                        stores: '[]',
+                        isWin: 1
+                      },
 					{
 	                    text: 'Preview Assessment Details',
 	                    iconCls: 'fa fa-medkit',
 	                    storeID:'psurManagerReviewGridStr',
 	                    tooltip: 'Preview Assessment Details',
 	                    childXtype: 'psurpreviewEvaluationFrm',
-	                    winTitle: 'PSUR/PBRER Assessment Details',
+	                    winTitle: 'Assessment Details',
 	                    winWidth: '90%',
 	                    isReadOnly: 1,
 	                    handler: 'previewpsureAssessmentDetails'

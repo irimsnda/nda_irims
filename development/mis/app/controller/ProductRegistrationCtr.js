@@ -1574,29 +1574,29 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             activeTab = mainTabPnl.getActiveTab();
 
        
-        if (activeTab.down('combo[name=product_type_id]')) {
-            product_type_id = activeTab.down('combo[name=product_type_id]').getValue();
+        // if (activeTab.down('combo[name=product_type_id]')) {
+        //     product_type_id = activeTab.down('combo[name=product_type_id]').getValue();
 
-            if(product_type_id==3 || product_type_id===3){
-              frm.down('combo[name=active_common_name_id]').setVisible(true);
-              frm.down('combo[name=active_common_name_id]').allowBlank = false;
-              frm.down('combo[name=active_common_name_id]').validate();
-           }else{
-              frm.down('combo[name=active_common_name_id]').setVisible(false);
-              frm.down('combo[name=active_common_name_id]').allowBlank = true;
-           }
-        }else{
-            product_type_id = Ext.ComponentQuery.query("#product_detailspanel")[0].down('combo[name=product_type_id]').getValue();
-            if(product_type_id==3 || product_type_id===3){
-              frm.down('combo[name=active_common_name_id]').setVisible(true);
-              frm.down('combo[name=active_common_name_id]').allowBlank = false;
-              frm.down('combo[name=active_common_name_id]').validate();
-           }else{
-              frm.down('combo[name=active_common_name_id]').setVisible(false);
-              frm.down('combo[name=active_common_name_id]').allowBlank = true;
-           }
+        //     if(product_type_id==3 || product_type_id===3){
+        //       frm.down('combo[name=active_common_name_id]').setVisible(true);
+        //       frm.down('combo[name=active_common_name_id]').allowBlank = false;
+        //       frm.down('combo[name=active_common_name_id]').validate();
+        //    }else{
+        //       frm.down('combo[name=active_common_name_id]').setVisible(false);
+        //       frm.down('combo[name=active_common_name_id]').allowBlank = true;
+        //    }
+        // }else{
+        //     product_type_id = Ext.ComponentQuery.query("#product_detailspanel")[0].down('combo[name=product_type_id]').getValue();
+        //     if(product_type_id==3 || product_type_id===3){
+        //       frm.down('combo[name=active_common_name_id]').setVisible(true);
+        //       frm.down('combo[name=active_common_name_id]').allowBlank = false;
+        //       frm.down('combo[name=active_common_name_id]').validate();
+        //    }else{
+        //       frm.down('combo[name=active_common_name_id]').setVisible(false);
+        //       frm.down('combo[name=active_common_name_id]').allowBlank = true;
+        //    }
 
-        }
+        // }
 
     },
 
@@ -2239,22 +2239,22 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                 product_id = panel.down('hiddenfield[name=product_id]').getValue();
 
         }
-        if (activeTab.down('combo[name=product_type_id]')) {
-            product_type_id = activeTab.down('combo[name=product_type_id]').getValue();
+        // if (activeTab.down('combo[name=product_type_id]')) {
+        //     product_type_id = activeTab.down('combo[name=product_type_id]').getValue();
 
-            if(product_type_id==3 || product_type_id===3){
-             if(activeTab.down('drugsProductsOtherInformationFrm')){
-                 if (!activeTab.down('copackedproductsgrid')) {
-                    // activeTab.down('copackedproductsgrid').destroy();
-                   activeTab.down('drugsProductsOtherInformationFrm').add(0, {title: 'Product Details for Co-Packed Products', xtype: 'copackedproductsgrid'});
-                 }
-                }
-           }else{
-              if(activeTab.down('copackedproductsgrid')){
-                activeTab.down('copackedproductsgrid').destroy();
-             }
-           }
-        }
+        //     if(product_type_id==3 || product_type_id===3){
+        //      if(activeTab.down('drugsProductsOtherInformationFrm')){
+        //          if (!activeTab.down('copackedproductsgrid')) {
+        //             // activeTab.down('copackedproductsgrid').destroy();
+        //            activeTab.down('drugsProductsOtherInformationFrm').add(0, {title: 'Product Details for Co-Packed Products', xtype: 'copackedproductsgrid'});
+        //          }
+        //         }
+        //    }else{
+        //       if(activeTab.down('copackedproductsgrid')){
+        //         activeTab.down('copackedproductsgrid').destroy();
+        //      }
+        //    }
+        // }
 
         if (product_id == '') {
 

@@ -29,6 +29,15 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
        
     }, 
 
+    showApplicationCommentsGeneric: function (item) {
+        var btn = item.up('button'),
+            record = btn.getWidgetRecord(),
+            active_application_id = record.get('active_application_id'),
+            active_application_code = record.get('application_code');
+           
+        this.fireEvent('showApplicationCommentsWin', item,active_application_id,active_application_code );
+    },
+
      viewPsurWinFrm:function(btn) {
            var me = this,
             record = btn.getWidgetRecord(),
@@ -671,10 +680,12 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
         btn = item.up('button'),
         record = btn.getWidgetRecord(),
         application_code = record.get('application_code'),
+        sub_module_id = record.get('sub_module_id'),
         childXtype = item.childXtype,
         winTitle=item.winTitle,
         winWidth=item.winWidth,
         isReadOnly=item.isReadOnly,
+        isReviewAllocation=item.isReviewAllocation,
         form = Ext.widget(childXtype);
 
          Ext.getBody().mask('Please wait...');
@@ -696,12 +707,41 @@ Ext.define('Admin.view.psur.viewController.PsurVctr', {
                    Ext.getBody().unmask();
                    var model = Ext.create('Ext.data.Model', results);
                     form.loadRecord(model);
+
                     if(isReadOnly==1 || isReadOnly===1){
                         form.getForm().getFields().each(function (field) {
                             field.setReadOnly(true);
                         });
                       form.down('button[name=save_btn]').setVisible(false);
-                    }
+                     }else{
+                        form.getForm().getFields().each(function (field) {
+                        if (field.category ==1 ||field.category ===1) {
+                                field.setReadOnly(true);
+                            }
+                        if (field.category ==2 || field.category ===2) {
+                                field.setReadOnly(true);
+                            }
+                        });
+                     }
+
+                     if (sub_module_id == 129 || sub_module_id === 129) {
+                         form.query('fieldset').forEach(function (fieldset) {
+                            if (fieldset.isnotlinelisting == 1 || fieldset.isnotlinelisting === 1) {
+                                fieldset.setHidden(true);
+                            }
+                        });
+                     }
+                     if(isReviewAllocation){
+                       form.getForm().getFields().each(function (field) {
+                        if (field.category ==2 ||field.category ===2) {
+                            field.setHidden(true);
+                        }
+                        if (field.category ==3 || field.category ===3) {
+                            field.setHidden(true);
+                         }
+                        });
+
+                     }
                   
                     funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
                 } else {

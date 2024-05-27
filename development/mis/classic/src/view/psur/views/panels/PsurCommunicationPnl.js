@@ -1,6 +1,6 @@
-Ext.define('Admin.view.psur.views.panels.PsurDirectorReviewPnl', {
+Ext.define('Admin.view.psur.views.panels.PsurCommunicationPnl', {
     extend: 'Ext.panel.Panel',
-    xtype: 'psurDirectorReviewPnl',
+    xtype: 'psurcommunicationPnl',
     controller: 'psurVctr',
     height: Ext.Element.getViewportHeight() - 118,
     layout: 'fit',
@@ -113,7 +113,7 @@ Ext.define('Admin.view.psur.views.panels.PsurDirectorReviewPnl', {
     }
     ],
     items: [{
-            xtype: 'psurdirectorreviewGrid'
+            xtype: 'psurdcommunicationgrid'
         }],
     initComponent: function () {
         var me = this;
@@ -124,10 +124,9 @@ Ext.define('Admin.view.psur.views.panels.PsurDirectorReviewPnl', {
                 {
                     text: 'Submit Report',
                     ui: 'soft-blue',
-                    isNotificationSubmission:1,
                     iconCls: 'fa fa-check',
                     name: 'process_submission_btn',
-                    storeID: 'psurDirectorGridStr',
+                    storeID: 'psurCommunicationGridStr',
                     table_name: '',
                     winWidth: '50%'
                 }

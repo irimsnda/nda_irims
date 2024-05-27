@@ -1,6 +1,6 @@
-Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
+Ext.define('Admin.view.psur.views.grids.PsurManagerReviewAllocationGrid', {
     extend: 'Ext.grid.Panel',
-    xtype: 'psurManagerReviewGrid',
+    xtype: 'psurManagerReviewAllocationGrid',
     cls: 'dashboard-todo-list',
     // header: false,
     controller: 'psurVctr',
@@ -22,6 +22,7 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
             var grid = this.up('grid'),
                 pnl = grid.up('panel'),
                 module_id = pnl.down('hiddenfield[name=module_id]').getValue(),
+                sub_module_id = pnl.down('hiddenfield[name=sub_module_id]').getValue(),
                 application_code = pnl.down('hiddenfield[name=active_application_code]').getValue(),
                 workflow_stage_id = pnl.down('hiddenfield[name=workflow_stage_id]').getValue(),
                 process_id = pnl.down('hiddenfield[name=process_id]').getValue(),
@@ -30,6 +31,7 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
             store.getProxy().extraParams = {
                 application_code: application_code,
                 module_id: module_id,
+                sub_module_id: sub_module_id,
                 workflow_stage_id: workflow_stage_id,
                 process_id: process_id
             }
@@ -50,7 +52,7 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
             fn: 'setGridStore',
             config: {
                 pageSize: 100,
-                storeId: 'psurManagerReviewGridStr',
+                storeId: 'psurManagerReviewAllocationGridStr',
                 proxy: {
                     url: 'psur/getStagePsurApplications',
                     
@@ -58,7 +60,7 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
             },
             isLoad: true
         },
-       afterrender: function(grid) {
+        afterrender: function(grid) {
                 var pnl = grid.up('panel'),
                 subModuleId = pnl.down('hiddenfield[name=sub_module_id]').getValue();
                 grid.columns.forEach(function(column) {
@@ -145,23 +147,6 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
     columns: [{
 	    	xtype: 'rownumberer'
 	    },{
-         xtype: 'widgetcolumn',
-         width: 120,
-         widget: {
-            width: 120,
-            textAlign: 'left',
-            xtype: 'button',
-            itemId: 'prints',
-            ui: 'soft-green',
-            text: 'Preview Letter',
-            iconCls: 'x-fa fa-certificate',
-            backend_function: 'printPremiseRegistrationCertificate',
-            handler: 'printTCPDFColumnPsurPermit',
-            bind: {
-                 disabled: '{!record.reviewers_final_response}'
-            }
-        }
-    },{
 	        xtype: 'gridcolumn',
 	        dataIndex: 'tracking_no',
 	        text: 'Tracking No',
@@ -211,7 +196,7 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
 		    dataIndex: 'version_no',
 		    text: 'Version No',
 		    flex: 1
-		},{
+		}, {
 	        text: 'Options',
 	        xtype: 'widgetcolumn',
 	        width: 90,
@@ -251,7 +236,7 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
                         stores: '[]',
                         isWin: 1
                       },
-					{
+	                {
 	                    text: 'Assessment Details',
 	                    iconCls: 'fa fa-medkit',
 	                    storeID:'psurManagerReviewGridStr',
@@ -259,6 +244,7 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
 	                    childXtype: 'psurpreviewEvaluationFrm',
 	                    winTitle: 'Assessment Details',
 	                    winWidth: '90%',
+	                    isReviewAllocation:1,
 	                    isReadOnly: 0,
 	                    handler: 'previewpsureAssessmentDetails'
 	                }

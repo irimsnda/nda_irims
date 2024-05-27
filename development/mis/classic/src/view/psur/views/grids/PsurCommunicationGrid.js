@@ -1,6 +1,6 @@
-Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
+Ext.define('Admin.view.psur.views.grids.PsurCommunicationGrid', {
     extend: 'Ext.grid.Panel',
-    xtype: 'psurManagerReviewGrid',
+    xtype: 'psurdcommunicationgrid',
     cls: 'dashboard-todo-list',
     // header: false,
     controller: 'psurVctr',
@@ -35,6 +35,20 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
             }
         }
     }],
+     tbar: [{
+        xtype: 'tbspacer',
+        width: 5
+     },{
+        text:'Batch Share Feedback',
+        name:'share_feedback',
+        iconCls: 'fa fa-mail-bulk',
+        ui: 'soft-green',
+        hidden:true,
+        table_name: 'tra_psur_pbrer_applications',
+        handler:'batchfeedbackReport',
+        margin: 5
+        
+      }],
 
     selModel:{
         selType: 'checkboxmodel',
@@ -50,7 +64,7 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
             fn: 'setGridStore',
             config: {
                 pageSize: 100,
-                storeId: 'psurManagerReviewGridStr',
+                storeId: 'psurCommunicationGridStr',
                 proxy: {
                     url: 'psur/getStagePsurApplications',
                     
@@ -143,8 +157,6 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
          }
     },
     columns: [{
-	    	xtype: 'rownumberer'
-	    },{
          xtype: 'widgetcolumn',
          width: 120,
          widget: {
@@ -153,13 +165,14 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
             xtype: 'button',
             itemId: 'prints',
             ui: 'soft-green',
-            text: 'Preview Letter',
+            text: 'Print Letter',
             iconCls: 'x-fa fa-certificate',
             backend_function: 'printPremiseRegistrationCertificate',
             handler: 'printTCPDFColumnPsurPermit',
-            bind: {
-                 disabled: '{!record.reviewers_final_response}'
-            }
+            // bind: {
+            //     disabled: '{record.is_notified <= 0 || record.is_notified === null}'
+            //     //disabled: '{record.decision_id !== 1}'
+            // }
         }
     },{
 	        xtype: 'gridcolumn',
@@ -212,7 +225,35 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
 		    text: 'Version No',
 		    flex: 1
 		},{
-	        text: 'Options',
+	        xtype: 'gridcolumn',
+	        dataIndex: 'is_notified',
+	        text: 'Feedback Shared',
+	        width: 120,
+	        renderer: function (value, metaData) {
+	            if (value == 1) {
+	                metaData.tdStyle = 'color:white;background-color:green';
+	                return "Yes";
+	            }
+	            metaData.tdStyle = 'color:white;background-color:gray';
+	            return "Pending";
+	        }
+	    },{
+	        xtype: 'widgetcolumn',
+	        hidden:true,
+	        width: 150,
+	        widget: {
+	            width: 150,
+	            textAlign: 'left',
+	            xtype: 'button',
+	            ui: 'soft-red',
+	            text: 'Share Feedback',
+	            iconCls: 'fa fa-mail-bulk',
+	            handler: 'shareReportFeedback',
+	            stores: '["psurDirectorGridStr"]',
+	            table_name: 'tra_psur_pbrer_applications'
+	        }
+	    }, {
+		        text: 'Options',
 	        xtype: 'widgetcolumn',
 	        width: 90,
 	        widget: {
@@ -252,14 +293,14 @@ Ext.define('Admin.view.psur.views.grids.PsurManagerReviewGrid', {
                         isWin: 1
                       },
 					{
-	                    text: 'Assessment Details',
+	                    text: 'Preview Assessment Details',
 	                    iconCls: 'fa fa-medkit',
 	                    storeID:'psurManagerReviewGridStr',
 	                    tooltip: 'Preview Assessment Details',
 	                    childXtype: 'psurpreviewEvaluationFrm',
 	                    winTitle: 'Assessment Details',
 	                    winWidth: '90%',
-	                    isReadOnly: 0,
+	                    isReadOnly: 1,
 	                    handler: 'previewpsureAssessmentDetails'
 	                }
 	                ]

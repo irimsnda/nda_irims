@@ -2020,7 +2020,19 @@ class CommonController extends Controller
                      }
 
 
-                     $res = array('success'=>true, 'message'=>'Application details validated sucessfully and Notification send to Initial Reporter ');
+                     $res = array('success'=>true, 'message'=>'Report details validated sucessfully and Notification send to Initial Reporter ');
+                  
+
+                }else if($module_id==32 || $module_id===32){
+
+                    $reaction = DB::table('tra_product_notification_details')->where('application_code',$application_code)->first();
+                    if(!$reaction){
+                       $res = array('success'=>false, 'message'=>'Product details not capture!!. Please capture atleast one Product');
+                       echo json_encode($res);
+                       exit();
+                    }
+
+                     $res = array('success'=>true, 'message'=>'Notification details validated sucessfully!!!');
                   
 
                 }else{

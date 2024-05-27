@@ -957,6 +957,7 @@ class NewIntegrationsController extends Controller
             $xml_string .= "</ichicsr>";
             $response = array(
                 'status' => 'success',
+                'message' => 'XML File exported successfully',
                 'name' => $reportid . '.xml',
                 'file' => "data:application/xml;base64," . base64_encode($xml_string) 
             );
