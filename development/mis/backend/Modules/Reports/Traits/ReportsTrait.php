@@ -2370,8 +2370,13 @@ public function printImportPersonalUseLette11($req){
         return response()->json($res);
 }
 
+function getOrganisationInfo(){
+    $org_info = DB::table('tra_organisation_information')->first();
+     return $org_info;
+ }
 
- public function printProductNotificationLetter($request){
+
+ public function printProductNotificationLetter($request, $permit_previewoption,$upload_directory=null){
 	  try{ 
 		$org_info = $this->getOrganisationInfo();
 		$application_code = $request->application_code;	
@@ -2389,7 +2394,6 @@ public function printImportPersonalUseLette11($req){
                     't2.postal_address as app_postal_address', 't2.telephone_no as app_telephone', 't2.fax as app_fax', 't2.email as app_email', 't2.website as app_website','t4.name as notification_type','t3.reviewers_final_response','t5.feedback_shared_by as approved_by','t5.feedback_shared_on as feedback_shared_on','t8.date_received as submitted_on',DB::raw("CONCAT_WS(' ',decrypt(t6.first_name),decrypt(t6.last_name),'(',t7.name ,')') as approved_by_name"))
                 ->where('t1.application_code', $application_code)
                 ->first();
-
 
                	 
 					if($record){
@@ -2566,9 +2570,15 @@ public function printImportPersonalUseLette11($req){
 											
 				                        }
 
-								     //end Approval
+								if($permit_previewoption =='preview'){
+											
+									$pdf->Output($record->tracking_no.' Approval Letter.pdf');											
+								}else{
+									$pdf->Output($upload_directory, "F"); 
+								 }
+
            
-                             $pdf->Output("Approval Letter.pdf");
+                            // $pdf->Output("Approval Letter.pdf");
                       //  }
 
 		 } catch (\Exception $exception) {
@@ -2584,8 +2594,8 @@ public function printImportPersonalUseLette11($req){
 						'message' => $throwable->getMessage()
 					);
 		}
-				print_r($res);
-	        return response()->json($res);
+			// print_r($res);
+	  //       return response()->json($res);
 	}
 
 		

@@ -12,71 +12,14 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use Modules\Reports\Traits\ReportsTrait;
 
 class PsurController extends Controller
 {
     protected $user_id;
+    use ReportsTrait;
 
-    // public function getPsurApplications(Request $request)
-    // {
-    //     $module_id = $request->input('module_id');
-    //     $section_id = $request->input('section_id');
-    //     $sub_module_id = $request->input('sub_module_id');
-    //     $workflow_stage_id = $request->input('workflow_stage_id');
-    //     $user_id = $this->user_id;
-    //     $assigned_groups = getUserGroups($user_id);
-    //     $is_super = belongsToSuperGroup($assigned_groups);
-    //     try {
-    //         $assigned_stages = getAssignedProcessStages($user_id, $module_id);
-
-    //         $qry = DB::table('tra_psur_pbrer_applications as t1')
-    //             ->join('tra_submissions as t7', function ($join) {
-    //                 $join->on('t1.application_code', '=', 't7.application_code')
-    //                     ->on('t1.workflow_stage_id', '=', 't7.current_stage');
-    //             })
-    //             ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
-    //             ->join('wf_tfdaprocesses as t4', 't7.process_id', '=', 't4.id')
-    //             ->leftJoin('wf_workflow_stages as t5', 't7.current_stage', '=', 't5.id')
-    //             ->leftJoin('par_system_statuses as t6', 't1.application_status_id', '=', 't6.id')
-    //             ->leftJoin('users as t8', 't7.usr_from', '=', 't8.id')
-    //             ->join('users as t9', 't7.usr_to', '=', 't9.id')
-    //             ->select(DB::raw("t7.date_received, CONCAT(decryptval(t8.first_name,".getDecryptFunParams()."),decryptval(t8.last_name,".getDecryptFunParams().")) as from_user,CONCAT(decryptval(t9.first_name,".getDecryptFunParams()."),decryptval(t9.last_name,".getDecryptFunParams().")) as to_user,  t1.id as active_application_id, t1.application_code, t4.module_id, t4.sub_module_id, t4.section_id,
-    //             t6.name as application_status, t3.name as applicant_name, t4.name as process_name, t5.name as workflow_stage, t5.is_general, t3.contact_person,
-    //                 t3.tpin_no, t3.country_id as app_country_id, t3.region_id as app_region_id, t3.district_id as app_district_id, t3.physical_address as app_physical_address,
-    //                 t3.postal_address as app_postal_address, t3.telephone_no as app_telephone, t3.fax as app_fax, t3.email as app_email, t3.website as app_website,t1.*"));
-    //         $is_super ? $qry->whereRaw('1=1') : $qry->whereIn('t1.workflow_stage_id', $assigned_stages);
-    //         if (validateIsNumeric($section_id)) {
-    //             $qry->where('t1.section_id', $section_id);
-    //         }
-    //         if (validateIsNumeric($sub_module_id)) {
-    //             $qry->where('t1.sub_module_id', $sub_module_id);
-    //         }
-
-
-    //         if (validateIsNumeric($workflow_stage_id)) {
-
-    //             $qry->where('t7.current_stage', $workflow_stage_id);
-    //         }else{
-    //             $qry->where('stage_status', 1);
-    //         }
-    //         //$qry->where('t7.isDone', 0);
-    //         $results = $qry->get();
-
-    //         $res = array(
-    //             'success' => true,
-    //             'results' => $results,
-    //             'message' => 'All is well'
-    //         );
-    //     } catch (\Exception $exception) {
-    //         $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
-
-    //     } catch (\Throwable $throwable) {
-    //         $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
-    //     }
-    //     return \response()->json($res);
-
-    // }
-    public function saveNewPsurReceivingBaseDetails(Request $request, $inCall=0)
+public function saveNewPsurReceivingBaseDetails(Request $request, $inCall=0)
     {
                 $active_application_id = $request->input('application_id');
                 $applicant_id = $request->input('applicant_id');
@@ -98,12 +41,6 @@ class PsurController extends Controller
              DB::beginTransaction();
              $applications_table = 'tra_psur_pbrer_applications';
 
-
-           
-             
-
-             //Edit enforcement Application
-             //if (isset($active_application_id) && $active_application_id != "") {
              if (isset($active_application_id) || isset($application_code)) {
                  
                  $application_params = array(
@@ -163,8 +100,7 @@ class PsurController extends Controller
                  $tracking_no = $app_details[0]['tracking_no'];
                  $reference_no = $app_details[0]['reference_no'];
     
-    
-               // initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no.rand(10,100), $user_id);
+    ;
                      DB::commit();
              } else {
                  //Insert
@@ -228,11 +164,6 @@ class PsurController extends Controller
                  
                  $active_application_id = $res['record_id'];
                  
-                 // createInitialRegistrationRecord('tra_enforcement_applications', $applications_table, $reg_params, $application_id, 'reg_premise_id');
-                 //DMS
-    
-             // initializeApplicationDMS($section_id, $module_id, $sub_module_id, $application_code, $tracking_no, $user_id);
-                 // add to submissions table
                  $submission_params = array(
                      'application_id' => $active_application_id,
                      'view_id' => $view_id,
@@ -590,13 +521,6 @@ public function preparenewPsurReceiving(Request $req)
                 ->where('isDone', 0);
 
 
-              
-
-
-            // if(!$is_super){
-            //     $qry->whereIn('t1.workflow_stage_id', $assigned_stages);
-            //     $qry->whereNull('t7.usr_to');
-            // }
             if (validateIsNumeric($section_id)) {
                 $qry->where('t1.section_id', $section_id);
             }
@@ -653,6 +577,27 @@ public function shareFeedBackAndLog($application_code){
         $user_id= \Auth::user()->id;
         $where = ['application_code' => $application_code];
         $update = ['is_notified' => 1];
+       
+        $message = "Kindly find attached feedback as per the following details:";
+      
+        $message .= "<br/>Feedback  Date:".Carbon::now();
+
+        $subject='ACKNOWLEDGMENT OF RECEIPT OF PBRER';
+        $applicant_id = getSingleRecordColValue('tra_psur_pbrer_applications', array('application_code' => $application_code ), 'applicant_id');                                                                  
+        $trader_record = getSingleRecord('wb_trader_account', array('id'=>$applicant_id),'mysql');                                           
+        if($trader_record){
+            $attachement_name = 'Acknowledgement Letter.pdf';
+            $attachement =   getcwd() .Config('constants.dms.doc_rootupload').'Feedback' . time() . '.' . 'pdf';
+
+            $request = new Request([
+                'application_code' => $application_code,
+                                    
+            ]);
+            $this->printProductNotificationLetter($request, 'notify',$attachement);            
+               $response = sendMailNotification($trader_record->name, 'kenedymuthui1@gmail.com',$subject,$message,'','',$attachement,$attachement_name);
+               unlink($attachement);
+
+        }
 
         $res = updateRecordNoPrevious('tra_psur_pbrer_applications', $where, $update);
 

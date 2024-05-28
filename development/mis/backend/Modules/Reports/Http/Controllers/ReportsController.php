@@ -1293,7 +1293,7 @@ public function getModuleName($module_id)
             PDF::SetTextColor(0, 0, 0);
         }
         public function generateProductNotificationLetter (Request $request){
-            $res = $this->printProductNotificationLetter($request);
+            $res = $this->printProductNotificationLetter($request,'preview','');
             print_r($res);
        }
 
