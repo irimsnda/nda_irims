@@ -2,6 +2,8 @@
 
 /**
  * Created by Softclans
+ * User robinson odhiambo
+ * on 9/24/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExportInspectionBookingDetailsFrm', {
     extend: 'Ext.form.Panel',
@@ -27,9 +29,6 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         name: 'id',
         allowBlank: true
     }, {
-                xtype: 'hiddenfield',
-                name: 'section_id'
-            },{
         xtype: 'hiddenfield',
         name: 'table_name',
         value: 'wb_importexport_applications'
@@ -42,7 +41,6 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         displayField: 'name',
         forceSelection: true,
         name: 'sub_module_id',
-        hidden: true,
         queryMode: 'local',
         fieldStyle: {
             'color': 'green',
@@ -68,8 +66,8 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         }
     },{
         xtype: 'combo',
-        fieldLabel: 'Application Reason',
-        name: 'importation_reason_id',
+        fieldLabel: 'Application Category/Reason',
+        name: 'permit_category_id',
         forceSelection: true,
         queryMode: 'local',
         valueField: 'id',
@@ -82,7 +80,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
                     proxy: {
                         url: 'configurations/getNonrefParameter',
                         extraParams: {
-                            table_name: 'par_importexport_reasons'
+                            table_name: 'par_permit_category'
                         }
                     }
                 },
@@ -94,8 +92,8 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         },
     }, {
         xtype: 'combo',
-        fieldLabel: 'Product Category',
-        name: 'product_category_id',
+        fieldLabel: 'Permit Product Categories',
+        name: 'permit_productscategory_id',
         forceSelection: true,
         queryMode: 'local',
         valueField: 'id',
@@ -106,10 +104,9 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
                 config: {
                     pageSize: 10000,
                     proxy: {
-                        //url: 'configurations/getRegistrationApplicationParameters',
-                        url: 'configurations/getNonrefParameter',
+                        url: 'configurations/getRegistrationApplicationParameters',
                         extraParams: {
-                            table_name: 'par_importexport_product_category'
+                            table_name: 'par_permitsproduct_categories'
                         }
                     }
                 },
@@ -179,37 +176,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
             readOnly: '{isReadOnly}'
         },
         fieldLabel: 'Invoice No',
-    },{
-        xtype: 'textfield',
-        name: 'clearing_agent',bind: {
-            readOnly: '{isReadOnly}'
-        },
-        fieldLabel: 'Agent Name',
     }, {
-        xtype: 'textfield',
-        name: 'clearing_agent_no',bind: {
-            readOnly: '{isReadOnly}'
-        },
-        fieldLabel: 'Agent Contact',
-    },{
-        xtype: 'textfield',
-        name: 'clearing_agent_email',bind: {
-            readOnly: '{isReadOnly}'
-        },
-        fieldLabel: 'Agent Email',
-    },{
-        xtype: 'textfield',
-        name: 'clearing_agent_firm',bind: {
-            readOnly: '{isReadOnly}'
-        },
-        fieldLabel: 'Agent Firm',
-    },{
-        xtype: 'textfield',
-        name: 'package_no',bind: {
-            readOnly: '{isReadOnly}'
-        },
-        fieldLabel: 'Number of Packages to be Inspected',
-    },{
         xtype: 'datefield',
         name: 'proforma_invoice_date',bind: {
             readOnly: '{isReadOnly}'
@@ -223,15 +190,13 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         name:'custom_declaration_no',bind: {
             readOnly: '{isReadOnly}'
         }
-    },
-    // {
-    //     xtype: 'textfield',
-    //     fieldLabel: 'Clearing Agent',
-    //     name:'clearing_agent',bind: {
-    //         readOnly: '{isReadOnly}'
-    //     }
-    // }, 
-    {
+    },{
+        xtype: 'textfield',
+        fieldLabel: 'Clearing Agent',
+        name:'clearing_agent',bind: {
+            readOnly: '{isReadOnly}'
+        }
+    }, {
         xtype: 'datefield',
         name: 'shipment_date',bind: {
             readOnly: '{isReadOnly}'
@@ -239,8 +204,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         format:'Y-m-d',
         altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
         fieldLabel: 'Consignment Shipment Date',
-    },
-     {
+    }, {
         xtype: 'datefield',
         name: 'proposed_inspection_date',bind: {
             readOnly: '{isReadOnly}'

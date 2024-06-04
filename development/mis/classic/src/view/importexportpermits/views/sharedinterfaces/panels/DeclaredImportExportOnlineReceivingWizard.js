@@ -159,7 +159,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.Declared
             xtype: 'tabpanel',
             items: [{
                 xtype: 'declaredimportexportdocuploadsgrid',
-                title: 'Document Review'
+                title: 'Documents Submission'
             }]
         },
         {
@@ -214,7 +214,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.Declared
                     step: 2,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'Import/Export Licence Document Review',
+                    text: 'Import/Export permit Documents Submission',
                     action: 'quickNav',
                      wizard: 'declaredimportexportonlinereceivingwizard',
                     handler: 'quickDeclarationNavigationonlineprev'

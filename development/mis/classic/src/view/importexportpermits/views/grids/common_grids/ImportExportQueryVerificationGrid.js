@@ -31,7 +31,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                 grid.down('button[name=submit_selected]').setDisabled(true);
             }
         },
-        itemdblclick:'editpreviewPermitQueryinformation'
+      //  itemdblclick:'editpreviewPermitQueryinformation'
     }, selModel: {
         selType: 'checkboxmodel',
         mode: 'MULTI'
@@ -78,8 +78,47 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
     selModel: {
         selType: 'checkboxmodel',
         mode: 'MULTI'
-    },
+    },features: [{
+        ftype: 'searching',
+        minChars: 2,
+        mode: 'local'
+    }],
     columns: [{
+        text: 'Options',
+        xtype: 'widgetcolumn',
+        width: 90,
+        widget: {
+            width: 75,
+            textAlign: 'left',
+            xtype: 'splitbutton',
+            iconCls: 'x-fa fa-th-list',
+            ui: 'gray',
+            menu: {
+                xtype: 'menu',
+                items: [{
+                    text: 'Preview Application & Queries Details',
+                    iconCls: 'x-fa fa-edit',
+                    tooltip: 'Preview Record',
+                    action: 'edit',
+                    childXtype: '',
+                    winTitle: 'Import/Export Permit Applications',
+                    winWidth: '40%',
+                    isReadOnly:1,
+                    handler: 'editpreviewPermitinformation'
+                },{
+                    text: 'Permit Application Documents',
+                    iconCls: 'x-fa fa-file',
+                    tooltip: 'Application Documents',
+                    action: 'edit',
+                    document_previewpnl: 'previewpermitdocuploadsgrid',
+                    winTitle: 'Application Documents',
+                    winWidth: '40%',
+                    isReadOnly:1,
+                    handler: 'funcPrevGridApplicationDocuments'
+                }]
+            }
+        }
+    },{
         xtype: 'gridcolumn',
         dataIndex: 'tracking_no',
         text: 'Tracking No',
@@ -87,7 +126,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
     },{
         xtype: 'gridcolumn',
         dataIndex: 'reference_no',
-        text: 'Reference No',
+        text: 'Application No',
         flex: 1
     }, {
         xtype: 'gridcolumn',
@@ -99,15 +138,30 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         dataIndex: 'proforma_invoice_no',
         text: 'Proforma Invoice No',
         flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'process_name',
+        text: 'Process Name',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'workflow_stage',
+        text: 'Current Stage',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'date_received',
+        text: 'Date Received',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'from_user',
+        text: 'Submitted By',
+        flex: 1
     },  {
         xtype: 'gridcolumn',
         dataIndex: 'premises_name',
         text: 'Premises Name',
-        flex: 1
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'application_status',
-        text: 'Status',
         flex: 1
     }]
 });

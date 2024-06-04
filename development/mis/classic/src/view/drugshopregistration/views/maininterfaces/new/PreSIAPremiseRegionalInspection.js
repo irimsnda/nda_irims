@@ -110,7 +110,7 @@ Ext.define('Admin.view.drugshopregistration.views.maininterfaces.new.PreSIAPremi
             },{
                 xtype: 'hiddenfield',
                 name: 'report_type_id',
-                value:2
+                value:3
             },{
                 xtype: 'hiddenfield',
                 name: 'is_report_saved'

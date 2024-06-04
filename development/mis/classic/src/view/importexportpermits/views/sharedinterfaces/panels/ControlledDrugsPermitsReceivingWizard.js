@@ -11,9 +11,6 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
         'Ext.layout.container.*',
         'Ext.toolbar.Fill'
     ],
-     viewModel: {
-       type: 'importexportpermitsvm'
-       },
     reference: 'wizardpnl',
     layout: 'card',
     //bodyPadding: 3,
@@ -237,7 +234,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
                 },
                 {
                     text: 'Submit Application',
-                    ui: 'soft-purple', hidden:false,
+                    ui: 'soft-purple', hidden: true,
                     iconCls: 'fa fa-check',
                     name: 'processreceiving_submission_btn',
                     table_name: 'tra_importexport_applications',

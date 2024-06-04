@@ -1,5 +1,7 @@
 /**
  * Created by softclans
+ * user robinson odhiambo
+ * Kip on 9/24/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ReceivingPoeInspectionsWizard', {
     extend: 'Ext.panel.Panel',
@@ -178,26 +180,35 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Receivi
                             },
                             labelStyle: 'font-weight:bold'
                         },'->',{
-                            fieldLabel:'Reference No',
+                            fieldLabel:'License No/Reference No',
                             name:'permit_no',
                             xtype:'textfield',
                             labelWidth: 108,
-                            emptytext:'Enter Full Permit No',
+                             readOnly: true,
+                             hidden: true,
+                            emptytext:'License No',
                             width: 450
                         },{
                             
-                             text: 'Approved Declaration',
+                             text: 'Search Approved License',
                              iconCls: 'fa fa-search',
                              ui:'soft-green',
-                             winTitle:' Imports Details',
-                             winWidth: '87%',
+                             winTitle:' Imports Permit Details',
+                             winWidth: '90%',
+                             childXtype: 'allapprovedlicenseapplicationsgrid',
+                             winTitle: 'Approved License Applications',
                              handler:'funcSearchInspectionImportPermitDetails'
                      }
                     ]
                 }
             ],
         }, {
-            xtype: 'poeinspectiondetailspnl',
+            xtype: 'poeinspectionpermitsproductsgrid',
+           // region: 'center',
+            layout: 'fit',
+            title: 'Products Details',
+        }, {
+            xtype: 'poeinspectiondetailspnl', layout: 'fit',
             title: 'POE Inspection Details'
         },
         {
@@ -225,16 +236,24 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Receivi
                     step: 0,
                     iconCls: 'fa fa-university',
                     enableToggle: true, iconAlign: 'top',
-                    text: 'Declaration Details',
+                    text: 'Permit Details',
                     action: 'quickNav', wizard: 'receivingpoeinspectionswizard',
                     handler: 'quickNavigationPOE'
-                }, {
+                },{
                     step: 1,
                     iconCls: 'fa fa-edit',
                     enableToggle: true, iconAlign: 'top',
-                    text: 'Inspection Recommendation &  Details',
+                    text: 'Products Details',
                     action: 'quickNav', 
                     
+                    wizard: 'receivingpoeinspectionswizard',
+                    handler: 'quickNavigationPOE'
+                } ,{
+                    step: 2,
+                    iconCls: 'fa fa-edit',
+                    enableToggle: true, iconAlign: 'top',
+                    text: 'Inspection Details & Recommendation ',
+                    action: 'quickNav', 
                     wizard: 'receivingpoeinspectionswizard',
                     handler: 'quickNavigationPOE'
                 }
@@ -248,7 +267,8 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Receivi
                     text: 'Back to List',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-bars',
-                    name: 'back_to_list'
+                    name: 'back_to_list',
+                    hidden: true
                 },
                 '->',
                 {
@@ -261,17 +281,36 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Receivi
                     wizard:'receivingpoeinspectionswizard',
                     handler: 'onPrevCardClickPOE'
                 }, {
-                    text: 'Verify/Reject Licence',
-                    winTitle:'Licence Verification',
+                    text: 'Verify/Reject Permit',
+                    winTitle:'Permit Verification',
                     childXtype: 'poeinspectionverificationfrm',
                     winWidth: '30%',
                     name:'btnverify_permit',
+                    hidden: true,
                     handler: 'funcVerifyImportPermit'
+                }, {
+                    text: 'Preview Approval Document',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-check',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-sliders',
+                    menu: {
+                        xtype: 'menu',
+                        items: [{
+                                ui: 'soft-red',
+                                iconCls: 'fa fa-print',
+                                text: 'Preview Approval Document',
+                                is_preview : true,
+                                name: 'preview_importexportpermit',
+                            }
+                        ]
+                    }
                 },{
                     text: 'Inspection Recommendation and Release',
                     childXtype: 'poeinspectionrecommendationfrm',
                     winTitle:'Inspection Recommendation',
                     winWidth: '30%',
+                    hidden: true,
                     name: 'process_submission_btn',
                     handler: 'showReceivingPoeApplicationSubmissionWin'
                 },

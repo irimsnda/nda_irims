@@ -51,10 +51,6 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.POEInspectio
         },{
             xtype:'hiddenfield',
             name:'poe_application_id'
-        },{
-            xtype: 'hidden',
-            name: '_token',
-            value: token
         }
     ],
     buttons: [

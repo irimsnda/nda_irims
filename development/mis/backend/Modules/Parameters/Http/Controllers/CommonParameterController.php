@@ -537,6 +537,52 @@ class CommonParameterController extends BaseController
         return response()->json($res);
     }
 
+    public function getProductRange(Request $req) {
+        try {
+            $business_type_id = $req->input('business_type_id');
+            $licence_type_id = $req->input('licence_type_id');
+            $product_classification_id = $req->input('product_classification_id');
+    
+            $records = DB::table('par_importexport_product_range as t1')
+                ->join('par_importexport_productrange as t2', 't2.product_range_id', '=', 't1.id')
+                ->where([
+                    't2.business_type_id' => $business_type_id,
+                    't2.licence_type_id' => $licence_type_id,
+                    't2.product_classification_id' => $product_classification_id
+                ])
+                ->select('t1.id', 't1.name')
+                ->get();
+
+            // if (validateIsNumeric($business_type_id)) {
+            //   $records->where('t2.business_type_id', $business_type_id);
+            // }
+
+            // if (validateIsNumeric($licence_type_id)) {
+            //   $records->where('t2.licence_type_id', $licence_type_id);
+            // }
+            // if (validateIsNumeric($product_classification_id)) {
+            //   $records->where('t2.product_classification_id', $product_classification_id);
+            // }
+    
+            $res = [
+                'success' => true,
+                'results' => $records,
+            ];
+        } catch (\Exception $e) {
+            $res = [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        } catch (\Throwable $throwable) {
+            $res = [
+                'success' => false,
+                'message' => $throwable->getMessage()
+            ];
+        }
+    
+        return response()->json($res);
+    }
+
 
     public function getCommonParamFromTable(Request $request)
     {   
@@ -562,6 +608,13 @@ class CommonParameterController extends BaseController
             } else if($table_name == 'par_premise_districts'){
                  $qry = DB::connection($db_con)
                         ->table($table_name .' as t1')
+                        ->select('t1.*');
+
+            }
+            else if($table_name == 'par_licence_type'){
+                 $qry = DB::connection($db_con)
+                        ->table($table_name .' as t1')
+                         ->leftJoin('par_importlicence_applications  as t2', 't2.licence_type_id', 't1.id')
                         ->select('t1.*');
 
             }

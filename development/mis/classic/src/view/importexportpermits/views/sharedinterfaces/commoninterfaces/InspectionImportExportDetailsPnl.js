@@ -1,6 +1,6 @@
 
 /**
- * Created by Kip Softclans
+ * Created by Kip on 11/12/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.commoninterfaces.InspectionImportExportDetailsPnl', {
     extend: 'Ext.tab.Panel',
@@ -19,13 +19,15 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.InspectionImpo
         autoScroll: true, 
         itemId:'permitsdetails_panel', 
         viewModel: 'importexportpermitsvm',
-        title: 'Application Details',
+        title: 'Application Details(Permit, Sender/Receiver, Premises Licenses Outlets)',
         items:[{
             xtype: 'importexportinspectionbookingdetailsfrm',
             autoScroll: true,
-            title: 'Inspection Booking Information'
+            title: 'Permit & Inspection Booking Information'
         }, {
             xtype: 'senderreceiverdetailsfrm',
+            collapsible: true,
+            collapsed: true,
             title: 'Supplier/Receiver Details',
         },{
             xtype: 'importexportpermitsproductsgrid', 
@@ -35,6 +37,9 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.InspectionImpo
             title: 'Permit Products Details',
         },{
             xtype: 'importexportpremisesfrm',
+            collapsible: true,
+            collapsed: true,
+            itemId:'importexportpremisesfrm',
             title: 'Licensed Outlet Details',
         }] 
     },  {

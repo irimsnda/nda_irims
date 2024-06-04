@@ -19,7 +19,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PoeInspectio
         margin: 5,
         labelAlign: 'right',
         width: '100%',
-        columnWidth: 0.33,
+        columnWidth: 0.49,
         labelAlign: 'top',
         allowBlank: false,
        
@@ -83,9 +83,8 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PoeInspectio
         },
         {
             xtype: 'button',
-           // text: 'add',
+            text: 'add',
             width: '50px',
-             margin: '30 0 0 0',
             iconCls: 'x-fa fa-plus',
             columnWidth: 0.082,
             form: 'clearingAgentfrm',
@@ -93,12 +92,6 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.PoeInspectio
             handler: 'showAddFormWin'
         }
         ]
-    },{
-        xtype:'datefield',
-        maxValue: new Date(),
-        fieldLabel:'URA Registration Date',format: 'Y-m-d', altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
-   
-        name: 'tra_reg_date'
     }, {
         xtype: 'combo',
         fieldLabel: 'Port Of Entry/Exit',

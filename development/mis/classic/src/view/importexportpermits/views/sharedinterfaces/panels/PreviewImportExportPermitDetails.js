@@ -27,6 +27,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
         dock: 'top',
         ui: 'footer',
         height: 40,
+        hidden:true,
         defaults: {
             labelAlign: 'top',
             margin: '-12 5 0 5',
@@ -67,58 +68,12 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
 ],
     items: [
         {
-            xtype: 'vcdetailspnl',//onlinefoodproductsdetailspnl
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    ui: 'footer',
-                    dock: 'top',
-                    margin: 3,
-                    items: [
-                        {
-                            xtype: 'tbseparator',
-                            width: 2
-                        },
-                        {
-                            xtype: 'combo',
-                            fieldLabel: 'Zone',
-                            labelWidth: 50,
-                            width: 400,
-                            name: 'zone_id',
-                            valueField: 'id',
-                            displayField: 'name',
-                            queryMode: 'local',
-                            hidden: true,
-                            readOnly: true,
-                            forceSelection: true,
-                            listeners: {
-                                beforerender: {
-                                    fn: 'setOrgConfigCombosStore',
-                                    config: {
-                                        pageSize: 1000,
-                                        proxy: {
-                                            extraParams: {
-                                                model_name: 'Zone'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            },
-                            labelStyle: 'font-weight:bold'
-                        }
-                    ]
-                }
-            ],
+            xtype: 'importexportdetailspnl',
+           
         },{
-            xtype: 'importexportpermitsproductsgrid',
-            title: 'Import/Export VC Products Details',
+            xtype: 'importexportapplicantdetailsfrm',
+            title: 'APPLICANT DETAILS'
         },
-        
-        // {
-        //     xtype: 'importexportapplicantdetailsfrm',
-        //     title: 'APPLICANT DETAILS'
-        // },
         {
             xtype: 'hiddenfield',
             name: 'active_application_id'
@@ -144,7 +99,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     step: 0,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
-                    text: 'Import/Export VC Details',
+                    text: 'Import/Export Permit Details',
                     action: 'quickNav', 
                     wizard: 'previewimportexportpermitdetails',
                     handler: 'prevquickNavigation'
@@ -153,26 +108,17 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     iconCls: 'fa fa-user',
                     enableToggle: true,
                     pressed: true,
-                    text: 'VC Products Details',
+                    text: 'Applicant',
                     action: 'quickNav',
                     wizard: 'previewimportexportpermitdetails',
                     handler: 'prevquickNavigation'
-                },
-                // {
-                //     step: 2,
-                //     iconCls: 'fa fa-user',
-                //     enableToggle: true,
-                //     pressed: true,
-                //     text: 'Applicant',
-                //     action: 'quickNav',
-                //     wizard: 'previewimportexportpermitdetails',
-                //     handler: 'prevquickNavigation'
-                // }
+                }
             ]
         };
         this.bbar = {
             reference: 'navigation-toolbar',
             ui: 'footer',
+            hidden:true,
             items: [
                 {
                     text: 'Back to List',
@@ -186,7 +132,6 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     text: 'Previous',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-arrow-left',
-                    hidden: true,
                     bind: {
                         disabled: '{atBeginning}'
                     },
@@ -216,11 +161,12 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     ui: 'soft-purple',
                     reference: 'nextbutton',
                     iconCls: 'fa fa-arrow-right',
-                    hidden: true,
-                    iconAlign: 'right', max_step: 1,
+                    iconAlign: 'right', 
+                    max_step: 1,
                     bind: {
                         disabled: '{atEnd}'
-                    },wizard:'previewimportexportpermitdetails',
+                    },
+                    wizard:'previewimportexportpermitdetails',
                     handler: 'prevonNextCardClick'
                 }
             ]

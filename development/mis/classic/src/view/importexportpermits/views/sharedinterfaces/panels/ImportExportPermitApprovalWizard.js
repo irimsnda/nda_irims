@@ -48,7 +48,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                 }, {
                     xtype: 'displayfield',
                     name: 'workflow_stage',
-                    fieldLabel: 'Application Status',
+                    fieldLabel: 'Workflow Stage',
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
@@ -136,7 +136,6 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                             name: 'zone_id',
                             valueField: 'id',
                             displayField: 'name',
-                            hidden: true,
                             queryMode: 'local',
                             forceSelection: true,
                             listeners: {
@@ -165,7 +164,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
             xtype: 'tabpanel',
             items: [{
                 xtype: 'importexportdocuploadsgrid',
-                title: 'Document Review'
+                title: 'Documents Submission'
             }]
         },{
             xtype: 'importexportscreeninggrid',
@@ -196,7 +195,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     step: 0,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
-                    text: 'Import/Export Licence Details',
+                    text: 'Import/Export Permit Details',
                     action: 'quickNav', wizard: 'importexportpermitapprovalwizard',
                     handler: 'quickNavigation'
                 },{
@@ -212,7 +211,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     step: 2,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'Import/Export Licence Document Review',
+                    text: 'Import/Export permit Documents Submission',
                     action: 'quickNav', 
                     wizard: 'importexportpermitapprovalwizard',
                     handler: 'quickNavigation'
@@ -220,7 +219,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     step: 3,
                     iconCls: 'fa fa-product-hunt',
                     enableToggle: true,
-                    text: 'Import/Export Licence Checklist',
+                    text: 'Import/Export Permit Checklist',
                     action: 'quickNav', 
                     wizard: 'importexportpermitapprovalwizard',
                     handler: 'quickNavigation'

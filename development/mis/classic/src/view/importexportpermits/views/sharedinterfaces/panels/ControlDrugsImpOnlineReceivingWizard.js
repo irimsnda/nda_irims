@@ -157,7 +157,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ControlD
             ],
         }, {
             xtype: 'onlineimportexportdocuploadsgrid',
-            title: 'Document Review'
+            title: 'Documents Submission'
         },
         {
             xtype: 'productscreeninggrid',
@@ -207,7 +207,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ControlD
                     step: 2,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'Import/Export Licence Document Review',
+                    text: 'Import/Export permit Documents Submission',
                     action: 'quickNav',
                      wizard: 'controldrugsimponlinereceivingwizard',
                     handler: 'quickNavigationonlineprev'

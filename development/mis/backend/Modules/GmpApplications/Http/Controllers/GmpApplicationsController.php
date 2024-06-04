@@ -1168,8 +1168,11 @@ class GmpApplicationsController extends Controller
                 ->leftJoin('par_regions as t3', 't1.region_id', '=', 't3.id')
                 ->leftJoin('par_districts as t4', 't1.district_id', '=', 't4.id')
                 ->leftJoin('tra_manufacturers_information as t7', 't1.manufacturer_id', '=', 't7.id')
+                 ->leftJoin('tra_pharmacist_personnel as t6aa', 't1.psu_no', '=', 't6aa.psu_no')
                 ->select('t1.name as premise_name', 't1.id as premise_id', 't1.id as manufacturing_site_id', 't1.*','t11.applicant_id', 't11.gmp_type_id', 't11.device_type_id', 't11.assessment_type_id',
-                    't7.name as manufacturer_name', 't7.email_address as manufacturer_email_address', 't7.physical_address as manufacturer_physical_address', 't7.country_id as manufacturer_country_id');
+                    't7.name as manufacturer_name', 't7.email_address as manufacturer_email_address', 't7.physical_address as manufacturer_physical_address', 't7.country_id as manufacturer_country_id','t6aa.name as supervising_name','t6aa.psu_date as supervising_psu_date','t6aa.telephone as supervising_telephone_no','t6aa.telephone2 as supervising_telephone_no2','t6aa.telephone3 as supervising_telephone_no3','t6aa.email as supervising_email_address','t6aa.email2 as supervising_email_address2','t6aa.email3 as supervising_email_address3','t6aa.qualification_id as supervising_qualification_id','t6aa.country_id as supervising_country_id','t6aa.region_id as supervising_region_id','t6aa.district_id as supervising_district_id','t6aa.physical_address as supervising_physical_address');
+
+
             $siteDetails = $qrySite->first();
 
              $qry = DB::table('tra_gmp_applications as t1')
@@ -2316,12 +2319,13 @@ $applicant_id = $siteDetails->applicant_id;
                 ->leftJoin('tra_approval_recommendations as t5', 't2.permit_id', '=', 't5.id')
                 ->leftJoin('par_gmplocation_details as t6', 't1.gmp_type_id', '=', 't6.id')
                 ->leftJoin('tra_manufacturers_information as t7', 't2.manufacturer_id', '=', 't7.id')
+                ->leftJoin('tra_pharmacist_personnel as t6aa', 't2.psu_no', '=', 't6aa.psu_no')
                 ->select('t1.*', 't1.id as active_application_id', 't2.name as premise_name',
                     't3.name as applicant_name', 't3.contact_person', 't1.reg_site_id as registered_manufacturing_site_id',
                     't3.tin_no', 't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id', 't3.physical_address as app_physical_address',
                     't3.postal_address as app_postal_address', 't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website',
                     't2.*', 't2.id as manufacturing_site_id', 't4.id as invoice_id', 't4.invoice_no', 't5.permit_no', 't5.permit_no as gmp_cert_no', 't6.name as gmp_type_txt', 't1.gmp_type_id',
-                    't7.name as manufacturer_name', 't7.email_address as manufacturer_email_address', 't7.physical_address as manufacturer_physical_address', 't7.country_id as manufacturer_country_id');
+                    't7.name as manufacturer_name', 't7.email_address as manufacturer_email_address', 't7.physical_address as manufacturer_physical_address', 't7.country_id as manufacturer_country_id','t6aa.name as supervising_name','t6aa.psu_date as supervising_psu_date','t6aa.telephone as supervising_telephone_no','t6aa.telephone2 as supervising_telephone_no2','t6aa.telephone3 as supervising_telephone_no3','t6aa.email as supervising_email_address','t6aa.email2 as supervising_email_address2','t6aa.email3 as supervising_email_address3','t6aa.qualification_id as supervising_qualification_id','t6aa.country_id as supervising_country_id','t6aa.region_id as supervising_region_id','t6aa.district_id as supervising_district_id','t6aa.physical_address as supervising_physical_address');
             $results = $qry1->first();
 
             $qry2 = clone $main_qry;
@@ -2343,13 +2347,15 @@ $applicant_id = $siteDetails->applicant_id;
                 ->select('t4.contract_manufacturing_id', 't4.manufacturing_site_id', 't4.manufacturer_name as contract_manufacturer_name', 't4.physical_address as physical_address',
                     't4.contact_person as contract_personnel_name', 't4.email_address as contract_email_address', 't4.telephone_no as contract_telephone_no', 't4.country_id as contract_country_id', 't4.region_id as contract_region_id', 't4.inspected_id as inspected_activity_id');
             $contractmanufacturingDetails = $qry4->first();
-
+     
                  
             $qry5 = clone $main_qry;
             $qry5->leftJoin('tra_personnel_information as t5', 't2.billing_person_id', '=', 't5.id')
                 ->select('t2.applicant_as_billingperson', 't5.name as contact_name', 't5.postal_address as contact_postal_address', 't5.telephone_no as contact_telephone_no', 't5.email_address as contact_email_address',
                     't2.billing_person_id');
             $billingPersonDetails = $qry5->first();
+
+
             $res = array(
                 'success' => true,
                 'results' => $results,

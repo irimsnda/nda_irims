@@ -69,7 +69,8 @@ Ext.define('Admin.view.importexportpermits.views.toolbars.ImportExportPermitsTb'
                         text: 'Edit Permit Details and Permit Extension Process',
                         iconCls: 'x-fa fa-check',
                         childXtype: 'editimportexportapplicationdetails',
-                        wrapper: 'drugsimportexportpermitsappsWrapper',
+                        wrapper: 'importexportpermitsappswrapper',
+                        
                         handler: 'showDataCleanUpWindow'
                     }
                 ]

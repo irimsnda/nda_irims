@@ -5,7 +5,6 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
     extend: 'Ext.panel.Panel',
     title: 'Import/Export Permit Permit Review',
     xtype: 'importexportpermitmanagerreviewpnl',
-    controller: 'importexportpermitsvctr',
     layout: 'fit',
     permitsdetails_panel: 'previewimportexportpermitdetails',
     itemId: 'main_processpanel',

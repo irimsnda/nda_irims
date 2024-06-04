@@ -48,7 +48,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                 }, {
                     xtype: 'displayfield',
                     name: 'workflow_stage',
-                    fieldLabel: 'Application Status',
+                    fieldLabel: 'Workflow Stage',
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',
@@ -215,7 +215,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
             title: 'APPLICANT DETAILS'
         }, {
             xtype: 'declaredimportexportdocuploadsgrid',
-            title: 'Document Review'
+            title: 'Documents Submission'
         },{
             xtype: 'importexportscreeninggrid',
             title: 'Import/Export Permit Prechecking'
@@ -262,7 +262,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     step: 2,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'Import/Export Licence Document Review',
+                    text: 'Import/Export permit Documents Submission',
                     action: 'quickNav', 
                     wizard: 'importexportdeclaredpermitmanagerreviewwizard',
                     handler: 'quickNavigation'

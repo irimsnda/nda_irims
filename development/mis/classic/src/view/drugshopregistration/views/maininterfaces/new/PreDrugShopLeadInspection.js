@@ -110,7 +110,7 @@ Ext.define('Admin.view.drugshopregistration.views.maininterfaces.new.PreDrugShop
             },{
                 xtype: 'hiddenfield',
                 name: 'report_type_id',
-                value:3
+                value:4
             },{
                 xtype: 'hiddenfield',
                 name: 'is_report_saved'

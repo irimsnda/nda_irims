@@ -68,19 +68,19 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.EditImportEx
         }
     },{
         xtype: 'combo',
-        fieldLabel: 'Application Category',
+        fieldLabel: 'Application Category/Reason',
         name: 'permit_category_id',
         forceSelection: true,
-        queryMode: 'local',
+        queryMode: 'local',readOnly: true,
         valueField: 'id',
         displayField: 'name',
         listeners: {
             beforerender: {
-                fn: 'setConfigCombosSectionfilterStore',
+                fn: 'setWorkflowCombosStore',
                 config: {
                     pageSize: 10000,
                     proxy: {
-                        url: 'configurations/getproductApplicationParameters',
+                        url: 'configurations/getNonrefParameter',
                         extraParams: {
                             table_name: 'par_permit_category'
                         }
@@ -88,55 +88,34 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.EditImportEx
                 },
                 isLoad: true
             }
+        },bind: {
+            readOnly: '{isReadOnly}'
         },
-        readOnly: true
     }, {
         xtype: 'combo',
-        fieldLabel: 'Permit Type Category(on Special Case)',
-        name: 'import_typecategory_id',
+        fieldLabel: 'Permit Product Categories',
+        name: 'permit_productscategory_id',
         forceSelection: true,
         queryMode: 'local',
-        valueField: 'id',
-        readOnly: true,
-        
+        valueField: 'id',readOnly: true,
+        displayField: 'name',
         listeners: {
             beforerender: {
-                fn: 'setConfigCombosSectionfilterStore',
+                fn: 'setWorkflowCombosStore',
                 config: {
                     pageSize: 10000,
                     proxy: {
-                        url: 'configurations/getproductApplicationParameters',
+                        url: 'configurations/getRegistrationApplicationParameters',
                         extraParams: {
-                            table_name: 'par_permit_typecategories'
+                            table_name: 'par_permitsproduct_categories'
                         }
                     }
                 },
                 isLoad: true
             }
-        }
-    }, {
-        xtype: 'combo',
-        fieldLabel: 'Permit Reason',
-        name: 'permit_reason_id',
-        forceSelection: true,
-        queryMode: 'local',
-        valueField: 'id',
-        readOnly: true,
-        listeners: {
-            beforerender: {
-                fn: 'setConfigCombosSectionfilterStore',
-                config: {
-                    pageSize: 10000,
-                    proxy: {
-                        url: 'configurations/getproductApplicationParameters',
-                        extraParams: {
-                            table_name: 'par_permit_reasons'
-                        }
-                    }
-                },
-                isLoad: true
-            }
-        }
+        },bind: {
+            readOnly: '{isReadOnly}'
+        },
     }, {
         xtype: 'combo',
         fieldLabel: 'Port Of Entry/Exit',
@@ -144,6 +123,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.EditImportEx
         width: 320,
         valueField: 'id',
         readOnly: false,
+        readOnly: true,
         displayField: 'name',
         forceSelection: true,
         name: 'port_id',
@@ -176,84 +156,6 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.EditImportEx
         readOnly: false,
         altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
         fieldLabel: 'Proform Invoice Date',
-    }, {
-        xtype: 'combo',
-        fieldLabel: 'Paying Currency',
-        labelWidth: 80,
-        width: 320,
-        valueField: 'id',
-        displayField: 'name',
-        forceSelection: true,
-        name: 'paying_currency_id',
-        queryMode: 'local',
-        listeners: {
-            beforerender: {
-                fn: 'setConfigCombosSectionfilterStore',
-                config: {
-                    pageSize: 10000,
-                    proxy: {
-                        url: 'configurations/getPayingCurrency',
-                        extraParams: {
-                            table_name: 'par_currencies',
-                            has_filter: 0
-                        }
-                    }
-                },
-                isLoad: true
-            }
-        }
-    }, {
-        xtype: 'combo',
-        fieldLabel: 'Consignee Options',
-        labelWidth: 80,
-        width: 320,
-        valueField: 'id',
-        displayField: 'name',
-        forceSelection: true,
-        name: 'consignee_options_id',
-        queryMode: 'local',
-        listeners: {
-            beforerender: {
-                fn: 'setConfigCombosSectionfilterStore',
-                config: {
-                    pageSize: 10000,
-                    proxy: {
-                        url: 'configurations/getNonrefParameter',
-                        extraParams: {
-                            table_name: 'par_consignee_options',
-                            has_filter: 0
-                        }
-                    }
-                },
-                isLoad: true
-            }
-        }
-    }, {
-        xtype: 'fieldcontainer',
-        layout: 'column',
-        defaults: {
-            labelAlign: 'top'
-        },
-        fieldLabel: 'Consignee Name',
-        items: [
-            {
-                xtype: 'textfield',
-                name: 'consignee_name',
-                readOnly: true,
-                columnWidth: 0.9
-            },
-            {
-                xtype: 'button',
-                iconCls: 'x-fa fa-link',
-                columnWidth: 0.1,
-                tooltip: 'Link Consignee',
-                name: 'link_consignee',
-                handler: 'showConsigneeDetails'
-            },{
-                xtype: 'hiddenfield',
-                name:'consignee_id'
-            }
-        ]
     }]
    
 });

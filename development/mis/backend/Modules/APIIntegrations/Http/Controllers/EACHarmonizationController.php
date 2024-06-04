@@ -590,7 +590,7 @@ class EACHarmonizationController extends Controller
                                  //insert in MIS DB $table_name, $table_data,$con
                                  $res = insertRecord('wb_trader_account', $data, '');
                                  
-                                 $subject = 'TFDA CUSTOMER SELF SERVICE PORTAL ACCOUNT DETAILS';
+                                 $subject = 'NDA CUSTOMER SELF SERVICE PORTAL ACCOUNT DETAILS';
                                  
                          $email_content = "We wish to acknowledge receipt of your account application details, we are reviewing the account details for approval process</br>.";
                          $email_content.= "Thank you for registering at TFDA Self Service portal and below are the account registration information</br>.";

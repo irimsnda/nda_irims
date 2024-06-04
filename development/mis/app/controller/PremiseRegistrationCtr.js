@@ -9383,7 +9383,7 @@ previewPremisesOnlineApplication: function (view, record) {
             
             Ext.Ajax.request({
                 method: 'GET',
-                url: 'premiseregistration/prepareNewPremiseRegionalEvaluationStage',
+                url: 'premiseregistration/prepareNewPremiseDistrictEvaluationStage',
                 params: {
                     application_id: application_id,
                     application_code: application_code,
@@ -10651,7 +10651,7 @@ previewPremisesOnlineApplication: function (view, record) {
             
             Ext.Ajax.request({
                 method: 'GET',
-                url: 'premiseregistration/prepareNewPremiseRegionalEvaluationStage',
+                url: 'premiseregistration/prepareNewPremiseDistrictEvaluationStage',
                 params: {
                     application_id: application_id,
                     application_code: application_code,

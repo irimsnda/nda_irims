@@ -193,6 +193,11 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.medical
                             xtype: 'displayfield',
                             fieldLabel: 'Product Details',
                             name: 'product_details'
+                        },
+                        {
+                        xtype: 'displayfield',
+                        fieldLabel: 'Local Agent details',
+                        name: 'local_agentdetails'
                         }
                     ]
                 }

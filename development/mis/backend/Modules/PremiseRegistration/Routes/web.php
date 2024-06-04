@@ -160,6 +160,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'premiseregistration'], fu
     
 
     Route::get('prepareNewPremiseRegionalEvaluationStage', 'PremiseRegistrationController@prepareNewPremiseRegionalEvaluationStage');
+    Route::get('prepareNewPremiseDistrictEvaluationStage', 'PremiseRegistrationController@prepareNewPremiseDistrictEvaluationStage');
 
     Route::get('prepareNewPremiseLeadEvaluationStage', 'PremiseRegistrationController@prepareNewPremiseLeadEvaluationStage');
 

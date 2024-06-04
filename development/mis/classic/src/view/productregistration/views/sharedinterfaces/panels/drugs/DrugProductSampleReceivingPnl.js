@@ -117,6 +117,7 @@ Ext.define('Admin.view.productregistration.views.sharedinterfaces.panels.drugs.D
         collapsible: true,
         titleCollapse: true,
         items: [
+        
             {
                 xtype: 'form',
                 bodyPadding: 5,

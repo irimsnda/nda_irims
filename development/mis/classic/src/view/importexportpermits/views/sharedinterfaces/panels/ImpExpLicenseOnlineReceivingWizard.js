@@ -102,9 +102,6 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
             }, {
                 xtype: 'hiddenfield',
                 name: 'is_manager_query'
-            },{
-                xtype: 'hiddenfield',
-                name: 'has_registered_premises'
             }]
     }
 ],
@@ -159,7 +156,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
             xtype: 'tabpanel',
             items: [{
                 xtype: 'onlineimportexportdocuploadsgrid',
-                title: 'Document Review'
+                title: 'Documents Submission'
             }]
         }, {
             title: 'Invoice & Payment Details',
@@ -209,7 +206,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
                     step: 2,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'Import/Export Licence Document Review',
+                    text: 'Import/Export permit Documents Submission',
                     action: 'quickNav',
                      wizard: 'impexplicenseonlinereceivingwizard',
                     handler: 'quickNavigationonlineprev'

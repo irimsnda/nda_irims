@@ -35,7 +35,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportP
                 }, {
                     xtype: 'displayfield',
                     name: 'workflow_stage',
-                    fieldLabel: 'Application Status',
+                    fieldLabel: 'Workflow Stage',
                     fieldStyle: {
                         'color': 'green',
                         'font-weight': 'bold',

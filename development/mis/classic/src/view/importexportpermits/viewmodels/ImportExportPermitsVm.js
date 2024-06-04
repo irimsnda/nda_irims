@@ -20,7 +20,7 @@ Ext.define('Admin.view.importexportpermits.viewmodels.ImportExportPermitsVm', {
         atBeginning: true,
         atEnd: false,
         isReadOnly: false,
-        application_title: 'Import/Export Licence Application',
+        application_title: 'Permit Application',
         isVisaApplication: true,
         showProdDosageForm: false,
         showProdSubCategory:false

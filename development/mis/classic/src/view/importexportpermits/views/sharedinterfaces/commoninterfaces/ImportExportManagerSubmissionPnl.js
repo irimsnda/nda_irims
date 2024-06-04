@@ -1,7 +1,7 @@
 
 
 /**
- * Created by softclans.
+ * Created by Kip on 10/17/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfaces.ImportExportManagerSubmissionPnl', {
     extend: 'Ext.panel.Panel',
@@ -34,7 +34,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
             }, {
                 xtype: 'displayfield',
                 name: 'workflow_stage',
-                fieldLabel: 'Application Status',
+                fieldLabel: 'Workflow Stage',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
@@ -136,7 +136,6 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
                 iconCls: 'x-fa fa-check',
                 ui: 'soft-purple',
                 name: 'submit_selected',
-                disabled: true,
                 table_name: 'tra_importexport_applications',
                 action: 'process_submission_btn',
                 winWidth: '50%',

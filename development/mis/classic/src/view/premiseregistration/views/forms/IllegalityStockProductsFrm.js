@@ -44,6 +44,13 @@ Ext.define('Admin.view.premiseregistration.views.forms.IllegalityStockProductsFr
             xtype: 'hiddenfield',
             name: 'id'
         },
+
+         {
+            xtype: 'hidden',
+            name: '_token',
+            value: token
+        },
+
         {
             xtype: 'hiddenfield',
             name: 'application_id'

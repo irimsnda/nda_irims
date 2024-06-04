@@ -114,7 +114,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                   store.insert(0, all);
                 },
             afterrender: function(combo) {
-                        combo.select(combo.getStore().getAt(0));	
+                        combo.select(combo.getStore().getAt(0));    
                     }
         }
     }],
@@ -146,21 +146,6 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             }
         }
     },
-    // {
-    //     xtype: 'widgetcolumn',
-    //     width: 120,
-    //     hidden: true,
-    //     widget: {
-    //         width: 120,
-    //         textAlign: 'left',
-    //         xtype: 'button',
-    //         ui: 'soft-green',
-    //         text: 'Permit Release Recommendation',
-    //         iconCls: 'x-fa fa-chevron-circle-up',
-    //         approval_frm: 'permitReleaseRecommFrm',
-    //         handler: 'getPermitReleaseRecommendationDetails',
-    //     }
-    // },
     
     {
         xtype: 'gridcolumn',
@@ -259,7 +244,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                         text: 'Preview Import/Export Details',
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 0,
-                        handler: 'editpreviewLicencedPermitinformation'
+                        handler: 'editpreviewPermitinformation'
                     }
                 ]
             }

@@ -95,6 +95,31 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ControlDrugs
         allowBlank: true
     }, {
         xtype: 'combo',
+        fieldLabel: 'Reason for Importation',
+        name: 'reason_for_importation',
+        forceSelection: true,
+        queryMode: 'local',
+        valueField: 'id',
+        displayField: 'name',bind: {
+            readOnly: '{isReadOnly}'
+        },
+        listeners: {
+            beforerender: {
+                fn: 'setWorkflowCombosStore',
+                config: {
+                    pageSize: 10000,
+                    proxy: {
+                        url: 'configurations/getNonrefParameter',
+                        extraParams: {
+                            table_name: 'par_reasonsfor_importation'
+                        }
+                    }
+                },
+                isLoad: true
+            }
+        }
+    }, {
+        xtype: 'combo',
         fieldLabel: 'Port Of Entry/Exit',
         labelWidth: 80,
         width: 320,
@@ -190,36 +215,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ControlDrugs
                 isLoad: true
             }
         }
-    }, {
-        xtype: 'combo',
-        fieldLabel: 'Paying Currency',
-        labelWidth: 80,
-        allowBlank: true,
-        valueField: 'id',
-        displayField: 'name',bind: {
-            readOnly: '{isReadOnly}',
-            hidden: 'isVisaApplication'
-        },
-        forceSelection: true,
-        name: 'paying_currency_id',
-        queryMode: 'local',
-        listeners: {
-            beforerender: {
-                fn: 'setConfigCombosSectionfilterStore',
-                config: {
-                    pageSize: 10000,
-                    proxy: {
-                        url: 'configurations/getPayingCurrency',
-                        extraParams: {
-                            table_name: 'par_currencies',
-                            has_filter: 0
-                        }
-                    }
-                },
-                isLoad: true
-            }
-        }
-    }, {
+    },{
         xtype: 'combo',
         fieldLabel: 'Zone',
         labelWidth: 50,

@@ -1,7 +1,9 @@
 /**
  * Created by softclans
+ * user robinson odhiambo
+ * Kip on 9/24/2018.
  */
-Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportExportPermitEvaluationPnl', {
+Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importexportpermitevaluationpnl', {
     extend: 'Ext.panel.Panel',
     xtype: 'importexportpermitevaluationpnl', 
      permitsdetails_panel: 'previewimportexportpermitdetails',
@@ -46,7 +48,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
             }, {
                 xtype: 'displayfield',
                 name: 'workflow_stage',
-                fieldLabel: 'Application Status',
+                fieldLabel: 'Workflow Stage',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
@@ -119,7 +121,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
     items: [{
             xtype:'tabpanel',
             layout: 'fit',
-            title: 'Application Details',
+            title: 'Application Details((Permit, Sender/Receiver, Licenses Outlets and Documents)',
             items:[{
                 xtype: 'panel',
                 autoScroll: true, 
@@ -135,16 +137,16 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     autoScroll: true,
                     collapsible: true,
                     title: 'Application Details', 
-                    title: 'Information'
+                    title: 'Permit Information'
                 },  {
                     xtype: 'senderreceiverdetailsfrm',collapsible: true,
                     title: 'Sender/Receiver Details',
                 },{
                     xtype: 'importexportpremisesfrm',collapsible: true,
-                    title: 'Premises Details',
+                    title: 'Licensed Outlet Details',
                 }],
                 bbar:[{
-                    text: 'Update VC Application Details',
+                    text: 'Update Permit Application Details',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-save',
                     name: 'save_btn',
@@ -161,9 +163,9 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
         {
             xtype: 'importexportpermitsproductsgrid',
             itemId: 'importexportpermitsproductsgrid',
-            title: 'Recommendation on Import/Export VC Products Details',
+            title: 'Recommendation on Import/Export Permit Products Details',
             bind: {
-                title:'Products Details Recommendations'
+                title: '{application_title}'+' Permit Products Details Recommendations'
             },
             selModel: {
                 selType: 'checkboxmodel',
@@ -180,7 +182,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
             }],
             
             tbar:[{
-                text:'Recommend Selected Products',
+                text:'Recommend Selected Permits Products',
                // name:'btn_recommendallproducts',
                viewXtype: 'permitsproductsrecommendationfrm',
                winTitle: 'Permits Products Recommendation',
@@ -188,122 +190,118 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                 handler: 'funcPermitsProductRecommendationWin',
                 iconCls: 'x-fa fa-plus',
                 ui: 'soft-red',
+				bind: {
+					disabled: '{isReadOnly}'  // negated
+				}
             },'->',{
-                text:'Update Products Recommendation',
+                text:'Update Permits Products Recommendation',
                 name:'btn_updatesprodrecommendtion',
                 iconCls: 'x-fa fa-plus',
                 ui: 'soft-green',
+				bind: {
+					disabled: '{isReadOnly}'  // negated
+				}
 
+            }],features: [{
+                ftype: 'summary'
+            },{
+                ftype: 'searching',
+                minChars: 2,
+                mode: 'local'
             }],
             columns: [{
                 xtype:'rownumberer'  
               },{
-          xtype: 'gridcolumn',
-          dataIndex: 'brand_name',
-          tdCls: 'wrap-text',
-          text: 'Brand Name/Device Name',
-          flex: 1
-      }, {
-          xtype: 'gridcolumn',
-          dataIndex: 'certificate_no',
-          hidden: true,
-          tdCls: 'wrap-text',
-          text: 'Certificate No',
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'common_name',
-          tdCls: 'wrap-text',
-          text: 'Common Name',
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'product_category',
-          hidden: true,
-          tdCls: 'wrap-text',
-          text: 'Product Category',
-          flex: 1,
-      }, {
-          xtype: 'gridcolumn',
-          dataIndex: 'quantity',
-          tdCls: 'wrap-text',
-          text: 'Quantity',hidden: true,
-          flex: 1,
-      }, {
-          xtype: 'gridcolumn',
-          dataIndex: 'si_unit',
-          tdCls: 'wrap-text',
-          text: 'Packaging Units',
-          flex: 1,
-      }, {
-          xtype: 'gridcolumn',
-          dataIndex: 'pack_size',hidden: true,
-          text: 'Unit Pack size',
-  
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'pack_unit',hidden: true,
-          text: 'Unit Pack',
-  
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'no_of_packs_tertiary',
-          tdCls: 'wrap-text',
-          text: 'Tertiary',
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'no_of_packs_secondary',
-          tdCls: 'wrap-text',
-          text: 'Secondary',
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'verification_fee_percent',
-          tdCls: 'wrap-text',
-          text: 'Verification Percentage',
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'no_of_packs',
-          tdCls: 'wrap-text',
-          text: 'Primary',
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'total_units',
-          text: 'Total Units',
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'currency_name',
-          tdCls: 'wrap-text',
-          text: 'Currency Name',
-          flex: 1,
-      },{
+                  xtype: 'gridcolumn',
+                  dataIndex: 'brand_name',
+                  tdCls: 'wrap-text',
+                  text: 'Brand Name/Device Name',
+                  flex: 1
+              }, {
+                  xtype: 'gridcolumn',
+                  dataIndex: 'certificate_no',
+                  tdCls: 'wrap-text',
+                  text: 'Certificate No',
+                  flex: 1,
+              },{
+                  xtype: 'gridcolumn',
+                  dataIndex: 'common_name',
+                  tdCls: 'wrap-text',
+                  text: 'Common Name',
+                  flex: 1,
+              },{
+                  xtype: 'gridcolumn',
+                  dataIndex: 'product_category',
+                  hidden: true,
+                  tdCls: 'wrap-text',
+                  text: 'Product Category',
+                  flex: 1,
+              },{
+                xtype: 'gridcolumn',
+                dataIndex: 'manufacturer_name',
+                
+                tdCls: 'wrap-text',
+                text: 'Manufacturer Name',
+                flex: 1,
+            },{
+                xtype: 'gridcolumn',
+                dataIndex: 'country_oforigin',
+                
+                tdCls: 'wrap-text',
+                text: 'Country of Origin',
+                flex: 1,
+            }, {
+                  xtype: 'gridcolumn',
+                  dataIndex: 'quantity',
+                  tdCls: 'wrap-text',
+                  text: 'Quantity',
+                  flex: 1,
+              }, {
+                  xtype: 'gridcolumn',
+                  dataIndex: 'packaging_units',
+                  tdCls: 'wrap-text',
+                  text: 'Packaging Units',
+                  flex: 1,
+              }, {
+                  xtype: 'gridcolumn',
+                  dataIndex: 'pack_size',hidden: true,
+                  text: 'Unit Pack size',
           
-          xtype: 'gridcolumn',
-          dataIndex: 'unit_price',
-          tdCls: 'wrap-text',
-          text: 'Unit Price',
-          flex: 1,
-        
-      },{
+                  flex: 1,
+              },{
+                  xtype: 'gridcolumn',
+                  dataIndex: 'pack_unit',hidden: true,
+                  text: 'Unit Pack',
+          
+                  flex: 1,
+              },{
+                  xtype: 'gridcolumn',
+                  dataIndex: 'currency_name',
+                  tdCls: 'wrap-text',
+                  text: 'Currency Name',
+                  flex: 1
+              },{
+                  
+                  xtype: 'gridcolumn',
+                  dataIndex: 'unit_price',
+                  tdCls: 'wrap-text',
+                  text: 'Unit Price',
+                  flex: 1,
+                
+              },{
                   xtype: 'gridcolumn',
                   dataIndex: 'total_value',
                   tdCls: 'wrap-text',
                   text: 'Total Value',
-                  flex: 1,
+                  width: 200,
                   summaryType: 'sum',
-                  // renderer: function (val, meta, record) {
-                  //     return Ext.util.Format.number(val, '0,000.00');
-                  // },
-                  // summaryRenderer: function (val) {
-                  //     val = Ext.util.Format.number(val, '0,000.00');
-                  //     return 'Total Fob '+val
-                  // }
+                  renderer: function (val, meta, record) {
+                      return Ext.util.Format.number(val, '0,000.00');
+                  },
+                  summaryRenderer: function (val) {
+                      val = Ext.util.Format.number(val, '0,000.00');
+                      return 'Total Fob '+val
+                  }
               },{
                 xtype: 'gridcolumn',
                 text: 'Registration Status', 
@@ -318,48 +316,47 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     metaData.tdStyle = 'color:white;background-color:red';
                     return "Not Registered";
                 }
-         },
-               // {   
-            //     xtype: 'gridcolumn',
-            //     dataIndex: 'prodregistrationvalidation_recommendation_id',
-            //     tdCls:'wrap-text',
-            //     text: 'Product Registration Validation Recommendation',
-            //     width: 80,
-            //         renderer: function (val, meta, record, rowIndex, colIndex, store, view) {
-            //             var textVal = '';
+        
+            },{   
+                xtype: 'gridcolumn',
+                dataIndex: 'prodregistrationvalidation_recommendation_id',
+                tdCls:'wrap-text',
+                text: 'Product Registration Validation Recommendation',
+                flex: 1,
+                    renderer: function (val, meta, record, rowIndex, colIndex, store, view) {
+                        var textVal = '';
                        
-            //             if (val == 2) {
-            //                 textVal = "Accepted";
-            //                 meta.tdStyle = 'color:white;background-color:green';
+                        if (val == 2) {
+                            textVal = "Accepted";
+                            meta.tdStyle = 'color:white;background-color:green';
                             
-            //             }else if(val == 3){
-            //                 meta.tdStyle = 'color:white;background-color:red';
-            //                 textVal = "Rejected";
-            //             }else{
-            //                // meta.tdStyle = 'color:white;background-color:blue';
-            //             }
-            //             return textVal;
-            //         }
-            //   },{   
-            //     xtype: 'gridcolumn',
-            //     dataIndex: 'prodregistrationvalidation_recommendation_remarks',
-            //     tdCls:'wrap-text',
-            //     text: 'Product Registration Validation Recommendation',
-            //     width: 80,
-            //     renderer: function (val) {
-            //         if (val == '') {
+                        }else if(val == 3){
+                            meta.tdStyle = 'color:white;background-color:red';
+                            textVal = "Rejected";
+                        }else{
+                           // meta.tdStyle = 'color:white;background-color:blue';
+                        }
+                        return textVal;
+                    }
+              },{   
+                xtype: 'gridcolumn',
+                dataIndex: 'prodregistrationvalidation_recommendation_remarks',
+                tdCls:'wrap-text',
+                text: 'Product Registration Validation Recommendation',
+                flex: 1,
+                renderer: function (val) {
+                    if (val == '') {
                        
-            //                  var val = 'Recommendation Remarks';
-            //         }
-            //         return val;
-            //     }
-            //   },
-              {   
+                             var val = 'Recommendation Remarks';
+                    }
+                    return val;
+                }
+              },{   
                 xtype: 'gridcolumn',
                 dataIndex: 'permitprod_recommendation_id',
                 tdCls:'wrap-text',
-                text: 'Product Recommendation(Acceptance)',
-                width: 80,
+                text: 'Permits Product Recommendation(Acceptance)',
+                flex: 1,
                     editor: {
                         xtype: 'combo',
                         store: 'permitprod_recommendationstr',
@@ -400,7 +397,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                 dataIndex: 'permitprod_recommendation_remarks',
                 tdCls:'wrap-text',
                 text: 'Recommendation Remarks',
-                width: 100,
+                flex: 1,
                 editor: {
                     xtype:'textfield'
                 },renderer: function (val) {
@@ -426,7 +423,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
             }]
         },{
             xtype: 'productscreeninggrid',
-            title: 'Application Checklist Recommendation',
+            title: 'Application Screening & Recommendation',
             listeners:{
                 beforerender:function(grid){
                     btn = grid.down('button[name=raise_checklist_query]');
@@ -496,7 +493,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     iconCls: 'fa fa-user',
                     enableToggle: true,
                     pressed: true,
-                    text: 'Application Details',
+                    text: 'Application Details (Permit, Sender/Receiver, Licenses Outlets and Documents)',
                     iconAlign: 'top',
                     action: 'quickNav',max_step:2,
                     wizard: 'importexportpermitevaluationpnl',
@@ -506,7 +503,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     step: 1,
                     iconCls: 'fa fa-university',
                     enableToggle: true,iconAlign: 'top',
-                    text: 'Recommendation on Import/Export VC Products Details',
+                    text: 'Recommendation on Import/Export Permit Products Details',
                     max_step:2,
                     action: 'quickNav', wizard: 'importexportpermitevaluationpnl',
                     handler: 'quickScreeningNavigation'
@@ -514,7 +511,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     step: 2,
                     iconCls: 'fa fa-university',
                     enableToggle: true,iconAlign: 'top',
-                    text: 'Application Checklist Details',
+                    text: 'Application Screening & Recommendation',
                     max_step:2,
                     action: 'quickNav', wizard: 'importexportpermitevaluationpnl',
                     handler: 'quickScreeningNavigation'
@@ -528,12 +525,29 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                 {
                     xtype: 'transitionsbtn'
                 },{
-                    text: 'Preview & Edit VC Details(Preview Option)',
+                    text: 'Preview Approval Document',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-check',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-sliders',
+                    menu: {
+                        xtype: 'menu',
+                        items: [{
+                                ui: 'soft-red',
+                                iconCls: 'fa fa-print',
+                                text: 'Preview Approval Document',
+                                is_preview : true,
+                                name: 'preview_importexportpermit',
+                            }
+                        ]
+                    }
+                },{
+                    text: 'Preview & Edit Permit Details(Preview Option)',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-edit',
                     hidden: true,
                     isReadOnly: 0,
-                    winTitle: 'Preview & Edit Details',
+                    winTitle: 'Preview & Edit Permit Details',
                     winWidth: '60%',
                     name: 'more_app_details',
                     stores: '[]'
@@ -566,57 +580,22 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     tooltip: 'Raise Query/View Query(Request for Information) and query Responses',
                     ui: 'soft-green',
                     handler: 'showAddApplicationUnstrcuturedQueries',
+					bind: {
+						disabled: '{isReadOnly}'  // negated
+					}
+					
+                },{
+                    text: 'Submit Application',
+                    ui: 'soft-purple',
+                    hidden: true,
+                    iconCls: 'fa fa-check',
+                    name: 'process_submission_btn',
+                    table_name: 'tra_importexport_applications',
+                    winWidth: '50%',
+					bind: {
+						disabled: '{isReadOnly}'  // negated
+					}
                 },
-                
-            //     {
-                    
-            //         //text: 'Review & Approval Recommendation',
-            //         text: 'Approval Recommendation1',
-            //         ui: 'soft-purple',
-            //         iconCls: 'fa fa-check',
-            //         ui: 'soft-purple',
-            //         iconCls: 'fa fa-sliders',
-            //         menu: {
-            //             xtype: 'menu',
-            //             items: [
-            //                 {
-            //                     text: 'Reject Application',
-            //                     iconCls: 'x-fa fa-bars',
-            //                     decision_id: 3,
-            //                     winWidth: '90%', ui: 'soft-red',
-            //                     name: 'reject_recommendation',
-            //                     stores: '[]'
-            //                 },{
-            //                     text: 'Approve Application',
-            //                     iconCls: 'x-fa fa-bars', decision_id: 1,
-            //                     winWidth: '90%',ui: 'soft-green',
-            //                     name: 'approve_recommendation',
-            //                     stores: '[]'
-            //                 }
-            //             ]
-            //         }
-            // },
-            // {
-            //     text: 'Close & Release Application',
-            //     ui: 'soft-purple',
-            //     iconCls: 'fa fa-check',
-            //     wizard: 'importexportpermitmanagerreviewwizard',
-            //     name: 'process_submission_btn',
-            //     table_name: 'tra_importexport_applications',
-            //     winWidth: '50%',
-                
-            // },
-            {
-                text: 'Add Overrall Comments',
-                ui: 'soft-purple', 
-                iconCls: 'fa fa-weixin',
-                childXtype: 'applicationcommentspnl',
-                winTitle: 'Asssesment Process Comments',
-                winWidth: '60%',
-                name:'prev_comments',
-                comment_type_id: 2,
-                stores: '[]'
-         }, 
                 {
                     text: 'Next',
                     ui: 'soft-purple',
@@ -627,17 +606,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                         disabled: '{atEnd}'
                     },wizard:'importexportpermitevaluationpnl',
                     handler: 'onNextScreeningCardClick'
-                }, 
-
-                {
-                    text: 'Submit Application',
-                    ui: 'soft-purple',
-                    hidden: true,
-                    iconCls: 'fa fa-check',
-                    name: 'process_submission_btn',
-                    table_name: 'tra_importexport_applications',
-                    winWidth: '50%'
-                },
+                }
             ]
         };
         me.callParent(arguments);

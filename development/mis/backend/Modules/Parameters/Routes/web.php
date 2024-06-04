@@ -81,6 +81,7 @@ Route::group(['middleware' => ['web'], 'prefix' => 'commonparam'], function(){
     Route::get('getRevenueAccounts',[CommonParameterController::class,'getRevenueAccounts']);
     Route::get('getAgeAnalysisDaysSpanParam',[CommonParameterController::class,'getAgeAnalysisDaysSpanParam']);
     Route::get('saveCommonParameter',[CommonParameterController::class,'saveCommonParameter']);
+    Route::get('getProductRange',[CommonParameterController::class,'getProductRange']);
     Route::get('getUserGroupsdetails',[CommonParameterController::class,'getUserGroupsdetails']);
     Route::get('getCountriesByStateRegions',[CommonParameterController::class,'getCountriesByStateRegions']);
 

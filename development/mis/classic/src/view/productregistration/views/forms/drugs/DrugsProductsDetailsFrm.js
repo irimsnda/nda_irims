@@ -278,11 +278,38 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
             {
             xtype: 'combo',
             fieldLabel: 'Assessment Procedure',
+            name: 'assessmentprocedure_type_id',
+            forceSelection: true,
+            queryMode: 'local',
+            allowBlank:true,
+            valueField: 'id',
+            displayField: 'name',
+            listeners: {
+                 afterrender: {
+                        fn: 'setConfigCombosStore',
+                        config: {
+                        pageSize: 10000,
+                        proxy: {
+                        url: 'configurations/getRegistrationApplicationParameters',
+                        extraParams: {
+                                table_name: 'par_assessmentprocedure_types'
+                         }
+                    }
+                },
+                isLoad: true
+                }
+            }, bind: {
+                    readOnly: '{isReadOnly}'  // negated
+                }
+            },
+            {
+            xtype: 'combo',
+            fieldLabel: 'Certification Status',
             name: 'assessment_procedure_id',
             forceSelection: true,
             queryMode: 'local',
             allowBlank:true,
-            valueField: 'id',labelWidth: 110,
+            valueField: 'id',
             displayField: 'name',
             listeners: {
                  afterrender: {
@@ -298,9 +325,12 @@ Ext.define('Admin.view.productregistration.views.forms.drugs.DrugsProductsDetail
                 },
                 isLoad: true
                 }
+            }, bind: {
+                readOnly: '{isReadOnly}'  // negated
             }
+          } ,
                 
-            },{
+          {
             xtype: 'combo',
             fieldLabel: 'Product Class Category',
             name: 'prodclass_category_id',

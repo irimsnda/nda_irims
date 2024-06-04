@@ -3,7 +3,7 @@
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportExportPermitReleasePnl', {
     extend: 'Ext.panel.Panel',
-    title: 'Import/Export Licence Release',
+    title: 'Import/Export Permit Release',
     xtype: 'importexportpermitreleasepnl',
     layout: 'fit',
     permitsdetails_panel: 'previewimportexportpermitdetails',
@@ -38,7 +38,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
             }, {
                 xtype: 'displayfield',
                 name: 'workflow_stage',
-                fieldLabel: 'Application Status',
+                fieldLabel: 'Workflow Stage',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',

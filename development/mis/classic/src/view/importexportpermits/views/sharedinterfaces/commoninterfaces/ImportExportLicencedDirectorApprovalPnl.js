@@ -6,7 +6,8 @@
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfaces.ImportExportLicencedDirectorApprovalPnl', {
     extend: 'Ext.panel.Panel',
     title: 'Pending Applications',
-    xtype: 'importexportlicenceddirectorapprovalpnl',  permitsdetails_panel: 'previewimportexportpermitdetails',
+    xtype: 'importexportlicenceddirectorapprovalpnl',  
+    permitsdetails_panel: 'previewimportexportpermitdetails',
     itemId: 'main_processpanel',
     layout: 'fit',
     dockedItems: [{

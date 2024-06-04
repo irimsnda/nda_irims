@@ -182,7 +182,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                         text: 'Preview Import/Export Details',
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 0,
-                        handler: 'editpreviewLicencedPermitinformation'
+                        handler: 'editpreviewPermitinformation'
                     },{
                         text: 'All Application Documents',
                         iconCls: 'x-fa fa-file',
@@ -197,7 +197,8 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                         handler: 'showPreviousUploadedDocs'
                     },{
                         text: 'View Screening Checklists & Recommendation',
-                        iconCls: 'x-fa fa-check-square',hidden: true,
+                        iconCls: 'x-fa fa-check-square',
+                        hidden: true,
                         handler: 'showApplicationChecklists'
                     }
                 ]

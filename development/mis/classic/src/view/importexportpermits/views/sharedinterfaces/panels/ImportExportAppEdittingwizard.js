@@ -194,10 +194,10 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
             xtype: 'tabpanel',
             items: [{
                 xtype: 'importexportextentiondocuploadsgrid',
-                title: 'Document Review'
+                title: 'Documents Submission'
             },{
                 xtype: 'previousimportexportdocuploadsgrid',
-                title: 'Previous Document Review'
+                title: 'Previous Documents Submission'
             }]
         },{
             xtype: 'extensionimportexportapppnl',
@@ -248,7 +248,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     step: 1,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'Import/Export Licence Document Review',
+                    text: 'Import/Export permit Documents Submission',
                     action: 'quickNav', 
                     wizard: 'importexportedittingswizard',
                     handler: 'quickNavigation'
@@ -281,6 +281,23 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     iconCls: 'fa fa-arrow-left',
                     wizard:'importexportedittingswizard',
                     handler: 'onPrevCardClick'
+                },{
+                    text: 'Preview Approval Document',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-check',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-sliders',
+                    menu: {
+                        xtype: 'menu',
+                        items: [{
+                                ui: 'soft-red',
+                                iconCls: 'fa fa-print',
+                                text: 'Preview Approval Document',
+                                is_preview : true,
+                                name: 'preview_importexportpermit',
+                            }
+                        ]
+                    }
                 },
                 {
                     text: 'Save Application Details',

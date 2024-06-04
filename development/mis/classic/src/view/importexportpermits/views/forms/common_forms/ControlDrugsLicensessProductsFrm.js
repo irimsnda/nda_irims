@@ -34,10 +34,6 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ControlDrugs
         name: 'id',
         allowBlank: true
     },{
-        xtype: 'hidden',
-        name: '_token',
-        value: token
-    },{
         xtype: 'hiddenfield',
         name: 'conversion_unit',
         allowBlank: true
@@ -332,7 +328,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ControlDrugs
             change:'baseStrengthCalculation'
         }
     },{
-        xtype: 'numberfield',readOnly: true,
+        xtype: 'numberfield',//readOnly: true,
         name: 'controlleddrug_base',
         fieldLabel: 'Base(g)',
     },{

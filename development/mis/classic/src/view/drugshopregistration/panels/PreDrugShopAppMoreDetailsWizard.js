@@ -51,7 +51,7 @@ Ext.define('Admin.view.drugshopregistration.views.panels.PreDrugShopAppMoreDetai
            xtype: 'applicationapplicantpnl',
            collapsible: true, 
            collapsed: true,
-           hidden: true,
+           //hidden: true,
           title:' Applicant Details'
         }
     ],

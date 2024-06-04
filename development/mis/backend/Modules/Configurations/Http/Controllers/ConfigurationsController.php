@@ -1286,8 +1286,7 @@ public function deleteWorkflowRecord(Request $req)
              else {
 
                 $qry = DB::table($table_name)
-                    ->leftJoin('par_sections as t2', 't1.section_id', '=', 't2.id')
-                    ->select('t1.*', 't2.name as section_name');
+                    ->select('t1.*');
 
 
             }

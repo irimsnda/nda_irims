@@ -143,6 +143,7 @@ Ext.define('Admin.controller.ReportsCtr', {
             print_report(action_url);
 
     },
+
     generateImportExportpermit:function(application_code,module_id,permit_watermark ){
 
         var action_url = 'reports/genenerateImportExportPermit?application_code=' + application_code + '&&module_id=' + module_id+'&permit_watermark='+permit_watermark;

@@ -18,14 +18,6 @@
         }
     },
     items: [
-        // {
-        //     xtype: 'hiddenfield',
-        //     name: 'selected_appcodes'
-        // },
-        //  {
-        //     xtype: 'hiddenfield',
-        //     name: 'selected_appIds'
-        // },
         {
             xtype: 'hiddenfield',
             name: 'recommendation_id'
@@ -67,7 +59,8 @@
             iconCls: 'x-fa fa-search',
             columnWidth: 0.1,
             margin:5,
-            text: 'Preview Letter of Rejection',
+            hidden:true,
+            text: 'Preview Permit/Letter of Rejection',
             handler: 'generateimportpermitfromfrm',
             winWidth: '90%'
         },{
@@ -112,7 +105,6 @@
             value: new Date(),
             maxValue: new Date(),
             name: 'approval_date',
-             readOnly:true,
             submitFormat: 'Y-m-d',
             format: 'd/m/Y',
             altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00'
@@ -120,7 +112,7 @@
             xtype: 'combo',
             store: 'confirmationstr',
             value: 1,
-            fieldLabel: 'SA Signatory?',
+            fieldLabel: 'DG Signatory?',
             queryMode: 'local',
             forceSelection: true,
             valueField: 'id',
@@ -172,7 +164,7 @@
         },{
             xtype: 'textarea',
             fieldLabel: 'Permit Release/Rejection Remarks',
-            name: 'permit_release_remarks',allowBlank: true
+            name: 'permit_release_remarks',allowBlank: false
         }
     ],
     buttons: [

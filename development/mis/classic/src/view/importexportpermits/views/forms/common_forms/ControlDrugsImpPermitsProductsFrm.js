@@ -185,7 +185,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ControlDrugs
     },{
         xtype: 'numberfield',
         name: 'drugs_content',
-        readOnly: true,
+        //readOnly: true,
         fieldLabel: 'Drug Contents(%)',
         listeners: {
             change:'baseStrengthCalculation'
@@ -317,6 +317,8 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ControlDrugs
         xtype: 'numberfield',
         name: 'strength_asgrams',
         fieldLabel: 'Strength(g)', 
+        hidden: true, 
+        allowBlank: true,
         listeners: {
             change:'baseStrengthCalculation'
         }
@@ -328,7 +330,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ControlDrugs
             change:'baseStrengthCalculation'
         }
     },{
-        xtype: 'numberfield',readOnly: true,
+        xtype: 'numberfield',
         name: 'controlleddrug_base',
         fieldLabel: 'Base(g)',
     },{

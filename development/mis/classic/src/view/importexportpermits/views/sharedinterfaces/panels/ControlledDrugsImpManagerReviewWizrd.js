@@ -258,7 +258,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
                         collapsible: true,
                         title: 'APPLICANT DETAILS'
                     },{
-                        xtype: 'importexportdetailsfrm',
+                        xtype: 'ctrdrugsimportexportdetailsfrm',
                         autoScroll: true,
                         collapsible: true,
                         title: 'Application Details', 
@@ -275,7 +275,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
                     title: 'Uploaded Application Documents',
                     xtype: 'previewpermitdocuploadsgrid'
                 },{
-                    xtype: 'importexportpermitsproductsgrid',
+                    xtype: 'controldrugsimppermitsproductsgrid',
                     itemId: 'importexportpermitsproductsgrid',
                     title: 'Recommendation on Import/Export Permit Products Details',
                     bind: {
@@ -292,7 +292,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
                     }],
                     listeners:{
                         beforerender: function(grid){
-                            var btn = grid.down('button[name=add_products]');
+                            var btn = grid.down('button[action=add]');
                             btn.setVisible(false);
                         }
                     },

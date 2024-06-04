@@ -1,5 +1,5 @@
 /**
- * Created by Softclans.
+ * Created by Kip on 9/22/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExportPermitsProductsGrid', {
     extend: 'Ext.grid.Panel',
@@ -21,25 +21,22 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             }
         }
     },
-    tbar: [
-    // {
-    //     xtype: 'button',
-    //     text: 'Add VC Products Details',
-    //     iconCls: 'x-fa fa-plus',
-    //     action: 'add',
-    //     name: 'add_products',
-    //     ui: 'soft-green',
-    //     childXtype: 'importexportpermitsproductspnl',
-    //     winTitle: 'Add VC Products Details',
-    //     hidden: true,
-    //     winWidth: '80%',
-    //     handler: 'showAddImpPermitProductsWinFrm',
-    //     stores: '[]',
-    //     bind: {
-    //         hidden: '{isReadOnly}'  // negated
-    //     }
-    // }, 
-    {
+    tbar: [{
+        xtype: 'button',
+        text: 'Add Permit Products Details',
+        iconCls: 'x-fa fa-plus',
+        action: 'add',
+        name: 'add_products',
+        ui: 'soft-green',
+        childXtype: 'importexportpermitsproductspnl',
+        winTitle: 'Add Permit Products Details',
+        winWidth: '80%',
+        handler: 'showAddImpPermitProductsWinFrm',
+        stores: '[]',
+        bind: {
+            hidden: '{isReadOnly}'  // negated
+        }
+    }, {
         xtype: 'exportbtn'
     }, {
         xtype: 'hiddenfield',
@@ -48,7 +45,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             value: '{isReadOnly}'  // negated
         }
     }],
-    export_title: 'Impor/Export VC Products',
+    export_title: 'Impor/Export Permits Products',
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '80%',
@@ -112,7 +109,6 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
       }, {
           xtype: 'gridcolumn',
           dataIndex: 'certificate_no',
-          hidden: true,
           tdCls: 'wrap-text',
           text: 'Certificate No',
           flex: 1,
@@ -133,11 +129,11 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
           xtype: 'gridcolumn',
           dataIndex: 'quantity',
           tdCls: 'wrap-text',
-          text: 'Quantity',hidden: true,
+          text: 'Quantity',
           flex: 1,
       }, {
           xtype: 'gridcolumn',
-          dataIndex: 'si_unit',
+          dataIndex: 'packaging_units',
           tdCls: 'wrap-text',
           text: 'Packaging Units',
           flex: 1,
@@ -152,35 +148,6 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
           dataIndex: 'pack_unit',hidden: true,
           text: 'Unit Pack',
   
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'no_of_packs_tertiary',
-          tdCls: 'wrap-text',
-          text: 'Tertiary',
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'no_of_packs_secondary',
-          tdCls: 'wrap-text',
-          text: 'Secondary',
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'no_of_packs',
-          tdCls: 'wrap-text',
-          text: 'Primary',
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'verification_fee_percent',
-          tdCls: 'wrap-text',
-          text: 'Verification Percentage',
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'total_units',
-          text: 'Total Units',
           flex: 1,
       },{
           xtype: 'gridcolumn',
@@ -201,23 +168,22 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
           dataIndex: 'total_value',
           tdCls: 'wrap-text',
           text: 'Total Value',
-          flex: 1
-          //width: 200,
-          // summaryType: 'sum',
-          // renderer: function (val, meta, record) {
-          //     return Ext.util.Format.number(val, '0,000.00');
-          // },
-          // summaryRenderer: function (val) {
-          //     val = Ext.util.Format.number(val, '0,000.00');
-          //     return 'Total Fob '+val
-          // }
+          width: 200,
+          summaryType: 'sum',
+          renderer: function (val, meta, record) {
+              return Ext.util.Format.number(val, '0,000.00');
+          },
+          summaryRenderer: function (val) {
+              val = Ext.util.Format.number(val, '0,000.00');
+              return 'Total Fob '+val
+          }
       },{
         xtype: 'gridcolumn',
         text: 'Registration Status', 
         tdCls: 'wrap-text',
-        dataIndex: 'is_registered',
+        dataIndex: 'certificate_no',
         renderer: function (value, metaData) {
-            if (value == 1) {
+            if (value !='') {
                 metaData.tdStyle = 'color:white;background-color:green';
                 return "Registered/Authorised";
             }

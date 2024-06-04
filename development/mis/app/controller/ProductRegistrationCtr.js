@@ -575,9 +575,11 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                 click: 'funcAddProductApplicationParamter'
             },'drugsIngredientsFrm': {
                 afterrender: 'drugsProductsOtherDetailsFormDefinition'
-            },'primarydrugsProductPackagingFrm': {
-                afterrender: 'drugsProductsOtherDetailsFormDefinition'
-            },'productManuctureringFrm': {
+            },
+            // 'primarydrugsProductPackagingFrm': {
+            //     afterrender: 'drugsProductsOtherDetailsFormDefinition'
+            // },
+            'productManuctureringFrm': {
                 afterrender: 'drugsProductsOtherDetailsFormDefinition'
             },'productApiManuctureringFrm': {
                 afterrender: 'drugsProductsOtherDetailsFormDefinition'
@@ -1574,29 +1576,29 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
             activeTab = mainTabPnl.getActiveTab();
 
        
-        // if (activeTab.down('combo[name=product_type_id]')) {
-        //     product_type_id = activeTab.down('combo[name=product_type_id]').getValue();
+        if (activeTab.down('combo[name=product_type_id]')) {
+            product_type_id = activeTab.down('combo[name=product_type_id]').getValue();
 
-        //     if(product_type_id==3 || product_type_id===3){
-        //       frm.down('combo[name=active_common_name_id]').setVisible(true);
-        //       frm.down('combo[name=active_common_name_id]').allowBlank = false;
-        //       frm.down('combo[name=active_common_name_id]').validate();
-        //    }else{
-        //       frm.down('combo[name=active_common_name_id]').setVisible(false);
-        //       frm.down('combo[name=active_common_name_id]').allowBlank = true;
-        //    }
-        // }else{
-        //     product_type_id = Ext.ComponentQuery.query("#product_detailspanel")[0].down('combo[name=product_type_id]').getValue();
-        //     if(product_type_id==3 || product_type_id===3){
-        //       frm.down('combo[name=active_common_name_id]').setVisible(true);
-        //       frm.down('combo[name=active_common_name_id]').allowBlank = false;
-        //       frm.down('combo[name=active_common_name_id]').validate();
-        //    }else{
-        //       frm.down('combo[name=active_common_name_id]').setVisible(false);
-        //       frm.down('combo[name=active_common_name_id]').allowBlank = true;
-        //    }
+            if(product_type_id==3 || product_type_id===3){
+              frm.down('combo[name=active_common_name_id]').setVisible(true);
+              frm.down('combo[name=active_common_name_id]').allowBlank = false;
+              frm.down('combo[name=active_common_name_id]').validate();
+           }else{
+              frm.down('combo[name=active_common_name_id]').setVisible(false);
+              frm.down('combo[name=active_common_name_id]').allowBlank = true;
+           }
+        }else{
+            product_type_id = Ext.ComponentQuery.query("#product_detailspanel")[0].down('combo[name=product_type_id]').getValue();
+            if(product_type_id==3 || product_type_id===3){
+              frm.down('combo[name=active_common_name_id]').setVisible(true);
+              frm.down('combo[name=active_common_name_id]').allowBlank = false;
+              frm.down('combo[name=active_common_name_id]').validate();
+           }else{
+              frm.down('combo[name=active_common_name_id]').setVisible(false);
+              frm.down('combo[name=active_common_name_id]').allowBlank = true;
+           }
 
-        // }
+        }
 
     },
 
@@ -2239,22 +2241,22 @@ Ext.define('Admin.controller.ProductRegistrationCtr', {
                 product_id = panel.down('hiddenfield[name=product_id]').getValue();
 
         }
-        // if (activeTab.down('combo[name=product_type_id]')) {
-        //     product_type_id = activeTab.down('combo[name=product_type_id]').getValue();
+        if (activeTab.down('combo[name=product_type_id]')) {
+            product_type_id = activeTab.down('combo[name=product_type_id]').getValue();
 
-        //     if(product_type_id==3 || product_type_id===3){
-        //      if(activeTab.down('drugsProductsOtherInformationFrm')){
-        //          if (!activeTab.down('copackedproductsgrid')) {
-        //             // activeTab.down('copackedproductsgrid').destroy();
-        //            activeTab.down('drugsProductsOtherInformationFrm').add(0, {title: 'Product Details for Co-Packed Products', xtype: 'copackedproductsgrid'});
-        //          }
-        //         }
-        //    }else{
-        //       if(activeTab.down('copackedproductsgrid')){
-        //         activeTab.down('copackedproductsgrid').destroy();
-        //      }
-        //    }
-        // }
+            if(product_type_id==3 || product_type_id===3){
+             if(activeTab.down('drugsProductsOtherInformationFrm')){
+                 if (!activeTab.down('copackedproductsgrid')) {
+                    // activeTab.down('copackedproductsgrid').destroy();
+                   activeTab.down('drugsProductsOtherInformationFrm').add(0, {title: 'Product Details for Co-Packed Products', xtype: 'copackedproductsgrid'});
+                 }
+                }
+           }else{
+              if(activeTab.down('copackedproductsgrid')){
+                activeTab.down('copackedproductsgrid').destroy();
+             }
+           }
+        }
 
         if (product_id == '') {
 
@@ -4373,7 +4375,6 @@ prepareNewSummaryQualityReport: function () {
                         success = resp.success,
                         results = resp.results,
                         ltrResults = resp.ltrDetails,
-                        ltrResults = resp.ltrDetails,
                         product_id = results.product_id;
                         prodclass_category_id = results.prodclass_category_id;
                         model = Ext.create('Ext.data.Model', results);
@@ -4385,9 +4386,11 @@ prepareNewSummaryQualityReport: function () {
                         productsDetailsFrm.loadRecord(model);
                         applicant_details.setValue(results.applicant_name + ', ' + results.app_physical_address);
                         if (ltrResults) {
-                            local_agentdetails.setValue(ltrResults.applicant_name + ', ' + ltrResults.app_physical_address);
+                            local_agentdetails.setValue(ltrResults.applicant_name + ', ' + ltrResults.link_permit_no +', ' + ltrResults.app_physical_address);
 
                         }
+
+
                         
                        // zone_cbo.setValue(results.zone_id);
                         if(section_id == 2){
@@ -5352,6 +5355,7 @@ prepareNewSummaryQualityReport: function () {
             upload_grid = activeTab.down('grid'),
             applicant_details = activeTab.down('displayfield[name=applicant_details]'),
             product_details = activeTab.down('displayfield[name=product_details]'),
+            local_agentdetails = activeTab.down('displayfield[name=local_agentdetails]'),
             preview_productdetails = activeTab.down('#preview_productdetails'),
             product_panel = preview_productdetails.down('#product_panel'),
             product_detailspanel = activeTab.down('#product_detailspanel'),
@@ -5390,6 +5394,7 @@ prepareNewSummaryQualityReport: function () {
                         message = resp.message,
                         success = resp.success,
                         results = resp.results;
+                        ltrResults = resp.ltrDetails;
                         template = resp.template;
                         assessmentId = resp.assessmentId;
                         model = Ext.create('Ext.data.Model', results);
@@ -5426,7 +5431,7 @@ prepareNewSummaryQualityReport: function () {
                         //uploads details
                         applicant_details.setValue(results.applicant_details);
                        
-                        productsDetailsFrm = activeTab.down('#productsDetailsFrm'),
+                        productsDetailsFrm = activeTab.down('#productsDetailsFrm');
                         productsDetailsFrm.loadRecord(model);
 
                        // product_detailspanel.getViewModel().set('isReadOnly', true);
@@ -5434,6 +5439,11 @@ prepareNewSummaryQualityReport: function () {
                       //  product_detailspanel.down('form').getViewModel().set('isReadOnly', true);
                        
                         product_details.setValue(results.product_details);
+
+                         if (ltrResults) {
+                            local_agentdetails.setValue(ltrResults.applicant_name + ', ' + ltrResults.link_permit_no +', ' + ltrResults.app_physical_address);
+
+                        }
 
                     } else {
                         toastr.error(message, 'Failure Response');
@@ -5468,7 +5478,7 @@ prepareNewSummaryQualityReport: function () {
             applicant_details = activeTab.down('displayfield[name=applicant_details]'),
             product_details = activeTab.down('displayfield[name=product_details]'),
             product_panel = activeTab.down('#product_panel'),
-           
+            local_agentdetails = activeTab.down('displayfield[name=local_agentdetails]'),
             product_detailspanel = activeTab.down('#product_detailspanel'),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
@@ -5496,6 +5506,7 @@ prepareNewSummaryQualityReport: function () {
                         message = resp.message,
                         success = resp.success,
                         results = resp.results;
+                        ltrResults = resp.ltrDetails;
                         template = resp.template;
                         assessmentId = resp.assessmentId;
                         model = Ext.create('Ext.data.Model', results);
@@ -5532,7 +5543,10 @@ prepareNewSummaryQualityReport: function () {
 
                         productsDetailsFrm = activeTab.down('#productsDetailsFrm');
                         productsDetailsFrm.loadRecord(model);
-                        
+                        if (ltrResults) {
+                            local_agentdetails.setValue(ltrResults.applicant_name + ', ' + ltrResults.link_permit_no +', ' + ltrResults.app_physical_address);
+
+                        }
                        
                         product_panel.getViewModel().set('isReadOnly', true);
                     } else {
@@ -5571,7 +5585,7 @@ prepareNewSummaryQualityReport: function () {
             product_detailspanel = activeTab.down('#product_detailspanel'),
             process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
-
+            local_agentdetails = activeTab.down('displayfield[name=local_agentdetails]'),
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
@@ -5595,6 +5609,7 @@ prepareNewSummaryQualityReport: function () {
                         message = resp.message,
                         success = resp.success,
                         results = resp.results;
+                        ltrResults = resp.ltrDetails;
                         classification_id = results.classification_id;
 
                     if (success == true || success === true) {
@@ -5624,6 +5639,10 @@ prepareNewSummaryQualityReport: function () {
 
                         product_details.setVisible(true);
                         product_details.setValue(results.product_details);
+                        if (ltrResults) {
+                            local_agentdetails.setValue(ltrResults.applicant_name + ', ' + ltrResults.link_permit_no +', ' + ltrResults.app_physical_address);
+
+                        }
                        
                         product_detailspanel.getViewModel().set('isReadOnly', true);
                     } else {

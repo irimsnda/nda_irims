@@ -1,5 +1,5 @@
 /**
- * Created by Softclans
+ * Created by Kip on 11/20/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.dashboard.DrugsImportExportPermitsApps', {
     extend: 'Ext.Container',
@@ -11,11 +11,6 @@ Ext.define('Admin.view.importexportpermits.views.dashboard.DrugsImportExportPerm
         name: 'module_id',
         value: 4
     },
-    {
-            xtype: 'hiddenfield',
-            name: 'sub_module_id',
-            value: 81
-        },
     {
         xtype: 'hiddenfield',
         name: 'section_id',

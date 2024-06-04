@@ -36,7 +36,7 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.PoeInspectionP
         } 
         ,{
             xtype:'textfield',
-            fieldLabel:'URA Registration Number',
+            fieldLabel:'TRA Registration Number',
             name: 'tra_reg_number'
         } 
         , {
@@ -74,7 +74,7 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.PoeInspectionP
         ,{
             xtype:'datefield',
             maxValue: new Date(),
-            fieldLabel:'URA Registration Date',format: 'Y-m-d', altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
+            fieldLabel:'TRA Registration Date',format: 'Y-m-d', altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
        
             name: 'tra_reg_date'
         }
@@ -107,11 +107,11 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.PoeInspectionP
     },
      {
         xtype: 'grid',
-        title: 'Import/Export Licence & Inspected Products Details',
+        title: 'Import/Export Permit & Inspected Products Details',
         plugins: [{
                 ptype: 'gridexporter'
         }],
-        export_title: 'Import/Export Products',
+        export_title: 'Import/Export Permits Products',
         bbar: [{
             xtype: 'pagingtoolbar',
             width: '70%',

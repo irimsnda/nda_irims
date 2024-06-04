@@ -1,10 +1,4 @@
 
-
-/**
- * Created by Softclans
- * User robinson odhiambo
- * on 9/24/2018.
- */
 Ext.define('Admin.view.importexportpermits.views.forms.common_forms.DeclaredImportExportDetailsFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'declaredimportexportdetailsfrm',

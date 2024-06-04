@@ -53,6 +53,11 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         flex: 1
     },{
         xtype: 'gridcolumn',
+        dataIndex: 'reference_no',
+        text: 'Reference No',
+        flex: 1
+    }, {
+        xtype: 'gridcolumn',
         dataIndex: 'applicant_name',
         text: 'Applicant Name',
         flex: 1
@@ -100,7 +105,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                         text: 'Preview Import/Export Details',
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 0,
-                        handler: 'editpreviewLicencedPermitinformation'
+                        handler: 'editpreviewPermitinformation'
                     }
                 ]
             }

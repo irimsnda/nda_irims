@@ -20,6 +20,11 @@ Ext.define('Admin.view.premiseregistration.views.forms.LegalityOfStockPrdFrm', {
             name: 'inspection_id'
         },
         {
+            xtype: 'hidden',
+            name: '_token',
+            value: token
+        },
+        {
             xtype: 'combo',
             fieldLabel: 'Existence of Illegal Stocked Products',
             valueField: 'id',

@@ -37,7 +37,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             ptype: 'gridexporter'
         }
     ],
-    export_title: 'Controlled Drugs Permits applications',
+    export_title: 'Personal Use Permits applications',
 
     features: [{
         ftype: 'searching',

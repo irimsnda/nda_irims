@@ -4,10 +4,14 @@
  */
 Ext.define('Admin.view.importexportpermits.views.grids.common_grids.RegisteredPremisesDetailsGrid', {
     extend: 'Ext.grid.Panel',
-    
     controller: 'importexportpermitsvctr',
     xtype: 'registeredpremisesdetailsgrid',
     itemId: 'registeredpremisesdetailsgrid',
+    cls: 'dashboard-todo-list',
+    autoScroll: true,
+    autoHeight: true,
+    frame: true,
+    height: 550,
     width: '100%',
     viewConfig: {
         deferEmptyText: false,
@@ -28,16 +32,38 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.RegisteredPr
             xtype: 'displayfield',
             value: 'Double click to select!!',
             fieldStyle: {
-                'color': 'green',
-                'font-style': 'italic'
+                'color': 'green'
             }
         },
         {
             xtype: 'hiddenfield',
-            name: 'application_code'
+            name: 'section_id'
+        },
+        {
+            xtype: 'hiddenfield',
+            name: 'gmp_type_id'
+        },
+        {
+            xtype: 'hiddenfield',
+            name: 'region_id'
         },{
             xtype: 'hiddenfield',
-            name: 'section_id'
+            name: 'district_id'
+        },{
+            xtype: 'hiddenfield',
+            name: 'premise_id'
+        },{
+            xtype: 'hiddenfield',
+            name: 'is_nearest_premise'
+        },{
+            xtype: 'hiddenfield',
+            name: 'business_type_id'
+        },{
+            xtype: 'hiddenfield',
+            name: 'is_inspection_nearest_premise'
+        },{
+            xtype: 'hiddenfield',
+            name: 'application_code'
         }
     ],
     bbar: [{
@@ -50,65 +76,130 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.RegisteredPr
             var store = this.getStore(),
                 grid = this.up('grid'),
                 section_id = grid.down('hiddenfield[name=section_id]').getValue();
+                region_id = grid.down('hiddenfield[name=region_id]').getValue();
+                is_nearest_premise = grid.down('hiddenfield[name=is_nearest_premise]').getValue();
+                is_inspection_nearest_premise = grid.down('hiddenfield[name=is_inspection_nearest_premise]').getValue();
+                premise_id = grid.down('hiddenfield[name=premise_id]').getValue();
                 application_code = grid.down('hiddenfield[name=application_code]').getValue();
-            store.getProxy().extraParams = {
+                premise_id = grid.down('hiddenfield[name=premise_id]').getValue();
+                district_id = grid.down('hiddenfield[name=district_id]').getValue();
+                business_type_id = grid.down('hiddenfield[name=business_type_id]').getValue();
+
+            if(is_nearest_premise==1 || is_nearest_premise===1){
+                store.getProxy().extraParams = {
+                section_id: section_id,
+                is_nearest_premise: is_nearest_premise,
+                premise_id: premise_id,
                 application_code: application_code,
-                'section_id':section_id
+                region_id: region_id,
             };
+
+            }else if(is_inspection_nearest_premise==1 || is_inspection_nearest_premise===1){
+                store.getProxy().extraParams = {
+                section_id: section_id,
+                is_inspection_nearest_premise: is_inspection_nearest_premise,
+                premise_id: premise_id,
+                application_code: application_code,
+                region_id: region_id,
+            };
+
+            }
+            else{
+                store.getProxy().extraParams = {
+                section_id: section_id,
+                region_id: region_id,
+                business_type_id: business_type_id
+             };
+
+            }
+            
         }
     }],
-
+    /* features: [{
+         ftype: 'searching',
+         minChars: 2,
+         mode: 'local'
+     }],*/
+    plugins: [{
+        ptype: 'filterfield'
+    }],
     listeners: {
         beforerender: {
             fn: 'setProductRegGridsStore',
             config: {
-                pageSize: 10000,
+                pageSize: 1000,
                 remoteFilter: true,
                 proxy: {
-                    url: 'importexportpermits/getTraderRegisteredPremisesDetails'
+                    url: 'importexportpermits/getTraderRegisteredPremisesDetails',
+                    reader: {
+                        type: 'json',
+                        totalProperty: 'totalCount',
+                        rootProperty: 'results'
+                    }
                 }
             },
             isLoad: true
         }
     },
-    features: [{
-        ftype: 'searching',
-        minChars: 2,
-        mode: 'local'
-    }],
     columns: [{
         xtype: 'gridcolumn',
         dataIndex: 'name',
         text: 'Premise Name',
         flex: 1,
-       
+        filter: {
+            xtype: 'textfield'
+        }
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'applicant_name',
         text: 'Applicant Name',
         flex: 1,
-       
+        filter: {
+            xtype: 'textfield'
+        }
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'premise_reg_no',
         text: 'Registration No',
+        hidden:true,
         flex: 1,
-        
+        filter: {
+            xtype: 'textfield'
+        }
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'permit_no',
         text: 'Permit No',
         flex: 1,
-       
+        filter: {
+            xtype: 'textfield'
+        }
     }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'region_name',
+        text: 'Region',
+        flex: 1
+    },
+    {
+        xtype: 'gridcolumn',
+        dataIndex: 'district_name',
+        text: 'District',
+        flex: 1
+    },{
         xtype: 'gridcolumn',
         dataIndex: 'physical_address',
         text: 'Physical Address',
-        flex: 1
-    }, {
+        flex: 1,
+        filter: {
+            xtype: 'textfield'
+        }
+    }, 
+    {
         xtype: 'gridcolumn',
         dataIndex: 'postal_address',
+        hidden:true,
         text: 'Postal Address',
         flex: 1
     }]
 });
+

@@ -1,6 +1,6 @@
 
 /**
- * Created bysoftclans.
+ * Created by Kip on 9/22/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PreviousInspectionsGrid', {
     extend: 'Ext.grid.Panel',

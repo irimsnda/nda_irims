@@ -44,14 +44,12 @@ Ext.define('Admin.view.drugshopregistration.views.panels.DrugShopAppMoreDetailsW
     }],
     items: [{
             xtype: 'drugshopdetailstabpnl',
-            //title:'Premises, Personnel and Activities Details',
             layout:'fit'
         },
         {
             xtype: 'applicationapplicantpnl',
             collapsible: true, 
-           collapsed: true,
-           hidden: true,
+            collapsed: true,
             title:'Drug Shop Applicant Details'
         }
     ],

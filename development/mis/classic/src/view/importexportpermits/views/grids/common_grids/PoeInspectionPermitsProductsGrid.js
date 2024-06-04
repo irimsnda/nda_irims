@@ -27,6 +27,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PoeInspectio
         iconCls: 'x-fa fa-plus',
         name: 'update_allproducts',
         ui: 'soft-purple',
+        hidden:true,
         childXtype: 'importexportpermitsproductspnl',
         winTitle: 'Update Permit Products Details',
         winWidth: '40%',
@@ -44,7 +45,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PoeInspectio
         iconCls: 'x-fa fa-plus',
         ui: 'soft-purple',
        // hidden: true,
-        winWidth: '40%',
+        winWidth: '40%',hidden:true,
         name: 'update_products',
         stores: '[]',
       
@@ -64,7 +65,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PoeInspectio
         ptype: 'cellediting',
         clicksToEdit: 1
     }],
-    export_title: 'Import/Export Licence Products',
+    export_title: 'Import/Export Permits Products',
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '70%',
@@ -106,34 +107,46 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PoeInspectio
     columns: [{
         xtype:'rownumberer'  
       },{
+          xtype: 'gridcolumn',
+          dataIndex: 'brand_name',
+          tdCls: 'wrap-text',
+          text: 'Brand Name/Device Name',
+          flex: 1
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'certificate_no',
+          tdCls: 'wrap-text',
+          text: 'Certificate No',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'common_name',
+          tdCls: 'wrap-text',
+          text: 'Common Name',
+          flex: 1,
+      },{
         xtype: 'gridcolumn',
-        dataIndex: 'brand_name',
-        text: 'Brand Name',
-        flex: 2,
+        dataIndex: 'manufacturer_name',
         
+        tdCls: 'wrap-text',
+        text: 'Manufacturer Name',
+        flex: 1,
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'common_name',
-		hidden: true,
-        text: 'Common/Generic Name',
+        dataIndex: 'country_oforigin',
+        
+        tdCls: 'wrap-text',
+        text: 'Country of Origin',
         flex: 1,
-       
     },{
         xtype: 'gridcolumn',
         dataIndex: 'product_batch_no',
-        text: 'Batch Number',
-        flex: 1.5,
-        tdCls:'wrap-text'
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'batch_qty',
-        text: 'Batch Qty',
+        text: 'Batch Number(Comma Seperator)',
         flex: 1.5,
         tdCls:'wrap-text'
     },{
         xtype: 'gridcolumn',
         dataIndex: 'product_manufacturing_date',
-        hidden: true,
         text: 'Manufacturing Date',
         flex: 1.5,
         tdCls:'wrap-text'
@@ -143,58 +156,44 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PoeInspectio
         text: 'Expiry Date',
         flex: 1.5,
         tdCls:'wrap-text'
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'unit_price',
-        text: 'Unit Value',
-        flex: 0.5,
-       
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'total_value',
-        text: 'Total Value',
-        flex: 1,hidden: true,
-        summaryType: 'sum',
-        renderer: function (val, meta, record) {
-            return Ext.util.Format.number(val, '0,000.00');
-        },
-        summaryRenderer: function (val) {
-            val = Ext.util.Format.number(val, '0,000.00');
-        }
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'consignment_quantity',
-        text: 'Permit Quantity',
-        flex: 0.5,
     }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'poe_prod_quantity',
-        text: 'Inspected Consignment',
-        flex: 1,
-        editor: {
-            xtype: 'textfield'
-        },renderer: function (val, meta, record, rowIndex, colIndex, store, view) {
-            var textVal = '';
-                balance = record.get('balance');
-                consignment_quantity = record.get('consignment_quantity');
-                if(val > balance && val != consignment_quantity ){
-                        val = 0;
-                        toastr.error('The entered Qty exceeds the allowed permit quantity(Balance)', 'Failure Response');
-                }
-                return val;
-        }
-
-    },  {
-        xtype: 'gridcolumn',
-        dataIndex: 'balance',
-        text: 'Balance',
-        flex: 1
-    },  {
+          xtype: 'gridcolumn',
+          dataIndex: 'quantity',
+          tdCls: 'wrap-text',
+          text: 'Quantity',
+          flex: 1,
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'packaging_units',
+          tdCls: 'wrap-text',
+          text: 'Packaging Units',
+          flex: 1,
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'pack_size',hidden: true,
+          text: 'Unit Pack size',
+  
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'currency_name',
+          tdCls: 'wrap-text',
+          text: 'Currency Name',
+          flex: 1
+      },{
+          
+          xtype: 'gridcolumn',
+          dataIndex: 'unit_price',
+          tdCls: 'wrap-text',
+          text: 'Unit Price',
+          flex: 1,
+        
+      }, {
         xtype: 'gridcolumn',
         dataIndex: 'remarks',
         text: 'Remarks',
         flex: 1,
-		editor: {
+        editor: {
             xtype: 'textarea'
         }
     },{   
@@ -225,30 +224,5 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.PoeInspectio
                 }
                 return textVal;
             }
-      },{
-        text: 'Options',
-        xtype: 'widgetcolumn',
-        width: 90,
-        widget: {
-            width: 75,
-            textAlign: 'left',
-            xtype: 'splitbutton',
-            iconCls: 'x-fa fa-th-list',
-            ui: 'gray',
-            menu: {
-                xtype: 'menu',
-                items: [{
-                    text: 'Remove the Inspected Quantities',
-                    iconCls: 'x-fa fa-trash',
-                    tooltip: 'Delete Record',
-                    table_name: 'tra_poe_permitsdata',
-                    storeID: 'poeinspectionpermitsproductsstr', 
-                    action_url: 'productregistration/onDeleteProductOtherDetails',
-                    action: 'actual_delete',
-                    handler: 'doDeletePermitOtherdetails',
-                    hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
-                }]
-            }
-        }
-    }]
+      }]
 });

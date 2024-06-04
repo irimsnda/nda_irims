@@ -422,72 +422,38 @@ setConfigGridsStore: function (obj, options) {
             regional_inspector_recommendation_id= form.down('combo[name=regional_inspector_recommendation_id]').getValue();
             chiefregional_inspector_recommendation_id= form.down('combo[name=chiefregional_inspector_recommendation_id]').getValue();
 
-          if(report_type_id==1 ||report_type_id===1){
-            if(recommendation_id ==1){
-
-                title = "Do you want to Recommend the reviewed License Application?";
-            }else if(recommendation_id ==3){
-
-                title = "Do you want to Request for Re-Inspection for the reviewed License Application?";
+          
+           if(report_type_id==1 ||report_type_id===1){
+               var record = form.down('combo[name=recommendation_id]').getSelection();
+               if(record){
+                  recommendation= record.get('name');
+               }
             }
-            else if(recommendation_id ==5){
-
-                title = "Do you want to Postponed Inspection for the reviewed License Application?";
-            }
-            else if(recommendation_id ==4){
-
-                title = "Do you want to Recommend after Query Response/CAPA Submission for the reviewed License Application?";
-            }
-            else{
-                title = "Do you want to Not Recommend the reviewed License Application?";
-
-             }
-            }  
-            else if(report_type_id==2 ||report_type_id===2){
-            if(regional_inspector_recommendation_id ==1){
-
-                title = "Do you want to Recommend the reviewed License Application?";
-            }else if(regional_inspector_recommendation_id ==3){
-
-                title = "Do you want to Request for Re-Inspection for the reviewed License Application?";
-            }
-            else if(regional_inspector_recommendation_id ==5){
-
-                title = "Do you want to Postponed Inspection for the reviewed License Application?";
-            }
-            else if(regional_inspector_recommendation_id ==4){
-
-                title = "Do you want to Recommend after Query Response/CAPA Submission for the reviewed License Application?";
-            }
-            else{
-                title = "Do you want to Not Recommend the reviewed License Application?";
-
-            }
-            }
+             else if(report_type_id==2 ||report_type_id===2){
+               var record = form.down('combo[name=inspector_drugs_recommendation_id]').getSelection();
+               if(record){
+                  recommendation= record.get('name');
+               }
+            
+            } 
             else if(report_type_id==3 ||report_type_id===3){
-            if(chiefregional_inspector_recommendation_id ==1){
-
-                title = "Do you want to Recommend the reviewed License Application?";
-            }else if(chiefregional_inspector_recommendation_id ==3){
-
-                title = "Do you want to Request for Re-Inspection for the reviewed License Application?";
+               var record = form.down('combo[name=regional_inspector_recommendation_id]').getSelection();
+               if(record){
+                  recommendation= record.get('name');
+               }
+            
             }
-            else if(chiefregional_inspector_recommendation_id ==5){
-
-                title = "Do you want to Postponed Inspection for the reviewed License Application?";
-            }
-            else if(chiefregional_inspector_recommendation_id ==4){
-
-                title = "Do you want to Recommend after Query Response/CAPA Submission for the reviewed License Application?";
-            }
-            else{
-                title = "Do you want to Not Recommend the reviewed License Application?";
-
-            }
+            else if(report_type_id==4 ||report_type_id===4){
+                var record = form.down('combo[name=chiefregional_inspector_recommendation_id]').getSelection();
+               if(record){
+                  recommendation= record.get('name');
+               }
+            
            }
+
             frm = form.getForm();
             if (frm.isValid()) {
-               Ext.MessageBox.confirm('Approval Recommendation', title, function (button) {
+               Ext.MessageBox.confirm('Approval Recommendation','Do you want to '+ recommendation+' the reviewed License Application?', function (button) {
                 if (button === 'yes') {
                     Ext.getBody().mask('Saving Recommendation Application...');
                     var formData = frm.getValues();

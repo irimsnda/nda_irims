@@ -100,9 +100,9 @@ public function getAllPremisesList(Request $request)
 					't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id',
 					't3.physical_address as app_physical_address', 't3.postal_address as app_postal_address','t4.name as region_name', 't5.name as district_name',
 					't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website');
-			if (validateIsNumeric($section_id)) {
-				$qry->where('t1.section_id', $section_id);
-			}
+			// if (validateIsNumeric($section_id)) {
+			// 	$qry->where('t1.section_id', $section_id);
+			// }
 			if ($filter_string != '') {
 				$qry->whereRAW($filter_string);
 			}
@@ -4953,6 +4953,104 @@ public function funcAddNewPremisesDetails(Request $request){
 		return \response()->json($res);
 	}
 
+	public function prepareNewPremiseDistrictEvaluationStage(Request $request)
+	{
+		$application_id = $request->input('application_id');
+		$application_code = $request->input('application_code');
+		$table_name = $request->input('table_name');
+		try {
+			$qry = DB::table($table_name . ' as t1')
+				->join('wb_trader_account as t2', 't1.applicant_id', '=', 't2.id')
+				->join('tra_premises as t3', 't1.premise_id', '=', 't3.id')
+				->leftJoin('tra_premiseinspection_applications as t4', 't1.application_code', '=', 't4.application_code')
+				->leftJoin('tra_premise_inspection_details as t5', 't4.inspection_id', '=', 't5.id')
+				->select(DB::raw("t1.applicant_id, t5.id as inspection_id,t1.premise_id,CONCAT_WS(',',t2.name,t2.postal_address) as applicant_details,t5.start_date,t5.end_date,t5.inspection_type_id,t5.description,
+				t1.section_id,t1.module_id,CONCAT_WS(',',t3.name,t3.postal_address) as premise_details"))
+				->where('t1.id', $application_id);
+			$results = $qry->first();
+			$applicant_id = $results->applicant_id;
+			
+			$premise_id = $results->premise_id;
+			$qryApplicant = DB::table('wb_trader_account as t1')
+				->leftJoin('par_countries as t2', 't1.country_id', '=', 't2.id')
+				->leftJoin('par_premise_regions as t3', 't1.region_id', '=', 't3.id')
+				->leftJoin('par_premise_districts as t4', 't1.district_id', '=', 't4.id')
+				->select('t1.id as applicant_id', 't1.name as applicant_name', 't1.contact_person', 't1.tpin_no',
+					't1.country_id as app_country_id', 't1.region_id as app_region_id', 't1.district_id as app_district_id',
+					't1.physical_address as app_physical_address', 't1.postal_address as app_postal_address', 't1.telephone_no as app_telephone',
+					't1.fax as app_fax', 't1.email as app_email', 't1.website as app_website', 't2.name as country_name', 't3.name as region_name', 't4.name as district_name')
+				->where('t1.id', $applicant_id);
+			$applicantDetails = $qryApplicant->first();
+			
+			$qryPremise = DB::table('tra_premises as t1')
+				->join('par_countries as t2', 't1.country_id', '=', 't2.id')
+				->leftJoin('par_premise_regions as t3', 't1.region_id', '=', 't3.id')
+				->leftJoin('par_premise_districts as t4', 't1.district_id', '=', 't4.id')
+				->leftJoin('tra_premises_applications as t5', 't1.id', '=', 't5.premise_id')
+				->leftJoin('tra_application_offlineprepayments as t6', 't5.application_code', '=', 't6.application_code')
+				->leftJoin('tra_premise_incharge_personnel as t5aa', 't1.nin_no', '=', 't5aa.nin_no')
+				->leftJoin('tra_pharmacist_personnel as t6aa', 't1.psu_no', '=', 't6aa.psu_no')
+				->leftJoin('par_recommended_roomsizes as t7aa', 't1.business_type_id', '=', 't7aa.business_type_id')
+				->leftJoin('par_county as t8aaa', 't1.county_id', '=', 't8aaa.id')
+				->leftJoin('par_locationcouncils_definations as t8aa', 't8aaa.locationcouncils_defination_id', '=', 't8aa.id')
+				->leftJoin('par_business_types as t9aa', 't1.business_type_id', '=', 't9aa.id')
+
+				->select('t1.name as premise_name', 't1.id as premise_id', 't1.*','t5aa.name as incharge_name','t5aa.telephone as incharge_telephone_no','t5aa.telephone2 as incharge_telephone_no2','t5aa.telephone3 as incharge_telephone_no3','t5aa.email as incharge_email_address','t5aa.email2 as incharge_email_address2','t5aa.email3 as incharge_email_address3','t5aa.qualification_id as incharge_qualification_id','t5aa.country_id as incharge_country_id','t5aa.region_id as incharge_region_id','t5aa.district_id as incharge_district_id','t5aa.physical_address as incharge_physical_address','t6aa.name as supervising_name','t6aa.psu_date as supervising_psu_date','t6aa.telephone as supervising_telephone_no','t6aa.telephone2 as supervising_telephone_no2','t6aa.telephone3 as supervising_telephone_no3','t6aa.email as supervising_email_address','t6aa.email2 as supervising_email_address2','t6aa.email3 as supervising_email_address3','t6aa.qualification_id as supervising_qualification_id','t6aa.country_id as supervising_country_id','t6aa.region_id as supervising_region_id','t6aa.district_id as supervising_district_id','t6aa.physical_address as supervising_physical_address','t7aa.size as recommended_room_size','t8aa.recommended_premise_distance as recommended_distance','t9aa.name as premise_type','t8aa.name as locationcouncils_definations')
+				->where('t1.id', $premise_id);
+			$premiseDetails = $qryPremise->first();
+
+			$qryContact = DB::table('tra_premises as t1')
+				->leftJoin('tra_personnel_information as t2', 't1.contact_person_id', '=', 't2.id')
+				->select('t2.*', 't2.name as contact_name', 't2.postal_address as contact_postal_address', 't2.telephone_no as contact_telephone_no', 't2.email_address as contact_email_address',
+					't1.applicant_contact_person', 't1.contact_person_startdate as start_date', 't1.contact_person_enddate as end_date')
+				->where('t1.id', $premise_id);
+			$contactDetails = $qryContact->first();
+			
+			$qry = DB::table('tra_premiseinspection_applications as t1')
+				->leftJoin('tra_premise_inspection_details as t2', 't1.inspection_id', '=', 't2.id')
+				->Join('tra_premises as t3', 't1.premise_id', '=', 't3.id')
+				->leftJoin('par_recommended_roomsizes as t4', 't3.business_type_id', '=', 't4.business_type_id')
+				//->leftJoin('par_recommended_distances as t5', 't3.business_type_id', '=', 't5.business_type_id')
+				->leftJoin('par_county as t5a', 't3.county_id', '=', 't5a.id')
+				->leftJoin('par_locationcouncils_definations as t5', 't5a.locationcouncils_defination_id', '=', 't5.id')
+				->leftJoin('par_business_types as t6', 't3.business_type_id', '=', 't6.id')
+				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.company_registration_no','t3.product_classification_id','t3.country_id','t3.district_id','t3.region_id','t3.county_id','t3.sub_county_id','t3.village','t3.street','t3.physical_address','t3.latitude','t3.longitude','t4.size as recommended_room_size','t5.recommended_premise_distance as recommended_distance','t6.name as premise_type','t5.name as locationcouncils_definations')
+				->where(array('t1.application_code' => $application_code,'report_type_id' =>2));
+			$inspection_details = $qry->first();
+
+
+			$qryPrev = DB::table('tra_premiseinspection_applications as t1')
+				->leftJoin('tra_premise_inspection_details as t2', 't1.inspection_id', '=', 't2.id')
+				->leftJoin('tra_premises as t3', 't1.premise_id', '=', 't3.id')
+				->leftJoin('par_recommended_roomsizes as t4', 't3.business_type_id', '=', 't4.business_type_id')
+				//->leftJoin('par_recommended_distances as t5', 't3.business_type_id', '=', 't5.business_type_id')
+				->leftJoin('par_county as t5a', 't3.county_id', '=', 't5a.id')
+				->leftJoin('par_locationcouncils_definations as t5', 't5a.locationcouncils_defination_id', '=', 't5.id')
+				->leftJoin('par_business_types as t6', 't3.business_type_id', '=', 't6.id')
+				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.company_registration_no','t3.product_classification_id','t3.country_id','t3.district_id','t3.region_id','t3.county_id','t3.sub_county_id','t3.village','t3.street','t3.physical_address','t3.latitude','t3.longitude','t4.size as recommended_room_size','t5.recommended_premise_distance as recommended_distance','t6.name as premise_type','t5.name as locationcouncils_definations')
+				->where(array('t1.application_code' => $application_code,'report_type_id' =>1));
+			$previous_inspection_details = $qryPrev->first();
+			
+			$res = array(
+				'success' => true,
+				'applicant_details' => $applicantDetails,
+				'premise_details' => $premiseDetails,
+				'contact_details' => $contactDetails,
+				'inspection_details'=>$inspection_details,
+				'previous_inspection_details'=>$previous_inspection_details,
+				'results' => $results,
+				'message' => 'Records fetched successfully'
+			);
+		   
+		} catch (\Exception $exception) {
+			$res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+
+		} catch (\Throwable $throwable) {
+			$res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+		}
+		return \response()->json($res);
+	}
+
 
 	public function prepareNewPremiseRegionalEvaluationStage(Request $request)
 	{
@@ -5119,7 +5217,7 @@ public function funcAddNewPremisesDetails(Request $request){
 
 				->leftJoin('par_business_types as t6', 't3.business_type_id', '=', 't6.id')
 				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.company_registration_no','t3.product_classification_id','t3.country_id','t3.district_id','t3.region_id','t3.county_id','t3.sub_county_id','t3.village','t3.street','t3.physical_address','t3.latitude','t3.longitude','t4.size as recommended_room_size','t5.recommended_premise_distance as recommended_distance','t6.name as premise_type','t5.name as locationcouncils_definations')
-				->where(array('t1.application_code' => $application_code,'report_type_id' =>3));
+				->where(array('t1.application_code' => $application_code,'report_type_id' =>4));
 			$inspection_details = $qry->first();
 
 
@@ -5132,7 +5230,7 @@ public function funcAddNewPremisesDetails(Request $request){
 				->leftJoin('par_locationcouncils_definations as t5', 't5a.locationcouncils_defination_id', '=', 't5.id')
 				->leftJoin('par_business_types as t6', 't3.business_type_id', '=', 't6.id')
 				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.company_registration_no','t3.product_classification_id','t3.country_id','t3.district_id','t3.region_id','t3.county_id','t3.sub_county_id','t3.village','t3.street','t3.physical_address','t3.latitude','t3.longitude','t4.size as recommended_room_size','t5.recommended_premise_distance as recommended_distance','t6.name as premise_type','t5.name as locationcouncils_definations')
-				->where(array('t1.application_code' => $application_code,'report_type_id' =>2));
+				->where(array('t1.application_code' => $application_code,'report_type_id' =>3));
 			$previous_inspection_details = $qryPrev->first();
 			
 			$res = array(

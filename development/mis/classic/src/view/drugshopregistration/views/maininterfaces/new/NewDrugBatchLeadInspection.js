@@ -113,7 +113,7 @@ Ext.define('Admin.view.drugshopregistration.views.maininterfaces.new.NewDrugBatc
             },{
                 xtype: 'hiddenfield',
                 name: 'report_type_id',
-                value:3
+                value:4
             },
             ]
         }

@@ -64,6 +64,7 @@
             iconCls: 'x-fa fa-search',
             columnWidth: 0.1,
             margin:5,
+            hidden:true,
             text: 'Preview Permit/Letter of Rejection',
             handler: 'generateimportpermitfromfrm',
             winWidth: '90%'

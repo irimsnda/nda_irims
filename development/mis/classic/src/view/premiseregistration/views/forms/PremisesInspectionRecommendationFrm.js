@@ -19,6 +19,12 @@ Ext.define('Admin.view.premiseregistration.views.forms.PremisesInspectionRecomme
             xtype: 'hiddenfield',
             name: 'record_id'
         },
+         {
+            xtype: 'hidden',
+            name: '_token',
+            value: token
+        },
+        
         {
             xtype: 'datefield',
             name: 'actual_start_date',

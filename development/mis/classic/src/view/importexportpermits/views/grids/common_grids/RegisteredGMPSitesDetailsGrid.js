@@ -2,11 +2,11 @@
 /**
  * Created by Kip on 9/22/2018.
  */
-Ext.define('Admin.view.productregistration.views.grids.common_grids.ManufacturingDetailsGrid', {
+Ext.define('Admin.view.importexportpermits.views.grids.common_grids.RegisteredGMPSitesDetailsGrid', {
     extend: 'Ext.grid.Panel',
-    controller: 'productregistrationvctr',
-    xtype: 'manufacturingDetailsGrid',
-    itemId: 'manufacturingDetailsGrid',
+    controller: 'importexportpermitsvctr',
+    xtype: 'registeredgmpsitesdetailsgrid',
+    itemId: 'registeredgmpsitesdetailsgrid',
     cls: 'dashboard-todo-list',
     autoScroll: true,
     autoHeight: true,
@@ -27,6 +27,7 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.Manufacturin
             fn: 'setConfigGridsStore',
             config: {
                 pageSize: 1000,
+                remoteFilter: true,
                 storeId: 'manufacturingDetailsStr',
                 proxy: {
                    url: 'productregistration/onLoadManufacturersDetails',
@@ -66,18 +67,17 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.Manufacturin
         displayMsg: 'Showing {0} - {1} of {2} total records',
         emptyMsg: 'No Records'
     }],
-    features: [{
-        ftype: 'searching',
-        minChars: 2,
-        mode: 'local'
-    }],
+    // features: [{
+    //     ftype: 'searching',
+    //     minChars: 2,
+    // }],
    
     columns: [{
         xtype: 'gridcolumn',
         dataIndex: 'manufacturer_name',
         text: 'Manufacturer Name',
         flex: 1,filter: {
-            xtype: 'textfield'
+            xtype: 'textfield',
         }
     }, {
         xtype: 'gridcolumn',
@@ -103,9 +103,9 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.Manufacturin
         flex: 1
     },{
         text: 'Options',
-        hidden:true,
         xtype: 'widgetcolumn',
         width: 90,
+        hidden:true,
         widget: {
             width: 75,
             textAlign: 'left',
@@ -129,3 +129,4 @@ Ext.define('Admin.view.productregistration.views.grids.common_grids.Manufacturin
         }
     }]
 });
+

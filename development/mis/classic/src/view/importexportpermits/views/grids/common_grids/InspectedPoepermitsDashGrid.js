@@ -1,6 +1,6 @@
 
 /**
- * Created by Softclans
+ * Created by Kip on 9/22/2018.
  */
 Ext.define('Admin.view.importexportpermits.views.grids.common_grids.InspectedPoepermitsDashGrid', {
     extend: 'Ext.grid.Panel',
@@ -121,7 +121,6 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.InspectedPoe
                     valueField:'id',
                     displayField:'name',
                     fieldLabel: 'Permit section',
-                    hidden: true,
                     listeners: {
                         beforerender: {
                             fn: 'setWorkflowCombosStore',
@@ -141,11 +140,11 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.InspectedPoe
                 }
             ],
             buttons:[{
-                text: 'Filter Licence Inspection',
+                text: 'Filter Permits Inspection',
                 iconCls:'x-fa fa-search',
                 handler: 'funcFilterInspectedPOEPermits'
             },{
-                text: 'Export Inspected Licence',
+                text: 'Export Inspected Permits',
                 iconCls:'x-fa fa-print',
                 handler: 'funcExportInspectedpermits'
             },{
@@ -186,7 +185,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.InspectedPoe
     }],
     columns: [ {
         xtype: 'gridcolumn',
-        dataIndex: 'tracking_no',
+        dataIndex: 'reference_no',
         text: 'Reference No',
         width: 130,filter: {
             xtype: 'textfield'
@@ -194,7 +193,6 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.InspectedPoe
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'permit_no',
-        hidden: true,
         text: 'Permit No',
         width: 130,
         filter: {
@@ -203,7 +201,6 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.InspectedPoe
     },   {
         xtype: 'gridcolumn',
         text: 'Permit section ',
-        hidden: true,
         dataIndex: 'permit_section',
         width: 130,
         tdCls: 'wrap',
@@ -245,10 +242,9 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.InspectedPoe
         }
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'tra_reg_number',
-        hidden: true,
-        text: 'URA Reg NUmber',
-        width: 130,
+        dataIndex: 'custom_declaration_no',
+        text: 'Custom Declaration No',
+        width: 150,
         filter: {
             xtype: 'textfield'
         }
