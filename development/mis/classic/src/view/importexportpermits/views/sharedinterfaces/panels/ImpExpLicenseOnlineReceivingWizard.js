@@ -8,6 +8,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
 	extend: 'Ext.panel.Panel',
     alias: 'widget.impexplicenseonlinereceivingwizard',
     padding: '2 0 2 0',
+    controller: 'importexportpermitsvctr',
     requires: [
         'Ext.layout.container.*',
         'Ext.toolbar.Fill'
@@ -112,54 +113,14 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
         },
         {
             xtype: 'onlineimportexportdetailspnl',//onlinefoodproductsdetailspnl
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    ui: 'footer',
-                    dock: 'top',
-                    margin: 3,
-                    items: [
-                        {
-                            xtype: 'tbspacer',
-                            width: 2
-                        },
-                        {
-                            xtype: 'combo',
-                            fieldLabel: 'Zone',
-                            labelWidth: 50,
-                            width: 400,
-                            name: 'zone_id',
-                            valueField: 'id',
-                            displayField: 'name',
-                            queryMode: 'local',
-                            forceSelection: true,
-                            listeners: {
-                                beforerender: {
-                                    fn: 'setOrgConfigCombosStore',
-                                    config: {
-                                        pageSize: 1000,
-                                        proxy: {
-                                            extraParams: {
-                                                model_name: 'Zone'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            },
-                            labelStyle: 'font-weight:bold'
-                        }
-                    ]
-                }
-            ],
-        }, {
+        },{
             xtype: 'tabpanel',
             items: [{
                 xtype: 'onlineimportexportdocuploadsgrid',
                 title: 'Documents Submission'
             }]
         }, {
-            title: 'Invoice & Payment Details',
+            //title: 'Invoice & Payment Details',
             xtype: 'onlineappinvoicepaymentspanel',
         },
         {
@@ -316,6 +277,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
                     ui: 'soft-purple',
                     iconCls: 'fa fa-save',
                     name: 'save_btn', 
+                    hidden:true,
                     form_panel:'#importexportdetailsfrm',
                     action_url: 'updateonlineImportPermittReceivingBaseDetails',
                     wizard: 'impexplicenseonlinereceivingwizard',

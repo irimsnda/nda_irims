@@ -280,10 +280,11 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
             },
             isLoad: true
         },
-        afterrender: function(tagfield) {
+          afterrender: function(tagfield) {
             var store = tagfield.getStore();
             store.on('load', function() {
                 var form = tagfield.up('form');
+                if(form){
                 var loadedData = form.getRecord();
                 if (loadedData) {
                     var fieldValue = loadedData.get('importexport_product_range_id');
@@ -291,6 +292,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
                         tagfield.setValue(fieldValue);
                     }
                 }
+               }
             });
         }
     }

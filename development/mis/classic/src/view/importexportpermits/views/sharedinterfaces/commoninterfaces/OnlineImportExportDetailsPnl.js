@@ -20,8 +20,7 @@ Ext.define(
       {
         xtype: "onlineimportexportdetailsfrm",
         autoScroll: true,
-
-        title: "Import/Export Permit Information",
+        title: "Application Information",
       },
       {
         xtype: "onlineimportexportpermitsproductsgrid",

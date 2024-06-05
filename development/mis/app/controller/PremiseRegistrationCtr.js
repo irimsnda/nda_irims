@@ -4640,7 +4640,21 @@ previewPremisesOnlineApplication: function (view, record) {
             hasQueries = checkApplicationRaisedQueries(application_code, module_id),
             valid = this.validateNewPremiseReceivingSubmission(btn),
             storeID = getApplicationStore(module_id, section_id),
-            table_name = getApplicationTable(module_id),
+            table_name = getApplicationTable(module_id);
+            validateHasInvoice = validateHasInvoiceGeneration(application_code);
+            validateHasDocuments = validateHasUploadedDocumentsDetils(application_code, module_id,sub_module_id,section_id,0,workflow_stage_id,process_id);
+            if(!hasQueries){
+                if(!validateHasInvoice){
+                    toastr.error('Response: Please generate Porforma Invoice Before submission of the License Application for payment Verification'); 
+                    Ext.getBody().unmask();
+                    return;
+                }
+                // if(!validateHasDocuments){
+                //     toastr.error('Response: Please Upload the required documents to proceed.'); 
+                //     Ext.getBody().unmask();
+                //     return;
+                // }
+            }
             extraParams = [{
                 field_type: 'hiddenfield',
                 field_name: 'has_queries',
@@ -4663,9 +4677,23 @@ previewPremisesOnlineApplication: function (view, record) {
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             hasQueries = checkApplicationRaisedQueries(application_code, module_id),
-            valid = this.validateNewPremiseLicenseReceivingSubmission(btn),
+            valid = this.validateNewPremiseReceivingSubmission(btn),
             storeID = getApplicationStore(module_id, section_id),
-            table_name = getApplicationTable(module_id),
+            table_name = getApplicationTable(module_id);
+            validateHasInvoice = validateHasInvoiceGeneration(application_code);
+            validateHasDocuments = validateHasUploadedDocumentsDetils(application_code, module_id,sub_module_id,section_id,0,workflow_stage_id,process_id);
+            if(!hasQueries){
+                if(!validateHasInvoice){
+                    toastr.error('Response: Please generate Porforma Invoice Before submission of the License Application for payment Verification'); 
+                    Ext.getBody().unmask();
+                    return;
+                }
+                // if(!validateHasDocuments){
+                //     toastr.error('Response: Please Upload the required documents to proceed.'); 
+                //     Ext.getBody().unmask();
+                //     return;
+                // }
+            }
             extraParams = [{
                 field_type: 'hiddenfield',
                 field_name: 'has_queries',
@@ -4677,7 +4705,6 @@ previewPremisesOnlineApplication: function (view, record) {
             Ext.getBody().unmask();
         }
     },
-
     validateNewPremiseReceivingSubmission: function (btn) {
         var mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
@@ -4751,8 +4778,21 @@ previewPremisesOnlineApplication: function (view, record) {
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
             valid = this.validatePremiseRenewalReceivingSubmission(btn),
+            hasQueries = checkApplicationRaisedQueries(application_code, module_id),
             storeID = getApplicationStore(module_id, section_id),
             table_name = getApplicationTable(module_id);
+            if(!hasQueries){
+                if(!validateHasInvoice){
+                    toastr.error('Response: Please generate Porforma Invoice Before submission of the License Application for payment Verification'); 
+                    Ext.getBody().unmask();
+                    return;
+                }
+                if(!validateHasDocuments){
+                    toastr.error('Response: Please Upload the required documents to proceed.'); 
+                    Ext.getBody().unmask();
+                    return;
+                }
+            }
         if (valid == true || valid === true) {
             showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsreceivingfrm', winWidth, storeID);
         } else {
@@ -8500,7 +8540,21 @@ previewPremisesOnlineApplication: function (view, record) {
             hasQueries = checkApplicationRaisedQueries(application_code, module_id),
             valid = this.validateNewLicenseDrugShopReceivingSubmission(btn),
             storeID = getApplicationStore(module_id, section_id),
-            table_name = getApplicationTable(module_id),
+            table_name = getApplicationTable(module_id);
+            validateHasInvoice = validateHasInvoiceGeneration(application_code);
+            validateHasDocuments = validateHasUploadedDocumentsDetils(application_code, module_id,sub_module_id,section_id,0,workflow_stage_id,process_id);
+            if(!hasQueries){
+                if(!validateHasInvoice){
+                    toastr.error('Response: Please generate Porforma Invoice Before submission of the License Application for payment Verification'); 
+                    Ext.getBody().unmask();
+                    return;
+                }
+                // if(!validateHasDocuments){
+                //     toastr.error('Response: Please Upload the required documents to proceed.'); 
+                //     Ext.getBody().unmask();
+                //     return;
+                // }
+            }
             extraParams = [{
                 field_type: 'hiddenfield',
                 field_name: 'has_queries',
@@ -8522,8 +8576,6 @@ previewPremisesOnlineApplication: function (view, record) {
             Ext.getBody().unmask();
         }
     },
-
-
     directWorkflowSubmission: function (mainTabPanel,activeTab,table_name,application_code,application_id,workflow_stage_id,process_id,module_id,sub_module_id,section_id) {
          var workflowaction_type_id = 1, 
             intrayStore = Ext.getStore('intraystr'),

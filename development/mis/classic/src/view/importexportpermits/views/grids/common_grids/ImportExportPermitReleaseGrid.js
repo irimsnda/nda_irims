@@ -98,6 +98,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                         text: 'Print/Preview Permit',
                         iconCls: 'x-fa fa-certificate',
                         handler: '',
+                        hidden:true,
                         name: 'certificate',
                         handler: 'generateImportExportPermit'
                     },

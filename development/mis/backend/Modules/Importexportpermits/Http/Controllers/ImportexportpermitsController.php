@@ -249,10 +249,23 @@ class ImportexportpermitsController extends Controller
                 );
 
             $results = $qry1->first();
+            $results->importexport_product_range_id=json_decode($results->importexport_product_range_id);
             $premise_id = $results->premise_id;
-            $sender_receiver_id = $results->sender_receiver_id;
-
+            $has_registered_premises = $results->has_registered_premises;
+            $business_type_id = $results->business_type_id;
             $consignee_id = $results->consignee_id;
+            $sender_receiver_id = $results->sender_receiver_id;
+            
+            if($has_registered_premises==1 || $has_registered_premises===1){
+                 if($has_registered_premises==5 || $has_registered_premises===5){
+                    $manufacturing_site_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
+                    $results->manufacturing_site_name=$manufacturing_site_name;
+                 }else{
+                    $premises_name = getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'name');
+                    $results->premises_name=$premises_name;
+                 }
+            }
+
             if (validateIsNumeric($consignee_id)) {
                 $consignee_name = getSingleRecordColValue('tra_consignee_data', array('id' => $consignee_id), 'name');
 
@@ -277,10 +290,11 @@ class ImportexportpermitsController extends Controller
                 ->where(array('id' => $sender_receiver_id));
             $senderReceiverDetails = $qry2->first();
 
-            $qry3 = DB::table('tra_premises as t3')
-                ->select('t3.*')
-                ->where(array('id' => $premise_id));
-            $premisesDetails = $qry3->first();
+            // $qry3 = DB::table('tra_premises as t3')
+            //     ->select('t3.*')
+            //     ->where(array('id' => $premise_id));
+            // $premisesDetails = $qry3->first();
+            $premisesDetails=$this->getPremiseDetails($has_registered_premises,$business_type_id,$premise_id);
             $where = array(
                 'module_id' => $results->module_id,
                 'sub_module_id' => $results->sub_module_id,
@@ -4855,9 +4869,9 @@ class ImportexportpermitsController extends Controller
                 $qry1->join('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
                     ->select(
                         DB::raw("t1.*,'Approved Permits' as application_status, t1.id as active_application_id,
-						t3.name as applicant_name, t3.contact_person,
-						t3.tin_no, t3.country_id as app_country_id, t3.region_id as app_region_id, t3.district_id as app_district_id, t3.physical_address as app_physical_address,
-						t3.postal_address as app_postal_address, t3.telephone_no as app_telephone, t3.fax as app_fax, t3.email as app_email, t3.website as app_website,t1.verification_remarks,t1.permit_verified_on, if(t8.name is null, 'New Permit Not Verified', t8.name) as verification_status,date_format(t6.expiry_date,'%Y-%m-%d') as expiry_date, if(t6.expiry_date < now(), 1,0) as is_permitexpired")
+                        t3.name as applicant_name, t3.contact_person,
+                        t3.tin_no, t3.country_id as app_country_id, t3.region_id as app_region_id, t3.district_id as app_district_id, t3.physical_address as app_physical_address,
+                        t3.postal_address as app_postal_address, t3.telephone_no as app_telephone, t3.fax as app_fax, t3.email as app_email, t3.website as app_website,t1.verification_remarks,t1.permit_verified_on, if(t8.name is null, 'New Permit Not Verified', t8.name) as verification_status,date_format(t6.expiry_date,'%Y-%m-%d') as expiry_date, if(t6.expiry_date < now(), 1,0) as is_permitexpired")
                     );
 
 
@@ -4962,9 +4976,9 @@ class ImportexportpermitsController extends Controller
                     ->join('wb_trader_account as t7', 't1.applicant_id', '=', 't7.id')
                     ->leftJoin('par_poeinspection_verificationrecommends as t8', 't1.permit_verificationstatus_id', '=', 't8.id')
                     ->select(DB::raw("t1.*,t1.id as permit_id, t3.name as applicant_name,t5.name as premises_name, t4.name as application_status,
-								t1.id as active_application_id,t6.permit_no, t6.approval_date, t3.*,t3.name as applicant_name, t3.contact_person,
-								t3.tin_no, t3.country_id as app_country_id, t3.region_id as app_region_id, t3.district_id as app_district_id, t3.physical_address as app_physical_address,
-								t3.postal_address as app_postal_address, t3.telephone_no as app_telephone, t3.fax as app_fax, t3.email as app_email, t3.website as app_website, t1.verification_remarks,t1.permit_verified_on, t8.name as verification_status,t6.expiry_date, if(t6.expiry_date < now(), 1,0) as is_permitexpired "));
+                                t1.id as active_application_id,t6.permit_no, t6.approval_date, t3.*,t3.name as applicant_name, t3.contact_person,
+                                t3.tin_no, t3.country_id as app_country_id, t3.region_id as app_region_id, t3.district_id as app_district_id, t3.physical_address as app_physical_address,
+                                t3.postal_address as app_postal_address, t3.telephone_no as app_telephone, t3.fax as app_fax, t3.email as app_email, t3.website as app_website, t1.verification_remarks,t1.permit_verified_on, t8.name as verification_status,t6.expiry_date, if(t6.expiry_date < now(), 1,0) as is_permitexpired "));
 
                 $qry->whereRAW("(t1.reference_no like '" . $permit_no . "' OR t6.permit_no like '" . $permit_no . "')");
 
@@ -5234,7 +5248,7 @@ class ImportexportpermitsController extends Controller
                              ->orWhereRaw("(t10.usr_to in ($all_users))");
 
                  });
-				 */
+                 */
             if (validateIsNumeric($decision_id)) {
 
                 $qry = $qry->where('t7.decision_id', $decision_id);
@@ -6426,10 +6440,10 @@ class ImportexportpermitsController extends Controller
 
                 $user_id = $this->user_id;
                 /* if ($dg_signatory == 1) {
-							$permit_signatory = getPermitSignatoryDetails();
-							$permit_signatory = $permit_signatory->director_id;
-						} else {
-							*/
+                            $permit_signatory = getPermitSignatoryDetails();
+                            $permit_signatory = $permit_signatory->director_id;
+                        } else {
+                            */
                 $permit_signatory = $user_id;
                 //}
 

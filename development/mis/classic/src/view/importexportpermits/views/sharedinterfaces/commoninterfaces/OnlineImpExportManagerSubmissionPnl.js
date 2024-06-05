@@ -143,15 +143,15 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
                         application_status_id = panel.down('hiddenfield[name=application_status_id]').getValue(),
                         section_id = panel.down('hiddenfield[name=section_id]').getValue(),
                         module_id = panel.down('hiddenfield[name=module_id]').getValue(),
-                        sub_module_id = panel.down('hiddenfield[name=sub_module_id]').getValue(),
+                        sub_module_id = panel.down('hiddenfield[name=sub_module_id]').getValue();
                         
-                        has_registered_outlets = grid.down('combo[name=has_registered_outlets]').getValue();
+                        //has_registered_outlets = grid.down('combo[name=has_registered_outlets]').getValue();
 
                         store.getProxy().extraParams = {
                             section_id: section_id,
                             module_id: module_id,
                             application_status_id: application_status_id,
-                            has_registered_outlets: has_registered_outlets,
+                            //has_registered_outlets: has_registered_outlets,
                             sub_module_id: sub_module_id,
                             process_id: process_id
                         };

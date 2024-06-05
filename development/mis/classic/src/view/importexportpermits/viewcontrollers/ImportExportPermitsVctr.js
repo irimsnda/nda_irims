@@ -44,10 +44,11 @@ Ext.define('Admin.view.importexportpermits.viewcontrollers.ImportExportPermitsVc
         this.fireEvent('setProductRegGridsStore', obj, options);
     },
     onpreviewonlineimpApplicationdetails:function(item){
-        var record = item.getWidgetRecord(),
+        var btn = item.up("button"),
+             record = btn.getWidgetRecord();
             grid = item.up('grid');
 
-        this.fireEvent('previewImpExpOnlineApplication',grid, record);
+        this.fireEvent('previewImpSingleExpOnlineApplication',grid, record);
     },
 
 

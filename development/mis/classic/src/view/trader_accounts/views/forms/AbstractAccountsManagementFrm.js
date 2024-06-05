@@ -229,6 +229,7 @@ Ext.define('Admin.view.trader_accounts.views.forms.AbstractAccountsManagementFrm
         }, {
             fieldLabel: 'Contact Person Email ',
             maxlength: 9,
+            allowBlank:true,
             name: 'contact_person_email',
             vtype: 'email'
         },  {

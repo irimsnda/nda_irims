@@ -2361,8 +2361,7 @@ previewMultiUploadedDocument: function (item) {
 },
 
 funcCancelGeneratedInvoice: function(item){
-    var btn = item.up('button'),
-        record = btn.getWidgetRecord(),
+    var record = item.getWidgetRecord(),
         grid = item.up('grid'),
         invoice_no = record.get('invoice_no'),
         invoice_id = record.get('invoice_id'),

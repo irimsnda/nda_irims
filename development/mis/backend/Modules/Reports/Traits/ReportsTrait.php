@@ -3811,7 +3811,7 @@ public function printClinicalTrialCertificate($application_code,$application_id)
 		
 		
 	}
-	public function printImportExportLicense($application_code,$record,$permit_watermark){
+	public function printImportExportLicense($application_code,$record,$permit_watermark,$is_preview= false){
 		try{
 				$record = DB::table('tra_importexport_applications as t1')
 						->join('sub_modules as t2','t1.sub_module_id','t2.id')
@@ -3887,9 +3887,11 @@ public function printClinicalTrialCertificate($application_code,$application_id)
 	                        PDF::SetFont('times','I',10);
 
 	                        if($licence_type_id == 3 || $licence_type_id == 4){
-	                        PDF::Cell(0,4,'Issued under and Regulation 3(2), National Drug Policy and Authority (Importation and Exportation of Drugs) Regulations, 2014',0,1,'C');
+	                        //PDF::MultiCell(0,4,'Issued under and Regulation 3(2), National Drug Policy and Authority (Importation and Exportation of Drugs) Regulations, 2014',0,1,'C');
+	                        PDF::WriteHTML('Issued under and Regulation 3(2), National Drug Policy and Authority (Importation and Exportation of Drugs) Regulations, 2014', true, 0, true, true, 'C');
 							}else{
-	                        PDF::Cell(0,4,'Issued under section 44 and 45 of the Act and Regulation 21(2), National Drug Policy and Authority (Importation and Exportation of Drugs) Regulations, 2014',0,1,'C');
+							PDF::WriteHTML('Issued under section 44 and 45 of the Act and Regulation 21(2), National Drug Policy and Authority (Importation and Exportation of Drugs) Regulations, 2014', true, 0, true, true, 'C');
+	                       // PDF::Cell(0,4,'Issued under section 44 and 45 of the Act and Regulation 21(2), National Drug Policy and Authority (Importation and Exportation of Drugs) Regulations, 2014',0,1,'C');
 							}
 	                        PDF::ln();
 	                       	PDF::ln();
@@ -3898,45 +3900,65 @@ public function printClinicalTrialCertificate($application_code,$application_id)
 							PDF::SetFont('times','',12);
 							PDF::setCellHeightRatio(1.8);
 
-							$htmlContent1 = "
-								<p>The applicant named: <b>" . strtoupper($record->applicant_name) . "</b></p>
-								<p>Of Address: <b>" . strtoupper($record->physical_address . ", " . $record->postal_address . ", " . $record->region_name . ", " . $record->country_name) . $consignee_name . "</b></p>
-								<p>TIN : <b>" . strtoupper($record->tpin_no) . "</b></p>
-								<p> is authorised to <b>" . $permit_title . "</b> into Uganda, in accordance with sections 44 and 46 of the Act, the following classified drugs and raw materials:<b> " . $record->product_category . "," . $record->product_classification . "</b></p>";
-							PDF::WriteHTML($htmlContent1, true, 0, true, true, 'J');
 
- 							PDF::ln();
+							PDF::WriteHTML("The applicant named: <b>" . strtoupper($record->applicant_name) ."</b>  of Address: <b>" . strtoupper($record->physical_address . " " . $record->postal_address . "  " . $record->region_name . " " . $record->country_name) ."</b> TIN : <b>" . strtoupper($record->tpin_no) . "</b>", true, 0, true, true, 'J');
+							
+							PDF::WriteHTML("is hereby granted a <b>" . $permit_title . "</b> in accordance with sections 44 and 46 of the Act, for the importation of", true, 0, true, true, 'J');
+
+					        $paramdatasets = DB::table('par_importexport_product_range')
+							    ->select('id', 'name')
+							    ->get()
+							    ->keyBy('id')
+							    ->toArray();
+
+							$paramIds = json_decode($record->importexport_product_range_id);
+
+							if (!is_array($paramIds)) {
+							    $paramIds = []; // Initialize $paramIds as an empty array if it's not an array
+							}
+
+							if (is_array($paramIds)) {
+							    $i = 'a';
+							    foreach ($paramIds as $id) {
+							        if (isset($paramdatasets[$id])) {
+							            PDF::WriteHTML('('.$i.'): '.$paramdatasets[$id]->name, true, 0, true, true, 'J');
+							        }
+							        $i++;
+							    }
+							}
+
+
 	                       	PDF::ln();
 							PDF::SetFont('times','',12);
+							PDF::WriteHTML('<b>Conditions</b>', true, 0, true, true, 'J');
+							PDF::WriteHTML('1. This licence does not allow the importation of narcotic and psychotropic drugs', true, 0, true, true, 'J');
+							PDF::WriteHTML("2. The " . $permit_title . " shall be through authorized Customs entry points", true, 0, true, true, 'J');
+							PDF::WriteHTML("3. Each consignment to be " . $permit_title . " shall be verified prior to importation, by the Authority", true, 0, true, true, 'J');
+							PDF::WriteHTML("4. This permit shall be displayed at the premises for which it is issued.", true, 0, true, true, 'J');
 
-							$htmlContent2 = "
-								<p><b>Conditions</b></p> 
-								<p>1.This licence does not allow the importation of narcotic and psychotropic drugs </p>
-								<p>2. The " . $permit_title . " shall be through authorized Customs entry points </p>
-								<p>3. Each consignment to be " . $permit_title . " shall be verified prior to importation, by the Authority. </p>
-
-								<p>4. This permit shall be displayed at the premises for which it is issued.</p>";
-
-							PDF::WriteHTML($htmlContent2, true, 0, true, true, 'J');
 							PDF::ln();
-	                        PDF::ln();
+	                        //PDF::ln();
 	                        PDF::SetFont('times','B',13);
 	        
 	                        PDF::SetFont('times', ' ', 11);
 
 	                        PDF::Cell(90, 4, 'Permit No:'.$record->reference_no, 0, 0, 'L');
 	                        PDF::Cell(20,5,'',0,0);
-	                        PDF::Cell(30,5,'Issue Date',0,0);
-	                        $permit_issue_date = date('d F\\, Y',strtotime($record->approval_date));
-	                        PDF::SetFont('times', 'B', 11);
-	                        PDF::Cell(20,5,$permit_issue_date,0,1,'R');
+	                       // PDF::Cell(30,5,'Issue Date',0,0);
+	                        //$permit_issue_date = date('d F\\, Y',strtotime($record->approval_date));
+
+                            $permit_issue_date = formatDateWithSuffix($record->approval_date);
+	                        PDF::SetFont('times', '', 11);
+	                        //PDF::Cell(20,5,$permit_issue_date,0,1,'R');
+	                       // PDF::writeHTMLCell(20, 5, '', '', $permit_issue_date, 0, 1, 0, true, 'R', true);	
+	                        PDF::writeHTMLCell(0, 5, '', '', 'Issue Date' .'  '.'<b>'.$permit_issue_date.'</b>', 0, 1, 0, true, 'R', true);	
  							PDF::Cell(20,5,'',0,0);
 	                        PDF::SetFont('times', 'B', 11);
 	                        PDF::Cell(90, 4, 'Fees paid Ushs: '.$equivalent_paid, 0, 0, 'L');
 
 	                        PDF::ln();
 							PDF::SetFont('times',' ',11);
-	                        $expiry_date = date('d F\\, Y',strtotime($record->expiry_date));
+	                        $expiry_date = formatDateWithSuffix($record->expiry_date);
 	                        PDF::WriteHTML('This permit expires on <b>'.$expiry_date.'</b>', true, false, false, false, 'L');
 
 	                         PDF::Cell(0,15,'',0,1);
@@ -3978,75 +4000,12 @@ public function printClinicalTrialCertificate($application_code,$application_id)
 	                        $textX = $qrCodeX + $qrCodeWidth + 10; // Adjust the 5 based on your desired spacing
 	                        $textY = $qrCodeY;
 
-								
-							// 	$pdf->MultiCell(0,6,'Total Product Value',0,'',0,1);
-								
-								
-							// //	$pdf->Cell(0,5,'Date: '.date('jS F, Y',strtotime($approval_date)),0,1,'R');
-							// 	$pdf->SetFont('','B',10);
-								
-							// 	$pdf->Cell(10,7,'No',1,0);
-							// 	$pdf->Cell(45,7,'Product',1,0);
-							// 	$pdf->Cell(30,7,'Batch Details',1,0);
-							// 	$pdf->Cell(30,7,'Quantity',1,0);
-							// 	$pdf->Cell(25,7,'Unit Value',1,0);
-							// 	$pdf->Cell(0,7,'Total Value',1,1);
-							// 	$pdf->SetFont('','',10);
-							// $prod_rec = DB::table('tra_permits_products as t1')
-							// 											->leftJoin('tra_product_information as t2', 't1.product_id', 't2.id')
-							// 											->leftJoin('par_dosage_forms as t3', 't1.dosage_form_id', 't3.id')
-							// 											->leftJoin('par_packaging_units as t4', 't1.packaging_unit_id', 't4.id')
-							// 											->leftJoin('par_common_names as t5', 't1.common_name_id', 't5.id')
-							// 											->leftJoin('par_si_units as t6', 't1.unitpack_unit_id', 't6.id')
-							// 											->leftJoin('par_currencies as t7', 't1.currency_id', 't7.id')
-							// 											->select('t1.*','t7.name as currency_name', 't4.name as packaging_unit','t1.product_strength','t5.name as generic_name', 't2.brand_name', 't3.name as dosage_form', 't6.name as si_unit', 't1.unitpack_size')
-							// 											->where(array('application_code'=>$record->application_code))
-							// 											->get();
-							// 				$prod_counter = $prod_rec->count();						
-							// 	if($prod_counter >0){
-							// 				$i=1;
-							// 				$total_amount = 0;
-							// 		foreach($prod_rec as $rec){
-							// 			if($rec->permitbrand_name != ''){
-							// 					$permit_brandname = $rec->permitbrand_name.' '.$rec->generic_name;
-							// 			}
-							// 			else{
-							// 				$permit_brandname = $rec->brand_name.' '.$rec->generic_name;
-
-							// 			}			
-							// 			$amount = ($rec->unit_price*$rec->quantity);
-							// 			$batch_details = "Batch No: ".$rec->product_batch_no." Batch Qty- ".$rec->quantity." Expiry Date -".formatDateRpt($rec->product_expiry_date);
-							// 			$packaging_data = $rec->unitpack_size.' '.$rec->si_unit;
-							// 				$rowcount = max(PDF::getNumLines($permit_brandname, 120),PDF::getNumLines($batch_details, 25));
-							// 				$pdf->MultiCell(10,5*$rowcount,$i,1,'',0,0);
-							// 				$pdf->MultiCell(45,5*$rowcount,$permit_brandname,1,'',0,0);
-							// 				$pdf->MultiCell(30,5*$rowcount,$batch_details,1,'',0,0);
-							// 				$pdf->MultiCell(30,5*$rowcount,$rec->quantity.' '.$rec->packaging_unit,1,'',0,0);
-							// 				$pdf->MultiCell(25,5*$rowcount,formatMoney($rec->unit_price).' ',1,'',0,0);
-							// 				$pdf->MultiCell(0,5*$rowcount,formatMoney($amount).$rec->currency_name,1,'R',0,1);	
-							// 				$currency_name = $rec->currency_name;
-							// 				$total_amount = $total_amount+$amount;
-							// 		}
-							// 			$pdf->Cell(140,7,'Total Value:',1,0, 'C');
-							// 			$pdf->Cell(0,7,formatMoney($total_amount).' '.$rec->currency_name,1,1, 'R');
-							// 	}   $pdf->SetFont('','',10);
-							// 	$pdf->ln();
-							// 	$pdf->WriteHTML("Name of Supplier / Exporter / Consignee :<b> ".strtoupper($record->suppler_name)."</b> of (Physical Address) <b>".strtoupper($record->suppler_address.", ".$record->supplier_region.", ".$record->supplier_country).'</b>.', true, 0, true, true,'J');
-								
-								
-							// 	$pdf->Cell(0,5,'This Special Case Import Visa is valid for only 3 months from the issue date',0,1);
-								
-							// 	$pdf->ln();
-							// 	$pdf->Cell(0,5,'Done at Kigali on : '.formatDateRpt($record->approval_date),0,1);
-												
-								
-							// 	$pdf->ln();
-							// 	$permit_signitory = '';
-							// 	$title= 'ACTING';
-							// 	$title= '';
-							// 	$approved_by = '';
-												
-							// 	$this->getCertificateSignatoryDetail($record,$pdf);
+							
+							//$this->getCertificateSignatoryDetail($record,$pdf);
+							if($permit_watermark != ''){
+								 //$this->generatePreviewWatermark();
+								$this->printWaterMark($permit_watermark);
+							}
 
                         	PDF::Output($permit_title.date('Y').date('m').date('d').date('i').date('s').'.pdf','I');
 
@@ -4075,6 +4034,31 @@ public function printClinicalTrialCertificate($application_code,$application_id)
 		
 		
 		
+		
+	}
+	function printWaterMark($permit_watermark){
+		PDF::setPage( 1 );
+
+		// Get the page width/height
+		$myPageWidth = PDF::getPageWidth();
+		$myPageHeight = PDF::getPageHeight();
+
+		// Find the middle of the page and adjust.
+		$myX = ( $myPageWidth / 2 ) - 75;
+		$myY = ( $myPageHeight / 2 ) + 25;
+
+		// Set the transparency of the text to really light
+		PDF::SetAlpha(0.09);
+
+		// Rotate 45 degrees and write the watermarking text
+		PDF::StartTransform();
+		PDF::Rotate(45, $myX, $myY);
+		PDF::SetFont("courier", "", 80);
+		PDF::Text($myX, $myY,$permit_watermark);
+		PDF::StopTransform();
+
+		// Reset the transparency to default
+		PDF::SetAlpha(1);
 		
 	}
 	public function printImportExportvisa($application_code,$record,$permit_watermark){

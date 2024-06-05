@@ -40,44 +40,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.OnlineImport
         selType: 'checkboxmodel',
         mode: 'MULTI'
     },
-    tbar: [{
-        xtype: 'combo',
-        fieldLabel: 'Has Registered Premises',
-        forceSelection: true,
-        queryMode: 'local',
-        valueField: 'id',
-        labelAlign : 'top',
-        displayField: 'name',
-        name: 'has_registered_outlets',
-        fieldStyle: {
-            'color': 'green',
-            'font-weight': 'bold'
-        },
-        listeners: {
-             beforerender: {
-                fn: 'setOrgConfigCombosStore',
-                config: {
-                    pageSize: 100,
-                    proxy: {
-                    url: 'configurations/getConfigParamFromTable',
-                    extraParams: {
-                        table_name: 'par_confirmations'
-                    }
-                   }
-                },
-                isLoad: true
-            },
-           change:function(cbo){
-                var grid = cbo.up('grid'),
-                store = grid.getStore();
-
-                store.load();
-
-           }
-        }
-    }, {
-        xtype: 'tbspacer'
-    },'->',{xtype: 'displayfield', value: 'Double click to preview the application details.'}],
+    tbar: [{xtype: 'displayfield', value: 'Double click to preview the application details.'}],
     
     selModel: {
         selType: 'checkboxmodel',
@@ -260,6 +223,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.OnlineImport
         text: 'Options',
         xtype: 'widgetcolumn',
         width: 90,
+        //hidden:true,
         widget: {
             width: 75,
             textAlign: 'left',

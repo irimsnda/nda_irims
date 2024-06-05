@@ -2483,12 +2483,16 @@ public function getModuleName($module_id)
         
 
         $approvalGrant = DB::table('tra_permitsrelease_recommendation')->where('application_code',$application_code)->first();
-        if(!empty($approvalGrant) && $approvalGrant->decision_id == 1){
+        if((!empty($approvalGrant) && $approvalGrant->decision_id == 1) || empty($approvalGrant)){
             $record = DB::table('tra_importexport_applications as t1')
                         ->join('sub_modules as t2','t1.sub_module_id','t2.id')
                         ->select('t2.title', 't1.sub_module_id')
                         ->where('application_code',$application_code)->first();
                         $sub_module_id = $record->sub_module_id;
+            if(empty($approvalGrant)){
+                $permit_watermark = 'Print Preview';
+            }
+
             if($sub_module_id == 81){
 
                 $this->printImportExportLicense($application_code,$record,$permit_watermark);

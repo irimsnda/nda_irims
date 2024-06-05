@@ -1,6 +1,7 @@
 Ext.define('Admin.view.commoninterfaces.OnlineAppInvoicePaymentsPanel', {
     extend: 'Ext.panel.Panel',
     xtype: 'onlineappinvoicepaymentspanel',
+    controller: 'commoninterfacesVctr',
     layout: {
         type: 'fit'
     },

@@ -410,6 +410,7 @@ Ext.define('Admin.view.dashboard.grids.OnlineApplicationDashboardGrid', {
             text: 'Zone',
             dataIndex: 'zone_name',
             flex: 1,
+            hidden:true,
             tdCls: 'wrap'
         },
         {
@@ -417,6 +418,7 @@ Ext.define('Admin.view.dashboard.grids.OnlineApplicationDashboardGrid', {
             text: 'Tansad Number',
             dataIndex: 'tansadNumber',
             flex: 1,
+            hidden:true,
             tdCls: 'wrap',
             filter: {
                 xtype: 'textfield',

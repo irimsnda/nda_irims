@@ -112,49 +112,6 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImportEx
         {
             xtype: 'importexportapplicantdetailsfrm',
             title: 'APPLICANT DETAILS'
-        },
-        {
-            xtype: 'onlineimportexportdetailspnl',//onlinefoodproductsdetailspnl
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    ui: 'footer',
-                    dock: 'top',
-                    margin: 3,
-                    items: [
-                        {
-                            xtype: 'tbspacer',
-                            width: 2
-                        },
-                        {
-                            xtype: 'combo',
-                            fieldLabel: 'Zone',
-                            labelWidth: 50,
-                            width: 400,
-                            name: 'zone_id',
-                            valueField: 'id',
-                            displayField: 'name',
-                            queryMode: 'local',
-                            forceSelection: true,
-                            listeners: {
-                                beforerender: {
-                                    fn: 'setOrgConfigCombosStore',
-                                    config: {
-                                        pageSize: 1000,
-                                        proxy: {
-                                            extraParams: {
-                                                model_name: 'Zone'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            },
-                            labelStyle: 'font-weight:bold'
-                        }
-                    ]
-                }
-            ],
         }, {
             xtype: 'tabpanel',
             items: [{
@@ -319,6 +276,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImportEx
                     ui: 'soft-purple',
                     iconCls: 'fa fa-save',
                     name: 'save_btn', 
+                    hidden:true,
                     form_panel:'#importexportdetailsfrm',
                     action_url: 'updateonlineImportPermittReceivingBaseDetails',
                     wizard: 'importexportonlinereceivingwizard',

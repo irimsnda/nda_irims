@@ -3,7 +3,7 @@
  */
 Ext.define('Admin.view.commoninterfaces.grids.OnlinePaymentInvoicingCostDetailsGrid', {
     extend: 'Ext.grid.Panel',
-    controller: 'premiseregistrationvctr',
+    controller: 'commoninterfacesVctr',
     xtype: 'onlinepaymentinvoicingcostdetailsgrid',
     cls: 'dashboard-todo-list',
     autoScroll: true,
@@ -109,7 +109,7 @@ Ext.define('Admin.view.commoninterfaces.grids.OnlinePaymentInvoicingCostDetailsG
             width: 75,
             textAlign: 'left',
             xtype: 'button',
-            iconCls: 'x-fa fa-print',
+            iconCls: 'x-fa fa-times',
             ui: 'soft-green',
             name:'print_invoice',
             text: 'Print Invoice',
@@ -124,8 +124,8 @@ Ext.define('Admin.view.commoninterfaces.grids.OnlinePaymentInvoicingCostDetailsG
             width: 75,
             textAlign: 'left',
             xtype: 'button',
-            iconCls: 'x-fa fa-print',
-            ui: 'soft-green',
+            iconCls: 'x-fa fa-cancel',
+            ui: 'soft-red',
             name:'cancel_invoice',
             text: 'Cancel Generate P-Invoice',
             handler: 'funcCancelGeneratedInvoice'

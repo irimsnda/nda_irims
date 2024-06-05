@@ -867,7 +867,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
 
     action_url = "saveApplicationApprovalDetails";
     if (decision_id == 1) {
-      title = "Do you want to Approve the reviewed Permit Application>";
+      title = "Do you want to Approve the reviewed Permit Application";
     } else {
       title = "Do you want to Reject the reviewed Permit Application?";
     }
@@ -1884,7 +1884,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
 
     funcShowOnlineCustomizableWindow(
       ref_no,
-      "80%",
+      "90%",
       onlinePanel,
       "customizablewindow"
     );
@@ -1984,7 +1984,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
 
     funcShowOnlineCustomizableWindow(
       ref_no,
-      "80%",
+      "90%",
       onlinePanel,
       "customizablewindow"
     );
@@ -2177,7 +2177,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
     docsGrid.portal_uploads = 3;
     funcShowOnlineCustomizableWindow(
       ref_no,
-      "80%",
+      "90%",
       onlinePanel,
       "customizablewindow"
     );
@@ -2192,7 +2192,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
       sub_module_id = record.get("sub_module_id");
 
     if (module_id == 4) {
-      wizard_pnl = "importexportonlinereceivingwizard";
+      wizard_pnl = "impexplicenseonlinereceivingwizard";
     } else {
       if (sub_module_id == 60) {
         wizard_pnl = "controldrugsliconlinereceivingwizard";
@@ -2212,22 +2212,22 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
       status_type_id = record.get("status_type_id"),
       isRejection = record.get("isRejection");
 
-    if (sub_module_id == 78 || sub_module_id == 81 || sub_module_id == 82) {
-      if (module_id == 4) {
-        wizard_pnl = "impexplicenseonlinereceivingwizard";
-      } else {
-        if (sub_module_id == 60) {
-          wizard_pnl = "controldrugsliconlinereceivingwizard";
-        } else {
-          wizard_pnl = "controldrugsimponlinereceivingwizard";
-        }
-      }
-      me.funcREceiveSingleApplication(wizard_pnl, view, record);
-    } else {
+    // if (sub_module_id == 78 || sub_module_id == 81 || sub_module_id == 82) {
+    //   if (module_id == 4) {
+    //     wizard_pnl = "impexplicenseonlinereceivingwizard";
+    //   } else {
+    //     if (sub_module_id == 60) {
+    //       wizard_pnl = "controldrugsliconlinereceivingwizard";
+    //     } else {
+    //       wizard_pnl = "controldrugsimponlinereceivingwizard";
+    //     }
+    //   }
+    //   me.funcREceiveSingleApplication(wizard_pnl, view, record);
+    // } else {
       Ext.MessageBox.show({
         title: "Application Reception",
         message:
-          "Do you want to receive the Visa Application as Single Application or Multi Applications(Batch Submission)?",
+          "Do you want to receive the Application as Single Application or Multi Applications(Batch Submission)?",
         buttons: Ext.Msg.YESNO,
         icon: Ext.window.MessageBox.INFO,
         buttonText: {
@@ -2237,7 +2237,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
         fn: function (btn, text) {
           if (btn == "yes") {
             if (module_id == 4) {
-              wizard_pnl = "importexportonlinereceivingwizard";
+              wizard_pnl = "impexplicenseonlinereceivingwizard";
             } else {
               if (sub_module_id == 60) {
                 wizard_pnl = "controldrugsliconlinereceivingwizard";
@@ -2253,7 +2253,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
         },
       });
       return;
-    }
+    //}
   },
   funcReceiveMultiApplications: function (wizard_pnl, view, record) {
     var ref_no = record.get("reference_no"),
@@ -2293,7 +2293,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
     onlinePanel.setHeight(490);
     funcShowOnlineCustomizableWindow(
       process_name + " Applications",
-      "80%",
+      "90%",
       onlinePanel,
       "customizablewindow"
     );
@@ -2323,7 +2323,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
     onlinePanel.down("hiddenfield[name=sub_module_id]").setValue(sub_module_id);
     onlinePanel.down("hiddenfield[name=section_id]").setValue(section_id);
 
-    onlinePanel.down("button[action=link_applicant]").setDisabled(true);
+    //onlinePanel.down("button[action=link_applicant]").setDisabled(true);
     onlinePanel
       .down("hiddenfield[name=status_type_id]")
       .setValue(status_type_id);
@@ -2349,7 +2349,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
 
     funcShowOnlineCustomizableWindow(
       ref_no,
-      "80%",
+      "90%",
       onlinePanel,
       "customizablewindow"
     );
@@ -2416,7 +2416,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
 
     funcShowOnlineCustomizableWindow(
       ref_no,
-      "80%",
+      "90%",
       onlinePanel,
       "customizablewindow"
     );
@@ -2460,7 +2460,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
 
     funcShowOnlineCustomizableWindow(
       ref_no,
-      "80%",
+      "90%",
       onlinePanel,
       "customizablewindow"
     );
@@ -4840,8 +4840,8 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
             if (permit_details.module_id != 20) {
               (importexportpremisesfrm = permitsdetails_panel.down(
                 "#importexportpremisesfrm"
-              )),
-                importexportpremisesfrm.loadRecord(premisesDetails);
+              ));
+                
             }
             if (has_registered_premises==2 || has_registered_premises===2) {
               if(importexportpremisesfrm.down("fieldset[name=Phamacist_fieldset]")){
@@ -4859,34 +4859,41 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
                }
 
             }
+            if(senderreceiverdetailsfrm){
+              senderreceiverdetailsfrm.loadRecord(senderReceiverDetails);
+              senderreceiverdetailsfrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+             });
+            }
+            if(importexportapplicantdetailsfrm){
+               importexportapplicantdetailsfrm.loadRecord(model2);
+               importexportapplicantdetailsfrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
 
-            senderreceiverdetailsfrm.loadRecord(senderReceiverDetails);
-
-            importexportapplicantdetailsfrm.loadRecord(model2);
-            importexportdetailsfrm.loadRecord(model2);
+               });
+               if(importexportapplicantdetailsfrm.down("button[name=link_applicant]")){
+                importexportapplicantdetailsfrm.down("button[name=link_applicant]").setDisabled(true);
+               }
+             }
+             if(importexportdetailsfrm){
+               importexportdetailsfrm.loadRecord(model2);
+               importexportdetailsfrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+                });
+             }
+              if(importexportpremisesfrm){
+                importexportpremisesfrm.loadRecord(premisesDetails);
+                importexportpremisesfrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+                  });
+                  if(importexportpremisesfrm.down("button[action=search_premise_non_licensed]")){
+                       importexportpremisesfrm.down("button[action=search_premise_non_licensed]").setDisabled(true);
+                  }
+              }
 
           }
 
-
-          importexportapplicantdetailsfrm.getForm().getFields().each(function (field) {
-                field.setReadOnly(true);
-            });
-             importexportdetailsfrm.getForm().getFields().each(function (field) {
-                field.setReadOnly(true);
-            });
-             senderreceiverdetailsfrm.getForm().getFields().each(function (field) {
-                field.setReadOnly(true);
-            });
-
-             importexportpremisesfrm.getForm().getFields().each(function (field) {
-                field.setReadOnly(true);
-            });
-            if(importexportpremisesfrm.down("button[action=search_premise_non_licensed]")){
-                 importexportpremisesfrm.down("button[action=search_premise_non_licensed]").setDisabled(true);
-            }
-            if(importexportapplicantdetailsfrm.down("button[name=link_applicant]")){
-                importexportapplicantdetailsfrm.down("button[name=link_applicant]").setDisabled(true);
-            }
+            
 
   
           permitsdetails_panel.height = 550;
@@ -6923,7 +6930,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
       (sub_module_id = activeTab
         .down("hiddenfield[name=sub_module_id]")
         .getValue()),
-      (zone_cbo = activeTab.down("combo[name=zone_id]"));
+     // (zone_cbo = activeTab.down("combo[name=zone_id]"));
     filter = { section_id: section_id };
 
     workflow_stage_id = activeTab
@@ -6933,6 +6940,13 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
     if (application_status_id == 4 || application_status_id === 4) {
       activeTab.down("button[name=queries_responses]").setVisible(true);
     }
+   
+     if(sub_module_id==81 || sub_module_id===81){
+      if(activeTab.down('onlineimportexportpermitsproductsgrid')){
+          activeTab.down('onlineimportexportpermitsproductsgrid').destroy();
+      }
+    }
+
     if (pnl.down("combo[name=applicable_checklist]")) {
       var checklistTypesGrid = pnl.down("combo[name=applicable_checklist]"),
         checklistTypesStr = checklistTypesGrid.getStore();
@@ -6966,6 +6980,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
             senderReceiverDetails = resp.senderReceiverDetails,
             premisesDetails = resp.premisesDetails,
             zone_id = results.zone_id,
+            has_registered_premises = results.has_registered_premises,
             model = Ext.create("Ext.data.Model", results);
           senderReceiverDetails = Ext.create(
             "Ext.data.Model",
@@ -6980,9 +6995,53 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
             importexportpremisesfrm.loadRecord(premisesDetails);
             senderreceiverdetailsfrm.loadRecord(senderReceiverDetails);
 
+
+            if (has_registered_premises==2 || has_registered_premises===2) {
+              if(importexportpremisesfrm.down("fieldset[name=Phamacist_fieldset]")){
+               importexportpremisesfrm.down("fieldset[name=Phamacist_fieldset]").setVisible(false);
+              }
+               if(importexportpremisesfrm.down("fieldset[name=non_licensed_fieldset]")){
+                 importexportpremisesfrm.down("fieldset[name=non_licensed_fieldset]").setVisible(true);
+               }
+            }else{
+              if(importexportpremisesfrm.down("fieldset[name=Phamacist_fieldset]")){
+                importexportpremisesfrm.down("fieldset[name=Phamacist_fieldset]").setVisible(true);
+               }
+               if(importexportpremisesfrm.down("fieldset[name=non_licensed_fieldset]")){
+                 importexportpremisesfrm.down("fieldset[name=non_licensed_fieldset]").setVisible(false);
+               }
+
+            }
+
+             applicantFrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+            });
+             importexportdetailsfrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+            });
+             senderreceiverdetailsfrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+            });
+
+             importexportpremisesfrm.getForm().getFields().each(function (field) {
+                field.setReadOnly(true);
+            });
+            if(importexportpremisesfrm.down("button[action=search_premise_non_licensed]")){
+                 importexportpremisesfrm.down("button[action=search_premise_non_licensed]").setDisabled(true);
+            }
+            if(applicantFrm.down("button[name=link_applicant]")){
+                applicantFrm.down("button[name=link_applicant]").setDisabled(true);
+            }
+
+             if(sub_module_id==81 || sub_module_id===81){
+              if(activeTab.down('senderreceiverdetailsfrm')){
+                  activeTab.down('senderreceiverdetailsfrm').destroy();
+              }
+           }
+
             // zone_cbo.setReadOnly(true);
-            zone_cbo.setValue(zone_id);
-            zone_cbo.setDisabled(true);
+            // zone_cbo.setValue(zone_id);
+            // zone_cbo.setDisabled(true);
             activeTab
               .down("displayfield[name=application_status]")
               .setValue(results.application_status);
