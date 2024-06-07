@@ -616,6 +616,29 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 afterrender: 'afterRecommendationComboRender'
             },
 
+            'precheckingrecommendationfrm combo[name=recommendation_id]': {
+                afterrender: 'afterRecommendationComboRender'
+            },
+
+
+            'onlinequeriesfrm combo[name=application_section_id]': {
+                afterrender: 'afterSectionComboRender'
+            },
+
+            'adhocqueryfrm combo[name=application_section_id]': {
+                afterrender: 'afterSectionComboRender'
+            },
+            'applicationinternalqueriesfrm combo[name=application_section_id]': {
+                afterrender: 'afterSectionComboRender'
+            },
+
+            'applicationqueryfrm combo[name=application_section_id]': {
+                afterrender: 'afterSectionComboRender'
+            },
+            'applicationunstructuredqueriesfrm combo[name=application_section_id]': {
+                afterrender: 'afterSectionComboRender'
+            },
+
             //  'pvDetailsFrm': {
             //     beforerender: 'prepareInterfaceBasedonConfig'
             // },
@@ -3645,12 +3668,12 @@ setCompStore: function (me, options) {
                 //skip some modules
                 if(is_invoicecheck){
                     invoiceIsGenerated = checkGeneratedInvoiceDetails(application_code, module_id,sub_module_id,section_id);
-                    // if(!invoiceIsGenerated){
-                    //         toastr.warning('Receive and Generate Invoice, to proceed!!', 'Warning Response');
-                    //         Ext.getBody().unmask();
-                    //         return false;
+                    if(!invoiceIsGenerated){
+                            toastr.warning('Receive and Generate Invoice, to proceed!!', 'Warning Response');
+                            Ext.getBody().unmask();
+                            return false;
 
-                    // }
+                    }
                 }
 
 

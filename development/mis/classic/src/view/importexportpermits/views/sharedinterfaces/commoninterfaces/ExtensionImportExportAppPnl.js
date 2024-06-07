@@ -2,15 +2,18 @@
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfaces.ExtensionImportExportAppPnl', {
     extend: 'Ext.tab.Panel',
     xtype: 'extensionimportexportapppnl',
-    layout: {//
-        type: 'fit'
-    },
+    // layout: {//
+    //     type: 'fit'
+    // },
     defaults:{
         margin: 3
     },viewModel: {
         type: 'importexportpermitsvm'
     },
-    tbar: [{
+    tbar: [ {
+            xtype: 'tbspacer',
+            width: 20
+        },{
                 xtype: 'displayfield',
                 name: 'process_name',
                 value: 'Applications Reference and Previous Expiry date are only loaded for registered applications',

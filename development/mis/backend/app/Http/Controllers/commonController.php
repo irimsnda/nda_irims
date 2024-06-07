@@ -332,6 +332,25 @@ class CommonController extends Controller
         return response()->json($res);
     }
 
+     public function onDeleteApplicationQueries(Request $request)
+    {
+        $item_ids = $request->input('record_id');
+        try {
+            DB::table('checklistitems_queries')
+                ->where('id', $item_ids)
+                ->delete();
+            $res = array(
+                'success' => true,
+                'message' => 'Selected queries removed successfully!!'
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    } 
+
 
     public function updateParticipantRole(Request $req)
     {
@@ -4424,7 +4443,7 @@ public function getUploadedApplicationPaymentDetails(Request $req){
     public function checkReviewREcommendationDEtails(Request $req){
         try {
                 
-                $res = $this->validateRequiredApplicationDetails('tra_managerpermits_review', $req->application_code, 'Manager Review Recommendation not filled successfully');
+         $res = $this->validateRequiredApplicationDetails('tra_managerpermits_review', $req->application_code, 'Manager Review Recommendation not filled successfully');
 
 
         } catch (\Exception $exception) {

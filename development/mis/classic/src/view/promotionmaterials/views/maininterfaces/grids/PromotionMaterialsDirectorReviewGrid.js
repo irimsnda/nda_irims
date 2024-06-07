@@ -108,6 +108,7 @@ Ext.define('Admin.view.promotionmaterials.views.maininterfaces.grids.PromotionMa
              flex: 1,
             tdCls: 'wrap-text'
         },
+        
         {
             xtype: 'gridcolumn',
             dataIndex: 'reference_no',

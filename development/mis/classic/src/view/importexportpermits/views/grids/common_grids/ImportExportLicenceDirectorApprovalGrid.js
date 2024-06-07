@@ -17,7 +17,6 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             },
             isLoad: true 
         },
-
         select: function (sel, record, index, eOpts) {
             var grid = sel.view.grid,
                 selCount = grid.getSelectionModel().getCount();
@@ -37,10 +36,17 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         selType: 'checkboxmodel',
         mode: 'MULTI'
     },
-    tbar: [{
+    features: [{
+        ftype: 'searching',
+        mode: 'local',
+        minChars: 2
+    }],
+     margin: 3,
+    tbar: [ {
+            xtype: 'tbspacer',
+            width: 20
+        },{
         xtype: 'exportbtn'
-    }, {
-        xtype: 'tbspacer'
     },'->',{
         xtype: 'combo',
         fieldLabel: 'Zones',
@@ -89,82 +95,70 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         xtype: 'gridcolumn',
         dataIndex: 'tracking_no',
         text: 'Tracking No',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'id',
-        text: 'Application ID',
+        tdCls: 'wrap-text',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'date_added',
-        text: 'Date of Application',
+        text: 'Application Date',
+        tdCls: 'wrap-text',
         flex: 1
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'reference_no',
-        hidden:true,
-        text: 'Import Permit Number',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        text: 'Premises Name',
+        text: 'Business Name',
         dataIndex: 'premises_name',
         flex: 1,
+        tdCls: 'wrap-text',
         tdCls: 'wrap'
         
     },{
         xtype: 'gridcolumn',
-        text: 'Premises Number',
-        dataIndex: 'psu_no',
-        flex: 1,
-        tdCls: 'wrap'
-        
-    },{
-        xtype: 'gridcolumn',
-        text: 'Premises Physical Address',
-        dataIndex: 'pre_physical_address',
-        flex: 1,
-        tdCls: 'wrap'
-        
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'applicant_name',
-        text: 'Applicant Name',
+        dataIndex: 'business_type',
+        text: 'Business Type',
+        tdCls: 'wrap-text',
         flex: 1
     }, 
-    {
-        xtype: 'gridcolumn',
-        text: 'Has Licensed Premises', 
-        dataIndex: 'has_registered_premises',
-        renderer: function (value, metaData) {
-            if (value == 1) {
-                metaData.tdStyle = 'color:white;background-color:green';
-                return "NDA Licensed";
-            }
-
-            metaData.tdStyle = 'color:white;background-color:red';
-            return "NDA Non-Licensed";
-        }
-
-    },{
+   {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
         text: 'Status',
         flex: 1
     },
     {
-        xtype: 'gridcolumn',
-        dataIndex: 'premises_validation_recommendation',
-        text: 'Validation Recommendation',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'products_validation_recommendation',
-        hidden: true,
-        text: 'Products Validation Recommendation',
-        flex: 1
+        header: '(MIE) Recommendation',
+        dataIndex: 'manager_recommendation',
+        flex: 1,
+        renderer: function (value, metaData,record) {
+            var manager_recommendation_id = record.get('manager_recommendation_id')
+            if (manager_recommendation_id==1 || manager_recommendation_id===1) {
+                metaData.tdStyle = 'color:white;background-color:green';
+                return record.get('manager_recommendation');
+            }else if(manager_recommendation_id==2 || manager_recommendation_id===2){
+              metaData.tdStyle = 'color:white;background-color:red';
+              return record.get('manager_recommendation');
+          }else{
+            return record.get('manager_recommendation');
+           }
+        }
     },
+     {
+        xtype: 'widgetcolumn',
+        width: 150,
+        widget: {
+            width: 150,
+            textAlign: 'left',
+            xtype: 'button',
+            ui: 'soft-red',
+            text: 'Recommendation',
+            iconCls: 'x-fa fa-chevron-circle-up',
+            childXtype: 'applicationcommentspnl',
+            winTitle: 'Assessment Comments',
+            winWidth: '60%',
+            handler: 'showCommentDetails',
+            comment_type_id: 3,
+            stores: '[]'
+        }
+    }, 
     {
         text: 'Options',
         xtype: 'widgetcolumn',
@@ -190,17 +184,21 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                         action: 'edit',
                         childXtype: '',
                         winTitle: 'Application Documents',
-                        winWidth: '40%',
+                        winWidth: '70%',
                         isReadOnly: 1,
                         document_type_id: '',
-                        hidden: true,
+                       // hidden: true,
                         handler: 'showPreviousUploadedDocs'
                     },{
                         text: 'View Screening Checklists & Recommendation',
                         iconCls: 'x-fa fa-check-square',
-                        hidden: true,
+                       // hidden: true,
                         handler: 'showApplicationChecklists'
-                    }
+                    },{
+                        text: 'Request for Additional Information',
+                        iconCls: 'x-fa fa-file-pdf-o',
+                        handler: 'showApplicationQueries'
+                    },
                 ]
             }
         }

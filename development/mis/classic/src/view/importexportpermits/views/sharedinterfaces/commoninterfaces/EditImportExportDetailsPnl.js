@@ -5,9 +5,9 @@
 Ext.define('Admin.view.importexportpermits.views.commoninterfaces.EditImportExportDetailsPnl', {
     extend: 'Ext.tab.Panel',
     xtype: 'editimportexportdetailspnl',
-    layout: {//
-        type: 'fit'
-    },
+    // layout: {//
+    //     type: 'fit'
+    // },
     defaults:{
         margin: 3
     },viewModel: {
@@ -18,11 +18,7 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.EditImportExpo
         autoScroll: true,
         title: 'Import/Export Permit Information'
     }, 
-    // {
-    //     xtype: 'importexportpermitsproductsgrid',
-    //     title: 'Import/Export Permit Products Details',
-    //     readonly: true
-    // },
+   
     {
         xtype: 'senderreceiverdetailsfrm',
         title: 'Sender/Receiver Details',

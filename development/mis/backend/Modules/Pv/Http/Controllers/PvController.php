@@ -5,13 +5,27 @@ namespace Modules\Pv\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Exports\GridExport;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Excel;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PDF;
+use \Mpdf\Mpdf as mPDF;
+use PhpOffice\PhpPresentation\Style\Alignment;
+use PhpOffice\PhpPresentation\Style\Color;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Style\Font;
+use PhpOffice\PhpWord\Shared\Converter;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+
 class PvController extends Controller
 {
     protected $user_id;
@@ -1377,7 +1391,7 @@ public function getWHOCasaultyAssessment(Request $request)
 
     // Clean up the attachment after all notifications are sent
     if ($attachment_path && file_exists($attachment_path)) {
-        unlink($attachment_path);
+       // unlink($attachment_path);
     }
 
 
@@ -1393,11 +1407,217 @@ public function handleAttachment($attachment)
         $document_rootupload = Config('constants.dms.doc_rootupload');
         $destination = getcwd() . $document_rootupload;
         $savedName = str_random(3) . time() . '.' . $extension;
+        $watermarkText = 'CONFIDENTIAL';
         $attachment->move($destination, $savedName);
+        //$this->addWatermark($attachment, $destination, $watermarkText,$savedName);
+        //$this->addExcelWatermark($attachment, $destination, $watermarkText,$savedName);
         return $destination . $savedName;
     }
     return null;
 }
+
+
+public function addExcelWatermark($attachment, $destination, $watermarkText, $savedName) {
+    try {
+        // Create a temporary file for the uploaded Excel
+        $tempPath = tempnam(sys_get_temp_dir(), 'excel_');
+        $attachment->move(dirname($tempPath), basename($tempPath));
+
+        // Load the Excel file using the Xlsx reader
+        $reader = IOFactory::createReader('Xlsx');
+        $spreadsheet = $reader->load($tempPath);
+
+        // Loop through all sheets and add the text watermark to each sheet
+        foreach ($spreadsheet->getAllSheets() as $sheet) {
+            // Add text watermark
+            $sheet->getHeaderFooter()->setOddHeader('&L&G&F' . $watermarkText);
+            $sheet->getHeaderFooter()->setEvenHeader('&L&G&F' . $watermarkText);
+        }
+
+        // Ensure the destination directory exists
+        if (!is_dir($destination)) {
+            mkdir($destination, 0755, true);
+        }
+
+        // Form the full path for the output Excel file
+        $outputPath = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $savedName;
+
+        // Save the modified Excel file
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save($outputPath);
+
+        // Remove the temporary file
+        unlink($tempPath);
+
+        return true; // Return true on success
+    } catch (\PhpOffice\PhpSpreadsheet\Exception $e) {
+        // Handle any exceptions that occur during the process
+        echo 'Error: ' . $e->getMessage();
+        return false; // Return false on failure
+    }
+}
+
+
+
+public function addImageWatermark($sourceFile, $destination, $watermarkFile, $savedName) {
+    // Create an Imagick object for the source image
+    $image = new Imagick($sourceFile);
+
+    // Create an Imagick object for the watermark image
+    $watermark = new Imagick($watermarkFile);
+
+    // Get the dimensions of the source image and the watermark image
+    $imageWidth = $image->getImageWidth();
+    $imageHeight = $image->getImageHeight();
+    $watermarkWidth = $watermark->getImageWidth();
+    $watermarkHeight = $watermark->getImageHeight();
+
+    // Calculate the position to place the watermark (centered)
+    $x = ($imageWidth - $watermarkWidth) / 2;
+    $y = ($imageHeight - $watermarkHeight) / 2;
+
+    // Composite the watermark on the source image
+    $image->compositeImage($watermark, imagick::COMPOSITE_OVER, $x, $y);
+
+    // Ensure the destination directory exists
+    if (!is_dir($destination)) {
+        mkdir($destination, 0755, true);
+    }
+
+    // Form the full path for the output image file
+    $outputPath = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $savedName;
+
+    // Write the new image to the destination
+    $image->writeImage($outputPath);
+
+    // Clean up
+    $image->clear();
+    $image->destroy();
+    $watermark->clear();
+    $watermark->destroy();
+}
+
+
+public function addWordWatermark($sourceFile, $destination, $watermarkText, $savedName) {
+    // Load the Word document
+    $phpWord = IOFactory::load($sourceFile);
+
+    // Loop through all sections and add the watermark text to the header
+    foreach ($phpWord->getSections() as $section) {
+        $header = $section->addHeader();
+
+        // Add a text watermark
+        $watermark = $header->addWatermarkShape();
+        $watermark->addText($watermarkText, [
+            'font' => ['size' => 50, 'color' => 'C0C0C0', 'bold' => true],
+            'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER,
+            'rotate' => 45
+        ]);
+
+        // Alternatively, you can use an image as a watermark
+        // $header->addImage('path/to/watermark/image.png', ['width' => 100, 'height' => 100, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'marginTop' => -80, 'wrappingStyle' => 'behind']);
+    }
+
+    // Ensure the destination directory exists
+    if (!is_dir($destination)) {
+        mkdir($destination, 0755, true);
+    }
+
+    // Form the full path for the output Word document
+    $outputPath = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $savedName;
+
+    // Save the modified Word document
+    $writer = IOFactory::createWriter($phpWord, 'Word2007');
+    $writer->save($outputPath);
+}
+
+
+public function addPptWatermark($sourceFile, $destination, $watermarkText, $savedName) {
+    // Load the PowerPoint file
+    $ppt = IOFactory::load($sourceFile);
+
+    foreach ($ppt->getAllSlides() as $slide) {
+        // Create a new rich text shape
+        $shape = $slide->createRichTextShape()
+            ->setHeight(100)
+            ->setWidth(600)
+            ->setOffsetX(170)
+            ->setOffsetY(180);
+
+        // Center the text
+        $shape->getActiveParagraph()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        // Add the watermark text
+        $textRun = $shape->createTextRun($watermarkText);
+        $textRun->getFont()->setBold(true)
+            ->setSize(60)
+            ->setColor(new Color(Color::COLOR_GRAY));
+    }
+
+    // Ensure the destination directory exists
+    if (!is_dir($destination)) {
+        mkdir($destination, 0755, true);
+    }
+
+    // Form the full path for the output PowerPoint file
+    $outputPath = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $savedName;
+
+    // Save the modified PowerPoint file
+    $writer = IOFactory::createWriter($ppt, 'PowerPoint2007');
+    $writer->save($outputPath);
+}
+
+public function addWatermark($attachment, $destination, $watermarkText, $savedName) {
+    $pdf = new \Mpdf\Mpdf();
+    // Save the uploaded file to a temporary location
+    $tempPath = tempnam(sys_get_temp_dir(), 'pdf_');
+    $attachment->move(dirname($tempPath), basename($tempPath));
+
+    // Set source file
+    $pageCount = $pdf->setSourceFile($tempPath);
+
+    for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+        // Import a page
+        $tplId = $pdf->importPage($pageNo);
+        $pdf->AddPage();
+        $pdf->useTemplate($tplId);
+
+        // Set watermark font and color
+        $pdf->SetFont('Helvetica', 'B', 50);
+        $pdf->SetTextColor(255, 192, 203);
+
+        // Get page width and height
+        $size = $pdf->getTemplateSize($tplId);
+        $width = $size['width'];
+        $height = $size['height'];
+
+        // Add watermark text
+        $pdf->StartTransform();
+        $pdf->Rotate(45, $width / 2, $height / 2);
+        $pdf->Text($width / 4, $height / 2, $watermarkText);
+        $pdf->StopTransform();
+
+         // Reset the transparency to default
+        $pdf->SetAlpha(1);
+    }
+
+    // Ensure destination directory exists
+    if (!is_dir($destination)) {
+        mkdir($destination, 0755, true);
+    }
+
+    // Form the full path for the output PDF
+    $outputPath = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $savedName;
+
+    // Output the new PDF to the specified destination
+    $pdf->Output($outputPath, 'F');
+
+    // Clean up the temporary file
+    unlink($tempPath);
+}
+
+
+
 
 public function sendMailAndLogNotification($application_code, $subject, $response, $attachment_path, $attachment)
 {

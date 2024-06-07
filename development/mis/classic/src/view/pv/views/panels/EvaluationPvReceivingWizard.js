@@ -226,7 +226,6 @@ Ext.define('Admin.view.pv.views.panels.EvaluationPvReceivingWizard', {
                 {
                     text: 'Overrall Comments and recommendation',
                     ui: 'soft-purple',
-                    //hidden: true,
                     iconCls: 'fa fa-weixin',
                     childXtype: 'applicationcommentspnl',
                     winTitle: 'Assessment Comments',

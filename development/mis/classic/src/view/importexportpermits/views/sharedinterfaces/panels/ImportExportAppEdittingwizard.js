@@ -117,7 +117,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     defaults: {
                         labelAlign: 'top'
                     },
-                    fieldLabel: 'Application Details',
+                    fieldLabel: 'License Details',
                     items: [
                         {
                             xtype: 'textfield',
@@ -150,46 +150,6 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
     //     },
         {
             xtype: 'editimportexportdetailspnl',//onlinefoodproductsdetailspnl
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    ui: 'footer',
-                    dock: 'top',
-                    margin: 3,
-                    items: [
-                        {
-                            xtype: 'tbspacer',
-                            width: 2
-                        },
-                        {
-                            xtype: 'combo',
-                            fieldLabel: 'Zone',
-                            labelWidth: 50,
-                            width: 400,
-                            name: 'zone_id',
-                            valueField: 'id',
-                            displayField: 'name',
-                            queryMode: 'local',
-                            forceSelection: true,
-                            listeners: {
-                                beforerender: {
-                                    fn: 'setOrgConfigCombosStore',
-                                    config: {
-                                        pageSize: 1000,
-                                        proxy: {
-                                            extraParams: {
-                                                model_name: 'Zone'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            },
-                            labelStyle: 'font-weight:bold'
-                        }
-                    ]
-                }
-            ],
         }, {
             xtype: 'tabpanel',
             items: [{
@@ -201,7 +161,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
             }]
         },{
             xtype: 'extensionimportexportapppnl',
-            title: 'Import/Export Permit Extention'
+            //title: 'Import/Export License Extention'
         },
         {
             xtype: 'hiddenfield',
@@ -225,16 +185,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                 pack: 'center'
             },
             items: [
-                // {
-                //     step: 0,
-                //     iconCls: 'fa fa-user',
-                //     enableToggle: true,
-                //     pressed: true,
-                //     text: 'Applicant',
-                //     action: 'quickNav',
-                //     wizard: 'importexportedittingswizard',
-                //     handler: 'quickNavigation'
-                // },
+                
                 {
                     step: 0,
                     iconCls: 'fa fa-university',
@@ -248,7 +199,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     step: 1,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'Import/Export permit Documents Submission',
+                    text: 'Import/Export License Documents Submission',
                     action: 'quickNav', 
                     wizard: 'importexportedittingswizard',
                     handler: 'quickNavigation'
@@ -256,7 +207,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     step: 2,
                     iconCls: 'fa fa-product-hunt',
                     enableToggle: true,
-                    text: 'Import/Export Permit Extension',
+                    text: 'Import/Export License Extension',
                     action: 'quickNav', 
                     wizard: 'importexportedittingswizard',
                     handler: 'quickNavigation'

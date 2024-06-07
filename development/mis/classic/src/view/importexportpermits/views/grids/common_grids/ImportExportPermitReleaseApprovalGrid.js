@@ -147,54 +147,89 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         }
     },
     
-    {
+   {
         xtype: 'gridcolumn',
         dataIndex: 'tracking_no',
         text: 'Tracking No',
+        tdCls: 'wrap-text',
+        flex: 1
+    }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'date_added',
+        text: 'Application Date',
+        tdCls: 'wrap-text',
         flex: 1
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'reference_no',
-        text: 'Reference No',
-        flex: 1
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'applicant_name',
-        text: 'Applicant Name',
-        flex: 1
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'proforma_invoice_no',
-        hidden: true,
-        text: 'Proforma Invoice No',
-        flex: 1
-    },  {
-        xtype: 'gridcolumn',
+        text: 'Business Name',
         dataIndex: 'premises_name',
-        text: 'Premises Name',
+        flex: 1,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'business_type',
+        text: 'Business Type',
+        tdCls: 'wrap-text',
         flex: 1
-    }, {
+    }, 
+   {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
         text: 'Status',
         flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'prechecking_recommendation',
-        hidden: true,
-        text: 'Prechecking Recommendation',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'recommendation',
-        text: 'Review Recommendation',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'release_recommendation',
-        text: 'Permit Release Recommendation',
-        flex: 1
-    }, {
+    },
+    {
+        header: 'MIE Recommendation',
+        dataIndex: 'manager_recommendation',
+        flex: 1,
+        renderer: function (value, metaData,record) {
+            var manager_recommendation_id = record.get('manager_recommendation_id')
+            if (manager_recommendation_id==1 || manager_recommendation_id===1) {
+                metaData.tdStyle = 'color:white;background-color:green';
+                return record.get('manager_recommendation');
+            }else if(manager_recommendation_id==2 || manager_recommendation_id===2){
+              metaData.tdStyle = 'color:white;background-color:red';
+              return record.get('manager_recommendation');
+          }else{
+            return record.get('manager_recommendation');
+           }
+        }
+    }, 
+    {
+        header: 'Director Recommendation',
+        dataIndex: 'director_recommendation',
+        flex: 1,
+        renderer: function (value, metaData,record) {
+            var director_recommendation_id = record.get('director_recommendation_id')
+            if (director_recommendation_id==1 || director_recommendation_id===1) {
+                metaData.tdStyle = 'color:white;background-color:green';
+                return record.get('director_recommendation');
+            }else if(director_recommendation_id==2 || director_recommendation_id===2){
+              metaData.tdStyle = 'color:white;background-color:red';
+              return record.get('director_recommendation');
+          }else{
+            return record.get('director_recommendation');
+           }
+        }
+      }, {
+        header: 'Approval Recommendation',
+        dataIndex: 'approval_recommendation',
+        flex: 1,
+        renderer: function (value, metaData,record) {
+            var approval_recommendation_id = record.get('approval_recommendation_id')
+            if (approval_recommendation_id==1 || approval_recommendation_id===1) {
+                metaData.tdStyle = 'color:white;background-color:green';
+                return record.get('approval_recommendation');
+            }else if(approval_recommendation_id==2 || approval_recommendation_id===2){
+              metaData.tdStyle = 'color:white;background-color:red';
+              return record.get('approval_recommendation');
+          }else{
+            return record.get('approval_recommendation');
+           }
+        }
+      }, {
         xtype: 'widgetcolumn',
         width: 150,
         widget: {
@@ -245,7 +280,28 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 0,
                         handler: 'editpreviewPermitinformation'
-                    }
+                    },{
+                        text: 'All Application Documents',
+                        iconCls: 'x-fa fa-file',
+                        tooltip: 'Application Documents',
+                        action: 'edit',
+                        childXtype: '',
+                        winTitle: 'Application Documents',
+                        winWidth: '70%',
+                        isReadOnly: 1,
+                        document_type_id: '',
+                       // hidden: true,
+                        handler: 'showPreviousUploadedDocs'
+                    },{
+                        text: 'View Screening Checklists & Recommendation',
+                        iconCls: 'x-fa fa-check-square',
+                       // hidden: true,
+                        handler: 'showApplicationChecklists'
+                    },{
+                        text: 'Request for Additional Information',
+                        iconCls: 'x-fa fa-file-pdf-o',
+                        handler: 'showApplicationQueries'
+                    },
                 ]
             }
         }

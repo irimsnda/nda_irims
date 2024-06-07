@@ -3,7 +3,7 @@
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportExportPermitApprovalPnl', {
     extend: 'Ext.panel.Panel',
-    title: 'Import/Export Permit Permit Approval',
+   // title: 'Import/Export Permit Permit Approval',
     xtype: 'importexportpermitapprovalpnl',
     layout: 'fit',
     permitsdetails_panel: 'previewimportexportpermitdetails',

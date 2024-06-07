@@ -24,7 +24,7 @@ Ext.define(
       },
       {
         xtype: "onlineimportexportpermitsproductsgrid",
-        title: "Import/Export Permit Products Details",
+        title: "Products Details",
       },
       {
         xtype: "senderreceiverdetailsfrm",
@@ -32,7 +32,7 @@ Ext.define(
       },
       {
         xtype: "importexportpremisesfrm",
-        title: "Premises Details",
+        title: "Business Details",
       },
       {
         xtype: "hiddenfield",

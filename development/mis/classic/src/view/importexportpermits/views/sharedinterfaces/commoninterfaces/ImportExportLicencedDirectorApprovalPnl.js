@@ -131,7 +131,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
                 beforeLoad: function () {
                     this.up('grid').fireEvent('refresh', this);
                 }
-            },{
+            },'->',{
                 xtype: 'button',
                 text: 'Submit Application(s)',
                 iconCls: 'x-fa fa-check',

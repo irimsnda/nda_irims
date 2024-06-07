@@ -1,12 +1,9 @@
 <?php
 
-
 namespace Modules\Importexportpermits\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -2230,7 +2227,7 @@ class ImportexportpermitsController extends Controller
                     'application_id' => $active_application_id,
                     'process_id' => $process_id,
                     'application_code' => $application_code,
-                    'reference_no' => $ref_number,
+                    //'reference_no' => $ref_number,
                     'tracking_no' => $ref_number,
                     'usr_from' => $user_id,
                     'usr_to' => $user_id,
@@ -4053,30 +4050,46 @@ class ImportexportpermitsController extends Controller
         $table_name = 'tra_importexport_applications';
 
         try {
-
-
             $qry = DB::table($table_name . ' as t1')
                 ->leftJoin('wb_trader_account as t3', 't1.applicant_id', '=', 't3.id')
                 ->leftJoin('par_system_statuses as t4', 't1.application_status_id', '=', 't4.id')
                 ->leftJoin('tra_premises as t5', 't1.premise_id', '=', 't5.id')
-                //->leftjoin('tra_submissions as t6', 't1.application_code', '=', 't6.application_code');
+                ->leftjoin('tra_submissions as t6', 't1.application_code', '=', 't6.application_code')
                 ->leftJoin('tra_managerpermits_review as t7', 't1.application_code', '=', 't7.application_code')
                 ->leftJoin('par_approval_decisions as t8', 't7.decision_id', '=', 't8.id')
                 ->leftJoin('tra_permitsrelease_recommendation as t9', 't1.application_code', '=', 't9.application_code')
                 ->leftJoin('par_confirmations as t10', 't9.is_permit_verified', '=', 't10.id')
+                ->leftJoin('par_business_types as t11', 't1.business_type_id', '=', 't11.id')
+                 ->leftJoin('par_approval_decisions as t12', 't9.decision_id', '=', 't12.id')
+
+                 ->leftJoin('tra_applications_comments as t13', function ($join) {
+                    $join->on('t1.application_code', '=', 't13.application_code')
+                        ->where('t13.comment_type_id', 3);
+                    })
+                   ->leftJoin('par_evaluation_recommendations as t14', 't13.recommendation_id', '=', 't14.id')
+
                 ->select(
                     't1.*',
                     't1.id as application_id',
                     't3.name as applicant_name',
-                    't5.name as premises_name',
                     't4.name as application_status',
                     't9.id as release_recommendation_id',
                     't10.description as release_recommendation',
                     't1.id as active_application_id',
-                    't8.name as recommendation'
-                );
-            // //->where(array('t6.current_stage' => $workflow_stage, 'isDone' => 0, 't1.section_id' => $section_id))
-            // ->orderBy('t1.id', 'desc');
+                    't8.name as recommendation',
+                     't11.name as business_type',
+                     't8.id as manager_recommendation_id',
+                    't8.name as manager_recommendation',
+                    't12.id as approval_recommendation_id',
+                    't12.name as approval_recommendation',
+                    't13.recommendation_id as director_recommendation_id',
+                    't14.name as director_recommendation',
+                )
+            ->groupBy('t1.id')
+            ->where(array('t6.current_stage' => $workflow_stage, 'isDone' => 0))
+            ->orderBy('t1.id', 'desc');
+
+
 
 
             if (validateIsNumeric(($workflow_stage)) && validateIsNumeric(($section_id))) {
@@ -4091,6 +4104,24 @@ class ImportexportpermitsController extends Controller
             }
 
             $results = $qry->get();
+            foreach ($results as $result) {
+             $premise_id = $result->premise_id;
+             $has_registered_premises = $result->has_registered_premises;
+             $result->date_added = formatDateWithSuffix($result->created_on);
+             if($has_registered_premises==1 || $has_registered_premises===1){
+                 if($has_registered_premises==5 || $has_registered_premises===5){
+                    $premises_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
+                    $result->manufacturing_site_name=$manufacturing_site_name;
+                 }else{
+                    $premises_name = getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'name');
+                    $result->premises_name=$premises_name;
+                 }
+            }else{
+                $premises_name = getSingleRecordColValue('tra_non_license_business_details', array('id' => $premise_id), 'name');
+                $result->premises_name=$premises_name;
+
+            }
+          }
 
 
             $res = array(
@@ -5186,6 +5217,7 @@ class ImportexportpermitsController extends Controller
         $decision_id = $req->decision_id;
 
         try {
+
             $user_id = $this->user_id;
             $all_users = getAllUsersOnActingGroups($user_id);
             $qry = DB::table($table_name . ' as t1')
@@ -5218,37 +5250,33 @@ class ImportexportpermitsController extends Controller
                 ->leftJoin('par_evaluation_recommendations as t18', 't17.recommendation_id', '=', 't18.id')
                 ->leftJoin('tra_impproducts_validation_recommendations as t19', 't1.application_code', '=', 't19.application_code')
                 ->leftJoin('par_evaluation_recommendations as t20', 't19.recommendation_id', '=', 't20.id')
+                 ->leftJoin('par_business_types as t21', 't1.business_type_id', '=', 't21.id')
+                  ->leftJoin('tra_applications_comments as t22', function ($join) {
+                    $join->on('t1.application_code', '=', 't22.application_code')
+                        ->where('t22.comment_type_id', 3);
+                })
+                   ->leftJoin('par_evaluation_recommendations as t23', 't22.recommendation_id', '=', 't23.id')
 
                 ->select(
                     't1.*',
                     't3.name as applicant_name',
-                    't5.name as premises_name',
                     't5.physical_address as prem_physical_address',
                     't5.premise_reg_no',
                     't9.name as special_caseapproval',
                     't8.decision_id as specialcaseapproval_id',
                     't4.name as application_status',
                     't7.id as recommendation_id',
-                    't6.name as recommendation',
-                    't6.name as approval_status',
-                    't15.name as screening_recommendation',
-                    't18.name as premises_validation_recommendation',
-                    't20.name as products_validation_recommendation',
+                    't6.id as manager_recommendation_id',
+                    't6.name as manager_recommendation',
+                    't22.recommendation_id as director_recommendation_id',
+                    't23.name as director_recommendation',
                     't1.id as active_application_id',
-                    DB::raw("t10.date_received, CONCAT_WS(' ',decrypt(t12.first_name),decrypt(t12.last_name)) as from_user,t16.name as process_name, t11.name as workflow_stage")
+                    't21.name as business_type',
+                    DB::raw("CONCAT_WS(' ',decrypt(t12.first_name),decrypt(t12.last_name)) as from_user,t16.name as process_name, t11.name as workflow_stage")
                 )
+                ->groupBy('t1.id')
                 ->where(array('t10.current_stage' => $workflow_stage, 'isDone' => 0));
-            // ->where('t10.usr_to', $user_id);
-            /*
-                $qry->where(function ($query) use ($user_id, $all_users) {
-                        
-                    $all_users = convertArrayToString($all_users);
-                    $all_users =rtrim($all_users, ",");
-                     $query->where('t10.usr_to', $user_id)
-                             ->orWhereRaw("(t10.usr_to in ($all_users))");
-
-                 });
-                 */
+        
             if (validateIsNumeric($decision_id)) {
 
                 $qry = $qry->where('t7.decision_id', $decision_id);
@@ -5258,6 +5286,21 @@ class ImportexportpermitsController extends Controller
                 $qry = $qry->where('t1.section_id', $section_id);
             }
             $results = $qry->get();
+
+          foreach ($results as $result) {
+             $premise_id = $result->premise_id;
+             $has_registered_premises = $result->has_registered_premises;
+             $result->date_added = formatDateWithSuffix($result->created_on);
+             if($has_registered_premises==1 || $has_registered_premises===1){
+                 if($has_registered_premises==5 || $has_registered_premises===5){
+                    $premises_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
+                    $result->manufacturing_site_name=$manufacturing_site_name;
+                 }else{
+                    $premises_name = getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'name');
+                    $result->premises_name=$premises_name;
+                 }
+            }
+          }
 
             $res = array(
                 'success' => true,

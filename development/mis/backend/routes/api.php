@@ -34,6 +34,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 
       Route::post('saveChecklistApplicationCAPA ', [commonController::class, 'saveChecklistApplicationCAPA']);
+      Route::post('onDeleteApplicationQueries ', [commonController::class, 'onDeleteApplicationQueries']);
 
     Route::get('getOnlineApplicationRejections', [commonController::class, 'getOnlineApplicationRejections']);
 

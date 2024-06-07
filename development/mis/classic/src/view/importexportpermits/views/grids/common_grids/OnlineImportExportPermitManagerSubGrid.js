@@ -40,7 +40,25 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.OnlineImport
         selType: 'checkboxmodel',
         mode: 'MULTI'
     },
-    tbar: [{xtype: 'displayfield', value: 'Double click to preview the application details.'}],
+     features: [{
+        ftype: 'searching',
+        mode: 'local',
+        minChars: 2
+    }],
+    margin: 3,
+    tbar: [
+        {
+            xtype: 'tbspacer',
+            width: 20
+        },
+        {
+            xtype: 'displayfield',
+            value: 'Double click to preview the application details.!!',
+            fieldStyle: {
+                'color': 'green'
+            }
+        }
+    ],
     
     selModel: {
         selType: 'checkboxmodel',
@@ -106,16 +124,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.OnlineImport
             xtype: 'textfield'
         }
     },
-    {
-        xtype: 'gridcolumn',
-        text: 'Reference',
-        dataIndex: 'reference_no',
-        flex: 1,
-        tdCls: 'wrap',
-        filter: {
-            xtype: 'textfield'
-        }
-    },
+   
     {
         xtype: 'gridcolumn',
         text: 'Process',
@@ -123,13 +132,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.OnlineImport
         flex: 1,
         tdCls: 'wrap-text'
     },
-    {
-        xtype: 'gridcolumn',
-        text: 'Stage',
-        dataIndex: 'workflow_stage',
-        flex: 1,
-        tdCls: 'wrap-text'
-    },
+   
     {
         xtype: 'gridcolumn',
         text: 'Applicant',
@@ -139,87 +142,30 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.OnlineImport
         filter: {
             xtype: 'textfield'
         }
-    },{
-        xtype: 'gridcolumn',
-        text: 'Remarks/Comment',
-        dataIndex: 'remarks',
-        flex: 1,
-        tdCls: 'wrap'
     },
     {
         xtype: 'gridcolumn',
         text: 'Date Received',
         dataIndex: 'date_submitted',
         flex: 1,
-        tdCls: 'wrap-text',
-        renderer: Ext.util.Format.dateRenderer('d/m/Y H:i:s')
+        tdCls: 'wrap-text'
     },
-    {
+     {
         xtype: 'gridcolumn',
-        text: 'Time Span',
-        dataIndex: 'time_span',
-        flex: 1,
-        tdCls: 'wrap',
-        filter: {
-            xtype: 'textfield',
-            emptyText: 'span over'
-        }
-    },{
-        xtype: 'gridcolumn',
-        text: 'Zone',
-        dataIndex: 'zone_name',
-        flex: 1,
-        tdCls: 'wrap'
-    },
-    
-    {
-        xtype: 'gridcolumn',
-        width: 50,
-        hidden: true,
-        renderer: function (val, meta, record) {
-            var is_fast_track = record.get('is_fast_track');
-            if (is_fast_track == 1 || is_fast_track === 1) {
-                return '<img src="' + base_url + '/resources/images/fasttrack.jpg">';
-            } else {
-                //return '<img src="' + base_url + '/resources/images/fasttrack.jpg">';
-            }
-        }
-    },{
-        xtype: 'gridcolumn',
-        text: 'Has Licensed Premises', 
-        dataIndex: 'certificate_no',
-        renderer: function (value, metaData) {
-            if (value == 1) {
-                metaData.tdStyle = 'color:white;background-color:green';
-                return "Registered/Licensed";
-            }
-
-            metaData.tdStyle = 'color:white;background-color:red';
-            return "Not Registered";
-        }
-
-    },{
-        xtype: 'gridcolumn',
-        text: 'Premises Name',
+        text: 'Business Name',
         dataIndex: 'premises_name',
         flex: 1,
+        tdCls: 'wrap-text',
         tdCls: 'wrap'
         
     },{
         xtype: 'gridcolumn',
-        text: 'Premises Physical Address',
-        dataIndex: 'prem_physical_address',
-        flex: 1,
-        tdCls: 'wrap'
-        
-    },{
-        xtype: 'gridcolumn',
-        text: 'Premises Registration No',
-        dataIndex: 'premise_reg_no',
-        flex: 1,
-        tdCls: 'wrap'
-        
-    },{
+        dataIndex: 'business_type',
+        text: 'Business Type',
+        tdCls: 'wrap-text',
+        flex: 1
+    }, 
+    {
         text: 'Options',
         xtype: 'widgetcolumn',
         width: 90,

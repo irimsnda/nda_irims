@@ -170,15 +170,15 @@
                             <table cellspacing="0" cellpadding="0" width="750" class="w320">
                                 <tr>
                                     <td>
-                                        <img alt="Logo" src="https://irims.nda.or.ug/mis/resources/images/logo.jpg" width="120px"
+                                        <img alt="Logo" src=" {{$logo_url}}" width="120px"
                                              height="65px"/>
                                     </td>
                                     <td valign="top" class="mobile-block mobile-no-padding-bottom mobile-center"
                                         width="800" style="color:#fff;background:#67a154;padding:5px 5px 5px 8px;">
                                         <h3 style="color:#fff">
-                                            National Drug Authority
+                                            {{$org_name}}
                                         </h3>
-                                        <p>Safe Drugs Save Lives</p>
+                                        <p>{{$org_motto}}</p>
                                         <span style="color:#fff;"></span>
                                     </td>
                                     <td valign="top" class="mobile-block mobile-center
@@ -236,25 +236,12 @@
                                         <table cellspacing="0" cellpadding="0" width="100%">
                                             <tr>
                                                 <td>
-                                                    <h5>Mission: To protect and promote Human and Animal health through the effective regulation of drugs and healthcare products.</h5>
-                                                    <b>
-                                                        <center>NDA - Head Office;
-                                                            P. O Box 23096, Kampala, Uganda,
-                                                            Plot 19 Lumumba Avenue (opposite TWED plaza).
-                                                            Tel:
-                                                            Reception : +256 [0]417 788 100,
-                                                            Directorate of Product Safety : +256 [0]417 788 124,
-                                                            Directorate of Inspectorate Services : +256 [0]417 788 129.
-                                                            Email : ndaug@nda.or.ug
-
-                                                        </center>
-                                                    </b>
+                                                     {!! $email_footer !!}
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td width="350" style="vertical-align:top;">
-                                                    <center>Please <a href="http://ndaug@nda.or.ug/">contact us</a>
-                                                        with any enquiry,<br></center>
+                                                    <center>Please <a href="{{ $org_website }}">contact us</a> with any enquiry,<br></center>
                                                 </td>
                                             </tr>
                                         </table>
@@ -272,10 +259,10 @@
                                 <tr>
                                     <td align="right" valign="middle" class="mobile-padding"
                                         style="font-size:12px;padding:20px; background-color:#1f1f1f; color:#ffffff; text-align:left;">
-                                        <a style="color:#ffffff;" href="https://ndaug@nda.or.ug">Contact Us</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                                        <a style="color:#ffffff;" href="{{ $org_website }}">Contact Us</a>&nbsp;&nbsp;|&nbsp;&nbsp;
                                         <!--  <a style=\"color:#ffffff;\" href=\"#\">Facebook</a>&nbsp;&nbsp;|&nbsp;&nbsp;
                                         <a style=\"color:#ffffff;\" href=\"#\">Twitter</a>&nbsp;&nbsp;|&nbsp;&nbsp;-->
-                                        <a style="color:#ffffff;" href="http://ndaug@nda.or.ug">Support</a>
+                                        <a style="color:#ffffff;" href="{{ $org_website }}">Support</a>
                                     </td>
                                 </tr>
                             </table>

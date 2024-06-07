@@ -66,11 +66,10 @@ Ext.define('Admin.view.importexportpermits.views.toolbars.ImportExportPermitsTb'
                         hidden: true
                     }
                     ,{
-                        text: 'Edit Permit Details and Permit Extension Process',
+                        text: 'Edit License Details and License Extension Process',
                         iconCls: 'x-fa fa-check',
                         childXtype: 'editimportexportapplicationdetails',
                         wrapper: 'importexportpermitsappswrapper',
-                        
                         handler: 'showDataCleanUpWindow'
                     }
                 ]

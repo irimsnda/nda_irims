@@ -159,7 +159,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
                     step: 1,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
-                    text: 'Import/Export permit Details',
+                    text: 'Import/Export Application Details',
                     action: 'quickNav', 
                     wizard: 'impexplicenseonlinereceivingwizard',
                     handler: 'quickNavigationonlineprev'
@@ -167,7 +167,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
                     step: 2,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'Import/Export permit Documents Submission',
+                    text: 'Import/Export Application Documents Submission',
                     action: 'quickNav',
                      wizard: 'impexplicenseonlinereceivingwizard',
                     handler: 'quickNavigationonlineprev'
@@ -255,7 +255,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
                     iconCls: 'fa fa-question',
                     handler: 'queryWinOnlineApplication',
                     action: 'query_app',
-                    hidden: true
+                   // hidden: true
                     
                 },
                 {

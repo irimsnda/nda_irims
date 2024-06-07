@@ -919,9 +919,11 @@ return $string;
                 ->leftJoin($portal_db.'.wb_statuses as t5', 't1.application_status_id', '=', 't5.id')
                 ->leftJoin('par_zones as t6', 't1.zone_id', '=', 't6.id')
                 ->leftJoin('wb_trader_account as t9', 't1.applicant_id', '=', 't9.id')
+                ->leftJoin($portal_db.'.wb_importexport_applications as t10', 't1.application_code', '=', 't10.application_code')
+                ->leftJoin('par_business_types as t11', 't10.business_type_id', '=', 't11.id')
                 ->select(DB::raw("t1.*, t1.current_stage as workflow_stage_id, t1.application_id as active_application_id, t2.name as process_name,
                      t4.name as workflow_stage,t4.is_general,t5.name as application_status,
-                    t9.name as applicant_name, t6.name as zone_name"));
+                    t9.name as applicant_name, t6.name as zone_name,t10.premise_id,t10.has_registered_premises,t11.name as business_type"));
             
                     if ($is_super) {
                         $qry->whereRaw('1=1');
@@ -946,6 +948,25 @@ return $string;
             $qry->orderBy('t1.id', 'desc');
             $qry->where('onlinesubmission_status_id', 1);
             $results = $qry->get();
+
+             foreach ($results as $result) {
+                 $premise_id = $result->premise_id;
+                 $has_registered_premises = $result->has_registered_premises;
+                 $result->date_submitted = formatDateWithSuffix($result->date_submitted);
+                 if($has_registered_premises==1 || $has_registered_premises===1){
+                     if($has_registered_premises==5 || $has_registered_premises===5){
+                        $premises_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
+                        $result->manufacturing_site_name=$manufacturing_site_name;
+                     }else{
+                        $premises_name = getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'name');
+                        $result->premises_name=$premises_name;
+                     }
+                }else{
+                    $premises_name = getSingleRecordColValue('tra_non_license_business_details', array('id' => $premise_id), 'name');
+                    $result->premises_name=$premises_name;
+
+                }
+              }
             
             $res = array(
                 'success' => true,

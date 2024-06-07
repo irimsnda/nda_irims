@@ -5367,7 +5367,7 @@ public function funcAddNewPremisesDetails(Request $request){
 
 			$portal_db = DB::connection('portal_db');
 			$qry = $portal_db->table('tra_online_queries as t1')
-				->join('wb_query_statuses as t2', 't1.status_id', '=', 't2.id')
+				->leftjoin('wb_query_statuses as t2', 't1.status_id', '=', 't2.id')
 				->select('t1.*', 't2.name as query_status')
 				->where($where);
 

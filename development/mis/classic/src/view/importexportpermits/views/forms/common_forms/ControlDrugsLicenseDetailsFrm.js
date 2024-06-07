@@ -33,9 +33,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ControlDrugs
         value: 'tra_importexport_applications'
     },{
         xtype: 'combo',
-        fieldLabel: 'Application Type',
-        labelWidth: 80,
-        width: 320,
+        fieldLabel: 'Application Process',
         readOnly: true,
         valueField: 'id',
         displayField: 'name',
@@ -45,73 +43,17 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ControlDrugs
         fieldStyle: {
             'color': 'green',
             'font-weight': 'bold'
-        }, 
+        },
         listeners: {
             beforerender: {
-                fn: 'setWorkflowCombosStore',
+                fn: 'setParamCombosStore',
                 config: {
                     pageSize: 1000,
                     proxy: {
-                        url: 'configurations/getNonrefParameter',
+                        url: 'workflow/getSystemSubModules',
                         extraParams: {
-                            table_name: 'sub_modules',
-                            module_id:12
-                        }
-                    }
-                },
-                isLoad: true
-            }
-        }
-    },
-    {
-        xtype: 'combo',
-        fieldLabel: 'Permit Reason',
-        name: 'permit_reason_id',
-        forceSelection: true,
-        queryMode: 'local',
-        valueField: 'id',
-        displayField: 'name',bind: {
-            readOnly: '{isReadOnly}'
-        },
-        listeners: {
-            beforerender: {
-                fn: 'setWorkflowCombosStore',
-                config: {
-                    pageSize: 10000,
-                    proxy: {
-                        url: 'configurations/getNonrefParameter',
-                        extraParams: {
-                            table_name: 'par_permit_reasons'
-                        }
-                    }
-                },
-                isLoad: true
-            }
-        }
-    },{
-        xtype:'textfield',
-        name:'otherpermit_reason',
-        fieldLabel:'Other Reasons for Permit Application',
-        allowBlank: true
-    }, {
-        xtype: 'combo',
-        fieldLabel: 'Reason for Importation',
-        name: 'reason_for_importation',
-        forceSelection: true,
-        queryMode: 'local',
-        valueField: 'id',
-        displayField: 'name',bind: {
-            readOnly: '{isReadOnly}'
-        },
-        listeners: {
-            beforerender: {
-                fn: 'setWorkflowCombosStore',
-                config: {
-                    pageSize: 10000,
-                    proxy: {
-                        url: 'configurations/getNonrefParameter',
-                        extraParams: {
-                            table_name: 'par_reasonsfor_importation'
+                            model_name: 'SubModule',
+                            module_id: 4
                         }
                     }
                 },
@@ -120,94 +62,22 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ControlDrugs
         }
     }, {
         xtype: 'combo',
-        fieldLabel: 'Port Of Entry/Exit',
-        labelWidth: 80,
-        width: 320,
+        fieldLabel: 'NDA Application Type',
         valueField: 'id',
         displayField: 'name',
         forceSelection: true,
-        name: 'port_id',
-        queryMode: 'local',
+        readOnly: true,
+        allowBlank: true,
+        name: 'has_registered_premises',
         listeners: {
             beforerender: {
-                fn: 'setWorkflowCombosStore',
+                fn: 'setParamCombosStore',
                 config: {
                     pageSize: 10000,
                     proxy: {
-                        url: 'configurations/getNonrefParameter',
+                        url: 'commonparam/getCommonParamFromTable',
                         extraParams: {
-                            table_name: 'par_ports_information'
-                        }
-                    }
-                },
-                isLoad: true
-            }
-        },bind: {
-            readOnly: '{isReadOnly}'
-        },
-    },{
-        xtype: 'combo',
-        fieldLabel: 'Mode of Transport',
-        labelWidth: 80,
-        width: 320,
-        valueField: 'id',
-        displayField: 'name',
-        forceSelection: true,
-        name: 'mode_oftransport_id',
-        queryMode: 'local',
-        listeners: {
-            beforerender: {
-                fn: 'setWorkflowCombosStore',
-                config: {
-                    pageSize: 10000,
-                    proxy: {
-                        url: 'configurations/getNonrefParameter',
-                        extraParams: {
-                            table_name: 'par_modesof_transport'
-                        }
-                    }
-                },
-                isLoad: true
-            }
-        },bind: {
-            readOnly: '{isReadOnly}'
-        },
-    },{
-        xtype: 'textfield',
-        name: 'proforma_invoice_no',
-        bind: {
-            readOnly: '{isReadOnly}'
-        },
-        fieldLabel: 'Proform Invoice No',
-    }, {
-        xtype: 'datefield',
-        name: 'proforma_invoice_date',bind: {
-            readOnly: '{isReadOnly}'
-        },
-        format:'Y-m-d',
-        altFormats: 'd,m,Y|d.m.Y|Y-m-d|d/m/Y/d-m-Y|d,m,Y 00:00:00|Y-m-d 00:00:00|d.m.Y 00:00:00|d/m/Y 00:00:00',
-        fieldLabel: 'Proform Invoice Date',
-    }, {
-        xtype: 'combo',
-        fieldLabel: 'Proforma Invoice Currency',
-        labelWidth: 80,
-        width: 320,
-        valueField: 'id',
-        displayField: 'name',bind: {
-            readOnly: '{isReadOnly}'
-        },
-        forceSelection: true,
-        name: 'proforma_currency_id',
-        queryMode: 'local',
-        listeners: {
-            beforerender: {
-                fn: 'setConfigCombosSectionfilterStore',
-                config: {
-                    pageSize: 10000,
-                    proxy: {
-                        url: 'configurations/getPayingCurrency',
-                        extraParams: {
-                            table_name: 'par_currencies',
+                            table_name: 'par_importexport_application_type',
                             has_filter: 0
                         }
                     }
@@ -215,31 +85,223 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ControlDrugs
                 isLoad: true
             }
         }
-    },{
+    }, {
         xtype: 'combo',
-        fieldLabel: 'Zone',
-        labelWidth: 50,
-        width: 400,
-        name: 'zone_id',
+        fieldLabel: 'Business Type',
+        name: 'business_type_id',
+        forceSelection: true,
+        queryMode: 'local',
         valueField: 'id',
         displayField: 'name',
-        queryMode: 'local',
-        forceSelection: true,
         listeners: {
             beforerender: {
-                fn: 'setOrgConfigCombosStore',
+                fn: 'setParamCombosStore',
                 config: {
-                    pageSize: 1000,
+                    pageSize: 10000,
                     proxy: {
+                        url: 'commonparam/getCommonParamFromTable',
                         extraParams: {
-                            model_name: 'Zone'
+                            table_name: 'par_business_types'
+                        }
+                    }
+                },
+                isLoad: false
+            },
+            change: function(cmbo, newVal) {
+                var form = cmbo.up('form'),
+                has_registered_premises_id = form.down('combo[name=has_registered_premises]').getValue(),
+                licenseTypeStore = form.down('combo[name=licence_type_id]').getStore();
+                var filterObj = { "t2.business_type_id": newVal },
+                filterStr = JSON.stringify(filterObj);
+                licenseTypeStore.removeAll();
+                licenseTypeStore.load({ params: { filters: filterStr } });
+                if(has_registered_premises_id!=2){
+                    if (newVal == 5 || newVal === 5) {
+                        form.down('fieldcontainer[name=gmp_search]').setVisible(true);
+                        form.down('fieldcontainer[name=premise_search]').setVisible(false);
+                        form.down('textfield[name=premises_name]').allowBlank = true;
+                        form.down('textfield[name=manufacturing_site_name]').allowBlank = false;
+                        form.down('textfield[name=manufacturing_site_name]').validate();
+                    } else {
+                        form.down('fieldcontainer[name=gmp_search]').setVisible(false);
+                        form.down('fieldcontainer[name=premise_search]').setVisible(true);
+                        form.down('textfield[name=premises_name]').allowBlank = false;
+                        form.down('textfield[name=manufacturing_site_name]').allowBlank = true;
+                        form.down('textfield[name=premises_name]').validate();
+                    }
+                }
+            }
+        }
+    }, {
+        xtype: 'fieldcontainer',
+        layout: 'column',
+        name: 'premise_search',
+        defaults: {
+            labelAlign: 'top'
+        },
+        items: [{
+            xtype: 'textfield',
+            name: 'premises_name',
+            columnWidth: 0.9,
+            readOnly: true,
+            allowBlank: false,
+            fieldLabel: 'Premises Name',
+        }, {
+            xtype: 'button',
+            iconCls: 'x-fa fa-search',
+            //disabled: true,
+            columnWidth: 0.1,
+            tooltip: 'Search',
+            action: 'search_premise',
+            childXtype: 'registeredpremisesdetailsgrid',
+            winTitle: 'Premises Selection List',
+            winWidth: '90%',
+            margin: '30 0 0 0',
+            // bind: {
+            //     disabled: '{isReadOnly}'
+            // }
+        }]
+    }, {
+        xtype: 'fieldcontainer',
+        layout: 'column',
+        hidden: true,
+        name: 'gmp_search',
+        defaults: {
+            labelAlign: 'top'
+        },
+        items: [{
+            xtype: 'textfield',
+            name: 'manufacturing_site_name',
+            columnWidth: 0.9,
+            allowBlank: true,
+            readOnly: true,
+            fieldLabel: 'Manufacturing Site Name',
+        }, {
+            xtype: 'button',
+            iconCls: 'x-fa fa-search',
+           // disabled: true,
+            columnWidth: 0.1,
+            tooltip: 'Search',
+            action: 'search_site',
+            handler: 'funcSearchManufacturer',
+            childXtype: 'registeredgmpsitesdetailsgrid',
+            winTitle: 'Manufacturer Selection List',
+            winWidth: '90%',
+            margin: '30 0 0 0',
+            // bind: {
+            //     disabled: '{isReadOnly}'
+            // }
+        }]
+    }, {
+        xtype: 'combo',
+        fieldLabel: 'Licence Type',
+        name: 'licence_type_id',
+        forceSelection: true,
+        queryMode: 'local',
+        valueField: 'id',
+        displayField: 'name',
+        listeners: {
+            beforerender: {
+                fn: 'setParamCombosStore',
+                config: {
+                    pageSize: 10000,
+                    proxy: {
+                        url: 'commonparam/getCommonParamFromTable',
+                        extraParams: {
+                            table_name: 'par_licence_type'
                         }
                     }
                 },
                 isLoad: true
+            },
+            change: function(cmbo, newVal) {
+                var form = cmbo.up('form'),
+                    rangeStore = form.down('combo[name=importexport_product_range_id]').getStore(),
+                    business_type_id = form.down('combo[name=business_type_id]').getValue(),
+                    product_classification_id = form.down('combo[name=product_classification_id]').getValue();
+                rangeStore.removeAll();
+                rangeStore.load({ params: { business_type_id: business_type_id, licence_type_id: newVal, product_classification_id: product_classification_id } });
             }
         },
-        labelStyle: 'font-weight:bold'
-    }]
-   
+        // bind: {
+        //     readOnly: '{isReadOnly}'
+        // },
+    }, {
+        xtype: 'combo',
+        fieldLabel: 'Product Classification',
+        name: 'product_classification_id',
+        forceSelection: true,
+        queryMode: 'local',
+        valueField: 'id',
+        displayField: 'name',
+        listeners: {
+            beforerender: {
+                fn: 'setParamCombosStore',
+                config: {
+                    pageSize: 10000,
+                    proxy: {
+                        url: 'commonparam/getCommonParamFromTable',
+                        extraParams: {
+                            table_name: 'par_premise_class'
+                        }
+                    }
+                },
+                isLoad: true
+            },
+            change: function(cmbo, newVal) {
+                var form = cmbo.up('form'),
+                rangeStore = form.down('combo[name=importexport_product_range_id]').getStore(),
+                business_type_id = form.down('combo[name=business_type_id]').getValue(),
+                licence_type_id = form.down('combo[name=licence_type_id]').getValue();
+                rangeStore.removeAll();
+                rangeStore.load({ params: { business_type_id: business_type_id, licence_type_id: licence_type_id, product_classification_id: newVal } });
+            }
+        },
+        // bind: {
+        //     readOnly: '{isReadOnly}'
+        // },
+    },{
+    xtype: 'tagfield',
+    fieldLabel: 'Product Classification',
+    name: 'importexport_product_range_id',
+    allowBlank: false,
+    columnWidth: 1,
+    forceSelection: true,
+    filterPickList: true,
+    encodeSubmitValue: true,
+    growMax: 100,
+    queryMode: 'local',
+    valueField: 'id',
+    displayField: 'name',
+    listeners: {
+        beforerender: {
+            fn: 'setParamCombosStore',
+            config: {
+                pageSize: 100,
+                proxy: {
+                    url: 'commonparam/getProductRange',
+                    extraParams: {
+                        table_name: 'par_importexport_product_range'
+                    }
+                }
+            },
+            isLoad: true
+        },
+          afterrender: function(tagfield) {
+            var store = tagfield.getStore();
+            store.on('load', function() {
+                var form = tagfield.up('form');
+                if(form){
+                var loadedData = form.getRecord();
+                if (loadedData) {
+                    var fieldValue = loadedData.get('importexport_product_range_id');
+                    if (fieldValue) {
+                        tagfield.setValue(fieldValue);
+                    }
+                }
+               }
+            });
+        }
+    }
+}]
 });

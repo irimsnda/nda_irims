@@ -5,7 +5,7 @@
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfaces.OnlineImpExportManagerSubmissionPnl', {
     extend: 'Ext.panel.Panel',
-    title: 'Pending Applications',
+   // title: 'Pending Applications',
     xtype: 'onlineimpexportmanagersubmissionpnl',  
     permitsdetails_panel: 'previewimportexportpermitdetails',
     itemId: 'main_processpanel',
@@ -114,7 +114,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
     ],
     
   items: [{
-    title: 'Applications',
+    //title: 'Applications',
     region: 'center',
     xtype: 'onlineimportexportpermitmanagersubgrid',
     dockedItems: [{
@@ -156,7 +156,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
                             process_id: process_id
                         };
                 }
-            },{
+            },'->',{
                 xtype: 'button',
                 text: 'Submit Application(s)',
                 iconCls: 'x-fa fa-check',

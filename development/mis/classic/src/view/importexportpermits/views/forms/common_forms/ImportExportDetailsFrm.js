@@ -142,7 +142,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         }, {
             xtype: 'button',
             iconCls: 'x-fa fa-search',
-            disabled: true,
+           // disabled: true,
             columnWidth: 0.1,
             tooltip: 'Search',
             action: 'search_premise',
@@ -172,7 +172,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         }, {
             xtype: 'button',
             iconCls: 'x-fa fa-search',
-            disabled: true,
+           // disabled: true,
             columnWidth: 0.1,
             tooltip: 'Search',
             action: 'search_site',

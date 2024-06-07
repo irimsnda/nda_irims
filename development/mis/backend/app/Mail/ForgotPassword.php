@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -32,12 +33,20 @@ class ForgotPassword extends Mailable
      * @return $this
      */
     public function build()
-    {
+    {   
+        $org_info = DB::table('tra_organisation_information')->first();
         $data['resetLink'] = $this->link;
         $data['notification_subject'] = $this->notification_subject;
         $data['notification_message'] = $this->notification_message;
+        $data['email_footer'] = $org_info->email_footer;
+        $data['org_name'] = $org_info->name;
+        $data['org_website'] = $org_info->website;
+        $data['org_motto'] = $org_info->motto;
+        $data['org_email'] = $org_info->email_address;
+        $data['logo_url'] = $org_info->logo_url;
         return $this->view('mail.forgotPassword')
             ->subject($this->notification_subject)
             ->with($data);
     }
 }
+

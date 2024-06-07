@@ -29,6 +29,15 @@ Ext.define('Admin.view.importexportpermits.viewcontrollers.ImportExportPermitsVc
         add_btn.setDisabled(true);
     },
 
+    showApplicationQueries: function (item) {
+        this.fireEvent('showApplicationQueries', item);
+    },
+
+     showApplicationChecklists: function (item) {
+        this.fireEvent('showApplicationChecklists', item);
+    },
+
+
     cancelAddApplicationEvaluationComment: function (btn) {
         var form = btn.up('form'),
             panel = form.up('panel'),
@@ -129,6 +138,27 @@ Ext.define('Admin.view.importexportpermits.viewcontrollers.ImportExportPermitsVc
         }
         funcShowOnlineCustomizableWindow(winTitle, winWidth, form, 'customizablewindow');
     },
+
+
+     showCommentDetails: function (item) {
+            var me = this,
+            record = item.getWidgetRecord(),
+            childXtype = item.childXtype,
+            winTitle = item.winTitle,
+            winWidth = item.winWidth,
+            comment_type_id = item.comment_type_id,
+            child = Ext.widget(childXtype);
+        if (!comment_type_id) {
+            toastr.warning('Comment Type not specified!!', 'Warning Response');
+            return;
+        }
+        child.down('hiddenfield[name=application_id]').setValue(record.get('active_application_id'));
+        child.down('hiddenfield[name=application_code]').setValue(record.get('application_code'));
+        child.down('hiddenfield[name=comment_type_id]').setValue(comment_type_id);
+        child.setHeight(450);
+        funcShowCustomizableWindow('Overrall Comments & Recommendation', '50%', child, 'customizablewindow');
+    },
+
     funcPermitsProductRecommendationWin:function(btn){
             var viewXtype = btn.viewXtype,
                 winTitle = btn.winTitle,
@@ -2558,7 +2588,7 @@ downloadPreviousDocupload: function (item) {
             application_id = win.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = win.down('hiddenfield[name=application_code]').getValue(),
             module_id = win.down('hiddenfield[name=module_id]').getValue(),
-            tracking_no = win.down('displayfield[name=tracking_no]').getValue(),
+            ref_no = win.down('displayfield[name=tracking_no]').getValue(),
             application_status = win.down('hiddenfield[name=application_status_id]').getValue(),
            
             queriesGrid = Ext.widget('onlinequeriesgrid');
@@ -3719,7 +3749,7 @@ downloadPreviousDocupload: function (item) {
                     }
                 });
         app_form.loadRecord(record);
-        app_pnl.down('combo[name=zone_id]').setValue(record.get('zone_id'));
+       // app_pnl.down('combo[name=zone_id]').setValue(record.get('zone_id'));
         wrapper.down('hiddenfield[name=active_application_code]').setValue(record.get('application_code'));
         wrapper.down('textfield[name=reference_no]').setValue(record.get('reference_no'));
         wrapper.down('hiddenfield[name=active_application_id]').setValue(record.get('application_id'));

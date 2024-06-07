@@ -27,7 +27,6 @@ Ext.define('Admin.view.premiseregistration.views.forms.PrecheckingRecommendation
             name: '_token',
             value: token
         },
-        
         {
             xtype: 'combo',
             name: 'recommendation_id',
