@@ -27,10 +27,7 @@ Ext.define('Admin.view.parameters.views.grids.CostElementGrid', {
         mode: 'local'
     } ,{
         ftype: 'grouping',
-        startCollapsed: true,
-        groupHeaderTpl: 'Fee Type: {[values.rows[0].data.feetype]} [{rows.length}]',
-        hideGroupedHeader: true,
-        enableGroupingMenu: false
+        startCollapsed: false
     }],
     columns: [
     {

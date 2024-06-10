@@ -69,6 +69,7 @@ Route::get('getApplicationApprovalDetails', [commonController::class, 'getApplic
 	Route::get('getImporPermitApplicationApprovalDetails', [commonController::class, 'getImporPermitApplicationApprovalDetails']);
 	Route::post('saveApplicationApprovalDetails', [commonController::class, 'saveApplicationApprovalDetails']);
 	Route::get('checkReviewREcommendationDEtails', [commonController::class, 'checkReviewREcommendationDEtails']);
+	Route::get('checkDirecorReviewREcommendationDetails', [commonController::class, 'checkDirecorReviewREcommendationDetails']);
 	Route::get('getPermitReleaseRecommendationDetails', [commonController::class, 'getPermitReleaseRecommendationDetails']);
 	Route::get('getApplicationPaymentDetails', [commonController::class, 'getApplicationPaymentDetails']);
 	

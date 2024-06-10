@@ -254,7 +254,7 @@ class ImportexportpermitsController extends Controller
             $sender_receiver_id = $results->sender_receiver_id;
             
             if($has_registered_premises==1 || $has_registered_premises===1){
-                 if($has_registered_premises==5 || $has_registered_premises===5){
+                 if($business_type_id==5 || $business_type_id===5){
                     $manufacturing_site_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
                     $results->manufacturing_site_name=$manufacturing_site_name;
                  }else{
@@ -506,7 +506,7 @@ class ImportexportpermitsController extends Controller
             $business_type_id = $results->business_type_id;
 
             if($has_registered_premises==1 || $has_registered_premises===1){
-                 if($has_registered_premises==5 || $has_registered_premises===5){
+                 if($business_type_id==5 || $business_type_id===5){
                     $manufacturing_site_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
                     $results->manufacturing_site_name=$manufacturing_site_name;
                  }else{
@@ -563,7 +563,7 @@ class ImportexportpermitsController extends Controller
      public function getPremiseDetails($has_registered_premises,$business_type_id,$premise_id){
 
         if($has_registered_premises==1 || $has_registered_premises===1){
-                if($has_registered_premises==5 || $has_registered_premises===5){
+                if($business_type_id==5 || $business_type_id===5){
                      $qry = DB::table('tra_manufacturing_sites as t1')
                              ->leftJoin('tra_pharmacist_personnel as t6aa', 't1.psu_no', '=', 't6aa.psu_no')
                              ->select('t1.id as premise_id','t1.name as manufacturing_site_name','t1.psu_no','t6aa.name as supervising_name','t6aa.psu_date as supervising_registration_date','t6aa.telephone as supervising_telephone_no','t6aa.telephone2 as supervising_telephone_no2','t6aa.telephone3 as supervising_telephone_no3','t6aa.email as supervising_email_address','t6aa.email2 as supervising_email_address2','t6aa.email3 as supervising_email_address3','t6aa.qualification_id as supervising_qualification_id','t6aa.country_id as supervising_country_id','t6aa.region_id as supervising_region_id','t6aa.district_id as supervising_district_id','t6aa.physical_address as supervising_physical_address')
@@ -1680,7 +1680,7 @@ class ImportexportpermitsController extends Controller
             $has_registered_premises = $permit_details->has_registered_premises;
             $business_type_id = $permit_details->business_type_id;
              if($has_registered_premises==1 || $has_registered_premises===1){
-                 if($has_registered_premises==5 || $has_registered_premises===5){
+                 if($business_type_id==5 || $business_type_id===5){
                     $manufacturing_site_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
                     $permit_details->manufacturing_site_name=$manufacturing_site_name;
                  }else{
@@ -4062,11 +4062,11 @@ class ImportexportpermitsController extends Controller
                 ->leftJoin('par_business_types as t11', 't1.business_type_id', '=', 't11.id')
                  ->leftJoin('par_approval_decisions as t12', 't9.decision_id', '=', 't12.id')
 
-                 ->leftJoin('tra_applications_comments as t13', function ($join) {
-                    $join->on('t1.application_code', '=', 't13.application_code')
-                        ->where('t13.comment_type_id', 3);
-                    })
-                   ->leftJoin('par_evaluation_recommendations as t14', 't13.recommendation_id', '=', 't14.id')
+                  ->leftJoin('tra_directorpermits_review as t13', function ($join) {
+                    $join->on('t1.id', '=', 't13.application_id')
+                        ->on('t1.application_code', '=', 't13.application_code');
+                })
+                ->leftJoin('par_approval_decisions as t14', 't13.decision_id', '=', 't14.id')
 
                 ->select(
                     't1.*',
@@ -4082,7 +4082,7 @@ class ImportexportpermitsController extends Controller
                     't8.name as manager_recommendation',
                     't12.id as approval_recommendation_id',
                     't12.name as approval_recommendation',
-                    't13.recommendation_id as director_recommendation_id',
+                    't13.decision_id as director_recommendation_id',
                     't14.name as director_recommendation',
                 )
             ->groupBy('t1.id')
@@ -4107,11 +4107,12 @@ class ImportexportpermitsController extends Controller
             foreach ($results as $result) {
              $premise_id = $result->premise_id;
              $has_registered_premises = $result->has_registered_premises;
+              $business_type_id = $result->business_type_id;
              $result->date_added = formatDateWithSuffix($result->created_on);
              if($has_registered_premises==1 || $has_registered_premises===1){
-                 if($has_registered_premises==5 || $has_registered_premises===5){
+                 if($business_type_id==5 || $business_type_id===5){
                     $premises_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
-                    $result->manufacturing_site_name=$manufacturing_site_name;
+                    $result->premises_name=$premises_name;
                  }else{
                     $premises_name = getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'name');
                     $result->premises_name=$premises_name;
@@ -5251,11 +5252,11 @@ class ImportexportpermitsController extends Controller
                 ->leftJoin('tra_impproducts_validation_recommendations as t19', 't1.application_code', '=', 't19.application_code')
                 ->leftJoin('par_evaluation_recommendations as t20', 't19.recommendation_id', '=', 't20.id')
                  ->leftJoin('par_business_types as t21', 't1.business_type_id', '=', 't21.id')
-                  ->leftJoin('tra_applications_comments as t22', function ($join) {
-                    $join->on('t1.application_code', '=', 't22.application_code')
-                        ->where('t22.comment_type_id', 3);
+                  ->leftJoin('tra_directorpermits_review as t22', function ($join) {
+                    $join->on('t1.id', '=', 't22.application_id')
+                        ->on('t1.application_code', '=', 't22.application_code');
                 })
-                   ->leftJoin('par_evaluation_recommendations as t23', 't22.recommendation_id', '=', 't23.id')
+                   ->leftJoin('par_approval_decisions as t23', 't22.decision_id', '=', 't23.id')
 
                 ->select(
                     't1.*',
@@ -5268,7 +5269,7 @@ class ImportexportpermitsController extends Controller
                     't7.id as recommendation_id',
                     't6.id as manager_recommendation_id',
                     't6.name as manager_recommendation',
-                    't22.recommendation_id as director_recommendation_id',
+                    't22.decision_id as director_recommendation_id',
                     't23.name as director_recommendation',
                     't1.id as active_application_id',
                     't21.name as business_type',
@@ -5290,15 +5291,21 @@ class ImportexportpermitsController extends Controller
           foreach ($results as $result) {
              $premise_id = $result->premise_id;
              $has_registered_premises = $result->has_registered_premises;
+             $business_type_id = $result->business_type_id;
              $result->date_added = formatDateWithSuffix($result->created_on);
-             if($has_registered_premises==1 || $has_registered_premises===1){
-                 if($has_registered_premises==5 || $has_registered_premises===5){
+
+          if($has_registered_premises==1 || $has_registered_premises===1){
+                 if($business_type_id==5 || $business_type_id===5){
                     $premises_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
-                    $result->manufacturing_site_name=$manufacturing_site_name;
+                    $result->premises_name=$premises_name;
                  }else{
                     $premises_name = getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'name');
                     $result->premises_name=$premises_name;
                  }
+            }else{
+                $premises_name = getSingleRecordColValue('tra_non_license_business_details', array('id' => $premise_id), 'name');
+                $result->premises_name=$premises_name;
+
             }
           }
 
@@ -6450,159 +6457,182 @@ class ImportexportpermitsController extends Controller
         }
         return \response()->json($res);
     }
-    public function savepermitReleaseRecommendation(Request $request)
-    {
+public function savepermitReleaseRecommendation(Request $request){
+    $table_name = $request->input('table_name');
+    $application_code = $request->input('application_code');
+    $selected_appcodes = $request->input('selected_appcodes');
+    $res = array();
+    $user_id = \Auth::user()->id;
 
-        $table_name = $request->input('table_name');
-        $application_id = $request->input('application_id');
-        $application_code = $request->input('application_code');
+    try {
+        if (!empty($selected_appcodes)) {
+            $selected_appcodes = json_decode($selected_appcodes, true);
 
-        $qry = DB::table($table_name . '  as t1')
-            ->join('wb_trader_account as t2', 't1.applicant_id', 't2.id')
-            ->where('t1.id', $application_id)
-            ->where('t1.application_code', $application_code);
-        $res = array();
-        try { // 
-            DB::transaction(function () use ($qry, $application_id, $application_code, $table_name, $request, &$res) {
-                $ProductUpdateParams = array();
-                $rec = $qry->first();
-                $reference_no = $rec->reference_no;
-                $sub_module_id = $rec->sub_module_id;
-                $module_id = $rec->module_id;
-
-                $id = $request->input('recommendation_id');
-                $is_payment_verified = $request->input('is_payment_verified');
-                $payment_verification_remarks = $request->input('payment_verification_remarks');
-                $permit_release_remarks = $request->input('permit_release_remarks');
-                $is_permit_verified = $request->input('is_permit_verified');
-
-                $decision_id = $request->input('decision_id');
-                $approval_date = $request->input('approval_date');
-                $permit_signatory = $request->input('permit_signatory');
-                $dg_signatory = $request->input('dg_signatory');
-
-                $user_id = $this->user_id;
-                /* if ($dg_signatory == 1) {
-                            $permit_signatory = getPermitSignatoryDetails();
-                            $permit_signatory = $permit_signatory->director_id;
-                        } else {
-                            */
-                $permit_signatory = $user_id;
-                //}
-
-                $params = array(
-                    'application_code' => $application_code,
-                    'is_payment_verified' => $is_payment_verified,
-                    'decision_id' => $decision_id,
-                    'approval_date' => $approval_date,
-                    'permit_signatory' => $permit_signatory,
-                    'dg_signatory' => $dg_signatory,
-                    'payment_verification_remarks' => $payment_verification_remarks,
-                    'permit_release_remarks' => $permit_release_remarks,
-                    'is_permit_verified' => $is_permit_verified
-                );
-                if ($decision_id == 1) {
-
-                    $portal_status_id = 26;
-                } else {
-
-                    $portal_status_id = 11;
-                }
-                if (validateIsNumeric($id)) {
-                    //update
-
-                    $where = array(
-                        'id' => $id
-                    );
-
-                    $params['dola'] = Carbon::now();
-                    $params['altered_by'] = $user_id;
-                    $prev_data = getPreviousRecords('tra_permitsrelease_recommendation', $where);
-                    if ($prev_data['success'] == false) {
-                        return \response()->json($prev_data);
-                    }
-                    $prev_data_results = $prev_data['results'];
-
-                    $prev_data_results[0]['altered_by'] = $user_id;
-                    unset($prev_data_results[0]['id']);
-                    $res = updateRecord('tra_permitsrelease_recommendation', $prev_data['results'], $where, $params, $user_id);
-                } else {
-                    //insert
-                    $params['created_on'] = Carbon::now();
-                    $params['created_by'] = $user_id;
-
-                    $res = insertRecord('tra_permitsrelease_recommendation', $params, $user_id);
-                    $id = $res['record_id'];
-                }
-
-                //update the manager permits review 
-                $record = DB::table('tra_managerpermits_review')
-                    ->where(array('application_code' => $application_code))
-                    ->first();
-                if ($record) {
-                    $prevdecision_id = $record->decision_id;
-                    $id = $record->id;
-
-                    $where = array(
-                        'id' => $id,
-                        'application_code' => $application_code
-                    );
-                    $prev_data = getPreviousRecords('tra_managerpermits_review', $where);
-
-                    if ($decision_id == 1) {
-
-                        if ($prevdecision_id == 2) {
-
-                            $data = array('permit_no' => $reference_no, 'approval_date' => $approval_date, 'decision_id' => $decision_id);
-                            $data['expiry_date'] = getApplicationExpiryDate($approval_date, $sub_module_id, $module_id, '');
-                        } else {
-                            $data = array('permit_no' => $reference_no, 'approval_date' => $approval_date, 'decision_id' => $decision_id);
-                            $data['expiry_date'] = getApplicationExpiryDate($approval_date, $sub_module_id, $module_id, '');
-                        }
-                        updateRecord('tra_managerpermits_review', $prev_data['results'], $where, $data, $user_id);
-                    } else {
-
-                        if ($prevdecision_id == 1) {
-                            $data = array('permit_no' => '', 'approval_date' => $approval_date, 'decision_id' => $decision_id);
-                            updateRecord('tra_managerpermits_review', $prev_data['results'], $where, $data, $user_id);
-                        }
-                    }
-                }
-                updatePortalApplicationStatusWithCode($application_code, 'wb_importexport_applications', $portal_status_id);
-
-
-                if ($res['success']) {
-
-                    $approval_decision = getSingleRecordColValue('par_approval_decisions', array('id' => $decision_id), 'name');
-                    $message = "Dear " . $rec->email . "</br>";
-                    if ($decision_id == 1) {
-                        $message = "This is to notify you that the the Application for the Import/Export Permit " . $rec->reference_no . " has been Approved for Permit Release, kindly print the permit from the online portal.</br>Attached is the Approved Permit";
-                        $attachement_name = 'Import/Export Permit.pdf';
-                        $document_root = $_SERVER['DOCUMENT_ROOT'];
-
-                        $attachement =       $document_root . '/' . Config('constants.dms.system_uploaddirectory') . date('Y-m-d H:i:s') . '.pdf';
-
-                        // $this->generateImportExportPermit($application_code, 0, 'notify',$attachement);
-
-                        //$response = sendMailNotification($rec->name, $rec->email,$rec->reference_no.' Permit Approval Recommendation: '.$approval_decision,$message,'','',$attachement,$attachement_name);
-
-                    } else {
-                        $message = "This is to notify you that the the Application for the Import/Export Permit " . $rec->reference_no . " has been rejected, kindly print the rejection letter from the Self service Portal</br>";
-                        sendMailNotification($rec->name, $rec->email, $rec->reference_no . ' Permit Approval Recommendation: ' . $approval_decision, $message);
-                    }
-
-
-
-                    $res['message'] = "Permit Release Recommendation saved successfully";
-                }
-            }, 5);
-        } catch (\Exception $exception) {
-            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
-        } catch (\Throwable $throwable) {
-            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+            foreach ($selected_appcodes as $app_code) {
+                $this->processApplication($table_name, $app_code, $request, $user_id, $res);
+            }
+        } else {
+            $this->processApplication($table_name, $application_code, $request, $user_id, $res);
         }
-        return $res;
+
+        return response()->json(['success' => true, 'message' => 'Permit Release Recommendation saved successfully.']);
+    } catch (\Exception $exception) {
+        return response()->json(sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id));
+    } catch (\Throwable $throwable) {
+        return response()->json(sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id));
     }
+}
+
+private function processApplication($table_name, $application_code, $request, $user_id, &$res)
+{
+    $qry = DB::table($table_name . ' as t1')
+        ->join('wb_trader_account as t2', 't1.applicant_id', 't2.id')
+        ->where('t1.application_code', $application_code);
+
+    try {
+        DB::transaction(function () use ($qry, $application_code, $table_name, $request, $user_id, &$res) {
+            $rec = $qry->first();
+            if (!$rec) {
+                return;
+            }
+
+            $reference_no = $rec->reference_no;
+            $sub_module_id = $rec->sub_module_id;
+            $module_id = $rec->module_id;
+            $licence_type_id = $rec->licence_type_id;
+            $business_type_id = $rec->business_type_id;
+            $application_id = $rec->id; // Assume 'id' is the application ID
+            
+            $is_payment_verified = $request->input('is_payment_verified');
+            $payment_verification_remarks = $request->input('payment_verification_remarks');
+            $permit_release_remarks = $request->input('permit_release_remarks');
+            $is_permit_verified = $request->input('is_permit_verified');
+            $decision_id = $request->input('decision_id');
+            $approval_date = $request->input('approval_date');
+            $permit_signatory = $request->input('permit_signatory');
+            $dg_signatory = $request->input('dg_signatory');
+            $recommendation_id = $request->input('recommendation_id');
+
+            $params = array(
+                'application_code' => $application_code,
+                'is_payment_verified' => $is_payment_verified,
+                'decision_id' => $decision_id,
+                'approval_date' => $approval_date,
+                'permit_signatory' => $user_id,
+                'dg_signatory' => $dg_signatory,
+                'payment_verification_remarks' => $payment_verification_remarks,
+                'permit_release_remarks' => $permit_release_remarks,
+                'is_permit_verified' => $is_permit_verified
+            );
+
+            if ($decision_id == 1) {
+                $portal_status_id = 26;
+            } else {
+                $portal_status_id = 11;
+            }
+
+            if (validateIsNumeric($recommendation_id)) {
+                // Update
+                $where = array(
+                    'id' => $recommendation_id
+                );
+
+                $params['dola'] = Carbon::now();
+                $params['altered_by'] = $user_id;
+                $prev_data = getPreviousRecords('tra_permitsrelease_recommendation', $where);
+                if ($prev_data['success'] == false) {
+                    return \response()->json($prev_data);
+                }
+                $prev_data_results = $prev_data['results'];
+                $prev_data_results[0]['altered_by'] = $user_id;
+                unset($prev_data_results[0]['id']);
+                $res = updateRecord('tra_permitsrelease_recommendation', $prev_data['results'], $where, $params, $user_id);
+            } else {
+                // Insert
+                $params['created_on'] = Carbon::now();
+                $params['created_by'] = $user_id;
+                $res = insertRecord('tra_permitsrelease_recommendation', $params, $user_id);
+                $recommendation_id = $res['record_id'];
+            }
+
+            // Update the manager permits review 
+            $record = DB::table('tra_managerpermits_review')
+                ->where(array('application_code' => $application_code))
+                ->first();
+            if ($record) {
+                $prevdecision_id = $record->decision_id;
+                $id = $record->id;
+
+                $where = array(
+                    'id' => $id,
+                    'application_code' => $application_code
+                );
+                $prev_data = getPreviousRecords('tra_managerpermits_review', $where);
+
+                if ($decision_id == 1) {
+                    if ($prevdecision_id == 2) {
+                        $data = array('permit_no' => $reference_no, 'approval_date' => $approval_date, 'decision_id' => $decision_id);
+                        if ($business_type_id == 14) {
+                            $licence_type_id = 1;
+                        }
+                        $expiry_date = getApplicationExpiryDate($approval_date, $sub_module_id, $module_id, $licence_type_id);
+                        if (empty($expiry_date) || $expiry_date == ' ') {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Expiry Details not set, Please Contact System admin!!'
+                            );
+                            return $res;
+                        }
+                        $data['expiry_date'] = $expiry_date;
+                    } else {
+                        $data = array('permit_no' => $reference_no, 'approval_date' => $approval_date, 'decision_id' => $decision_id);
+                        if ($business_type_id == 14) {
+                            $licence_type_id = 1;
+                        }
+                        $expiry_date = getApplicationExpiryDate($approval_date, $sub_module_id, $module_id, $licence_type_id);
+                        if (empty($expiry_date) || $expiry_date == ' ') {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Expiry Details not set, Please Contact System admin!!'
+                            );
+                            return $res;
+                        }
+                        $data['expiry_date'] = $expiry_date;
+                    }
+                    updateRecord('tra_managerpermits_review', $prev_data['results'], $where, $data, $user_id);
+                } else {
+                    if ($prevdecision_id == 1) {
+                        $data = array('permit_no' => '', 'approval_date' => $approval_date, 'decision_id' => $decision_id);
+                        updateRecord('tra_managerpermits_review', $prev_data['results'], $where, $data, $user_id);
+                    }
+                }
+            }
+            updatePortalApplicationStatusWithCode($application_code, 'wb_importexport_applications', $portal_status_id);
+
+            if ($res['success']) {
+                $approval_decision = getSingleRecordColValue('par_approval_decisions', array('id' => $decision_id), 'name');
+                $message = "Dear " . $rec->email . "</br>";
+                if ($decision_id == 1) {
+                    $message = "This is to notify you that the Application for the Import/Export Permit " . $rec->reference_no . " has been Approved for Permit Release, kindly print the permit from the online portal.</br>Attached is the Approved Permit";
+                    $attachement_name = 'Import/Export Permit.pdf';
+                    $document_root = $_SERVER['DOCUMENT_ROOT'];
+                    $attachement = $document_root . '/' . Config('constants.dms.system_uploaddirectory') . date('Y-m-d H:i:s') . '.pdf';
+                    // $this->generateImportExportPermit($application_code, 0, 'notify', $attachement);
+                    // $response = sendMailNotification($rec->name, $rec->email, $rec->reference_no.' Permit Approval Recommendation: '.$approval_decision, $message, '', '', $attachement, $attachement_name);
+                } else {
+                    $message = "This is to notify you that the Application for the Import/Export Permit " . $rec->reference_no . " has been rejected, kindly print the rejection letter from the Self service Portal</br>";
+                    sendMailNotification($rec->name, $rec->email, $rec->reference_no . ' Permit Approval Recommendation: ' . $approval_decision, $message);
+                }
+                $res['message'] = "Permit Release Recommendation saved successfully";
+            }
+        });
+    } catch (\Exception $exception) {
+        $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+    } catch (\Throwable $throwable) {
+        $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1), explode('\\', __CLASS__), \Auth::user()->id);
+    }
+}
+
 
     public function onSaveControlledDrugsPermitProductsDetails(Request $req)
     {
@@ -7667,4 +7697,63 @@ class ImportexportpermitsController extends Controller
         }
         return \response()->json($res);
     }
+
+
+    public function saveDirectorBatchRecommendation(Request $request){
+    try {
+        $table_name = 'tra_directorpermits_review';
+        $user_id = \Auth::user()->id;
+        $selected_appcodes = $request->input('selected_appcodes');
+        $selected_appIds = $request->input('selected_appIds');
+        $res = array();
+
+        if ($selected_appcodes != '') {
+            $selected_appcodes = json_decode($selected_appcodes);
+            $selected_appIds = json_decode($selected_appIds);
+            
+                foreach ($selected_appcodes as $index => $application_code) {
+                    $application_id = $selected_appIds[$index];
+                    
+                    $where = array(
+                        'application_code' => $application_code,
+                    );
+                    
+                    $params = array(
+                        'application_id' => $application_id,
+                        'application_code' => $application_code,
+                        'workflow_stage_id' => $request->input('workflow_stage_id'),
+                        'module_id' => $request->input('module_id'),
+                        'sub_module_id' => $request->input('sub_module_id'),
+                        'decision_id' => $request->input('decision_id'),
+                        'approval_date' => $request->input('approval_date'),
+                        'certificate_issue_date' => $request->input('approval_date'),
+                        'expiry_date' => $request->input('expiry_date'),
+                        'prepared_by_id' => \Auth::user()->id,
+                        'created_by' => \Auth::user()->id,
+                        'created_on' => Carbon::now(),
+                    );
+
+                    if (recordExists($table_name, $where)) {
+                        $prev_data = getPreviousRecords($table_name, $where);
+                        $previous_data = $prev_data['results'];
+                        $res = updateRecord($table_name, $previous_data, $where, $params, $user_id);
+                    } else {
+                        $res = insertRecord($table_name, $params, $user_id);
+                    }
+                }
+        }
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return \response()->json($res);
+}
+
 }

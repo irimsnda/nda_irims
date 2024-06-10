@@ -256,7 +256,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                         autoScroll: true,
                         collapsible: true,
                         title: 'Application Details', 
-                        title: 'Permit Information'
+                        title: 'Application Details'
                     },  {
                         xtype: 'senderreceiverdetailsfrm',
                         collapsible: true,
@@ -275,7 +275,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     itemId: 'importexportpermitsproductsgrid',
                     title: 'Recommendation on Import/Export Permit Products Details',
                     bind: {
-                        title: '{application_title}'+' Permit Products Details Recommendations'
+                        title: 'Products Details Recommendations'
                     },
                     selModel: {
                         selType: 'checkboxmodel',
@@ -510,7 +510,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                 autoScroll: true, 
                 layout: 'fit',
                 items: [{
-                            xtype: 'allchecklistsgrid', 
+                            xtype: 'importexportscreeninggrid', 
                             collapsible: true,
                             title: 'Screening Checklist'
 
@@ -560,7 +560,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     step: 0,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
-                    text: 'Import/Export Permit Details',
+                    text: 'Application Details',
                     action: 'quickNav',  pressed: true,
                     wizard: 'importexportpermitmanagerreviewwizard',
                     handler: 'quickNavigationReview',
@@ -606,6 +606,11 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     table_name: 'tra_importexport_applications',
                     winWidth: '50%',
                     
+                },{
+                    text: 'Save Screening Details',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-save',
+                    name: 'save_screening_btn'
                 },
                 '->',
                 
@@ -620,7 +625,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     handler: 'saveImporExportPermitReceivingBaseDetails'
                 },'->',
                 {
-                    text: 'Preview & Print Approval Document',
+                    text: 'Preview Approval Document',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-check',
                     ui: 'soft-purple',
@@ -670,7 +675,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                         }
                 },
                 {
-                    text: 'Close & Release Application',
+                    text: 'Close & Submit Application',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-check',
                     name: 'process_submission_btn',

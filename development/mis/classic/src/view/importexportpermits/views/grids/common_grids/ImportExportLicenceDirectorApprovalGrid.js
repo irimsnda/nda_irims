@@ -22,6 +22,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                 selCount = grid.getSelectionModel().getCount();
             if (selCount > 0) {
                 grid.down('button[name=submit_selected]').setDisabled(false);
+                grid.down('button[name=batch_director_recommendation]').setDisabled(false);
             }
         },
         deselect: function (sel, record, index, eOpts) {
@@ -29,6 +30,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                 selCount = grid.getSelectionModel().getCount();
             if (selCount < 1) {
                 grid.down('button[name=submit_selected]').setDisabled(true);
+                grid.down('button[name=batch_director_recommendation]').setDisabled(true);
             }
         }
         
@@ -46,8 +48,33 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             xtype: 'tbspacer',
             width: 20
         },{
-        xtype: 'exportbtn'
-    },'->',{
+            text: 'Batch Review & Approval Recommendation',
+            ui: 'soft-purple',
+            disabled:true,
+            name:'batch_director_recommendation',
+            iconCls: 'x-fa fa-chevron-circle-up',
+            ui: 'soft-purple',
+            iconCls: 'fa fa-sliders',
+            menu: {
+                xtype: 'menu',
+                items: [
+                    {
+                        text: 'Reject Application',
+                        iconCls: 'x-fa fa-bars',
+                        decision_id: 3,
+                        winWidth: '90%', ui: 'soft-red',
+                        name: 'reject_recommendation',
+                        stores: '[]'
+                    },{
+                        text: 'Approve Application',
+                        iconCls: 'x-fa fa-bars', decision_id: 1,
+                        winWidth: '90%',ui: 'soft-green',
+                        name: 'approve_recommendation',
+                        stores: '[]'
+                }
+            ]
+        }
+     },'->',{
         xtype: 'combo',
         fieldLabel: 'Zones',
         forceSelection: true,
@@ -141,24 +168,42 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
            }
         }
     },
-     {
+    //  {
+    //     xtype: 'widgetcolumn',
+    //     width: 150,
+    //     widget: {
+    //         width: 150,
+    //         textAlign: 'left',
+    //         xtype: 'button',
+    //         ui: 'soft-red',
+    //         text: 'Recommendation',
+    //         iconCls: 'x-fa fa-chevron-circle-up',
+    //         childXtype: 'applicationcommentspnl',
+    //         winTitle: 'Assessment Comments',
+    //         winWidth: '60%',
+    //         handler: 'showCommentDetails',
+    //         comment_type_id: 3,
+    //         stores: '[]'
+    //     }
+    // }, 
+    {
         xtype: 'widgetcolumn',
-        width: 150,
+        width: 120,
         widget: {
-            width: 150,
+            width: 120,
             textAlign: 'left',
             xtype: 'button',
-            ui: 'soft-red',
-            text: 'Recommendation',
-            iconCls: 'x-fa fa-chevron-circle-up',
-            childXtype: 'applicationcommentspnl',
-            winTitle: 'Assessment Comments',
-            winWidth: '60%',
-            handler: 'showCommentDetails',
-            comment_type_id: 3,
-            stores: '[]'
+            itemId: 'prints',
+            ui: 'soft-green',
+            text: 'Preview License/Letter',
+            iconCls: 'x-fa fa-certificate',
+            handler: 'generateImportExportPermit',
+            bind: {
+               // disabled: '{record.release_recommendation_id <= 0 || record.release_recommendation_id === null}'
+                //disabled: '{record.decision_id !== 1}'
+            }
         }
-    }, 
+    },
     {
         text: 'Options',
         xtype: 'widgetcolumn',

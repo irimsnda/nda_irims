@@ -1749,6 +1749,30 @@ function checkReviewREcommendationDEtails(application_code) {
     return hasReviewrecommendation;
 }
 
+function checkDirecorReviewRecommendationDetails(application_code) {
+    var hasReviewrecommendation = 0;
+    
+    Ext.Ajax.request({
+        method: 'GET',
+        async: false,
+        url: 'api/checkDirectorReviewREcommendationDetails',
+        params: {
+            application_code: application_code,
+        },
+        headers: {
+            'Authorization': 'Bearer ' + access_token
+        },
+        success: function (response) {
+            var resp = Ext.JSON.decode(response.responseText),
+                success = resp.success;
+            if (success || success == true || success === true) {
+                hasReviewrecommendation = 1;
+            }
+        }
+    });
+    return hasReviewrecommendation;
+}
+
 function checkSampleSubmisisonDetails(application_code) {
     var is_recommended = false;
     

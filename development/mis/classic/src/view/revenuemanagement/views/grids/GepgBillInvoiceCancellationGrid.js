@@ -1,16 +1,14 @@
 /**
  * Created by Kip on 10/17/2018.
  */
-Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillInvoicePostingGrid', {
+Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillInvoiceCancellationGrid', {
     extend: 'Ext.grid.Panel',
     controller: 'revenuemanagementvctr',
-    xtype: 'gepgbillinvoicepostinggrid',
+    xtype: 'gepgbillinvoicecancellationgrid',
     cls: 'dashboard-todo-list',
     autoScroll: true,
     autoHeight: true,
     width: '100%',
-    
-
     viewConfig: {
         deferEmptyText: false,
         emptyText: 'Nothing to display',
@@ -60,21 +58,17 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillInvoicePostingGrid'
         margin: 5,
         ui:'soft-red',
         handler: 'funcClearFIlterBillsDetails'
-    },{
-            text:'Print Invoice/Bills Statement',
-            iconCls:'-x-fa fa-print',
-            handler: 'funcGenerateInvoiceStatement'
     }],
     listeners: {
         beforerender: {
             fn: 'setConfigGridsStore',
             config: {
                 pageSize: 200, remoteFilter: true,
-                storeId: 'gepgbillinvoicepostinggridstr',
+                storeId: 'gepgbillinvoicecancellationgridstr',
                
                 totalProperty:'totals',
                 proxy: {
-                    url: 'revenuemanagement/getGepgbillinvoicepostingdetails',
+                    url: 'revenuemanagement/getbillinvoiceCancellationdetails',
                     reader: {
                         type: 'json',
                         totalProperty: 'totals'
@@ -217,21 +211,9 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillInvoicePostingGrid'
             menu: {
                 xtype: 'menu',
                 items: [{
-                    text: 'Print Invoice',
+                    text: 'Restore Cancelled Bills',
                     iconCls: 'x-fa fa-print',
-                    handler: 'funcPrintApplicationInvoice'
-                },{
-                    text: 'Resubmit for Issuance of Billing ID',
-                    iconCls: 'x-fa fa-print',
-                    handler: 'funcREsubmitforBillingInvoice'
-                },{
-                    text: 'Sync Payment REmittance',
-                    iconCls: 'x-fa fa-print',
-                    handler: 'funcSyncforBillingPaymentsREmittance'
-                },{
-                    text: 'Bill Cancellation Request',
-                    iconCls: 'x-fa fa-print',
-                    handler: 'funcBillingInvoiceCancellation'
+                    handler: 'funcREstoreBillingInvoice'
                 }]
             }
         }

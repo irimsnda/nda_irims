@@ -99,7 +99,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     step: 0,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
-                    text: 'Import/Export Permit Details',
+                    text: 'Application Details',
                     action: 'quickNav', 
                     wizard: 'previewimportexportpermitdetails',
                     handler: 'prevquickNavigation'

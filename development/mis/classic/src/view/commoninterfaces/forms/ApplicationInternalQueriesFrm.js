@@ -99,14 +99,19 @@ Ext.define('Admin.view.commoninterfaces.forms.ApplicationInternalQueriesFrm', {
                             },
                             isLoad: false
                         },
-                        afterrender: function () {
+                         afterrender: function () {
                             var form = this.up('form'),
                                 store = this.getStore(),
-                                module_id = form.down('hiddenfield[name=module_id]').getValue();
-
+                                module_id = form.down('hiddenfield[name=module_id]').getValue(),
+                                sub_module_id = form.down('hiddenfield[name=sub_module_id]').getValue();
+                                if(module_id==4 || module_id===4 || module_id==12 || module_id===12){
+                                       var filterObj = {module_id: module_id, sub_module_id: sub_module_id};
+                                }else{
+                                      filterObj = {module_id: module_id};
+                                }
+                                filterStr = JSON.stringify(filterObj);
                             store.removeAll();
-                            store.load({params: {module_id: module_id}});
-
+                            store.load({params: {filters: filterStr}});
                         }
                     }
                 },

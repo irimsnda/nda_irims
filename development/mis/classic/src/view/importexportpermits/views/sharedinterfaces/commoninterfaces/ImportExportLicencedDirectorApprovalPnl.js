@@ -5,7 +5,7 @@
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfaces.ImportExportLicencedDirectorApprovalPnl', {
     extend: 'Ext.panel.Panel',
-    title: 'Pending Applications',
+   // title: 'Pending Applications',
     xtype: 'importexportlicenceddirectorapprovalpnl',  
     permitsdetails_panel: 'previewimportexportpermitdetails',
     itemId: 'main_processpanel',
@@ -138,6 +138,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
                 ui: 'soft-purple',
                 name: 'submit_selected',
                 disabled: true,
+                isDirectorReviewSubmission:true,
                 table_name: 'tra_importexport_applications',
                 action: 'process_submission_btn',
                 winWidth: '50%',

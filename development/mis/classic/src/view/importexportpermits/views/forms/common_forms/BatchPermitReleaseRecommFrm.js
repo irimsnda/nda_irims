@@ -170,7 +170,8 @@
         },{
             xtype: 'textarea',
             fieldLabel: 'Permit Release/Rejection Remarks',
-            name: 'permit_release_remarks',allowBlank: true
+            name: 'permit_release_remarks',
+            allowBlank: true
         }
     ],
     buttons: [

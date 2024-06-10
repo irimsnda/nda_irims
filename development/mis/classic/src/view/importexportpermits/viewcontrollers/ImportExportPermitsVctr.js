@@ -2604,7 +2604,7 @@ downloadPreviousDocupload: function (item) {
         }
 
         funcShowOnlineCustomizableWindow(ref_no + ' - Queries', '55%', queriesGrid, 'customizablewindow');
-        win.close();
+        //win.close();
     },
     showOnlineApplicationRejections: function (btn) {
         var win = btn.up('window'),

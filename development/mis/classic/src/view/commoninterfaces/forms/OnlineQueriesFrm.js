@@ -5,15 +5,19 @@ Ext.define('Admin.view.premiseregistration.views.forms.OnlineQueriesFrm', {
     extend: 'Ext.form.Panel',
     xtype: 'onlinequeriesfrm',
     controller: 'commoninterfacesVctr',
-    frame: true,
+    scrollable: true,
     layout: {
-        type: 'form'
+        type: 'column'
     },
+    //autoScroll: true,
     bodyPadding: 5,
     defaults: {
+        columnWidth: 1,
         margin: 5,
-        allowBlank: false
+        labelAlign: 'top',
+        allowBlank: true
     },
+
     items: [
         {
             xtype: 'hiddenfield',
@@ -40,7 +44,7 @@ Ext.define('Admin.view.premiseregistration.views.forms.OnlineQueriesFrm', {
             queryMode: 'local',
             displayField: 'name',
             valueField: 'id',
-            allowBlank: true,
+            allowBlank: false,
             listeners: {
                 beforerender: {
                     fn: 'setConfigCombosStore',
@@ -68,9 +72,10 @@ Ext.define('Admin.view.premiseregistration.views.forms.OnlineQueriesFrm', {
             }
         },
         {
-            xtype: 'textarea',
+            xtype: 'htmleditor',
             fieldLabel: 'Query',
             name: 'query_txt',
+            allowBlank: false,
             labelAlign: 'top'
         }
     ],

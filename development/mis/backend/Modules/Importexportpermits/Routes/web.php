@@ -123,7 +123,7 @@ Route::group(['middleware' => ['web'], 'prefix' => 'importexportpermits'], funct
     Route::post('onIntiateLicenseInspectionApplication', 'ImportexportpermitsController@onIntiateLicenseInspectionApplication');
     Route::post('updateInspectionProductsrodrecommendtion', 'ImportexportpermitsController@updateInspectionProductsrodrecommendtion');
 
-
+    Route::post('saveDirectorBatchRecommendation', 'ImportexportpermitsController@saveDirectorBatchRecommendation');
 
 
     //

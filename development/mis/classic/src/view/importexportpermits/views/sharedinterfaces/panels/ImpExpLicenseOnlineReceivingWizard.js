@@ -7,6 +7,7 @@
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLicenseOnlineReceivingWizard', {
 	extend: 'Ext.panel.Panel',
     alias: 'widget.impexplicenseonlinereceivingwizard',
+    itemId: 'wizzard_panel',
     padding: '2 0 2 0',
     controller: 'importexportpermitsvctr',
     requires: [
@@ -289,6 +290,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
                     iconCls: 'fa  fa-thumbs-up',
                     winWidth: '50%', 
                     hidden: true,
+                    is_invoicecheck:true,
                     //handler: 'receiveWinOnlineApplicationDetails',
                     storeID: 'onlineimportexportappsstr',
                     winWidth: '50%',

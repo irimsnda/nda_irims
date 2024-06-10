@@ -139,6 +139,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                         text: 'Submit Application(s)',
                         iconCls: 'x-fa fa-check',
                         ui: 'soft-purple',
+                        isLicenseApprovalSubmission:true,
                         name: 'submit_selected',disabled: true,
                         table_name: 'tra_importexport_applications',
                         action: 'process_submission_btn',

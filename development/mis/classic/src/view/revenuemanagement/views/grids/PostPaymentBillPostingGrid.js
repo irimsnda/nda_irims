@@ -1,10 +1,10 @@
 /**
  * Created by Kip on 10/17/2018.
  */
-Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillPaymentsPostingGrid', {
+Ext.define('Admin.view.revenuemanagement.views.grids.PostPaymentBillPostingGrid', {
     extend: 'Ext.grid.Panel',
     controller: 'revenuemanagementvctr',
-    xtype: 'gepgbillpaymentspostinggrid',
+    xtype: 'postpaymentbillpostinggrid',
     cls: 'dashboard-todo-list',
     autoScroll: true,
     autoHeight: true,
@@ -32,13 +32,13 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillPaymentsPostingGrid
         ptype: 'gridexporter'
     }],
     tbar:['->',{
-        fieldLabel: 'Payment From',
+        fieldLabel: 'Post Payment Request From',
         xtype:'datefield',
         labelAlign: 'right',
         width: '300',
         name: 'paid_fromdate'
     },{
-        fieldLabel: 'Payment to',
+        fieldLabel: 'Post Payment Request to',
         xtype:'datefield',
         labelAlign: 'right',
         width: '300',
@@ -60,12 +60,12 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillPaymentsPostingGrid
             fn: 'setConfigGridsStore',
             config: {
                 
-                storeId: 'gepgbillinvoicepostinggridstr',
+                storeId: 'postpaymentbillpostinggridstr',
                 pageSize: 200, remoteFilter: true,
                 totalProperty:'totals',
                 groupField:'module_name',
                 proxy: {
-                    url: 'revenuemanagement/getGepgbillPaymentspostingdetails',
+                    url: 'revenuemanagement/getpostPaymentspostingdetails',
                     reader: {
                         type: 'json',
                         totalProperty: 'totals'
@@ -78,8 +78,7 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillPaymentsPostingGrid
                 store.removeAll();
                 store.load();
         }
-    }, features: [
-        {
+    }, features: [{
             ftype: 'grouping',
             startCollapsed: false,
             groupHeaderTpl: 'Module: {[values.rows[0].data.module_name]}, Sub-Module: {[values.rows[0].data.sub_modulename]}',
@@ -157,19 +156,19 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillPaymentsPostingGrid
         }
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'paymentStatus',
+        dataIndex: 'post_paymentstatus_id',
         tdCls:'wrap-text',
-        text: 'iREMBO Payment Status',
+        text: 'Post Payment Status',
         tdCls:'wrap-text',
         width: 200,
          renderer: function (value, metaData,record) {
-            var paymentStatus = record.get('paymentStatus')
-            if (paymentStatus == 'PAID') {
-                metaData.tdStyle = 'color:white;background-color:green';
-                return value;
+            var post_paymentstatus_id = record.get('post_paymentstatus_id')
+            if (post_paymentstatus_id == 1) {
+                metaData.tdStyle = 'color:white;background-color:red';
+                return 'Pending Clearance';
             }
-            metaData.tdStyle = 'color:white;background-color:red';
-            return value;
+            metaData.tdStyle = 'color:white;background-color:green';
+            return 'Payment Cleared';
         }
     }, {
         xtype: 'gridcolumn',
@@ -186,21 +185,21 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillPaymentsPostingGrid
         style: 'text-align:left',
         text: 'Invoice Amount',
         tdCls:'wrap-text',
-        width: 120,
+        width: 200,
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'currency_name',align:'right',
         style: 'text-align:left',
         text: 'Currency Name',
         tdCls:'wrap-text',
-        width: 80,
+        width: 200,
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'invoice_amounttshs',align:'right',
         style: 'text-align:left',
         text: 'Invoice Amount',
         tdCls:'wrap-text',
-        width: 120,
+        width: 200,
     },   {
         xtype: 'gridcolumn',
         dataIndex: 'exchange_rate',align:'right',
@@ -213,9 +212,9 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillPaymentsPostingGrid
         dataIndex: 'amount_paid',
         align:'right',
         style: 'text-align:left',
-        text: ' Amount Paid',
+        text: ' POST Payment Request Amount',
         tdCls:'wrap-text',
-        width: 120,
+        width: 200,
         filter: {
             xtype: 'textfield'
         }
@@ -224,19 +223,13 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillPaymentsPostingGrid
         dataIndex: 'currency_name',align:'right',
         style: 'text-align:left',
         text: 'Currency Name',
-        width:80
+        width:50
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'amount_paidtshs',align:'right',
         style: 'text-align:left',
-        text: 'Amount Paid(Converted)',
-        width:120
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'balance',align:'right',
-        style: 'text-align:left',
-        text: 'Balance',
-        width:120
+        text: 'POST Payment Request Amount(Converted)',
+        width:100
     }, {
         text: 'Options',
         xtype: 'widgetcolumn',
@@ -250,9 +243,9 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillPaymentsPostingGrid
             menu: {
                 xtype: 'menu',
                 items: [{
-                    text: 'Print Payments',
+                    text: 'Print POST Payment Request',
                     iconCls: 'x-fa fa-print',
-                    handler: 'funcPrintApplicationREceipts'
+                    handler: 'showPaymentReceiptsWin'
                 },{
                     text: 'Print Invoice',
                     iconCls: 'x-fa fa-print',
@@ -271,12 +264,12 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillPaymentsPostingGrid
             this.up('grid').fireEvent('refresh', this);
         }
     },{
-            text:'Export Payment Statement',
+            text:'Export Post Payment Statement',
             iconCls:'-x-fa fa-print',
-            handler: 'funcExportPaymentsStatement'
+            handler: 'funcExportPostPaymentsStatement'
     },{
-            text:'Print Payment Statement',
+            text:'Print Post Payment Statement',
             iconCls:'-x-fa fa-print',
-            handler: 'funcGeneratePaymentsStatement'
+            handler: 'funcPrintPostPaymentsStatement'
     }]
 });

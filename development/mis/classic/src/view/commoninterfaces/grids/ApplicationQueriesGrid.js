@@ -419,7 +419,8 @@ Ext.define('Admin.view.commoninterfaces.grids.ApplicationQueriesGrid', {
                                         iconCls: 'x-fa fa-edit',
                                         handler: 'onEditApplicationsQuery',
                                         stores: '[]'
-                                    }, {
+                                    },
+                                     {
                                         text: 'Close',
                                         iconCls: 'x-fa fa-edit',
                                         handler: 'onCloseApplicationsQuery',

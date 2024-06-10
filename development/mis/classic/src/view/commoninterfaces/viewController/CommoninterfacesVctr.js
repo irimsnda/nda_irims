@@ -448,10 +448,10 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
     functionQueryaction: function (grid, rowIndex, status_id) {
 
         var store = grid.store,
-            record = store.getAt(rowIndex);
-        win = grid.up('window'),
-            record_id = record.get('id'),
-            application_id = win.down('hiddenfield[name=application_id]').getValue();
+        record = store.getAt(rowIndex);
+        var win = grid.up('window'),
+        record_id = record.get('id'),
+        application_id = win.down('hiddenfield[name=application_id]').getValue();
         application_code = win.down('hiddenfield[name=application_code]').getValue();
 
         //get the document path

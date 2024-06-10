@@ -1169,7 +1169,6 @@ trait ImportexportpermitsTraits
                     'approved_by' => $directorate_director_id,
                     'permit_signatory' => $permit_signatory
                 );
-
                 if ($decision_id == 1) {
 
                     $params['expiry_date'] = getApplicationExpiryDate($approval_date, $sub_module_id, $module_id, $section_id);

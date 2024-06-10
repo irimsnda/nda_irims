@@ -18,39 +18,31 @@ Ext.define('Admin.view.dashboard.ManagementProcessDashboard', {
             listeners: {
                 beforeRender: 'loadApplicationAssaignmentTab'
             },
-            items: [{
-                title: 'Application In Process',
-                xtype: 'tabpanel',
-                layout: 'fit',
-                items: [{
-                     title: 'In-Tray',
-                     xtype: 'intraypnl',
-                     height: Ext.Element.getViewportHeight() - 161
-                 },
-                 {
-                     title: 'Out-Tray',
-                     xtype: 'outtraygrid',
-                     height: Ext.Element.getViewportHeight() - 161
-                 }],
-            },{
-                    xtype:'tabpanel',
-                    layout:'border',
-                    title: 'Online Application Dashboard',
-                    height: Ext.Element.getViewportHeight() - 161,
+            items: [  {
+                    xtype: 'panel',
+                    title: 'Intray(Assignments)',is_receipting_stage:0,
+                    layout: 'border',
                     items:[{
-                        xtype: 'onlineapplicationdashboardgrid',
-                        is_management_dashboard: 1,
-                        region:'center'
-                    },{
-                        xtype: 'onlineappssubmissioncountergrid',
-                        title:'Online Application Submissions Counter(Summary Data)',
-                        region: 'south',
-                        collapsible: true,
-                        collapsed: true,
-                        height: 320,
-                        autoScroll: true
-                    }]
-                },{
+                        xtype: 'summaryintraygrid',
+                        title: 'Summary of Assigned or Active Applications ',
+                        region: 'west',
+                        width: 500,
+                        autoScroll: true,
+                        split: true,
+                        titleCollapse: true,
+                        collapsed: false,
+                        collapsible: true
+                    }, {
+                            xtype: 'intraygrid',
+                            region: 'center',
+                            title: 'Assigned or Active Applications Pending or Completed Processing',
+                            userCls: 'big-100 small-100'
+                    }] 
+            },{
+                title: 'Out-Tray',
+                xtype: 'outtraygrid',
+                height: Ext.Element.getViewportHeight() - 161
+            },{
                     title:'Application Enquiries(Tracking Applications Processing)',
                     xtype:'application_enquiriesGrid'
                 },
@@ -62,25 +54,25 @@ Ext.define('Admin.view.dashboard.ManagementProcessDashboard', {
                         xtype: 'tabpanel',
                         items:[{
                             title:'Product Summary Reports',
-                            xtype:'product_reg_reportPnl'
+                            xtype:'productreportpnl'
                         },{
                             title:'Premises Summary Reports',
-                            xtype:'premise_reg_reportPnl'
+                            xtype:'premisesreportpnl'
                         },{
                             title:'GMP Summary Reports',
-                            xtype:'gmp_reg_reportPnl'
+                            xtype:'gmpreportpnl'
                         },{
                             title:'Clinical Trial Summary Reports',
-                            xtype:'clinicaltrial_reg_reportPnl'
+                            xtype:'clinicaltrialreportpnl'
                         },{
                             title:'Import & Export Summary',
-                            xtype:'importexport_reg_reportPnl'
+                            xtype:'importexportreportpnl'
                         },{
                             title:'Promotional & Advertisements',
-                            xtype:'promadvert_reg_reportPnl'
+                            xtype:'promotionadvertisementreportpnl'
                         },{
                             title:'Disposal Application Summary Report',
-                            xtype:'disposal_reg_reportPnl'
+                            xtype:'disposalreportpnl'
                         }]
                 },{
                     xtype:'controllleddocumentsaccessdashboard',
@@ -90,6 +82,6 @@ Ext.define('Admin.view.dashboard.ManagementProcessDashboard', {
                 
             ]
         }
-		
+        
     ]
 });

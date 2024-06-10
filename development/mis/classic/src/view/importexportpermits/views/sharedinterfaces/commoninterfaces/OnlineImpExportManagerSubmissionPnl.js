@@ -161,7 +161,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
                 text: 'Submit Application(s)',
                 iconCls: 'x-fa fa-check',
                 ui: 'soft-purple',
-               
+                is_invoicecheck:true,
                 name: 'submit_selected',
                 table_name: 'tra_importexport_applications',
                 action: 'process_submission_btn',

@@ -34,7 +34,8 @@ Ext.define('Admin.view.commoninterfaces.views.forms.common_forms.DocumentsSubmis
         }, {
             xtype: 'combo',
             name: 'document_status_id',
-            allowBlank: true,forceSelection:true,
+            allowBlank: true,
+            forceSelection:true,
             fieldLabel: 'Document Submission Statuses',
             queryMode: 'local',
             valueField: 'id',

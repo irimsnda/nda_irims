@@ -109,7 +109,8 @@ Ext.define('Admin.view.commoninterfaces.grids.OnlineQueriesGrid', {
     },
     columns: [{
         xtype: 'rownumberer',
-        text: 'SN'
+        text: 'SN',
+        width: 100
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'query_txt',
@@ -122,13 +123,33 @@ Ext.define('Admin.view.commoninterfaces.grids.OnlineQueriesGrid', {
         text: 'Query Date',
         tdCls: 'wrap',
         flex: 1
-    },  {
-        xtype: 'gridcolumn',
-        dataIndex: 'query_status',
-        text: 'Status',
-        tdCls: 'wrap',
-        flex: 1
     }, {
+        xtype: 'gridcolumn',
+        dataIndex: 'status_id',
+        text: 'Status',
+        width: 100,
+        renderer: function (value, metaData) {
+            if (value == 1) {
+                metaData.tdStyle = 'color:white;background-color:green';
+                return "Open";
+            }
+            if (value == 2) {
+                metaData.tdStyle = 'color:green;background-color:white';
+                return "Responded";
+            }
+            if (value == 3) {
+                metaData.tdStyle = 'color:white;background-color:gray';
+                return "Re-Queried";
+            }
+            if (value == 4) {
+                metaData.tdStyle = 'color:white;background-color:gray';
+                return "Closed";
+            }
+
+            metaData.tdStyle = 'color:white;background-color:red';
+            return "Not Tracked";
+        }
+    },  {
         xtype: 'gridcolumn',
         dataIndex: 'response_txt',
         text: 'Query Response',
@@ -172,13 +193,14 @@ Ext.define('Admin.view.commoninterfaces.grids.OnlineQueriesGrid', {
                     iconCls: 'x-fa fa-edit',
                     handler: 'onEditOnlineQuery',
                     stores: '[]'
-                }, {
+                },
+                 {
                     text: 'Delete',
                     iconCls: 'x-fa fa-trash',
                     //disabled: true,
-                    handler: 'onDeleteOnlineQuery',
+                    handler: 'onActionCloseInitialQuery',
                     stores: '[]'
-                }
+                },
                 ]
             }
         }

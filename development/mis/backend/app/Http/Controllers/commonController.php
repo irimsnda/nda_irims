@@ -4453,6 +4453,19 @@ public function getUploadedApplicationPaymentDetails(Request $req){
         }
         return \response()->json($res);
     }
+
+    public function checkDirecorReviewREcommendationDetails(Request $req){
+        try {
+                
+         $res = $this->validateRequiredApplicationDetails('tra_directorpermits_review', $req->application_code, 'Manager Review Recommendation not filled successfully');
+
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
     public function checkIfHasGeneratedInvoiceDEtails(Request $req){
         try {
                 $sub_module_id = $req->sub_module_id;

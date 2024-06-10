@@ -5403,6 +5403,7 @@ public function funcAddNewPremisesDetails(Request $request){
 			if (isset($id) && $id != '') {
 				unset($post_data['id']);
 				$post_data['mis_dola'] = Carbon::now();
+				//$post_data['status_id'] = 1;
 				$post_data['mis_altered_by'] = $this->user_id;
 				$portal_db->table('tra_online_queries')
 					->where('id', $id)
