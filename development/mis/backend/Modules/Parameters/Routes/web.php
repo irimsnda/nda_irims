@@ -68,7 +68,6 @@ Route::group(['middleware' => ['web'], 'prefix' => 'commonparam'], function(){
     Route::get('getCommonParamFromTable', [CommonParameterController::class,'getCommonParamFromTable']);
     Route::get('deleteParameters', [CommonParameterController::class,'deleteParameters']);
 
-
     Route::get('getelementcost',[CommonParameterController::class,'getelementcost']);
     Route::get('getcostCategories',[CommonParameterController::class,'getcostCategories']);
     Route::get('getcostSubCategories',[CommonParameterController::class,'getcostSubCategories']);

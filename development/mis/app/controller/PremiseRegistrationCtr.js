@@ -6847,15 +6847,19 @@ previewPremisesOnlineApplication: function (view, record) {
             var mainTabPanel = this.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),
             basicFrm;
+            console.log(personnel_type);
         win.close();
         if (moreDetails == 1 || moreDetails === 1) {
             this.setContactPersonDetailsOnMoreDetailsWin(record);
         }
-        if (personnel_type == 'contact_person') {
+        if (personnel_type == 'contact_person'){
             basicFrm = activeTab.down('premisecontactpersonfrm');
             basicFrm.loadRecord(record);
         }else if (personnel_type == 'billing_person') {
             basicFrm = activeTab.down('billingdetailsfrm');
+            basicFrm.loadRecord(record);
+        }else if(personnel_type == 'gvp_billing_person'){
+            basicFrm = activeTab.down('gvpbillingdetailsfrm');
             basicFrm.loadRecord(record);
         }else if (personnel_type == 'contract_manufacturing_person') {
             basicFrm = activeTab.down('contractmanufacturingfrm');

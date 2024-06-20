@@ -305,6 +305,81 @@ class ConfigurationsController extends Controller
         return \response()->json($res);
     }
 
+    public function getGVPInspectionForm(Request $req){
+        try{
+            $type_id = $req->type_id;
+            $application_code = $req->application_code;
+            $master = [];
+            //loop 
+            $categories = DB::table('par_gvp_assessment_categories as t1')->where('type_id', $type_id)->get();
+            $i = 0;
+            $j = 0;
+            $k = 0;
+            //get subcategories
+            foreach ($categories as $cat) {
+                $sub_cats = DB::table('par_gvp_assessment_sub_categories as t1')
+                                ->where('gvp_assessment_category_id', $cat->id)
+                                ->get();
+                //add to array
+               $master[$i]['name'] = $cat->name;
+               
+               if($sub_cats->isEmpty()){
+                    $master[$i]['sub_categories'] = [];
+               }
+               
+               $j= 0;
+
+               foreach ($sub_cats as $sub_cat) {
+                    $items = DB::table('par_gvp_assessment_items as t1')
+                                ->where('gvp_assessment_sub_category_id', $sub_cat->id)
+                                ->get();
+                    //add to array
+                    $master[$i]['sub_categories'][$j]['id'] = $sub_cat->id; 
+                    $master[$i]['sub_categories'][$j]['name'] = $sub_cat->name; 
+
+                    //add data for sub
+                    $master[$i]['sub_categories'][$j]['workspace_value'] = getSingleRecordColValue('par_gvp_assessment_category_details', ['sub_category_id' =>  $sub_cat->id, 'active_application_code'=>$application_code], 'workspace');
+                    $master[$i]['sub_categories'][$j]['comment_value'] = getSingleRecordColValue('par_gvp_assessment_category_details', ['sub_category_id' =>  $sub_cat->id, 'active_application_code'=>$application_code], 'comment');
+
+                    if($items->isEmpty()){
+                            $master[$i]['sub_categories'][$j]['items'] = [];
+                       }
+
+                    $k = 0;
+                    //loop for items
+                    foreach ($items as $item) {
+                        if($item->is_checklist == 1){
+                            $master[$i]['sub_categories'][$j]['items'][$k]['is_checklist'] = 1;
+                            $master[$i]['sub_categories'][$j]['items'][$k]['item_value'] = getSingleRecordColValue('par_gvp_assessment_items_details', ['item_id' =>  $item->id, 'active_application_code'=>$application_code], 'itemcheck');
+                        }else{
+                            $master[$i]['sub_categories'][$j]['items'][$k]['is_checklist'] = 0;
+                            $master[$i]['sub_categories'][$j]['items'][$k]['item_value'] = getSingleRecordColValue('par_gvp_assessment_items_details', ['item_id' =>  $item->id, 'active_application_code'=>$application_code], 'item');
+                        }
+                        $master[$i]['sub_categories'][$j]['items'][$k]['name'] = $item->name; 
+                        $master[$i]['sub_categories'][$j]['items'][$k]['id'] = $item->id; 
+                        $k++;
+                       
+                    }
+                    $j++;
+               }
+               $i++;
+            }
+
+           //dd($master);
+            $res = array(
+                'success' => true,
+                'message' => 'All is well',
+                'assessment_categories' => $master
+            );
+        } catch (\Exception $exception) {
+            $res = sys_error_handler($exception->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        } catch (\Throwable $throwable) {
+            $res = sys_error_handler($throwable->getMessage(), 2, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1),explode('\\', __CLASS__), \Auth::user()->id);
+        }
+        return \response()->json($res);
+    }
+
+
 
     public function getClinicalAssessmentForm(Request $req){
         try{

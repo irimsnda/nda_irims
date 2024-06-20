@@ -297,6 +297,9 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'newgmpinspectionpanel button[name=save_btn]': {
                 click: 'saveApplicationChecklistDetails'
             },
+            'newgvpinspectionpanel button[name=save_btn]': {
+                click: 'saveApplicationChecklistDetails'
+            },
             'renewgmpinspectionpanel button[name=save_btn]': {
                 click: 'saveApplicationChecklistDetails'
             },
@@ -350,8 +353,7 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
 
-
-            'productmanagerevaluationgrid': {
+          'productmanagerevaluationgrid': {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
@@ -420,7 +422,17 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'gmpmanagerinspectiongrid': {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
-            }, 'gmpmanagerprecheckingquerygrid': {
+            },
+            'gvpmanagerinspectiongrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+            
+            'gmpmanagerprecheckingquerygrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+            'gvpmanagerprecheckingquerygrid': {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
@@ -456,18 +468,43 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
+            'gvpcustomerconfirmationgrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
 
 
             'gmpinspectionschedulinggrid': {
                 refresh: 'addApplicationWorkflowParams'
-            },
+            }, 
+            'gvpinspectionschedulinggrid': {
+                refresh: 'addApplicationWorkflowParams'
+            }, 
             'gmpinspectionschedulingphysicalgrid': {
+                refresh: 'addApplicationWorkflowParams'
+            },
+            'gvpinspectionschedulingphysicalgrid': {
                 refresh: 'addApplicationWorkflowParams'
             },
             'gmpinspectionschedulingdeskreviewgrid': {
                 refresh: 'addApplicationWorkflowParams'
             },
+            'gvpinspectionschedulingdeskreviewgrid': {
+                refresh: 'addApplicationWorkflowParams'
+            },
             'gmpdeskreviewschedulinggrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+            'gvpdeskreviewschedulinggrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+            'gvpmeetingschedulinggrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+            'gvptcmeetingrecommendationgrid': {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
@@ -488,7 +525,15 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
+            'gvpapprovalfordeskreviewgrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
             'gmpcommunicationsgrid': {
+                refresh: 'addApplicationWorkflowParams',
+                moveRowTop: 'moveSelectedRecordRowToTop'
+            },
+            'gvpcommunicationsgrid': {
                 refresh: 'addApplicationWorkflowParams',
                 moveRowTop: 'moveSelectedRecordRowToTop'
             },
@@ -603,10 +648,19 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'newgmpapprovalfordeskreview': {
                 afterrender: 'prepareManagersInterfaceGeneric'
             },
+            'newgvpapprovalfordeskreview':{
+                afterrender: 'prepareManagersInterfaceGeneric'
+            }, 
             'gmpcommunication': {
                 afterrender: 'prepareManagersInterfaceGeneric'
             },
+            'gvpcommunication': {
+                afterrender: 'prepareManagersInterfaceGeneric'
+            },
             'newgmpinspectionreportsreview': {
+                afterrender: 'prepareManagersInterfaceGeneric'
+            },
+            'newgvpinspectionreportsreview': {
                 afterrender: 'prepareManagersInterfaceGeneric'
             },
             'gmpmanagerevaluation': {
@@ -648,6 +702,9 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
 
 
             'gmpmanagerreview': {
+                afterrender: 'prepareManagersInterfaceGeneric'
+            },
+            'gvpmanagerreview': {
                 afterrender: 'prepareManagersInterfaceGeneric'
             },
             'clinicaltrialmanagerreview': {
@@ -753,7 +810,14 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'approvalfordeskreviewgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
+            'gvpapprovalfordeskreviewgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+            
             'gmpinspectionreportsreviewgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+            'gvpinspectionreportsreviewgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
             'gmpapprovalsgrid button[action=process_submission_btn]': {
@@ -841,6 +905,12 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'gmpcustomerconfirmationgrid button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
+            'gvpcustomerconfirmationgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+            'gvpnewmanagerreviewgrid button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
 
 
             'gmpevaluationpanel button[name=process_submission_btn]': {
@@ -882,8 +952,14 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'gmpgprcmeetingrecommendationpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
+            'gvpgprcmeetingrecommendationpanel button[name=comments_btn]': {
+                click: 'showApplicationCommentsWin'
+            },
 
             'gmpdeskreviewmanagerrecommendationpanel button[name=comments_btn]': {
+                click: 'showApplicationCommentsWin'
+            },
+            'gvpdeskreviewmanagerrecommendationpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
 
@@ -892,16 +968,18 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'singlegmpapprovalpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
+            'singlegvpapprovalpanel button[name=comments_btn]': {
+                click: 'showApplicationCommentsWin'
+            },
 
 
 
             'singledeskreviewgmpapprovalpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
-
-
-
-
+            'singledeskreviewgvpapprovalpanel button[name=comments_btn]': {
+                click: 'showApplicationCommentsWin'
+            },
             'renewpremiseinspectionpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
@@ -914,11 +992,17 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'newgmpinspectionpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
+            'newgvpinspectionpanel button[name=comments_btn]': {
+                click: 'showApplicationCommentsWin'
+            },
             'renewgmpinspectionpanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             }, 
 
             'gmpdeskreviewprocesspanel button[name=comments_btn]': {
+                click: 'showApplicationCommentsWin'
+            },
+            'gvpdeskreviewprocesspanel button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
             },
 
@@ -1008,7 +1092,13 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'newgmpinspectionpanel button[name=docs_btn]': {
                 click: 'showApplicationUploads'
             },
+            'newgvpinspectionpanel button[name=docs_btn]': {
+                click: 'showApplicationUploads'
+            },
             'gmpdeskreviewprocesspanel button[name=docs_btn]': {
+                click: 'showApplicationUploads'
+            },
+            'gvpdeskreviewprocesspanel button[name=docs_btn]': {
                 click: 'showApplicationUploads'
             },
             'newgmpdeskreviewprocesspanel button[name=docs_btn]': {
@@ -1022,7 +1112,12 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
             'gmpapprovalrecommendationfrm button[name=save_recommendation]': {
                 click: 'saveApplicationApprovalDetails'
-            },'gmpconditionalapprovalrecommendationfrm button[name=save_recommendation]': {
+            },
+            'gvpapprovalrecommendationfrm button[name=save_recommendation]': {
+                click: 'saveApplicationApprovalDetails'
+            },
+            
+            'gmpconditionalapprovalrecommendationfrm button[name=save_recommendation]': {
                 click: 'saveApplicationApprovalDetails'
             },
 
@@ -1143,6 +1238,9 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             },
             'gmpappdocuploadsgenericgrid button[name=add_upload]': {
                 click: 'showApplicationDocUploadWin'
+            },
+            'gvpappdocuploadsgenericgrid button[name=add_upload]': {
+                    click: 'showApplicationDocUploadWin'
             },
             'clinicaltrialdocuploadsgenericgrid button[name=add_upload]': {
                 click: 'showApplicationDocUploadWin'
@@ -4426,12 +4524,13 @@ setCompStore: function (me, options) {
     },
     refreshApplicationDocUploadsGrid: function (me) {
         var store = me.store,
-            grid = me.up('grid'),
-            document_type_id = grid.down('combo[name=applicable_documents]').getValue();
-            var application_code = grid.down('hiddenfield[name=application_code]').getValue(),
-            mainTabPanel = this.getMainTabPanel(),
-            activeTab = mainTabPanel.getActiveTab(),   
-            premise_type_id,prodclass_category_id;
+        grid = me.up('grid'),
+        document_type_id = grid.down('combo[name=applicable_documents]').getValue();
+        var application_code = grid.down('hiddenfield[name=application_code]').getValue(),
+        mainTabPanel = this.getMainTabPanel(),
+        activeTab = mainTabPanel.getActiveTab(),   
+        premise_type_id,prodclass_category_id;
+            
 
             if(application_code >0){
                 
@@ -4452,7 +4551,7 @@ setCompStore: function (me, options) {
                 section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
                 query_ref_id = '',
                 module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
-                document_type = activeTab.down('hiddenfield[name=document_type_id]').getValue(),
+                // document_type = activeTab.down('hiddenfield[name=document_type_id]').getValue(),
                 sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
                 workflow_stage = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue();
                 if(module_id == 1){
@@ -6900,6 +6999,7 @@ else{
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             gmp_type_id = (activeTab.down('combo[name=gmp_type_id]')) ? activeTab.down('combo[name=gmp_type_id]').getValue() : null,
+            gvp_type_id = (activeTab.down('combo[name=gvp_type_id]')) ? activeTab.down('combo[name=gvp_type_id]').getValue() : null,
             inspection_type_id = me.inspection_type_id,
             region_id = (grid.down('combo[name=region_id]')) ? grid.down('combo[name=region_id]').getValue() : null,
             district_id = (grid.down('combo[name=district_id]')) ? grid.down('combo[name=district_id]').getValue() : null,
@@ -6914,6 +7014,7 @@ else{
             workflow_stage_id: workflow_stage_id,
             section_id: section_id,
             gmp_type_id: gmp_type_id,
+            gvp_type_id: gvp_type_id,
             inspection_type_id: inspection_type_id,
             inspection_id: inspection_id,
             region_id: region_id,

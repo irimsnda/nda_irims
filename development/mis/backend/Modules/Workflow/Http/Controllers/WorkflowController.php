@@ -2625,6 +2625,9 @@ public function getProcessApplicableChecklistItems(Request $request)
         }else if ($module_id == 32) { //Signal Management
             $this->processNormalApplicationSubmission($request);
 
+        }else if ($module_id == 35) { //Gvp Applications
+            $this->processNormalApplicationSubmission($request);
+
         }else {
            echo "module not set";
         }
@@ -2662,6 +2665,8 @@ public function getProcessApplicableChecklistItems(Request $request)
         }else if ($module_id == 23) {//Alert
             $this->processNormalManagersApplicationSubmission($request);
         }else if ($module_id == 32) {//psur
+            $this->processNormalManagersApplicationSubmission($request);
+        }else if ($module_id == 35) {//Gvp
             $this->processNormalManagersApplicationSubmission($request);
         }else {
             //unknown module

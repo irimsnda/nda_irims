@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use Modules\PremiseRegistration\Traits\PremiseRegistrationTrait;
 use Modules\GmpApplications\Traits\GmpApplicationsTrait;
+use Modules\GvpApplications\Traits\GvpApplicationsTrait;
 use Modules\ClinicalTrial\Traits\ClinicalTrialTrait;
 use Modules\ProductRegistration\Traits\ProductsRegistrationTrait;
 use Modules\Enforcement\Traits\EnforcementTrait;
@@ -19,6 +20,7 @@ class CommonController extends Controller
 
     use PremiseRegistrationTrait;
     use GmpApplicationsTrait;
+    use GvpApplicationsTrait;
     use ClinicalTrialTrait;
     use ProductsRegistrationTrait;
     use PromotionMaterialsTrait;
@@ -1298,8 +1300,10 @@ class CommonController extends Controller
             $res = $this->savePremiseApplicationApprovalDetails($request, $sub_module_id, $app_details);
         }
 
-        else if ($module_id ==30) {//enforcement
+        else if ($module_id ==30) { //Enforcement
             $res = $this->saveEnforcementApplicationRecommendationDetails($request, $sub_module_id, $app_details);
+        }else if ($module_id == 35) { //Gvp
+            $res = $this->saveGvpApplicationApprovalDetails($request, $sub_module_id, $app_details);
         }
         return \response()->json($res);
     }

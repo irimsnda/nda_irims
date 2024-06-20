@@ -21,6 +21,7 @@ Ext.define('Admin.Application', {
         'ProductRecallAlertCtr',
         'ConfigurationsCtr',
         'GmpApplicationsCtr',
+        'GvpApplicationsCtr',
         'ClinicalTrialCtr',
         'ReportsCtr',
         'SurveillanceCtr',
