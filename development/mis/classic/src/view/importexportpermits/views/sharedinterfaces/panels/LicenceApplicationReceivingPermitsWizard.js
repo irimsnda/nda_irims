@@ -130,6 +130,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Licence
                             fieldLabel: 'Zone',
                             labelWidth: 50,
                             width: 400,
+                            hidden:true,
                             name: 'zone_id',
                             valueField: 'id',
                             displayField: 'name',
@@ -153,25 +154,28 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Licence
                         },'->',{
                             xtype: 'fieldcontainer',
                             layout: 'column',
-                           
+                            labelWidth: 208,
+                            width: 700,
+                            fieldLabel: 'Licence Application Details',
+                            labelAlign:'left',
                             items: [
                                 {
                                     xtype: 'textfield',
                                     name: 'reference_no',
-                                    hidden: false,fieldLabel: 'Visa Application Details',
+                                    hidden: false,
                                     readOnly: true,
-                                    columnWidth: 0.9
+                                    columnWidth: 0.7
                                 },
                                 {
                                     xtype: 'button',
                                     iconCls: 'x-fa fa-search',
-                                    columnWidth: 0.1,
+                                    columnWidth: 0.3,
                                     hidden: false,
                                     text: 'Search',
                                     tooltip: 'Select Application',
                                     name: 'select_applications',
                                     childXtype: 'allapprovedvisaapplicationsgrid',
-                                    winTitle:'Approved Visa Applications',
+                                    winTitle:'Approved License Applications',
                                     winWidth:'70%',
                                     handler: 'showIEApplicationsSelectionList'
                                 }
@@ -180,10 +184,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Licence
                     ]
                 }
             ],
-        },{
-            xtype: 'licensepermitsproductsgrid',
-            title: 'Permit Products Details',
-         },  {
+        }, {
             xtype: 'importexportdocuploadsgrid',
             title: 'Documents Submission'
         },{
@@ -224,36 +225,31 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Licence
                     step: 0,
                     iconCls: 'fa fa-university',
                     enableToggle: true,iconAlign: 'top',
-                    text: 'License Application Details',max_step:4,
+                    text: 'Application Details',max_step:3,
                     action: 'quickNav', wizard: 'licenceapplicationreceivingpermitswizard',
                     handler: 'quickNavigation'
-                },{
+                },
+            
+                {
                     step: 1,
-                    iconCls: 'fa fa-university',
-                    enableToggle: true,iconAlign: 'top',
-                    text: 'License Product Details',max_step:4,
-                    action: 'quickNav', wizard: 'licenceapplicationreceivingpermitswizard',
+                    iconCls: 'fa fa-upload',
+                    enableToggle: true,max_step: 3,
+                    text: 'Documents Submission',
+                    action: 'quickNav', iconAlign: 'top',
+                    wizard: 'licenceapplicationreceivingpermitswizard',
                     handler: 'quickNavigation'
                 }, {
                     step: 2,
-                    iconCls: 'fa fa-upload',
-                    enableToggle: true,max_step: 4,
-                    text: 'License Documents Submission',
-                    action: 'quickNav', iconAlign: 'top',
-                    wizard: 'licenceapplicationreceivingpermitswizard',
-                    handler: 'quickNavigation'
-                }, {
-                    step: 3,
-                    iconCls: 'fa fa-product-hunt',
-                    enableToggle: true,max_step: 4,
-                    text: 'License Prechecking Checklist',
+                    iconCls: 'fa fa-check-square',
+                    enableToggle: true,max_step: 3,
+                    text: 'Prechecking Checklist',
                     action: 'quickNav', iconAlign: 'top',
                     wizard: 'licenceapplicationreceivingpermitswizard',
                     handler: 'quickNavigation'
                 },{
-                    step: 4,
-                    iconCls: 'fa fa-money',
-                    enableToggle: true,max_step: 4,
+                    step: 3,
+                    iconCls: 'fa fa-money-bill-wave',
+                    enableToggle: true,max_step: 3,
                     text: 'Invoice & Payment Details',
                     action: 'quickNav',iconAlign: 'top',
                     wizard: 'licenceapplicationreceivingpermitswizard',
@@ -275,7 +271,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Licence
                 '->',
                 {
                     text: 'Previous',
-                    ui: 'soft-purple',max_step:4,
+                    ui: 'soft-purple',max_step:3,
                     iconCls: 'fa fa-arrow-left',
                     bind: {
                         disabled: '{atBeginning}'
@@ -309,7 +305,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Licence
                     ui: 'soft-purple',
                     reference: 'nextbutton',
                     iconCls: 'fa fa-arrow-right',
-                    max_step:4,
+                    max_step:3,
                     iconAlign: 'right',
                     bind: {
                         disabled: '{atEnd}'

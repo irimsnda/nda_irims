@@ -262,14 +262,18 @@ Ext.define('Admin.controller.ReportsCtr', {
     printApplicationInvoice: function (btn) {
         var me = this,
             mainTabPanel = me.getMainTabPanel(),
+            application_id='',
             activeTab = mainTabPanel.getActiveTab(),
             record = btn.getWidgetRecord();
         
             if(btn.up('window')){
               var win = btn.up('window');
-                 application_code = win.down('hiddenfield[name=active_application_code]').getValue(),
-                application_id = win.down('hiddenfield[name=active_application_id]').getValue(),
-                module_id = win.down('hiddenfield[name=module_id]').getValue();
+                 application_code = win.down('hiddenfield[name=active_application_code]').getValue();
+                 if(win.down('hiddenfield[name=active_application_id]')){
+                   application_id = win.down('hiddenfield[name=active_application_id]').getValue();
+                 } 
+                 module_id = activeTab.down('hiddenfield[name=module_id]').getValue();               
+                // module_id = win.down('hiddenfield[name=module_id]').getValue();
 
             }
             else{

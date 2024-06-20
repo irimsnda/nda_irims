@@ -1637,11 +1637,13 @@ Ext.define('Admin.view.disposalpermits.viewcontrollers.DisposalPermitsVctr', {
                         active_application_id = resp.active_application_id,
                         product_id = resp.product_id,
                         ref_no = resp.ref_no;
+                        tracking_no = resp.tracking_no;
                     if (success == true || success === true) {
                         toastr.success(message, "Success Response");
                         if (checkapplication_id == '') {
                             containerPnl.down('hiddenfield[name=active_application_id]').setValue(active_application_id);
                             containerPnl.down('displayfield[name=reference_no]').setValue(ref_no);
+                            containerPnl.down('displayfield[name=tracking_no]').setValue(tracking_no);
                         }
 
                     } else {

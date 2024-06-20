@@ -1,12 +1,7 @@
-/**
- * Created by softclans
- * user robinson odhiambo
- * Kip on 9/24/2018.
- */
+
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.PreviewControlDrugsImpPermitDetails', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.previewcontroldrugsimppermitdetails',
-    itemId:'previewimportexportpermitdetails',
     padding: '2 0 2 0',
     requires: [
         'Ext.layout.container.*',
@@ -28,6 +23,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
         dock: 'top',
         ui: 'footer',
         height: 40,
+        hidden:true,
         defaults: {
             labelAlign: 'top',
             margin: '-12 5 0 5',
@@ -68,60 +64,11 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
 ],
     items: [
         {
-            xtype: 'controlleddrugsimpdetailspnl',//onlinefoodproductsdetailspnl
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    ui: 'footer',
-                    dock: 'top',
-                    margin: 3,
-                    items: [
-                        {
-                            xtype: 'tbseparator',
-                            width: 2
-                        },
-                        {
-                            xtype: 'combo',
-                            fieldLabel: 'Zone',
-                            labelWidth: 50,
-                            width: 400,
-                            name: 'zone_id',
-                            valueField: 'id',
-                            displayField: 'name',
-                            queryMode: 'local',
-                            readOnly: true,
-                            forceSelection: true,
-                            listeners: {
-                                beforerender: {
-                                    fn: 'setOrgConfigCombosStore',
-                                    config: {
-                                        pageSize: 1000,
-                                        proxy: {
-                                            extraParams: {
-                                                model_name: 'Zone'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            },
-                            labelStyle: 'font-weight:bold'
-                        }
-                    ]
-                }
-            ],
+            xtype: 'controlleddrugslicensedetailspnl',
+           
         },{
             xtype: 'importexportapplicantdetailsfrm',
             title: 'APPLICANT DETAILS'
-        },{
-            xtype: 'tabpanel',
-            items: [{
-                xtype: 'onlineimportexportdocuploadsgrid',
-                title: 'Documents Submission'
-            }]
-        },{
-            title: 'Invoice & Payment Details',
-            xtype: 'onlineappinvoicepaymentspanel',
         },
         {
             xtype: 'hiddenfield',
@@ -148,7 +95,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     step: 0,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
-                    text: 'Controlled Drugs Permit Details',
+                    text: 'Application Details',
                     action: 'quickNav', 
                     wizard: 'previewcontroldrugsimppermitdetails',
                     handler: 'prevquickNavigation'
@@ -161,30 +108,13 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     action: 'quickNav',
                     wizard: 'previewcontroldrugsimppermitdetails',
                     handler: 'prevquickNavigation'
-                }, {
-                    step: 2,
-                    iconCls: 'fa fa-upload',
-                    enableToggle: true,
-                    text: 'Controlled Drugs Permit Documents Submission',
-                    action: 'quickNav', 
-                    wizard: 'previewcontroldrugsimppermitdetails',
-                    handler: 'prevquickNavigation'
-                },{
-                    step: 3,
-                    iconCls: 'fa fa-check-square',
-                    enableToggle: true,
-                    text: 'Invoice & Payment Details',
-                    action: 'quickNav',
-                    wizard: 'previewcontroldrugsimppermitdetails',
-                    handler: 'quickNavigationonlineprev'
                 }
-
-                
             ]
         };
         this.bbar = {
             reference: 'navigation-toolbar',
             ui: 'footer',
+            hidden:true,
             items: [
                 {
                     text: 'Back to List',
@@ -201,6 +131,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     bind: {
                         disabled: '{atBeginning}'
                     },
+                    max_step: 1,
                     wizard:'previewcontroldrugsimppermitdetails',
                     handler: 'prevonPrevCardClick'
                 },
@@ -213,16 +144,25 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
                     action_url: 'onSavePermitinformation',
                     wizard: 'previewcontroldrugsimppermitdetails',
                     handler: 'savePermitInformation'
+                },{
+                    text: 'Save Screening Details',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-save',
+                    name: 'save_screening_btn',
+                    disabled:true,
+                    hidden: true
                 },
                 {
                     text: 'Next',
                     ui: 'soft-purple',
                     reference: 'nextbutton',
                     iconCls: 'fa fa-arrow-right',
-                    iconAlign: 'right',
+                    iconAlign: 'right', 
+                    max_step: 1,
                     bind: {
                         disabled: '{atEnd}'
-                    },wizard:'previewcontroldrugsimppermitdetails',
+                    },
+                    wizard:'previewcontroldrugsimppermitdetails',
                     handler: 'prevonNextCardClick'
                 }
             ]
@@ -230,3 +170,4 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Preview
         me.callParent(arguments);
     }
 });
+

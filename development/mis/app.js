@@ -1463,6 +1463,7 @@ function getApplicationTable(module_id, section_id) {
             product_table: 'tra_product_applications',
             pms_table: 'tra_surveillance_applications',
             importexport_table: 'tra_importexport_applications',
+            controlleddrugs_table: 'tra_importexport_applications',
             tra_promotion_adverts_applications: 'tra_promotion_adverts_applications',
             product_notifications: 'tra_product_notifications',
             disposal: 'tra_disposal_applications',
@@ -1484,6 +1485,8 @@ function getApplicationTable(module_id, section_id) {
         table_name = 'pms_table';
     } else if (module_id == 4 || module_id === 4) {
         table_name = 'importexport_table';
+    }else if (module_id == 12 || module_id === 12) {
+        table_name = 'controlleddrugs_table';
     } else if (module_id == 14 || module_id === 14) {
         table_name = 'tra_promotion_adverts_applications';
     } else if (module_id == 6 || module_id === 6) {
@@ -1824,6 +1827,7 @@ function checkPrecheckingrecommendation(application_code, module_id){
     });
     return is_recommended;
 }
+
 
 
 function checkAssignedProcessingZone(application_code, module_id){

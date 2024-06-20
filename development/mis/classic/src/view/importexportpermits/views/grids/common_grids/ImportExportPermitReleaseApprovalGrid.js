@@ -18,6 +18,35 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             isLoad: true,
             autoLoad: true
         },
+         afterrender: function(grid) {
+                var pnl = grid.up('panel'),
+                subModuleId = pnl.down('hiddenfield[name=sub_module_id]').getValue();
+                grid.columns.forEach(function(column) {
+                if(subModuleId==12 || subModuleId===12){
+                            if (column.dataIndex === 'proforma_invoice_no') {
+                                column.setHidden(false);
+                            } 
+                            if (column.dataIndex === 'vc_application_type') {
+                                column.setHidden(false);
+                            }
+                            if (column.dataIndex === 'registration_level') {
+                                column.setHidden(false);
+                            }
+                              
+                          }else{
+                            if (column.dataIndex === 'proforma_invoice_no') {
+                                column.setHidden(true);
+                            } 
+                            if (column.dataIndex === 'vc_application_type') {
+                                column.setHidden(true);
+                            }
+                            if (column.dataIndex === 'registration_level') {
+                                column.setHidden(true);
+                            }
+                            
+                          }
+                    });
+        },
 
 
         select: function (sel, record, index, eOpts) {
@@ -153,6 +182,24 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         text: 'Tracking No',
         tdCls: 'wrap-text',
         flex: 1
+    },{
+        xtype: 'gridcolumn',
+        text: 'VC Application Type',
+        dataIndex: 'vc_application_type',
+        flex: 1,
+        hidden:true,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
+    }, {
+        xtype: 'gridcolumn',
+        text: 'Registration Level',
+        dataIndex: 'registration_level',
+        flex: 1,
+        hidden:true,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'date_added',

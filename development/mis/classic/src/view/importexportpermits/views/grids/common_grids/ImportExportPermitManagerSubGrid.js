@@ -20,7 +20,42 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             },
             isLoad: false
         },
-        
+         afterrender: function(grid) {
+                var pnl = grid.up('panel'),
+                subModuleId = pnl.down('hiddenfield[name=sub_module_id]').getValue();
+                grid.columns.forEach(function(column) {
+                if(subModuleId==12 || subModuleId===12){
+                            if (column.dataIndex === 'proforma_invoice_no') {
+                                column.setHidden(false);
+                            } 
+                            if (column.dataIndex === 'vc_application_type') {
+                                column.setHidden(false);
+                            }
+                            if (column.dataIndex === 'registration_level') {
+                                column.setHidden(false);
+                            }
+                              
+                          }else{
+                            if (column.dataIndex === 'proforma_invoice_no') {
+                                column.setHidden(true);
+                            } 
+                            if (column.dataIndex === 'vc_application_type') {
+                                column.setHidden(true);
+                            }
+                            if (column.dataIndex === 'registration_level') {
+                                column.setHidden(true);
+                            }
+                            
+                          }
+                    });
+        },
+        select: function (sel, record, index, eOpts) {
+            var grid = sel.view.grid,
+                selCount = grid.getSelectionModel().getCount();
+            if (selCount > 0) {
+                grid.down('button[name=submit_selected]').setDisabled(false);
+            }
+        },
         deselect: function (sel, record, index, eOpts) {
             
             var grid = sel.view.grid,
@@ -42,6 +77,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         xtype: 'combo',
         fieldLabel: 'Zones',
         forceSelection: true,
+        hidden:true,
         queryMode: 'local',
         valueField: 'id',
         labelAlign : 'top',
@@ -85,71 +121,61 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         xtype: 'gridcolumn',
         dataIndex: 'tracking_no',
         text: 'Tracking No',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'reference_no',
-        text: 'Reference No',
+        tdCls: 'wrap-text',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'applicant_name',
-        text: 'Applicant Name',
-        flex: 1
+        text: 'VC Application Type',
+        dataIndex: 'vc_application_type',
+        flex: 1,
+        hidden:true,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'proforma_invoice_no',
-        text: 'Proforma Invoice No',
+        text: 'Registration Level',
+        dataIndex: 'registration_level',
+        flex: 1,
+        hidden:true,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'date_added',
+        text: 'Application Date',
+        tdCls: 'wrap-text',
         flex: 1
     },{
         xtype: 'gridcolumn',
-        text: 'Has Licensed Premises', 
-        dataIndex: 'certificate_no',
-        renderer: function (value, metaData) {
-            if (value == 1) {
-                metaData.tdStyle = 'color:white;background-color:green';
-                return "Registered/Licensed";
-            }
-
-            metaData.tdStyle = 'color:white;background-color:red';
-            return "Not Registered";
-        }
-
-    },{
-        xtype: 'gridcolumn',
-        text: 'Premises Name',
+        text: 'Business Name',
         dataIndex: 'premises_name',
         flex: 1,
+        tdCls: 'wrap-text',
         tdCls: 'wrap'
         
     },{
         xtype: 'gridcolumn',
-        text: 'Premises Physical Address',
-        dataIndex: 'prem_physical_address',
-        flex: 1,
-        tdCls: 'wrap'
-        
-    },{
+        dataIndex: 'business_type',
+        text: 'Business Type',
+        tdCls: 'wrap-text',
+        flex: 1
+    }, 
+    {
         xtype: 'gridcolumn',
-        text: 'Premises Registration No',
-        dataIndex: 'premise_reg_no',
+        text: 'Invoice No',
+        dataIndex: 'proforma_invoice_no',
         flex: 1,
+        hidden:true,
+        tdCls: 'wrap-text',
         tdCls: 'wrap'
         
-    }, {
+    },
+   {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
         text: 'Status',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'premises_validation_recommendation',
-        text: 'Premises Validation Recommendation',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'products_validation_recommendation',
-        text: 'Products Validation Recommendation',
         flex: 1
     },{
         text: 'Options',

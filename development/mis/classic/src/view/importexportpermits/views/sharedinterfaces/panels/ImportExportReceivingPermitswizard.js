@@ -150,7 +150,7 @@ Ext.define(
       },
       {
         xtype: "productscreeninggrid",
-        title: "Import/Export Permit Prechecking",
+        title: "Import/Export Application Prechecking",
       },
 
       {
@@ -196,7 +196,7 @@ Ext.define(
             iconCls: "fa fa-university",
             enableToggle: true,
             iconAlign: "top",
-            text: " Permit Application Details",
+            text: " Application Details",
             max_step: 4,
             action: "quickNav",
             wizard: "importexportreceivingpermitswizard",

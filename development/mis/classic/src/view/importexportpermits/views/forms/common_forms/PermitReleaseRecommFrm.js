@@ -112,7 +112,7 @@
             xtype: 'combo',
             store: 'confirmationstr',
             value: 1,
-            fieldLabel: 'DG Signatory?',
+            fieldLabel: 'SA Signatory?',
             queryMode: 'local',
             forceSelection: true,
             valueField: 'id',
@@ -163,7 +163,7 @@
             }
         },{
             xtype: 'textarea',
-            fieldLabel: 'Permit Release/Rejection Remarks',
+            fieldLabel: 'Release/Rejection Remarks',
             name: 'permit_release_remarks',
             allowBlank: true
         }

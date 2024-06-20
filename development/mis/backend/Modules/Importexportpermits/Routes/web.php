@@ -29,6 +29,7 @@ Route::group(['middleware' => ['web'], 'prefix' => 'importexportpermits'], funct
     Route::get('getImportExportPermitDeclarations', [ImportexportpermitsController::class, 'getImportExportPermitDeclarations']);
     Route::get('getPreviousImportExportDocuploads', [ImportexportpermitsController::class, 'getPreviousImportExportDocuploads']);
     Route::get('getPreviousPreviousScreeningData', [ImportexportpermitsController::class, 'getPreviousPreviousScreeningData']);
+     Route::get('getImportProductRange', [ImportexportpermitsController::class, 'getImportProductRange']);
     Route::get('getImportexportpermitsproductsDetails', [ImportexportpermitsController::class, 'getImportexportpermitsproductsDetails']);
     Route::get('getRegisteredNonRegisteredProddetails', [ImportexportpermitsController::class, 'getRegisteredNonRegisteredProddetails']);
     Route::get('getSenderreceiverinformation', [ImportexportpermitsController::class, 'getSenderreceiverinformation']);
@@ -36,6 +37,7 @@ Route::group(['middleware' => ['web'], 'prefix' => 'importexportpermits'], funct
     Route::get('prepapareImportpermitUniformStage', [ImportexportpermitsController::class, 'prepapareImportpermitUniformStage']);
     Route::get('prepareImportInvoicingStage', [ImportexportpermitsController::class, 'prepareImportInvoicingStage']);
     Route::get('getImportsInvoicingOtherDetails', [ImportexportpermitsController::class, 'getImportsInvoicingOtherDetails']);
+    Route::get('getImportationReasons', [ImportexportpermitsController::class, 'getImportationReasons']);
     Route::get('getAllNonLicensedPremises', [ImportexportpermitsController::class, 'getAllNonLicensedPremises']);
     Route::get('prepareNewImportExportPaymentStage', [ImportexportpermitsController::class, 'prepareNewImportExportPaymentStage']);
     Route::get('getImportExportApprovedPermit', [ImportexportpermitsController::class, 'getImportExportApprovedPermit']);
@@ -116,8 +118,9 @@ Route::group(['middleware' => ['web'], 'prefix' => 'importexportpermits'], funct
     Route::get('getImportExportCancelledPermit', [ImportexportpermitsController::class, 'getImportExportCancelledPermit']);
     Route::post('savePermitCancellationApprovalDetails', [ImportexportpermitsController::class, 'savePermitCancellationApprovalDetails']);
     Route::get('getApprovedPermitAppsDetails', [ImportexportpermitsController::class, 'getApprovedPermitAppsDetails']);
+    Route::get('getConsigneedetails', [ImportexportpermitsController::class, 'getConsigneedetails']);
     Route::get('getApprovedPermitRegisterDetails', [ImportexportpermitsController::class, 'getApprovedPermitRegisterDetails']);
-    Route::get('getApprovedVisaApplicationDetails', [ImportexportpermitsController::class, 'getApprovedVisaApplicationDetails']);
+    Route::get('getApprovedLicenceApplicationDetails', [ImportexportpermitsController::class, 'getApprovedLicenceApplicationDetails']);
     Route::post('onIntiateLicenseApplication', 'ImportexportpermitsController@onIntiateLicenseApplication');
     Route::get('getApprovedImportLicenseApplicationDetails', [ImportexportpermitsController::class, 'getApprovedImportLicenseApplicationDetails']);
     Route::post('onIntiateLicenseInspectionApplication', 'ImportexportpermitsController@onIntiateLicenseInspectionApplication');

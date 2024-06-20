@@ -259,6 +259,7 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                     text: 'Prechecking',wizard_pnl : 'newgmpreceivingwizard',
                     action: 'quickNav'
                 },
+                
                 {
                     step: 6,
                     iconCls: 'fa fa-money-bill-wave',

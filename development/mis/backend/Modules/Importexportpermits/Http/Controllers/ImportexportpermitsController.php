@@ -698,6 +698,20 @@ class ImportexportpermitsController extends Controller
                 );
 
             $results = $qry1->first();
+            $results->importexport_product_range_id=json_decode($results->importexport_product_range_id);
+            $premise_id = $results->premise_id;
+            $has_registered_premises = $results->has_registered_premises;
+            $business_type_id = $results->business_type_id;
+
+            if($has_registered_premises==1 || $has_registered_premises===1){
+                 if($business_type_id==5 || $business_type_id===5){
+                    $manufacturing_site_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
+                    $results->manufacturing_site_name=$manufacturing_site_name;
+                 }else{
+                    $premises_name = getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'name');
+                    $results->premises_name=$premises_name;
+                 }
+            }
             $sender_receiver_id = $results->sender_receiver_id;
             $qry2 = DB::table('tra_permitsenderreceiver_data as t3')
                 ->select(
@@ -717,16 +731,18 @@ class ImportexportpermitsController extends Controller
                 ->where(array('id' => $sender_receiver_id));
             $senderReceiverDetails = $qry2->first();
 
+            // $qry3 = DB::table('tra_premises as t3')
+            //     ->select('t3.*')
+            //     ->where(array('id' => $premise_id));
+            // $premisesDetails = $qry3->first();
+            $premisesDetails=$this->getPremiseDetails($has_registered_premises,$business_type_id,$premise_id);
+
             $res = array(
                 'success' => true,
                 'results' => $results,
                 'senderReceiverDetails' => $senderReceiverDetails,
+                'premisesDetails' => $premisesDetails,
                 'message' => 'All is well'
-            );
-        } catch (\Exception $exception) {
-            $res = array(
-                'success' => false,
-                'message' => $exception->getMessage()
             );
         } catch (\Throwable $throwable) {
             $res = array(
@@ -1906,7 +1922,7 @@ class ImportexportpermitsController extends Controller
             $module_id = $request->input('module_id');
             $sub_module_id = $request->input('sub_module_id');
 
-            $narcoticsdrug_type_id = $request->input('narcoticsdrug_type_id');
+           // $narcoticsdrug_type_id = $request->input('narcoticsdrug_type_id');
 
             $user_id = $this->user_id;
 
@@ -1918,19 +1934,14 @@ class ImportexportpermitsController extends Controller
                 "sub_module_id" => $request->input('sub_module_id'),
                 "module_id" => $request->input('module_id'),
                 "section_id" => $request->input('section_id'),
-
-                "narcoticsdrug_type_id" => $request->input('narcoticsdrug_type_id'),
-                "modesof_transport_id" => $request->input('modesof_transport_id'),
-
-                "permit_reason_id" => $request->input('permit_reason_id'),
-                "proforma_invoice_no" => $request->input('proforma_invoice_no'),
-                "proforma_invoice_date" => $request->input('proforma_invoice_date'),
-                "pharmacists_in_charge" => $request->input('pharmacists_in_charge'),
-                "pharmacists_registration_no" => $request->input('pharmacists_registration_no'),
-                "hospital_registration_no" => $request->input('hospital_registration_no'),
-                "zone_id" => $request->input('zone_id'),
-                "port_id" => $request->input('port_id'),
                 "sender_receiver_id" => $request->input('sender_receiver_id'),
+                "premise_id" => $request->input('premise_id'),
+                "has_registered_premises" => $request->input('has_registered_premises'),
+                "business_type_id" => $request->input('business_type_id'),
+                "licence_type_id" => $request->input('licence_type_id'),
+                "product_classification_id" => $request->input('product_classification_id'),
+                "importexport_product_range_id" => $request->input('importexport_product_range_id'),
+                "zone_id" => $request->input('zone_id'),
             );
 
             $applications_table = 'tra_importexport_applications';
@@ -1965,12 +1976,12 @@ class ImportexportpermitsController extends Controller
                 $section_code = getSingleRecordColValue('par_sections', array('id' => $section_id), 'code');
 
                 $apptype_code = getSingleRecordColValue('sub_modules', array('id' => $sub_module_id), 'code');
-                $narcoticsdrug_typecode = getSingleRecordColValue('par_narcoticsdrug_types', array('id' => $narcoticsdrug_type_id), 'code');
+               // $narcoticsdrug_typecode = getSingleRecordColValue('par_narcoticsdrug_types', array('id' => $narcoticsdrug_type_id), 'code');
 
                 $codes_array = array(
                     'section_code' => $section_code,
                     'zone_code' => $zone_code,
-                    'narcoticsdrug_typecode' => $narcoticsdrug_typecode
+//narcoticsdrug_typecode' => $narcoticsdrug_typecode
                 );
 
                 $application_code = generateApplicationCode($sub_module_id, $applications_table);
@@ -2134,20 +2145,22 @@ class ImportexportpermitsController extends Controller
                 "licence_type_id" => $request->input('licence_type_id'),
                 "product_classification_id" => $request->input('product_classification_id'),
                 "importexport_product_range_id" => $request->input('importexport_product_range_id'),
-                // "permit_category_id" => $request->input('permit_category_id'),
-                // "import_typecategory_id" => $request->input('import_typecategory_id'),
+                 "product_category_id" => $request->input('product_category_id'),
 
-                // "permit_reason_id" => $request->input('permit_reason_id'),
-                // "proforma_invoice_no" => $request->input('proforma_invoice_no'),
+                 "importation_reason_id" => $request->input('importation_reason_id'),
+                 "vc_application_type_id" => $request->input('vc_application_type_id'),
+                "is_registered" => $request->input('is_registered'),
+                "proforma_invoice_no" => $request->input('proforma_invoice_no'),
 
-                // "proforma_invoice_date" => $request->input('proforma_invoice_date'),
-                // "mode_oftransport_id" => $request->input('mode_oftransport_id'),
-                // "permit_productscategory_id" => $request->input('permit_productscategory_id'),
-
-                // "paying_currency_id" => $request->input('paying_currency_id'),
-                "zone_id" => $request->input('zone_id'),
-                // "port_id" => $request->input('port_id'),
-                // "consignee_options_id" => $request->input('consignee_options_id'),
+                "proforma_invoice_date" => $request->input('proforma_invoice_date'),
+                "importer_licence_number" => $request->input('importer_licence_number'),
+                "consignee_id" => $request->input('consignee_id'),
+                "entry_country_id" => $request->input('entry_country_id'),
+                "mode_oftransport_id" => $request->input('mode_oftransport_id'),
+                "contact_person_id" => $request->input('contact_person_id'),
+                 "port_id" => $request->input('port_id'),
+                "applicant_as_consignee" => $request->input('applicant_as_consignee'),
+                "applicant_contact_person" => $request->input('applicant_contact_person'),
             );
 
             $applications_table = 'tra_importexport_applications';
@@ -2171,11 +2184,12 @@ class ImportexportpermitsController extends Controller
 
                 $application_code = $app_details[0]['application_code']; //$app_details->application_code;
                 $ref_number = $app_details[0]['reference_no']; //$app_details->reference_no;
+                $tracking_number = $app_details[0]['tracking_no'];
 
                 $res['active_application_id'] = $active_application_id;
                 $res['application_code'] = $application_code;
                 $res['ref_no'] = $ref_number;
-                $res['tracking_no'] = $ref_number;
+                $res['tracking_no'] = $tracking_number;
             } else {
 
 
@@ -2207,12 +2221,12 @@ class ImportexportpermitsController extends Controller
 
                 $ref_id = getSingleRecordColValue('tra_submodule_referenceformats', array('sub_module_id' => $sub_module_id, 'module_id' => $module_id, 'reference_type_id' => 1), 'reference_format_id');
 
-                $ref_number = generateProductsRefNumber($ref_id, $codes_array, date('Y'), $process_id, $zone_id, $user_id);
+                $tracking_no = generateProductsRefNumber($ref_id, $codes_array, date('Y'), $process_id, $zone_id, $user_id);
                 $view_id = generateApplicationViewID();
                 //  'view_id'=>$view_id,
                 $app_data['view_id'] = $view_id;
-                $app_data['reference_no'] = $ref_number;
-                $app_data['tracking_no'] = $ref_number;
+               // $app_data['reference_no'] = $ref_number;
+                $app_data['tracking_no'] = $tracking_no;
                 $app_data['application_code'] = $application_code;
                 $app_data['created_by'] = \Auth::user()->id;
                 $app_data['created_on'] = Carbon::now();
@@ -2227,8 +2241,8 @@ class ImportexportpermitsController extends Controller
                     'application_id' => $active_application_id,
                     'process_id' => $process_id,
                     'application_code' => $application_code,
-                    //'reference_no' => $ref_number,
-                    'tracking_no' => $ref_number,
+                    //'reference_no' => $tracking_no,
+                    'tracking_no' => $tracking_no,
                     'usr_from' => $user_id,
                     'usr_to' => $user_id,
                     'previous_stage' => $workflow_stage_id,
@@ -2249,10 +2263,10 @@ class ImportexportpermitsController extends Controller
                 $res['active_application_id'] = $active_application_id;
                 $res['application_code'] = $application_code;
 
-                $res['ref_no'] = $ref_number;
-                $res['tracking_no'] = $ref_number;
+               // $res['ref_no'] = $ref_number;
+                $res['tracking_no'] = $tracking_no;
                 //dms function 
-                $nodetracking = str_replace("/", "-", $ref_number);
+                $nodetracking = str_replace("/", "-", $tracking_no);
 
                 $node_details = array(
                     'name' => $nodetracking,
@@ -5256,7 +5270,9 @@ class ImportexportpermitsController extends Controller
                     $join->on('t1.id', '=', 't22.application_id')
                         ->on('t1.application_code', '=', 't22.application_code');
                 })
-                   ->leftJoin('par_approval_decisions as t23', 't22.decision_id', '=', 't23.id')
+                ->leftJoin('par_approval_decisions as t23', 't22.decision_id', '=', 't23.id')
+                ->leftJoin('par_vc_application_type as t24', 't1.vc_application_type_id', '=', 't24.id')
+                ->leftJoin('par_import_registration_level as t25', 't1.is_registered', '=', 't25.id')
 
                 ->select(
                     't1.*',
@@ -5273,6 +5289,8 @@ class ImportexportpermitsController extends Controller
                     't23.name as director_recommendation',
                     't1.id as active_application_id',
                     't21.name as business_type',
+                    't24.name as vc_application_type',
+                    't25.name as registration_level',
                     DB::raw("CONCAT_WS(' ',decrypt(t12.first_name),decrypt(t12.last_name)) as from_user,t16.name as process_name, t11.name as workflow_stage")
                 )
                 ->groupBy('t1.id')
@@ -5602,7 +5620,8 @@ class ImportexportpermitsController extends Controller
                 ->leftJoin('par_permit_category as t5', 't1.permit_category_id', '=', 't5.id')
                 ->leftJoin('par_system_statuses as t6', 't1.application_status_id', '=', 't6.id')
                 ->leftJoin('tra_managerpermits_review as t7', 't1.application_code', '=', 't7.application_code')
-
+                ->leftJoin('par_business_types as t8', 't1.business_type_id', '=', 't8.id')
+               ->leftJoin('tra_permitsrelease_recommendation as t9', 't1.application_code', 't9.application_code')
                 ->select(
                     't1.*',
                     't1.id as active_application_id',
@@ -5610,6 +5629,7 @@ class ImportexportpermitsController extends Controller
                     't1.application_code',
                     't3.name as applicant_name',
                     't3.tin_no',
+                    't1.applicant_id',
                     't3.country_id as app_country_id',
                     't3.region_id as app_region_id',
                     't3.district_id as app_district_id',
@@ -5623,8 +5643,10 @@ class ImportexportpermitsController extends Controller
                     't3.name as applicant_name',
                     't4.name as sender_receiver_name',
                     't7.permit_no',
+                     't8.name as business_type',
                     DB::raw("date_format(t7.expiry_date, '%m/%d/%Y') as expiry_date")
-                );
+                )
+                ->groupBy('t1.id');
 
             if ($filter_string != '') {
                 $qry->whereRAW($filter_string);
@@ -5632,6 +5654,28 @@ class ImportexportpermitsController extends Controller
 
             $count = $qry->count();
             $records = $qry->orderBy('t1.id', 'desc')->skip($start)->take($limit)->get();
+
+            foreach ($records as $record) {
+             $premise_id = $record->premise_id;
+             $has_registered_premises = $record->has_registered_premises;
+             $business_type_id = $record->business_type_id;
+             $record->date_added = formatDateWithSuffix($record->created_on);
+
+             $record->expiry_date_formated = formatDateWithSuffix($record->expiry_date);
+             if($has_registered_premises==1 || $has_registered_premises===1){
+                 if($business_type_id==5 || $business_type_id===5){
+                    $premises_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
+                    $record->premises_name=$premises_name;
+                 }else{
+                    $premises_name = getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'name');
+                    $record->premises_name=$premises_name;
+                 }
+            }else{
+                $premises_name = getSingleRecordColValue('tra_non_license_business_details', array('id' => $premise_id), 'name');
+                $record->premises_name=$premises_name;
+
+            }
+          }
 
             $res = array(
                 'success' => true,
@@ -5655,7 +5699,7 @@ class ImportexportpermitsController extends Controller
 
 
 
-    public function getApprovedVisaApplicationDetails(Request $req)
+    public function getApprovedLicenceApplicationDetails(Request $req)
     {
         $filter = $req->input('filter');
         $start = $req->input('start');
@@ -5698,6 +5742,7 @@ class ImportexportpermitsController extends Controller
                 ->leftJoin('par_system_statuses as t6', 't1.application_status_id', '=', 't6.id')
                 ->leftJoin('tra_managerpermits_review as t7', 't1.application_code', '=', 't7.application_code')
                 ->leftJoin('tra_permitsrelease_recommendation as t8', 't1.application_code', '=', 't8.application_code')
+                ->leftJoin('par_business_types as t9', 't1.business_type_id', '=', 't9.id')
                 ->select(
                     't1.*',
                     't1.id as active_application_id',
@@ -5718,9 +5763,10 @@ class ImportexportpermitsController extends Controller
                     't3.name as applicant_name',
                     't4.name as sender_receiver_name',
                     't7.permit_no',
+                    't9.name as business_type',
                     DB::raw("date_format(t7.expiry_date, '%m/%d/%Y') as expiry_date")
                 )
-                ->where(array('t8.decision_id' => 1, 't1.section_id' => $section_id));
+                ->where(array('t8.decision_id' => 1));
 
             if ($filter_string != '') {
                 // $qry->whereRAW($filter_string);
@@ -5728,6 +5774,28 @@ class ImportexportpermitsController extends Controller
 
             $count = $qry->count();
             $records = $qry->orderBy('t1.id', 'desc')->skip($start)->take($limit)->get();
+            foreach ($records as $record) {
+             $premise_id = $record->premise_id;
+             $has_registered_premises = $record->has_registered_premises;
+             $business_type_id = $record->business_type_id;
+             $record->date_added = formatDateWithSuffix($record->created_on);
+
+             $record->expiry_date_formated = formatDateWithSuffix($record->expiry_date);
+             if($has_registered_premises==1 || $has_registered_premises===1){
+                 if($business_type_id==5 || $business_type_id===5){
+                    $premises_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
+                    $record->premises_name=$premises_name;
+                 }else{
+                    $premises_name = getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'name');
+                    $record->premises_name=$premises_name;
+                 }
+            }else{
+                $premises_name = getSingleRecordColValue('tra_non_license_business_details', array('id' => $premise_id), 'name');
+                $record->premises_name=$premises_name;
+
+            }
+          }
+
 
             $res = array(
                 'success' => true,
@@ -5751,21 +5819,20 @@ class ImportexportpermitsController extends Controller
     public function saveImportExportEditionBaseDetails(Request $req)
     {
         $table_data = $req->all();
-        $sender_receiver_id = $req->sender_receiver_id;
-        $zone_id = $req->zone_id;
         $application_code = $req->application_code;
-        $port_id = $req->port_id;
-        $proforma_invoice_no = $req->proforma_invoice_no;
-        $proforma_invoice_date = formatDate($req->proforma_invoice_date);
+        
         if (validateIsNumeric($application_code)) {
             //update record
             $app_data = array();
-            $app_data['sender_receiver_id'] = $table_data['sender_receiver_id'];
-            // $app_data['zone_id'] = $table_data['zone_id'];
-            //$app_data['port_id'] = $table_data['port_id'];
+           
 
-            $app_data['proforma_invoice_no'] = $table_data['proforma_invoice_no'];
-            $app_data['proforma_invoice_date'] = $table_data['proforma_invoice_date'];
+            $app_data['sender_receiver_id'] = $table_data['sender_receiver_id'];
+            $app_data['premise_id'] = $table_data['premise_id'];
+            $app_data['has_registered_premises'] = $table_data['has_registered_premises'];
+            $app_data['business_type_id'] = $table_data['business_type_id'];
+            $app_data['licence_type_id']= $table_data['licence_type_id'];
+            $app_data['product_classification_id'] = $table_data['product_classification_id'];
+            $app_data['importexport_product_range_id'] = $table_data['importexport_product_range_id'];
 
             //app table update
             $app_table_name = 'tra_importexport_applications';
@@ -5837,6 +5904,69 @@ class ImportexportpermitsController extends Controller
         return \response()->json($res);
     }
 
+    public function getImportationReasons(Request $req) {
+    try {
+        $business_type_id = $req->input('business_type_id');
+        $licence_type_id = $req->input('licence_type_id');
+
+        $records = DB::table('par_importexport_reasons as t1')
+            ->join('par_importationreasons as t2', 't2.importation_reason_id', '=', 't1.id')
+            ->where([
+                't2.business_type_id' => $business_type_id,
+                't2.licence_type_id' => $licence_type_id
+            ])
+            ->select('t1.id', 't1.name')
+            ->get();
+
+        $res = [
+            'success' => true,
+            'results' => $records,
+            'message' => 'All is well'
+        ];
+    } catch (\Exception $e) {
+        $res = [
+            'success' => false,
+            'message' => $e->getMessage()
+        ];
+    } catch (\Throwable $throwable) {
+        $res = [
+            'success' => false,
+            'message' => $throwable->getMessage()
+        ];
+    }
+
+    return response()->json($res);
+}
+
+public function getImportProductRange(Request $req) {
+    try {
+        $importexport_product_range_id = json_decode($req->input('importexport_product_range_id'));
+        $records = DB::table('par_importexport_product_category as t1')
+            ->whereIn('t1.importexport_product_range_id', $importexport_product_range_id)
+            ->select('t1.*')
+            ->get();
+
+        $res = [
+            'success' => true,
+             'results' => $records,
+            'message' => 'All is well'
+        ];
+    } catch (\Exception $e) {
+        $res = [
+            'success' => false,
+            'message' => $e->getMessage()
+        ];
+    } catch (\Throwable $throwable) {
+        $res = [
+            'success' => false,
+            'message' => $throwable->getMessage()
+        ];
+    }
+
+    return response()->json($res);
+}
+
+
 
 
     public function getNarcoticspermitsproductsDetails(Request $req)
@@ -5880,9 +6010,12 @@ class ImportexportpermitsController extends Controller
         $requested_by = $req->requested_by;
         $user_id = $this->user_id;
         $expiry_date = $this->getNewDate($table_data['prev_expiry_date'], $table_data['extension_period'], $table_data['timeline_duration_id']);
+       // dd($table_data['prev_expiry_date']);
         $updated_data['expiry_date'] = $expiry_date;
         $table_data['expiry_date'] = $expiry_date;
         $table_data['application_code'] = $application_code;
+
+
         if ($requested_by == '') {
 
             $table_data['requested_by'] = $user_id;
@@ -5892,6 +6025,7 @@ class ImportexportpermitsController extends Controller
             if (!validateIsNumeric($id)) {
 
                 $res = insertRecord('tra_permit_extensions', $table_data, $user_id);
+                $res['expiry_date'] = $table_data['expiry_date']->format('m/d/Y');
                 if ($res['success']) {
                     $app_where = array(
                         'application_code' => $application_code
@@ -5912,6 +6046,7 @@ class ImportexportpermitsController extends Controller
                     $previous_data = $prev_appdata['results'];
 
                     $res = updateRecord($table_name, $previous_data, $app_where, $table_data, $user_id);
+                    $res['expiry_date'] = $table_data['expiry_date']->format('m/d/Y');
                     //updated permit review table
                     $prev_permitdata = getPreviousRecords('tra_importexport_applications', $app_where);
                     //$application_code =  $prev_permitdata['results'][0]['application_code'];
@@ -5935,24 +6070,34 @@ class ImportexportpermitsController extends Controller
         return \response()->json($res);
     }
     public function getNewDate($oldDate, $extension_period, $duration_desc)
-    {
-        // $date = Carbon::now();
-        $date = Carbon::parse($oldDate);
-        switch ($duration_desc) {
-            case 2:
-                return $date->addDays($extension_period);
-                break;
-            case 1:
-                return $date->addMonths($extension_period);
-                break;
-            case 3:
-                return $date->addYears($extension_period);
-                break;
-            default:
-                return '0000-00-00 00:00:00';
-                break;
-        }
+{
+    // $date = Carbon::now();
+
+     $date = Carbon::parse($oldDate);
+    switch ($duration_desc) {
+        case 1: // Years
+            return $date->addYears($extension_period);
+            break;
+        case 2: // Months
+            return $date->addMonths($extension_period);
+            break;
+        case 3: // Weeks
+            return $date->addWeeks($extension_period);
+            break;
+        case 4: // Days
+
+            // $date = Carbon::parse($oldDate);
+            // $test=$date->addDays($extension_period);
+            // dd($test);
+           
+            return $date->addDays($extension_period);
+            break;
+        default:
+            return '0000-00-00 00:00:00';
+            break;
     }
+}
+
 
   public function savePersonalUsePermitReceivingBaseDetails(Request $request)
         {
@@ -6935,6 +7080,9 @@ private function processApplication($table_name, $application_code, $request, $u
             $where = array('application_code' => $application_code);
             $workflow_stage_id =  $req->workflow_stage_id;
             $sub_module_id =  $req->sub_module_id;
+            $vc_application_type_id =  $req->vc_application_type_id;
+            $is_registered =  $req->is_registered;
+            $permit_no =  $req->permit_no;
             $section_id = $req->section_id;
             $application_status_id = 1;
             $email = $req->email;
@@ -6942,6 +7090,7 @@ private function processApplication($table_name, $application_code, $request, $u
             $trader_id = $req->trader_id;
             $rec = DB::table($table_name)->where($where)->first();
             $permit_productscategory_id = $req->input('permit_productscategory_id');
+
 
             $user_id = $this->user_id;
             if ($rec) {
@@ -6953,19 +7102,26 @@ private function processApplication($table_name, $application_code, $request, $u
                     ->where(array('reg_importexport_id' => $reg_importexport_id, 'sub_module_id' => $sub_module_id))
                     ->first();
 
+
                 if (!$record && $reg_importexport_id != 0) {
 
                     $reference_no = $rec->reference_no;
                     $process_id = getSingleRecordColValue('wf_tfdaprocesses', array('sub_module_id' => $sub_module_id, 'section_id' => $section_id), 'id');
                     $view_id = generateApplicationViewID();
                     $app_data = array(
-                        'importexport_permittype_id' => $rec->importexport_permittype_id,
                         'sub_module_id' => $sub_module_id,
-                        'permit_productscategory_id' => $permit_productscategory_id,
+                        'vc_application_type_id' => $vc_application_type_id,
+                        'is_registered' => $is_registered,
+                        'importer_licence_number' => $permit_no,
                         'reg_importexport_id' => $rec->reg_importexport_id,
-                        'module_id' => $rec->module_id, 'section_id' => $rec->section_id,
-                        'permit_reason_id' => $rec->permit_reason_id,
+                        'module_id' => $rec->module_id, 
+                        'section_id' => $rec->section_id,
+                        'importexport_product_range_id' => $rec->importexport_product_range_id,
                         'otherpermit_reason' => $rec->otherpermit_reason,
+                        'has_registered_premises' => $rec->has_registered_premises,
+                        'business_type_id' => $rec->business_type_id,
+                        'product_classification_id' => $rec->product_classification_id,
+                        'licence_type_id' => $rec->licence_type_id,
                         'port_id' => $rec->port_id,
                         'process_id' => $process_id,
                         'view_id' => $view_id,
@@ -6979,14 +7135,8 @@ private function processApplication($table_name, $application_code, $request, $u
                         'premise_id' => $rec->premise_id,
                         'applicant_id' => $rec->applicant_id
                     );
-                    if ($rec->importexport_permittype_id == 4) {
-                        $app_data['has_medical_prescription'] = $rec->has_medical_prescription;
-                        $app_data['prescribling_hospital'] = $rec->prescribling_hospital;
-                        $app_data['hospital_address'] = $rec->hospital_address;
-                        $app_data['prescribing_doctor'] = $rec->prescribing_doctor;
-                        $app_data['prescription_no'] = $rec->prescription_no;
-                    }
-                    $reference_no = $this->generateImportPermitAmmendmentTrackingno($reference_no, $reg_importexport_id, $table_name, $sub_module_id, 'LIC');
+
+                    $reference_no = $this->generateImportPermitAmmendmentTrackingno($reference_no, $reg_importexport_id, $table_name, $sub_module_id, 'VC');
 
                     //$generateapplication_code = generateApplicationCode($sub_module_id, 'wb_importexport_applications');
                     $generateapplication_code = generateApplicationCode($sub_module_id, 'tra_importexport_applications'); //Job from above as not in mis table
@@ -7001,7 +7151,7 @@ private function processApplication($table_name, $application_code, $request, $u
 
                         $this->saveApplicationSubmissionDetails($generateapplication_code, 'tra_importexport_applications', $workflow_stage_id, $view_id);
 
-                        $res = $this->saveImportPermitProducts($generateapplication_code, $application_code, $trader_email);
+                        // $res = $this->saveImportPermitProducts($generateapplication_code, $application_code, $trader_email);
 
                         $res = $this->saveImportPermitDocuments($generateapplication_code, $application_code, $trader_email, $sub_module_id);
                         $res =  $this->getImportExportApplicationsDetails($generateapplication_code);
@@ -7087,8 +7237,30 @@ private function processApplication($table_name, $application_code, $request, $u
             );
 
         $permit_details = $qry1->first();
+        $permit_details->importexport_product_range_id=json_decode($permit_details->importexport_product_range_id);
         $premise_id = $permit_details->premise_id;
+        $has_registered_premises = $permit_details->has_registered_premises;
+        $business_type_id = $permit_details->business_type_id;
+         $consignee_id = $permit_details->consignee_id;
         $sender_receiver_id = $permit_details->sender_receiver_id;
+            
+        if($has_registered_premises==1 || $has_registered_premises===1){
+                if($business_type_id==5 || $business_type_id===5){
+                    $manufacturing_site_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
+                    $permit_details->manufacturing_site_name=$manufacturing_site_name;
+                 }else{
+                    $premises_name = getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'name');
+                    $permit_details->premises_name=$premises_name;
+                 }
+            }
+
+            if (validateIsNumeric($consignee_id)) {
+                $consignee_name = getSingleRecordColValue('tra_consignee_data', array('id' => $consignee_id), 'name');
+
+                $permit_details->consignee_name = $consignee_name;
+            }
+
+
         $qry2 = DB::table('tra_permitsenderreceiver_data as t3')
             ->select(
                 't3.id as trader_id',
@@ -7107,12 +7279,11 @@ private function processApplication($table_name, $application_code, $request, $u
             ->where(array('id' => $sender_receiver_id));
         $senderReceiverDetails = $qry2->first();
 
-        $qry3 = DB::table('tra_premises as t3')
-            ->select('t3.*')
-            ->where(array('id' => $premise_id));
-        $premisesDetails = $qry3->first();
-
-
+        // $qry3 = DB::table('tra_premises as t3')
+        //     ->select('t3.*')
+        //     ->where(array('id' => $premise_id));
+        // $premisesDetails = $qry3->first();
+        $premisesDetails=$this->getPremiseDetails($has_registered_premises,$business_type_id,$premise_id);
 
         $res = array(
             'success' => true,

@@ -3,7 +3,7 @@
  */
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ControlledDrugsImpManagerReviewPnl', {
     extend: 'Ext.panel.Panel',
-    title: 'Controlled Drugs Permit Permit Review',
+   // title: 'Controlled Drugs Permit Permit Review',
     xtype: 'controlleddrugsimpmanagerreviewpnl',
     layout: 'fit',
     permitsdetails_panel: 'previewcontroldrugsimppermitdetails',

@@ -122,9 +122,9 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
     ],
     items: [
         {
-                     xtype:'tabpanel',
+                xtype:'tabpanel',
                 layout: 'fit',
-                title: 'Application Details((Permit, Sender/Receiver, Licenses Outlets and Documents)',
+                //title: 'Application Details((Permit, Sender/Receiver, Licenses Outlets and Documents)',
                 dockedItems: [
                     {
                         xtype: 'toolbar',
@@ -141,6 +141,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
                                 fieldLabel: 'Zone',
                                 labelWidth: 50,
                                 width: 400,
+                                hidden:true,
                                 name: 'zone_id',
                                 valueField: 'id',
                                 displayField: 'name',
@@ -192,8 +193,8 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
                             },{
                                 xtype: 'combo',
                                 fieldLabel: 'Approval Review Recommendation',
-                                labelWidth: 108,
-                                width: 315,
+                                labelWidth: 250,
+                                width: 500,
                                 name: 'review_recommendation_id',
                                 valueField: 'id',
                                 displayField: 'name',readOnly: true,
@@ -218,8 +219,8 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
                             },{
                                 xtype: 'combo',
                                 fieldLabel: 'Approval recommendation',
-                                labelWidth: 108,
-                                width: 315,
+                                labelWidth: 320,
+                                width: 700,
                                 name: 'approval_recommendation_id',
                                 valueField: 'id',
                                 displayField: 'name',
@@ -258,11 +259,10 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
                         collapsible: true,
                         title: 'APPLICANT DETAILS'
                     },{
-                        xtype: 'ctrdrugsimportexportdetailsfrm',
+                        xtype: 'controldrugslicensedetailsfrm',
                         autoScroll: true,
                         collapsible: true,
                         title: 'Application Details', 
-                        title: 'Permit Information'
                     },  {
                         xtype: 'senderreceiverdetailsfrm',collapsible: true,
                         title: 'Sender/Receiver Details',
@@ -277,9 +277,9 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
                 },{
                     xtype: 'controldrugsimppermitsproductsgrid',
                     itemId: 'importexportpermitsproductsgrid',
-                    title: 'Recommendation on Import/Export Permit Products Details',
+                    //title: 'Recommendation on Products Details',
                     bind: {
-                        title: '{application_title}'+' Permit Products Details Recommendations'
+                        title: 'Products Details Recommendations'
                     },
                     selModel: {
                         selType: 'checkboxmodel',
@@ -556,7 +556,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
                     wizard: 'importexportpermitmanagerreviewwizard',
                     handler: 'quickNavigationReview',
                     bind: {
-                        text: '{application_title}'+' Details'
+                        text: 'Application Details'
                     },
                 }
             ]
@@ -564,7 +564,9 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
         this.bbar = {
             reference: 'navigation-toolbar',
             ui: 'footer',
-            items: [
+            items: [ {
+                    xtype: 'transitionsbtn',
+                },
                 {
                     text: 'Back to List',
                     ui: 'soft-purple',
@@ -597,6 +599,11 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
                     table_name: 'tra_importexport_applications',
                     winWidth: '50%',
                     
+                },{
+                    text: 'Save Screening Details',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-save',
+                    name: 'save_screening_btn'
                 },
                 '->',
                 
@@ -629,6 +636,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
                                 iconCls: 'fa fa-print',
                                 text: 'Print Approval Document',
                                 is_preview : false,
+                                hidden:true,
                                 name: 'print_importexportpermit',
                             }
                         ]
@@ -660,7 +668,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.Control
                         }
                 },
                 {
-                    text: 'Close & Release Application',
+                    text: 'Close & Submit Application',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-check',
                     name: 'process_submission_btn',

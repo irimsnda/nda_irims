@@ -206,10 +206,36 @@ Ext.define('Admin.view.configurations.views.forms.Gmpfeeconfigfrm', {
                
             }
         },
+          {
+                    xtype: 'combo',
+                    fieldLabel: 'Licence Type(Local GMP)',
+                    name: 'local_gmp_license_type_id',
+                    forceSelection: true,
+                    allowBlank:true,
+                    columnWidth: 1,
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    listeners: {
+                        beforerender: {
+                            fn: 'setConfigCombosStore',
+                            config: {
+                                pageSize: 10000,
+                                proxy: {
+                                    url: 'commonparam/getCommonParamFromTable',
+                                    extraParams: {
+                                        table_name: 'par_local_gmplicense_application'
+                                    }
+                                }
+                            },
+                            isLoad: true
+                        }
+                    }
+                },
 
          {
                     xtype: 'combo',
-                    fieldLabel: 'Inpection Manufacturing Activities',
+                    fieldLabel: 'Inpection Manufacturing Activities(Foreign GMP)',
                     name: 'inspection_activities_id',
                     columnWidth: 1,
                     allowBlank: true,

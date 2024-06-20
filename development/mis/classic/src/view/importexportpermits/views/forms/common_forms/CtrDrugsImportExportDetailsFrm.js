@@ -80,7 +80,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.CtrDrugsImpo
                     proxy: {
                         url: 'configurations/getNonrefParameter',
                         extraParams: {
-                            table_name: 'par_permit_category'
+                            table_name: 'par_importexport_reasons'
                         }
                     }
                 },
@@ -106,7 +106,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.CtrDrugsImpo
                     proxy: {
                         url: 'configurations/getRegistrationApplicationParameters',
                         extraParams: {
-                            table_name: 'par_permitsproduct_categories'
+                            table_name: 'par_importexport_product_category'
                         }
                     }
                 },

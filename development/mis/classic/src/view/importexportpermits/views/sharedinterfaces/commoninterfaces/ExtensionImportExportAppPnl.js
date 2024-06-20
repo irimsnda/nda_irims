@@ -16,7 +16,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
         },{
                 xtype: 'displayfield',
                 name: 'process_name',
-                value: 'Applications Reference and Previous Expiry date are only loaded for registered applications',
+                value: 'Applications Reference and Previous Expiry date are only loaded for Approved applications',
                 fieldStyle: {
                     'color': 'green',
                     'font-weight': 'bold',
@@ -25,7 +25,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.commoninterfac
             },'->',{
                 xtype: 'button',
                 name: 'reprint_pemit',
-                text: 'Reprint Permit',
+                text: 'Reprint license',
                 ui: 'soft-green',
                 iconCls: 'x-fa fa-print',
                 handler: 'print_permit'

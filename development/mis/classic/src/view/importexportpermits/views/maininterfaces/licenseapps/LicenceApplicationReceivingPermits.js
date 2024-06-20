@@ -8,6 +8,7 @@ Ext.define('Admin.view.importexportpermits.views.maininterfaces.licenseapps.Lice
   viewModel: {
       type: 'importexportpermitsvm'
   },
+  
   layout: 'fit',
   items: [
       {

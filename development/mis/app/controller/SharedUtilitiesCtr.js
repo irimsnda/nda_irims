@@ -266,6 +266,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'saveApplicationChecklistDetails'
             },
 
+            'controlleddrugsimpmanagerreviewwizrd button[name=save_screening_btn]': {
+                click: 'saveApplicationChecklistDetails'
+            },
+
             'newdrugshopinspectionpanel button[name=save_screening_btn]': {
                 click: 'saveApplicationChecklistDetails'
             },
@@ -1676,6 +1680,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
 
+            'controldrugslicenceddirectorapprovalpnl button[action=process_submission_btn]': {
+                click: 'showManagerApplicationSubmissionWinGeneric'
+            },
+
             'vcnonlicencedpermitreleaseapprovalpnl button[action=process_submission_btn]': {
                 click: 'showManagerApplicationSubmissionWinGeneric'
             },
@@ -1745,6 +1753,13 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             'onlinealtdrugproductreceivingwizard button[name=save_screening_btn]': {
                 click: 'saveOnlineApplicationChecklistDetails'
             },
+
+            'controldrugsimponlinereceivingwizard button[name=save_screening_btn]': {
+                click: 'saveOnlineApplicationChecklistDetails'
+            },
+
+
+
             'onlinealtdrugproductreceivingwizard button[name=prechecking_recommendation]': {
                 click: 'addPrecheckingRecommendation'
             },
@@ -1928,6 +1943,9 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'addPrecheckingRecommendation'
             },
             'impexplicenseonlinereceivingwizard button[name=prechecking_recommendation]': {
+                click: 'addPrecheckingRecommendation'
+            },
+            'controldrugsimponlinereceivingwizard button[name=prechecking_recommendation]': {
                 click: 'addPrecheckingRecommendation'
             },
             
@@ -3619,8 +3637,7 @@ setCompStore: function (me, options) {
                         if(!invoiceIsGenerated){
                                 toastr.warning('Receive and Generate Invoice for all Seleceted Application to proceed!!', 'Warning Response');
                                 Ext.getBody().unmask();
-                                return false;
-
+                                throw 'BreakLoopException';
                         }
                     }
 
@@ -3681,6 +3698,7 @@ setCompStore: function (me, options) {
             status_type_id = win.down('hiddenfield[name=status_type_id]').getValue(),
             application_status_id = win.down('hiddenfield[name=application_status_id]').getValue(),
             hasQueries = checkApplicationRaisedQueries(application_code, module_id),
+            is_recommended=checkPrecheckingrecommendation(application_code, module_id),
             table_name = getApplicationTable(module_id);
             action_type =0;
 
@@ -3735,6 +3753,14 @@ setCompStore: function (me, options) {
                     Ext.getBody().unmask();
                     return false;
 
+                }
+
+            }
+            if(module_id==4 ||module_id==12){
+                if(!is_recommended){
+                    toastr.warning('Please add Recommendation proceed.', 'Warning Response');
+                    Ext.getBody().unmask();
+                    return false;
                 }
 
             }

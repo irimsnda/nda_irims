@@ -40,9 +40,11 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         xtype: 'exportbtn'
     }, {
         xtype: 'tbspacer'
-    },{
-        text:'Double Click to review the Raised Queries'
-    }],
+    }
+    // ,{
+    //     text:'Double Click to review the Raised Queries'
+    // }
+    ],
     dockedItems: [
         {
             xtype: 'toolbar',
@@ -122,46 +124,33 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         xtype: 'gridcolumn',
         dataIndex: 'tracking_no',
         text: 'Tracking No',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'reference_no',
-        text: 'Application No',
+        tdCls: 'wrap-text',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'applicant_name',
-        text: 'Applicant Name',
-        flex: 1
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'proforma_invoice_no',
-        text: 'Proforma Invoice No',
+        dataIndex: 'date_added',
+        text: 'Application Date',
+        tdCls: 'wrap-text',
         flex: 1
     },{
         xtype: 'gridcolumn',
-        dataIndex: 'process_name',
-        text: 'Process Name',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'workflow_stage',
-        text: 'Current Stage',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'date_received',
-        text: 'Date Received',
-        flex: 1
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'from_user',
-        text: 'Submitted By',
-        flex: 1
-    },  {
-        xtype: 'gridcolumn',
+        text: 'Business Name',
         dataIndex: 'premises_name',
-        text: 'Premises Name',
+        flex: 1,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'business_type',
+        text: 'Business Type',
+        tdCls: 'wrap-text',
+        flex: 1
+    }, 
+   {
+        xtype: 'gridcolumn',
+        dataIndex: 'application_status',
+        text: 'Status',
         flex: 1
     }]
 });

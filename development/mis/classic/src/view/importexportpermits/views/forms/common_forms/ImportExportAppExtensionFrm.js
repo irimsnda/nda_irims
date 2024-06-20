@@ -38,56 +38,111 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
         name: 'prev_expiry_date',
         readOnly: true,
         allowBlank: false
-    },{
-        xtype: 'numberfield',
-        name: 'extension_period',
-        margin: '0 20 20 0',
-        fieldLabel: 'Extended By'
-    },{
-        xtype: 'combo',
-        name: 'timeline_duration_id',
-        fieldLabel: 'Duration',
-        forceSelection: true,
-        margin: '0 20 20 0',
-        queryMode: 'local',
-        valueField: 'id',
-        displayField: 'name',
-        listeners: {
-                beforerender: {
-                    fn: 'setOrgConfigCombosStore',
-                    config: {
-                        pageSize: 100,
-                        proxy: {
-                            url: 'commonparam/getCommonParamFromTable',
-                            extraParams: {
-                                table_name: 'par_timespan_defination'
-                            }
-                        }
-                    },
-                    isLoad: true
+    },
+
+     {
+                xtype:'fieldcontainer',
+                margin: '0 20 20 0',
+                fieldLabel: 'Extended By',
+                layout: {
+                    type: 'column'
                 },
-            },
+                defaults:{
+                    columnWidth: 0.5,
+                    labelAlign: 'top'
+                },
+                items:[{
+                        xtype: 'numberfield',
+                        name: 'extension_period',
+                       // margin: '0 20 20 0',
+                        //minValue: 0,
+                        allowBlank:false,
+                        fieldLabel: 'Extended By',
+                        hideLabel:true
+                    },
+                    {
+                        xtype: 'combo',
+                        name: 'timeline_duration_id',
+                        fieldLabel: 'Duration',
+                        hideLabel:true,
+                        allowBlank:false,
+                        forceSelection: true,
+                        //margin: '0 20 20 0',
+                        queryMode: 'local',
+                        valueField: 'id',
+                        displayField: 'name',
+                        listeners: {
+                                beforerender: {
+                                    fn: 'setOrgConfigCombosStore',
+                                    config: {
+                                        pageSize: 100,
+                                        proxy: {
+                                            url: 'commonparam/getCommonParamFromTable',
+                                            extraParams: {
+                                                table_name: 'par_timespan_defination'
+                                            }
+                                        }
+                                    },
+                                    isLoad: true
+                                },
+                            },
+                    
+                    }
+                ]
+            } ,
+
+    // {
+    //     xtype: 'numberfield',
+    //     name: 'extension_period',
+    //     margin: '0 20 20 0',
+    //     fieldLabel: 'Extended By'
+    // },{
+    //     xtype: 'combo',
+    //     name: 'timeline_duration_id',
+    //     fieldLabel: 'Duration',
+    //     forceSelection: true,
+    //     margin: '0 20 20 0',
+    //     queryMode: 'local',
+    //     valueField: 'id',
+    //     displayField: 'name',
+    //     listeners: {
+    //             beforerender: {
+    //                 fn: 'setOrgConfigCombosStore',
+    //                 config: {
+    //                     pageSize: 100,
+    //                     proxy: {
+    //                         url: 'commonparam/getCommonParamFromTable',
+    //                         extraParams: {
+    //                             table_name: 'par_timespan_defination'
+    //                         }
+    //                     }
+    //                 },
+    //                 isLoad: true
+    //             },
+    //         },
     
-    },{
+    // },
+
+    {
 
         xtype: 'datefield',
         name: 'requested_on',
         margin: '0 20 20 0',
         fieldLabel: 'Requested On',
-        allowBlank: true
+        allowBlank:false
     },{
 
         xtype: 'textfield',
         name: 'requested_by',
         fieldLabel: 'Requested By',
-        allowBlank: true
+        allowBlank: false
     },{
         xtype: 'textarea',
         fieldLabel: 'Extension Reason',
         margin: '0 20 20 0',
         name: 'extention_reason',
         columnWidth: 1,
-        allowBlank: true
+        allowBlank: false
     },{
         xtype: 'textarea',
         fieldLabel: 'Remarks',

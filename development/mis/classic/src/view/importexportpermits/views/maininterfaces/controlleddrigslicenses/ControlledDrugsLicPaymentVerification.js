@@ -8,7 +8,7 @@ Ext.define('Admin.view.importexportpermits.views.maininterfaces.controlleddrugsp
     layout: 'fit',
     items:[{
         xtype: 'controlleddrugspaymentverificationpnl',
-        permitsdetails_panel: 'previewcontroldrugslicpermitdetails',
+        permitsdetails_panel: 'previewcontroldrugsimppermitdetails',
         itemId: 'main_processpanel'
     }]
 });

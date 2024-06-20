@@ -4634,6 +4634,9 @@ previewPremisesOnlineApplication: function (view, record) {
             winWidth = btn.winWidth,
             activeTab = mainTabPanel.getActiveTab(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
@@ -4641,7 +4644,7 @@ previewPremisesOnlineApplication: function (view, record) {
             valid = this.validateNewPremiseReceivingSubmission(btn),
             storeID = getApplicationStore(module_id, section_id),
             table_name = getApplicationTable(module_id);
-            validateHasInvoice = validateHasInvoiceGeneration(application_code);
+            validateHasInvoice = validateHasInvoiceGeneration(application_code,sub_module_id);
             validateHasDocuments = validateHasUploadedDocumentsDetils(application_code, module_id,sub_module_id,section_id,0,workflow_stage_id,process_id);
             if(!hasQueries){
                 if(!validateHasInvoice){
@@ -4673,6 +4676,9 @@ previewPremisesOnlineApplication: function (view, record) {
             winWidth = btn.winWidth,
             activeTab = mainTabPanel.getActiveTab(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
@@ -4680,7 +4686,7 @@ previewPremisesOnlineApplication: function (view, record) {
             valid = this.validateNewPremiseReceivingSubmission(btn),
             storeID = getApplicationStore(module_id, section_id),
             table_name = getApplicationTable(module_id);
-            validateHasInvoice = validateHasInvoiceGeneration(application_code);
+            validateHasInvoice = validateHasInvoiceGeneration(application_code,sub_module_id);
             validateHasDocuments = validateHasUploadedDocumentsDetils(application_code, module_id,sub_module_id,section_id,0,workflow_stage_id,process_id);
             if(!hasQueries){
                 if(!validateHasInvoice){
@@ -6865,6 +6871,13 @@ previewPremisesOnlineApplication: function (view, record) {
             basicFrm.down('textfield[name=contract_telephone_no]').setValue(record.get('contact_telephone_no'));
             basicFrm.down('textfield[name=contract_email_address]').setValue(record.get('contact_email_address'));
         }
+        else if (personnel_type == 'import_billing_person') {
+            basicFrm = activeTab.down('importexportdetailsfrm');
+            basicFrm.down('hiddenfield[name=contact_person_id]').setValue(record.get('contact_person_id'));
+            basicFrm.down('textfield[name=billing_person]').setValue(record.get('contact_name'));
+         
+        }
+
          else {
             var anotherWin = Ext.WindowManager.getActive();
             if (anotherWin) {
@@ -8541,7 +8554,7 @@ previewPremisesOnlineApplication: function (view, record) {
             valid = this.validateNewLicenseDrugShopReceivingSubmission(btn),
             storeID = getApplicationStore(module_id, section_id),
             table_name = getApplicationTable(module_id);
-            validateHasInvoice = validateHasInvoiceGeneration(application_code);
+            validateHasInvoice = validateHasInvoiceGeneration(application_code,sub_module_id);
             validateHasDocuments = validateHasUploadedDocumentsDetils(application_code, module_id,sub_module_id,section_id,0,workflow_stage_id,process_id);
             if(!hasQueries){
                 if(!validateHasInvoice){

@@ -2481,7 +2481,7 @@ public function getModuleName($module_id)
         $permit_watermark = $request->input('permit_watermark');
         $is_permitupdate = $request->input('is_permitupdate');
         
-
+      
         $approvalGrant = DB::table('tra_permitsrelease_recommendation')->where('application_code',$application_code)->first();
         if((!empty($approvalGrant) && $approvalGrant->decision_id == 1) || empty($approvalGrant)){
             $record = DB::table('tra_importexport_applications as t1')
@@ -2493,7 +2493,7 @@ public function getModuleName($module_id)
                 $permit_watermark = 'Print Preview';
             }
 
-            if($sub_module_id == 81){
+            if($sub_module_id == 81 || $sub_module_id == 60){
 
                 $this->printImportExportLicense($application_code,$record,$permit_watermark);
             }

@@ -128,7 +128,7 @@ Ext.define('Admin.view.commoninterfaces.grids.OnlinePaymentInvoicingCostDetailsG
             ui: 'soft-red',
             name:'cancel_invoice',
             text: 'Cancel Generate P-Invoice',
-            handler: 'funcCancelGeneratedInvoice'
+            handler: 'funcCancelOnlineGeneratedInvoice'
         }
     }]
 });

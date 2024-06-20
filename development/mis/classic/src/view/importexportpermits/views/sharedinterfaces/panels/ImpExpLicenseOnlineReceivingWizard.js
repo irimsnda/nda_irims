@@ -120,9 +120,22 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
                 xtype: 'onlineimportexportdocuploadsgrid',
                 title: 'Documents Submission'
             }]
-        }, {
-            //title: 'Invoice & Payment Details',
-            xtype: 'onlineappinvoicepaymentspanel',
+        },
+        //  {
+        //     //title: 'Invoice & Payment Details',
+        //     xtype: 'onlineappinvoicepaymentspanel',
+        // },
+        
+        {
+            xtype: 'tabpanel',
+            items:[{
+                xtype: 'productonlinescreeninggrid',
+                title:'Prechecking Checklist'
+               },{
+                title: 'Invoice & Payment Details',
+                xtype: 'onlineappinvoicepaymentspanel', 
+             }
+            ]
         },
         {
             xtype: 'hiddenfield',
@@ -160,7 +173,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
                     step: 1,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
-                    text: 'Import/Export Application Details',
+                    text: 'Application Details',
                     action: 'quickNav', 
                     wizard: 'impexplicenseonlinereceivingwizard',
                     handler: 'quickNavigationonlineprev'
@@ -168,7 +181,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
                     step: 2,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'Import/Export Application Documents Submission',
+                    text: 'Application Documents Submission',
                     action: 'quickNav',
                      wizard: 'impexplicenseonlinereceivingwizard',
                     handler: 'quickNavigationonlineprev'
@@ -176,14 +189,13 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
                     step: 3,
                     iconCls: 'fa fa-check-square',
                     enableToggle: true,
-                    text: 'Invoice & Payment Details',
+                    text: 'Pre-Checking Checklist & Invoice/Payment Details',
                     action: 'quickNav',
                     wizard: 'impexplicenseonlinereceivingwizard',
                     handler: 'quickNavigationonlineprev'
                 }
             ]
         };
-      
         this.bbar = {
             reference: 'navigation-toolbar',
             ui: 'footer',
@@ -283,6 +295,12 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
                     action_url: 'updateonlineImportPermittReceivingBaseDetails',
                     wizard: 'impexplicenseonlinereceivingwizard',
                     handler: 'updateOnlineImporExportPermitReceivingBaseDetails'
+                },
+                {
+                    text: 'Save Pre-Checking Details',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-save',
+                    name: 'save_screening_btn',
                 },
                 {
                     text: 'Submit Application',

@@ -21,11 +21,12 @@ Ext.define('Admin.view.importexportpermits.views.commoninterfaces.EditImportExpo
    
     {
         xtype: 'senderreceiverdetailsfrm',
+        hidden:true,
         title: 'Sender/Receiver Details',
     }, {
         xtype: 'importexportpremisesfrm',
         
-        title: 'Premises Details',
+        title: 'Business Details',
         autoScroll: true,
     },{
         xtype: 'hiddenfield',

@@ -16,7 +16,6 @@ Ext.define('Admin.view.importexportpermits.views.containers.MedicinesPoeInspecti
         {
             xtype: 'hiddenfield',
             name: 'section_id',
-            value: 2
         },
         {
             xtype: 'poeinspectionprocessdashwrapper',

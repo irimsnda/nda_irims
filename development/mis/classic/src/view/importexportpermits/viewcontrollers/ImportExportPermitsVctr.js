@@ -679,76 +679,100 @@ Ext.define('Admin.view.importexportpermits.viewcontrollers.ImportExportPermitsVc
         //wizardPanel.down('button[name=save_btn]').setVisible(false);
     },
    
-    navigate: function (button, wizardPanel, direction) {
-        var layout = wizardPanel.getLayout(),
-            progress = this.lookupReference('progress'),
-            max_step = button.max_step,
-            motherPnl = wizardPanel,
-            panel = motherPnl.up('panel'),
-            model = panel.getViewModel(),
-            progressItems = progress.items.items,
-            item, i, activeItem, activeIndex,
-            nextStep = wizardPanel.items.indexOf(layout.getNext());
-
-        layout[direction]();
-
+   navigate: function (button, wizardPanel, direction) {
+    var layout = wizardPanel.getLayout(),
+        progress = this.lookupReference('progress'),
+        max_step = button.max_step || 3, // Default max_step to 3 if not provided
+        motherPnl = wizardPanel,
+        application_id = motherPnl.down('hiddenfield[name=active_application_id]').getValue(),
+        panel = motherPnl.up('panel'),
+        model = panel.getViewModel(),
+        progressItems = progress.items.items,
+        item, i, activeItem, activeIndex;
         activeItem = layout.getActiveItem();
         activeIndex = wizardPanel.items.indexOf(activeItem);
 
-        for (i = 0; i < progressItems.length; i++) {
-            item = progressItems[i];
+    // Check if application_id exists before navigating
+    if (activeIndex > 0 && direction === 'next' && !application_id) {
+        toastr.warning('Please save Application details first!!', 'Warning Response');
+        return false;
+    }
 
-            if (activeIndex === item.step) {
-                item.setPressed(true);
-            }
-            else {
-                item.setPressed(false);
-            }
+    layout[direction]();
 
-            if (Ext.isIE8) {
-                item.btnIconEl.syncRepaint();
-            }
-        }
-        activeItem.focus();
-        if(max_step < 1){
-            max_step =3;
-        }
-        // beginning disables previous
-        if (activeIndex === 0) {
-            wizardPanel.down('button[name=save_btn]').setDisabled(false);
-            wizardPanel.down('button[name=save_btn]').setVisible(true);
-            if(motherPnl.down('button[name=process_submission_btn]')){
-                motherPnl.down('button[name=process_submission_btn]').setVisible(false);
-            }
-            if(motherPnl.down('button[name=process_submission_btn]')){
-                motherPnl.down('button[name=process_submission_btn]').setVisible(false);
-            }
-            model.set('atBeginning', true);
-            model.set('atEnd', false);
-        } else if (activeIndex === max_step) {
-            wizardPanel.down('button[name=save_btn]').setVisible(true);
-            if(motherPnl.down('button[name=process_submission_btn]')){
-                motherPnl.down('button[name=process_submission_btn]').setVisible(true);
-            }
-            if(motherPnl.down('button[name=processreceiving_submission_btn]')){
-                motherPnl.down('button[name=processreceiving_submission_btn]').setVisible(true);
-            }
-            model.set('atBeginning', false);
-            model.set('atEnd', true);
+    activeItem = layout.getActiveItem();
+    activeIndex = wizardPanel.items.indexOf(activeItem);
+
+    for (i = 0; i < progressItems.length; i++) {
+        item = progressItems[i];
+
+        if (activeIndex === item.step) {
+            item.setPressed(true);
         } else {
-            wizardPanel.down('button[name=save_btn]').setVisible(true);
-            wizardPanel.down('button[name=save_btn]').setDisabled(false);
-            if(motherPnl.down('button[name=process_submission_btn]')){
-                motherPnl.down('button[name=process_submission_btn]').setVisible(false);
-            }
-            if(motherPnl.down('button[name=processreceiving_submission_btn]')){
-                motherPnl.down('button[name=processreceiving_submission_btn]').setVisible(false);
-            }
-            model.set('atBeginning', false);
-            model.set('atEnd', false);
+            item.setPressed(false);
         }
-        //wizardPanel.down('button[name=save_btn]').setVisible(false);
-    },
+
+        if (Ext.isIE8) {
+            item.btnIconEl.syncRepaint();
+        }
+    }
+    activeItem.focus();
+
+    // Adjust button visibility and model state based on the current step
+    if (activeIndex === 0) {
+        wizardPanel.down('button[name=save_btn]').setDisabled(false);
+        wizardPanel.down('button[name=save_btn]').setVisible(true);
+        if (motherPnl.down('button[name=process_submission_btn]')) {
+            motherPnl.down('button[name=process_submission_btn]').setVisible(false);
+        }
+        if (motherPnl.down('button[name=processreceiving_submission_btn]')) {
+            motherPnl.down('button[name=processreceiving_submission_btn]').setVisible(false);
+        }
+        model.set('atBeginning', true);
+        model.set('atEnd', false);
+        if (wizardPanel.down('button[name=previous_btn]')) {
+            wizardPanel.down('button[name=previous_btn]').setDisabled(true);
+        }
+        if (wizardPanel.down('button[name=next_btn]')) {
+            wizardPanel.down('button[name=next_btn]').setDisabled(false,);
+        }
+    } 
+    else if (activeIndex==max_step ||activeIndex ===max_step) {
+        
+        wizardPanel.down('button[name=save_btn]').setVisible(true);
+        if (motherPnl.down('button[name=process_submission_btn]')) {
+            motherPnl.down('button[name=process_submission_btn]').setVisible(true);
+        }
+        if (motherPnl.down('button[name=processreceiving_submission_btn]')) {
+            motherPnl.down('button[name=processreceiving_submission_btn]').setVisible(true);
+        }
+        if (wizardPanel.down('button[name=previous_btn]')) {
+            wizardPanel.down('button[name=previous_btn]').setDisabled(false);
+        }
+        if (wizardPanel.down('button[name=next_btn]')) {
+            wizardPanel.down('button[name=next_btn]').setDisabled(true,);
+        }
+        model.set('atBeginning', false);
+        model.set('atEnd', true);
+    } else {
+        wizardPanel.down('button[name=save_btn]').setVisible(true);
+        wizardPanel.down('button[name=save_btn]').setDisabled(false);
+        if (motherPnl.down('button[name=process_submission_btn]')) {
+            motherPnl.down('button[name=process_submission_btn]').setVisible(false);
+        }
+        if (motherPnl.down('button[name=processreceiving_submission_btn]')) {
+            motherPnl.down('button[name=processreceiving_submission_btn]').setVisible(false);
+        }
+         if (wizardPanel.down('button[name=previous_btn]')) {
+            wizardPanel.down('button[name=previous_btn]').setDisabled(false);
+        }
+        if (wizardPanel.down('button[name=next_btn]')) {
+            wizardPanel.down('button[name=next_btn]').setDisabled(false,);
+        }
+        model.set('atBeginning', false);
+        model.set('atEnd', false);
+    }
+},
     quickNavigationonlineprev:function(btn){
         var step = btn.step,
             wizard = btn.wizard,
@@ -3627,7 +3651,7 @@ downloadPreviousDocupload: function (item) {
                 child = Ext.widget(btn.childXtype);
                 wrapper.removeAll();
                 wrapper.add(child);
-                child.getViewModel().set('isReadOnly', true);
+                child.getViewModel().set('isReadOnly', false);
         
     },
     showIEApplicationsSelectionList: function(btn) {
@@ -3648,92 +3672,86 @@ downloadPreviousDocupload: function (item) {
 
 
             if(active_application_code >0){
-                toastr.warning('The License Application Has already been initiated, submit for processing!!', 'Alert');  
+                toastr.warning('The VC Application Has already been initiated!!', 'Alert');  
                 return;
             }
         childObject.down('hiddenfield[name=section_id]').setValue(section_id);
         funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow');
     },
+
     loadSelectedApplication :function(view, record) {
         var wrapper = Ext.ComponentQuery.query("#importexportedittingswizardId")[0],
             app_pnl = wrapper.down('editimportexportdetailspnl'),
-            app_form = app_pnl.down('editimportexportdetailsfrm'),
-            sender_receiver_frm = wrapper.down('senderreceiverdetailsfrm'),
-            premise_frm = app_pnl.down('importexportpremisesfrm'),
+            importexportdetailsfrm = app_pnl.down('editimportexportdetailsfrm'),
+            senderreceiverdetailsfrm = app_pnl.down('senderreceiverdetailsfrm'),
+            importexportpremisesfrm = app_pnl.down('importexportpremisesfrm'),
             extension_pnl = wrapper.down('extensionimportexportapppnl'),
             extension_frm = extension_pnl.down('importexportappextensionFrm'),
             grid = view.up('grid');
            
         //load applicant form details
         Ext.getBody().mask('loading...');
-        Ext.Ajax.request({
-                    url: "importexportpermits/getSenderreceiverinformation",
-                    method: 'GET',
-                    params: {
-                        applicant_id: record.get('sender_receiver_id'),
-                        start: 0,
-                        limit: 1000
-                    },
-                    headers: {
-                        'Authorization': 'Bearer ' + access_token,
-                        'X-CSRF-Token': token
-                    },
-                    success: function (response) {
-                       
-                        var resp = Ext.JSON.decode(response.responseText),
-                            message = resp.message,
-                            success = resp.success;
-                        if (success == true || success === true) {
-                            var model = Ext.create('Ext.data.Model', resp.results[0]);
-                             
-                           sender_receiver_frm.loadRecord(model);
-                        } else {
-                            toastr.error(message, 'Failure Response');
-                            var model = Ext.create('Ext.data.Model', []);
-                            return model;
-                        }
-                    },
-                    failure: function (response) {
-                        
-                        var resp = Ext.JSON.decode(response.responseText),
-                            message = resp.message;
-                        toastr.error(message, 'Failure Response');
-                        var model = Ext.create('Ext.data.Model', []);
-                        return model;
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                      
-                        toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
-                        var model = Ext.create('Ext.data.Model', []);
-                        return model;
+         Ext.Ajax.request({
+              method: "GET",
+              url: "importexportpermits/getPermitsApplicationMoreDetails",
+              params: {
+                application_id: record.get('application_id'),
+                applicant_id: record.get('applicant_id'),
+                _token:token
+              },
+              headers: {
+                Authorization: "Bearer " + access_token,
+              },
+              success: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.JSON.decode(response.responseText),
+                  success = resp.success,
+                  message = resp.message,
+                  permit_details = resp.permit_details,
+                  senderReceiverDetails = resp.senderReceiverDetails,
+                  application_code = permit_details.application_code,
+                  premisesDetails = resp.premisesDetails,
+                  has_registered_premises = permit_details.has_registered_premises;
+                if (success == true || success === true) {
+                  if (permit_details) {
+                    var model2 = Ext.create("Ext.data.Model", permit_details);
+
+                    var senderReceiverDetails = Ext.create(
+                        "Ext.data.Model",
+                        senderReceiverDetails
+                      ),
+                      premisesDetails = Ext.create("Ext.data.Model", premisesDetails);
+                       if(importexportdetailsfrm){
+                       importexportdetailsfrm.loadRecord(model2);
+                     }
+                      if(importexportpremisesfrm){
+                         importexportpremisesfrm.loadRecord(premisesDetails);
+                     }
+                           
+                    if (has_registered_premises==2 || has_registered_premises===2) {
+                      if(importexportpremisesfrm.down("fieldset[name=Phamacist_fieldset]")){
+                       importexportpremisesfrm.down("fieldset[name=Phamacist_fieldset]").setVisible(false);
+                      }
+                       if(importexportpremisesfrm.down("fieldset[name=non_licensed_fieldset]")){
+                         importexportpremisesfrm.down("fieldset[name=non_licensed_fieldset]").setVisible(true);
+                       }
+                    }else{
+                      if(importexportpremisesfrm.down("fieldset[name=Phamacist_fieldset]")){
+                        importexportpremisesfrm.down("fieldset[name=Phamacist_fieldset]").setVisible(true);
+                       }
+                       if(importexportpremisesfrm.down("fieldset[name=non_licensed_fieldset]")){
+                         importexportpremisesfrm.down("fieldset[name=non_licensed_fieldset]").setVisible(false);
+                       }
+
                     }
-                });
-       Ext.Ajax.request({
-                    url: "importexportpermits/getTraderRegisteredPremisesDetails",
-                    method: 'GET',
-                    params: {
-                        premise_id: record.get('premise_id'),
-                        applicant_id: record.get('applicant_id'),
-                        start: 0,
-                        limit: 1000
-                    },
-                    headers: {
-                        'Authorization': 'Bearer ' + access_token,
-                        'X-CSRF-Token': token
-                    },
-                    success: function (response) {
-                       
-                        var resp = Ext.JSON.decode(response.responseText),
-                            message = resp.message,
-                            success = resp.success;
-                        if (success == true || success === true) {
-                            var model = Ext.create('Ext.data.Model', resp.results[0]);
-                               
-                           premise_frm.loadRecord(model);
-                        } else {
-                            toastr.error(message, 'Failure Response');
-                            
-                        }
+                    if(senderreceiverdetailsfrm){
+                      senderreceiverdetailsfrm.loadRecord(senderReceiverDetails);
+                      
+                      }
+                
+                     }
+                     }
+        
                     },
                     failure: function (response) {
                         
@@ -3748,7 +3766,6 @@ downloadPreviousDocupload: function (item) {
                        
                     }
                 });
-        app_form.loadRecord(record);
        // app_pnl.down('combo[name=zone_id]').setValue(record.get('zone_id'));
         wrapper.down('hiddenfield[name=active_application_code]').setValue(record.get('application_code'));
         wrapper.down('textfield[name=reference_no]').setValue(record.get('reference_no'));
@@ -3757,6 +3774,7 @@ downloadPreviousDocupload: function (item) {
         extension_frm.down('datefield[name=prev_expiry_date]').setValue(record.get('expiry_date'));
         wrapper.down('hiddenfield[name=sub_module_id]').setValue(record.get('sub_module_id'));
         wrapper.down('hiddenfield[name=process_id]').setValue(record.get('process_id'));
+       // wrapper.down('hiddenfield[name=applicant_id]').setValue(record.get('applicant_id'));
         Ext.getBody().unmask();
         grid.up('window').close();
     },
@@ -3782,24 +3800,25 @@ downloadPreviousDocupload: function (item) {
             sender_receiver_frm = import_pnl.down('senderreceiverdetailsfrm'),
             premise_frm = import_pnl.down('importexportpremisesfrm'),
             sender_receiver_id = sender_receiver_frm.down('hiddenfield[name=applicant_id]').getValue(),
-            zone_id = import_pnl.down('combo[name=zone_id]').getValue(),
+            premise_id = premise_frm.down('hiddenfield[name=premise_id]').getValue(),
             application_code = form_wizard.down('hiddenfield[name=active_application_code]').getValue(),
             frm = product_form.getForm();
-        if(!zone_id){
-            toastr.warning('Please select a zone!!!', 'Warning Response');
-            return false;
-          }
-        if(!sender_receiver_id){
-                toastr.warning('Please select a sender receiver!!!', 'Warning Response');
+        
+          if(!sender_receiver_id){
+                //toastr.warning('Please select a sender receiver!!!', 'Warning Response');
+                //return false;
+            }
+            if(!premise_id){
+                toastr.warning('Please select a Business Details!!!', 'Warning Response');
                 return false;
-              }
+            }
         if(frm.isValid()){
             frm.submit({
                 url: "importexportpermits/saveImportExportEditionBaseDetails",
                 params: { 
                     sender_receiver_id:sender_receiver_id,
-                    zone_id:zone_id,
-                    application_code:application_code
+                    application_code:application_code,
+                    premise_id:premise_id
                 },
                 waitMsg: 'Please wait...',
                 
@@ -3855,6 +3874,7 @@ downloadPreviousDocupload: function (item) {
                     if (success == true || success === true) {
                         toastr.success(message, "Success Response");
                         extension_frm.down('hiddenfield[name=id]').setValue(response.record_id);
+                        extension_frm.down('datefield[name=prev_expiry_date]').setValue(response.expiry_date);
                     } else {
                         toastr.error(message, 'Failure Response');
                     }
@@ -3872,13 +3892,26 @@ downloadPreviousDocupload: function (item) {
         
     },
     print_permit: function (btn) {
-       var pnl = btn.up('panel'),
-           wizard = pnl.up('panel'),
-           module_id = wizard.down('hiddenfield[name=module_id]').getValue(),
-           reference_no = wizard.down('textfield[name=reference_no]').getValue(),
-           action_url = 'summaryreport/generatedSystemReport?module_id=' + module_id +'&doc_type=' + 30 +'&reference_no=' + reference_no;
-         print_report(action_url);
+        var me = this,
+        pnl = btn.up('panel'),
+        wizard = pnl.up('panel'),
+        module_id = wizard.down('hiddenfield[name=module_id]').getValue(),
+        application_code = wizard.down("hiddenfield[name=active_application_code]").getValue();
+        me.funcPrintPermit(application_code, module_id);
  },
+
+  funcPrintPermit: function (application_code, module_id, is_preview = 0) {
+    var action_url =
+      "reports/genenerateImportExportPermit?application_code=" +
+      application_code +
+      "&module_id=" +
+      module_id +
+      "&is_preview=" +
+      is_preview;
+    print_report(action_url);
+  },
+
+
  backHome: function(btn) {
      var child = Ext.widget(btn.childXtype),
          wrapper =Ext.ComponentQuery.query(btn.sec_dashboard)[0];

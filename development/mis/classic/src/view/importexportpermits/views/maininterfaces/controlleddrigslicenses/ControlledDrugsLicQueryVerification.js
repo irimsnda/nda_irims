@@ -12,7 +12,7 @@ Ext.define('Admin.view.importexportpermits.views.maininterfaces.import.Controlle
   items: [
       {
           xtype: 'importexportqueryverificationpnl',
-             permitsdetails_panel: 'previewcontroldrugslicpermitdetails',
+          permitsdetails_panel: 'previewcontroldrugsimppermitdetails',
           itemId: 'main_processpanel',
       }
   ]

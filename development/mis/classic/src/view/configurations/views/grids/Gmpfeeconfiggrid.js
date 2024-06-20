@@ -188,6 +188,13 @@ Ext.define('Admin.view.configurations.views.grids.Gmpfeeconfiggrid', {
         tdCls: 'wrap',
         flex:1
     },
+     {
+        xtype: 'gridcolumn',
+        dataIndex: 'gmp_license_type',
+        text: 'License Type',
+        tdCls: 'wrap',
+        flex:1
+    },
     {
         xtype: 'gridcolumn',
         dataIndex: 'inspection_activities',

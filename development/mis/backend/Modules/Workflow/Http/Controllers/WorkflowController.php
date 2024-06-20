@@ -1804,12 +1804,12 @@ public function getProcessApplicableChecklistItems(Request $request)
             'section_id' => $section_id
         );
         $process_details = getTableData('wf_tfdaprocesses', $where2);
-        if($module_id == 4){
-             $process_id = 38;
-        }
-        else{
+        // if($module_id == 4){
+        //      $process_id = 38;
+        // }
+        // else{
             
-        }
+        // }
         $process_id = $process_details->id;
         $workflow_id = $process_details->workflow_id;
 

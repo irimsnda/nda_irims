@@ -44,75 +44,78 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.abstract.Per
     initComponent: function () {
         var defaultColumns = [{
             xtype:'rownumberer'  
-          },{
-              xtype: 'gridcolumn',
-              dataIndex: 'brand_name',
-              text: 'Brand Name/Device Name',
-              flex: 1
-          }, {
-              xtype: 'gridcolumn',
-              dataIndex: 'certificate_no',
-              text: 'Certificate No',
-              flex: 1,
-          },{
-              xtype: 'gridcolumn',
-              dataIndex: 'common_name',
-              text: 'Common Name',
-              flex: 1,
-          },{
-              xtype: 'gridcolumn',
-              dataIndex: 'product_category',
-              hidden: true,
-              text: 'Product Category',
-              flex: 1,
-          }, {
-              xtype: 'gridcolumn',
-              dataIndex: 'quantity',
-              text: 'Quantity',
-              flex: 1,
-          }, {
-              xtype: 'gridcolumn',
-              dataIndex: 'packaging_units',
-              text: 'Packaging Units',
-              flex: 1,
-          }, {
-              xtype: 'gridcolumn',
-              dataIndex: 'pack_size',hidden: true,
-              text: 'Unit Pack size',
-      
-              flex: 1,
-          },{
-              xtype: 'gridcolumn',
-              dataIndex: 'pack_unit',hidden: true,
-              text: 'Unit Pack',
-      
-              flex: 1,
-          },{
-              xtype: 'gridcolumn',
-              dataIndex: 'currency_name',
-              text: 'Currency Name',
-              flex: 1,
-          },{
-              
-              xtype: 'gridcolumn',
-              dataIndex: 'unit_price',
-              text: 'Unit Price',
-              flex: 1,
-            
-          },{
-              xtype: 'gridcolumn',
-              dataIndex: 'total_value',
-              text: 'Total Value',
-              width: 200,
-              summaryType: 'sum',
-              renderer: function (val, meta, record) {
-                  return Ext.util.Format.number(val, '0,000.00');
-              },
-              summaryRenderer: function (val) {
-                  val = Ext.util.Format.number(val, '0,000.00');
-                  return 'Total Fob '+val
-              }
-          },{
+          },
+         {
+          xtype: 'gridcolumn',
+          dataIndex: 'certificate_no',
+          tdCls: 'wrap-text',
+          text: 'Registration No',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'brand_name',
+          tdCls: 'wrap-text',
+          text: 'Brand Name',
+          flex: 1
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'product_strength',
+          tdCls: 'wrap-text',
+          text: 'Strength',
+          flex: 1,
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'units_of_strength',
+          tdCls: 'wrap-text',
+          text: 'Unit Of Strenght',
+          flex: 1,
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'dosage_form',
+          tdCls: 'wrap-text',
+          text: 'Dosage Form',
+          flex: 1,
+      }, {
+          xtype: 'gridcolumn',
+          dataIndex: 'no_of_packs',
+          text: 'Number of Packs',
+  
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'currency_name',
+          tdCls: 'wrap-text',
+          text: 'Currency ',
+          flex: 1,
+      },{
+          
+          xtype: 'gridcolumn',
+          dataIndex: 'unit_price',
+          tdCls: 'wrap-text',
+          text: 'Price Per Pack',
+          flex: 1,
+      },{
+          
+          xtype: 'gridcolumn',
+          dataIndex: 'pack_size',
+          tdCls: 'wrap-text',
+          text: 'Pack Size',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'total_value',
+          tdCls: 'wrap-text',
+          text: 'Total Price',
+          width: 200,
+          summaryType: 'sum',
+          renderer: function (val, meta, record) {
+              return Ext.util.Format.number(val, '0,000.00');
+          },
+          summaryRenderer: function (val) {
+              val = Ext.util.Format.number(val, '0,000.00');
+              return 'Total Fob '+val
+          }
+      },{
             xtype: 'gridcolumn',
             text: 'Registration Status', 
             dataIndex: 'certificate_no',

@@ -9,49 +9,35 @@ Ext.define(
 
     layout: {
       //
-      type: "card",
+      //: "card",
     },
-    defaults: {
-      margin: 3,
+
+    defaults:{
+        margin: 3
+    },viewModel: {
+        type: 'importexportpermitsvm'
     },
-    viewModel: {
-      type: "importexportpermitsvm",
+    listeners: {
+        tabchange: 'funcActiveImportOtherInformationTab'
     },
-    items: [
-      {
-        xtype: "tabpanel",
-        title: "Permit Details",
-        layout: "card",
-        autoScroll: true,
-        items: [
-          {
-            xtype: "controldrugslicensedetailsfrm",
-            autoScroll: true,
-            collapsible: true,
-            title: "Controlled Drugs License Information",
-          },
-          {
-            xtype: "senderreceiverdetailsfrm",
-            autoScroll: true,
-            title: "Consignee Details",
-          },
-          {
-            xtype: "importexportpremisesfrm",
-            autoScroll: true,
-            hidden: true,
-            title: "Registered Outlets Details",
-          },
-        ],
-      },
-      {
-        xtype: "controldrugslicensesproductsgrid",
-        title: "Control Drugs Permit Products Details",
-      },
-      {
-        xtype: "hiddenfield",
-        name: "_token",
-        value: token,
-      },
-    ],
-  }
-);
+    
+    items: [{
+            xtype: 'panel',
+            autoScroll: true, 
+            title: 'Application Details',
+            items:[{
+                xtype: 'controldrugslicensedetailsfrm',
+                title: 'Application Details'
+               },{
+                xtype: 'senderreceiverdetailsfrm',
+                //hidden:true,
+                title: 'Sender/Receiver Details',
+               },{
+                xtype: 'importexportpremisesfrm',
+                title: 'BUSINESS DETAILS',
+            }]
+          },{
+            xtype: 'controldrugslicensesproductsgrid',
+            title:'Control Drugs Application Products Details'
+        }]
+});

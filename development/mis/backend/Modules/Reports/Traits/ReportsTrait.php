@@ -3132,9 +3132,9 @@ function getOrganisationInfo(){
 		if($records){
 			
 			foreach($records as $rec){
-				
-					$pdf->Cell(8,2,$rec->order_no.'. ',0,0);
-					$pdf->MultiCell(0,5,$rec->certificate_conditions." .\n",0,'J',0,1);
+					//$pdf->Cell(8,2,$rec->order_no.'. ',0,0);
+					//$pdf->MultiCell(0,5,$rec->certificate_conditions." .\n",0,'J',0,1);
+					$pdf->writeHTML($rec->certificate_conditions." .\n", true, false, true, false, '');
 				
 			}
 			
@@ -3833,10 +3833,10 @@ public function printClinicalTrialCertificate($application_code,$application_id)
 						->leftJoin('par_countries as t10', 't9.country_id', 't10.id')
 						->leftJoin('par_regions as t11', 't9.region_id', 't11.id')
 						->leftJoin('par_modesof_transport as t12', 't1.mode_oftransport_id', 't12.id')
-						->leftJoin('tra_managerpermits_review as t13', 't1.application_code', 't13.id')
+						->leftJoin('tra_managerpermits_review as t13', 't1.application_code', 't13.application_code')
 						->leftJoin('tra_consignee_data as t14', 't1.consignee_id', 't14.id')
 						->leftJoin('par_permitsproduct_categories as t15', 't1.permit_productscategory_id', 't15.id')
-						->select('t20.element_amount as total_element_amount','t22.name as currency','t20.paying_exchange_rate as exchange_rate', 't19.invoice_no', 't20.paying_currency_id','t2.title','t17.name  as product_category','t18.name  as product_classification' ,'t16.name as permit_title','t13.permit_no','t14.name as consignee_name', 't1.sub_module_id', 't1.*','t3.name as applicant_name','t2.action_title','t6.name as port_entry', 't3.*', 't4.name as country_name', 't5.name as region_name','t7.permit_signatory','t7.expiry_date', 't7.approval_date', DB::raw("concat(decrypt(t8.first_name),' ',decrypt(t8.last_name)) as permit_signatoryname,t9.name as suppler_name, t9.physical_address as suppler_address, t10.name as supplier_country, t11.name as supplier_region, t9.postal_address as supplier_postal_address, t12.name as mode_of_transport"))
+						->select('t20.element_amount as total_element_amount','t22.name as currency','t20.paying_exchange_rate as exchange_rate', 't19.invoice_no', 't20.paying_currency_id','t2.title','t17.name  as product_category','t18.name  as product_classification' ,'t16.name as permit_title','t13.permit_no','t14.name as consignee_name', 't1.sub_module_id', 't1.*','t3.name as applicant_name','t2.action_title','t6.name as port_entry', 't3.*', 't4.name as country_name', 't5.name as region_name','t7.permit_signatory','t13.expiry_date', 't7.approval_date', DB::raw("concat(decrypt(t8.first_name),' ',decrypt(t8.last_name)) as permit_signatoryname,t9.name as suppler_name, t9.physical_address as suppler_address, t10.name as supplier_country, t11.name as supplier_region, t9.postal_address as supplier_postal_address, t12.name as mode_of_transport"))
 						->groupBy('t20.invoice_id')
 						->where('t1.application_code',$application_code)->first();
 

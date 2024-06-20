@@ -2359,8 +2359,61 @@ previewMultiUploadedDocument: function (item) {
         }
         
 },
-
 funcCancelGeneratedInvoice: function(item){
+    var btn = item.up('button'),
+        record = btn.getWidgetRecord(),
+        grid = item.up('grid'),
+        invoice_no = record.get('invoice_no'),
+        invoice_id = record.get('invoice_id'),
+        application_code = record.get('application_code'),
+        store = grid.getStore();
+
+        Ext.MessageBox.confirm('Proforma Invoice Cancellation', 'Do you want to cancel the generate  Application Proforma Invoice?', function (button) {
+            if (button === 'yes') {
+                Ext.Ajax.request({
+                    url: 'revenuemanagement/onCancelGeneratedApplicationInvoice',
+                    method: 'GET',
+                    params: {
+                        application_code:application_code,
+                        invoice_id:invoice_id,
+                        invoice_no:invoice_no
+                    },
+                    headers: {
+                        'Authorization': 'Bearer ' + access_token,
+                        'X-CSRF-Token': token
+                    },
+                    success: function (response) {
+                        Ext.getBody().unmask();
+                     
+                        var resp = Ext.JSON.decode(response.responseText),
+                            success = resp.success,
+                            message = resp.message;
+                        
+                            toastr.error(message, 'Failure Response');
+                            store.removeAll();
+                            store.load();
+        
+                    },
+                    failure: function (response) {
+                        Ext.getBody().unmask();
+                     
+                        var resp = Ext.JSON.decode(response.responseText),
+                            message = resp.message;
+                        toastr.error(message, 'Failure Response');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        Ext.getBody().unmask();
+                        toastr.error('Error data: ' + errorThrown, 'Error Response');
+                    }
+                });
+
+            }
+        });
+        
+
+},
+
+funcCancelOnlineGeneratedInvoice: function(item){
     var record = item.getWidgetRecord(),
         grid = item.up('grid'),
         invoice_no = record.get('invoice_no'),

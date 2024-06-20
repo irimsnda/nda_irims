@@ -23,13 +23,13 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
     },
     tbar: [{
         xtype: 'button',
-        text: 'Add Permit Products Details',
+        text: 'Add Products Details',
         iconCls: 'x-fa fa-plus',
         action: 'add',
         name: 'add_products',
         ui: 'soft-green',
         childXtype: 'importexportpermitsproductspnl',
-        winTitle: 'Add Permit Products Details',
+        winTitle: 'Add  Products Details',
         winWidth: '80%',
         handler: 'showAddImpPermitProductsWinFrm',
         stores: '[]',
@@ -45,7 +45,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             value: '{isReadOnly}'  // negated
         }
     }],
-    export_title: 'Impor/Export Permits Products',
+    export_title: 'Impor/Export Products',
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '80%',
@@ -102,72 +102,65 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         xtype:'rownumberer'  
       },{
           xtype: 'gridcolumn',
+          dataIndex: 'certificate_no',
+          tdCls: 'wrap-text',
+          text: 'Registration No',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
           dataIndex: 'brand_name',
           tdCls: 'wrap-text',
-          text: 'Brand Name/Device Name',
+          text: 'Brand Name',
           flex: 1
       }, {
           xtype: 'gridcolumn',
-          dataIndex: 'certificate_no',
+          dataIndex: 'product_strength',
           tdCls: 'wrap-text',
-          text: 'Certificate No',
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'common_name',
-          tdCls: 'wrap-text',
-          text: 'Common Name',
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'product_category',
-          hidden: true,
-          tdCls: 'wrap-text',
-          text: 'Product Category',
+          text: 'Strength',
           flex: 1,
       }, {
           xtype: 'gridcolumn',
-          dataIndex: 'quantity',
+          dataIndex: 'units_of_strength',
           tdCls: 'wrap-text',
-          text: 'Quantity',
+          text: 'Unit Of Strenght',
           flex: 1,
       }, {
           xtype: 'gridcolumn',
-          dataIndex: 'packaging_units',
+          dataIndex: 'dosage_form',
           tdCls: 'wrap-text',
-          text: 'Packaging Units',
+          text: 'Dosage Form',
           flex: 1,
       }, {
           xtype: 'gridcolumn',
-          dataIndex: 'pack_size',hidden: true,
-          text: 'Unit Pack size',
-  
-          flex: 1,
-      },{
-          xtype: 'gridcolumn',
-          dataIndex: 'pack_unit',hidden: true,
-          text: 'Unit Pack',
+          dataIndex: 'no_of_packs',
+          text: 'Number of Packs',
   
           flex: 1,
       },{
           xtype: 'gridcolumn',
           dataIndex: 'currency_name',
           tdCls: 'wrap-text',
-          text: 'Currency Name',
+          text: 'Currency ',
           flex: 1,
       },{
           
           xtype: 'gridcolumn',
           dataIndex: 'unit_price',
           tdCls: 'wrap-text',
-          text: 'Unit Price',
+          text: 'Price Per Pack',
           flex: 1,
-        
+      },{
+          
+          xtype: 'gridcolumn',
+          dataIndex: 'pack_size',
+          tdCls: 'wrap-text',
+          text: 'Pack Size',
+          flex: 1,
       },{
           xtype: 'gridcolumn',
           dataIndex: 'total_value',
           tdCls: 'wrap-text',
-          text: 'Total Value',
+          text: 'Total Price',
           width: 200,
           summaryType: 'sum',
           renderer: function (val, meta, record) {

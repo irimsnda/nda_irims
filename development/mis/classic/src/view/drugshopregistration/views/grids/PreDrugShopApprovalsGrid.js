@@ -334,7 +334,8 @@ Ext.define('Admin.view.drugshopregistration.views.grids.PreDrugShopApprovalsGrid
             text: 'Print Approvals',
             iconCls: 'x-fa fa-certificate',
             backend_function: 'printPremiseRegistrationCertificate',
-            handler: 'printColumnPremisePermit',
+            //handler: 'printColumnPremisePermit',
+            handler: 'printTCPDFColumnPremisePermit',
             bind: {
                 disabled: '{record.decision_id <= 0 || record.decision_id === null}'
                 //disabled: '{record.decision_id !== 1}'

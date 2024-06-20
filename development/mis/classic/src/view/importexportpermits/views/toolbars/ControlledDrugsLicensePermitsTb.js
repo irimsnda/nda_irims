@@ -23,7 +23,7 @@ Ext.define('Admin.view.importexportpermits.views.toolbars.ControlledDrugsLicense
             name: 'poepermitstbRegHomeBtn'
         },{
 
-            text: 'Control Drugs License & Permit Options',
+            text: 'Control Drugs License & VC Options',
             iconCls: 'x-fa fa-plus-square',
             menu: {
                 xtype: 'menu',
@@ -31,10 +31,11 @@ Ext.define('Admin.view.importexportpermits.views.toolbars.ControlledDrugsLicense
                     text: 'Control Drugs License Application',
                     iconCls: 'x-fa fa-plus-square',
                     handler: 'onInitializeControlledDrugsImpPermits',
-                    app_type: 60
+                    app_type: 60,
+                    has_registered_premises: 1
                 },
                 {
-                    text: 'Control Drugs Import permit Application',
+                    text: 'Control Drugs Import VC Application',
                     iconCls: 'x-fa fa-plus-square',
                     handler: 'onInitializeControlledDrugsImpPermits',
                     app_type: 61,

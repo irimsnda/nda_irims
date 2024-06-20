@@ -280,7 +280,9 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
         this.bbar = {
             reference: 'navigation-toolbar',
             ui: 'footer',
-            items: [
+            items: [ {
+                    xtype: 'transitionsbtn',
+                },
                 {
                     text: 'Back to List',
                     ui: 'soft-purple',

@@ -7,7 +7,7 @@
 Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ControlDrugsImpOnlineReceivingWizard', {
 	extend: 'Ext.panel.Panel',
     alias: 'widget.controldrugsimponlinereceivingwizard',
-    
+    itemId: 'wizzard_panel',
     padding: '2 0 2 0',
     requires: [
         'Ext.layout.container.*',
@@ -115,54 +115,31 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ControlD
         },
         {
             xtype: 'onlinecontroldrugsimpdetailspnl',//onlinefoodproductsdetailspnl
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    ui: 'footer',
-                    dock: 'top',
-                    margin: 3,
-                    items: [
-                        {
-                            xtype: 'tbspacer',
-                            width: 2
-                        },
-                        {
-                            xtype: 'combo',
-                            fieldLabel: 'Zone',
-                            labelWidth: 50,
-                            width: 400,
-                            name: 'zone_id',
-                            valueField: 'id',
-                            displayField: 'name',
-                            queryMode: 'local',
-                            forceSelection: true,
-                            listeners: {
-                                beforerender: {
-                                    fn: 'setOrgConfigCombosStore',
-                                    config: {
-                                        pageSize: 1000,
-                                        proxy: {
-                                            extraParams: {
-                                                model_name: 'Zone'
-                                            }
-                                        }
-                                    },
-                                    isLoad: true
-                                }
-                            },
-                            labelStyle: 'font-weight:bold'
-                        }
-                    ]
-                }
-            ],
-        }, {
-            xtype: 'onlineimportexportdocuploadsgrid',
-            title: 'Documents Submission'
-        },
+        },{
+            xtype: 'tabpanel',
+            items: [{
+                xtype: 'onlineimportexportdocuploadsgrid',
+                title: 'Documents Submission'
+            }]
+        }, 
+        // {
+        //     //title: 'Invoice & Payment Details',
+        //     //xtype: 'onlineappinvoicepaymentspanel',
+        //     xtype: 'productonlinescreeninggrid'
+        // },
+
         {
-            xtype: 'productscreeninggrid',
-            name: 'productonlinescreeninggrid'
+            xtype: 'tabpanel',
+            items:[{
+                xtype: 'productonlinescreeninggrid',
+                title:'Prechecking Checklist'
+               },{
+                title: 'Invoice & Payment Details',
+                xtype: 'onlineappinvoicepaymentspanel', 
+             }
+            ]
         },
+
         {
             xtype: 'hiddenfield',
             name: 'active_application_id'
@@ -199,7 +176,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ControlD
                     step: 1,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
-                    text: 'Import/Export permit Details',
+                    text: 'Application Details',
                     action: 'quickNav', 
                     wizard: 'controldrugsimponlinereceivingwizard',
                     handler: 'quickNavigationonlineprev'
@@ -207,7 +184,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ControlD
                     step: 2,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'Import/Export permit Documents Submission',
+                    text: 'Application Documents Submission',
                     action: 'quickNav',
                      wizard: 'controldrugsimponlinereceivingwizard',
                     handler: 'quickNavigationonlineprev'
@@ -215,8 +192,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ControlD
                     step: 3,
                     iconCls: 'fa fa-check-square',
                     enableToggle: true,
-                    
-                    text: 'Precheking Checklist',
+                    text: 'Pre-Checking Checklist & Invoice/Payment Details',
                     action: 'quickNav',
                     wizard: 'controldrugsimponlinereceivingwizard',
                     handler: 'quickNavigationonlineprev'
@@ -238,7 +214,77 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ControlD
                     handler: 'onPrevCardClickOnline'
                 },
                 {
-                    text: 'Receiving Recommendation',
+                    text: 'Actions',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-bars',
+                    name: 'actions',
+                    hidden: true,
+                    menu:{
+                        xtype: 'menu',
+                        items:[
+                            {
+                                text: 'Dismiss Rejection And Receive Application',
+                                iconCls: 'x-fa fa-arrow-right',
+                                name: 'action_dismiss1',
+                                handler: 'receiveOnlineApplicationDetailsFrmBtn',
+                                storeID: 'onlineimportexportappsstr',
+                                winWidth: '50%'
+                            },
+                            '-',
+                            {
+                                text: 'Dismiss Rejection And Send To Rejecting Officer',
+                                iconCls: 'x-fa fa-arrow-right',
+                                name: 'action_dismiss2',
+                                handler: 'submitManagerRejectedOnlineApplicationFrmBtn',
+                                application_status: 24
+                            },
+                            '-',
+                            {
+                                text: 'Approve Rejection And Send Application To Trader',
+                                iconCls: 'x-fa fa-arrow-right',
+                                name: 'action_approve',
+                                handler: 'submitManagerRejectedOnlineApplicationFrmBtn',
+                                application_status: 18
+                            }
+                        ]
+                    }
+                },{
+                    text: 'Preview Queries',
+                    ui: 'soft-purple',
+                    hidden: true,
+                    iconCls: 'x-fa fa-bars',
+                    name: 'preview_queries_btn',
+                    handler: 'previewQueriesFromOnlineApp'
+                }, 
+                {
+                    text: 'Previous Rejections',
+                    ui: 'soft-purple',
+                    iconCls: 'x-fa fa-thumbs-down',
+                    hidden: true,
+                    name: 'prev_rejections',
+                    handler: 'showOnlineApplicationRejections',
+                    childXtype: 'onlineappsrejectionsgrid',
+                    winWidth: '60%'
+                }, '->',
+                {
+                    text: 'Query Application',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-question',
+                    handler: 'queryWinOnlineApplication',
+                    action: 'query_app',
+                   // hidden: true
+                    
+                },
+                {
+                    text: 'Reject Application',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-thumbs-down',
+                    name: 'save_btn', hidden: true,
+                    handler: 'submitWinRejectedOnlineApplication',
+                    action: 'reject_app'
+                   
+                },{
+                    text: ' Pre-Checking Recommendation',
                     ui: 'soft-red',
                     iconCls: 'fa fa-save',
                     name: 'prechecking_recommendation',
@@ -248,10 +294,16 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ControlD
                     ui: 'soft-purple',
                     iconCls: 'fa fa-save',
                     name: 'save_btn', 
-                    form_panel:'#controldrugsimpdetailsfrm',
-                    action_url: 'updateonlineControlDrugsImpReceivingBaseDetails',
+                    hidden:true,
+                    form_panel:'#importexportdetailsfrm',
+                    action_url: 'updateonlineImportPermittReceivingBaseDetails',
                     wizard: 'controldrugsimponlinereceivingwizard',
                     handler: 'updateOnlineImporExportPermitReceivingBaseDetails'
+                },{
+                    text: 'Save Pre-Checking Details',
+                    ui: 'soft-purple',
+                    iconCls: 'fa fa-save',
+                    name: 'save_screening_btn',
                 },
                 {
                     text: 'Submit Application',
@@ -259,6 +311,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ControlD
                     iconCls: 'fa  fa-thumbs-up',
                     winWidth: '50%', 
                     hidden: true,
+                    is_invoicecheck:true,
                     //handler: 'receiveWinOnlineApplicationDetails',
                     storeID: 'onlineimportexportappsstr',
                     winWidth: '50%',

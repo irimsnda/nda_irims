@@ -13,13 +13,13 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.AllApprovedV
                 remoteFilter: true,
                 enablePaging: true,
                 proxy: {
-                    url: 'importexportpermits/getApprovedVisaApplicationDetails'//getProductApprovalApplications
+                    url: 'importexportpermits/getApprovedLicenceApplicationDetails'//getProductApprovalApplications
                 }
             },
             isLoad: true
         }
     },
-    plugins: [{
+     plugins: [{
             ptype: 'filterfield'
         }],
     bbar: [{
@@ -32,27 +32,34 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.AllApprovedV
             var store = this.getStore(),
                 grid = this.up('grid'),
                 section_id = grid.down('hiddenfield[name=section_id]').getValue();
-                store.getProxy().extraParams = {
-                    section_id: section_id
-                };
 
+            store.getProxy().extraParams = {
+                section_id: section_id
+            };
         }
     }],
+    //  features: [{
+    //     ftype: 'searching',
+    //     mode: 'local',
+    //     minChars: 2
+    // }],
     tbar: [{
-        text: 'Double Click to select application'
-    },{
+            xtype: 'tbspacer',
+            width: 20
+        },
+        {
+            xtype: 'displayfield',
+            value: 'Double click to select!!',
+            fieldStyle: {
+                'color':'green',
+                'font-style':'italic'
+            }
+        },
+    {
         xtype: 'hiddenfield',
         name: 'section_id'
     }],
     columns: [{
-        xtype: 'gridcolumn',
-        dataIndex: 'reference_no',
-        text: 'Permit/Reference No',
-        flex: 1,
-        filter: {
-                xtype: 'textfield',
-            }
-    }, {
         xtype: 'gridcolumn',
         dataIndex: 'tracking_no',
         text: 'Tracking No',
@@ -62,38 +69,37 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.AllApprovedV
             }
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'proforma_invoice_no',
-        text: 'Proform Invoice No',
+        dataIndex: 'reference_no',
+        text: 'Reference No',
         flex: 1,
         filter: {
                 xtype: 'textfield',
             }
-    }, {
+    },{
         xtype: 'gridcolumn',
-        dataIndex: 'permit_category',
-        text: 'Permit Category',
-        flex: 1
-    }, {
+        text: 'Business Name',
+        dataIndex: 'premises_name',
+        flex: 1,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
+    },{
         xtype: 'gridcolumn',
-        dataIndex: 'applicant_name',
-        text: 'Applicant Name',
-        flex: 1
-    }, {
-        xtype: 'gridcolumn',
-        dataIndex: 'sender_receiver_name',
-        text: 'Sender Receiver',
+        dataIndex: 'business_type',
+        text: 'Business Type',
+        tdCls: 'wrap-text',
         flex: 1
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'permit_no',
-        text: 'Permit No',
+        text: 'License No',
         flex: 1,
          filter: {
                 xtype: 'textfield',
             }
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'expiry_date',
+        dataIndex: 'expiry_date_formated',
         text: 'Expiry Date',
         flex: 1
     }, {

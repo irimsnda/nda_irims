@@ -53,7 +53,7 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ControlDrugs
                         url: 'workflow/getSystemSubModules',
                         extraParams: {
                             model_name: 'SubModule',
-                            module_id: 4
+                            module_id: 12
                         }
                     }
                 },
@@ -110,11 +110,21 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ControlDrugs
             change: function(cmbo, newVal) {
                 var form = cmbo.up('form'),
                 has_registered_premises_id = form.down('combo[name=has_registered_premises]').getValue(),
-                licenseTypeStore = form.down('combo[name=licence_type_id]').getStore();
+                licenseTypeStore = form.down('combo[name=licence_type_id]').getStore(),
+                licence_type_id = form.down('combo[name=licence_type_id]').getValue(),
+                product_classification_id = form.down('combo[name=product_classification_id]').getValue();
                 var filterObj = { "t2.business_type_id": newVal },
                 filterStr = JSON.stringify(filterObj);
                 licenseTypeStore.removeAll();
                 licenseTypeStore.load({ params: { filters: filterStr } });
+                // Check if both licence_type_id and product_classification_id have values
+                 if (licence_type_id && product_classification_id) {
+                    var rangeStore = form.down('combo[name=importexport_product_range_id]').getStore(),
+                    product_classification_id = form.down('combo[name=product_classification_id]').getValue();
+                    rangeStore.removeAll();
+                    rangeStore.load({ params: { business_type_id: newVal, licence_type_id: licence_type_id, product_classification_id: product_classification_id } });
+
+                }
                 if(has_registered_premises_id!=2){
                     if (newVal == 5 || newVal === 5) {
                         form.down('fieldcontainer[name=gmp_search]').setVisible(true);

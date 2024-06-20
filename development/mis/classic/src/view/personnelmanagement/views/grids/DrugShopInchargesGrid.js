@@ -117,6 +117,16 @@ Ext.define('Admin.view.personnelmanagement.views.grids.DrugShopInchargesGrid', {
         flex: 1
     },{
         xtype: 'gridcolumn',
+        dataIndex: 'premise_no',
+        text: 'Premise No',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'tracking_no',
+        text: 'Tracking No',
+        flex: 1
+    },{
+        xtype: 'gridcolumn',
         dataIndex: 'telephone',
         text: 'Telephone No',
         flex: 1
@@ -170,12 +180,14 @@ Ext.define('Admin.view.personnelmanagement.views.grids.DrugShopInchargesGrid', {
         text: 'Gender',
         flex: 1
         //,hidden: true
-    },{
-        xtype: 'gridcolumn',
-        dataIndex: 'country_name',
-        text: 'Country',
-        flex: 1
-    },{
+    },
+    // {
+    //     xtype: 'gridcolumn',
+    //     dataIndex: 'country_name',
+    //     text: 'Country',
+    //     flex: 1
+   // },
+    {
         xtype: 'gridcolumn',
         dataIndex: 'region_name',
         text: 'Region',

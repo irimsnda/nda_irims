@@ -1,7 +1,7 @@
 
-Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExportLicenceDirectorApprovalGrid', {
+Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ControlledDrugsLicenceDirectorApprovalGrid', {
     extend: 'Ext.grid.Panel',
-    xtype: 'importexportlicencedirectorapprovalgrid',
+    xtype: 'controleddrugslicencedirectorapprovalgrid',
     listeners: {
         
     },
@@ -17,35 +17,45 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
             },
             isLoad: true 
         },
-        afterrender: function(grid) {
-                var pnl = grid.up('panel'),
-                subModuleId = pnl.down('hiddenfield[name=sub_module_id]').getValue();
-                grid.columns.forEach(function(column) {
-                if(subModuleId==12 || subModuleId===12){
-                            if (column.dataIndex === 'proforma_invoice_no') {
-                                column.setHidden(false);
-                            } 
-                            if (column.dataIndex === 'vc_application_type') {
-                                column.setHidden(false);
-                            }
-                            if (column.dataIndex === 'registration_level') {
-                                column.setHidden(false);
-                            }
-                              
-                          }else{
-                            if (column.dataIndex === 'proforma_invoice_no') {
-                                column.setHidden(true);
-                            } 
-                            if (column.dataIndex === 'vc_application_type') {
-                                column.setHidden(true);
-                            }
-                            if (column.dataIndex === 'registration_level') {
-                                column.setHidden(true);
-                            }
-                            
-                          }
-                    });
-        },
+        //  afterrender: function(grid) {
+        //         var pnl = grid.up('panel'),
+        //         subModuleId = pnl.down('hiddenfield[name=sub_module_id]').getValue();
+        //         grid.columns.forEach(function(column) {
+        //         if(subModuleId==12 || subModuleId===12){
+        //                     if (column.dataIndex === 'from_date') {
+        //                         column.setHidden(false);
+        //                     } 
+        //                     if (column.dataIndex === 'to_date') {
+        //                         column.setHidden(false);
+        //                     }
+        //                     if (column.dataIndex === 'report_approval_date') {
+        //                         column.setHidden(true);
+        //                     }
+        //                     if (column.dataIndex === 'international_birth_date') {
+        //                         column.setHidden(false);
+        //                     }
+        //                     if (column.dataIndex === 'data_log_point') {
+        //                         column.setHidden(false);
+        //                     }   
+        //                   }else{
+        //                     if (column.dataIndex === 'from_date') {
+        //                         column.setHidden(false);
+        //                     } 
+        //                     if (column.dataIndex === 'to_date') {
+        //                         column.setHidden(false);
+        //                     }
+        //                     if (column.dataIndex === 'report_approval_date') {
+        //                         column.setHidden(true);
+        //                     }
+        //                     if (column.dataIndex === 'international_birth_date') {
+        //                         column.setHidden(false);
+        //                     }
+        //                     if (column.dataIndex === 'data_log_point') {
+        //                         column.setHidden(false);
+        //                     }  
+        //                   }
+        //             });
+        // },
         select: function (sel, record, index, eOpts) {
             var grid = sel.view.grid,
                 selCount = grid.getSelectionModel().getCount();
@@ -155,24 +165,6 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        text: 'VC Application Type',
-        dataIndex: 'vc_application_type',
-        flex: 1,
-        hidden:true,
-        tdCls: 'wrap-text',
-        tdCls: 'wrap'
-        
-    }, {
-        xtype: 'gridcolumn',
-        text: 'Registration Level',
-        dataIndex: 'registration_level',
-        flex: 1,
-        hidden:true,
-        tdCls: 'wrap-text',
-        tdCls: 'wrap'
-        
-    },{
-        xtype: 'gridcolumn',
         dataIndex: 'date_added',
         text: 'Application Date',
         tdCls: 'wrap-text',
@@ -192,16 +184,6 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         tdCls: 'wrap-text',
         flex: 1
     }, 
-    {
-        xtype: 'gridcolumn',
-        text: 'Invoice No',
-        dataIndex: 'proforma_invoice_no',
-        flex: 1,
-        hidden:true,
-        tdCls: 'wrap-text',
-        tdCls: 'wrap'
-        
-    },
    {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',
@@ -278,7 +260,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                         text: 'Preview Import/Export Details',
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 0,
-                        handler: 'editpreviewPermitinformation'
+                        handler: 'editpreviewNarcoticsPermitinformation'
                     },{
                         text: 'All Application Documents',
                         iconCls: 'x-fa fa-file',

@@ -7,6 +7,9 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
         'Ext.layout.container.*',
         'Ext.toolbar.Fill'
     ],
+    viewModel: {
+        type: 'importexportpermitsvm'
+    },
     reference: 'wizardpnl',
     itemId: 'importexportedittingswizardId',
     layout: 'card',
@@ -136,7 +139,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                             name: 'select_applications',
                             childXtype: 'allimportexportappgrid',
                             winTitle:'Import/Export Applications',
-                            winWidth:'70%',
+                            winWidth:'90%',
                             handler: 'showIEApplicationsSelectionList'
                         }
                     ]
@@ -144,22 +147,17 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
         }
     ],
     items: [
-    // {
-    //         xtype: 'importexportapplicantdetailsfrm',
-    //         title: 'APPLICANT DETAILS'
-    //     },
+ 
         {
             xtype: 'editimportexportdetailspnl',//onlinefoodproductsdetailspnl
-        }, {
-            xtype: 'tabpanel',
-            items: [{
-                xtype: 'importexportextentiondocuploadsgrid',
-                title: 'Documents Submission'
-            },{
-                xtype: 'previousimportexportdocuploadsgrid',
-                title: 'Previous Documents Submission'
-            }]
-        },{
+        }, 
+     
+        {
+            xtype: 'importexportdocuploadsgrid',
+           // title: 'Application Documents '
+        },
+
+        {
             xtype: 'extensionimportexportapppnl',
             //title: 'Import/Export License Extention'
         },
@@ -191,7 +189,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     iconCls: 'fa fa-university',
                     enableToggle: true,
                     pressed: true,
-                    text: 'Import/Export Permit Details',
+                    text: 'Import/Export License Details',
                     action: 'quickNav', 
                     wizard: 'importexportedittingswizard',
                     handler: 'quickNavigation'
@@ -229,11 +227,14 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                 {
                     text: 'Previous',
                     ui: 'soft-purple',
+                    max_step:2,
+                    disabled:true,
+                    name:'previous_btn',
                     iconCls: 'fa fa-arrow-left',
                     wizard:'importexportedittingswizard',
                     handler: 'onPrevCardClick'
                 },{
-                    text: 'Preview Approval Document',
+                    text: 'Preview & Reprint Approval Document',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-check',
                     ui: 'soft-purple',
@@ -246,12 +247,18 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                                 text: 'Preview Approval Document',
                                 is_preview : true,
                                 name: 'preview_importexportpermit',
+                            },{
+                                ui: 'soft-green',
+                                iconCls: 'fa fa-print',
+                                text: 'Print Approval Document',
+                                is_preview : false,
+                                name: 'print_importexportpermit',
                             }
                         ]
                     }
                 },
                 {
-                    text: 'Save Application Details',
+                    text: 'Update Application Details',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-save',
                     name: 'save_btn',
@@ -269,23 +276,15 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                     handler: 'saveImporExportAppExtensionEditDetails'
                 },
                 {
-                    text: 'Next',
-                    ui: 'soft-purple',
-                    reference: 'nextbutton',
-                    iconCls: 'fa fa-arrow-right',
-                    iconAlign: 'right',
-                    wizard:'importexportedittingswizard',
-                    handler: 'onNextCardClick'
-                },
-                {
-                    text: 'Next',
-                    ui: 'soft-purple',
-                    name: 'save_screening_btn',
-                    iconCls: 'fa fa-arrow-right',
-                    iconAlign: 'right',
-                    hidden: true,
-                    wizard:'importexportedittingswizard',
-                    handler: 'onNextCardClick'
+                    text: "Next",
+                    ui: "soft-purple",
+                    reference: "nextbutton",
+                    iconCls: "fa fa-arrow-right",
+                    iconAlign: "right",
+                    max_step: 2,
+                    name:'next_btn',
+                    wizard: "importexportedittingswizard",
+                    handler: "onNextCardClick",
                 }
             ]
         };

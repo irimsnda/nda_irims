@@ -271,7 +271,8 @@ Ext.define('Admin.view.drugshopregistration.views.grids.PreDrugShopCommunication
             text: 'Print License/Letter',
             iconCls: 'x-fa fa-certificate',
             backend_function: 'printPremiseRegistrationCertificate',
-            handler: 'printColumnPremisePermit'
+           // handler: 'printColumnPremisePermit'
+           handler: 'printTCPDFColumnPremisePermit'
         }
     },{
         xtype: 'gridcolumn',

@@ -23,7 +23,7 @@ Ext.define('Admin.view.importexportpermits.views.toolbars.ImportExportPermitsTb'
             name: 'disposalpermitstbRegHomeBtn'
         },
         {
-            text: 'Initiate Import/Export Permit Applications',
+            text: 'Initiate Import/Export Applications',
             iconCls: 'x-fa fa-plus-square',
             menu: {
                 xtype: 'menu',

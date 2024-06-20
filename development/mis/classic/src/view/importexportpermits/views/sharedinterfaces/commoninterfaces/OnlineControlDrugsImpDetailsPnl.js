@@ -5,30 +5,38 @@
 Ext.define('Admin.view.importexportpermits.views.commoninterfaces.OnlineControlDrugsImpDetailsPnl', {
     extend: 'Ext.tab.Panel',
     xtype: 'onlinecontroldrugsimpdetailspnl',
-    layout: {//
-        type: 'fit'
-    },
-    defaults:{
-        margin: 3
-    },viewModel: {
-        type: 'importexportpermitsvm'
-    },
-    items: [{
-        xtype: 'controldrugsimpdetailsfrm',
-        autoScroll: true,
-        title: 'Import Permit Information'
-    }, {
-        xtype: 'onlinecontrolledpermitsproductsgrid',
-        title: 'Controll Drugs Products Details',
-    },  {
-        xtype: 'senderreceiverdetailsfrm',
-        title: 'Consignor Details',
-    }, {
-        xtype: 'importexportpremisesfrm',
-        title: 'Registered Outlet Details'
-    },{
-        xtype: 'hiddenfield',
-        name: '_token',
-        value: token
-    }]
-});
+    layout: {
+          type: "card",
+        },
+        defaults: {
+          margin: 3,
+        },
+        viewModel: {
+          type: "importexportpermitsvm",
+        },
+        items: [
+          {
+            xtype: "controldrugslicensedetailsfrm",
+            autoScroll: true,
+            title: "Application Information",
+          },
+          {
+            xtype: "onlinecontrolledpermitsproductsgrid",
+            title: "Products Details",
+          },
+          {
+            xtype: "senderreceiverdetailsfrm",
+            title: "Sender/Receiver Details",
+          },
+          {
+            xtype: "importexportpremisesfrm",
+            title: "Business Details",
+          },
+          {
+            xtype: "hiddenfield",
+            name: "_token",
+            value: token,
+          },
+        ],
+      }
+);
