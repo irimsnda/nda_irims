@@ -41,10 +41,6 @@
     "Enforcement": true,
     "Psur": true,
     "PersonnelManagement": true,
-<<<<<<< Updated upstream
-    "ResearchOperations": true
-=======
     "ResearchOperations": true,
     "GvpApplications": true
->>>>>>> Stashed changes
 }
