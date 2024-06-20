@@ -2716,6 +2716,289 @@ public function getModuleName($module_id)
         }
              
     }
+
+    public function generateGvpCertificate(Request $payload){
+        $application_id = $payload->input('application_id');
+        $application_code = $payload->input('application_code');
+        $section_id = $payload->input('section_id');
+        $ref='';
+
+        if(validateIsNumeric($application_code)){
+            $rec = DB::table('tra_gvp_applications as t1')
+                ->select('t1.*')
+                ->where('t1.application_code', $application_code)
+                ->first();
+            $application_id = $rec->id;
+            $section_id = $rec->section_id;
+        }
+        $approvalGrant = DB::table('tra_approval_recommendations as t2')
+            ->where('t2.application_code', $application_code)
+            ->first();
+
+        if(!empty($approvalGrant) && $approvalGrant->decision_id == 1){
+
+            $record = DB::table('tra_gvp_applications as t1')
+                ->leftJoin('tra_gvp_sites as t2', 't1.gvp_site_id', '=', 't2.id')
+                ->leftJoin('par_countries as t3', 't2.country_id', '=', 't3.id')
+                ->leftJoin('par_regions as t4', 't2.region_id', '=', 't4.id')
+                ->leftJoin('par_districts as t5', 't2.district_id', '=', 't5.id')
+                ->leftJoin('wb_trader_account as t6', 't1.applicant_id', '=', 't6.id')
+                ->leftJoin('par_regions as t7', 't6.region_id', '=', 't7.id')
+                ->leftJoin('par_districts as t8','t6.district_id','=', 't8.id')
+                ->leftJoin('tra_approval_recommendations as t9','t1.application_code','=', 't9.application_code')
+                ->leftJoin('users as t10','t9.approved_by', '=', 't10.id')
+                ->leftJoin('par_titles as t11', 't10.title_id', '=', 't11.id')
+                ->leftJoin('par_sections as t12', 't1.section_id', '=', 't12.id')
+                ->select(DB::raw("t1.section_id, t12.name as section_name, t9.certificate_issue_date,t9.approved_by, t9.expiry_date,t1.gvp_site_id as gvp_site_id, t9.certificate_no, t1.inspection_type_id, t2.name as gvp_site_name, t2.physical_address as gvp_phy_addr, t2.postal_address as gvp_postal_addr, t1.date_added as date_registered, t9.permit_no, t6.name as applicant_name, t5.name as gvpDistrictName, t4.name as gvpRegionName, t3.name as gvpCountryName, t6.postal_address, t6.physical_address, t6.name as countryName , t7.name as regionName, t8.name as districtName, CONCAT_WS(' ',IF(t10.first_name <> '', decrypt(t10.first_name), ''),IF(t10.last_name <> '', decrypt(t10.last_name), ''),IF(t11.name <> '', CONCAT('( ', t11.name, ' )'), '')) as signatoryname,t9.created_on as issue_date"))
+                ->where('t1.application_code', $application_code)
+                ->first();
+
+
+            if($record){
+                $section_id = $record->section_id;
+                $section_name = $record->section_name;
+                $certificate_issue_date = $record->certificate_issue_date;
+                $approved_by = $record->approved_by;
+                $expiry_date = $record->expiry_date;
+                $gvp_site_id = $record->gvp_site_id;
+                $certificate_no = $record->certificate_no;
+                $inspection_type_id = $record->inspection_type_id;
+                $gvpSiteName = $record->gvp_site_name;
+                $gvp_phy_addr = $record->gvp_phy_addr;
+                $gvp_postal_addr = $record->gvp_postal_addr;
+                $date_registered = $record->date_registered;
+                $permit_no = $record->permit_no;
+                $applicant_name = $record->applicant_name;
+                $gvpDistrictName = $record->gvpDistrictName;
+                $gvpRegionName = $record->gvpRegionName;
+                $gvpCountryName = $record->gvpCountryName;
+                $postal_address = $record->postal_address;
+                $physical_address = $record->physical_address;
+                $countryName = $record->countryName;
+                $regionName = $record->regionName;
+                $districtName = $record->districtName;
+                $signatoryname = $record->signatoryname;
+                $issue_date = $record->issue_date;
+
+
+                if(validateIsNumeric($inspection_type_id)){
+                    if($inspection_type_id == 1 || $inspection_type_id ===1){
+                        
+                        $inspection_rec = DB::table('tra_gvp_inspection_dates as t1')
+                        ->where('t1.application_code', $application_code)
+                        ->first();
+
+                    if($inspection_rec){
+                        $row = $inspection_rec;
+                        $inspection_start_date = $row->start_date;
+                        $inspection_end_date = $row->end_date;
+
+                        if($inspection_start_date == $inspection_end_date){
+                            $date_of_inspection = $inspection_start_date;
+
+                        }else{
+                            $inspection_end_date = date('d-M-Y', strtotime($inspection_end_date));
+                            $inspection_start_date = date('d-M-Y', strtotime($inspection_start_date));
+                            $date_of_inspection = $inspection_start_date.'-'.$inspection_end_date;
+  
+                        }
+
+                    }else{
+                        $res = array(
+                            'success' => false,
+                            'message' => 'Inspection Details not found, contact system administrator or Ensure Application has Inspection Details!!'
+                        );
+                    }
+
+                }else if($inspection_type_id==2 || $inspection_type_id===2){
+                    //DESK REVIEW
+                    $approval_date = getSingleRecordColValue('tra_applications_comments', array('application_code' => $application_code, 'comment_type_id' =>5), 'created_on');
+                    
+                    if(empty($approval_date) || $approval_date==' '){
+                        $res = array(
+                           'success' => false,
+                           'message' => 'Desk Review Manager Overall Recommendation Missing , Kindly return back the application to manager to add overall comment or contact system administrator!!'
+                        );
+                        return $res;
+                    }else{
+                        $date_of_inspection = date('d-m-Y', strtotime($approval_date));
+                    }
+                }else{
+                    $res = array(
+                        'success'=> false,
+                        'message' => 'Inspection Type Type  Details not set, contact system administrator!!'
+                    );
+                    return $res;
+                }
+            }else{
+                $res = array(
+                    'success' => false,
+                    'message' => 'Inspection Categorization Details not found, Kindly return back the application to GVP Inspection Categorization!!'
+                );
+             return $res;
+
+            }
+
+            $data = 'GVP Compliance: GVP Certificate No:'.$certificate_no.'; GVP Site:'.$gvpSiteName.'; Expiry Date:'.$expiry_date;
+
+            PDF::AddPage();
+            $styleQR = array('border' => false, 'padding' => 0, 'fgcolor'=> array(0,0,0), 'bgcolor'=>false);
+            PDF::write2DBarcode($data, 'QRCODE,H', 178, 20, 16, 16);
+            PDF::SetMargins(13,5,13, true);
+            PDF::SetFont('','B',13);
+
+            $logo = getcwd() . '/resources/images/cert_logo.png';
+            PDF::Image($logo,65,20,80,33);
+            PDF::Cell(0,35,'',0,1);
+            PDF::SetFont('','B',12);
+
+            PDF::Cell(0,7,'Certificate of Compliance with Good Pharmacovigilance Practice Guidelines',0,1,'C');
+                          
+            PDF::SetFont('','B',9);
+            
+            PDF::Cell(0,4,'The National Drug Policy and Authority Act, Cap 206',0,1,'C');
+      
+            PDF::SetFont('','',10);
+            
+            PDF::Cell(0,4,'Issued under Regulation 19(5) of the National Drug Policy and Authority (Licensing) Regulations, 2014',0,1,'C');
+            PDF::Cell(10);
+            PDF::SetFont('','B',10);
+            PDF::Cell(0,5,'',0,1);
+            PDF::Cell(40,5,'Certificate No.',0,0);
+            PDF::Cell(50, 5, ($permit_no ? $permit_no : $certificate_no), 0, 1);  
+            PDF::Cell(0,5,'',0,1);
+        
+            PDF::SetFont('','',10);
+
+            PDF::WriteHTML("This is to certify that the Gvp site facility:" , true, 0, true, true,'');
+
+        PDF::WriteHTML("Name of facility: <b>".strtoupper($gvpSiteName)." </b>" , true, 0, true, true,'');
+        PDF::WriteHTML("Physical address of facility: <b>".strtoupper($gvp_phy_addr.", ".$gvpCountryName)."</b>" , true, 0, true, true,'');
+            PDF::Cell(0, 4, '', 0, 1);
+            PDF::WriteHTML("Licence number of the site: <b>".$permit_no."</b> " , true, 0, true, true,'');
+            PDF::Cell(0, 4, '', 0, 1);
+
+            PDF::WriteHTML("Has been inspected by the Authority for compliance with the Good Pharmacovigilance Practice Guidelines. " , true, 0, true, true,'');
+
+            PDF::WriteHTML("On the basis of the inspection carried out <b>".$date_of_inspection."</b> It is certified that the facility indicated on this certificate complies with Good Pharmacovigilance Practice for products listed in Table 1 below." , true, 0, true, true,'');
+            PDF::ln();
+            PDF::WriteHTML("Table 1: Approved Products" , true, 0, true, true,'');
+
+            PDF::ln();
+
+           $qry = DB::table('tra_product_gvpinspectiondetails as t1')
+                ->leftJoin('tra_product_information as t7', 't1.product_id', '=', 't7.id')
+                ->leftJoin('tra_product_applications as t2', 't7.id', '=', 't2.product_id')
+                ->leftJoin('par_common_names as t8', 't7.common_name_id', '=', 't8.id')
+                ->leftJoin('par_classifications as t10', 't7.classification_id', '=', 't10.id')
+                ->leftJoin('tra_approval_recommendations as t11', 't2.permit_id', '=', 't11.id')
+                ->leftJoin('tra_registered_products as t12', 't12.tra_product_id', '=', 't7.id')
+                ->leftJoin('par_storage_conditions as t13', 't7.storage_condition_id', '=', 't13.id')
+                ->select('t7.*', 't1.*','t2.id as active_application_id','t2.product_id', 't2.applicant_id', 't2.application_code','t2.section_id', 't2.module_id','t2.sub_module_id','t13.name as storage_condition', 't7.brand_name', 't12.tra_product_id', 't8.name as common_name', 't10.name as classification_name','t7.brand_name as sample_name', 't11.certificate_no', 't2.product_id')
+                ->where('t1.gvp_site_id', $gvp_site_id);
+           $results = $qry->get();
+
+           $html = '<table border="1" cellpadding="5" style="width: 100%;">
+                <tr style="font-weight:bold; font-size: 9px; text-align: center;">
+                <th style="width: 5%;">No</th>
+                <th style="width: 30%;">Brand Name</th>
+                <th style="width: 20%;">Sample Name</th>
+                <th style="width: 45%;">Classification</th>
+                </tr>';
+        PDF::SetFont('','',10);
+        if($results){
+            $i = 1;
+            $dimensions = PDF::getPageDimensions();
+            $hasborder = false;
+            foreach($results as $rows){
+                $html .= '<tr style="font-size: 11px; font-size: 9px; margin-left: 2mm; margin-right: 4mm;">';
+                $html .= '<td style="width: 5%;">' . $i . '</td>';
+                $html .= '<td style="width: 30%; color:green; font-weight: bold;">' . $rows->brand_name . '</td>';
+                $html .= '<td style="width: 20%; color:green;">' . $rows->sample_name . '</td>';
+                $html .= '<td style="width: 45%; color:green;">' . $rows->classification_name . '</td>';
+                $html .= '</tr>';
+                $i++;
+            }
+        }
+
+        $html .= '</table>';
+
+        PDF::WriteHTML($html);
+
+        PDF::Cell(0,4,'',0,1);
+        $gvpSection = '';
+
+        PDF::WriteHTML('The responsibility for the quality of the individual batches of the products manufactured through this process sorely lies on the manufacturer.', true, 0, true, true,'');
+        PDF::Cell(0,7,'',0,1);
+
+        $registration_date = date('F d\\, Y',strtotime($date_registered));//
+        $expiry_date = date('d-M-Y', strtotime($expiry_date));
+
+        PDF::SetFont('','',10);
+        
+        $signatory= ''; 
+        $designation='';
+
+        PDF::Cell(0,8,'Issued On: '.$registration_date,0,1);
+        PDF::Cell(0,8,'Expires On: '.$expiry_date,0,1);
+
+        PDF::WriteHTML('This certificate remains valid until  <b> '.$expiry_date.' </b> It becomes invalid if the activities or the categories certified change or if the facility is no longer considered to be in compliance with GVP.', true, 0, true, true,'');
+
+        // PDF::Cell(0,7,'',0,1);//expiry_date
+        $permit_signitory = '';
+        $title = '';
+
+        PDF::SetFont('', 'B', 9);
+        $issue_date = ucwords(date('d-M-Y', strtotime($issue_date)));
+
+        PDF::Cell(0, 8, 'Issue Date: ' . $issue_date, 0, 1, '');
+            
+        PDF::SetFont('','B',10);
+        $permit_signitory = '';
+        $title= ''; PDF::ln();
+        //$approved_by= '';
+        $startY = PDF::GetY();
+        $startX = PDF::GetX();
+    
+        $signiture = getcwd() . '/resources/images/signatures/hi0kag.png';
+        $signatory=$approved_by;
+        $signature = getUserSignatureDetails($signatory);
+        $startY = PDF::GetY();
+        $startX = PDF::GetX();
+        $signiture = getcwd() . '/resources/images/signs/'.$signature;
+        PDF::Image($signiture,$startX,$startY-7,30,12);
+
+        PDF::SetFont('','B',10);
+        PDF::Cell(0,8,'...................................................',0,1,'');
+        
+    
+
+        PDF::Cell(0,8, ucwords(strtolower($signatoryname)),0,1,'');
+            
+        PDF::Cell(0,8,'FOR THE AUTHORITY',0,1,'');
+                                        
+        PDF::SetFont('','B',10);
+            
+        PDF::setPrintHeader(false);
+            
+        PDF::Output(date('Y').date('m').date('d').date('i').date('s').'.pdf','I');
+                     
+
+        }else{
+            $res = array(
+                'success' => false,
+                'message' => 'Please approve this application first, in order to generate Certificate. Please contact your System administrator if the problem persists!!'
+            );
+         return $res;
+
+
+        }
+                                                    
+    }else{
+        return "Setup rejection letter";
+    }
+
+}
     
     
      public function generateGMPCertificate(Request $request)

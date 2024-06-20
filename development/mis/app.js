@@ -1336,6 +1336,9 @@ function getApplicationStore(module_id, section_id,sub_module_id) {
             cosmetics: 'cosmeticsgmpapplicationsstr',
             medicine: 'meddevicesgmpapplicationsstr'
         },
+        gvp_stores = {
+            drugs: 'allgvpappgridstr',
+        },
         clinicalTrial_stores = {
             clinical_trial: 'clinicaltrialstr'
         },
@@ -1380,6 +1383,7 @@ function getApplicationStore(module_id, section_id,sub_module_id) {
             premise_stores: premise_stores,
             premiseinspection_stores: premiseinspection_stores,
             gmp_stores: gmp_stores,
+            gvp_stores: gvp_stores,
             clinicalTrial_stores: clinicalTrial_stores,
             pharmacovigilanceapp_stores: pharmacovigilanceapp_stores,
             pms_stores: pms_stores,
@@ -1437,7 +1441,9 @@ function getApplicationStore(module_id, section_id,sub_module_id) {
             module_name = 'enforcement_stores';
     }else if (module_id ==32 || module_id ===32) {
             module_name = 'psur_stores';
-    }   else {
+    } else if(module_id == 35 || module_id === 35){
+        module_name = 'gvp_stores';
+    }  else {
         //unknown module
     } 
 
@@ -1459,6 +1465,7 @@ function getApplicationTable(module_id, section_id) {
         application_tables = {
             premise_table: 'tra_premises_applications',
             gmp_table: 'tra_gmp_applications',
+            gvp_table: 'tra_gvp_applications',
             clinicalTrial_table: 'tra_clinical_trial_applications',
             product_table: 'tra_product_applications',
             pms_table: 'tra_surveillance_applications',
@@ -1501,6 +1508,8 @@ function getApplicationTable(module_id, section_id) {
         table_name = 'premise_table';
     }else if (module_id == 33 || module_id === 33) {
         table_name = 'premise_table';
+    }else if (module_id == 35 || module_id === 35){
+        table_name = 'gvp_table';
     }  else {
         //unknown module 
     }

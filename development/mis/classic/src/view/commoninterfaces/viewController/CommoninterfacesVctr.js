@@ -1491,6 +1491,72 @@ Ext.define('Admin.view.commoninterfaces.viewControllers.CommoninterfacesVctr', {
         });
     },
 
+    saveGvpProductDetails: function (btn) {
+        var grid = btn.up('grid')
+            win = grid.up('window')
+            products_sm = grid.getSelectionModel()
+            products_records = products_sm.getSelection()
+            gvp_site_id = grid.down('hiddenfield[name=gvp_site_id]').getValue()
+            products_selected = []
+            Ext.getBody().mask('Please wait...');
+
+        Ext.each(products_records, function (record) {
+            var product_id = record.get('product_id')
+                reg_product_id = record.get('reg_product_id')
+                obj = {product_id: product_id, reg_product_id: reg_product_id}
+            products_selected.push(obj)
+        });
+        Ext.Ajax.request({
+            url: 'gvpapplications/saveGvpProductInfoLinkage',
+            headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+            },
+            jsonData: products_selected,
+            params: {
+                gvp_site_id: gvp_site_id,
+            },
+            success: function (response) {
+                Ext.getBody().unmask();
+                var resp = Ext.decode(response.responseText)
+                    success = resp.success
+                    message = resp.message
+                if (success == true || success === true) {
+                    Ext.getStore('gvpproductslinkagedetailsstr').removeAll()
+                    Ext.getStore('gvpproductslinkagedetailsstr').load()
+                    win.close()
+                    toastr.success(message, 'Success Response')
+                } else {
+                    toastr.error(message, 'Failure Response')
+                }
+            },
+            failure: function (response) {
+                Ext.getBody().unmask();
+                var text = Ext.decode(response.responseText)
+                toastr.error(text.message, "Response")
+            }
+        });
+    },
+
+    addGvpProductLinkageDetails: function (btn) {
+        var me = this,
+            grid = btn.up('grid')
+            win = grid.up('window')
+            winTitle = btn.winTitle
+            winWidth = btn.winWidth
+            childObject = Ext.widget(btn.childXtype)
+            gvp_site_id = grid.down('hiddenfield[name=gvp_site_id]').getValue()
+            saveBtn = childObject.down('button[name=save_details]')
+        childObject.down('button[]')
+        childObject.down('hiddenfield[name=gvp_site_id]').setValue(gvp_site_id)
+        childObject.getStore().load()
+        funcShowOnlineCustomizableWindow(winTitle, winWidth, childObject, 'customizablewindow')
+        saveBtn.handler = function () {
+            me.saveGvpProductDetails(saveBtn, win)
+        }
+        
+        
+    },
     saveSampleSubmissionRemarks:function(btn){
 
         this.fireEvent('saveSampleSubmissionRemarks', btn);
