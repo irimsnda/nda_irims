@@ -5335,125 +5335,21 @@ previewPremisesOnlineApplication: function (view, record) {
                
             }
 
+
          var  validate_insprecom = validateInspectionReportSubmisson(application_code,report_type_id);
             if(!validate_insprecom){
                 Ext.getBody().unmask();
                 toastr.error('Please Enter the Recommendation to proceed', 'Error Response');
                 return false;
             }
-        var workflowaction_type_id = 1;
+        var isPopupSubmission = validateIsPopupSubmission(workflow_stage_id);
 
-        var mainTabPanel = this.getMainTabPanel(),
-            activeTab = mainTabPanel.getActiveTab(),
-            storeID = btn.storeID,
-            action_url = btn.action_url,
-            store = Ext.getStore(storeID),
-            intrayStore = Ext.getStore('intraystr'),
-            outtrayStore = Ext.getStore('outtraystr'),
-            onlineapplicationdashboardgridstr= Ext.getStore('onlineapplicationdashboardgridstr');
-
-            
-            
-        Ext.Ajax.request({
-            url: 'workflow/getApplicationNextStageActionDetails',
-            method: 'POST',
-            params: {
-                application_code:application_code,
-                application_id:application_id,
-                workflow_stage_id:workflow_stage_id,
-                workflowaction_type_id:workflowaction_type_id,
-                table_name : 'tra_premises_applications',
-                module_id:module_id,
-                sub_module_id:sub_module_id
-            },
-            headers: {
-                'Authorization': 'Bearer ' + access_token,
-                'X-CSRF-Token': token
-            },
-            success: function (response) {
-               
-                var resp = Ext.JSON.decode(response.responseText),
-                    message = resp.message,
-                    success = resp.success;
-                    if (success == true || success === true) {
-                        var results = resp.results,
-                            curr_stage_id = results.stage_id,
-                            action = results.action_id, 
-                            next_stage = results.nextstage_id;
-                          
-                            
-                        Ext.MessageBox.confirm('License Recommendation', 'Do you want to submit the Recommended Permit Application?', function (button) {
-                            if (button === 'yes') {
-                                Ext.getBody().mask('Submitting Application wait...');
-                                Ext.Ajax.request({
-                                    url: 'workflow/handleApplicationSubmission',
-                                    method: 'POST',
-                                    params: {
-                                        application_code:application_code,
-                                        application_id:application_id,
-                                        process_id:process_id,
-                                        workflowaction_type_id:workflowaction_type_id,
-                                        table_name : 'tra_premises_applications',
-                                        module_id:module_id,
-                                        sub_module_id:sub_module_id,
-                                        section_id:section_id,
-                                        curr_stage_id:curr_stage_id,
-                                        workflowaction_type_id:workflowaction_type_id,
-                                        next_stage:next_stage,
-                                        action:action
-                                    },
-                                    headers: {
-                                        'Authorization': 'Bearer ' + access_token,
-                                        'X-CSRF-Token': token
-                                    },
-                                    success: function (response) {
-                                       
-                                        var resp = Ext.JSON.decode(response.responseText),
-                                            message = resp.message,
-                                            success = resp.success;
-                                            if (success == true || success === true) {
-                                                toastr.success(message, "Success Response");
-                                                //store.load();
-                                                intrayStore.load();
-                                                outtrayStore.load();
-                                                externaluserintraystr = Ext.getStore('externaluserintraystr');
-                                                externaluserintraystr.load();
-                                                
-                                                onlineapplicationdashboardgridstr.load();
-                                                //win.close();
-                                                closeActiveWindow() ;
-                                                mainTabPanel.remove(activeTab);
-                                                
-                                            } Ext.getBody().unmask();
-                                    },
-                                    failure: function (response) {
-                                                
-                                                var resp = Ext.JSON.decode(response.responseText),
-                                                    message = resp.message;
-                                                toastr.error(message, 'Failure Response');
-                                                Ext.getBody().unmask();
-                                    }
-                                });
-                            }
-                        })
-                    } else {
-                        toastr.error(message, 'Failure Response');
-                    }
-                Ext.getBody().unmask();
-            },
-            failure: function (response) {
-                
-                var resp = Ext.JSON.decode(response.responseText),
-                    message = resp.message;
-                toastr.error(message, 'Failure Response');
-                Ext.getBody().unmask();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                Ext.getBody().unmask();
-                toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
-                
+        if(!isPopupSubmission){
+                this.directWorkflowSubmission(mainTabPanel,activeTab,table_name,application_code,application_id,workflow_stage_id,process_id,module_id,sub_module_id,section_id);
+            }else{
+               showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsfrm', winWidth, storeID);
             }
-        });
+         
     },
 
 

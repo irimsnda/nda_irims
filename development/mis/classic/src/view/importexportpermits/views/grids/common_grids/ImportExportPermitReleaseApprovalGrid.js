@@ -32,6 +32,18 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                             if (column.dataIndex === 'registration_level') {
                                 column.setHidden(false);
                             }
+                            if (column.dataIndex === 'importation_reason') {
+                                column.setHidden(false);
+                            }
+                            if (column.dataIndex === 'product_category') {
+                                column.setHidden(false);
+                            }
+                            if (column.dataIndex === 'date_added') {
+                                column.setHidden(true);
+                            }
+                            if (column.dataIndex === 'application_status') {
+                                column.setHidden(true);
+                            }
                               
                           }else{
                             if (column.dataIndex === 'proforma_invoice_no') {
@@ -42,6 +54,18 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                             }
                             if (column.dataIndex === 'registration_level') {
                                 column.setHidden(true);
+                            }
+                            if (column.dataIndex === 'importation_reason') {
+                                column.setHidden(true);
+                            }
+                            if (column.dataIndex === 'product_category') {
+                                column.setHidden(true);
+                            }
+                            if (column.dataIndex === 'date_added') {
+                                column.setHidden(false);
+                            }
+                            if (column.dataIndex === 'application_status') {
+                                column.setHidden(false);
                             }
                             
                           }
@@ -221,6 +245,26 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
         tdCls: 'wrap-text',
         flex: 1
     }, 
+     {
+        xtype: 'gridcolumn',
+        text: 'Importation Reason',
+        dataIndex: 'importation_reason',
+        flex: 1,
+        hidden:true,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
+    },
+     {
+        xtype: 'gridcolumn',
+        text: 'Product Category',
+        dataIndex: 'product_category',
+        flex: 1,
+        hidden:true,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
+    },
    {
         xtype: 'gridcolumn',
         dataIndex: 'application_status',

@@ -296,6 +296,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panel.ImpExpLi
                     wizard: 'impexplicenseonlinereceivingwizard',
                     handler: 'updateOnlineImporExportPermitReceivingBaseDetails'
                 },
+                
                 {
                     text: 'Save Pre-Checking Details',
                     ui: 'soft-purple',

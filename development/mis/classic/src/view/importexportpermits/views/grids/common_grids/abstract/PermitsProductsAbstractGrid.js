@@ -55,8 +55,9 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.abstract.Per
           xtype: 'gridcolumn',
           dataIndex: 'brand_name',
           tdCls: 'wrap-text',
-          text: 'Brand Name',
-          flex: 1
+          width: 180,
+          text: 'Brand Name'
+          //flex: 1
       }, {
           xtype: 'gridcolumn',
           dataIndex: 'product_strength',
@@ -74,7 +75,8 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.abstract.Per
           dataIndex: 'dosage_form',
           tdCls: 'wrap-text',
           text: 'Dosage Form',
-          flex: 1,
+          //flex: 2,
+          width: 150,
       }, {
           xtype: 'gridcolumn',
           dataIndex: 'no_of_packs',
@@ -100,12 +102,30 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.abstract.Per
           dataIndex: 'pack_size',
           tdCls: 'wrap-text',
           text: 'Pack Size',
-          flex: 1,
-      },{
+          //flex: 2,
+          width: 150,
+      },
+       {
+          
           xtype: 'gridcolumn',
           dataIndex: 'total_value',
           tdCls: 'wrap-text',
           text: 'Total Price',
+          flex: 1,
+      },
+
+      {
+          
+          xtype: 'gridcolumn',
+          dataIndex: 'verification_fee_percentage',
+          tdCls: 'wrap-text',
+          text: 'Verification Fee %',
+          flex: 1,
+      },{
+          xtype: 'gridcolumn',
+          dataIndex: 'verification_fee',
+          tdCls: 'wrap-text',
+          text: 'Verification Fees',
           width: 200,
           summaryType: 'sum',
           renderer: function (val, meta, record) {
@@ -113,7 +133,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.abstract.Per
           },
           summaryRenderer: function (val) {
               val = Ext.util.Format.number(val, '0,000.00');
-              return 'Total Fob '+val
+              return 'Total Verification Fees '+val
           }
       },{
             xtype: 'gridcolumn',
@@ -122,17 +142,18 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.abstract.Per
             renderer: function (value, metaData) {
                 if (value !='') {
                     metaData.tdStyle = 'color:white;background-color:green';
-                    return "Registered/Authorised";
+                    return "Registered";
                 }
     
                 metaData.tdStyle = 'color:white;background-color:red';
-                return "Not Registered";
+                return "Un Registered";
             }
     
         },{   
             xtype: 'gridcolumn',
             dataIndex: 'prodregistrationvalidation_recommendation_id',
             tdCls:'wrap-text',
+            hidden:true,
             text: 'Product Registration Validation Recommendation',
             flex: 1,
                 renderer: function (val, meta, record, rowIndex, colIndex, store, view) {
@@ -166,7 +187,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.abstract.Per
             xtype: 'gridcolumn',
             dataIndex: 'permitprod_recommendation_id',
             tdCls:'wrap-text',
-            text: 'Permits Product Recommendation(Acceptance)',
+            text: 'Product Recommendation(Acceptance)',
             flex: 1,
                 editor: {
                     xtype: 'combo',

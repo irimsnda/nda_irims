@@ -148,7 +148,7 @@ Ext.define('Admin.view.commoninterfaces.views.grids.OnlineApplicationPaymentsGri
             text: 'Print Receipt',
             iconCls: 'x-fa fa-file-pdf-o',
             report_type: 'Receipt',
-            handler: 'printColumnReceipt'
+            handler: 'printOnlineApplicationInvoice'
         }
     }, {
         text: 'Options',

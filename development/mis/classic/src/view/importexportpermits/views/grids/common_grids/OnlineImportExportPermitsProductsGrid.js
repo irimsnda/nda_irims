@@ -26,15 +26,16 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.OnlineImport
         text: 'Add Permit Products Details',
         iconCls: 'x-fa fa-plus',
         action: 'add',
+        hidden:true,
         ui: 'soft-green',
         childXtype: 'importexportpermitsproductsfrm',
         winTitle: 'Add Permit Products Details',
         winWidth: '40%',
         handler: 'showAddProductOtherdetailsWinFrm',
         stores: '[]',
-        bind: {
-            hidden: '{isReadOnly}'  // negated
-        }
+        // bind: {
+        //     hidden: '{isReadOnly}'  // negated
+        // }
     }, {
         xtype: 'exportbtn'
     }, {
@@ -50,7 +51,7 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.OnlineImport
             ptype: 'gridexporter'
         }
     ],
-    export_title: 'Impor/Export Permits Products',
+    export_title: 'Impor/Export Products',
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '100%',

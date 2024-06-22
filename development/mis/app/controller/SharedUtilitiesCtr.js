@@ -1704,6 +1704,10 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                 click: 'saveOnlineApplicationChecklistDetails'
             },
 
+            'impexplicenseonlinereceivingwizard button[name=save_screening_btn]': {
+                click: 'saveOnlineApplicationChecklistDetails'
+            },
+
           
              'newdrugshoponlinepreviewwizard button[name=assign_zone]': {
                 click: 'addZone'

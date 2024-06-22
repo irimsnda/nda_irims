@@ -31,7 +31,7 @@ Ext.define('Admin.view.gvpapplications.views.toolbars.MedDevicesGvpTb', {
                         iconCls: 'x-fa fa-check',
                         handler:'showNewGvpApplication',
                         wrapper_xtype: 'meddevicesgvpdashwrapper',
-                        app_type: 127
+                        app_type: 133
                     },
                     '-',
                     {
@@ -39,12 +39,13 @@ Ext.define('Admin.view.gvpapplications.views.toolbars.MedDevicesGvpTb', {
                         iconCls: 'x-fa fa-check',
                         handler:'showNewGvpApplication',
                         wrapper_xtype: 'meddevicesgvpdashwrapper',
-                        app_type: 128
+                        app_type: 134
                     },
                     '-',
                     {
                         text: 'Surgical Instrument & Appliances GVP Widthrawal',
                         iconCls: 'x-fa fa-check',
+                        hidden:true,
                         handler:'showNewGvpApplication',
                         wrapper_xtype: 'meddevicesgvpdashwrapper',
                         app_type: 129
@@ -53,6 +54,7 @@ Ext.define('Admin.view.gvpapplications.views.toolbars.MedDevicesGvpTb', {
                     {
                         text: 'Surgical Instrument & Appliances GVP Variation',
                         iconCls: 'x-fa fa-check',
+                         hidden:true,
                         handler:'showNewGvpApplication',
                         wrapper_xtype: 'meddevicesgvpdashwrapper',
                         app_type: 130

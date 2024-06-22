@@ -4384,6 +4384,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
       (process_id = activeTab.down("hiddenfield[name=process_id]").getValue()),
       (section_id = activeTab.down("hiddenfield[name=section_id]").getValue()),
       (module_id = activeTab.down("hiddenfield[name=module_id]").getValue()),
+      (applicantFrm = activeTab.down("importexportapplicantdetailsfrm")),
       (sub_module_id = activeTab
         .down("hiddenfield[name=sub_module_id]")
         .getValue()),
@@ -4423,9 +4424,9 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
       }
       senderreceiverdetailsfrm.setHidden(true);
     }
-      // applicantFrm.getForm().getFields().each(function (field) {
-      //       field.setReadOnly(true);
-      //   });
+      applicantFrm.getForm().getFields().each(function (field) {
+            field.setReadOnly(true);
+        });
       importexportdetailsfrm.getForm().getFields().each(function (field) {
             field.setReadOnly(true);
        });
@@ -4439,9 +4440,16 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
       if(importexportpremisesfrm.down("button[action=search_premise_non_licensed]")){
             importexportpremisesfrm.down("button[action=search_premise_non_licensed]").setDisabled(true);
         }
-      // if(applicantFrm.down("button[name=link_applicant]")){
-      //     applicantFrm.down("button[name=link_applicant]").setDisabled(true);
-      // }
+      if(applicantFrm.down("button[name=link_applicant]")){
+          applicantFrm.down("button[name=link_applicant]").setDisabled(true);
+      }
+
+       if(importexportdetailsfrm.down("button[action=search_premise]")){
+              importexportdetailsfrm.down("button[action=search_premise]").setDisabled(true);
+       }
+        if(importexportdetailsfrm.down("button[action=search_site]")){
+              importexportdetailsfrm.down("button[action=search_site]").setDisabled(true);
+       }
 
 
 
@@ -4515,6 +4523,7 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
             senderReceiverDetails = resp.senderReceiverDetails,
             senderReceiverDetails = resp.senderReceiverDetails,
             premisesDetails = resp.premisesDetails;
+            has_registered_premises = permit_details.has_registered_premises;
 
           if (success == true || success === true) {
             //   applicant_details.setValue(results.applicant_details);
@@ -4534,8 +4543,26 @@ Ext.define("Admin.controller.ImportExportpermitsCtr", {
               senderreceiverdetailsfrm.loadRecord(senderReceiverDetails);
               importexportapplicantdetailsfrm.loadRecord(model2);
               importexportdetailsfrm.loadRecord(model2);
-              permitsdetails_panel.getViewModel().set("isReadOnly", true);
-              permitsdetails_panel.getViewModel().set("readOnly", true);
+              // permitsdetails_panel.getViewModel().set("isReadOnly", true);
+              // permitsdetails_panel.getViewModel().set("readOnly", true);
+
+               if (has_registered_premises==2 || has_registered_premises===2) {
+                if(importexportpremisesfrm.down("fieldset[name=Phamacist_fieldset]")){
+                 importexportpremisesfrm.down("fieldset[name=Phamacist_fieldset]").setVisible(false);
+                }
+                 if(importexportpremisesfrm.down("fieldset[name=non_licensed_fieldset]")){
+                   importexportpremisesfrm.down("fieldset[name=non_licensed_fieldset]").setVisible(true);
+                 }
+              }else{
+                if(importexportpremisesfrm.down("fieldset[name=Phamacist_fieldset]")){
+                  importexportpremisesfrm.down("fieldset[name=Phamacist_fieldset]").setVisible(true);
+                 }
+                 if(importexportpremisesfrm.down("fieldset[name=non_licensed_fieldset]")){
+                   importexportpremisesfrm.down("fieldset[name=non_licensed_fieldset]").setVisible(false);
+                 }
+
+              }
+
             }
             me.funcsetApplicatonTitle(pnl, sub_module_id);
           } else {

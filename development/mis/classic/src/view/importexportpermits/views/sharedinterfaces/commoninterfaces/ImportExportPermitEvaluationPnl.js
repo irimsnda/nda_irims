@@ -163,7 +163,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
         {
             xtype: 'importexportpermitsproductsgrid',
             itemId: 'importexportpermitsproductsgrid',
-            title: 'Recommendation on Import/Export Permit Products Details',
+            title: 'Recommendation on Import/Export Products Details',
             bind: {
                 title: 'Products Details Recommendations'
             },
@@ -185,7 +185,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                 text:'Recommend Selected Permits Products',
                // name:'btn_recommendallproducts',
                viewXtype: 'permitsproductsrecommendationfrm',
-               winTitle: 'Permits Products Recommendation',
+               winTitle: 'Products Recommendation',
                winWidth: '40%',
                 handler: 'funcPermitsProductRecommendationWin',
                 iconCls: 'x-fa fa-plus',
@@ -222,7 +222,8 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                 dataIndex: 'brand_name',
                 tdCls: 'wrap-text',
                 text: 'Brand Name',
-                flex: 1
+                flex: 1,
+                width: 180
             }, {
                 xtype: 'gridcolumn',
                 dataIndex: 'product_strength',
@@ -240,7 +241,8 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                 dataIndex: 'dosage_form',
                 tdCls: 'wrap-text',
                 text: 'Dosage Form',
-                flex: 1,
+                //flex: 2,
+                width: 150,
             }, {
                 xtype: 'gridcolumn',
                 dataIndex: 'no_of_packs',
@@ -266,22 +268,39 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                 dataIndex: 'pack_size',
                 tdCls: 'wrap-text',
                 text: 'Pack Size',
-                flex: 1,
-            },{
-                xtype: 'gridcolumn',
-                dataIndex: 'total_value',
-                tdCls: 'wrap-text',
-                text: 'Total Price',
-                width: 200,
-                summaryType: 'sum',
-                renderer: function (val, meta, record) {
-                    return Ext.util.Format.number(val, '0,000.00');
-                },
-                summaryRenderer: function (val) {
-                    val = Ext.util.Format.number(val, '0,000.00');
-                    return 'Total Fob '+val
-                }
-                 },{
+                //flex: 2,
+                width: 150,
+            }, {
+                  xtype: 'gridcolumn',
+                  dataIndex: 'total_value',
+                  tdCls: 'wrap-text',
+                  text: 'Total Price',
+                  flex: 1,
+              },
+
+              {
+                  
+                  xtype: 'gridcolumn',
+                  dataIndex: 'verification_fee_percentage',
+                  tdCls: 'wrap-text',
+                  text: 'Verification Fee %',
+                  flex: 1,
+              },{
+                  xtype: 'gridcolumn',
+                  dataIndex: 'verification_fee',
+                  tdCls: 'wrap-text',
+                  text: 'Verification Fees',
+                  width: 200,
+                  summaryType: 'sum',
+                  renderer: function (val, meta, record) {
+                      return Ext.util.Format.number(val, '0,000.00');
+                  },
+                  summaryRenderer: function (val) {
+                      val = Ext.util.Format.number(val, '0,000.00');
+                      return 'Total Verification Fees '+val
+                  }
+              },
+                 {
                 xtype: 'gridcolumn',
                 text: 'Registration Status', 
                 tdCls: 'wrap-text',
@@ -472,7 +491,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                     iconCls: 'fa fa-user',
                     enableToggle: true,
                     pressed: true,
-                    text: 'Application Details (Permit, Sender/Receiver, Licenses Outlets and Documents)',
+                    text: 'Application Details',
                     iconAlign: 'top',
                     action: 'quickNav',max_step:2,
                     wizard: 'importexportpermitevaluationpnl',
@@ -482,7 +501,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                     step: 1,
                     iconCls: 'fa fa-university',
                     enableToggle: true,iconAlign: 'top',
-                    text: 'Recommendation on Import/Export Permit Products Details',
+                    text: 'Recommendation on Import/Export Products Details',
                     max_step:2,
                     action: 'quickNav', wizard: 'importexportpermitevaluationpnl',
                     handler: 'quickScreeningNavigation'
@@ -521,7 +540,7 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.importe
                         ]
                     }
                 },{
-                    text: 'Preview & Edit Permit Details(Preview Option)',
+                    text: 'Preview & Edit  Details(Preview Option)',
                     ui: 'soft-purple',
                     iconCls: 'fa fa-edit',
                     hidden: true,

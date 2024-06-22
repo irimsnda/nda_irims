@@ -34,7 +34,7 @@ Ext.define('Admin.view.gvpapplications.views.toolbars.DrugsGvpTb', {
                         iconCls: 'x-fa fa-check',
                         handler:'showNewGvpApplication',
                         wrapper_xtype: 'drugsgvpdashwrapper',
-                        app_type: 127
+                        app_type: 133
                     },
                     '-',
                     {
@@ -42,7 +42,7 @@ Ext.define('Admin.view.gvpapplications.views.toolbars.DrugsGvpTb', {
                         iconCls: 'x-fa fa-check',
                         handler:'showNewGvpApplication',
                         wrapper_xtype: 'drugsgvpdashwrapper',
-                        app_type: 128
+                        app_type: 134
                     },
                 ]
             }
@@ -63,18 +63,19 @@ Ext.define('Admin.view.gvpapplications.views.toolbars.DrugsGvpTb', {
                         iconCls: 'x-fa fa-check',
                         handler:'showGvpApplicationWorkflow',
                         wrapper_xtype: 'drugsgvpdashwrapper',
-                        app_type: 127
+                        app_type: 133
                     },
                     {
                         text: ' GVP Renewal',
                         iconCls: 'x-fa fa-check',
                         handler:'showGvpApplicationWorkflow',
                         wrapper_xtype: 'drugsgvpdashwrapper',
-                        app_type: 128
+                        app_type: 134
                     },
                     {
                         text: ' GVP Widthrawal',
                         iconCls: 'x-fa fa-check',
+                         hidden:true,
                         handler:'showGvpApplicationWorkflow',
                         wrapper_xtype: 'drugsgvpdashwrapper',
                         app_type: 129
@@ -82,6 +83,7 @@ Ext.define('Admin.view.gvpapplications.views.toolbars.DrugsGvpTb', {
                     {
                         text: ' GVP Alteration',
                         iconCls: 'x-fa fa-check',
+                         hidden:true,
                         handler:'showGvpApplicationWorkflow',
                         wrapper_xtype: 'drugsgvpdashwrapper',
                         app_type: 130

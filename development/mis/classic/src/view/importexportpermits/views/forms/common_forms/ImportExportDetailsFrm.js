@@ -386,7 +386,6 @@ Ext.define('Admin.view.importexportpermits.views.forms.common_forms.ImportExport
             }
         }
     },
-
    {
         xtype: 'combo',
         fieldLabel: 'Registration Level',

@@ -305,7 +305,8 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                       dataIndex: 'brand_name',
                       tdCls: 'wrap-text',
                       text: 'Brand Name',
-                      flex: 1
+                      flex: 1,
+                      width: 180
                   }, {
                       xtype: 'gridcolumn',
                       dataIndex: 'product_strength',
@@ -323,7 +324,8 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                       dataIndex: 'dosage_form',
                       tdCls: 'wrap-text',
                       text: 'Dosage Form',
-                      flex: 1,
+                     // flex: 2,
+                     width: 150,
                   }, {
                       xtype: 'gridcolumn',
                       dataIndex: 'no_of_packs',
@@ -349,12 +351,29 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                       dataIndex: 'pack_size',
                       tdCls: 'wrap-text',
                       text: 'Pack Size',
-                      flex: 1,
-                  },{
+                      //flex: 2,
+                      width: 150,
+                  },  {
+          
                       xtype: 'gridcolumn',
                       dataIndex: 'total_value',
                       tdCls: 'wrap-text',
                       text: 'Total Price',
+                      flex: 1,
+                  },
+
+                  {
+                      
+                      xtype: 'gridcolumn',
+                      dataIndex: 'verification_fee_percentage',
+                      tdCls: 'wrap-text',
+                      text: 'Verification Fee %',
+                      flex: 1,
+                  },{
+                      xtype: 'gridcolumn',
+                      dataIndex: 'verification_fee',
+                      tdCls: 'wrap-text',
+                      text: 'Verification Fees',
                       width: 200,
                       summaryType: 'sum',
                       renderer: function (val, meta, record) {
@@ -362,11 +381,9 @@ Ext.define('Admin.view.importexportpermits.views.sharedinterfaces.panels.ImportE
                       },
                       summaryRenderer: function (val) {
                           val = Ext.util.Format.number(val, '0,000.00');
-                          return 'Total Fob '+val
+                          return 'Total Verification Fees '+val
                       }
                   },
-
-
 
                     {
                         xtype: 'gridcolumn',

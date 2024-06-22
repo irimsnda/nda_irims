@@ -19,6 +19,57 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.OnlineImport
             },
             isLoad: true
         },
+        afterrender: function(grid) {
+                var pnl = grid.up('panel'),
+                subModuleId = pnl.down('hiddenfield[name=sub_module_id]').getValue();
+                grid.columns.forEach(function(column) {
+                if(subModuleId==12 || subModuleId===12){
+                            if (column.dataIndex === 'proforma_invoice_no') {
+                                column.setHidden(false);
+                            } 
+                            if (column.dataIndex === 'vc_application_type') {
+                                column.setHidden(false);
+                            }
+                            if (column.dataIndex === 'registration_level') {
+                                column.setHidden(false);
+                            }
+                            if (column.dataIndex === 'importation_reason') {
+                                column.setHidden(false);
+                            }
+                            if (column.dataIndex === 'product_category') {
+                                column.setHidden(false);
+                            }
+                            if (column.dataIndex === 'date_submitted') {
+                                column.setHidden(true);
+                            }
+                            
+                              
+                          }else{
+                            if (column.dataIndex === 'proforma_invoice_no') {
+                                column.setHidden(true);
+                            } 
+                            if (column.dataIndex === 'vc_application_type') {
+                                column.setHidden(true);
+                            }
+                            if (column.dataIndex === 'registration_level') {
+                                column.setHidden(true);
+                            }
+                            if (column.dataIndex === 'importation_reason') {
+                                column.setHidden(true);
+                            }
+                            if (column.dataIndex === 'product_category') {
+                                column.setHidden(true);
+                            }
+                            if (column.dataIndex === 'date_submitted') {
+                                column.setHidden(false);
+                            }
+                           
+                            
+                          }
+                    });
+        },
+
+
         
         deselect: function (sel, record, index, eOpts) {
             
@@ -149,6 +200,24 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.OnlineImport
         dataIndex: 'date_submitted',
         flex: 1,
         tdCls: 'wrap-text'
+    }, {
+        xtype: 'gridcolumn',
+        text: 'VC Application Type',
+        dataIndex: 'vc_application_type',
+        flex: 1,
+        hidden:true,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
+    }, {
+        xtype: 'gridcolumn',
+        text: 'Registration Level',
+        dataIndex: 'registration_level',
+        flex: 1,
+        hidden:true,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
     },
      {
         xtype: 'gridcolumn',
@@ -164,6 +233,34 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.OnlineImport
         text: 'Business Type',
         tdCls: 'wrap-text',
         flex: 1
+    },{
+        xtype: 'gridcolumn',
+        text: 'Importation Reason',
+        dataIndex: 'importation_reason',
+        flex: 1,
+        hidden:true,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
+    },
+     {
+        xtype: 'gridcolumn',
+        text: 'Product Category',
+        dataIndex: 'product_category',
+        flex: 1,
+        hidden:true,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
+    },{
+        xtype: 'gridcolumn',
+        text: 'Invoice No',
+        dataIndex: 'proforma_invoice_no',
+        flex: 1,
+        hidden:true,
+        tdCls: 'wrap-text',
+        tdCls: 'wrap'
+        
     }, 
     {
         text: 'Options',
