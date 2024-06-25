@@ -1682,4 +1682,157 @@ loadGmpRegisterFilters: function (btn) {
                Ext.apply(Ext.getStore('productregistergridstr'), {pageSize: pagesize});
              },
 
+
+//GVP Functions Start here
+loadGvpRegisterFilters: function (btn) {
+    
+        var grid = btn.up('form'),
+        sub_module_id = grid.down('combo[name=sub_module_id]').getValue(),
+        gvp_location=grid.down('combo[name=gvp_location]').getValue(),
+        approved_from = grid.down('datefield[name=approved_from]').getValue(),
+        approved_to = grid.down('datefield[name=approved_to]').getValue(),
+        panel = grid.up('panel'),
+        gridStr = panel.down('gvpregistergrid').getStore();
+
+        module_id=panel.down('hiddenfield[name=module_id]').getValue();
+
+        gridStr.removeAll();
+        gridStr.load({
+        params:{
+            sub_module_id:sub_module_id,
+            module_id: module_id,
+            gvp_location: gvp_location,
+            approved_from: approved_from,
+            approved_to: approved_to,
+            
+            
+            },
+            
+        });
+                         
+},
+
+
+exportGvpRegister: function(btn) {
+    var panel=btn.up('panel'),
+    filter=panel.down('form'),
+    grid = panel.down('gvpregistergrid'),
+    filterfield = grid.getPlugin('filterfield');       
+    var filter_array =Ext.pluck(filterfield.getgridFilters(grid), 'config'),
+    sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
+    section_id = filter.down('combo[name=section_id]').getValue(),
+    gvp_location=filter.down('combo[name=gvp_location]').getValue(),
+    approved_from = filter.down('datefield[name=approved_from]').getValue(),
+    approved_to = filter.down('textfield[name=approved_to]').getValue();
+    approved_from = Ext.Date.format(approved_from,'Y-m-d');   
+    approved_to = Ext.Date.format(approved_to,'Y-m-d'); 
+   
+    module_id=panel.down('hiddenfield[name=module_id]').getValue();
+
+  
+    Ext.getBody().mask('Exporting...Please wait...');
+            
+    Ext.Ajax.request({
+        url: 'registers/exportGvpRegister',
+        method: 'GET',
+        headers: {
+             'Authorization':'Bearer '+access_token
+                 },
+        params : {
+             'module_id': module_id,
+             'sub_module_id': sub_module_id,
+             'section_id':section_id,
+             'gvp_location': gvp_location,
+             'approved_from': approved_from,
+             'approved_to': approved_to,
+             'filter': JSON.stringify(filter_array)
+    
+             },
+                      
+       success: function (response, textStatus, request) {
+            Ext.getBody().unmask();
+            var t = JSON.parse(response.responseText);
+            console.log(t.status);
+            if (t.status == 'sucesss' || t.status === 'success' ) {
+            var a = document.createElement("a");
+            a.href = t.file; 
+            a.download = t.name;
+            document.body.appendChild(a);
+
+            a.click();
+                     
+            a.remove();
+
+            } else {
+        toastr.error(t.message, 'Warning Response');
+        }
+      
+        },
+        failure: function(conn, response, options, eOpts) {
+            Ext.getBody().unmask();
+            Ext.Msg.alert('Error', 'please try again');
+        }
+       });
+  
+    },
+
+    printGvpRegister: function(btn) {
+        var panel=btn.up('panel'),
+        filter=panel.down('form'),
+        grid = panel.down('gvpregistergrid'),
+        filterfield = grid.getPlugin('filterfield');       
+        var filter_array =Ext.pluck(filterfield.getgridFilters(grid), 'config'),
+        sub_module_id = filter.down('combo[name=sub_module_id]').getValue(),
+        section_id = filter.down('combo[name=section_id]').getValue(),
+        gvp_location=filter.down('combo[name=gvp_location]').getValue(),
+        approved_from = filter.down('datefield[name=approved_from]').getValue(),
+        approved_to = filter.down('textfield[name=approved_to]').getValue();
+        approved_from = Ext.Date.format(approved_from,'Y-m-d');   
+        approved_to = Ext.Date.format(approved_to,'Y-m-d'); 
+       
+             //hidden value
+        module_id=panel.down('hiddenfield[name=module_id]').getValue();
+
+        Ext.Ajax.request({
+           url: 'registers/checkPrintGvpRegister',
+            method: 'GET',
+            headers: {
+                 'Authorization':'Bearer '+access_token
+                     },
+            params : {
+                 'module_id': module_id,
+                 'sub_module_id': sub_module_id,
+                 'section_id':section_id,
+                 'gvp_location': gvp_location,
+                 'approved_from': approved_from,
+                 'approved_to': approved_to,
+                 'filter': JSON.stringify(filter_array)
+        
+                 },
+            success: function (response) {
+                var resp = JSON.parse(response.responseText);
+                 if (resp.status == 'sucesss' || resp.status === 'success' ) {
+                  
+                   print_report('registers/printGvpRegister?sub_module_id='+sub_module_id+'&section_id='+section_id+'&gvp_location='+gvp_location+'&approved_to='+approved_to+'&approved_from='+approved_from+'&module_id='+module_id+'&filter='+encodeURIComponent(JSON.stringify(filter_array)));
+    
+      
+               }
+                else{
+                     toastr.error(resp.message, 'Warning Response');
+                }
+               
+            },
+            failure: function (response) {
+                 
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              
+            }
+        });
+       
+         
+     },
+
+
 });
+

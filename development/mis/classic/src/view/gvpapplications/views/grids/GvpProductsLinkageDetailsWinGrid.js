@@ -78,7 +78,7 @@ Ext.define('Admin.view.gvpapplications.views.grids.GvpProductsLinkageDetailsWinG
                    
                     var mainTabPanel = grid.up('#contentPanel'),
                     activeTab = mainTabPanel.getActiveTab(),
-                    site_id = activeTab.down('mansitedetailstabpnl').down('hiddenfield[name=gvp_site_id]').getValue();
+                    site_id = activeTab.down('gvpsitedetailstabpnl').down('hiddenfield[name=gvp_site_id]').getValue();
                     store.getProxy().extraParams = {
                         site_id: site_id
                     };

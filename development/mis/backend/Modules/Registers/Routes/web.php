@@ -41,6 +41,13 @@ Route::group(['middleware' => ['web'], 'prefix' => 'registers'], function(){
     Route::get('exportGmpRegister', [RegistersController::class,'exportGmpRegister']);
     Route::get('printGmpRegister', [RegistersController::class,'printGmpRegister']);
     Route::get('checkPrintGmpRegister', [RegistersController::class,'checkPrintGmpRegister']);
+    
+    
+    //gvp facility
+    Route::get('getGvpRegister', [RegistersController::class,'getGvpRegister']);
+    Route::get('exportGvpRegister', [RegistersController::class,'exportGvpRegister']);
+    Route::get('printGvpRegister', [RegistersController::class,'printGvpRegister']);
+    Route::get('checkPrintGvpRegister', [RegistersController::class,'checkPrintGvpRegister']);
 
 
     
