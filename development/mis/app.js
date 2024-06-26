@@ -1337,7 +1337,7 @@ function getApplicationStore(module_id, section_id,sub_module_id) {
             medicine: 'meddevicesgmpapplicationsstr'
         },
         gvp_stores = {
-            drugs: 'allgvpappgridstr',
+            drugs: 'drugsgvpapplicationsstr',
         },
         clinicalTrial_stores = {
             clinical_trial: 'clinicaltrialstr'
