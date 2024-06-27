@@ -159,7 +159,8 @@ public function DateFilterImportExport(request $req){
         return $qry;
 
         } 
-          public function getApprovedGmpRegister($table, $table2,$field,$filterdata,$subfilterdata,$datefilter){
+
+        public function getApprovedGmpRegister($table, $table2,$field,$filterdata,$subfilterdata,$datefilter){
 
 
         $qry=DB::table($table.' as t1')
@@ -196,7 +197,8 @@ public function DateFilterImportExport(request $req){
                      ->groupBy('t1.application_code');
         return $qry;
 
-        } 
+}
+
  public function getApprovedClinicalTrialRegister($table, $table2,$field,$filterdata,$subfilterdata,$datefilter){
 
 
@@ -679,6 +681,44 @@ public function DateFilterImportExport(request $req){
 
             PDF::Output($filename,'I');
     }  
+
+
+    public function getApprovedGvpRegister($table, $table2,$field,$filterdata,$subfilterdata,$datefilter){
+
+
+      $qry=DB::table($table.' as t1')
+         ->join('tra_approval_recommendations as t2','t1.application_code','t2.application_code')
+         ->leftJoin($table2.' as t3','t1.'.$field,'t3.id')
+         ->join('par_approval_decisions as t4','t2.decision_id','t4.id')
+         ->where($subfilterdata)
+         ->where('t2.decision_id',1);
+      //filter by submodule and section
+      if($filterdata!=''){
+           $qry->whereRAW($filterdata);
+       }
+
+      if($datefilter!=''){
+        $datefilter = str_replace('date_filter','t2.approval_date',$datefilter);
+        $qry->whereRAW($datefilter);
+         }
+        $qry->LeftJoin('tra_gvp_sites as t33','t1.gvp_site_id','t33.id')
+                 ->LeftJoin('par_countries as t55','t33.country_id','t55.id')
+                 ->LeftJoin('par_business_types as t8','t33.business_type_id','t8.id')
+                 ->LeftJoin('wb_trader_account as t10','t33.applicant_id','t10.id')
+                 ->LeftJoin('wb_trader_account as t11','t33.ltr_id','t11.id')
+                 ->LeftJoin('par_countries as t14','t10.country_id','t14.id')
+                 ->LeftJoin('par_countries as t16','t11.country_id','t16.id')
+                 ->LeftJoin('tra_approval_recommendations as t18','t1.application_code','t18.application_code')
+                 ->LeftJoin('par_gvpapproval_decisions as t21','t18.decision_id','t21.id')
+                 ->LeftJoin('par_validity_statuses as tv','t18.appvalidity_status_id','tv.id')
+                 ->LeftJoin('par_registration_statuses as tr','t18.appregistration_status_id','tr.id')
+                ->LeftJoin('par_system_statuses as t25','t1.application_status_id','t25.id')
+
+              ->select('t1.reference_no','t33.name as gvp_site','t33.premise_reg_no','t44.name as gvp_name','t44.postal_address','t44.physical_address','t44.email_address','t55.name as country','t8.name as business_type','t10.name as Trader','t10.physical_address as TraderPhysicalA','t10.postal_address as TraderPostalA','t10.email as TraderEmail','t14.name as TraderCountry','t18.certificate_issue_date as IssueFrom','t18.certificate_no', 'tv.name as validity_status', 't21.name as approval_recommendation')
+                   ->groupBy('t1.application_code');
+      return $qry;
+
+}
 
 
 }

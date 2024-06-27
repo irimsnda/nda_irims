@@ -4378,6 +4378,7 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
             }];
         if (valid == true || valid === true) {
             showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsreceivingfrm', winWidth, extraParams);
+            
         } else {
             Ext.getBody().unmask();
         }
@@ -4423,7 +4424,7 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
             table_name = getApplicationTable(module_id);
             table_name = getApplicationTable(module_id);
         if (valid == true || valid === true) {
-            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsfrm', winWidth, storeID);
+            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsfrm', winWidth);
         } else {
             Ext.getBody().unmask();
         }
@@ -4474,7 +4475,7 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
            }
         
         if (valid == true || valid === true) {
-            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth, storeID, extraParams, gridXtype);
+            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth, extraParams, gridXtype);
         } else {
             Ext.getBody().unmask();
         }
@@ -4507,7 +4508,7 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
             return false;
         }
         if (valid == true || valid === true) {
-            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsinspectionsfrm', winWidth, storeID, extraParams, 'gvpdeskreviewschedulinggrid', 'selected');
+            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsinspectionsfrm', winWidth, extraParams, 'gvpdeskreviewschedulinggrid', 'selected');
         } else {
             Ext.getBody().unmask();
         }
@@ -4594,7 +4595,7 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
                         return false;
                     }
         
-                    showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsinspectionsfrm', winWidth, storeID, extraParams, 'gvpmanagerinspectiongrid', 'all');
+                    showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsinspectionsfrm', winWidth, extraParams, 'gvpmanagerinspectiongrid', 'all');
                 },
                 failure: function () {
                     Ext.getBody().unmask();
@@ -4769,7 +4770,7 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
             
         if (valid == true || valid === true) {
           
-            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsfrm', winWidth, storeID,extraParams,'','',workflow_stage_id);
+            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsfrm', winWidth, extraParams,'','',workflow_stage_id);
         } else {
             Ext.getBody().unmask();
         }
@@ -4788,7 +4789,7 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
             storeID = getApplicationStore(module_id, section_id),
             table_name = getApplicationTable(module_id);
         if (valid == true || valid === true) {
-            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth, storeID);
+            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth);
         } else {
             Ext.getBody().unmask();
         }
@@ -4805,7 +4806,7 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
             storeID = getApplicationStore(module_id, section_id),
             table_name = getApplicationTable(module_id);
     
-            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth, storeID);
+            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth);
        
     },
     validateTCMeetingSchedulingApplicationSubmission: function (btn) {
@@ -4896,7 +4897,7 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
             //storeID = 'gvpapprovalsstr',//getApplicationStore(module_id, section_id),//static
             table_name = getApplicationTable(module_id);
         if (valid == true || valid === true) {
-            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsfrm', winWidth, storeID);
+            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsfrm', winWidth);
         } else {
             Ext.getBody().unmask();
         }
@@ -4928,7 +4929,7 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
                 value: inspection_id
             }];
         if (valid == true || valid === true) {
-            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagerqueryfrm', winWidth, storeID, extraParams);
+            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagerqueryfrm', winWidth, extraParams);
         } else {
             Ext.getBody().unmask();
         }
@@ -4947,7 +4948,7 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
             storeID = getApplicationStore(module_id, section_id),
             table_name = getApplicationTable(module_id);
         if (valid == true || valid === true) {
-            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth, storeID);
+            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionmanagersgenericfrm', winWidth);
         } else {
             Ext.getBody().unmask();
         }
@@ -4967,7 +4968,7 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
             storeID = getApplicationStore(module_id, section_id),
             table_name = getApplicationTable(module_id);
         if (valid == true || valid === true) {
-            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsreceivingfrm', winWidth, storeID);
+            showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsreceivingfrm', winWidth);
         } else {
             Ext.getBody().unmask();
         }

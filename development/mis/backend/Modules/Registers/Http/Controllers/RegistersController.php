@@ -1395,7 +1395,132 @@ class RegistersController extends Controller
       }else{
       return \response()->json($res);
       }
-    }
+
+}
+ public function getGvpRegister(Request $req){
+      $sub_module_id=$req->sub_module_id;
+      $gvp_location=$req->gvp_location;
+      $module_id=$req->module_id;
+      $approved_from=$req->approved_from;
+      $approved_to=$req->approved_to;
+      $filter = $req->filter;
+      $start=$req->start;
+      $limit=$req->limit;
+      $data = array();
+      $table=$this->getTableName($module_id);
+      $table2='par_gvplocation_details';
+      $field= 'gvp_type_id';
+      //date filter
+      $datefilter=$this->DateFilter($req);
+        //printGvpRegister
+      $filterdata = '';
+       if(validateIsNumeric($sub_module_id)){
+          $filterdata="t1.sub_module_id = ".$sub_module_id;
+      }
+      $subfilterdata = array();
+       if(validateIsNumeric($gvp_location)){
+          $subfilterdata=array('t1.gvp_type_id'=>$gvp_location);
+      }
+      $qry=$this->getApprovedGvpRegister($table,$table2,$field, $filterdata,$subfilterdata,$datefilter); 
+      $filter = $req->input('filter');
+                $whereClauses = array();
+                $filter_string = '';
+                if (isset($filter)) {
+                $filters = json_decode($filter);
+                foreach ($filters as $filter) {
+                          switch ($filter->property) {
+                            case 'reference_no' :
+                                 $whereClauses[] = "t1.reference_no like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'manufacturer_name' :
+                                 $whereClauses[] = "t44.name like '%" . ($filter->value) . "%'";
+                                 break;
+                            case 'gvp_site' :
+                                 $whereClauses[] = "t33.name like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'premise_reg_no' :
+                                 $whereClauses[] = "t33.premise_reg_no like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'physical_address' :
+                                 $whereClauses[] = "t44.physical_address like '%" . ($filter->value) . "%'";
+                                 break;
+                            case 'postal_address' :
+                                 $whereClauses[] = "t44.postal_address like '%" . ($filter->value) . "%'";
+                                 break;
+                            case 'email_address' :
+                                  $whereClauses[] = "t44.email_address like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'country' :
+                                  $whereClauses[] = "t55.name like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'business_type' :
+                                  $whereClauses[] = "t8.name like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'Trader' :
+                                  $whereClauses[] = "t10.name like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'TraderPhysicalA' :
+                                  $whereClauses[] = "t10.physical_address like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'TraderPostalA' :
+                                  $whereClauses[] = "t10.postal_address like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'TraderEmail' :
+                                  $whereClauses[] = "t10.email like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'TraderCountry' :
+                                  $whereClauses[] = "t14.name like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'IssueFrom' :
+                                  $whereClauses[] = "date_format(t18.certificate_issue_date, '%Y%-%m-%d')= '" . formatDate($filter->value) . "'";
+                                  break;
+                            case 'certificate_no' :
+                                  $whereClauses[] = "t18.certificate_no like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'validity_status' :
+                                  $whereClauses[] = "tv.name like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'approval_recommendation' :
+                                  $whereClauses[] = "t21.name like '%" . ($filter->value) . "%'";
+                                  break; 
+                           
+                            }
+         $whereClauses = array_filter($whereClauses);
+            }
+         if (!empty($whereClauses)) {
+            $filter_string = implode(' AND ', $whereClauses);
+            }
+         }
+         if ($filter_string != '') {
+            $qry->whereRAW($filter_string);
+          }
+      $total=$qry->get()->count();
+
+      if(isset($start)&&isset($limit)){
+        $results = $qry->skip($start)->take($limit)->get();
+      }
+      else{
+        $results=$qry->get();
+      }
+
+      $res = array(
+        'success' => true,
+         'results' => $results,
+         'message' => 'All is well',
+         'totalResults'=>$total
+         );
+          $type = $req->input('type');
+      if(isset($type)){
+
+      return $results;
+      }else{
+      return \response()->json($res);
+      }
+
+}
+
+
+
 public function exportGmpRegister(request $req){
       $sub_module_id=$req->sub_module_id;
       $gmp_location=$req->gmp_location;
@@ -1551,7 +1676,163 @@ public function exportGmpRegister(request $req){
         $response=$this->generateExcell($data,$filename,$heading);  
        }
         return $response;
+}
+public function exportGvpRegister(request $req){
+      $sub_module_id=$req->sub_module_id;
+      $gvp_location=$req->gvp_location;
+      $module_id=$req->module_id;
+      $approved_from=$req->approved_from;
+      $approved_to=$req->approved_to;
+      $filter = $req->filter;
+      $heading='GVP Register';
+      $filename='GVP Register.Xlsx';
+      $limit=$req->limit;
+      $data = array();
+      $table=$this->getTableName($module_id);
+      $table2='par_gvplocation_details';
+      $field= 'gvp_type_id';
+
+
+      //date filter
+      $datefilter=$this->DateFilter($req);
+
+
+      $subfilterdata = array();
+       if(validateIsNumeric($gvp_location)){
+          $subfilterdata=array('t1.gvp_type_id'=>$gvp_location);
+      }
+
+      $submodule_details=array();
+      if(validateIsNumeric($sub_module_id)){
+          $submodule_details=array('id'=>$sub_module_id);
+      }
+    
+      $sub_data=DB::table('sub_modules')->where($submodule_details)->where('module_id',$module_id)->get();
+  
+
+      $data = array();
+      foreach ($sub_data as $submodule) {
+               
+                $filterdata="t1.sub_module_id = ".$submodule->id;
+            
+                $qry=$this->getApprovedGmpRegister($table,$table2,$field, $filterdata,$subfilterdata,$datefilter);
+                $filter = $req->input('filter');
+                $whereClauses = array();
+                $filter_string = '';
+                if (isset($filter)) {
+                $filters = json_decode($filter);
+                foreach ($filters as $filter) {
+                          switch ($filter->property) {
+                            case 'reference_no' :
+                                 $whereClauses[] = "t1.reference_no like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'manufacturer_name' :
+                                 $whereClauses[] = "t44.name like '%" . ($filter->value) . "%'";
+                                 break;
+                            case 'gvp_site' :
+                                 $whereClauses[] = "t33.name like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'premise_reg_no' :
+                                 $whereClauses[] = "t33.premise_reg_no like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'physical_address' :
+                                 $whereClauses[] = "t44.physical_address like '%" . ($filter->value) . "%'";
+                                 break;
+                            case 'postal_address' :
+                                 $whereClauses[] = "t44.postal_address like '%" . ($filter->value) . "%'";
+                                 break;
+                            case 'email_address' :
+                                  $whereClauses[] = "t44.email_address like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'country' :
+                                  $whereClauses[] = "t55.name like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'business_type' :
+                                  $whereClauses[] = "t8.name like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'Trader' :
+                                  $whereClauses[] = "t10.name like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'TraderPhysicalA' :
+                                  $whereClauses[] = "t10.physical_address like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'TraderPostalA' :
+                                  $whereClauses[] = "t10.postal_address like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'TraderEmail' :
+                                  $whereClauses[] = "t10.email like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'TraderCountry' :
+                                  $whereClauses[] = "t14.name like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'IssueFrom' :
+                                  $whereClauses[] = "date_format(t18.certificate_issue_date, '%Y%-%m-%d')= '" . formatDate($filter->value) . "'";
+                                  break;
+                            case 'certificate_no' :
+                                  $whereClauses[] = "t18.certificate_no like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'validity_status' :
+                                  $whereClauses[] = "tv.name like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'approval_recommendation' :
+                                  $whereClauses[] = "t21.name like '%" . ($filter->value) . "%'";
+                                  break; 
+                           
+                            }
+         $whereClauses = array_filter($whereClauses);
+            }
+         if (!empty($whereClauses)) {
+            $filter_string = implode(' AND ', $whereClauses);
+            }
+         }
+         if ($filter_string != '') {
+            $qry->whereRAW($filter_string);
+          }
+
+        if(isset($start)&&isset($limit)){
+        $results = $qry->skip($start)->take($limit)->get();
+        }
+        else{
+        $results=$qry->get();
+        }
+
+        foreach ($results as $results) {
+             $data[] = [    'Sub Module'=>$submodule->name,
+                            'Reference Number'=>$results->reference_no,
+                            'Certificate Number'=>$results->certificate_no,
+                            'GVP Name'=>$results->manufacturer_name,
+                            'GVP Site'=>$results->gvp_site,
+                            'GVP Country'=>$results->country,
+                            'GVP Email'=>$results->email_address,
+                            'GVP Postal Address'=>$results->postal_address,
+                            'GVP Physical Address'=>$results->physical_address,
+                            'Business Type'=>$results->business_type,
+                            'Premise Registration Number'=>$results->premise_reg_no,
+                            'Applicant'=>$results->Trader,
+                            'Applicant Postal Address'=>$results->TraderPostalA,
+                            'Applicant Physical Address'=>$results->TraderPhysicalA,
+                            'Applicant Email'=>$results->TraderEmail,
+                            'Applicant County'=>$results->TraderCountry,
+                            'Approved On'=>$results->IssueFrom,
+                            'Approval Recommendation'=>$results->approval_recommendation,
+                            'Validity Status'=>$results->validity_status
+   
+                        ]; 
+              }
+
+            }
+
+          if(empty($data)){
+        $response =  array(
+           'status'=>'failure',
+           'message' => 'Currently there is no data to Export! Make sure you have loaded data you want to export'
+        );
+
+       }else{
+        $response=$this->generateExcell($data,$filename,$heading);  
        }
+        return $response;
+}
 
     public function checkPrintGmpRegister(Request $req){
       $sub_module_id=$req->sub_module_id;
@@ -1685,7 +1966,140 @@ public function exportGmpRegister(request $req){
              );
             }
             return $response;
-    } 
+} 
+    public function checkPrintGvpRegister(Request $req){
+      $sub_module_id=$req->sub_module_id;
+      $module_id=$req->module_id;
+      $gvp_location=$req->gvp_location;
+      $approved_from=$req->approved_from;
+      $approved_to=$req->approved_to;
+      $filter = $req->filter;
+      $start=$req->start;
+      $limit=$req->limit;
+      $data = array();
+      $table=$this->getTableName($module_id);
+      $table2='par_gvplocation_details';
+      $field= 'gvp_type_id';
+      //date filter
+      $datefilter=$this->DateFilter($req);
+      $subfilterdata = array();
+      
+
+
+      $submodule_details=array();
+      if(validateIsNumeric($sub_module_id)){
+          $submodule_details=array('id'=>$sub_module_id);
+      }
+    
+      $sub_data=DB::table('sub_modules')->where($submodule_details)->where('module_id',$module_id)->get();
+
+      $gmplocation_details=array();
+      if(validateIsNumeric($gvp_location)){
+         $gvplocation_details=array('t1.id'=>$gvp_location);
+      }
+      $data = array();
+
+         $filterdata = '';
+         if(validateIsNumeric($sub_module_id)){
+            $filterdata="t1.sub_module_id = ".$sub_module_id;
+        }
+        $subfilterdata = array();
+         if(validateIsNumeric($gvp_location)){
+            $subfilterdata=array('t1.gvp_type_id'=>$gvp_location);
+        }
+        
+         $qry=$this->getApprovedGvpRegister($table,$table2,$field, $filterdata,$subfilterdata,$datefilter);
+         $filter = $req->input('filter');
+         $whereClauses = array();
+                $filter_string = '';
+                if (isset($filter)) {
+                $filters = json_decode($filter);
+                foreach ($filters as $filter) {
+                          switch ($filter->property) {
+                            case 'reference_no' :
+                                 $whereClauses[] = "t1.reference_no like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'gvp_name' :
+                                 $whereClauses[] = "t44.name like '%" . ($filter->value) . "%'";
+                                 break;
+                            case 'gvp_site' :
+                                 $whereClauses[] = "t33.name like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'premise_reg_no' :
+                                 $whereClauses[] = "t33.premise_reg_no like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'physical_address' :
+                                 $whereClauses[] = "t44.physical_address like '%" . ($filter->value) . "%'";
+                                 break;
+                            case 'postal_address' :
+                                 $whereClauses[] = "t44.postal_address like '%" . ($filter->value) . "%'";
+                                 break;
+                            case 'email_address' :
+                                  $whereClauses[] = "t44.email_address like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'country' :
+                                  $whereClauses[] = "t55.name like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'business_type' :
+                                  $whereClauses[] = "t8.name like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'Trader' :
+                                  $whereClauses[] = "t10.name like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'TraderPhysicalA' :
+                                  $whereClauses[] = "t10.physical_address like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'TraderPostalA' :
+                                  $whereClauses[] = "t10.postal_address like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'TraderEmail' :
+                                  $whereClauses[] = "t10.email like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'TraderCountry' :
+                                  $whereClauses[] = "t14.name like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'IssueTo' :
+                                  $whereClauses[] = "date_format(t18.certificate_issue_date, '%Y%-%m-%d')= '" . formatDate($filter->value) . "'";
+                                  break;
+                            case 'certificate_no' :
+                                  $whereClauses[] = "t18.certificate_no like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'validity_status' :
+                                  $whereClauses[] = "tv.name like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'approval_recommendation' :
+                                  $whereClauses[] = "t21.name like '%" . ($filter->value) . "%'";
+                                  break; 
+                           
+                            }
+         $whereClauses = array_filter($whereClauses);
+            }
+         if (!empty($whereClauses)) {
+            $filter_string = implode(' AND ', $whereClauses);
+            }
+         }
+         if ($filter_string != '') {
+            $qry->whereRAW($filter_string);
+          }
+         
+         if(isset($start)&&isset($limit)){
+            $results = $qry->skip($start)->take($limit)->get();
+          }
+          else{
+            $results=$qry->get();
+         }
+         if(empty(json_decode($results))){
+             $response =  array(
+               'status'=>'failure',
+               'message' => 'Currently there is no data to Print! Make sure you have loaded data you want to Print'
+             );
+            }else{
+            $response =  array(
+               'status'=>'sucesss'
+             );
+            }
+            return $response;
+} 
 
    public function printGmpRegister(Request $req){
       $sub_module_id=$req->sub_module_id;
@@ -1855,8 +2269,176 @@ public function exportGmpRegister(request $req){
        
                  // PDF::Ln();    
        PDF::Output($filename,'I');
-   }  
+}  
+   public function printGvpRegister(Request $req){
+      $sub_module_id=$req->sub_module_id;
+      $module_id=$req->module_id;
+      $gvp_location=$req->gvp_location;
+      $approved_from=$req->approved_from;
+      $approved_to=$req->approved_to;
+       $heading='GVP Register';
+      $filename='GVP Register.pdf';
+      $title='GVP Register';
+      $filter = $req->filter;
+      $start=$req->start;
+      $limit=$req->limit;
+      $data = array();
+      $table=$this->getTableName($module_id);
+      $table2='par_gvplocation_details';
+      $field= 'gvp_type_id';
+      //date filter
+      $datefilter=$this->DateFilter($req);
+      $subfilterdata = array();
+      
 
+
+      $submodule_details=array();
+      if(validateIsNumeric($sub_module_id)){
+          $submodule_details=array('id'=>$sub_module_id);
+      }
+    
+      $sub_data=DB::table('sub_modules')->where($submodule_details)->where('module_id',$module_id)->get();
+
+      $gvplocation_details=array();
+      if(validateIsNumeric($gvp_location)){
+         $gvplocation_details=array('t1.id'=>$gvp_location);
+      }
+      $data = array();
+      $w = 20; 
+      $w_1 = 40;
+      $w_2 = 25;
+      $w_3 = 90;
+      $h_1=8;
+      $h = 5;
+      $b=array(0,0,0,0);
+
+      PDF::SetTitle( $title );
+      PDF::AddPage("L");
+       
+      $this->generateReportsHeader( $title);
+         
+      PDF::Ln();
+      
+      $i = 1;
+      //start loop
+      
+
+         $filterdata = '';
+         if(validateIsNumeric($sub_module_id)){
+            $filterdata="t1.sub_module_id = ".$sub_module_id;
+        }
+        $subfilterdata = array();
+         if(validateIsNumeric($gvp_location)){
+            $subfilterdata=array('t1.gvp_type_id'=>$gvp_location);
+        }
+        
+         $qry=$this->getApprovedGvpRegister($table,$table2,$field, $filterdata,$subfilterdata,$datefilter);
+         $filter = $req->input('filter');
+         $whereClauses = array();
+                $filter_string = '';
+                if (isset($filter)) {
+                $filters = json_decode($filter);
+                foreach ($filters as $filter) {
+                          switch ($filter->property) {
+                            case 'reference_no' :
+                                 $whereClauses[] = "t1.reference_no like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'gvp_name' :
+                                 $whereClauses[] = "t44.name like '%" . ($filter->value) . "%'";
+                                 break;
+                            case 'gvp_site' :
+                                 $whereClauses[] = "t33.name like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'premise_reg_no' :
+                                 $whereClauses[] = "t33.premise_reg_no like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'physical_address' :
+                                 $whereClauses[] = "t44.physical_address like '%" . ($filter->value) . "%'";
+                                 break;
+                            case 'postal_address' :
+                                 $whereClauses[] = "t44.postal_address like '%" . ($filter->value) . "%'";
+                                 break;
+                            case 'email_address' :
+                                  $whereClauses[] = "t44.email_address like '%" . ($filter->value) . "%'";
+                                 break;  
+                            case 'country' :
+                                  $whereClauses[] = "t55.name like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'business_type' :
+                                  $whereClauses[] = "t8.name like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'Trader' :
+                                  $whereClauses[] = "t10.name like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'TraderPhysicalA' :
+                                  $whereClauses[] = "t10.physical_address like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'TraderPostalA' :
+                                  $whereClauses[] = "t10.postal_address like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'TraderEmail' :
+                                  $whereClauses[] = "t10.email like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'TraderCountry' :
+                                  $whereClauses[] = "t14.name like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'IssueTo' :
+                                  $whereClauses[] = "date_format(t18.certificate_issue_date, '%Y%-%m-%d')= '" . formatDate($filter->value) . "'";
+                                  break;
+                            case 'certificate_no' :
+                                  $whereClauses[] = "t18.certificate_no like '%" . ($filter->value) . "%'";
+                                  break;  
+                            case 'validity_status' :
+                                  $whereClauses[] = "tv.name like '%" . ($filter->value) . "%'";
+                                  break;
+                            case 'approval_recommendation' :
+                                  $whereClauses[] = "t21.name like '%" . ($filter->value) . "%'";
+                                  break; 
+                           
+                            }
+         $whereClauses = array_filter($whereClauses);
+            }
+         if (!empty($whereClauses)) {
+            $filter_string = implode(' AND ', $whereClauses);
+            }
+         }
+         if ($filter_string != '') {
+            $qry->whereRAW($filter_string);
+          }
+         
+         if(isset($start)&&isset($limit)){
+            $results = $qry->skip($start)->take($limit)->get();
+          }
+          else{
+            $results=$qry->get();
+         }
+            PDF::MultiCell(14, $h_1, "No", 1,'C','',0);
+             PDF::MultiCell(40, $h_1, "Reference Number", 1,'C','',0);
+             PDF::MultiCell($w_3, $h_1, "GVP Site Details", 1,'C','',0);
+             PDF::MultiCell($w_3, $h_1, "Applicant Details", 1,'C','',0);
+             PDF::MultiCell(0, $h_1, "Status", 1,'C','',1);
+   
+  
+         foreach ($results as $results) {
+             
+              $rowcount = MAX(PDF::getNumLines("Gvp Name:".$results->gvp_name."\nGvp Site:".$results->gvp_site."\nGvp Email:".$results->email_address."\nCountry:".$results->country,60),
+              PDF::getNumLines("Name:".$results->Trader."\nEmail:".$results->TraderEmail."\nCountry:".$results->TraderCountry,
+                60),PDF::getNumLines("Approval Recommendation:".$results->approval_recommendation."\nValidity:".$results->validity_status,60));
+
+             PDF::MultiCell(14, $rowcount *$h, $i,'1','','',0);
+             PDF::MultiCell(40, $rowcount *$h,$results->reference_no,1,'L','',0);
+             PDF::MultiCell($w_3, $rowcount *$h,"Gvp Name:".$results->gvp_name."\nGvp Site:".$results->gvp_site."\nEmail:".$results->email_address."\nCountry:".$results->country,1,'L','',0);
+             PDF::MultiCell($w_3, $rowcount *$h, "Name:".$results->Trader."\nEmail:".$results->TraderEmail."\nCountry:".$results->TraderCountry,1,'L','',0);
+             PDF::MultiCell(0, $rowcount *$h,"Approval Recommendation:".$results->approval_recommendation."\nValidity:".$results->validity_status,1,'L','',1);
+             $i++; 
+
+              
+             }
+     
+       
+                 // PDF::Ln();    
+       PDF::Output($filename,'I');
+}
 
     public function getClinicalTrialRegister(Request $req){
       $sub_module_id=$req->sub_module_id;
