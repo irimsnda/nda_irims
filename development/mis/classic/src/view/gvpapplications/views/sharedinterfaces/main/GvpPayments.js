@@ -18,79 +18,81 @@ Ext.define('Admin.view.gvpapplications.views.sharedinterfaces.main.GvpPayments',
                 margin: '-12 5 0 5',
                 labelStyle: "color:#595959;font-size:11px"
             },
-            items: ['->', {
-                xtype: 'displayfield',
-                name: 'process_name',
-                fieldLabel: 'Process',
-                fieldStyle: {
-                    'color': 'green',
-                    'font-weight': 'bold',
-                    'font-size': '12px',
-                    'margin-top': '-2px'
-                }
-            }, {
-                xtype: 'tbseparator',
-                hidden: true
-            }, {
-                xtype: 'displayfield',
-                name: 'gvp_type_txt',
-                hidden: true,
-                fieldLabel: 'GVP Type',
-                fieldStyle: {
-                    'color': 'green',
-                    'font-weight': 'bold',
-                    'font-size': '12px',
-                    'margin-top': '-2px'
-                }
-            }, {
-                xtype: 'tbseparator'
-            }, {
-                xtype: 'displayfield',
-                name: 'workflow_stage',
-                fieldLabel: 'Workflow Stage',
-                fieldStyle: {
-                    'color': 'green',
-                    'font-weight': 'bold',
-                    'font-size': '12px',
-                    'margin-top': '-2px'
-                }
-            }, {
-                xtype: 'tbseparator'
-            }, {
-                xtype: 'displayfield',
-                name: 'application_status',
-                fieldLabel: 'App Status',
-                fieldStyle: {
-                    'color': 'green',
-                    'font-weight': 'bold',
-                    'font-size': '12px',
-                    'margin-top': '-2px'
-                }
-            }, {
-                xtype: 'tbseparator'
-            }, {
-                xtype: 'displayfield',
-                name: 'tracking_no',
-                fieldLabel: 'Tracking No',
-                fieldStyle: {
-                    'color': 'green',
-                    'font-weight': 'bold',
-                    'font-size': '12px',
-                    'margin-top': '-2px'
-                }
-            }, {
-                xtype: 'tbseparator'
-            }, {
-                xtype: 'displayfield',
-                name: 'reference_no',
-                fieldLabel: 'Reference No',
-                fieldStyle: {
-                    'color': 'green',
-                    'font-weight': 'bold',
-                    'font-size': '12px',
-                    'margin-top': '-2px'
-                }
-            }, {
+            items: [
+                // '->', {
+            //     xtype: 'displayfield',
+            //     name: 'process_name',
+            //     fieldLabel: 'Process',
+            //     fieldStyle: {
+            //         'color': 'green',
+            //         'font-weight': 'bold',
+            //         'font-size': '12px',
+            //         'margin-top': '-2px'
+            //     }
+            // }, {
+            //     xtype: 'tbseparator',
+            //     hidden: true
+            // }, {
+            //     xtype: 'displayfield',
+            //     name: 'gvp_type_txt',
+            //     hidden: true,
+            //     fieldLabel: 'GVP Type',
+            //     fieldStyle: {
+            //         'color': 'green',
+            //         'font-weight': 'bold',
+            //         'font-size': '12px',
+            //         'margin-top': '-2px'
+            //     }
+            // }, {
+            //     xtype: 'tbseparator'
+            // }, {
+            //     xtype: 'displayfield',
+            //     name: 'workflow_stage',
+            //     fieldLabel: 'Workflow Stage',
+            //     fieldStyle: {
+            //         'color': 'green',
+            //         'font-weight': 'bold',
+            //         'font-size': '12px',
+            //         'margin-top': '-2px'
+            //     }
+            // }, {
+            //     xtype: 'tbseparator'
+            // }, {
+            //     xtype: 'displayfield',
+            //     name: 'application_status',
+            //     fieldLabel: 'App Status',
+            //     fieldStyle: {
+            //         'color': 'green',
+            //         'font-weight': 'bold',
+            //         'font-size': '12px',
+            //         'margin-top': '-2px'
+            //     }
+            // }, {
+            //     xtype: 'tbseparator'
+            // }, {
+            //     xtype: 'displayfield',
+            //     name: 'tracking_no',
+            //     fieldLabel: 'Tracking No',
+            //     fieldStyle: {
+            //         'color': 'green',
+            //         'font-weight': 'bold',
+            //         'font-size': '12px',
+            //         'margin-top': '-2px'
+            //     }
+            // }, {
+            //     xtype: 'tbseparator'
+            // }, {
+            //     xtype: 'displayfield',
+            //     name: 'reference_no',
+            //     fieldLabel: 'Reference No',
+            //     fieldStyle: {
+            //         'color': 'green',
+            //         'font-weight': 'bold',
+            //         'font-size': '12px',
+            //         'margin-top': '-2px'
+            //     }
+            // }, 
+            {
                 xtype: 'tbspacer'
             }, {
                 xtype: 'hiddenfield',
