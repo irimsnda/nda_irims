@@ -344,6 +344,7 @@ setConfigGridsStore: function (obj, options) {
                 params = {},
                 method = "POST";
             params.token = form.down("textfield[name=_token]").getValue();
+            params.exchange_rate = form.down("textfield[name=exchange_rate]").getValue();
             params.rate = form.down("textfield[name=exchange_rate]").getValue();
             params.description = form.down("textfield[name=description]").getValue();
             params.currency_id = form.down("textfield[name=currency]").getValue();

@@ -94,7 +94,7 @@ Ext.define('Admin.view.pv.views.forms.PvIndicationFrm', {
                                 },
                              change: function (cmbo, newVal) {
                                 var form = cmbo.up('form'),
-                                    indicationMedraStore = form.down('combo[name=indication_medra]').getStore(),
+                                    indicationMedraStore = form.down('combo[name=indication_medra_id]').getStore(),
                                     filterObj = {meddra_level_id: newVal},
                                     filterStr = JSON.stringify(filterObj);
                                 indicationMedraStore.removeAll();
@@ -107,12 +107,12 @@ Ext.define('Admin.view.pv.views.forms.PvIndicationFrm', {
                             xtype: 'combo',
                             anyMatch: true,
                             fieldLabel: 'Indication',
-                            name: 'indication_medra',
+                            name: 'indication_medra_id',
                             forceSelection: true,
                             columnWidth: 0.5,
                             allowBlank:false,
                             queryMode: 'local',
-                            valueField: 'name',
+                            valueField: 'id',
                             displayField: 'name',
                              listeners: {
                                 beforerender: {

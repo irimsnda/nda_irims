@@ -114,7 +114,7 @@ Ext.define('Admin.view.commoninterfaces.grids.OnlinePaymentInvoicingCostDetailsG
             name:'print_invoice',
             text: 'Print Invoice',
             report_type: 'Invoice',
-            handler: 'printOnlineApplicationInvoice'
+            handler: 'funcPrintOnlineApplicationInvoice'
         }
     }, {
         text: 'Options',

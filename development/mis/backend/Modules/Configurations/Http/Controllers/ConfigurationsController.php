@@ -1312,6 +1312,7 @@ public function deleteWorkflowRecord(Request $req)
     }
 
 
+
      public function getproductApplicationParameters(Request $req)
     {
         try {
@@ -2541,18 +2542,23 @@ public function getParameterGridConfig(Request $req){
         $param_column_name='';
         $logic = '';
         foreach ($param_joins as $param_join) {
+             $columnDetails = DB::getDoctrineSchemaManager()->listTableColumns($param->table_name);
+             $columnDetail = $columnDetails[$param_join->param_column_name];
+             $null = !$columnDetail->getNotnull();
+
+             //dd($columnDetail);
             if($param_join->is_parent == 1){
                 $logic = $param_join->logic;
-                $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>ucwords($param_join->table_label),'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>0, 'is_parent'=>1,'logic'=>$logic);
+                $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>ucwords($param_join->table_label),'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>0, 'is_parent'=>1,'logic'=>$logic,'null' => $null);
                 $param_column_name = $param_join->param_column_name;
                 
             }
             else if($param_join->is_child == 1){
-                $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>ucwords($param_join->table_label),'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>1, 'is_parent'=>0, 'parent_combo_name'=> $param_column_name);
+                $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>ucwords($param_join->table_label),'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>1, 'is_parent'=>0, 'parent_combo_name'=> $param_column_name,'null' => $null);
                 $param_column_name = '';
                 $logic = '';
             }else{
-                $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>ucwords($param_join->table_label),'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>0, 'is_parent'=>0);
+                $labels[] = array('table'=>$param_join->join_table_name, 'column'=>$param_join->join_column_name,'label'=>ucwords($param_join->table_label),'join_disp_column_name'=>$param_join->join_disp_column_name,'param_column_name'=>$param_join->param_column_name,'is_child'=>0, 'is_parent'=>0,'null' => $null);
             }
         }
         $colums = DB::getDoctrineSchemaManager()->listTableColumns($param->table_name);

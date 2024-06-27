@@ -46,6 +46,7 @@ class ExchangeRate extends AbstractParameter
                 ['id', '=', $id]
             ],[
                 'rate' => $request->input('rate'),
+                'exchange_rate' => $request->input('exchange_rate'),
                 'description' => $request->input('description'),
                 'currency_id' => $request->input('currency_id'),
                 'altered_by' => \Auth::user()->id,
@@ -55,6 +56,7 @@ class ExchangeRate extends AbstractParameter
             return insertRecord('par_exchange_rates', [
                 'id' => $id,
                 'rate' => $request -> input('rate'),
+                'exchange_rate' => $request->input('exchange_rate'),
                 'description' => $request -> input('description'),
                 'currency_id' => $request->input('currency_id'),
                 'altered_by' => \Auth::user()->id,

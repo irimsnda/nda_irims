@@ -114,6 +114,8 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.abstract.Per
           flex: 1,
       },
 
+      
+
       {
           
           xtype: 'gridcolumn',

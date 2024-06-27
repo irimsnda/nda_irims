@@ -2479,6 +2479,15 @@ funcCancelGeneratedInvoice: function(item){
 
 },
 
+// funcPrintOnlineApplicationInvoice:function(item){
+//             var record = item.getWidgetRecord(),
+//             application_id = record.get('application_id'),
+//             module_id = record.get('module_id'),
+//             invoice_id = record.get('invoice_id');
+//         var action_url = 'reports/generateApplicationInvoice?application_id=' + application_id + '&&module_id=' + module_id + '&&invoice_id=' + invoice_id;
+//         print_report(action_url);
+//     },
+
 funcCancelOnlineGeneratedInvoice: function(item){
     var record = item.getWidgetRecord(),
         grid = item.up('grid'),

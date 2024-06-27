@@ -52,7 +52,15 @@ Ext.define('Admin.controller.ReportsCtr', {
                 refresh: 'refreshReportExportGrid'
             },'onlinemedicaldevicesreceivingwizard button[name=print_invoice]': {
                 click: 'printOnlineApplicationInvoice'
-            },'onlinedrugproductreceivingwizard button[name=print_invoice]': {
+            },
+            'onlineapplicationpaymentsgrid button[name=print_invoice]': {
+                click: 'printOnlineApplicationInvoice'
+            },
+             'onlinepaymentinvoicingcostdetailsgrid button[name=print_invoice]': {
+                click: 'printOnlineApplicationInvoice'
+            },
+
+            'onlinedrugproductreceivingwizard button[name=print_invoice]': {
                 click: 'printOnlineApplicationInvoice'
             },'onlineantisepticproductreceivingwizard button[name=print_invoice]': {
                 click: 'printOnlineApplicationInvoice'

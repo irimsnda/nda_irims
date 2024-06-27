@@ -1376,7 +1376,7 @@ trait ImportexportpermitsTraits
                 
                 $sub_module_id = $application_details->sub_module_id;
                 
-                if($sub_module_id == 79){
+                if($sub_module_id == 81){
                     $reg_importexport_id = $application_details->reg_importexport_id;
                     $reg_rec = DB::table('reg_importexport_registry')
                                 ->where('id',$reg_importexport_id)
