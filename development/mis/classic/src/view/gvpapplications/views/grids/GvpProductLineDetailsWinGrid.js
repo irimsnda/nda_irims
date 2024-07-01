@@ -51,7 +51,7 @@ Ext.define('Admin.view.gvpapplications.views.grids.GvpProductLineDetailsWinGrid'
             var store = this.getStore(),
                 grid = this.up('grid'),
                 pnl = grid.up('panel'),
-                site_id = pnl.down('mansitedetailsfrm').down('hiddenfield[name=manufacturing_site_id]').getValue();
+                site_id = pnl.down('gvpsitedetailsfrm').down('hiddenfield[name=gvp_site_id]').getValue();
             store.getProxy().extraParams = {
                 site_id: site_id
             };

@@ -18,19 +18,10 @@ Ext.define('Admin.view.gvpapplications.views.grids.GvpProductsLinkageDetailsWinG
             }
         }
     },
-    plugins: [{
+    plugins: [
+        {
         ptype: 'gridexporter'
-    }, {
-        ptype: 'rowexpander',
-        rowBodyTpl: new Ext.XTemplate(
-            '<p>' +
-            '<b>Product Line:</b> {product_line_name} <br>' +
-            '<b>Product Line Category:</b> {product_line_category}<br> ' +
-            '<b>Product Line Description:</b> {product_line_description}<br> ' +
-            '<b>Block:</b> {block} ' +
-            '</p>'
-        )
-    }],
+        }],
     tbar: [{
         xtype: 'hiddenfield',
         name: 'isReadOnly'

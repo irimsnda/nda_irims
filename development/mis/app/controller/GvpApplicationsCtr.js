@@ -2200,14 +2200,18 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
             running_balance = activeTab.down('displayfield[name=running_balance]'),
             otherDetailsFrm = activeTab.down('form'),
             applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
-            premise_details = otherDetailsFrm.down('displayfield[name=premise_details]'),
-            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
-            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
-            paymentsPnl = activeTab.down('paymentVerificationPnl');
-            console.log(paymentsPnl);
+            premise_details = otherDetailsFrm.down('displayfield[name=premise_details]')
+            module_id = activeTab.down('hiddenfield[name=module_id]').getValue()
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue()
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue()
+            paymentsPnl = activeTab.down('paymentVerificationPnl')
+            newpaymentspnl = activeTab.down('newgvppaymentspanel')
+            newpaymentspnl.down('hiddenfield[name=active_application_id]').setValue(application_id)
+            newpaymentspnl.down('hiddenfield[name=active_application_code]').setValue(application_code)
+            newpaymentspnl.down('hiddenfield[name=module_id]').setValue(module_id)
         
        
-        activeTab.down('button[name=process_submission_btn]').setVisible(true);
+        activeTab.down('button[name=process_submission_btn]').setVisible(true)
         
         if (application_id) {
             
@@ -2237,11 +2241,11 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
                         activeTab.down('hiddenfield[name=gvp_type_id]').setValue(results.gvp_type_id);
                         activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
 
-                        paymentsPnl.down('displayfield[name=process_name]').setVisible(false);
-                        paymentsPnl.down('displayfield[name=workflow_stage]').setVisible(false);
-                        paymentsPnl.down('displayfield[name=application_status]').setVisible(false);
-                        paymentsPnl.down('displayfield[name=tracking_no]').setVisible(false);
-                        paymentsPnl.down('displayfield[name=reference_no]').setVisible(false);
+                        // paymentsPnl.down('displayfield[name=process_name]').setVisible(false);
+                        // paymentsPnl.down('displayfield[name=workflow_stage]').setVisible(false);
+                        // paymentsPnl.down('displayfield[name=application_status]').setVisible(false);
+                        // paymentsPnl.down('displayfield[name=tracking_no]').setVisible(false);
+                        // paymentsPnl.down('displayfield[name=reference_no]').setVisible(false);
                         if (Math.abs(parseFloat(balance)) == parseFloat(invoice_amount) || Math.abs(parseFloat(balance)) === parseFloat(invoice_amount)) {
                             txt = ' (Not Paid)';
                         } else if (parseFloat(balance) > 0) {

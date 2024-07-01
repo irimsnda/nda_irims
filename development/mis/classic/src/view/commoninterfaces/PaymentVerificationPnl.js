@@ -5,7 +5,6 @@ Ext.define('Admin.view.commoninterfaces.PaymentVerificationPnl', {
     extend: 'Ext.panel.Panel',
     xtype: 'paymentVerificationPnl',
     itemId: 'paymentVerificationPnl',
-    //height: Ext.Element.getViewportHeight() - 118,
     controller:'commoninterfacesVctr',
     layout: 'border',
     dockedItems: [{
@@ -112,10 +111,8 @@ Ext.define('Admin.view.commoninterfaces.PaymentVerificationPnl', {
             },{
                 name: 'premise_id',
                 xtype: 'hiddenfield'
-            },{
-                name: 'manufacturing_site_id',
-                xtype: 'hiddenfield'
-            },{
+            },
+            {
                 name: 'gvp_site_id',
                 xtype: 'hiddenfield',
             },
@@ -123,10 +120,6 @@ Ext.define('Admin.view.commoninterfaces.PaymentVerificationPnl', {
                 xtype: 'hiddenfield',
                 name: 'gvp_type_id'
             },
-            {
-                name: 'gmp_type_id',
-                xtype: 'hiddenfield'
-            }
         ]
     }
     ],

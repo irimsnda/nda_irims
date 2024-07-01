@@ -853,9 +853,12 @@ Ext.define('Admin.controller.WorkflowManagementCtr', {
         checklistsGrid.setTitle(title + ' - ' + stage_name + ' Stage');
         store.removeAll();
         store.load({params: {process_id: process_id, workflow_stage: stage_id}});
-    }, addApplicantDetailstoTab: function (pnl) {
-        var application_code = pnl.down('hiddenfield[name=active_application_code]').getValue(),
-            module_id = pnl.down('hiddenfield[name=module_id]').getValue();
+    }, 
+    
+    addApplicantDetailstoTab: function (pnl) {
+        var application_code = pnl.down('hiddenfield[name=active_application_code]').getValue()
+            module_id = pnl.down('hiddenfield[name=module_id]').getValue()
+            // console.log(pnl,application_code, module_id);
 
         if(pnl.down('displayfield[name=applicant_details]')){
             Ext.Ajax.request({
