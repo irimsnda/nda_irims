@@ -1,6 +1,6 @@
 
 Ext.define('Admin.view.gvpapplications.views.forms.GvpProductLineDetailsFrm', {
-    extend: 'Admin.view.gvpapplications.views.forms.ProductLineAbstractFrm',
+    extend: 'Admin.view.gvpapplications.views.forms.GvpProductLineAbstractFrm',
     xtype: 'gvpproductlinedetailsfrm',
     itemId:'gvpproductlinedetailsfrm',
     listeners: {

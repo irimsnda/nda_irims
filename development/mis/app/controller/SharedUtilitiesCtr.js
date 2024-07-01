@@ -2330,9 +2330,17 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
             //the invoicng functionality
             'onlinemedicaldevicesreceivingwizard button[name=receive_invoicebtn]': {
                 click: 'receiveAndInvoiceOnlineApplicationDetailsFrmBtn'
-            }, 'onlineapplicationreceiceinvoicefrm button[name=savegenerate_invoice]': {
+            },
+
+             'onlineapplicationreceiceinvoicefrm button[name=savegenerate_invoice]': {
                 click: 'receiveandInvoiceOnlineApplicationDetails'
-            },'onlinedrugproductreceivingwizard button[name=receive_invoicebtn]': {
+            },
+
+             'adhocapplicationinvoicefrm button[name=savegenerate_invoice]': {
+                click: 'receiveandInvoiceadhocApplicationDetails'
+            },
+
+            'onlinedrugproductreceivingwizard button[name=receive_invoicebtn]': {
                 click: 'receiveAndInvoiceOnlineApplicationDetailsFrmBtn'
             },
             'onlineantisepticproductreceivingwizard button[name=receive_invoicebtn]': {
@@ -2432,9 +2440,16 @@ Ext.define('Admin.controller.SharedUtilitiesCtr', {
                     click: 'viewSubmissionRemark'
                 },'controlleddrugsimpmanagerreviewwizrd button[name=comments_btn]': {
                 click: 'showApplicationCommentsWin'
-            }, 'appinvoicepaymentspanel toolbar menu menuitem[name=generate_invoice]': {
+            }, 
+
+            'appinvoicepaymentspanel toolbar menu menuitem[name=generate_invoice]': {
                 click: 'funcGenerateNewApplicationInvoice'
             }, 
+
+            'appinvoicepaymentspanel toolbar menu menuitem[name=generate_adhoc_invoice]': {
+                click: 'funcGenerateNewApplicationInvoice'
+            },
+
             'onlineappinvoicepaymentspanel toolbar menu menuitem[name=generate_invoice]': {
                 click: 'funcGenerateNewApplicationInvoice'
             }, 
@@ -4034,7 +4049,8 @@ setCompStore: function (me, options) {
           child.down('hiddenfield[name=application_code]').setValue(application_code);
 
       funcShowCustomizableWindow(winTitle, winWidth, child, 'customizablewindow');
-  },funcGenerateNewApplicationInvoice: function(btn){
+  },
+  funcGenerateNewApplicationInvoice: function(btn){
         var payment_pnl = btn.viewType,
          payment_pnl=  Ext.widget(payment_pnl);
         //cost parameters 
@@ -4067,7 +4083,9 @@ setCompStore: function (me, options) {
         payment_pnl.down('hiddenfield[name=fasttrack_option_id]').setValue(fasttrack_option_id);
         payment_pnl.setHeight('95%');
         funcShowOnlineCustomizableWindow('Invoice Quotation', '95%', payment_pnl, 'customizablewindow');
-    }, showApplicationChecklistRevisions: function(btn){
+    }, 
+
+    showApplicationChecklistRevisions: function(btn){
         var mainTabPanel = this.getMainTabPanel(),
             panel = mainTabPanel.getActiveTab(),
             grid = btn.up('grid'),
@@ -10014,26 +10032,27 @@ else{
 
     showApplicationChecklists: function (item) {
         var btn = item.up('button'),
+            isnotDoc = item.isnotDoc,
             record = btn.getWidgetRecord(),
             ref_no = record.get('reference_no'),
             process_id = record.get('process_id'),
             application_id = record.get('id'),
             application_code = record.get('application_code'),
-            childItem = 'allchecklistsgrid',
-            documents_subpnl = 'documentssubmissionrecommendationfrm';
-
-            wizardPnl = Ext.create('Ext.tab.Panel', {layout: 'fit',items:[{xtype: documents_subpnl, title: 'Documents Submission Recommendation'},{xtype: childItem, title: 'Screening Checklists'}]});
-
-
+            childItem = 'allchecklistsgrid';
+           // documents_subpnl = 'documentssubmissionrecommendationfrm';
+           
+            wizardPnl = Ext.create('Ext.tab.Panel', {layout: 'fit',items:[{xtype: 'documentssubmissionrecommendationfrm', title: 'Documents Submission Recommendation'},{xtype: childItem, title: 'Checklists'}]});
             wizardPnl.down('hiddenfield[name=process_id]').setValue(process_id);
             wizardPnl.down('hiddenfield[name=application_id]').setValue(application_id);
             wizardPnl.down('hiddenfield[name=application_code]').setValue(application_code);
-
             wizardPnl.down('textarea[name=remarks]').setReadOnly(true);
             wizardPnl.down('combo[name=document_status_id]').setReadOnly(true);
             wizardPnl.down('button[name=btn_remarks]').setHidden(true);
+            if(isnotDoc){
+                wizardPnl.down('documentssubmissionrecommendationfrm').destroy();
 
-            funcShowCustomizableWindow(ref_no + 'Screening Recommendation & Checklist', '85%', wizardPnl, 'customizablewindow');
+            }
+            funcShowCustomizableWindow(ref_no + 'Checklist', '85%', wizardPnl, 'customizablewindow');
 
     },
 
@@ -10315,6 +10334,56 @@ else{
                         onlineappssubmissioncounterstr.load();
                         win.close();
                         closeActiveWindow();
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (fm, action) {
+                    var resp = action.result;
+                    toastr.error(resp.message, 'Failure Response');
+                }
+            });
+        }
+    },
+
+
+    receiveandInvoiceadhocApplicationDetails: function (btn) {
+        var mainTabPanel = this.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+            action_url = btn.action_url,
+            me = this,
+            form = btn.up('form'),
+            application_code = form.down('hiddenfield[name=application_code]').getValue(),
+            application_id = form.down('hiddenfield[name=application_id]').getValue(),
+            module_id = form.down('hiddenfield[name=module_id]').getValue(),
+            win = form.up('window'),
+            frm = form.getForm();
+        if (frm.isValid()) {
+            frm.submit({
+                url: action_url,
+                waitMsg: 'Please wait...',
+                params:{
+                    application_code:application_code
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + access_token,
+                    'X-CSRF-Token': token
+                },
+                success: function (fm, action) {
+                    var response = Ext.decode(action.response.responseText),
+                        success = response.success,
+                        message = response.message;
+                    if (success == true || success === true) {
+                        toastr.success(message, "Success Response");
+                       // this.generateApplicationInvoice();
+                       if(Ext.getStore('paymentinvoicingcostdetailsgridStr')){
+                                   Ext.getStore('paymentinvoicingcostdetailsgridStr').load();
+                          }
+                        if(Ext.getStore('reinvoicingdetailsgridStr')){
+                            Ext.getStore('reinvoicingdetailsgridStr').load();
+                        }
+                        me.fireEvent('funcgenerateApplicationInvoice', application_id, module_id, response.invoice_id,application_code);
+                         win.close();
                     } else {
                         toastr.error(message, 'Failure Response');
                     }

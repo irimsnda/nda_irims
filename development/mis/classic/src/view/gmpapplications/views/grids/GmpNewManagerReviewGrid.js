@@ -224,6 +224,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpNewManagerReviewGrid', {
                             hidden:true,
                             handler: 'showApplicationDismissalForm'
                         },
+                        
                         {
                          xtype: 'transitionsbtn'
                         }

@@ -1,13 +1,10 @@
 /**
- * Created by Kip on 12/18/2018.
+ * Created by Kip on 2/4/2019.
  */
-Ext.define('Admin.view.gvpapplications.views.grids.ProductLineDetailsAddGrid', {
+Ext.define('Admin.view.gvpapplications.views.grids.GvpProductLineDetailsWinGrid', {
     extend: 'Admin.view.gvpapplications.views.grids.GvpProductLineAbstractGrid',
     controller: 'gvpapplicationsvctr',
-    xtype: 'productLineDetailsaddgrid',
-
-
-cls: 'dashboard-todo-list',
+    xtype: 'gvpproductlinedetailswingrid',
     autoScroll: true,
     autoHeight: true,
     width: '100%',
@@ -25,39 +22,24 @@ cls: 'dashboard-todo-list',
         xtype: 'hiddenfield',
         name: 'isReadOnly'
     }, {
-        xtype:'hiddenfield',
-        name: 'manufacturing_site_id'
-
-    },{
-        xtype:'hiddenfield',
-        name: 'block_id'
-
-    },
-    {
-        xtype:'hiddenfield',
-        name: 'inspection_category_id'
-    },
-    {
-        xtype:'hiddenfield',
-        name: 'special_category_id'
-
-    },{
         xtype: 'button',
         text: 'Add Product Line',
         iconCls: 'x-fa fa-plus',
-        ui: 'soft-blue',
+        ui: 'soft-green',
         name: 'add_line',
         winTitle: 'GVP Product Line Details',
         childXtype: 'gvpproductlinedetailsfrm',
-        winWidth: '50%',
-        stores: '[]'
+        winWidth: '35%',
+        stores: '[]',
+        handler: 'showAddGvpProductLineDetailsFromWin'
     }, {
         xtype: 'exportbtn'
     }],
     plugins: [
         {
             ptype: 'gridexporter'
-    }],
+        }
+    ],
     export_title: 'Product line Details',
     bbar: [{
         xtype: 'pagingtoolbar',
@@ -68,13 +50,10 @@ cls: 'dashboard-todo-list',
         beforeLoad: function () {
             var store = this.getStore(),
                 grid = this.up('grid'),
-                // mainTabPanel = grid.up('#contentPanel'),
-                // activeTab = mainTabPanel.getActiveTab(),
-            site_id = grid.down('hiddenfield[name=manufacturing_site_id]').getValue(),
-             block_id = grid.down('hiddenfield[name=block_id]').getValue();
+                pnl = grid.up('panel'),
+                site_id = pnl.down('mansitedetailsfrm').down('hiddenfield[name=manufacturing_site_id]').getValue();
             store.getProxy().extraParams = {
-                site_id: site_id,
-                block_id:block_id
+                site_id: site_id
             };
         }
     }],
@@ -83,7 +62,6 @@ cls: 'dashboard-todo-list',
         minChars: 2,
         mode: 'local'
     }],
-
     listeners: {
         beforerender: {
             fn: 'setGvpApplicationGridsStore',
@@ -104,7 +82,7 @@ cls: 'dashboard-todo-list',
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 add_btn.setVisible(false);
                 widgetCol.setHidden(true);
-                widgetCol.widget.menu.items = [z];
+                widgetCol.widget.menu.items = [];
             } else {
                 add_btn.setVisible(true);
                 widgetCol.setHidden(false);
@@ -112,10 +90,10 @@ cls: 'dashboard-todo-list',
                     text: 'Edit',
                     iconCls: 'x-fa fa-edit',
                     stores: '[]',
-                    handler: 'showEditGvpInspectionLineDetails',
+                    handler: 'showEditGvpInspectionLineDetailsFromWin',
                     winTitle: 'GVP Product Line Details',
                     childXtype: 'gvpproductlinedetailsfrm',
-                    winWidth: '50%'
+                    winWidth: '35%'
                 }, {
                     text: 'Delete',
                     iconCls: 'x-fa fa-trash',
@@ -124,27 +102,26 @@ cls: 'dashboard-todo-list',
                     action_url: 'gvpapplications/deleteGvpApplicationRecord',
                     action: 'actual_delete',
                     handler: 'doDeleteGvpApplicationWidgetParam',
-                    //hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
-                }];
+                    hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
+                }
+                ];
             }
         }
     },
-    columns: [
-        {
-            text: 'Options',
-            xtype: 'widgetcolumn',
-            width: 90,
-            widget: {
-                width: 75,
-                textAlign: 'left',
-                xtype: 'splitbutton',
-                iconCls: 'x-fa fa-th-list',
-                ui: 'gray',
-                menu: {
-                    xtype: 'menu',
-                    items: []
-                }
+    columns: [{
+        text: 'Options',
+        xtype: 'widgetcolumn',
+        width: 90,
+        widget: {
+            width: 75,
+            textAlign: 'left',
+            xtype: 'splitbutton',
+            iconCls: 'x-fa fa-th-list',
+            ui: 'gray',
+            menu: {
+                xtype: 'menu',
+                items: []
             }
-        }]
+        }
+    }]
 });
-

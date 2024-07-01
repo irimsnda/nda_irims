@@ -273,13 +273,13 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
             'gvpmansitepersonneldetailsgrid button[action=add_personnel]': {
                 click: 'showAddSitePersonnelDetails'
             },
-            'mansitepersonneldetailswingrid button[action=add_personnel_win]': {
+            'gvpmansitepersonneldetailswingrid button[action=add_personnel_win]': {
                 click: 'showAddSitePersonnelDetailsWin'
             },
-            'mansiteotherdetailsgrid button[action=add_details]': {
+            'gvpmansiteotherdetailsgrid button[action=add_details]': {
                 click: 'showAddSiteOtherDetails'
             },
-            'mansiteotherdetailsgrid button[action=add_details_win]': {
+            'gvpmansiteotherdetailsgrid button[action=add_details_win]': {
                 click: 'showAddSiteOtherDetailsWin'
             },
             
@@ -287,17 +287,17 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
                 click: 'showAddGvpProductLineDetails'
             },
 
-            'productLineDetailsaddgrid button[name=add_line]': {
+            'gvpproductLineDetailsaddgrid button[name=add_line]': {
                 click: 'showAddProductLine'
             },
 
 
-            'mdproductLineDetailsaddgrid button[name=add_line]': {
+            'gvpmdproductLineDetailsaddgrid button[name=add_line]': {
                 click: 'showAddProductLine'
             },
 
 
-            'mansiteblockdetailsgrid button[name=add_block]': {
+            'gvpmansiteblockdetailsgrid button[name=add_block]': {
                 click: 'showAddGvpBlockWinFrm'
             },
 
@@ -1245,7 +1245,6 @@ Ext.define('Admin.controller.GvpApplicationsCtr', {
 
     onNewGvpApplication: function (sub_module_id, wrapper_xtype, gvp_type_id) {
         Ext.getBody().mask('Please wait...');
-        console.log("Jeff WAINAINA HAHA");
         var me = this,
             mainTabPanel = me.getMainTabPanel(),
             activeTab = mainTabPanel.getActiveTab(),

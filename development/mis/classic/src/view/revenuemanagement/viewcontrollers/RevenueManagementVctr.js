@@ -940,6 +940,9 @@ saveadhocInvoiceOtherDetails: function(btn) {
        var action_url = 'reports/generateApplicationInvoice?application_id=' + application_id + '&&module_id=' + module_id + '&&invoice_id=' + invoice_id+ '&&application_code=' + application_code;
        print_report(action_url);
     },
+
+
+    
   showReceivingApplicationSubmissionWin: function (btn) {
         Ext.getBody().mask('Please wait...');
         var activeTab = btn.up('panel'),
@@ -987,30 +990,30 @@ saveadhocInvoiceOtherDetails: function(btn) {
         var action_url = "retentionmanagement/exportRevenueReportsData?filename=RetentionReport&function=getRetentionReport"+"&filter="+encodeURIComponent(filter_array);
             print_report(action_url);
     },
-    printInvoice: function (btn) {
-        var me = this,
-            win = btn.up('panel'),
-            panel = win.up('panel'),
-            record = btn.getWidgetRecord(),
-            invoice_no = record.get('invoice_no');
-        if(panel.down('hiddenfield[name=active_application_code]')){
-            var application_code = panel.down('hiddenfield[name=active_application_code]').getValue(),
-                application_id = panel.down('hiddenfield[name=active_application_id]').getValue(),
-                invoice_id = '',
-                module_id = panel.down('hiddenfield[name=module_id]').getValue();
-        }else{
-            var panel = win.up('#contentPanel'),
-                application_code = panel.down('hiddenfield[name=active_application_code]').getValue(),
-                application_id = panel.down('hiddenfield[name=active_application_id]').getValue(),
-                invoice_id = '',
-                module_id = panel.down('hiddenfield[name=module_id]').getValue();
-        }
+    // printInvoice: function (btn) {
+    //     var me = this,
+    //         win = btn.up('panel'),
+    //         panel = win.up('panel'),
+    //         record = btn.getWidgetRecord(),
+    //         invoice_no = record.get('invoice_no');
+    //     if(panel.down('hiddenfield[name=active_application_code]')){
+    //         var application_code = panel.down('hiddenfield[name=active_application_code]').getValue(),
+    //             application_id = panel.down('hiddenfield[name=active_application_id]').getValue(),
+    //             invoice_id = '',
+    //             module_id = panel.down('hiddenfield[name=module_id]').getValue();
+    //     }else{
+    //         var panel = win.up('#contentPanel'),
+    //             application_code = panel.down('hiddenfield[name=active_application_code]').getValue(),
+    //             application_id = panel.down('hiddenfield[name=active_application_id]').getValue(),
+    //             invoice_id = '',
+    //             module_id = panel.down('hiddenfield[name=module_id]').getValue();
+    //     }
 
 
-       // var action_url = report_server_url+'invoice?invoice_no=' + invoice_no;
-       // print_report(action_url);
-       previewCorrespondence(application_code, module_id, 'invoice', JSON.stringify({invoice_no:invoice_no}));
-    },
+    //    // var action_url = report_server_url+'invoice?invoice_no=' + invoice_no;
+    //    // print_report(action_url);
+    //    previewCorrespondence(application_code, module_id, 'invoice', JSON.stringify({invoice_no:invoice_no}));
+    // },
 
       printColumnReceipt: function (item) {
         var record = item.getWidgetRecord(),
@@ -1655,30 +1658,30 @@ loadCustomerDetailsForm: function (form){
     RefreshGridFilters: function(btn){
         btn.up('grid').getStore().reload();
     },
-    printInvoice: function (btn) {
-        var me = this,
-            win = btn.up('panel'),
-            panel = win.up('panel'),
-            record = btn.getWidgetRecord(),
-            invoice_no = record.get('invoice_no');
-        if(panel.down('hiddenfield[name=active_application_code]')){
-            var application_code = panel.down('hiddenfield[name=active_application_code]').getValue(),
-                application_id = panel.down('hiddenfield[name=active_application_id]').getValue(),
-                invoice_id = '',
-                module_id = panel.down('hiddenfield[name=module_id]').getValue();
-        }else{
-            var panel = win.up('#contentPanel'),
-                application_code = panel.down('hiddenfield[name=active_application_code]').getValue(),
-                application_id = panel.down('hiddenfield[name=active_application_id]').getValue(),
-                invoice_id = '',
-                module_id = panel.down('hiddenfield[name=module_id]').getValue();
-        }
+    // printInvoice: function (btn) {
+    //     var me = this,
+    //         win = btn.up('panel'),
+    //         panel = win.up('panel'),
+    //         record = btn.getWidgetRecord(),
+    //         invoice_no = record.get('invoice_no');
+    //     if(panel.down('hiddenfield[name=active_application_code]')){
+    //         var application_code = panel.down('hiddenfield[name=active_application_code]').getValue(),
+    //             application_id = panel.down('hiddenfield[name=active_application_id]').getValue(),
+    //             invoice_id = '',
+    //             module_id = panel.down('hiddenfield[name=module_id]').getValue();
+    //     }else{
+    //         var panel = win.up('#contentPanel'),
+    //             application_code = panel.down('hiddenfield[name=active_application_code]').getValue(),
+    //             application_id = panel.down('hiddenfield[name=active_application_id]').getValue(),
+    //             invoice_id = '',
+    //             module_id = panel.down('hiddenfield[name=module_id]').getValue();
+    //     }
 
 
-       // var action_url = report_server_url+'invoice?invoice_no=' + invoice_no;
-       // print_report(action_url);
-       previewCorrespondence(application_code, module_id, 'invoice', JSON.stringify({invoice_no:invoice_no}));
-    },
+    //    // var action_url = report_server_url+'invoice?invoice_no=' + invoice_no;
+    //    // print_report(action_url);
+    //    previewCorrespondence(application_code, module_id, 'invoice', JSON.stringify({invoice_no:invoice_no}));
+    // },
     loadCustomerStatement: function(view, record, item, index, e, eOpts){
         var grid = view.grid,
             pnl = grid.up('panel'),

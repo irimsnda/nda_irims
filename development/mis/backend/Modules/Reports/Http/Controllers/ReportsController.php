@@ -411,6 +411,8 @@ public function getModuleName($module_id)
                         
                         $i++;
                     }
+
+               
                     
                     $pdf->MultiCell(155,10,'Sub-Total('.$currency_name.')',1,'R',0,0);
                     $pdf->MultiCell(0,10,formatMoney($total_amount),1,'R',0,1);
@@ -732,6 +734,7 @@ public function getModuleName($module_id)
         $application_id = $request->input('application_id');
         $invoice_id = $request->input('invoice_id');
         $module_id = $request->input('module_id');
+
         if(validateIsNumeric($module_id)){
             $module_details = getTableData('modules', array('id' => $module_id));
             $table_name = $module_details->table_name;
@@ -886,12 +889,13 @@ public function getModuleName($module_id)
 
 
             if(!validateIsNumeric($invoice_id)){
-                $invoice_record = DB::table('tra_application_invoices')->where('application_code',$application_code)->first();
-                if($invoice_record){
-                        $invoice_id = $invoice_record->id;
-                }
+                // $invoice_record = DB::table('tra_application_invoices')->where('application_code',$application_code)->first();
+                // if($invoice_record){
+                //         $invoice_id = $invoice_record->id;
+                // }
+                $invoice_id= getSingleRecordColValue('tra_payments', array('id' => $payment_id), 'invoice_id');
              }
-            
+
               $invoice_details = getInvoiceDetails($module_id, $application_id,$application_code);
              $app_description= '';
 

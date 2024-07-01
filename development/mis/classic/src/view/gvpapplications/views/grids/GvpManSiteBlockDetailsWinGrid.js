@@ -1,35 +1,13 @@
 /**
- * Created by Kip on 1/6/2019.
+ * Created by Kip on 5/14/2019.
  */
-Ext.define('Admin.view.gvpapplications.views.grids.ManSiteOtherDetailsWinGrid', {
-    extend: 'Admin.view.gvpapplications.views.grids.ManSiteOtherDetailsGrid',
-    xtype: 'mansiteotherdetailswingrid',
+Ext.define('Admin.view.gvpapplications.views.grids.GvpManSiteBlockDetailsWinGrid', {
+    extend: 'Admin.view.gvpapplications.views.grids.GvpManSiteBlockDetailsGrid',
+    xtype: 'gvpmansiteblockdetailswingrid',
     config: {
         isOnline: 0,
         isCompare: 0
     },
-    tbar: [{
-        xtype: 'hiddenfield',
-        name: 'isReadOnly'
-    }, {
-        xtype: 'hiddenfield',
-        name: 'is_temporal',
-        value: 0
-    }, {
-        xtype: 'button',
-        text: 'Add Detail',
-        iconCls: 'x-fa fa-plus',
-        ui: 'soft-green',
-        name: 'add_details',
-        action: 'add_details_win',
-        winTitle: 'Manufacturing Site Details',
-        childXtype: 'mansiteotherdetailsfrm',
-        winWidth: '35%',
-        stores: '[]',
-        isManufacturer: 1
-    }, {
-        xtype: 'exportbtn'
-    }],
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '100%',

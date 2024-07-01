@@ -1,10 +1,13 @@
 /**
- * Created by Kip on 2/4/2019.
+ * Created by Kip on 12/18/2018.
  */
-Ext.define('Admin.view.gvpapplications.views.grids.ProductLineDetailsWinGrid', {
-    extend: 'Admin.view.gvpapplications.views.grids.GvpProductLineAbstractGrid',
+Ext.define('Admin.view.gvpapplications.views.grids.GvpMdProductLineDetailsAddGrid', {
+    extend: 'Admin.view.gvpapplications.views.grids.GvpMdProductLineAbstractGrid',
     controller: 'gvpapplicationsvctr',
-    xtype: 'productlinedetailswingrid',
+    xtype: 'gvpmdproductLineDetailsaddgrid',
+
+
+cls: 'dashboard-todo-list',
     autoScroll: true,
     autoHeight: true,
     width: '100%',
@@ -22,24 +25,39 @@ Ext.define('Admin.view.gvpapplications.views.grids.ProductLineDetailsWinGrid', {
         xtype: 'hiddenfield',
         name: 'isReadOnly'
     }, {
+        xtype:'hiddenfield',
+        name: 'manufacturing_site_id'
+
+    },{
+        xtype:'hiddenfield',
+        name: 'block_id'
+
+    },
+    {
+        xtype:'hiddenfield',
+        name: 'inspection_category_id'
+    },
+    {
+        xtype:'hiddenfield',
+        name: 'special_category_id'
+
+    },{
         xtype: 'button',
         text: 'Add Product Line',
         iconCls: 'x-fa fa-plus',
-        ui: 'soft-green',
+        ui: 'soft-blue',
         name: 'add_line',
         winTitle: 'GVP Product Line Details',
         childXtype: 'gvpproductlinedetailsfrm',
-        winWidth: '35%',
-        stores: '[]',
-        handler: 'showAddGvpProductLineDetailsFromWin'
+        winWidth: '50%',
+        stores: '[]'
     }, {
         xtype: 'exportbtn'
     }],
     plugins: [
         {
             ptype: 'gridexporter'
-        }
-    ],
+    }],
     export_title: 'Product line Details',
     bbar: [{
         xtype: 'pagingtoolbar',
@@ -50,10 +68,13 @@ Ext.define('Admin.view.gvpapplications.views.grids.ProductLineDetailsWinGrid', {
         beforeLoad: function () {
             var store = this.getStore(),
                 grid = this.up('grid'),
-                pnl = grid.up('panel'),
-                site_id = pnl.down('mansitedetailsfrm').down('hiddenfield[name=manufacturing_site_id]').getValue();
+                // mainTabPanel = grid.up('#contentPanel'),
+                // activeTab = mainTabPanel.getActiveTab(),
+            site_id = grid.down('hiddenfield[name=manufacturing_site_id]').getValue(),
+             block_id = grid.down('hiddenfield[name=block_id]').getValue();
             store.getProxy().extraParams = {
-                site_id: site_id
+                site_id: site_id,
+                block_id:block_id
             };
         }
     }],
@@ -62,6 +83,7 @@ Ext.define('Admin.view.gvpapplications.views.grids.ProductLineDetailsWinGrid', {
         minChars: 2,
         mode: 'local'
     }],
+
     listeners: {
         beforerender: {
             fn: 'setGvpApplicationGridsStore',
@@ -82,7 +104,7 @@ Ext.define('Admin.view.gvpapplications.views.grids.ProductLineDetailsWinGrid', {
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 add_btn.setVisible(false);
                 widgetCol.setHidden(true);
-                widgetCol.widget.menu.items = [];
+                widgetCol.widget.menu.items = [z];
             } else {
                 add_btn.setVisible(true);
                 widgetCol.setHidden(false);
@@ -90,10 +112,10 @@ Ext.define('Admin.view.gvpapplications.views.grids.ProductLineDetailsWinGrid', {
                     text: 'Edit',
                     iconCls: 'x-fa fa-edit',
                     stores: '[]',
-                    handler: 'showEditGvpInspectionLineDetailsFromWin',
+                    handler: 'showEditGvpInspectionLineDetails',
                     winTitle: 'GVP Product Line Details',
                     childXtype: 'gvpproductlinedetailsfrm',
-                    winWidth: '35%'
+                    winWidth: '50%'
                 }, {
                     text: 'Delete',
                     iconCls: 'x-fa fa-trash',
@@ -102,26 +124,26 @@ Ext.define('Admin.view.gvpapplications.views.grids.ProductLineDetailsWinGrid', {
                     action_url: 'gvpapplications/deleteGvpApplicationRecord',
                     action: 'actual_delete',
                     handler: 'doDeleteGvpApplicationWidgetParam',
-                    hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
-                }
-                ];
+                }];
             }
         }
     },
-    columns: [{
-        text: 'Options',
-        xtype: 'widgetcolumn',
-        width: 90,
-        widget: {
-            width: 75,
-            textAlign: 'left',
-            xtype: 'splitbutton',
-            iconCls: 'x-fa fa-th-list',
-            ui: 'gray',
-            menu: {
-                xtype: 'menu',
-                items: []
+    columns: [
+        {
+            text: 'Options',
+            xtype: 'widgetcolumn',
+            width: 90,
+            widget: {
+                width: 75,
+                textAlign: 'left',
+                xtype: 'splitbutton',
+                iconCls: 'x-fa fa-th-list',
+                ui: 'gray',
+                menu: {
+                    xtype: 'menu',
+                    items: []
+                }
             }
-        }
-    }]
+        }]
 });
+

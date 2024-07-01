@@ -85,6 +85,31 @@ trait RevenuemanagementTrait
                     }else{
                         $table_name = 'tra_adhocinvoices_applications';
                     }
+
+                         $application_details = DB::table($table_name)
+                            ->where('application_code', $application_code)
+                            ->first();
+                                     
+                        if (is_null($application_details)) {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Problem encountered while fetching application details!!'
+                            );
+                            echo json_encode($res);
+                            exit();
+                        }
+                        //get process other details
+                        $process_details = DB::table('wf_tfdaprocesses')
+                            ->where('id', $process_id)
+                            ->first();
+                        if (is_null($process_details)) {
+                            $res = array(
+                                'success' => false,
+                                'message' => 'Problem encountered while fetching process details!!'
+                            );
+                            echo json_encode($res);
+                            exit();
+                        }
                         
                        
                         $from_stage = $request->input('curr_stage_id');
@@ -123,29 +148,55 @@ trait RevenuemanagementTrait
                         DB::table('tra_applications_transitions')
                             ->insert($transition_params);
                         //submissions
-                        $submission_params = array(
-                            'application_id' => $application_id,
-                            'process_id' => $process_id,
+                        // $submission_params = array(
+                        //     'application_id' => $application_id,
+                        //     'process_id' => $process_id,
+                        //     'view_id' => $view_id,
+                        //     'application_code' => $application_code,
+                        //     'reference_no' => $ref_no,
+                        //     'tracking_no' => $tracking_no,
+                        //     'usr_from' => $user_id,
+                        //     'usr_to' => $responsible_user,
+                        //     'previous_stage' => $from_stage,
+                        //     'current_stage' => $to_stage,
+                        //     'module_id' => $module_id,
+                        //     'sub_module_id' => $sub_module_id,
+                        //     'section_id' => $section_id,
+                        //     'application_status_id' => $application_status_id,
+                        //     'urgency' => $urgency,
+                        //     'applicant_id' => $applicant_id,
+                        //     'remarks' => $remarks,
+                        //     'directive_id' => $directive_id,
+                        //     'date_received' => Carbon::now(),
+                        //     'created_on' => Carbon::now(),
+                        //     'created_by' => $user_id
+                        // );
+
+                         $submission_params = array(
+                            'application_id' => $application_details->id,
                             'view_id' => $view_id,
+                            'process_id' => $application_details->process_id,
                             'application_code' => $application_code,
-                            'reference_no' => $ref_no,
-                            'tracking_no' => $tracking_no,
+                            'reference_no' => $application_details->reference_no,
+                            'tracking_no' => $application_details->tracking_no,
+                            'zone_id' => $application_details->zone_id,
                             'usr_from' => $user_id,
                             'usr_to' => $responsible_user,
-                            'previous_stage' => $from_stage,
+                            'previous_stage' => $application_details->workflow_stage_id,
                             'current_stage' => $to_stage,
-                            'module_id' => $module_id,
-                            'sub_module_id' => $sub_module_id,
-                            'section_id' => $section_id,
+                            'module_id' => $application_details->module_id,
+                            'sub_module_id' => $application_details->sub_module_id,
+                            'section_id' => $application_details->section_id,
                             'application_status_id' => $application_status_id,
                             'urgency' => $urgency,
-                            'applicant_id' => $applicant_id,
+                            'applicant_id' => $application_details->applicant_id,
                             'remarks' => $remarks,
-                            'directive_id' => $directive_id,
                             'date_received' => Carbon::now(),
                             'created_on' => Carbon::now(),
                             'created_by' => $user_id
                         );
+
+                        //dd($submission_params);
                         DB::table('tra_submissions')
                             ->insert($submission_params);
                         updateInTraySubmissions($application_id, $application_code, $from_stage, $user_id);
@@ -215,6 +266,7 @@ trait RevenuemanagementTrait
        // $isLocked =0;
        // $isSubmission = $request->input('isSubmission');
         $is_fast_track = 0;
+       // dd(111);
         //$fob = $request->fob;
         $details = $request->input();
         $user_id = $this->user_id;
@@ -257,6 +309,8 @@ trait RevenuemanagementTrait
                 $user = \Auth::user();
                 $prepared_by = aes_decrypt($user->first_name) . ' ' . aes_decrypt($user->last_name);
                 $invoicing_date = Carbon::now();
+
+                //dd($paying_currency_id);
                 $invoice_params = array(
                     'applicant_id' => $applicant_id,
                     'applicant_name' => $applicant_name,
@@ -299,18 +353,22 @@ trait RevenuemanagementTrait
                 if (DB::table('tra_invoice_details')
                         ->where($where_check)
                         ->count() < 1) {
-                    $params[] = array(
+                    $params = array(
                         'invoice_id' => $invoice_id,
                         'element_costs_id' => $element_costs_id,
                         'element_amount' => $details['cost'],
+                        'paying_currency_id'=> $paying_currency_id,
                         'currency_id' => $details['currency_id'],
                         'exchange_rate' => $paying_exchange_rate,
                         'quantity' => 1,
                         'total_element_amount' => ($details['cost'])
                     );
+                //dd($params);
+                $res = insertRecord('tra_invoice_details', $params, $user_id);
                 } else {
                     $update = array(
                         'quantity' => $details['quantity'],
+                        'paying_currency_id'=> $paying_currency_id,
                         'total_element_amount' => ($details['cost']),
                         'dola' => Carbon::now(),
                         'altered_by' => $user_id

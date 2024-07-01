@@ -485,35 +485,30 @@ funcCancelGeneratedInvoice: function (btn) {
             }
         })
      
-    },   prepareadhocinvoicingreceiptingpnl: function () {
-    
+    },   
+  prepareadhocinvoicingreceiptingpnl: function () {
     Ext.getBody().mask('Please wait...');
-    var me = this,
-        mainTabPanel = me.getMainTabPanel(),
-        activeTab = mainTabPanel.getActiveTab(),
-        invoice_id = activeTab.down('hiddenfield[name=invoice_id]'),
-        invoice_no = activeTab.down('displayfield[name=invoice_no]'),
-        running_balance = activeTab.down('displayfield[name=running_balance]'),
-        invoiceSummaryGrid = activeTab.down('paymentinvoicingcostdetailsgrid'),
-        invoiceSummaryStore = invoiceSummaryGrid.getStore(),
-        paymentsGrid = activeTab.down('applicationpaymentsgrid'),
-        paymentsStore = paymentsGrid.getStore(),
-        otherDetailsFrm = activeTab.down('form'),
-        applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
-        premise_details = otherDetailsFrm.down('displayfield[name=premise_details]'),
-        application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
-        application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
+        var me = this,
+            mainTabPanel = me.getMainTabPanel(),
+            activeTab = mainTabPanel.getActiveTab(),
+           
+            running_balance = activeTab.down('displayfield[name=running_balance]'),
+            otherDetailsFrm = activeTab.down('form'),
+            applicant_details = otherDetailsFrm.down('displayfield[name=applicant_details]'),
+            premise_details = otherDetailsFrm.down('displayfield[name=premise_details]'),
+            application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
+            application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue();
 
 
     if (application_id) {
-        paymentsStore.removeAll();
-        paymentsStore.load({
-            params: {
-                application_id: application_id,
-                application_code: application_code
-            }
-        });
-        //funLinkBatchInvoiceDetails
+        // paymentsStore.removeAll();
+        // paymentsStore.load({
+        //     params: {
+        //         application_id: application_id,
+        //         application_code: application_code
+        //     }
+        // });
+        // //funLinkBatchInvoiceDetails
         Ext.Ajax.request({
             method: 'GET',
             url: 'revenuemanagement/prepareadhocinvoicingreceiptingpnl',
@@ -526,58 +521,59 @@ funcCancelGeneratedInvoice: function (btn) {
                 'Authorization': 'Bearer ' + access_token
             },
             success: function (response) {
-                Ext.getBody().unmask();
-                var resp = Ext.JSON.decode(response.responseText),
-                    message = resp.message,
-                    success = resp.success,
-                    balance = resp.balance,
-                    invoice_amount = resp.invoice_amount,
-                    results = resp.results,
-                    txt;
-                if (success == true || success === true) {
-                    var module_id = results.module_id;
-                    activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
-                    if (Math.abs(parseFloat(balance)) == parseFloat(invoice_amount) || Math.abs(parseFloat(balance)) === parseFloat(invoice_amount)) {
-                        txt = ' (Not Paid)';
-                    } else if (parseFloat(balance) > 0) {
-                        txt = ' (Over-Paid)';
-                    } else if (parseFloat(balance) < 0) {
-                        txt = ' (Under-Paid)';
-                    } else {
-                        txt = ' (Cleared)';
-                    }
-                    invoice_id.setValue(results.invoice_id);
-                    invoice_no.setValue(results.invoice_no);
-                    applicant_details.setValue(results.applicant_details);
-                    running_balance.setValue(balance + txt);
-                    invoiceSummaryStore.removeAll();
-                    invoiceSummaryStore.load({
-                        params: {
-                            invoice_id: results.invoice_id
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success,
+                        balance = resp.balance,
+                        invoice_amount = resp.invoice_amount,
+                        results = resp.results,
+                        txt;
+                    if (success == true || success === true) {
+                        var module_id = results.module_id;
+                        activeTab.down('hiddenfield[name=manufacturing_site_id]').setValue(results.manufacturing_site_id);
+                        activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
+                        if (Math.abs(parseFloat(balance)) == parseFloat(invoice_amount) || Math.abs(parseFloat(balance)) === parseFloat(invoice_amount)) {
+                            txt = ' (Not Paid)';
+                        } else if (parseFloat(balance) > 0) {
+                            txt = ' (Over-Paid)';
+                        } else if (parseFloat(balance) < 0) {
+                            txt = ' (Under-Paid)';
+                        } else {
+                            txt = ' (Cleared)';
                         }
-                    });
-                   
-                } else {
+                        applicant_details.setValue(results.applicant_details);
+
+                        //product_details.setValue(results.product_details);
+
+                        running_balance.setValue(balance + txt);
+                       
+                        if (module_id == 1 || module_id === 1) {
+                            product_details.setVisible(true);
+                            product_details.setValue(results.product_details);
+                        }
+
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                },
+                failure: function (response) {
+                    Ext.getBody().unmask();
+                    var resp = Ext.JSON.decode(response.responseText),
+                        message = resp.message,
+                        success = resp.success;
                     toastr.error(message, 'Failure Response');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Ext.getBody().unmask();
+                    toastr.error('Error: ' + errorThrown, 'Error Response');
                 }
-            },
-            failure: function (response) {
-                Ext.getBody().unmask();
-                var resp = Ext.JSON.decode(response.responseText),
-                    message = resp.message,
-                    success = resp.success;
-                toastr.error(message, 'Failure Response');
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                Ext.getBody().unmask();
-                toastr.error('Error: ' + errorThrown, 'Error Response');
-            }
-        });
-    } else {
-        Ext.getBody().unmask();
-        //It's a new application
-    }
-},
+            });
+        } else {
+            Ext.getBody().unmask();
+            //It's a new application
+        }
+    },
 funLinkBatchInvoiceDetails:function(btn){
     var me = this,
         grid = btn.up('grid'),

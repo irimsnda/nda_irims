@@ -1,10 +1,10 @@
 /**
  * Created by Kip on 1/11/2019.
  */
-Ext.define('Admin.view.gvpapplications.views.grids.InspectionSchedulesGrid', {
+Ext.define('Admin.view.gvpapplications.views.grids.GvpInspectionSchedulesGrid', {
     extend: 'Ext.grid.Panel',
     controller: 'gvpapplicationsvctr',
-    xtype: 'inspectionschedulesgrid',
+    xtype: 'gvpinspectionschedulesgrid',
     autoScroll: true,
     autoHeight: true,
     headers: false,

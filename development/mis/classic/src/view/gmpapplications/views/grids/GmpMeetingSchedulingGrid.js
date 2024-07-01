@@ -201,12 +201,19 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpMeetingSchedulingGrid', {
                             text: 'View  Online Assessment Tool',
                             iconCls: 'x-fa fa-bars',
                             appDetailsReadOnly: 1,
+                            name:'assementreport',
                             winTitle: 'Online Assessment Tool Details',
                             handler: 'showGMPAssessmentToolDetails'
                          },{
-                            text: 'Application Documents',
+                            text: 'Inspection Checklists & Recommendation',
+                            iconCls: 'x-fa fa-check-square',
+                            name:'checklist',
+                            hidden:true,
+                            isnotDoc:1,
+                            handler: 'showApplicationChecklists'
+                        },{
                             iconCls: 'x-fa fa-file',
-                            tooltip: 'Application Documents',
+                            text: 'Application Documents',
                             action: 'edit',
                             childXtype: '',
                             winTitle: 'Application Documents',
@@ -232,8 +239,19 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpMeetingSchedulingGrid', {
                             hidden: true,
                             handler: 'showApplicationDismissalForm'
                         }
-                    ]
+                     ]
                 }
+            },
+            onWidgetAttach: function (col, widget, rec) {
+            var grid =widget.up('grid'),
+                sub_module_id = rec.get('sub_module_id');
+            if (sub_module_id === 117 || sub_module_id == 117) {
+                widget.down('menu menuitem[name=checklist]').setVisible(true);
+                widget.down('menu menuitem[name=assementreport]').setVisible(false);
+            } else{
+                widget.down('menu menuitem[name=assementreport]').setVisible(true);
+                widget.down('menu menuitem[name=checklist]').setVisible(false);
             }
-        }]
+        }
+    }],
 });

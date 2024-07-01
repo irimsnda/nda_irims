@@ -23,7 +23,7 @@ Ext.define('Admin.view.gmpapplications.views.sharedinterfaces.panels.GmpInspecti
             region: 'center'
         },
         {
-            title: 'Desk Review & Virtual Inspections',
+            title: 'Desk Review,Virtual Inspections & herbal inspection assessment',
             xtype: 'gmpinspectionschedulingdeskreviewgrid',
             region: 'east',
             width: '50%',

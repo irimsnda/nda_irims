@@ -60,6 +60,10 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                         },
                         change: function (cmbo, newVal) {
                             var pnl = cmbo.up('newgmpreceivingwizard'),
+                                mainPnl=pnl.up('newgmpreceiving'),
+                                sub_module_id = mainPnl.down('hiddenfield[name=sub_module_id]').getValue(),
+                                assessment_type_id = pnl.down('combo[name=assessment_type_id]'),
+                                productlinedetailsgrid = pnl.down('productlinedetailsgrid');
                                 ltr_selection = pnl.down('combo[name=applicant_as_ltr]');
                                 phamacist_fieldset = pnl.down('fieldset[name=phamacist_fieldset]');
                                 psu_no = pnl.down('textfield[name=psu_no]');
@@ -72,6 +76,7 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                                 village_id = pnl.down('combo[name=village_id]');
                                 region_id = pnl.down('combo[name=region_id]');
                                 country_id = pnl.down('combo[name=country_id]');
+                                local_gmp_license_type_id = pnl.down('combo[name=local_gmp_license_type_id]');
                                 var countryStore = country_id.getStore(),
                                 filterObj = {is_local: 1},
                                 filterStr = JSON.stringify(filterObj);
@@ -82,20 +87,38 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                                 inspection_activities.setVisible(false);
                                 inspection_activities.allowBlank = true;
                                 licence_no.allowBlank = true;
-                                psu_no.allowBlank = true;
+                                licence_no.setVisible(false);
                                 // psu_no.allowBlank = false;
                                 // psu_no.validate();
-                              //  county_id.setVisible(true);
-                                licence_no.setVisible(false);
-                               // county_id.allowBlank = false;
+                                productlinedetailsgrid.columns.find(col => col.dataIndex === 'general_manufacturing_activity_type').setHidden(false);
+                         
+                                if(sub_module_id!=117){
+                                 local_gmp_license_type_id.setVisible(true);
+                                 local_gmp_license_type_id.allowBlank = false;
+                                 local_gmp_license_type_id.validate();
+                                 //county_id.setVisible(true);
+                               
+                                }
+                                if(sub_module_id==117 ||sub_module_id===117){
+                                   psu_no.allowBlank = true;
+                                   assessment_type_id.setValue(1);
+                                   assessment_type_id.setReadOnly(true);
+
+                                }else{
+                                   psu_no.allowBlank = false;
+                                   psu_no.validate();
+
+                                }
+
+                                // county_id.allowBlank = false;
                                 // county_id.validate();
                                 // sub_county_id.setVisible(true);
                                 // parish_id.setVisible(true);
                                 // village_id.setVisible(true);
                                 region_id.allowBlank = false;
                                 region_id.validate();
-                                countryStore.removeAll();
-                                countryStore.load({params: {filter: filterStr}});
+                                // countryStore.removeAll();
+                                // countryStore.load({params: {filter: filterStr}});
 
                             }else{
                                 ltr_selection.setValue(2);
@@ -106,11 +129,14 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                                 inspection_activities.validate();
                                 psu_no.allowBlank = true;
                                 licence_no.setVisible(true);
-                                //county_id.setVisible(false);
-                               // county_id.allowBlank = true;
-                                //sub_county_id.setVisible(false);
-                               // parish_id.setVisible(false);
-                               // village_id.setVisible(false);
+                                local_gmp_license_type_id.setVisible(false);
+                                local_gmp_license_type_id.allowBlank = true;
+                                productlinedetailsgrid.columns.find(col => col.dataIndex === 'general_manufacturing_activity_type').setHidden(true);
+                                // county_id.setVisible(false);
+                                // county_id.allowBlank = true;
+                                // sub_county_id.setVisible(false);
+                                // parish_id.setVisible(false);
+                                // village_id.setVisible(false);
                                 region_id.allowBlank = true;
                                 // countryStore.removeAll();
                                 // countryStore.load();
@@ -118,6 +144,7 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                         }
                     }
                 },
+                        
                 {
                     xtype: 'combo',
                     fieldLabel: 'Device Type',
@@ -219,14 +246,18 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                     enableToggle: true,
                     pressed: true,
                     max_step: 6,iconAlign: 'top',
-                    text: 'Applicant details',wizard_pnl : 'newgmpreceivingwizard',
+                    text: '<span style="font-size: 9px;"><b>Applicant details</b></span>', 
+                    //text: 'Applicant details',
+                    wizard_pnl : 'newgmpreceivingwizard',
                     action: 'quickNav'
                 },
                 {
                     step: 1,
                     iconCls: 'fa fa-university',
                     enableToggle: true, max_step: 6,iconAlign: 'top',
-                    text: 'Manufacturing Site Details',wizard_pnl : 'newgmpreceivingwizard',
+                    text: '<span style="font-size: 9px;"><b>Manufacturing Site Details</b></span>',
+                    //text: 'Manufacturing Site Details',
+                    wizard_pnl : 'newgmpreceivingwizard',
                     action: 'quickNav'
                 },
                 {
@@ -234,7 +265,8 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                     iconCls: 'fa fa-suitcase',
                     enableToggle: true,iconAlign: 'top',
                     name: 'line_details', max_step: 6,
-                    text: 'Manufacturing Activity(s) Details',
+                    text: '<span style="font-size: 9px;"><b>Manufacturing Activity(s) Details</b></span>',
+                   // text: 'Manufacturing Activity(s) Details',
                     wizard_pnl : 'newgmpreceivingwizard',
                     action: 'quickNav'
                 },
@@ -242,21 +274,27 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                     step: 3,
                     iconCls: 'fa fa-cubes',
                     enableToggle: true, max_step: 6,iconAlign: 'top',
-                    text: 'Product Registration Details',wizard_pnl : 'newgmpreceivingwizard',
+                    text: '<span style="font-size: 9px;"><b>Product Registration Details</b></span>',
+                    //text: 'Product Registration Details',
+                    wizard_pnl : 'newgmpreceivingwizard',
                     action: 'quickNav'
                 },
                 {
                     step: 4,
                     iconCls: 'fa fa-upload',
                     enableToggle: true, max_step: 6,iconAlign: 'top',
-                    text: 'Documents Upload',wizard_pnl : 'newgmpreceivingwizard',
+                    text: '<span style="font-size: 9px;"><b>Documents Upload</b></span>',
+                    //text: 'Documents Upload',
+                    wizard_pnl : 'newgmpreceivingwizard',
                     action: 'quickNav'
                 },
                 {
                     step: 5,
                     iconCls: 'fa fa-check-square',
                     enableToggle: true, max_step: 6,iconAlign: 'top',
-                    text: 'Prechecking',wizard_pnl : 'newgmpreceivingwizard',
+                    text: '<span style="font-size: 9px;"><b>Prechecking</b></span>',
+                   // text: 'Prechecking',
+                    wizard_pnl : 'newgmpreceivingwizard',
                     action: 'quickNav'
                 },
                 
@@ -264,7 +302,9 @@ Ext.define('Admin.view.gmpapplications.views.panels.new.NewGmpReceivingWizard', 
                     step: 6,
                     iconCls: 'fa fa-money-bill-wave',
                     enableToggle: true,iconAlign:'top',
-                    text: 'Invoice & Payment Details',max_step: 6,
+                    text: '<span style="font-size: 9px;"><b>Invoice & Payment Details</b></span>',
+                    //text: 'Invoice & Payment Details',
+                    max_step: 6,
                     wizard_pnl : 'newgmpreceivingwizard',
                     action: 'quickNav'
                 }

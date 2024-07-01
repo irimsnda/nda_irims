@@ -32,11 +32,21 @@ Ext.define('Admin.view.commoninterfaces.AppInvoicePaymentsPanel', {
                         },{
                             text: 'Generate Invoice (Fast Track)',
                             application_feetype_id: 1,
-                            fasttrack_option_id: 1,  ui: 'soft-green',
+                            fasttrack_option_id: 1, 
+                            ui: 'soft-green',
                             winTitle: 'Generate Invoice (Fast Track)',
                             winWidth: '60%',
                             viewType:'applicationgenerateinvoicespnl',
                             name: 'generate_invoice'
+                        },,{
+                            text: 'Generate Invoice (Adhoc)',
+                            application_feetype_id: 6,
+                            fasttrack_option_id: 1,  ui: 'soft-green',
+                            winTitle: 'Generate Invoice (Adhoc)',
+                            winWidth: '60%',
+                            fasttrack_option_id: 2,
+                            viewType:'adhocapplicationinvoicefrm',
+                            name: 'generate_adhoc_invoice'
                         }
                     ]
                 }

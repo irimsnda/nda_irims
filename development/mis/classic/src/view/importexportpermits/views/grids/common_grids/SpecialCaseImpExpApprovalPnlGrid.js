@@ -95,6 +95,8 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.SpecialCaseI
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 0,
                         handler: 'editpreviewPermitinformation'
+                    },{
+                         xtype: 'transitionsbtn'
                     }
                 ]
             }

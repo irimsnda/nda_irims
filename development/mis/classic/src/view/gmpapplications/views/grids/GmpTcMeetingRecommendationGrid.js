@@ -186,6 +186,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpTcMeetingRecommendationGri
         xtype: 'gridcolumn',
         dataIndex: 'inspection_recommendation',
         text: 'Inspector Recommendation',
+        hidden:true,
         flex: 1
     },{
         text: 'Inspection Type',
@@ -234,8 +235,16 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpTcMeetingRecommendationGri
                         text: 'View  Online Assessment Tool',
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 1,
+                        name:'assementreport',
                         winTitle: 'Online Assessment Tool Details',
                         handler: 'showGMPGPRCAssessmentToolDetails'
+                    },{
+                        text: 'Inspection Checklists & Recommendation',
+                        iconCls: 'x-fa fa-check-square',
+                        name:'checklist',
+                        hidden:true,
+                        isnotDoc:1,
+                        handler: 'showApplicationChecklists'
                     },{
                         text: 'Application Documents',
                         iconCls: 'x-fa fa-file',
@@ -259,6 +268,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpTcMeetingRecommendationGri
                         winWidth: '50%',
                         toaster: 0
                     },
+
                     {
                         text: 'Dismiss/Cancel Application',
                         iconCls: 'x-fa fa-thumbs-down',
@@ -266,7 +276,18 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpTcMeetingRecommendationGri
                         handler: 'showApplicationDismissalForm'
                     }
                 ]
+                }
+            },
+            onWidgetAttach: function (col, widget, rec) {
+            var grid =widget.up('grid'),
+                sub_module_id = rec.get('sub_module_id');
+            if (sub_module_id === 117 || sub_module_id == 117) {
+                widget.down('menu menuitem[name=checklist]').setVisible(true);
+                widget.down('menu menuitem[name=assementreport]').setVisible(false);
+            } else{
+                widget.down('menu menuitem[name=assementreport]').setVisible(true);
+                widget.down('menu menuitem[name=checklist]').setVisible(false);
             }
         }
-    }]
+    }],
 });

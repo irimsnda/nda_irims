@@ -58,15 +58,89 @@ Ext.define('Admin.view.gmpapplications.views.panels.NewGmpOnlinePreviewWizard', 
                             },
                             isLoad: true
                         },
+                        
                         change: function (cmbo, newVal) {
-                            var win = cmbo.up('window'),
-                                ltr_selection = win.down('combo[name=applicant_as_ltr]');
-                            if (newVal == 2 || newVal === 2) {
-                                ltr_selection.setValue(1);
+                            var pnl = cmbo.up('newgmponlinepreviewwizard'),
+                               mainPnl=pnl.up('newgmponlinepreviewpnl'),
+                                sub_module_id = mainPnl.down('hiddenfield[name=sub_module_id]').getValue(),
+                                assessment_type_id = pnl.down('combo[name=assessment_type_id]'),
+                                productlinedetailsgrid = pnl.down('onlineproductlinedetailsgrid');
+                                ltr_selection = pnl.down('combo[name=applicant_as_ltr]');
+                                phamacist_fieldset = pnl.down('fieldset[name=phamacist_fieldset]');
+                                psu_no = pnl.down('textfield[name=psu_no]');
+                                licence_no = pnl.down('textfield[name=licence_no]');
+                                inspection_activities = pnl.down('combo[name=inspection_activities_id]');
+                                county_id = pnl.down('combo[name=county_id]');
+                                sub_county_id = pnl.down('combo[name=sub_county_id]');
+                                sub_county_id = pnl.down('combo[name=sub_county_id]');
+                                parish_id = pnl.down('combo[name=parish_id]');
+                                village_id = pnl.down('combo[name=village_id]');
+                                region_id = pnl.down('combo[name=region_id]');
+                                country_id = pnl.down('combo[name=country_id]');
+                                local_gmp_license_type_id = pnl.down('combo[name=local_gmp_license_type_id]');
+                                var countryStore = country_id.getStore(),
+                                filterObj = {is_local: 1},
+                                filterStr = JSON.stringify(filterObj);
+                            if (newVal == 2 || newVal === 2) {//local
+                                ltr_selection.setValue(2);
                                 ltr_selection.setReadOnly(true);
+                                phamacist_fieldset.setVisible(true);
+                                inspection_activities.setVisible(false);
+                                inspection_activities.allowBlank = true;
+                                licence_no.allowBlank = true;
+                                licence_no.setVisible(false);
+                                // psu_no.allowBlank = false;
+                                // psu_no.validate();
+                                productlinedetailsgrid.columns.find(col => col.dataIndex === 'general_manufacturing_activity_type').setHidden(false);
+                         
+                                if(sub_module_id!=117){
+                                 local_gmp_license_type_id.setVisible(true);
+                                 local_gmp_license_type_id.allowBlank = false;
+                                 local_gmp_license_type_id.validate();
+                                 //county_id.setVisible(true);
+                               
+                                }
+                                if(sub_module_id==117 ||sub_module_id===117){
+                                   psu_no.allowBlank = true;
+                                   assessment_type_id.setValue(1);
+                                   assessment_type_id.setReadOnly(true);
+
+                                }else{
+                                   psu_no.allowBlank = false;
+                                   psu_no.validate();
+
+                                }
+
+                                // county_id.allowBlank = false;
+                                // county_id.validate();
+                                // sub_county_id.setVisible(true);
+                                // parish_id.setVisible(true);
+                                // village_id.setVisible(true);
+                                region_id.allowBlank = false;
+                                region_id.validate();
+                                // countryStore.removeAll();
+                                // countryStore.load({params: {filter: filterStr}});
+
                             }else{
                                 ltr_selection.setValue(2);
-                                ltr_selection.setReadOnly(false);
+                                ltr_selection.setReadOnly(true);
+                                phamacist_fieldset.setVisible(false);
+                                inspection_activities.setVisible(true);
+                                inspection_activities.allowBlank = false;
+                                inspection_activities.validate();
+                                psu_no.allowBlank = true;
+                                licence_no.setVisible(true);
+                                local_gmp_license_type_id.setVisible(false);
+                                local_gmp_license_type_id.allowBlank = true;
+                                productlinedetailsgrid.columns.find(col => col.dataIndex === 'general_manufacturing_activity_type').setHidden(true);
+                                // county_id.setVisible(false);
+                                // county_id.allowBlank = true;
+                                // sub_county_id.setVisible(false);
+                                // parish_id.setVisible(false);
+                                // village_id.setVisible(false);
+                                region_id.allowBlank = true;
+                                // countryStore.removeAll();
+                                // countryStore.load();
                             }
                         }
                     }
@@ -181,7 +255,8 @@ Ext.define('Admin.view.gmpapplications.views.panels.NewGmpOnlinePreviewWizard', 
                     iconCls: 'fa fa-user',
                     enableToggle: true,
                     pressed: true,
-                    text: 'APPLICANT DETAILS',
+                    text: '<span style="font-size: 9px;"><b>APPLICANT DETAILS</b></span>', 
+                    //text: 'APPLICANT DETAILS',
                     action: 'quickNav',
                     handler: 'quickNavigationOnline'
                 },
@@ -189,7 +264,8 @@ Ext.define('Admin.view.gmpapplications.views.panels.NewGmpOnlinePreviewWizard', 
                     step: 1,
                     iconCls: 'fa fa-university',
                     enableToggle: true,
-                    text: 'MANUFACTURING BUSINESS DETAILS',
+                    text: '<span style="font-size: 9px;"><b>MANUFACTURING SITE DETAILS</b></span>', 
+                    //text: 'MANUFACTURING BUSINESS DETAILS',
                     action: 'quickNav',
                     handler: 'quickNavigationOnline'
                 },
@@ -197,7 +273,8 @@ Ext.define('Admin.view.gmpapplications.views.panels.NewGmpOnlinePreviewWizard', 
                     step: 2,
                     iconCls: 'fa fa-suitcase',
                     enableToggle: true,
-                    text: 'MANUFACTURING ACTIVITY(S) DETAILS',
+                    text: '<span style="font-size: 9px;"><b>MANUFACTURING ACTIVITY(S) DETAILS</b></span>', 
+                   // text: 'MANUFACTURING ACTIVITY(S) DETAILS',
                     action: 'quickNav',
                     name: 'line_details',
                     handler: 'quickNavigationOnline'
@@ -206,7 +283,8 @@ Ext.define('Admin.view.gmpapplications.views.panels.NewGmpOnlinePreviewWizard', 
                     step: 3,
                     iconCls: 'fa fa-cubes',
                     enableToggle: true,
-                    text: 'PRODUCTS APPLIED FOR REGISTRATION',
+                    text: '<span style="font-size: 9px;"><b>PRODUCTS APPLIED FOR REGISTRATION</b></span>', 
+                    //text: 'PRODUCTS APPLIED FOR REGISTRATION',
                     action: 'quickNav',
                     handler: 'quickNavigationOnline'
                 },
@@ -214,7 +292,8 @@ Ext.define('Admin.view.gmpapplications.views.panels.NewGmpOnlinePreviewWizard', 
                     step: 4,
                     iconCls: 'fa fa-upload',
                     enableToggle: true,
-                    text: 'DOCUMENT UPLOADS',
+                    text: '<span style="font-size: 9px;"><b>DOCUMENT UPLOADS</b></span>', 
+                    //text: 'DOCUMENT UPLOADS',
                     action: 'quickNav',
                     handler: 'quickNavigationOnline'
                 },
@@ -222,7 +301,8 @@ Ext.define('Admin.view.gmpapplications.views.panels.NewGmpOnlinePreviewWizard', 
                     step: 5,
                     iconCls: 'fa fa-check-square',
                     enableToggle: true,
-                    text: 'PRE-CHECKING & INVOICING',
+                    text: '<span style="font-size: 9px;"><b>PRE-CHECKING & INVOICING</b></span>', 
+                    //text: 'PRE-CHECKING & INVOICING',
                     action: 'quickNav',
                     handler: 'quickNavigationOnline'
                 }

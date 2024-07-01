@@ -58,6 +58,12 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpInspectionSchedulingGrid',
                     iconCls: 'x-fa fa-check',
                     inspection_type_id: 3,
                     handler: 'categorizeGmpApplications'
+                },
+                {
+                    text: 'Herbal Inspection Assessment',
+                    iconCls: 'x-fa fa-check',
+                    inspection_type_id: 4,
+                    handler: 'categorizeGmpApplications'
                 }
             ]
         }

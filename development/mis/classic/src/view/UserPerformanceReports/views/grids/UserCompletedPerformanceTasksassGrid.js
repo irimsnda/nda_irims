@@ -372,14 +372,17 @@ Ext.define('Admin.view.dashboard.grids.UserCompletedPerformanceTasksassGrid', {
                 }
           }
         },
+        // {
+        //     xtype: 'button',
+        //     text: 'Export Completed Tasks',
+        //     type: 1,
+        //     is_internaluser: 1,
+        //     ui:'soft-green',
+        //     iconCls: 'x-fa fa-print',
+        //     handler: 'exportCompletedTasksDashboard'
+        // }
         {
-            xtype: 'button',
-            text: 'Export Completed Tasks',
-            type: 1,
-            is_internaluser: 1,
-            ui:'soft-green',
-            iconCls: 'x-fa fa-print',
-            handler: 'exportCompletedTasksDashboard'
+            xtype: 'exportbtn'
         }
     ],
    

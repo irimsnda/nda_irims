@@ -59,8 +59,11 @@ Ext.define('Admin.view.gmpapplications.views.panels.ManSiteAppMoreDetailsWizard'
                             },
                             isLoad: true
                         },
-                        change: function (cmbo, newVal) {
+                         change: function (cmbo, newVal) {
                             var pnl = cmbo.up('mansiteappmoredetailswizard'),
+                                sub_module_id = pnl.down('hiddenfield[name=sub_module_id]').getValue(),
+                                assessment_type_id = pnl.down('combo[name=assessment_type_id]'),
+                                productlinedetailsgrid = pnl.down('productlinedetailsgrid');
                                 ltr_selection = pnl.down('combo[name=applicant_as_ltr]');
                                 phamacist_fieldset = pnl.down('fieldset[name=phamacist_fieldset]');
                                 psu_no = pnl.down('textfield[name=psu_no]');
@@ -73,6 +76,7 @@ Ext.define('Admin.view.gmpapplications.views.panels.ManSiteAppMoreDetailsWizard'
                                 village_id = pnl.down('combo[name=village_id]');
                                 region_id = pnl.down('combo[name=region_id]');
                                 country_id = pnl.down('combo[name=country_id]');
+                                local_gmp_license_type_id = pnl.down('combo[name=local_gmp_license_type_id]');
                                 var countryStore = country_id.getStore(),
                                 filterObj = {is_local: 1},
                                 filterStr = JSON.stringify(filterObj);
@@ -83,10 +87,29 @@ Ext.define('Admin.view.gmpapplications.views.panels.ManSiteAppMoreDetailsWizard'
                                 inspection_activities.setVisible(false);
                                 inspection_activities.allowBlank = true;
                                 licence_no.allowBlank = true;
-                                psu_no.allowBlank = false;
-                                psu_no.validate();
-                                county_id.setVisible(true);
                                 licence_no.setVisible(false);
+                                // psu_no.allowBlank = false;
+                                // psu_no.validate();
+                                productlinedetailsgrid.columns.find(col => col.dataIndex === 'general_manufacturing_activity_type').setHidden(false);
+                         
+                                if(sub_module_id!=117){
+                                 local_gmp_license_type_id.setVisible(true);
+                                 local_gmp_license_type_id.allowBlank = false;
+                                 local_gmp_license_type_id.validate();
+                                 //county_id.setVisible(true);
+                               
+                                }
+                                if(sub_module_id==117 ||sub_module_id===117){
+                                   psu_no.allowBlank = true;
+                                   assessment_type_id.setValue(1);
+                                   assessment_type_id.setReadOnly(true);
+
+                                }else{
+                                   psu_no.allowBlank = false;
+                                   psu_no.validate();
+
+                                }
+
                                 // county_id.allowBlank = false;
                                 // county_id.validate();
                                 // sub_county_id.setVisible(true);
@@ -106,6 +129,9 @@ Ext.define('Admin.view.gmpapplications.views.panels.ManSiteAppMoreDetailsWizard'
                                 inspection_activities.validate();
                                 psu_no.allowBlank = true;
                                 licence_no.setVisible(true);
+                                local_gmp_license_type_id.setVisible(false);
+                                local_gmp_license_type_id.allowBlank = true;
+                                productlinedetailsgrid.columns.find(col => col.dataIndex === 'general_manufacturing_activity_type').setHidden(true);
                                 // county_id.setVisible(false);
                                 // county_id.allowBlank = true;
                                 // sub_county_id.setVisible(false);
@@ -118,6 +144,7 @@ Ext.define('Admin.view.gmpapplications.views.panels.ManSiteAppMoreDetailsWizard'
                         }
                     }
                 },
+                       
                 {
                     xtype: 'combo',
                     fieldLabel: 'Device Type',

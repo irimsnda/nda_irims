@@ -140,7 +140,8 @@ Ext.define('Admin.view.revenuemanagement.views.panels.AdhocInvoiceRequestPnl', {
                 winWidth: '30%',
                 name: 'receive_invoicebtn',
                 handler: 'receiveAndInvoiceOnlineApplicationDetailsFrmBtn'
-            },'-',{
+            },
+            '-',{
                 xtype: 'button',
                 ui: 'soft-purple',
                 text: 'Print Invoice',

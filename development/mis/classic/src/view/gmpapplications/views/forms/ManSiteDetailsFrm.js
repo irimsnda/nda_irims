@@ -606,6 +606,34 @@ Ext.define('Admin.view.gmpapplications.views.forms.ManSiteDetailsFrm', {
                         }
                     }
                 },
+
+                {
+                    xtype: 'combo',
+                    fieldLabel: 'License Type Application',
+                    name: 'local_gmp_license_type_id',
+                    forceSelection: true,
+                    allowBlank:true,
+                    hidden:true,
+                    columnWidth: 1,
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    listeners: {
+                        beforerender: {
+                            fn: 'setGmpApplicationCombosStore',
+                            config: {
+                                pageSize: 10000,
+                                proxy: {
+                                    url: 'commonparam/getCommonParamFromTable',
+                                    extraParams: {
+                                        table_name: 'par_local_gmplicense_application'
+                                    }
+                                }
+                            },
+                            isLoad: true
+                        }
+                    }
+                },
                
                 {
                 xtype: 'fieldcontainer',

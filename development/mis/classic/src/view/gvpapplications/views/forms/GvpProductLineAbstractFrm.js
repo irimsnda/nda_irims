@@ -1,9 +1,9 @@
 
 
-Ext.define('Admin.view.gvpapplications.views.forms.ProductLineAbstractFrm', {
+Ext.define('Admin.view.gvpapplications.views.forms.GvpProductLineAbstractFrm', {
     extend: 'Ext.form.Panel',
-    xtype: 'productlineabstractfrm',
-    itemId:'productlineabstractfrm',
+    xtype: 'gvpproductlineabstractfrm',
+    itemId:'gvpproductlineabstractfrm',
     controller: 'gvpapplicationsvctr',
     frame: true,
     layout: {

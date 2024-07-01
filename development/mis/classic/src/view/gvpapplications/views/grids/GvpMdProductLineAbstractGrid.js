@@ -1,7 +1,7 @@
 
-Ext.define('Admin.view.gvpapplications.views.grids.MdProductLineAbstractGrid', {
+Ext.define('Admin.view.gvpapplications.views.grids.GvpMdProductLineAbstractGrid', {
     extend: 'Ext.grid.Panel',
-    xtype: 'mdproductlineabstractgrid',
+    xtype: 'gvpmdproductlineabstractgrid',
     features: [
     {
         ftype: 'summary',

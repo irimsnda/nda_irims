@@ -1250,7 +1250,7 @@ public function getcostCategories(Request $request){
          if ($filters != '') {
             $filters = (array)json_decode($filters);
             if(validateIsNumeric($filters['section_id'])){
-                 $results = $qry->where($filters);
+                // $results = $qry->where($filters);
             }
             else{
                 unset($filters['section_id']);

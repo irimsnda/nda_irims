@@ -139,7 +139,7 @@ Ext.define('Admin.view.registers.views.gmpregister.grid.GmpRegisterGrid', {
         xtype: 'gridcolumn',
         dataIndex: 'premise_reg_no',
         name: 'premise_reg_no',
-        text: 'Premise Registration No',
+        text: 'License No',
         width: 200, 
         filter: {
                 xtype: 'textfield',

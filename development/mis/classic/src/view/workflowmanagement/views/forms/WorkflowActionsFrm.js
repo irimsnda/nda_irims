@@ -348,7 +348,7 @@ Ext.define('Admin.view.workflowmanagement.views.forms.WorkflowActionsFrm', {
         displayField: 'name',
         queryMode: 'local',
         forceSelection: true,
-        fieldLabel: 'Has Premises Inspection Notification?',
+        fieldLabel: 'Has Inspection Notification?',
         value: 2,
         listeners: {
             change: function (cbo, newVal) {
@@ -377,7 +377,7 @@ Ext.define('Admin.view.workflowmanagement.views.forms.WorkflowActionsFrm', {
         allowBlank: true,
         hidden: true,
         anyMatch: true,
-        fieldLabel: 'Premises Inspection Notification Message',
+        fieldLabel: 'Inspection Notification Message',
         listeners: {
             beforerender: {
                 fn: 'setWorkflowCombosStore',
@@ -393,7 +393,62 @@ Ext.define('Admin.view.workflowmanagement.views.forms.WorkflowActionsFrm', {
                 isLoad: true
             }
         }
-    }, {
+    },
+   // {
+    //     xtype: 'combo',
+    //     name: 'has_trader_preminsp_notification',
+    //     store: 'confirmationstr',
+    //     valueField: 'id',
+    //     displayField: 'name',
+    //     queryMode: 'local',
+    //     forceSelection: true,
+    //     fieldLabel: 'Has Trader Inspection Notification?',
+    //     value: 2,
+    //     listeners: {
+    //         change: function (cbo, newVal) {
+    //             var form = cbo.up('form'),
+    //                 emailCbo = form.down('combo[name=preminspmail_msg_id]');
+    //             if (newVal == 1 || newVal === 1) {
+    //                 emailCbo.reset();
+    //                 emailCbo.allowBlank = false;
+    //                 emailCbo.validate();
+    //                 emailCbo.setVisible(true);
+    //             } else {
+    //                 emailCbo.reset();
+    //                 emailCbo.allowBlank = true;
+    //                 emailCbo.validate();
+    //                 emailCbo.setVisible(false);
+    //             }
+    //         }
+    //     }
+    // },{
+    //     xtype: 'combo',
+    //     name: 'trader_preminspmail_msg_id',
+    //     valueField: 'id',
+    //     displayField: 'description',
+    //     queryMode: 'local',
+    //     forceSelection: true,
+    //     allowBlank: true,
+    //     hidden: true,
+    //     anyMatch: true,
+    //     fieldLabel: ' Trader Inspection Notification Message',
+    //     listeners: {
+    //         beforerender: {
+    //             fn: 'setWorkflowCombosStore',
+    //             config: {
+    //                 pageSize: 1000,
+    //                  proxy: {
+    //                     url: 'configurations/getConfigParamFromTable',
+    //                     extraParams: {
+    //                         table_name: 'email_messages_templates'
+    //                     }
+    //                 }
+    //             },
+    //             isLoad: true
+    //         }
+    //     }
+    // }, 
+    {
 		xtype: 'combo',
         store: 'confirmationstr',
 		valueField: 'id',
@@ -401,7 +456,7 @@ Ext.define('Admin.view.workflowmanagement.views.forms.WorkflowActionsFrm', {
         queryMode: 'local',
         forceSelection: true,
         value: 2,
-        fieldLabel: 'Tied toTrader  Email Notification',
+        fieldLabel: 'Tied to Trader  Email Notification',
         name: 'has_email_notification',
         listeners: {
             change: function (cbo, newVal) {

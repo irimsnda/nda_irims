@@ -1,11 +1,10 @@
 /**
- * Created by Kip on 12/17/2018.
+ * Created by Kip on 5/7/2019.
  */
-Ext.define('Admin.view.gvpapplications.views.grids.ManSiteOtherDetailsGrid', {
+Ext.define('Admin.view.gvpapplications.views.grids.GvpManSiteBlockDetailsGrid', {
     extend: 'Ext.grid.Panel',
     controller: 'gvpapplicationsvctr',
-    xtype: 'mansiteotherdetailsgrid',
-    cls: 'dashboard-todo-list',
+    xtype: 'gvpmansiteblockdetailsgrid',
     autoScroll: true,
     autoHeight: true,
     width: '100%',
@@ -22,22 +21,16 @@ Ext.define('Admin.view.gvpapplications.views.grids.ManSiteOtherDetailsGrid', {
     tbar: [{
         xtype: 'hiddenfield',
         name: 'isReadOnly'
-    }, {
-        xtype: 'hiddenfield',
-        name: 'is_temporal',
-        value: 0
-    }, {
+    },{
         xtype: 'button',
-        text: 'Add Detail',
+        text: 'Add Block',
         iconCls: 'x-fa fa-plus',
         ui: 'soft-green',
-        name: 'add_details',
-        action: 'add_details',
-        winTitle: 'Manufacturing Site Details',
-        childXtype: 'mansiteotherdetailsfrm',
-        winWidth: '35%',
-        stores: '[]',
-        isManufacturer: 1
+        name: 'add_block',
+        winTitle: 'Manufacturing Site Block Details',
+        childXtype: 'mansiteblockdetailsfrm',
+        winWidth: '50%',
+        stores: '[]'
     }, {
         xtype: 'exportbtn'
     }],
@@ -46,7 +39,7 @@ Ext.define('Admin.view.gvpapplications.views.grids.ManSiteOtherDetailsGrid', {
             ptype: 'gridexporter'
         }
     ],
-    export_title: 'Premise Other Details',
+    export_title: 'Site Personnel Details',
     bbar: [{
         xtype: 'pagingtoolbar',
         width: '100%',
@@ -56,12 +49,15 @@ Ext.define('Admin.view.gvpapplications.views.grids.ManSiteOtherDetailsGrid', {
         beforeLoad: function () {
             var store=this.getStore(),
                 grid=this.up('grid'),
-                site_id=grid.up('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue();
-                store.getProxy().extraParams={
-                    manufacturing_site_id: site_id
-                };
+                 mainTabPanel = grid.up('#contentPanel'),
+                 activeTab = mainTabPanel.getActiveTab(),
+                 site_id = activeTab.down('mansitedetailstabpnl').down('hiddenfield[name=manufacturing_site_id]').getValue();
+            store.getProxy().extraParams={
+                manufacturing_site_id: site_id
+            };
         }
     }],
+
     features: [{
         ftype: 'searching',
         minChars: 2,
@@ -72,17 +68,17 @@ Ext.define('Admin.view.gvpapplications.views.grids.ManSiteOtherDetailsGrid', {
             fn: 'setPremiseRegGridsStore',
             config: {
                 pageSize: 1000,
-                storeId: 'mansiteotherdetailsstr',
+                storeId: 'mansiteblockdetailsstr',
                 proxy: {
-                    url: 'gvpapplications/getSiteOtherDetails'
+                    url: 'gvpapplications/getSiteBlockDetails'
                 }
             },
-            isLoad: true
+            isLoad: false
         },
         afterrender: function () {
             var grid = this,
                 isReadOnly = grid.down('hiddenfield[name=isReadOnly]').getValue(),
-                add_btn = grid.down('button[name=add_details]'),
+                add_btn = grid.down('button[name=add_block]'),
                 widgetCol = grid.columns[grid.columns.length - 1];
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 add_btn.setVisible(false);
@@ -90,20 +86,19 @@ Ext.define('Admin.view.gvpapplications.views.grids.ManSiteOtherDetailsGrid', {
                 widgetCol.widget.menu.items = [];
             } else {
                 add_btn.setVisible(true);
-                widgetCol.setHidden(false);
                 widgetCol.widget.menu.items = [{
                     text: 'Edit',
                     iconCls: 'x-fa fa-edit',
+                    winTitle: 'Manufacturing Site Block Details',
+                    childXtype: 'mansiteblockdetailsfrm',
+                    winWidth: '50%',
                     stores: '[]',
-                    handler: 'showEditSiteOtherDetails',
-                    winTitle: 'Manufacturing Site Details',
-                    childXtype: 'mansiteotherdetailsfrm',
-                    winWidth: '35%'
+                    handler: 'showEditGvpApplicationWinFrm'
                 }, {
                     text: 'Delete',
                     iconCls: 'x-fa fa-trash',
-                    table_name: 'tra_mansite_otherdetails',
-                    storeID: 'mansiteotherdetailsstr',
+                    table_name: 'tra_manufacturing_sites_blocks',
+                    storeID: 'mansiteblockdetailsstr',
                     action_url: 'gvpapplications/deleteGvpApplicationRecord',
                     action: 'actual_delete',
                     handler: 'doDeleteGvpApplicationWidgetParam',
@@ -115,13 +110,13 @@ Ext.define('Admin.view.gvpapplications.views.grids.ManSiteOtherDetailsGrid', {
     },
     columns: [{
         xtype: 'gridcolumn',
-        dataIndex: 'business_type',
-        text: 'Business Type',
+        dataIndex: 'name',
+        text: 'Block Name/Identity',
         flex: 1
     }, {
         xtype: 'gridcolumn',
-        dataIndex: 'business_type_detail',
-        text: 'Product Type',
+        dataIndex: 'activities',
+        text: 'Description of Activities Undertaken',
         flex: 1
     }, {
         text: 'Options',
@@ -135,25 +130,7 @@ Ext.define('Admin.view.gvpapplications.views.grids.ManSiteOtherDetailsGrid', {
             ui: 'gray',
             menu: {
                 xtype: 'menu',
-                items: [{
-                    text: 'Edit',
-                    iconCls: 'x-fa fa-edit',
-                    stores: '[]',
-                    handler: 'showEditSiteOtherDetails',
-                    winTitle: 'Manufacturing Site Details',
-                    childXtype: 'mansiteotherdetailsfrm',
-                    winWidth: '35%'
-                }, {
-                    text: 'Delete',
-                    iconCls: 'x-fa fa-trash',
-                    table_name: 'tra_mansite_otherdetails',
-                    storeID: 'mansiteotherdetailsstr',
-                    action_url: 'gvpapplications/deleteGvpApplicationRecord',
-                    action: 'actual_delete',
-                    handler: 'doDeleteGvpApplicationWidgetParam',
-                    hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
-                }
-                ]
+                items: []
             }
         }
     }]

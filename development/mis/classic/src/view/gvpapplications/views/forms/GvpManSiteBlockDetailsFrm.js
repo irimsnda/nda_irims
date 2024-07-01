@@ -1,10 +1,10 @@
 /**
  * Created by Kip on 5/7/2019.
  */
-Ext.define('Admin.view.gvpapplications.views.forms.ManSiteBlockDetailsFrm', {
+Ext.define('Admin.view.gvpapplications.views.forms.GvpManSiteBlockDetailsFrm', {
     extend: 'Ext.form.Panel',
-    xtype: 'mansiteblockdetailsfrm',
-    itemId:'mansiteblockdetailsfrm',
+    xtype: 'gvpmansiteblockdetailsfrm',
+    itemId:'gvpmansiteblockdetailsfrm',
     controller: 'gvpapplicationsvctr',
     layout: {
         type: 'column'

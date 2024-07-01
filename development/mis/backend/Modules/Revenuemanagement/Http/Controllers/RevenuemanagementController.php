@@ -99,6 +99,108 @@ class RevenuemanagementController extends Controller
         
     }
 
+    public function getpostPaymentspostingdetails(Request $req)
+    {
+        try {
+            $filter = $req->input('filter');
+            $start = $req->input('start');
+            $limit = $req->input('limit');
+            $paid_fromdate  = $req->input('paid_fromdate');
+            $paid_todate = $req->input('paid_todate');
+            $whereClauses = array();
+            $filter_string = '';
+            if (isset($filter)) {
+                $filters = json_decode($filter);
+                if ($filters != NULL) {
+                    foreach ($filters as $filter) {
+                        switch ($filter->property) {
+                            case 'invoice_no' :
+                                $whereClauses[] = "t4.invoice_no like '%" . ($filter->value) . "%'";
+                                break;
+                            case 'reference_no' :
+                                $whereClauses[] = "t4.reference_no like '%" . ($filter->value) . "%'";
+                                break;
+                            case 'tracking_no' :
+                                $whereClauses[] = "(t4.tracking_no like '%" . ($filter->value) . "%')";
+                                break;
+                            case 'PayCtrNum' :
+                                $whereClauses[] = "t1.PayCtrNum like '%" . ($filter->value) . "%'";
+                                break;
+                                case 'receipt_no' :
+                                $whereClauses[] = "t1.receipt_no like '%" . ($filter->value) . "%'";
+                                break;
+                                 case 'sub_modulename' :
+                                $whereClauses[] = "t7.name like '%" . ($filter->value) . "%'";
+                                break; 
+                                
+                                case 'applicant_name' :
+                                $whereClauses[] = "t3.name like '%" . ($filter->value) . "%'";
+                                break;
+                                case 'iremboInvoiceNumber' :
+                                $whereClauses[] = "t8.iremboInvoiceNumber like '%" . ($filter->value) . "%'";
+                                break;
+                                case 'payment_ref_no' :
+                                $whereClauses[] = "t1.trans_ref like '%" . ($filter->value) . "%'";
+                                break;
+                        }
+                    }
+                    $whereClauses = array_filter($whereClauses);
+                }
+                if (!empty($whereClauses)) {
+                    $filter_string = implode(' AND ', $whereClauses);
+                }
+            }
+            $where_filterdates = '';
+            if( $paid_fromdate != '' &&  $paid_todate != ''){
+                $paid_fromdate = formatDate($paid_fromdate);
+                $paid_todate = formatDate($paid_todate);
+                $where_filterdates  = " trans_date BETWEEN '".$paid_fromdate."' and  '".$paid_todate."'";
+            }
+           $qry = DB::table('tra_postpayments_requests as t1')
+                            ->select(DB::raw("DISTINCT t1.id,t6.name as module_name, t1.invoice_id, t1.application_code as active_application_code,t1.id as receipt_id,  t7.name as sub_modulename, t1.id as payment_id,t1.id as invoice_id, t1.receipt_no,t4.invoice_no, t1.module_id, t4.invoice_no, t1.amount_paid,t1.PayCtrNum,t1.exchange_rate,t3.name AS  applicant_name,t1.trans_date, t4.tracking_no,t4.reference_no,t1.application_id, t1.application_code,t8.iremboInvoiceNumber, if(t8.paymentStatus='NEW', 'Manual Pay', 'Irembo Pay') as paymentStatus, (amount_paid *t1.exchange_rate) as amount_paidtshs,(SUM(t9.total_element_amount) *t9.paying_exchange_rate) as invoice_amounttshs,t10.name as currency_name,t9.total_element_amount as invoice_amount,  trans_ref as payment_ref_no, t5.name as currency_name, t4.id as invoice_id"))
+                            ->join('wb_trader_account as t3', 't1.applicant_id', '=','t3.id')
+                            ->leftJoin('tra_application_invoices as t4', 't1.invoice_id', '=','t4.id')
+                            ->leftJoin('par_currencies as t5', 't1.currency_id', '=','t5.id')
+                            ->leftJoin('modules as t6', 't1.module_id', '=','t6.id')
+                            ->leftJoin('sub_modules as t7', 't1.sub_module_id', '=','t7.id')
+                            ->leftJoin('tra_iremboinvoices_information as t8', 't4.invoice_no', '=','t8.rfdaInvoiceNo')
+                            ->leftJoin('tra_invoice_details as t9', 't4.id', '=','t9.invoice_id')
+                             ->leftJoin('par_currencies as t10', 't9.currency_id', '=','t10.id')
+                            ;
+
+                            if ($filter_string != ''){
+                                $qry->whereRAW($filter_string);
+                            }
+                            if ($where_filterdates != '') {
+                                $qry->whereRAW($where_filterdates);
+                            }
+                            $count = $qry->get()->count();
+                            $records = $qry->groupBy('t1.id')->skip($start)->take($limit)->get();
+
+                
+
+            $res = array(
+                'success' => true,
+                'results' => $records,
+                'totals' => $count,
+                'message' => 'All is well'
+            );
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return \response()->json($res);
+    
+        
+    }
+
      public function getApplicationPaymentDetails(Request $request)
     {
         $application_id = $request->input('application_id');
@@ -993,6 +1095,9 @@ class RevenuemanagementController extends Controller
                 }
 
                 $previous_data = $previous_data['results'];
+
+                
+                $tracking_no = $previous_data[0]['tracking_no'];
                 $res = updateRecord($table_name, $previous_data, $where, $data, $this->user_id);
                 
             }else{
@@ -1012,10 +1117,15 @@ class RevenuemanagementController extends Controller
                 );  
                 $view_id = generateApplicationViewID();
                 //$ref_number = generatePremiseRefNumber($ref_id, $codes_array, date('Y'), $process_id, $zone_id, $user_id);
+
+
                 $tracking_details = generateApplicationTrackingNumber($sub_module_id, 1, $codes_array, $req->process_id, $req->zone_id, $user_id);
 
                 if ($tracking_details['success'] == false) {
-                    return \response()->json($tracking_details);
+
+                      echo json_encode($tracking_details);
+                      exit();
+
                 }
                 $tracking_no = $tracking_details['tracking_no'];
 
@@ -1177,7 +1287,7 @@ class RevenuemanagementController extends Controller
                 ->where('t1.id', $application_id);
                 
             $results = $qry->first();
-            $payment_details = getApplicationPaymentsRunningBalance($application_id, $application_code, $results->invoice_id);
+            $payment_details = getApplicationPaymentsRunningBalance($application_code, $results->invoice_id);
             $res = array(
                 'success' => true,
                 'results' => $results,
@@ -1742,7 +1852,7 @@ class RevenuemanagementController extends Controller
     }
     public function getApplicationRaisedInvoices(Request $req)
     {
-        try {
+        try { 
             $invoicing_data = array();
             $application_code = $req->application_code;
             if(validateIsNumeric($application_code)){
@@ -2514,6 +2624,170 @@ public function saveapplicationreceiceinvoiceDetails(Request $req){
             return response()->json($res);
 
    }
+
+    public function saveAdhocInvoiceDetails(Request $request)
+    {
+
+
+        $application_id = $request->input('application_id');
+
+
+        $application_code = $request->input('application_code');
+      //  $reference_no = $request->input('reference_no');
+      //  $invoice_id = $request->input('invoice_id');
+        $module_id = $request->input('module_id');
+       // $applicant_id = $request->input('applicant_id');
+        $paying_currency_id = $request->input('paying_currency_id');
+       // $isLocked =0;
+       // $isSubmission = $request->input('isSubmission');
+        $is_fast_track = 0;
+       // dd(111);
+        //$fob = $request->fob;
+        $details = $request->input();
+        $user_id = $this->user_id;
+        unset($details['_token']);
+        unset($details['application_id']);
+        unset($details['application_code']);
+        unset($details['paying_currency_id']);
+        unset($details['module_id']);      
+       
+        try {
+            $res = array();
+
+            DB::transaction(function () use (&$res, $module_id, $user_id, $paying_currency_id, $application_id, $application_code, $details) {
+                $table_name = getSingleRecordColValue('modules', array('id' => $module_id), 'table_name');
+               $app_details =  DB::table($table_name)
+                    ->where('id', $application_id)
+                    ->first();
+
+                $reference_no = $app_details->reference_no;
+                $tracking_no = $app_details->tracking_no;
+                $section_id = $app_details->section_id;
+                $applicant_id = $app_details->applicant_id;
+                $sub_module_id = $app_details->sub_module_id;
+                
+                $applicant_details = getTableData('wb_trader_account', array('id' => $applicant_id));
+                if (is_null($applicant_details)) {
+                    $res = array(
+                        'success' => false,
+                        'message' => 'Problem encountered while getting applicant details!!'
+                    );
+                    return response()->json($res);
+                }
+                $applicant_name = $applicant_details->name;
+                $applicant_email = $applicant_details->email;
+                $applicant_name = strtoupper($applicant_name);
+                //$paying_exchange_rate = getExchangeRate($paying_currency_id);
+                $paying_exchange_rate = getSingleRecordColValue('par_exchange_rates', array('currency_id' => $paying_currency_id), 'exchange_rate');
+            
+                if(!validateIsNumeric($paying_exchange_rate)){
+
+                    $res = array(
+                        'success' => false,
+                        'message' => 'Currency Exchange Rate has not been set, contact the finance Department for configuration'
+                    );
+                    echo json_encode($res);
+                    exit();
+                }
+                $due_date_counter = Config('invoice_due_days');
+                $date_today = Carbon::now();
+                $due_date = $date_today->addDays($due_date_counter);
+                $user = \Auth::user();
+                $prepared_by = aes_decrypt($user->first_name) . ' ' . aes_decrypt($user->last_name);
+                $invoicing_date = Carbon::now();
+
+                $invoice_params = array(
+                    'applicant_id' => $applicant_id,
+                    'applicant_name' => $applicant_name,
+                    'paying_currency_id' => $paying_currency_id,
+                    'paying_exchange_rate' => $paying_exchange_rate,
+                    'reference_no'=>$reference_no,
+                    'module_id'=>$module_id,
+                    'section_id'=>$section_id,
+                    'sub_module_id'=>$sub_module_id,
+                    'invoice_type_id'=>1,
+                    'tracking_no'=>$tracking_no,
+                    'application_feetype_id'=>$details['fasttrack_option_id'],
+                    'fasttrack_option_id'=>$details['fasttrack_option_id'],
+                    'date_of_invoicing'=>$invoicing_date,
+                    'payment_terms' => 'Due in ' . $due_date_counter . ' Days',
+                    'created_on' => Carbon::now()
+                );
+                    $invoice_params['prepared_by'] = $prepared_by;
+                    $invoice_params['due_date'] = $due_date;
+               
+
+                    $invoice_no = generateInvoiceNo($user_id);
+                    $invoice_params['invoice_no'] = $invoice_no;
+                    $invoice_params['application_id'] = $application_id;
+                    $invoice_params['application_code'] = $application_code;
+                    $invoice_params['applicant_id'] = $applicant_id;
+                    $res = insertRecord('tra_application_invoices', $invoice_params, $user_id);
+                    if ($res['success'] == false) {
+                        return \response()->json($res);
+                    }
+                    $invoice_id = $res['record_id'];
+                
+
+                $params = array();
+                $invoice_amount = 0;
+
+                //check
+                $element_costs_id = $details['element_costs_id'];
+                $where_check = array(
+                    'invoice_id' => $invoice_id,
+                    'element_costs_id' => $element_costs_id
+                );
+                if (DB::table('tra_invoice_details')
+                        ->where($where_check)
+                        ->count() < 1) {
+                    $params = array(
+                        'invoice_id' => $invoice_id,
+                        'element_costs_id' => $element_costs_id,
+                        'element_amount' => $details['cost'],
+                        'paying_currency_id'=> $paying_currency_id,
+                        'currency_id' => $details['currency_id'],
+                        'exchange_rate' => $paying_exchange_rate,
+                        'paying_exchange_rate' => $paying_exchange_rate,
+                        'quantity' => 1,
+                        'total_element_amount' => ($details['cost'])
+                    );
+
+
+                $res = insertRecord('tra_invoice_details', $params, $user_id);
+                } else {
+                    $update = array(
+                        'quantity' => $details['quantity'],
+                        'paying_currency_id'=> $paying_currency_id,
+                        'total_element_amount' => ($details['cost']),
+                        'dola' => Carbon::now(),
+                        'altered_by' => $user_id
+                    );
+                    DB::table('tra_invoice_details')
+                        ->where($where_check)
+                        ->update($update);
+                }
+
+                $res = array(
+                    'success' => true,
+                    'invoice_id' => $invoice_id,
+                    'invoice_no' => $invoice_no,
+                    'message' => 'Invoice details saved successfully!!'
+                );
+            }, 5);
+        } catch (\Exception $exception) {
+            $res = array(
+                'success' => false,
+                'message' => $exception->getMessage()
+            );
+        } catch (\Throwable $throwable) {
+            $res = array(
+                'success' => false,
+                'message' => $throwable->getMessage()
+            );
+        }
+        return $res;
+    }
    
    function saveNormalOnlineApplicationInvoice($table_name,$app_details,$invoice_type_id,$fasttrack_option_id,$fees_data,$application_feetype_id=1, $query_id= null){
         //detail

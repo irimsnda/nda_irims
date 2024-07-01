@@ -133,6 +133,8 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.NarcoticsDru
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 1,
                         handler: 'editpreviewNarcoticsPermitinformation'
+                    },{
+                         xtype: 'transitionsbtn'
                     }
                 ]
             }

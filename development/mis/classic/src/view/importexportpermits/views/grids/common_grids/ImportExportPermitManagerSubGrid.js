@@ -254,6 +254,8 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImportExport
                         text: 'View Screening Checklists & Recommendation',
                         iconCls: 'x-fa fa-check-square',hidden: true,
                         handler: 'showApplicationChecklists'
+                    },{
+                         xtype: 'transitionsbtn'
                     }
                 ]
             }

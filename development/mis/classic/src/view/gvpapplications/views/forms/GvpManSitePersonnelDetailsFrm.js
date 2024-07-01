@@ -1,9 +1,9 @@
 /**
  * Created by Kip on 12/17/2018.
  */
-Ext.define('Admin.view.gvpapplications.views.forms.ManSitePersonnelDetailsFrm', {
+Ext.define('Admin.view.gvpapplications.views.forms.GvpManSitePersonnelDetailsFrm', {
     extend: 'Ext.form.Panel',
-    xtype: 'mansitepersonneldetailsfrm',
+    xtype: 'gvpmansitepersonneldetailsfrm',
     controller: 'gvpapplicationsvctr',
     frame: true,
     layout: {

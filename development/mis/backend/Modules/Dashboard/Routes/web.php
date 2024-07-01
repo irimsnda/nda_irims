@@ -31,6 +31,8 @@ Route::group(['middleware' => ['web'], 'prefix' => 'dashboard'], function(){
     Route::post('saveTodo', [DashboardController::class, 'saveTodo']);
 
     Route::get('getDashApplicationSummaryDetails', [DashboardController::class, 'getDashApplicationSummaryDetails']);
+    Route::get('getApplicationSummaryOverDueTrayItems', [DashboardController::class, 'getApplicationSummaryOverDueTrayItems']);
+    Route::get('getOverDueTrayItems', [DashboardController::class, 'getOverDueTrayItems']);
     Route::get('getDashRevenueGraphSummaryDetails', [DashboardController::class, 'getDashRevenueGraphSummaryDetails']);
     Route::get('getDashRevenueSummaryDetails', [DashboardController::class, 'getDashRevenueSummaryDetails']);
     Route::get('getExternalOutTrayItems', [DashboardController::class, 'getExternalOutTrayItems']);
@@ -38,6 +40,9 @@ Route::group(['middleware' => ['web'], 'prefix' => 'dashboard'], function(){
     Route::post('checkAssignmentDefination', [DashboardController::class, 'checkAssignmentDefination']);
     Route::get('getApplicationAssaignmentRecords', [DashboardController::class, 'getApplicationAssaignmentRecords']);
     Route::get('getAssaignmentApplications', [DashboardController::class, 'getAssaignmentApplications']);
+    Route::get('getUserCompletedAssPerformancSummary', [DashboardController::class, 'getUserCompletedAssPerformancSummary']);
+    Route::get('getUserCompletedAssignments', [DashboardController::class, 'getUserCompletedAssignments']);
+    Route::get('getActiveUserCompletedAssignments', [DashboardController::class, 'getActiveUserCompletedAssignments']);
     Route::get('exportDashboard', [DashboardController::class, 'exportDashboard']);
     Route::get('getOnlineImportExportManagerReviewApplications', [DashboardController::class, 'getOnlineImportExportManagerReviewApplications']);
     Route::get('getAssignedFasttrackApplications', [DashboardController::class, 'getAssignedFasttrackApplications']);

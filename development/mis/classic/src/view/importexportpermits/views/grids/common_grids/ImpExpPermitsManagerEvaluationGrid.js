@@ -196,6 +196,8 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ImpExpPermit
                     winTitle: 'Product Information',
                     winWidth: '40%',
                     handler: 'printpreviewProductInformation'
+                },{
+                    xtype: 'transitionsbtn'
                 }]
             }
         }

@@ -1,8 +1,85 @@
+/**
+ * Created by Kip on 1/9/2019.
+ */
+Ext.define('Admin.view.gvpapplications.views.grids.GvpOnlineProductLineDetailsGrid', {
+//     extend: 'Admin.view.gvpapplications.views.grids.GvpProductLineAbstractGrid',
+//     controller: 'gvpapplicationsvctr',
+//     xtype: 'onlineproductlinedetailsgrid',
+//     cls: 'dashboard-todo-list',
+//     autoScroll: true,
+//     autoHeight: true,
+//     width: '100%',
+//     viewConfig: {
+//         deferEmptyText: false,
+//         emptyText: 'Nothing to display',
+//         getRowClass: function (record, rowIndex, rowParams, store) {
+//             var is_enabled = record.get('is_enabled');
+//             if (is_enabled == 0 || is_enabled === 0) {
+//                 return 'invalid-row';
+//             }
+//         }
+//     },
+//     tbar: [{
+//         xtype: 'hiddenfield',
+//         name: 'isReadOnly'
+//     }, {
+//         xtype: 'button',
+//         text: 'Add Product Line',
+//         iconCls: 'x-fa fa-plus',
+//         ui: 'soft-green',
+//         name: 'add_line',
+//         winTitle: 'GVP Product Line Details',
+//         childXtype: 'gvpproductlinedetailsfrm',
+//         winWidth: '35%',
+//         hidden: true,
+//         stores: '[]'
+//     }, {
+//         xtype: 'exportbtn'
+//     }],
+//     plugins: [
+//         {
+//             ptype: 'gridexporter'
+//         }
+//     ],
+//     export_title: 'Product line Details',
+//     bbar: [{
+//         xtype: 'pagingtoolbar',
+//         width: '100%',
+//         displayInfo: true,
+//         displayMsg: 'Showing {0} - {1} of {2} total records',
+//         store: 'onlineproductlinedetailsstr',
+//         emptyMsg: 'No Records',
+//         beforeLoad: function () {
+//             var store=this.getStore(),
+//                 grid=this.up('grid'),
+//                 site_id=grid.up('panel').down('hiddenfield[name=manufacturing_site_id]').getValue();
+//             store.getProxy().extraParams={
+//                 site_id: site_id
+//             };
+//         }
+//     }],
+//     features: [{
+//         ftype: 'searching',
+//         minChars: 2,
+//         mode: 'local'
+//     }],
+//     store: 'onlineproductlinedetailsstr',
+//     columns:[]
+// });
 
-Ext.define('Admin.view.gvpapplications.views.grids.MdProductLineDetailsGrid', {
+
+
+
+
+
+
+
+
+
+
    extend: 'Admin.view.gvpapplications.views.grids.GvpProductBlockLineAbstractGrid',
     controller: 'gvpapplicationsvctr',
-    xtype: 'mdproductlinedetailsgrid',
+    xtype: 'gvponlineproductlinedetailsgrid',
     cls: 'dashboard-todo-list',
     autoScroll: true,
     autoHeight: true,
@@ -27,7 +104,7 @@ Ext.define('Admin.view.gvpapplications.views.grids.MdProductLineDetailsGrid', {
         ui: 'soft-blue',
         name: 'add_line',
         winTitle: 'GVP Product Line Details',
-        childXtype: 'mdproductlinetabpnl',
+        childXtype: 'productlinetabpnl',
         winWidth: '50%',
         stores: '[]'
     }, {
@@ -57,7 +134,8 @@ Ext.define('Admin.view.gvpapplications.views.grids.MdProductLineDetailsGrid', {
                  }
                 
              store.getProxy().extraParams={
-                manufacturing_site_id: site_id
+                manufacturing_site_id: site_id,
+                isOnline:1
             };
         }
     }],
@@ -94,8 +172,8 @@ Ext.define('Admin.view.gvpapplications.views.grids.MdProductLineDetailsGrid', {
                     text: 'Edit',
                     iconCls: 'x-fa fa-edit',
                     winTitle: 'Product Line Details',
-                    childXtype: 'mdproductlinetabpnl',
-                    winWidth: '60%',
+                    childXtype: 'productlinetabpnl',
+                    winWidth: '50%',
                     stores: '[]',
                     handler: 'showEditProductLineDetails'
                 }, {
@@ -181,7 +259,6 @@ Ext.define('Admin.view.gvpapplications.views.grids.MdProductLineDetailsGrid', {
                             minChars: 2,
                             mode: 'local'
                         }],
-                      
                         listeners: {
                             beforerender: {
                                 fn: 'setConfigGridsStore',
@@ -201,41 +278,22 @@ Ext.define('Admin.view.gvpapplications.views.grids.MdProductLineDetailsGrid', {
                         },
                         columns: [{
                             xtype: 'rownumberer'
-                          },
-                          {
+                          },{
                             xtype: 'gridcolumn',
-                            dataIndex: 'medical_device_family_name',
-                            text: 'Medical Device Group/Family Name',
+                            dataIndex: 'product_line_name',
+                            text: 'DOSAGE FORM (line type)',
                             flex: 1
                         }, {
                             xtype: 'gridcolumn',
-                            dataIndex: 'sterile_category',
+                            dataIndex: 'product_line_category',
                             tdCls:'wrap-text',
-                            text: 'Sterile/Non-sterile',
+                            text: 'PRODUCT CATEGORY',
                             flex: 1
-                        },{
-                            xtype: 'gridcolumn',
-                            dataIndex: 'invasive_category',
-                            tdCls:'wrap-text',
-                            text: 'Invasive/Non- Invasive device',
-                            flex: 1
-                        },{
-                            xtype: 'gridcolumn',
-                            dataIndex: 'active_category',
-                            tdCls:'wrap-text',
-                            text: 'Active/Active',
-                            flex: 1
-                        },{
-                            xtype: 'gridcolumn',
-                            dataIndex: 'medicated_category',
-                            tdCls:'wrap-text',
-                            text: 'Medicated/Non-medicated',
-                            flex: 1
-                        },{
+                        }, {
                             xtype: 'gridcolumn',
                             dataIndex: 'product_line_description',
                             tdCls:'wrap-text',
-                            text: 'Device Description',
+                            text: 'Dosage Form Description',
                             flex: 1
                         },{
                             xtype: 'gridcolumn',
@@ -265,7 +323,8 @@ Ext.define('Admin.view.gvpapplications.views.grids.MdProductLineDetailsGrid', {
                                    store.removeAll();
                                    store.getProxy().extraParams = {
                                     site_id: manufacturing_site_id,
-                                    block_id:block_id
+                                    block_id:block_id,
+                                    isOnline:1
                                           
                                    };
                            }
@@ -277,5 +336,6 @@ Ext.define('Admin.view.gvpapplications.views.grids.MdProductLineDetailsGrid', {
        
    }]
 });
+
 
 

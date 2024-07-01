@@ -28,11 +28,12 @@ Route::group(['prefix' => 'revenuemanagement','middleware' => ['auth:api', 'web'
     Route::get('getBatchRetentionsInvoices', [RevenuemanagementController::class,'getBatchRetentionsInvoices']);
     Route::get('getBatchApplicationInvoicesDetails', [RevenuemanagementController::class,'getBatchApplicationInvoicesDetails']);
     Route::get('getRetentionChargesInvoicesdetails', [RevenuemanagementController::class,'getRetentionChargesInvoicesdetails']);
-    
+     Route::get('getpostPaymentspostingdetails', [RevenuemanagementController::class,'getpostPaymentspostingdetails']);
     
     Route::get('getReversedRequestsApplicationInvoices', [RevenuemanagementController::class,'getReversedRequestsApplicationInvoices']);
     
     Route::get('getApplicationInvoicesDetails', [RevenuemanagementController::class,'getApplicationInvoicesDetails']);
+    Route::post('saveAdhocInvoiceDetails', [RevenuemanagementController::class,'saveAdhocInvoiceDetails']);
     Route::get('prepareCancellationREquestDetails', [RevenuemanagementController::class,'prepareCancellationREquestDetails']);
     Route::post('approveInvoiceCancellationRequest', [RevenuemanagementController::class,'approveInvoiceCancellationRequest']);
     Route::get('getPaymentsReversalRequestApplications', [RevenuemanagementController::class,'getPaymentsReversalRequestApplications']);
@@ -61,7 +62,7 @@ Route::group(['prefix' => 'revenuemanagement','middleware' => ['auth:api', 'web'
     Route::get('getRetentionPendingInvoicesdetails', [RevenuemanagementController::class,'getRetentionPendingInvoicesdetails']);
     Route::get('getRetentionAplicantsDetails', [RetentionmanagementController::class, 'getRetentionAplicantsDetails']);
     Route::get('getRetentionChargesPaymentsdetails', [RetentionmanagementController::class,'getRetentionChargesPaymentsdetails']);
-    Route::get('prepareAdhocInvoiceRequestpnl', [RetentionmanagementController::class,'prepareAdhocInvoiceRequestpnl']);
+    Route::get('prepareAdhocInvoiceRequestpnl', [RevenuemanagementController::class,'prepareAdhocInvoiceRequestpnl']);
     Route::post('saveAdhocApplicationInvoiceDetails', [RevenuemanagementController::class,'saveAdhocApplicationInvoiceDetails']);
     
     Route::post('saveapplicationreceiceinvoiceDetails', [RevenuemanagementController::class,'saveapplicationreceiceinvoiceDetails']);

@@ -22,70 +22,75 @@ Ext.define('Admin.view.dashboard.FinanceProcessDashboard', {
             },
             
             items: [
-                    {
-                        xtype: 'panel',
-                        title: 'Intray(Assignments)',
-                        is_receipting_stage:1,
-                        layout: 'border',
-                        items:[{
-                            xtype: 'summaryintraygrid',
-                            title: 'Summary of Assigned or Active Applications ',
-                            region: 'west',
-                            width: 500,
-                            autoScroll: true,
-                            split: true,
-                            titleCollapse: true,
-                            collapsed: false,
-                            collapsible: true
-                        }, {
-                                xtype: 'intraygrid',
-                                region: 'center',
-                                title: 'Assigned or Active Applications Pending or Completed Processing',
-                                userCls: 'big-100 small-100'
-                        }] 
-                },
+                //     {
+                //         xtype: 'panel',
+                //         title: 'Intray(Assignments)',
+                //         is_receipting_stage:1,
+                //         layout: 'border',
+                //         items:[{
+                //             xtype: 'summaryintraygrid',
+                //             title: 'Summary of Assigned or Active Applications ',
+                //             region: 'west',
+                //             width: 500,
+                //             autoScroll: true,
+                //             split: true,
+                //             titleCollapse: true,
+                //             collapsed: false,
+                //             collapsible: true
+                //         }, {
+                //                 xtype: 'intraygrid',
+                //                 region: 'center',
+                //                 title: 'Assigned or Active Applications Pending or Completed Processing',
+                //                 userCls: 'big-100 small-100'
+                //         }] 
+                // },
+                // {
+                //     title: 'Out-Tray',
+                //     xtype: 'outtraygrid',
+                //     height: Ext.Element.getViewportHeight() - 161
+                // },
                 {
-                    title: 'Out-Tray',
-                    xtype: 'outtraygrid',
-                    height: Ext.Element.getViewportHeight() - 161
-                },{
                     xtype:'gepgbillinvoicepostingpnl',
                     layout:'fit',
                     title: 'Billing and Payment Details',
 
-                },{
-                    xtype:'tabpanel',
-                    title:'Revenue Reports',
-                    layout:'fit',
-                    items:[{
-                        xtype:'dailyfinancetrans',
-                        title: 'Daily revenue Transaction(Periodic Payments)'
-                    },{
-                        xtype:'revenuesummaryreports',
-                        title:'Applications Summary Revenue Report'
-                    }]
-
                 },
+                // {
+                //     xtype:'tabpanel',
+                //     title:'Revenue Reports',
+                //     layout:'fit',
+                //     items:[{
+                //         xtype:'dailyfinancetrans',
+                //         title: 'Daily revenue Transaction(Periodic Payments)'
+                //     },{
+                //         xtype:'revenuesummaryreports',
+                //         title:'Applications Summary Revenue Report'
+                //     }]
+
+                // },
                 {
                     xtype:'tabpanel',
                     layout:'fit',
                     title: 'Configurations',
                     height: Ext.Element.getViewportHeight() - 161,
                     items:[{
-                        xtype: 'exchangeratepnl',
+                        xtype: 'exchangeRatePnl',
                         region:'Exchange Rates'
                     },{
                         xtype: 'elementscost',
                         title: 'Fees Taariff Guideline'
-                    },{
-                        xtype: 'applicationuploadproofauthorisation'
-                    }]
+                    }
+                    // ,{
+                    //     xtype: 'applicationuploadproofauthorisation'
+                    // }
+                    ]
                 },{
                     title:'Application Enquiries(Tracking Applications Processing)',
                     xtype:'application_enquiriesGrid'
                 },{
                     xtype:'controllleddocumentsaccessdashboard',
                     title:'Shared Documents (Controlled Documents Dashboard)',
+                    hidden:true,
                     layout:'fit'
                 }
             ]

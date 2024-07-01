@@ -121,7 +121,7 @@ Ext.define('Admin.view.commoninterfaces.PaymentVerificationPnl', {
             },
             {
                 xtype: 'hiddenfield',
-                name: 'gyp_type_id'
+                name: 'gvp_type_id'
             },
             {
                 name: 'gmp_type_id',

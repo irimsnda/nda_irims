@@ -140,6 +140,15 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillPaymentsPostingGrid
         filter: {
             xtype: 'textfield'
         }
+    },{
+        xtype: 'gridcolumn',
+        dataIndex: 'payment_received_by_name',
+        text: 'Payment Received By',
+        tdCls:'wrap-text',
+        width: 200,
+        filter: {
+            xtype: 'textfield'
+        }
     }, {
         xtype: 'gridcolumn',
         dataIndex: 'trans_date',
@@ -149,7 +158,7 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillPaymentsPostingGrid
         xtype: 'gridcolumn',
         dataIndex: 'iremboInvoiceNumber',
         tdCls:'wrap-text',
-        text: 'iREMBO Invoice Number',
+        text: 'Bank Invoice Reference Number',
         tdCls:'wrap-text',
         width: 200,
         filter: {
@@ -159,7 +168,7 @@ Ext.define('Admin.view.revenuemanagement.views.grids.GepgBillPaymentsPostingGrid
         xtype: 'gridcolumn',
         dataIndex: 'paymentStatus',
         tdCls:'wrap-text',
-        text: 'iREMBO Payment Status',
+        text: 'Bank Payment Status',
         tdCls:'wrap-text',
         width: 200,
          renderer: function (value, metaData,record) {

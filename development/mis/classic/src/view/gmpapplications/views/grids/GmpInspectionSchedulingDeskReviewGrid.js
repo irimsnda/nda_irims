@@ -19,7 +19,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpInspectionSchedulingDeskRe
                     displayMsg: 'Showing {0} - {1} of {2} total records',
                     emptyMsg: 'No Records',
                     table_name: 'tra_gmp_applications',
-                    inspection_type_id:  '2,3',
+                    inspection_type_id:  '2,3,4',
                     beforeLoad: function () {
                         this.up('grid').fireEvent('refresh', this);
                     }
@@ -37,7 +37,7 @@ Ext.define('Admin.view.gmpapplications.views.grids.GmpInspectionSchedulingDeskRe
                     action: 'process_submission_btn',
                     winWidth: '50%',
                     gridXtype: 'gmpinspectionschedulingdeskreviewgrid',
-                    gmp_inspection_type: '2,3'
+                    gmp_inspection_type: '2,3,4'
                 }
             ]
         }

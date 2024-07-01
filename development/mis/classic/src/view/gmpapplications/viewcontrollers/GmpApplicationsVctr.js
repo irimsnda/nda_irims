@@ -1482,11 +1482,11 @@ addInspectionType: function (button) {
             motherPnl.getViewModel().set('atEnd', true);
             if(status_type_id == 1 || status_type_id == 2){
                 wizardPnl.down('button[name=receive_invoicebtn]').setVisible(true);
-                wizardPnl.down('button[name=print_invoice]').setVisible(true);
+                wizardPnl.down('button[name=print_invoice]').setVisible(false);
             }
             else{
                 wizardPnl.down('button[name=receive_invoicebtn]').setVisible(true);
-                wizardPnl.down('button[name=print_invoice]').setVisible(true);
+                wizardPnl.down('button[name=print_invoice]').setVisible(false);
             }
         } else {
             wizardPnl.down('button[name=save_screening_btn]').setDisabled(true);

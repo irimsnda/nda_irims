@@ -1,10 +1,10 @@
 /**
  * Created by Kip on 5/6/2019.
  */
-Ext.define('Admin.view.gvpapplications.views.grids.ManufacturersSelectionGrid', {
+Ext.define('Admin.view.gvpapplications.views.grids.GvpManufacturersSelectionGrid', {
     extend: 'Ext.grid.Panel',
     controller: 'gvpapplicationsvctr',
-    xtype: 'manufacturersselectiongrid',
+    xtype: 'gvpmanufacturersselectiongrid',
     autoScroll: true,
     autoHeight: true,
     frame: true,

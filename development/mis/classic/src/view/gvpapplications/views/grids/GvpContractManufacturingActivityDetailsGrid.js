@@ -1,10 +1,10 @@
 /**
  * Created by Kip on 12/17/2018.
  */
-Ext.define('Admin.view.gvpapplications.views.grids.ContractManufacturingActivityDetailsGrid', {
+Ext.define('Admin.view.gvpapplications.views.grids.GvpContractManufacturingActivityDetailsGrid', {
     extend: 'Ext.grid.Panel',
     controller: 'gvpapplicationsvctr',
-    xtype: 'contractmanufacturingactivitydetailsgrid',
+    xtype: 'gvpcontractmanufacturingactivitydetailsgrid',
     cls: 'dashboard-todo-list',
     autoScroll: true,
     autoHeight: true,

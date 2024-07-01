@@ -19,6 +19,7 @@ Ext.define('Admin.view.gmpapplications.views.sharedinterfaces.panels.SingleGmpAp
                     {
                    xtype:'tabpanel',
                    layout: 'fit',
+                   itemId:'mainispectiontabpanel',
                    items: [{
                             xtype: 'gmpappdocuploadsgenericgrid',
                             title: 'Inspection Documents'
@@ -26,6 +27,7 @@ Ext.define('Admin.view.gmpapplications.views.sharedinterfaces.panels.SingleGmpAp
                             {
                             title: 'GMP Inspection Report',
                             region: 'center',
+                            itemId:'inspectionreportTabPanel',
                             name: 'inspectionreportTabPanel',
                             itemId:'inspectionreportTabPanel',
                             xtype: 'tabpanel',

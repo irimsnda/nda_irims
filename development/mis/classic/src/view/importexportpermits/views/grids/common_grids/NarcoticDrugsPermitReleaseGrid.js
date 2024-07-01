@@ -97,6 +97,8 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.NarcoticDrug
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 0,
                         handler: 'editpreviewNarcoticsPermitinformation'
+                    },{
+                         xtype: 'transitionsbtn'
                     }
                 ]
             }

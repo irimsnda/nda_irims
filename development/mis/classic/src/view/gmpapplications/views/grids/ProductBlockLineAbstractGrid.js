@@ -25,7 +25,16 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductBlockLineAbstractGrid'
                 text: 'Inspection Manufacturing Category',
                 flex: 2,
                 tdCls: 'wrap-text'
-            },{
+            },
+            {
+                xtype: 'gridcolumn',
+                dataIndex: 'general_manufacturing_activity_type',
+                text: 'General Manufacturing Activity Type',
+                flex: 2,
+                hidden:true,
+                tdCls: 'wrap-text'
+            },
+            {
                 xtype: 'gridcolumn',
                 dataIndex: 'inspection_manufacturing_activity',
                 hidden:true,

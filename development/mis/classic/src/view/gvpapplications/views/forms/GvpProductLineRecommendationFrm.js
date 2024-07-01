@@ -2,7 +2,7 @@
  * Created by Kip on 1/5/2019.
  */
 Ext.define('Admin.view.gvpapplications.views.forms.GvpProductLineRecommendationFrm', {
-    extend: 'Admin.view.gvpapplications.views.forms.ProductLineAbstractFrm',
+    extend: 'Admin.view.gvpapplications.views.forms.GvpProductLineAbstractFrm',
     xtype: 'gvpproductlinerecommendationfrm',
     scrollable:true,
     listeners: {

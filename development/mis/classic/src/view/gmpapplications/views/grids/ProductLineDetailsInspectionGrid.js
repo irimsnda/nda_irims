@@ -2,8 +2,7 @@
  * Created by Kip on 1/5/2019.
  */
 Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsInspectionGrid', {
-   
-   extend: 'Admin.view.gmpapplications.views.grids.ProductBlockLineAbstractGrid',
+extend: 'Admin.view.gmpapplications.views.grids.ProductBlockLineAbstractGrid',
     controller: 'gmpapplicationsvctr',
     xtype: 'productlinedetailsinspectiongrid',
     cls: 'dashboard-todo-list',

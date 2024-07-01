@@ -12,6 +12,7 @@ Ext.define('Admin.view.revenuemanagement.views.panels.GepgBillInvoicePostingPnl'
             title: 'Payments Remittances'
         },{
             xtype: 'postpaymentbillpostinggrid',
+            hidden:true,
             title: 'Post Payment Requests'
         },{
             xtype: 'gepgbillinvoicepostinggrid',

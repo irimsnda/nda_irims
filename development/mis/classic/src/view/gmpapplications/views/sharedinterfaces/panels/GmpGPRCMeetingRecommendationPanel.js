@@ -80,6 +80,7 @@ Ext.define('Admin.view.gmpapplications.views.sharedinterfaces.panels.GmpGPRCMeet
         {
             region: 'center',
             xtype:'tabpanel',
+            itemId:'mainispectiontabpanel',
             layout: 'fit',
             items: [
                 {
@@ -89,6 +90,7 @@ Ext.define('Admin.view.gmpapplications.views.sharedinterfaces.panels.GmpGPRCMeet
                  {
                     title: 'GMP Inspection Report',
                     region: 'center',
+                    itemId:'inspectionreportTabPanel',
                     name: 'inspectionreportTabPanel',
                     itemId:'inspectionreportTabPanel',
                     xtype: 'tabpanel',
@@ -168,6 +170,7 @@ Ext.define('Admin.view.gmpapplications.views.sharedinterfaces.panels.GmpGPRCMeet
                 title:'GMP Online Assessment'
             }, {
                 xtype: 'productscreeninggrid',
+                hidden:true,
                 title: 'Inspection Checklist'
             }
             ]

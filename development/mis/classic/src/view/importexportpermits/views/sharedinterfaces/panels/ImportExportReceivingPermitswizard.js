@@ -155,7 +155,7 @@ Ext.define(
 
       {
         xtype: "appinvoicepaymentspanel",
-        title: "Invoicing",
+        //title: "Invoicing",
       },
       {
         xtype: "hiddenfield",

@@ -1,9 +1,9 @@
 /**
  * Created by Kip on 5/14/2019.
  */
-Ext.define('Admin.view.gvpapplications.views.grids.ProductLineDetailsManagerRecommGrid', {
+Ext.define('Admin.view.gvpapplications.views.grids.GvpProductLineDetailsManagerRecommGrid', {
     extend: 'Admin.view.gvpapplications.views.grids.GvpProductLineAbstractGrid',
-    xtype: 'productlinedetailsmanagerrecommgrid',
+    xtype: 'gvpproductlinedetailsmanagerrecommgrid',
     controller: 'gvpapplicationsvctr',
     tbar: [{
         xtype: 'hiddenfield',

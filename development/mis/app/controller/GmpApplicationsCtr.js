@@ -157,6 +157,9 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                 afterrender: 'prepareNewGmpSingleApproval'
             },
 
+            // 'productlinedetailsgrid': {
+            //     afterrender: 'productLineDetailsGridDefinition'
+            // },
 
             //NEW
             'newgmpreceiving': {
@@ -669,6 +672,46 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                     toastr.error(resp.message, 'Failure Response');
                 }
             });
+        }
+
+    },
+
+    productLineDetailsGridDefinition: function (grid) {
+
+        var mainTabPnl = this.getMainTabPanel(),
+            activeTab = mainTabPnl.getActiveTab();
+        console.log(2222);
+        if (activeTab.down('combo[name=gmp_type_id]')) {
+
+             console.log(gmp_type_id);
+            gmp_type_id = activeTab.down('combo[name=gmp_type_id]').getValue();
+            grid.columns.forEach(function(column) {
+                if(gmp_type_id==2 || gmp_type_id===2){
+                            if (column.dataIndex === 'general_manufacturing_activity_type') {
+                                column.setHidden(false);
+                            } 
+                              
+                          }else{
+                            if (column.dataIndex === 'general_manufacturing_activity_type') {
+                                column.setHidden(true);
+                            } 
+                          }
+            });
+        }else{
+            gmp_type_id = Ext.ComponentQuery.query("#mansiteappmoredetailswizard")[0].down('combo[name=gmp_type_id]').getValue();
+            grid.columns.forEach(function(column) {
+                if(gmp_type_id==2 || gmp_type_id===2){
+                            if (column.dataIndex === 'general_manufacturing_activity_type') {
+                                column.setHidden(false);
+                            } 
+                              
+                          }else{
+                            if (column.dataIndex === 'general_manufacturing_activity_type') {
+                                column.setHidden(true);
+                            } 
+                          }
+                });
+
         }
 
     },
@@ -1963,9 +2006,9 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                         if (results) {
                             if (results.gmp_type_id == 2 || results.gmp_type_id === 2) {//domestic
                                 if(sub_module_id !=117){
-                                   manufacturingSiteFrm.getForm().getFields().each(function (field) {
-                                        field.setReadOnly(true);
-                                    }); 
+                                   // manufacturingSiteFrm.getForm().getFields().each(function (field) {
+                                   //      field.setReadOnly(true);
+                                   //  }); 
                                 }
                                 //manufacturingSiteFrm.down('textfield[name=premise_reg_no]').setVisible(true);
                                 //premiseFrm.down('button[action=search_premise]').setDisabled(false);
@@ -2083,7 +2126,8 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             Ext.getBody().unmask();
             //It's a new application
         }
-    }, prepareNewGmpPayments: function () {
+    }, 
+    prepareNewGmpPayments: function () {
 
         Ext.getBody().mask('Please wait...');
         var me = this,
@@ -2613,6 +2657,7 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             otherDetailsFrm = activeTab.down('form'), // wizzardFrm
                     
             productlinedetailsgrid = activeTab.down('productlinedetailsinspectiongrid'),
+            //productlinedetailsinspectiongrid = activeTab.down('productlinedetailsinspectiongrid'),
             applicant_details = Ext.ComponentQuery.query('displayfield[name=applicant_details]')[0];
 
             inspectorsGrid = Ext.ComponentQuery.query('grid[name=inspectorsGrid]')[0];
@@ -2625,12 +2670,22 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
             gmp_type_txt_fld = activeTab.down('displayfield[name=gmp_type_txt]');
 
-
-           
       
         if (sub_module_id == 6) {
             activeTab.down('button[name=prev_productline_details]').setVisible(true);
         }
+        if (sub_module_id == 117) {
+          if(Ext.ComponentQuery.query("#mainispectiontabpanel")[0]){
+            if(Ext.ComponentQuery.query("#inspectionreportTabPanel")[0]){
+             Ext.ComponentQuery.query("#inspectionreportTabPanel")[0].destroy();
+            }
+            Ext.ComponentQuery.query("#mainispectiontabpanel")[0].add(1, {
+                    title: 'Inspection Checklist',
+                    xtype: 'productscreeninggrid'
+                });
+           }
+         }
+        
         inspectionscaparequestsgrid.down('hiddenfield[name=section_id]').setValue(section_id);
         inspectionscaparequestsgrid.down('hiddenfield[name=sub_module_id]').setValue(sub_module_id);
         inspectionscaparequestsgrid.down('hiddenfield[name=module_id]').setValue(module_id);
@@ -2673,6 +2728,44 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                             activeTab.down('hiddenfield[name=premise_id]').setValue(results.premise_id);
                             activeTab.down('hiddenfield[name=manufacturing_site_id]').setValue(results.premise_id);
                             activeTab.down('hiddenfield[name=applicant_id]').setValue(results.applicant_id);
+
+                            if (sub_module_id == 117) {
+                                // Ext.ComponentQuery.query("#inspectionreportTabPanel")[0].destroy();
+                                // Ext.ComponentQuery.query("#mainispectiontabpanel")[0].add(1, {
+                                //     title: 'Inspection Checklist',
+                                //     xtype: 'productscreeninggrid'
+                                // });
+                             if(Ext.ComponentQuery.query("#mainispectiontabpanel")[0]){
+                                Ext.ComponentQuery.query("#mainispectiontabpanel")[0].add(2, {
+                                    title: 'Manufacturing Site Product Line Details Recommendations',
+                                    xtype: 'productlinedetailsinspectiongrid',
+                                    listeners: {
+                                        afterrender: function(grid) {
+                                            var column = grid.columns.find(col => col.dataIndex === 'general_manufacturing_activity_type');
+                                            if (results.gmp_type_id == 2 || results.gmp_type_id === 2) {
+                                                column.setHidden(false);
+                                            } else {
+                                                column.setHidden(true);
+                                            }
+                                           
+                                        }
+                                    }
+                                });
+                            }
+                          }
+
+                           if(activeTab.down('productlinedetailsinspectiongrid')){
+                            if (results.gmp_type_id == 2 || results.gmp_type_id === 2) {
+                                activeTab.down('productlinedetailsinspectiongrid').columns.find(col => col.dataIndex === 'general_manufacturing_activity_type').setHidden(false);
+                            } else {
+                                 activeTab.down('productlinedetailsinspectiongrid').columns.find(col => col.dataIndex === 'general_manufacturing_activity_type').setHidden(true);
+                            }
+                                
+                          }
+
+                          
+
+
                             //  console.log(results.section_id);
                             // if (results.section_id==5 || results.section_id===5) {
                             //   if(activeTab.down('productlinedetailsinspectiongrid')){
@@ -2837,7 +2930,6 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
            // site_details = otherDetailsFrm.down('displayfield[name=premise_details]'),
             gmp_type_id_fld = activeTab.down('hiddenfield[name=gmp_type_id]'),
             gmp_type_txt_fld = activeTab.down('displayfield[name=gmp_type_txt]');
-            console.log(applicant_details);
         //site_details.setFieldLabel('Name of Manufacturing facility');
         app_doc_types_store.removeAll();
         app_doc_types_store.load({
@@ -2849,6 +2941,21 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         if (sub_module_id == 6) {
             activeTab.down('button[name=prev_productline_details]').setVisible(true);
         }
+        if (sub_module_id == 117) {
+         if(Ext.ComponentQuery.query("#mainispectiontabpanel")[0]){
+            Ext.ComponentQuery.query("#inspectionreportTabPanel")[0].destroy();
+            Ext.ComponentQuery.query("#mainispectiontabpanel")[0].add(1, {
+                    title: 'Inspection Checklist',
+                    xtype: 'productscreeninggrid'
+            });
+          }
+          if(activeTab.down('button[name=non_compliance]')){
+             activeTab.down('button[name=non_compliance]').setVisible(false);
+          }
+        }
+
+
+
         if (application_id) {
             Ext.Ajax.request({
                 method: 'GET',
@@ -2882,6 +2989,30 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
                                site_id: results.premise_id
                             });
                             productLine_store.load();
+
+                            // if (sub_module_id == 117) {
+                            //     Ext.ComponentQuery.query("#inspectionreportTabPanel")[0].destroy();
+                            //     Ext.ComponentQuery.query("#mainispectiontabpanel")[0].add(1, {
+                            //         title: 'Inspection Checklist',
+                            //         xtype: 'productscreeninggrid'
+                            //     });
+
+                            //     Ext.ComponentQuery.query("#mainispectiontabpanel")[0].add(2, {
+                            //         title: 'Manufacturing Site Product Line Details Recommendations',
+                            //         xtype: 'productlinedetailsinspectiongrid',
+                            //         listeners: {
+                            //             afterrender: function(grid) {
+                            //                 var column = grid.columns.find(col => col.dataIndex === 'general_manufacturing_activity_type');
+                            //                 if (results.gmp_type_id == 2 || results.gmp_type_id === 2) {
+                            //                     column.setHidden(false);
+                            //                 } else {
+                            //                     column.setHidden(true);
+                            //                 }
+                                           
+                            //             }
+                            //         }
+                            //     });
+                            //}
                         
                         }
                     } else {
@@ -2954,6 +3085,18 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         });
         if (sub_module_id == 6) {
             activeTab.down('button[name=prev_productline_details]').setVisible(true);
+        }
+         if (sub_module_id == 117) {
+          if(Ext.ComponentQuery.query("#mainispectiontabpanel")[0]){
+            Ext.ComponentQuery.query("#inspectionreportTabPanel")[0].destroy();
+            Ext.ComponentQuery.query("#mainispectiontabpanel")[0].add(1, {
+                    title: 'Inspection Checklist',
+                    xtype: 'productscreeninggrid'
+            });
+          }
+          if(activeTab.down('button[name=non_compliance]')){
+             activeTab.down('button[name=non_compliance]').setVisible(false);
+          }
         }
         if (application_id) {
             Ext.Ajax.request({
@@ -4438,6 +4581,8 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
         return valid;
     },
 
+
+
     showManagerInspectionApplicationSubmissionWin: function (btn) {
         Ext.getBody().mask('Please wait...');
         var mainTabPanel = this.getMainTabPanel(),
@@ -4445,7 +4590,10 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             activeTab = mainTabPanel.getActiveTab(),
             inspectorsGrid = activeTab.down('grid[name=inspectorsGrid]'),
             inspectorsStore = inspectorsGrid.getStore(),
+            workflow_stage_id = activeTab.down('hiddenfield[name=workflow_stage_id]').getValue(),
+            process_id = activeTab.down('hiddenfield[name=process_id]').getValue(),
             module_id = activeTab.down('hiddenfield[name=module_id]').getValue(),
+            sub_module_id = activeTab.down('hiddenfield[name=sub_module_id]').getValue(),
             section_id = activeTab.down('hiddenfield[name=section_id]').getValue(),
             application_id = activeTab.down('hiddenfield[name=active_application_id]').getValue(),
             application_code = activeTab.down('hiddenfield[name=active_application_code]').getValue(),
@@ -4469,12 +4617,19 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             var sm = grid.getSelectionModel(),
             selected_records = sm.getSelection();
             var selected_appcodes = [];
+            var selected_appIds = [];
         
             Ext.each(selected_records, function (record) {
                 var application_code = record.get('application_code');
+                var active_application_id = record.get('active_application_id');
                 if (application_code) {
                     selected_appcodes.push(application_code);
                 }
+                if (active_application_id) {
+                    selected_appIds.push(active_application_id);
+                }
+
+                    
             });
 
              if (selected_appcodes.length===0 || selected_appcodes.length==0) {
@@ -4488,12 +4643,127 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
             toastr.warning('No lead inspector found!!', 'Warning Response');
             return false;
         }
+         
         if (valid == true || valid === true) {
+           var isPopupSubmission = validateIsPopupSubmission(workflow_stage_id);
+           if(!isPopupSubmission){
+                this.directWorkflowSubmission(mainTabPanel,activeTab,table_name,selected_appcodes,selected_appIds,application_code,application_id,workflow_stage_id,process_id,module_id,sub_module_id,section_id,32);
+            }else{
             showWorkflowSubmissionWin(application_id, application_code, table_name, 'workflowsubmissionsinspectionsfrm', winWidth, storeID, extraParams, 'gmpmanagerinspectiongrid', 'all');
+          }
         } else {
             Ext.getBody().unmask();
         }
     },
+
+     directWorkflowSubmission: function (mainTabPanel,activeTab,table_name,selected_appcodes,selected_appIds,application_code,application_id,workflow_stage_id,process_id,module_id,sub_module_id,section_id,workflowaction_type_id) {
+         //var workflowaction_type_id = 1, 
+            intrayStore = Ext.getStore('intraystr'),
+            outtrayStore = Ext.getStore('outtraystr'),
+            onlineapplicationdashboardgridstr= Ext.getStore('onlineapplicationdashboardgridstr');  
+          Ext.Ajax.request({
+            url: 'workflow/getApplicationNextStageActionDetails',
+            method: 'POST',
+            params: {
+                application_code:application_code,
+                application_id:application_id,
+                workflow_stage_id:workflow_stage_id,
+                workflowaction_type_id:workflowaction_type_id,
+                table_name : table_name,
+                module_id:module_id,
+                sub_module_id:sub_module_id
+            },
+            headers: {
+                'Authorization': 'Bearer ' + access_token,
+                'X-CSRF-Token': token
+            },
+            success: function (response) {
+               
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message,
+                    success = resp.success;
+                    if (success == true || success === true) {
+                        var results = resp.results,
+                            curr_stage_id = results.stage_id,
+                            action = results.action_id, 
+                            next_stage = results.nextstage_id;
+                          
+                         Ext.getBody().unmask();  
+                        Ext.MessageBox.confirm('Application Submission', 'Do you want to submit selected Application(s)?', function (button) {
+                            if (button === 'yes') {
+                                Ext.getBody().mask('Submitting Application wait...');
+                                Ext.Ajax.request({
+                                    url: 'workflow/handleManagersApplicationSubmissions',
+                                    method: 'POST',
+                                    params: {
+                                        selected:JSON.stringify(selected_appIds),
+                                        selected_appCodes:JSON.stringify(selected_appcodes),
+                                        application_code:application_code,
+                                        application_id:application_id,
+                                        process_id:process_id,
+                                        workflowaction_type_id:workflowaction_type_id,
+                                        table_name : table_name,
+                                        module_id:module_id,
+                                        sub_module_id:sub_module_id,
+                                        section_id:section_id,
+                                        curr_stage_id:curr_stage_id,
+                                        next_stage:next_stage,
+                                        action:action
+                                    },
+                                    headers: {
+                                        'Authorization': 'Bearer ' + access_token,
+                                        'X-CSRF-Token': token
+                                    },
+                                    success: function (response) {
+                                       
+                                        var resp = Ext.JSON.decode(response.responseText),
+                                            message = resp.message,
+                                            success = resp.success;
+                                            if (success == true || success === true) {
+                                                toastr.success(message, "Success Response");
+                                                //store.load();
+                                                intrayStore.load();
+                                                outtrayStore.load();
+                                                externaluserintraystr = Ext.getStore('externaluserintraystr');
+                                                externaluserintraystr.load();
+                                                //onlineapplicationdashboardgridstr.load();
+                                                //win.close();
+                                                closeActiveWindow() ;
+                                                mainTabPanel.remove(activeTab);
+                                                
+                                            } Ext.getBody().unmask();
+                                    },
+                                    failure: function (response) {
+                                                
+                                                var resp = Ext.JSON.decode(response.responseText),
+                                                    message = resp.message;
+                                                toastr.error(message, 'Failure Response');
+                                                Ext.getBody().unmask();
+                                    }
+                                });
+                            }
+                        })
+                    } else {
+                        toastr.error(message, 'Failure Response');
+                    }
+                Ext.getBody().unmask();
+            },
+            failure: function (response) {
+                
+                var resp = Ext.JSON.decode(response.responseText),
+                    message = resp.message;
+                toastr.error(message, 'Failure Response');
+                Ext.getBody().unmask();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Ext.getBody().unmask();
+                toastr.error('Error fetching data: ' + errorThrown, 'Error Response');
+                
+            }
+        });
+    },
+
+
     
     showInspectionApplicationSubmissionWin: function (btn) {
         Ext.getBody().mask('Please wait...');
@@ -4983,16 +5253,16 @@ Ext.define('Admin.controller.GmpApplicationsCtr', {
 
                     productLinesGrid.getStore().load();
                     gmpProductDetailsGrid.getStore().load();
-                    mdproductline_store=mdproductLinesGrid.getStore();
-                    if(mdproductline_store){
-                        mdproductline_store.getProxy().extraParams={
-                        manufacturing_site_id: siteDetails.manufacturing_site_id
-                        };
-                        if (mdproductline_store) {
-                                mdproductline_store.removeAll();
-                                mdproductline_store.load();
-                        }
-                    }
+                    // mdproductline_store=mdproductLinesGrid.getStore();
+                    // if(mdproductline_store){
+                    //     mdproductline_store.getProxy().extraParams={
+                    //     manufacturing_site_id: siteDetails.manufacturing_site_id
+                    //     };
+                    //     if (mdproductline_store) {
+                    //             mdproductline_store.removeAll();
+                    //             mdproductline_store.load();
+                    //     }
+                    // }
                     documents_grid = wizardPnl.down('previewproductDocUploadsGrid');
                     documents_grid.down('hiddenfield[name=process_id]').setValue(process_id);
                     documents_grid.down('hiddenfield[name=section_id]').setValue(section_id);

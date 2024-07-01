@@ -1,10 +1,10 @@
 /**
  * Created by Kip on 12/18/2018.
  */
-Ext.define('Admin.view.gvpapplications.views.grids.MdProductLineDetailsAddGrid', {
-    extend: 'Admin.view.gvpapplications.views.grids.MdProductLineAbstractGrid',
+Ext.define('Admin.view.gvpapplications.views.grids.ProductLineDetailsAddGrid', {
+    extend: 'Admin.view.gvpapplications.views.grids.GvpProductLineAbstractGrid',
     controller: 'gvpapplicationsvctr',
-    xtype: 'mdproductLineDetailsaddgrid',
+    xtype: 'gvpproductLineDetailsaddgrid',
 
 
 cls: 'dashboard-todo-list',
@@ -124,6 +124,7 @@ cls: 'dashboard-todo-list',
                     action_url: 'gvpapplications/deleteGvpApplicationRecord',
                     action: 'actual_delete',
                     handler: 'doDeleteGvpApplicationWidgetParam',
+                    //hidden: Admin.global.GlobalVars.checkForProcessVisibility('actual_delete')
                 }];
             }
         }

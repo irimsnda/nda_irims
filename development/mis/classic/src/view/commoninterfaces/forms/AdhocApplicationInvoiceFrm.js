@@ -1,11 +1,11 @@
 /**
  * Created by Kip on 11/27/2018.
  */
-Ext.define('Admin.view.workflowmanagement.views.forms.OnlineApplicationReceiceInvoiceFrm', {
+Ext.define('Admin.view.commoninterfaces.forms.AdhocApplicationInvoiceFrm', {
     extend: 'Ext.form.Panel',
-    xtype: 'onlineapplicationreceiceinvoicefrm',
+    xtype: 'adhocapplicationinvoicefrm',
     autoScroll: true,
-    controller: 'revenuemanagementvctr',
+    controller: 'commoninterfacesVctr',
     layout: 'form',
     frame: true,
     fieldDefaults: {
@@ -230,7 +230,8 @@ Ext.define('Admin.view.workflowmanagement.views.forms.OnlineApplicationReceiceIn
 			}
 		},{
 				xtype:'numberfield',
-				name:'cost',readOnly: true,
+				name:'cost',
+                //readOnly: true,
 				fieldLabel: 'Cost'
 		},{
 				xtype: 'combo',
@@ -298,8 +299,9 @@ Ext.define('Admin.view.workflowmanagement.views.forms.OnlineApplicationReceiceIn
                     name: 'savegenerate_invoice',
                     action: 'submit',
                     formBind: true,
+                    storeId:'applicationgenerateinvoicesgridstr',
                     ui: 'soft-purple',
-                    action_url: 'workflow/saveonlineapplicationreceiceinvoiceDetails'
+                    action_url: 'revenuemanagement/saveAdhocInvoiceDetails'
                  //   action_url: 'revenue_management/saveonlineapplicationreceiceinvoiceDetails'
                 }, {
                     text: 'Close',

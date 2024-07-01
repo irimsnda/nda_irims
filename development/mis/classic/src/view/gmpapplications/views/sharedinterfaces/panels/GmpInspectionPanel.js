@@ -14,6 +14,7 @@
            // title: 'Manufacturing Site Inspection Process',
             region: 'center',
             xtype:'tabpanel',
+            itemId:'mainispectiontabpanel',
             layout: 'fit',
             items: [
                 {
@@ -169,7 +170,8 @@
                                         beforeLoad: function () {
                                             var store = this.store,
                                                 grid = this.up('grid'),
-                                                inspection_id = grid.up('gmpinspectionpanel').down('form').down('hiddenfield[name=id]').getValue();
+                                                inspection_id = grid.up('gmpinspectionpanel').down('inspectiondetailsupdatefrm').down('hiddenfield[name=id]').getValue();
+                                                //inspection_id = grid.up('gmpinspectionpanel').down('form').down('hiddenfield[name=id]').getValue();
                                             store.getProxy().extraParams = {
                                                 inspection_id: inspection_id
                                             };

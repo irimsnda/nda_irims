@@ -832,84 +832,171 @@ static function getPermitSignatoryDetails()
         return $receipt_no;
     }
 
-    static function getApplicationPaymentsRunningBalance($application_code, $invoice_id)
-    {
-        //get invoiced amount
-        $qry1 = DB::table('tra_invoice_details as t1')
-            ->join('tra_application_invoices as t2', 't1.invoice_id', 't2.id')
-            ->select(DB::raw("SUM((t1.total_element_amount*t1.paying_exchange_rate)) as invoiced_amount, SUM(t1.total_element_amount) as total_element_amount,t1.paying_currency_id,t1.paying_exchange_rate"));
+  //   static function getApplicationPaymentsRunningBalance($application_code, $invoice_id)
+  //   {
+  //       //get invoiced amount
+  //       $qry1 = DB::table('tra_invoice_details as t1')
+  //           ->join('tra_application_invoices as t2', 't1.invoice_id', 't2.id')
+  //           ->select(DB::raw("SUM((t1.total_element_amount*t1.paying_exchange_rate)) as invoiced_amount, SUM(t1.total_element_amount) as total_element_amount,t1.paying_currency_id,t1.paying_exchange_rate,t1.currency_id"));
 
-        if(validateIsNumeric($application_code)){
-            $qry1->where('t2.application_code', $application_code)
-                ->groupBy('t2.application_code');
-        } if(validateIsNumeric($invoice_id)){
-            $qry1->where('t2.id', $invoice_id)
-                ->groupBy('t2.id');
-        }
+  //       if(validateIsNumeric($application_code)){
+  //           $qry1->where('t2.application_code', $application_code)
+  //               ->groupBy('t2.application_code');
+  //       } if(validateIsNumeric($invoice_id)){
+  //           $qry1->where('t2.id', $invoice_id)
+  //           ->groupBy('t2.id');
+  //       }
         
            
-        $results1 = $qry1->first();
-        $invoiced_amount = 0;
-        $paying_exchange_rate = 0;
-        $paying_exchange_rate = 0;
-        $paying_currency_id = 0;
-        $total_element_amount = 0;
-        if (!is_null($results1)) {
-            $invoiced_amount = $results1->invoiced_amount;
-            $paying_exchange_rate = $results1->paying_exchange_rate;
-            $total_element_amount = $results1->total_element_amount;
-            $paying_currency_id = $results1->paying_currency_id;
-        }
-        //get total payments
-        $qry2 = DB::table('tra_payments as t2')
-            ->select(DB::raw("SUM((t2.amount_paid*t2.exchange_rate)) as paid_amount,exchange_rate,sum(amount_paid) as amount_paid, currency_id "));
-
-        if(validateIsNumeric($application_code)){
-            $qry2->where('t2.application_code', $application_code)
-                ->groupBy('t2.application_code');
-        }
-         if(validateIsNumeric($invoice_id)){
-            $qry2->where('t2.invoice_id', $invoice_id)
-                ->groupBy('t2.invoice_id');
-        }
-			
-        $results2 = $qry2->first();
+  //       $results1 = $qry1->first();
        
-        $amount_paid = 0;
-        $paid_amount = 0;
-        $currency_id = 0;
-        $currency_name = '';
-        if ($results2) {
-            $paid_amount = $results2->paid_amount;
-            $amount_paid = $results2->amount_paid;
-            $exchange_rate = $results2->exchange_rate;
-            $currency_id = $results2->currency_id;
-			if($paying_exchange_rate > $exchange_rate){
-				$invoiced_amount = $total_element_amount*$exchange_rate;
-			}
-        }
+  //       $invoiced_amount = 0;
+  //       $paying_exchange_rate = 0;
+  //       $paying_exchange_rate = 0;
+  //       $paying_currency_id = 0;
+  //       $total_element_amount = 0;
+  //       if (!is_null($results1)) {
+  //           $invoiced_amount = $results1->invoiced_amount;
+  //           $paying_exchange_rate = $results1->paying_exchange_rate;
+  //           $total_element_amount = $results1->total_element_amount;
+  //           $paying_currency_id = $results1->paying_currency_id;
+  //       }
 
-		if($paying_currency_id == $currency_id){
-			$running_balance =  $total_element_amount-$amount_paid;
-		}
-		else{
-			$running_balance =  $invoiced_amount-$paid_amount;
-		}
-		//currency 
+  //       //get total payments
+  //       $qry2 = DB::table('tra_payments as t2')
+  //           ->select(DB::raw("SUM((t2.amount_paid*t2.exchange_rate)) as paid_amount,exchange_rate,sum(amount_paid) as amount_paid, currency_id "));
+
+  //       if(validateIsNumeric($application_code)){
+  //           $qry2->where('t2.application_code', $application_code)
+  //               ->groupBy('t2.application_code');
+  //       }
+  //        if(validateIsNumeric($invoice_id)){
+  //           $qry2->where('t2.invoice_id', $invoice_id)
+  //               ->groupBy('t2.invoice_id');
+  //       }
+			
+  //       $results2 = $qry2->first();
+
+      
+  //       $amount_paid = 0;
+  //       $paid_amount = 0;
+  //       $currency_id = $results1->currency_id;
+  //       $currency_name = '';
+  //       if ($results2) {
+  //           $paid_amount = $results2->paid_amount;
+  //           $amount_paid = $results2->amount_paid;
+  //           $exchange_rate = $results2->exchange_rate;
+  //           $currency_id = $results2->currency_id;
+		// 	if($paying_exchange_rate > $exchange_rate){
+		// 		$invoiced_amount = $total_element_amount*$exchange_rate;
+		// 	}
+  //       }
+
+		// if($paying_currency_id == $currency_id){
+		// 	$running_balance =  $total_element_amount-$amount_paid;
+		// }
+		// else{
+		// 	$running_balance =  $invoiced_amount-$paid_amount;
+		// }
+		// //currency 
       
 	  
-		if(validateIsNumeric($currency_id)){
-			$currency_name = getSingleRecordColValue('par_currencies', array('id'=>$currency_id), 'name');
+		// if(validateIsNumeric($currency_id)){
+		// 	$currency_name = getSingleRecordColValue('par_currencies', array('id'=>$currency_id), 'name');
         
-		}
-		$details = array(
-            'invoice_amount' => round($invoiced_amount,2),
-            'running_balance' => round($running_balance,2),
-            'amount_paid' => round($amount_paid,2),
-            'currency_name' => $currency_name,
-        );
-        return $details;
-    }
+		// }
+		// $details = array(
+  //           'invoice_amount' => round($invoiced_amount,2),
+  //           'running_balance' => round($running_balance,2),
+  //           'amount_paid' => round($amount_paid,2),
+  //           'currency_name' => $currency_name,
+  //       );
+  //       return $details;
+  //   }
+
+    static function getApplicationPaymentsRunningBalance($application_code, $invoice_id)
+        {
+            // Initialize variables
+            $invoiced_amount = 0;
+            $paying_exchange_rate = 0;
+            $paying_currency_id = 0;
+            $total_element_amount = 0;
+            $amount_paid = 0;
+            $paid_amount = 0;
+            $currency_id = 0;
+            $currency_name = '';
+
+            // Get invoiced amount details
+            $qry1 = DB::table('tra_invoice_details as t1')
+                ->join('tra_application_invoices as t2', 't1.invoice_id', 't2.id')
+                ->select(DB::raw("t1.total_element_amount * t1.paying_exchange_rate as invoiced_amount, t1.total_element_amount, t1.paying_currency_id, t1.paying_exchange_rate, t1.currency_id"));
+
+            if (validateIsNumeric($application_code)) {
+                $qry1->where('t2.application_code', $application_code);
+            }
+            if (validateIsNumeric($invoice_id)) {
+                $qry1->where('t2.id', $invoice_id);
+            }
+
+            $results1 = $qry1->get();
+
+            // Aggregate invoiced amount details
+            foreach ($results1 as $result) {
+                $invoiced_amount += $result->invoiced_amount;
+                $total_element_amount += $result->total_element_amount;
+                $paying_exchange_rate = $result->paying_exchange_rate;
+                $paying_currency_id = $result->paying_currency_id;
+                $currency_id = $result->currency_id;
+            }
+
+            // Get total payments details
+            $qry2 = DB::table('tra_payments as t2')
+                ->select(DB::raw("t2.amount_paid * t2.exchange_rate as paid_amount, t2.amount_paid, t2.exchange_rate, t2.currency_id"));
+
+            if (validateIsNumeric($application_code)) {
+                $qry2->where('t2.application_code', $application_code);
+            }
+            if (validateIsNumeric($invoice_id)) {
+                $qry2->where('t2.invoice_id', $invoice_id);
+            }
+
+            $results2 = $qry2->get();
+
+            // Aggregate payment details
+            foreach ($results2 as $result) {
+                $paid_amount += $result->paid_amount;
+                $amount_paid += $result->amount_paid;
+                $exchange_rate = $result->exchange_rate;
+                $currency_id = $result->currency_id;
+
+                if ($paying_exchange_rate > $exchange_rate) {
+                    $invoiced_amount = $total_element_amount * $exchange_rate;
+                }
+            }
+
+            // Calculate running balance
+            if ($paying_currency_id == $currency_id) {
+                $running_balance = $total_element_amount - $amount_paid;
+            } else {
+                $running_balance = $invoiced_amount - $paid_amount;
+            }
+
+            // Get currency name
+            if (validateIsNumeric($currency_id)) {
+                $currency_name = getSingleRecordColValue('par_currencies', ['id' => $currency_id], 'name');
+            }
+
+            // Prepare the details array
+            $details = [
+                'invoice_amount' => round($invoiced_amount, 2),
+                'running_balance' => round($running_balance, 2),
+                'amount_paid' => round($amount_paid, 2),
+                'currency_name' => $currency_name,
+            ];
+
+            return $details;
+        }
+
 
     static function getPermitSignatory()
     {

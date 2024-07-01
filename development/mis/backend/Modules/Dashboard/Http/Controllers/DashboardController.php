@@ -203,6 +203,8 @@ class DashboardController extends Controller
         }
         return response()->json($res);
     }
+
+
     
     public function saveDashCommonData(Request $req)
     {
@@ -559,6 +561,230 @@ public function getApplicationSummaryOverDueTrayItems(Request $request){
         return $res;
 
     }
+public function getUserCompletedAssignments(Request $request){
+    $user_id = $request->input('user_id');
+    $res =$this->getUserTasksCompletedAssignments($request, $user_id);
+     return \response()->json($res);
+}
+public function getActiveUserCompletedAssignments(Request $request){
+     $user_id = $this->user_id;
+    $res= $this->getUserTasksCompletedAssignments($request, $user_id);
+      return \response()->json($res);
+}
+
+public function getUserTasksCompletedAssignments($request, $user_id){
+    
+    $process_id = $request->input('process_id');
+    $module_id = $request->input('module_id');
+
+    
+    $process_id = $request->input('process_id');
+    $module_id = $request->input('module_id');
+    $section_id = $request->input('section_id');
+    $sub_module_id = $request->input('sub_module_id');
+    $workflow_stage_id = $request->input('workflow_stage_id');
+    $received_from = $request->input('received_from');
+    
+    $received_to = $request->input('received_to');
+    try {
+        $filter = $request->input('filter');
+        $filter_string = '';
+        if (isset($filter)) {
+            $filters = json_decode($filter);
+            if ($filters != NULL) {
+                foreach ($filters as $filter) {
+                    switch ($filter->property) {
+                        case 'tracking_no' :
+                            $whereClauses[] = "(t1.tracking_no like '%" . ($filter->value) . "%' OR t1.reference_no like '%" . ($filter->value) . "%' )";
+                            break;
+                        case 'reference_no' :
+                            $whereClauses[] = "(t1.tracking_no like '%" . ($filter->value) . "%' OR t1.reference_no like '%" . ($filter->value) . "%' )";
+                            break;
+                        case 'applicant_name' :
+                            $whereClauses[] = "(t9.name like '%" . ($filter->value) . "%' or t12.name like '%" . ($filter->value) . "%' )";
+                            break;
+                             case 'premises_name' :
+                            $whereClauses[] = "( t12.name like '%" . ($filter->value) . "%' )";
+                            break;
+                            
+                            
+                        
+                    }
+                }
+                $whereClauses = array_filter($whereClauses);
+            }
+            if (!empty($whereClauses)) {
+                $filter_string = implode(' AND ', $whereClauses);
+            }
+        }
+        
+        $qry = DB::table('tra_submissions as t1')
+            ->join('wf_tfdaprocesses as t2', 't1.process_id', '=', 't2.id')
+            ->leftJoin('wf_workflow_stages as t3', 't1.previous_stage', '=', 't3.id')
+            ->join('wf_workflow_stages as t4', 't1.current_stage', '=', 't4.id')
+            ->leftJoin('par_system_statuses as t5', 't1.application_status_id', '=', 't5.id')
+            ->leftJoin('par_submission_urgencies as t6', 't1.urgency', '=', 't6.id')
+            ->leftJoin('users as t7', 't1.usr_from', '=', 't7.id')
+            ->leftJoin('users as t8', 't1.usr_to', '=', 't8.id')
+            ->leftJoin('users as t10', 't1.released_by', '=', 't10.id')
+            ->leftJoin('wb_trader_account as t9', 't1.applicant_id', '=', 't9.id')
+            ->select(DB::raw("t1.*, t2.name as process_name,
+                t3.name as prev_stage, t4.name as workflow_stage,t4.is_general,t5.name as application_status,t6.name as urgencyName,t6.name as urgency_name,
+                CONCAT_WS(' ',decrypt(t7.first_name),decrypt(t7.last_name)) as from_user,CONCAT_WS(' ',decrypt(t8.first_name),decrypt(t8.last_name)) as to_user, CONCAT_WS(' ',decrypt(t8.first_name),decrypt(t8.last_name)) as released_by,TOTAL_WEEKDAYS(t1.date_released, date_received) as time_span, 
+                t9.name as applicant_name"));
+                if (validateIsNumeric($process_id)) {
+                    $qry->where('t1.process_id', $process_id);
+                }
+                if (validateIsNumeric($module_id)) {
+                    $qry->where('t1.module_id', $module_id);
+                }
+                if (validateIsNumeric($section_id)) {
+                    $qry->where('t1.section_id', $section_id);
+                }if (validateIsNumeric($workflow_stage_id)) {
+                    $qry->where('t1.current_stage', $workflow_stage_id);
+                }if (validateIsNumeric($sub_module_id)) {
+                    $qry->where('t1.sub_module_id', $sub_module_id);
+                }
+                if (validateIsNumeric($user_id)) {
+                    $qry->where('t1.released_by', $user_id);
+                }
+
+                if ($filter_string != '') {
+                    $qry->whereRAW($filter_string);
+                }
+                if($received_from != ''){
+                    $received_from = formatDate($received_from);
+        
+                    $qry->whereRAW("date_format(t1.date_released, '%Y-%m-%d') >= '".$received_from."'");
+                }
+                if($received_to != ''){
+                    $received_to = formatDate($received_to);
+                    $qry->whereRAW("date_format(t1.date_released, '%Y-%m-%d') <= '".$received_to."'");
+        
+                } 
+        $qry->where('isDone',1)->orderBy('t1.id', 'desc');
+        $results = $qry->get();
+        $res = array(
+            'success' => true,
+            'results' => $results,
+            'message' => 'All is well'
+        );
+    } 
+    catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return $res;
+}
+
+public function getUserCompletedAssPerformancSummary(Request $request){
+
+    $process_id = $request->input('process_id');
+    $module_id = $request->input('module_id');
+    $section_id = $request->input('section_id');
+    $sub_module_id = $request->input('sub_module_id');
+    $workflow_stage_id = $request->input('workflow_stage_id');
+    $received_from = $request->input('received_from');
+    
+    $received_to = $request->input('received_to');
+    
+    $user_id = $request->input('user_id');
+        
+    $whereClauses = array();
+    $filter = $request->input('filter');
+    $filter_string = '';
+    if (isset($filter)) {
+        $filters = json_decode($filter);
+        if ($filters != NULL) {
+            foreach ($filters as $filter) {
+                switch ($filter->property) {
+                    case 'tracking_no' :
+                        $whereClauses[] = "t1.tracking_no like '%" . ($filter->value) . "%'";
+                        break;
+                    case 'reference_no' :
+                        $whereClauses[] = "t1.reference_no like '%" . ($filter->value) . "%'";
+                        break;
+                    case 'applicant_name' :
+                        $whereClauses[] = "t9.name like '%" . ($filter->value) . "%'";
+                        break;
+                }
+            }
+            $whereClauses = array_filter($whereClauses);
+        }
+        if (!empty($whereClauses)) {
+            $filter_string = implode(' AND ', $whereClauses);
+        }
+    }
+  
+    try {
+       $qry = DB::table('tra_submissions as t1')
+            ->join('wf_tfdaprocesses as t2', 't1.process_id', '=', 't2.id')
+            ->join('wf_workflow_stages as t4', 't1.current_stage', '=', 't4.id')
+            ->join('par_system_statuses as t5', 't1.application_status_id', '=', 't5.id')
+            ->leftJoin('users as t9', 't1.released_by', '=', 't9.id')
+            ->leftJoin('sub_modules as t10', 't2.sub_module_id', '=', 't10.id')
+            ->leftJoin('par_sections as t11', 't2.section_id', '=', 't11.id')
+            
+            ->select(DB::raw("t2.name as process_name,released_by,t10.name as sub_module,t11.name as section_name, t4.name as stage_name, CONCAT_WS(' ',decrypt(t9.first_name),decrypt(t9.last_name)) as user_name, t5.name as application_status, count(t1.id) as application_counter, t1.usr_to as user_id, t1.process_id,t1.released_by, t1.current_stage as stage_id"))
+            ->where('isDone',1);
+       
+        
+        if ($filter_string != '') {
+            $qry->whereRAW($filter_string);
+        }
+        if (validateIsNumeric($process_id)) {
+            $qry->where('t1.process_id', $process_id);
+        }
+        if (validateIsNumeric($module_id)) {
+            $qry->where('t1.module_id', $module_id);
+        }
+        if (validateIsNumeric($section_id)) {
+            $qry->where('t1.section_id', $section_id);
+        }if (validateIsNumeric($workflow_stage_id)) {
+            $qry->where('t1.current_stage', $workflow_stage_id);
+        }if (validateIsNumeric($sub_module_id)) {
+            $qry->where('t1.sub_module_id', $sub_module_id);
+        }
+        if (validateIsNumeric($user_id)) {
+            $qry->where('t1.released_by', $user_id);
+        }
+        if($received_from != ''){
+            $received_from = formatDate($received_from);
+
+            $qry->whereRAW("date_format(t1.date_released, '%Y-%m-%d') >= '".$received_from."'");
+        }
+        if($received_to != ''){
+            $received_to = formatDate($received_to);
+            $qry->whereRAW("date_format(t1.date_released, '%Y-%m-%d') <= '".$received_to."'");
+
+        }
+        $qry->groupBy('t1.released_by', 't1.current_stage','t2.id');
+        $results = $qry->where('t1.isDone',1)->get();
+        $res = array(
+            'success' => true,
+            'results' => $results,
+            'message' => 'All is well'
+        );
+    } catch (\Exception $exception) {
+        $res = array(
+            'success' => false,
+            'message' => $exception->getMessage()
+        );
+    } catch (\Throwable $throwable) {
+        $res = array(
+            'success' => false,
+            'message' => $throwable->getMessage()
+        );
+    }
+    return \response()->json($res);
+}
     
     public function getExternalUserInTrayItems(Request $request)
     {

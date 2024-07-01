@@ -1,9 +1,9 @@
 /**
  * Created by Kip on 1/6/2019.
  */
-Ext.define('Admin.view.gvpapplications.views.grids.ManSitePersonnelDetailsWinGrid', {
+Ext.define('Admin.view.gvpapplications.views.grids.GvpManSitePersonnelDetailsWinGrid', {
     extend: 'Admin.view.gvpapplications.views.grids.GvpManSitePersonnelDetailsGrid',
-    xtype: 'mansitepersonneldetailswingrid',
+    xtype: 'gvpmansitepersonneldetailswingrid',
     tbar: [{
         xtype: 'hiddenfield',
         name: 'isReadOnly'

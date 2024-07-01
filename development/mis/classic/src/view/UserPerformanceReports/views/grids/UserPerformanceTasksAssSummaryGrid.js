@@ -316,7 +316,7 @@ Ext.define('Admin.view.dashboard.grids.UserPerformanceTasksAssSummaryGrid', {
                 };
             }
         },
-        '->',,'->',
+        '->','->',
         {
             xtype: 'exportbtn'
         }

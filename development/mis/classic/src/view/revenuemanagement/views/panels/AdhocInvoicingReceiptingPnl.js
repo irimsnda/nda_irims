@@ -2,7 +2,8 @@
  * Created by Kip on 10/14/2018.
  */
 Ext.define('Admin.view.revenuemanagement.views.panels.AdhocInvoicingReceiptingPnl', {
-    extend: 'Admin.view.commoninterfaces.PaymentsPanel',
+   // extend: 'Admin.view.commoninterfaces.PaymentsPanel',
+    extend: 'Admin.view.commoninterfaces.PaymentVerificationPnl',
     xtype: 'adhocinvoicingreceiptingpnl',
     dockedItems: [{
         xtype: 'toolbar',

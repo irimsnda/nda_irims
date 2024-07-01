@@ -122,6 +122,8 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.OrderSupplyD
                         iconCls: 'x-fa fa-bars',
                         appDetailsReadOnly: 1,
                         handler: 'editpreviewPermitinformation'
+                    },{
+                        xtype: 'transitionsbtn'
                     }
                 ]
             }

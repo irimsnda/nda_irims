@@ -1371,6 +1371,7 @@ class CommonController extends Controller
         $non_gepg_reason = $request->input('non_gepg_reason');
         $receipt_no = generateReceiptNo($user_id);
         $exchange_rate = getSingleRecordColValue('par_exchange_rates', array('currency_id' => $currency_id), 'exchange_rate');
+
         $params = array(
             'application_id' => $application_id,
             'application_code' => $application_code,
@@ -1398,11 +1399,17 @@ class CommonController extends Controller
             'non_gepg_reason' => $non_gepg_reason
         );
 
+
+
         try {
             $res = insertRecord('tra_payments', $params, $user_id);
 
+
+
            generatePaymentRefDistribution($invoice_id, $res['record_id'], $amount, $currency_id, $user_id);
-            $payment_details = getApplicationPaymentsRunningBalance($application_id, $application_code, $invoice_id);
+
+            $payment_details = getApplicationPaymentsRunningBalance($application_code, $invoice_id);
+
             $res['balance'] = $payment_details['running_balance'];
             $res['invoice_amount'] = $payment_details['invoice_amount'];
             
@@ -2344,7 +2351,7 @@ class CommonController extends Controller
         $feeType = $request->input('fee_type');
         $costSubCat = $request->input('cost_subcategory');
         $where = array(
-            't1.feetype_id' => $feeType,
+            //'t1.feetype_id' => $feeType,
             't1.sub_cat_id' => $costSubCat
         );
         try {
@@ -2354,7 +2361,7 @@ class CommonController extends Controller
                 ->join('par_currencies as t4', 't1.currency_id', 't4.id')
                 ->join('par_cost_sub_categories as t5', 't1.sub_cat_id', 't5.id')
                 ->join('par_cost_categories as t6', 't5.cost_category_id', 't6.id')
-                ->join('par_exchange_rates as t7', 't4.id', 't7.currency_id')
+                ->leftjoin('par_exchange_rates as t7', 't4.id', 't7.currency_id')
                 ->select('t1.*', 't1.id as element_costs_id', 't4.id as currency_id', 't2.name as element', 
                     't4.name as currency', 't5.name as sub_category', 't6.name as category', 't7.exchange_rate')
                 ->where($where);
@@ -2969,7 +2976,7 @@ class CommonController extends Controller
     public function checkGeneratedInvoiceDetails(Request $request){
         $application_code = $request->input('application_code');
         try {
-            $invoiceIsGenerated = true;//revert to false on the deployment 
+            $invoiceIsGenerated = false;//revert to false on the deployment 
             $records = DB::table('tra_application_invoices')
                         ->where('application_code',$application_code)
                         ->get();

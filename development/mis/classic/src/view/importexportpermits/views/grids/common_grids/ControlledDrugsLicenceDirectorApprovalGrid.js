@@ -282,7 +282,9 @@ Ext.define('Admin.view.importexportpermits.views.grids.common_grids.ControlledDr
                         text: 'Request for Additional Information',
                         iconCls: 'x-fa fa-file-pdf-o',
                         handler: 'showApplicationQueries'
-                    },
+                    },{
+                        xtype: 'transitionsbtn'
+                    }
                 ]
             }
         }

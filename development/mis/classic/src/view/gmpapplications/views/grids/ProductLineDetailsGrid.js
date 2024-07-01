@@ -79,11 +79,24 @@ Ext.define('Admin.view.gmpapplications.views.grids.ProductLineDetailsGrid', {
             },
             isLoad: false
         },
+
         afterrender: function () {
             var grid = this,
                 isReadOnly = grid.down('hiddenfield[name=isReadOnly]').getValue(),
                 add_btn = grid.down('button[name=add_line]'),
                 widgetCol = grid.columns[grid.columns.length - 1];
+                // grid.columns.forEach(function(column) {
+                // if(subModuleId==2 || subModuleId===2){
+                //             if (column.dataIndex === 'general_manufacturing_activity_type') {
+                //                 column.setHidden(false);
+                //             } 
+                              
+                //           }else{
+                //             if (column.dataIndex === 'general_manufacturing_activity_type') {
+                //                 column.setHidden(true);
+                //             } 
+                //           }
+                // });
             if ((isReadOnly) && (isReadOnly == 1 || isReadOnly === 1)) {
                 add_btn.setVisible(false);
                 widgetCol.setHidden(true);
