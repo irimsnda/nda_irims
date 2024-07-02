@@ -204,18 +204,11 @@ class ReportsHelper
         
     } 
    static function exportDatatoExcel($data, $heading, $filename){
-        
-  //data capture
-        // $function=$req->function;
-        // $response=$this->$function($req,1);
-        // $data=$response['results'];
-        // $heading=$response['heading'];
+        $org_info = DB::table('tra_organisation_information')->first();
         $data_array = json_decode(json_encode($data), true);
 
-//product application details
         $dataSpreadsheet = new Spreadsheet();
         $sheet = $dataSpreadsheet->getActiveSheet();
-       // $ProductSpreadsheet->getActiveSheet()->setTitle($heading);
         $cell=0;
 
 
@@ -275,6 +268,8 @@ class ReportsHelper
        $sheet->insertNewColumnBefore('A', 1);
 
   //adding formats to header
+       $header = str_replace("_"," ", $header);
+       $header = array_map('ucwords', $header);
        array_unshift($header,"S/N");
        $sheet->fromArray($header, null, "A7");
 
@@ -296,29 +291,31 @@ class ReportsHelper
   //add heading title
         $sheet->mergeCells('A1:'.$letter.'6')
             ->getCell('A1')
-            ->setValue("TANZANIAN MEDICINE AND MEDICAL DEVICES AGENCY\nP.O. Box 77150, Nelson Mandela Road,Mabibo External\nTell : +255 22 2450512/2450751/2452108 Fax : +255 28 2541484\nWebsite: www.tfda.go.tzEmail: info@tfda.go.tz\n".$heading."\t\t printed on ".Carbon::now());
+             ->setValue(strtoupper($org_info->name)."\n".$org_info->postal_address."  , ".$org_info->physical_address."."."\nTel: ".$org_info->telephone_nos.",  Fax:".$org_info->fax.".\nWebsite: ".$org_info->website." Email: ".$org_info->email_address."."."\n".$heading."\t\t Exported on ".Carbon::now());
         $sheet->getStyle('A1:'.$letter.'6')->applyFromArray($styleArray);
         $sheet->getStyle('A1:'.$letter.'6')->getAlignment()->setWrapText(true);
+
 
       //format row headers 
        $sheet->getStyle('A7:'.$letter.'7')->applyFromArray($styleHeaderArray);
 
       //create file
        $writer = new Xlsx($dataSpreadsheet);
-         
-
-      $response =  new StreamedResponse(
-          function () use ($writer) {
-              $writer->save('php://output');
-          }
-      );
-      $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      $response->headers->set('Content-Disposition', 'attachment;filename='.$filename.'.xlsx');
-      $response->headers->set('Cache-Control','max-age=0');
+       ob_start();
+            $writer->save('php://output');
+            $excelOutput = ob_get_clean();
 
 
-     return $response;
-            }
+    
+        $response =  array(
+           'status'=>'success',
+           'name' => $filename, //no extention needed
+           'file' => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,".base64_encode($excelOutput) //mime type of used format
+        );
+
+   
+        return $response;
+   }
    static function number_to_alpha($num,$code)
         {   
             $alphabets = array('', 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');

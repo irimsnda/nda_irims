@@ -3219,7 +3219,7 @@ public function getProcessApplicableChecklistItems(Request $request)
             //for the email notification and more so the meeting details 
           //  $has_technicalmeeting_notification $has_email_notification $email_message_id
           
-          if($has_preminsp_notification == 1){
+         if ($has_preminsp_notification == 1 && ($module_id == 2 || $module_id == 29 || $module_id == 33)) {
                  $application_code = $application_detail->application_code;
                 //get the inspectors email
                 $inspection_details = $this->getPremisesInspectionDetails($application_code);
@@ -3231,9 +3231,84 @@ public function getProcessApplicableChecklistItems(Request $request)
                     '{description}'=>$inspection_details->description,
                     '{lead_inspector}'=>$inspection_details->lead_inspector
                 );
-                sendTemplatedApplicationNotificationEmail($preminspmail_msg_id, $inspectors_email,$vars);
+               // sendTemplatedApplicationNotificationEmail($preminspmail_msg_id, $inspectors_email,$vars);
 
           }
+
+          if ($has_preminsp_notification == 1 && $module_id == 3) {
+                foreach ($submission_params as $submission_param) {   
+                  $application_code =  $submission_param['application_code'];
+                    //get the inspectors email
+                  $inspection_details = $this->getGMPInspectionDetails($application_code);
+                  $inspectors_email = $this->getGMPInspectorsEmail($application_code);
+                  $lead_inspector = $this->_getLeadInspectorName($application_detail->application_code);
+                  $user_from = $this->getUserFromName($submission_param['usr_from']);
+                  $vars = array(
+                        '{start_date}'=>$inspection_details->start_date,
+                        '{end_date}'=>$inspection_details->end_date,
+                        '{inspection_days}'=>$inspection_details->inspection_days,
+                        '{travel_date}'=>$inspection_details->travel_date,
+                        '{return_date}'=>$inspection_details->return_date,
+                        '{inspectioncountry_list}'=>$inspection_details->inspectioncountry_list,
+                        '{inspectionteam_name}'=>$inspection_details->inspectionteam_name,
+                        '{inspection_details}'=>$inspection_details->inspection_details,
+                        '{lead_inspector}'=>$lead_inspector,
+                        '{module_name}'=>getSingleRecordColValue('modules', array('id' => $submission_param['module_id']), 'name'),
+                        '{sub_module_name}'=>getSingleRecordColValue('sub_modules', array('id' => $submission_param['sub_module_id']), 'name'),
+                        '{process_name}'=>getSingleRecordColValue('wf_tfdaprocesses', array('id' => $submission_param['process_id']), 'name'),
+                        '{process_stage}'=>getSingleRecordColValue('wf_workflow_stages', array('id' => $submission_param['current_stage']), 'name'),
+                        '{application_no}'=>$submission_param['tracking_no'],
+                        '{user_from}'=>$user_from
+                    );
+                
+                   // sendTemplatedApplicationNotificationEmail($preminspmail_msg_id, $inspectors_email,$vars);
+                }
+
+          }
+
+           if($has_email_notification == 1){
+               
+              foreach ($submission_params as $submission_param) {
+                       
+
+                  $application_code =  $submission_param['application_code'];
+                    //get the inspectors email
+                  $inspection_details = $this->getGMPInspectionDetails($application_code);
+                 // $inspectors_email = $this->getGMPInspectorsEmail($application_code);
+                  $applicant_email = getSingleRecordColValue('wb_trader_account', array('id' => $application_detail->applicant_id), 'email');
+                  $lead_inspector = $this->_getLeadInspectorName($application_detail->application_code);
+                  $user_from = $this->getUserFromName($submission_param['usr_from']);
+                  $invoice_details = getInvoiceDetails($submission_param['module_id'], '',$application_code);
+                  $app_description= '';
+                  if(isset($invoice_details)){
+                    $app_description = $invoice_details['module_desc'];
+                  }
+
+                  $vars = array(
+                        '{start_date}'=>$inspection_details->start_date,
+                        '{end_date}'=>$inspection_details->end_date,
+                        '{inspection_days}'=>$inspection_details->inspection_days,
+                        '{travel_date}'=>$inspection_details->travel_date,
+                        '{return_date}'=>$inspection_details->return_date,
+                        '{inspectioncountry_list}'=>$inspection_details->inspectioncountry_list,
+                        '{inspectionteam_name}'=>$inspection_details->inspectionteam_name,
+                        '{inspection_details}'=>$inspection_details->inspection_details,
+                        '{lead_inspector}'=>$lead_inspector,
+                        '{module_name}'=>getSingleRecordColValue('modules', array('id' => $submission_param['module_id']), 'name'),
+                        '{sub_module_name}'=>getSingleRecordColValue('sub_modules', array('id' => $submission_param['sub_module_id']), 'name'),
+                        '{process_name}'=>getSingleRecordColValue('wf_tfdaprocesses', array('id' => $submission_param['process_id']), 'name'),
+                        '{process_stage}'=>getSingleRecordColValue('wf_workflow_stages', array('id' => $submission_param['current_stage']), 'name'),
+                        '{application_no}'=>$submission_param['tracking_no'],
+                        '{tracking_no}'=>$submission_param['tracking_no'],
+                        '{user_from}'=>$user_from,
+                        '{app_description}'=>$app_description
+                    );
+                
+                   // sendTemplatedApplicationNotificationEmail($email_message_id, $applicant_email,$vars);
+                }
+             } 
+
+
           if($has_technicalmeeting_notification == 1){
               //get the emails 
 
@@ -3246,7 +3321,7 @@ public function getProcessApplicableChecklistItems(Request $request)
                     
                     //var_dump($meeting_details);exit;
                     $meeting_attendantsemail = $this->getMeetingAttendantsEmails($application_code);
-                    $directorate_details = $this->getDirectorateInformation($section_id);
+                    $directorate_details = $this->getDirectorateInformation($module_id);
                     if($directorate_details){
                         $meeting_id = $meeting_details->id;
                         //->select(DB::raw("t2.name as directorate_name, CONCAT_WS(' ',decrypt(t4.first_name),decrypt(t4.last_name)) as director_name"))
@@ -3261,25 +3336,26 @@ public function getProcessApplicableChecklistItems(Request $request)
                     }
                     
                     $module_name = getSingleRecordColValue('modules', array('id'=>$module_id), 'name');
-                   
                     $vars = array(
                         '{meeting_name}' => $meeting_details->meeting_name,
                         '{app_description}' => $app_description,
                         '{meeting_time}' => $meeting_details->meeting_time,
                         '{date_requested}' => $meeting_details->date_requested,
                         '{meeting_venue}' => $meeting_details->meeting_venue,
+                        '{meeting_invitation_details}' => $meeting_details->meeting_invitation_details,
                         '{directorate_name}' => $directorate_name,
                         '{director_name}' => $director_name,
                         '{section_name}' => $section_name,
                         '{module_name}' => $module_name
                      );
+
                      
                       //check for the external users and 
                     //sendTemplatedApplicationNotificationEmail($technicalmeetinemail_msg_id, $meeting_attendantsemail,$vars);
-                    /*$participantEmails = explode(';',$meeting_attendantsemail);
+                    $participantEmails = explode(';',$meeting_attendantsemail);
                     foreach($participantEmails as $participantEmail){
-                        sendTemplatedApplicationNotificationEmail($technicalmeetinemail_msg_id, $participantEmail,$vars);
-                   }*/
+                        //sendTemplatedApplicationNotificationEmail($technicalmeetinemail_msg_id, $participantEmail,$vars);
+                   }
                     //send an email to the rest of the users 
                     $records = DB::table('tc_meeting_participants')
                                     ->select('*')
@@ -3423,13 +3499,13 @@ public function getProcessApplicableChecklistItems(Request $request)
                 ->first();
         return $records;
     }
-    public function getDirectorateInformation($section_id){
-            $record = DB::table('par_sections as t1')
+    public function getDirectorateInformation($module_id){
+            $record = DB::table('modules as t1')
                             ->join('par_directorates as t2', 't1.directorate_id','t2.id')
                             ->join('tra_directorate_directors as t3', 't2.id', 't3.directorate_id')
-                            ->join('users as t4','t3.user_id','t4.id')
+                            ->join('users as t4','t3.director_id','t4.id')
                             ->select(DB::raw("t2.name as directorate_name, CONCAT_WS(' ',decrypt(t4.first_name),decrypt(t4.last_name)) as director_name, t1.name as section_name"))
-                            ->where('t1.id', $section_id)
+                            ->where('t1.id', $module_id)
                             ->first();
              return $record;
     }

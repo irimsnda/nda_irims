@@ -267,10 +267,8 @@ class EmailHelper
         $template_info = self::getEmailTemplateInfo($template_id, $vars);
         $subject = $template_info->subject;
         $message = $template_info->body;
-//dd($message);
+      
         //email notofications job creation
-
-
          $emailJob = (new GenericSendEmailJob($email, $subject, $message))->delay(Carbon::now()->addSeconds(2));
          dispatch($emailJob);
     }

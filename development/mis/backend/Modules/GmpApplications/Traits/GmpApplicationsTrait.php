@@ -440,6 +440,23 @@ trait GmpApplicationsTrait
             $sub_module_id = $process_details->sub_module_id;
             $section_id = $process_details->section_id;
             $application_status_id = getApplicationTransitionStatus($from_stage, $action, $to_stage);
+
+            //todo get workflow action details
+            $action_details = $this->getApplicationWorkflowActionDetails($action);
+            $keep_status = $action_details->keep_status;
+            $has_process_defination = $action_details->has_process_defination;
+            $appprocess_defination_id = $action_details->appprocess_defination_id;
+            //meeting inivitation
+            $has_technicalmeeting_notification = $action_details->has_technicalmeeting_notification;
+            $technicalmeetinemail_msg_id = $action_details->technicalmeetinemail_msg_id;
+            
+            $has_preminsp_notification = $action_details->has_preminsp_notification;
+            $preminspmail_msg_id = $action_details->preminspmail_msg_id;
+            $has_email_notification = $action_details->has_email_notification;
+            $email_message_id = $action_details->email_message_id;
+
+            $has_appdate_defination = $action_details->has_appdate_defination;
+            $appdate_defination_id = $action_details->appdate_defination_id;
             //application details
             foreach ($application_details as $key => $application_detail) {
                 if ($keep_status == true) {
@@ -523,6 +540,97 @@ trait GmpApplicationsTrait
                     } 
             }
 
+            if($has_preminsp_notification == 1){
+               
+              foreach ($submission_params as $submission_param) {
+                       
+
+                  $application_code =  $submission_param['application_code'];
+                    //get the inspectors email
+                  $inspection_details = $this->getGMPInspectionDetails($application_code);
+                  $inspectors_email = $this->getGMPInspectorsEmail($application_code);
+                  $lead_inspector = $this->_getLeadInspectorName($application_detail->application_code);
+                  $user_from = $this->getUserFromName($submission_param['usr_from']);
+                  $invoice_details = getInvoiceDetails($submission_param['module_id'], '',$application_code);
+                  $app_description= '';
+                  if(isset($invoice_details)){
+                    $app_description = $invoice_details['module_desc'];
+                  }
+
+                  $vars = array(
+                        '{start_date}'=>$inspection_details->start_date,
+                        '{end_date}'=>$inspection_details->end_date,
+                        '{inspection_days}'=>$inspection_details->inspection_days,
+                        '{travel_date}'=>$inspection_details->travel_date,
+                        '{return_date}'=>$inspection_details->return_date,
+                        '{inspectioncountry_list}'=>$inspection_details->inspectioncountry_list,
+                        '{inspectionteam_name}'=>$inspection_details->inspectionteam_name,
+                        '{inspection_details}'=>$inspection_details->inspection_details,
+                        '{lead_inspector}'=>$lead_inspector,
+                        '{module_name}'=>getSingleRecordColValue('modules', array('id' => $submission_param['module_id']), 'name'),
+                        '{sub_module_name}'=>getSingleRecordColValue('sub_modules', array('id' => $submission_param['sub_module_id']), 'name'),
+                        '{process_name}'=>getSingleRecordColValue('wf_tfdaprocesses', array('id' => $submission_param['process_id']), 'name'),
+                        '{process_stage}'=>getSingleRecordColValue('wf_workflow_stages', array('id' => $submission_param['current_stage']), 'name'),
+                        '{application_no}'=>$submission_param['tracking_no'],
+                        '{tracking_no}'=>$submission_param['tracking_no'],
+                        '{user_from}'=>$user_from,
+                        '{app_description}'=>$app_description
+                    );
+
+                  $inspectors_emails = explode(';',$inspectors_email);
+                  foreach($inspectors_emails as $inspector_email){
+                        //sendTemplatedApplicationNotificationEmail($preminspmail_msg_id, $inspector_email,$vars);
+                   }
+                
+                    //sendTemplatedApplicationNotificationEmail($preminspmail_msg_id, $inspectors_email,$vars);
+                }
+             } 
+
+               
+
+
+              if($has_email_notification == 1){
+               
+              foreach ($submission_params as $submission_param) {
+                       
+
+                  $application_code =  $submission_param['application_code'];
+                    //get the inspectors email
+                  $inspection_details = $this->getGMPInspectionDetails($application_code);
+                 // $inspectors_email = $this->getGMPInspectorsEmail($application_code);
+                  $applicant_email = getSingleRecordColValue('wb_trader_account', array('id' => $application_detail->applicant_id), 'email');
+                  $lead_inspector = $this->_getLeadInspectorName($application_detail->application_code);
+                  $user_from = $this->getUserFromName($submission_param['usr_from']);
+                  $invoice_details = getInvoiceDetails($submission_param['module_id'], '',$application_code);
+                  $app_description= '';
+                  if(isset($invoice_details)){
+                    $app_description = $invoice_details['module_desc'];
+                  }
+
+                  $vars = array(
+                        '{start_date}'=>$inspection_details->start_date,
+                        '{end_date}'=>$inspection_details->end_date,
+                        '{inspection_days}'=>$inspection_details->inspection_days,
+                        '{travel_date}'=>$inspection_details->travel_date,
+                        '{return_date}'=>$inspection_details->return_date,
+                        '{inspectioncountry_list}'=>$inspection_details->inspectioncountry_list,
+                        '{inspectionteam_name}'=>$inspection_details->inspectionteam_name,
+                        '{inspection_details}'=>$inspection_details->inspection_details,
+                        '{lead_inspector}'=>$lead_inspector,
+                        '{module_name}'=>getSingleRecordColValue('modules', array('id' => $submission_param['module_id']), 'name'),
+                        '{sub_module_name}'=>getSingleRecordColValue('sub_modules', array('id' => $submission_param['sub_module_id']), 'name'),
+                        '{process_name}'=>getSingleRecordColValue('wf_tfdaprocesses', array('id' => $submission_param['process_id']), 'name'),
+                        '{process_stage}'=>getSingleRecordColValue('wf_workflow_stages', array('id' => $submission_param['current_stage']), 'name'),
+                        '{application_no}'=>$submission_param['tracking_no'],
+                        '{tracking_no}'=>$submission_param['tracking_no'],
+                        '{user_from}'=>$user_from,
+                        '{app_description}'=>$app_description
+                    );
+                
+                    //sendTemplatedApplicationNotificationEmail($email_message_id, $applicant_email,$vars);
+                }
+             } 
+
             updateInTraySubmissionsBatch($selected_ids, $application_codes, $from_stage, $user_id);
             DB::commit();
             $res = array(
@@ -546,6 +654,26 @@ trait GmpApplicationsTrait
         exit();
     }
 
+    public function getGMPInspectorsEmail($application_code){
+        $inspectors_email = array();
+           $records = DB::table('assigned_gmpinspections as t1')
+                            ->join('gmp_inspectorsdetails as t2','t1.inspection_id','t2.inspection_id')
+                            ->join('users as t3', 't2.inspector_id','t3.id')
+                            ->where('t1.application_code',$application_code)
+                            ->select(DB::raw("decrypt(t3.email) as email") )
+                            ->get();
+       
+            if($records){
+                foreach ($records as $rec) {
+                    $inspectors_email[] = $rec->email;
+                }
+            }
+            $inspectors_email=implode(';',$inspectors_email);
+            //dd($inspectors_email);
+            return $inspectors_email;
+
+    }
+
     function _getLeadInspector($application_code)
     {
         $lead_inspector = 0;
@@ -559,6 +687,51 @@ trait GmpApplicationsTrait
         }
         return $lead_inspector;
     }
+
+
+  function _getLeadInspectorName($application_code)
+    {
+        $lead_inspector = '';
+        $qry = DB::table('assigned_gmpinspections as t1')
+            ->join('gmp_inspectorsdetails as t2', 't1.inspection_id', '=', 't2.inspection_id')
+            ->join('users as t3', 't2.inspector_id','t3.id')
+            ->where('t2.role_id', '=', 2)
+             ->select(DB::raw("CONCAT_WS(' ',decrypt(t3.first_name),decrypt(t3.last_name)) as lead_inspector_name") )
+            ->where('t1.application_code', $application_code);
+        $results = $qry->first();
+        if ($results) {
+            $lead_inspector = $results->lead_inspector_name;
+        }
+        return $lead_inspector;
+    }
+
+    function getUserFromName($user_from_id)
+    {
+        $user_from='';
+        $qry = DB::table('users as t1')
+             ->select(DB::raw("CONCAT_WS(' ',decrypt(t1.first_name),decrypt(t1.last_name)) as user_from") )
+            ->where('t1.id', $user_from_id);
+        $results = $qry->first();
+
+        if ($results) {
+            $user_from = $results->user_from;
+        }
+        return $user_from;
+    }
+
+    public function getGMPInspectionDetails($application_code){
+        $records = DB::table('assigned_gmpinspections as t1')
+               ->join('gmp_inspectorsdetails as t2', 't1.inspection_id', '=', 't2.inspection_id')
+               ->leftJoin('tra_gmp_inspection_dates as t3', 't1.application_code', '=', 't3.application_code')
+               ->leftJoin('inspectionteam_details as t4', 't1.inspection_id', '=', 't4.id')
+                ->select(DB::raw("t3.end_date,t3.start_date,t3.inspection_days,DATE_FORMAT(t4.travel_date,'%d/%m/%Y') as travel_date,DATE_FORMAT(t4.return_date, '%d/%m/%Y') as return_date,t4.inspectioncountry_list,t4.inspectionteam_name,CONCAT('Inspection Team:',t4.inspectionteam_name,'Inspection Countries:',t4.inspectioncountry_list,':Travel Date(',CONCAT_WS('& return date ', DATE_FORMAT(t4.travel_date,'%d/%m/%Y'), DATE_FORMAT(t4.return_date, '%d/%m/%Y')),'), Inspectors:',(SELECT GROUP_CONCAT(CONCAT(CONCAT_WS(' ', decrypt(first_name), decrypt(last_name)), '-', name)SEPARATOR ',') FROM gmp_inspectorsdetails k LEFT JOIN users l ON k.inspector_id = l.id  LEFT JOIN par_inspectors_roles as f ON k.role_id = f.id WHERE inspection_id = t1.inspection_id)) as inspection_details") )
+                ->where(array('t1.application_code'=>$application_code))
+                //->groupBy('t2.id')
+                ->first();
+        return $records;
+    }
+
+
 
     public function saveGmpApplicationApprovalDetails(Request $request, $sub_module_id, $app_details)
     {

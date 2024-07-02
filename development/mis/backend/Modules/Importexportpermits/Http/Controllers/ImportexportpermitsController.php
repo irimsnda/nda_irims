@@ -252,6 +252,7 @@ class ImportexportpermitsController extends Controller
             $business_type_id = $results->business_type_id;
             $consignee_id = $results->consignee_id;
             $sender_receiver_id = $results->sender_receiver_id;
+            $contact_person_id = $results->contact_person_id;
             
             if($has_registered_premises==1 || $has_registered_premises===1){
                  if($business_type_id==5 || $business_type_id===5){
@@ -267,6 +268,11 @@ class ImportexportpermitsController extends Controller
                 $consignee_name = getSingleRecordColValue('tra_consignee_data', array('id' => $consignee_id), 'name');
 
                 $results->consignee_name = $consignee_name;
+            }
+            if (validateIsNumeric($contact_person_id)) {
+                $billing_person = getSingleRecordColValue('tra_personnel_information', array('id' => $contact_person_id), 'name');
+
+                $results->billing_person = $billing_person;
             }
 
 
@@ -504,6 +510,9 @@ class ImportexportpermitsController extends Controller
             $premise_id = $results->premise_id;
             $has_registered_premises = $results->has_registered_premises;
             $business_type_id = $results->business_type_id;
+            $contact_person_id = $results->contact_person_id;
+            $consignee_id = $results->consignee_id;
+
 
             if($has_registered_premises==1 || $has_registered_premises===1){
                  if($business_type_id==5 || $business_type_id===5){
@@ -537,6 +546,17 @@ class ImportexportpermitsController extends Controller
             //     ->select('t3.*')
             //     ->where(array('id' => $premise_id));
             // $premisesDetails = $qry3->first();
+            if (validateIsNumeric($consignee_id)) {
+                $consignee_name = getSingleRecordColValue('tra_consignee_data', array('id' => $consignee_id), 'name');
+
+                $results->consignee_name = $consignee_name;
+            }
+
+           if (validateIsNumeric($contact_person_id)) {
+                $billing_person = getSingleRecordColValue('tra_personnel_information', array('id' => $contact_person_id), 'name');
+
+            $results->billing_person = $billing_person;
+            }
             $premisesDetails=$this->getPremiseDetails($has_registered_premises,$business_type_id,$premise_id);
 
             $res = array(
@@ -978,6 +998,30 @@ class ImportexportpermitsController extends Controller
                 ->select(DB::raw("t1.*,t14.name as country_oforigin, t1.id as permit_prod_id, t13.node_ref, t1.document_upload_id as uploadeddocuments_id,t1.application_code,  t2.section_id,if(t11.brand_name IS NULL, t1.permitbrand_name, t11.brand_name) AS brand_name,if(t12.id < 1, t1.permitcommon_name, t12.name) as common_name, if(t4.registration_no !='', t4.registration_no,prodcertificate_no)  as certificate_no,regulated_prodpermit_id,authorised_permit_no, t7.name as packaging_units,t6.name as weight_units, t5.name as currency_name,if(t1.manufacturer_name is null,t15.name,t1.manufacturer_name ) as manufacturer_name , t8.name as product_category,t9.name as device_type, (unit_price*quantity) as  total_value"))
                 ->where(array('t1.application_code' => $application_code));
             $records = $records->get();
+            foreach ($records as $rec) {
+                $pack_size_id = '';
+                $pack_size = null;
+
+                if (validateIsNumeric($rec->pack_size)) {
+                    $pack_size_id = $rec->pack_size;
+                    $pack_size_data = $this->getproductPackagingInformation($pack_size_id);
+
+                    if ($pack_size_data && $pack_size_data->isNotEmpty()) {
+                        $packSize = $pack_size_data->first(); // Safely get the first item
+                    }
+
+                   if ($packSize) {
+
+                        $pack_size = $packSize->pack_size;
+                        
+                    }  
+                }else{
+                $pack_size = $rec->pack_size;
+
+                }
+               
+               $records->pack_size=$pack_size;
+            }
 
             $res = array('success' => true, 'results' => $records);
         } catch (\Exception $e) {
@@ -1004,7 +1048,7 @@ class ImportexportpermitsController extends Controller
             //get the records 
             $records = DB::connection('portal_db')->table('wb_permits_products as t1')
                 ->join('wb_importexport_applications as t2', 't1.application_code', '=', 't2.application_code')
-                ->select(DB::raw("t1.*,t2.sub_module_id, t2.section_id, '' as certificate_no"))
+                ->select(DB::raw("t1.*,t2.sub_module_id, t2.section_id, '' as certificate_no,t2.licence_type_id as license_type_id,t2.importation_reason_id as import_reason_id,t2.product_category_id,t2.business_type_id as premise_type_id,t2.is_registered"))
                 ->where(array('t1.application_code' => $application_code))
                 ->get();
 
@@ -1545,47 +1589,365 @@ class ImportexportpermitsController extends Controller
         }
         return $data;
     }
-    public function getProductsPermitDetails($records)
-    {
-        $data = array();
+   public function getProductsPermitDetails($records){
+    $data = array();
 
-        $currencyData = getParameterItems('par_currencies', '');
-        $weightsData = getParameterItems('par_weights_units', '');
+    $currencyData = getParameterItems('par_currencies', '');
+    $weightsData = getParameterItems('par_weights_units', '');
+    $packagingData = getParameterItems('par_packaging_units', '');
+    $permitReasonData = getParameterItems('par_permit_category', '');
+    $productClassCategoriesData = getParameterItems('par_prodclass_categories', '');
+    $deviceData = getParameterItems('par_device_types', '');
+    $siUnitsData = getParameterItems('par_si_units', '');
+    $dosageFormsData = getParameterItems('par_dosage_forms', '');
+    $verification_fee_percentage = 'Not Set';
+    $verification_fee = '';
+    $country_of_origin_region_id = '';
+    $registration_equivalent_id = '';
+    $is_bubu = 2;
+    $is_generic = 2;
+    $is_vaccine='';
 
-        $packagingData = getParameterItems('par_packaging_units', '');
+    foreach ($records as $rec) {
+        $pack_size_id = '';
+        $pack_size = null;
 
-        $permitReasonData = getParameterItems('par_permit_category', '');
+        if (validateIsNumeric($rec->pack_size)) {
+            $pack_size_id = $rec->pack_size;
+            $pack_size_data = $this->getproductPackagingInformation($pack_size_id);
 
-        $productClassCategoriesData = getParameterItems('par_prodclass_categories', '');
-        $deviceData = getParameterItems('par_device_types', '');
+            if ($pack_size_data && $pack_size_data->isNotEmpty()) {
+                $packSize = $pack_size_data->first(); // Safely get the first item
+            }
 
-        foreach ($records as $rec) {
-
-            $data[] = array(
-                'application_code' => $rec->application_code,
-
-                'product_id' => $rec->product_id,
-                'quantity' => $rec->quantity,
-                'currency_id' => $rec->currency_id,
-                'packaging_unit_id' => $rec->packaging_unit_id,
-                'registration_no' => $rec->product_registration_no,
-                'common_name' => $rec->permitcommon_name,
-                'brand_name' => $rec->permitbrand_name,
-
-                'section_id' => $rec->section_id,
-                'certificate_no' => $rec->certificate_no,
-                'id' => $rec->id,
-                'packaging_units' => returnParamFromArray($packagingData, $rec->packaging_unit_id),
-
-                'currency_name' => returnParamFromArray($currencyData, $rec->currency_id),
-                'product_category' => returnParamFromArray($productClassCategoriesData, $rec->prodclass_category_id),
-
-                'unit_price' => $rec->unit_price,
-                'total_value' => ($rec->unit_price * $rec->quantity),
-            );
+            if ($packSize) {
+                $pack_size = $packSize->pack_size;
+            }
+        } else {
+            $pack_size = $rec->pack_size;
         }
-        return $data;
+
+        if (validateisNumeric($rec->product_origin_id)) {
+            $is_not_bubu_country = $this->belongsToWhichRegionCategory($rec->product_origin_id, array('bubu_id' => 2));
+
+            if (!$is_not_bubu_country) {
+                if (recordExists('par_bubu', array('atc_code_id' => $rec->atc_code_id, 'strength' => $rec->product_strength, 'si_unit' => $rec->si_unit_id, 'dosage_form_id' => $rec->dosage_form_id))) {
+                    $is_bubu = 1;
+                }
+            }
+        }
+
+        $is_eac_country = $this->belongsToWhichRegionCategory($rec->product_origin_id, array('eac_id' => 1));
+        if ($is_eac_country) {
+            $country_of_origin_region_id = 3;
+        } else {
+            $country_of_origin_region_id = 2;
+        }
+
+        $is_sra_country = $this->belongsToWhichRegionCategory($rec->product_origin_id, array('sra_id' => 1));
+        if ($is_sra_country) {
+            $country_of_origin_region_id = 1;
+        }
+
+        if ($rec->product_category == 10) {
+            $is_generic = 1;
+        }
+
+      // dd($rec);
+
+        if ($rec->is_registered == 1) {
+            $fob_percentage = getSingleRecordColValue('tra_import_feesconfigurations', array(
+                'license_type_id' => $rec->license_type_id,
+                'import_reason_id' => $rec->import_reason_id,
+                'premise_type_id' => $rec->premise_type_id,
+                'product_category_id' => $rec->product_category_id,
+                'is_registered' => $rec->is_registered,
+                'is_bubu' => $is_bubu
+            ), 'fob');
+        } else {
+            if ($country_of_origin_region_id == 1) {
+                if ($is_generic == 1) {
+                    if (recordExists('tra_product_information', array(
+                        'atc_code_id' => $rec->atc_code_id,
+                        'product_strength' => $rec->product_strength,
+                        'si_unit_id' => $rec->si_unit_id,
+                        'dosage_form_id' => $rec->dosage_form_id
+                    ))) {
+                        $product_origin_id = getSingleRecordColValue('tra_import_feesconfigurations', array(
+                            'atc_code_id' => $rec->atc_code_id,
+                            'product_strength' => $rec->product_strength,
+                            'si_unit_id' => $rec->si_unit_id,
+                            'dosage_form_id' => $rec->dosage_form_id
+                        ), 'product_origin_id');
+
+                        $is_eac_country = $this->belongsToWhichRegionCategory($product_origin_id, array('eac_id' => 1));
+                        if ($is_eac_country) {
+                            $registration_equivalent_id = 8;
+                        } else {
+                            $registration_equivalent_id = 7;
+                        }
+
+                        $is_sra_country = $this->belongsToWhichRegionCategory($product_origin_id, array('sra_id' => 1));
+                        if ($is_sra_country) {
+                            $registration_equivalent_id = 6;
+                        }
+                    } else {
+                        $registration_equivalent_id = 5;
+                    }
+                } else {
+                    if (recordExists('tra_product_information', array(
+                        'atc_code_id' => $rec->atc_code_id,
+                        'product_strength' => $rec->product_strength,
+                        'si_unit_id' => $rec->si_unit_id,
+                        'dosage_form_id' => $rec->dosage_form_id,
+                        'prodclass_category_id' => 10
+                    ))) {
+                        $product_origin_id = getSingleRecordColValue('tra_import_feesconfigurations', array(
+                            'atc_code_id' => $rec->atc_code_id,
+                            'product_strength' => $rec->product_strength,
+                            'si_unit_id' => $rec->si_unit_id,
+                            'dosage_form_id' => $rec->dosage_form_id,
+                            'prodclass_category_id' => 10
+                        ), 'product_origin_id');
+
+                        $is_eac_country = $this->belongsToWhichRegionCategory($product_origin_id, array('eac_id' => 1));
+                        if ($is_eac_country) {
+                            $registration_equivalent_id = 4;
+                        } else {
+                            $registration_equivalent_id = 3;
+                        }
+
+                        $is_sra_country = $this->belongsToWhichRegionCategory($product_origin_id, array('sra_id' => 1));
+                        if ($is_sra_country) {
+                            if ($product_origin_id == 37) {
+                                $registration_equivalent_id = 1;
+                            } else {
+                                $registration_equivalent_id = 2;
+                            }
+                        }
+                    } else {
+                        $registration_equivalent_id = 5;
+                    }
+                }
+            } else if ($country_of_origin_region_id == 3) {
+                if ($is_generic == 1) {
+                    if (recordExists('tra_product_information', array(
+                        'atc_code_id' => $rec->atc_code_id,
+                        'product_strength' => $rec->product_strength,
+                        'si_unit_id' => $rec->si_unit_id,
+                        'dosage_form_id' => $rec->dosage_form_id
+                    ))) {
+                        $product_origin_id = getSingleRecordColValue('tra_product_information', array(
+                            'atc_code_id' => $rec->atc_code_id,
+                            'product_strength' => $rec->product_strength,
+                            'si_unit_id' => $rec->si_unit_id,
+                            'dosage_form_id' => $rec->dosage_form_id
+                        ), 'product_origin_id');
+
+                        $is_eac_country = $this->belongsToWhichRegionCategory($product_origin_id, array('eac_id' => 1));
+                        if ($is_eac_country) {
+                            $registration_equivalent_id = 8;
+                        } else {
+                            $registration_equivalent_id = 7;
+                        }
+
+                        $is_sra_country = $this->belongsToWhichRegionCategory($product_origin_id, array('sra_id' => 1));
+                        if ($is_sra_country) {
+                            $registration_equivalent_id = 6;
+                        }
+                    } else {
+                        $registration_equivalent_id = 5;
+                    }
+                } else {
+                    if (recordExists('tra_product_information', array(
+                        'atc_code_id' => $rec->atc_code_id,
+                        'product_strength' => $rec->product_strength,
+                        'si_unit_id' => $rec->si_unit_id,
+                        'dosage_form_id' => $rec->dosage_form_id,
+                        'prodclass_category_id' => 10
+                    ))) {
+                        $product_origin_id = getSingleRecordColValue('tra_product_information', array(
+                            'atc_code_id' => $rec->atc_code_id,
+                            'product_strength' => $rec->product_strength,
+                            'si_unit_id' => $rec->si_unit_id,
+                            'dosage_form_id' => $rec->dosage_form_id,
+                            'prodclass_category_id' => 10
+                        ), 'product_origin_id');
+
+                        $is_eac_country = $this->belongsToWhichRegionCategory($product_origin_id, array('eac_id' => 1));
+                        if ($is_eac_country) {
+                            $registration_equivalent_id = 4;
+                        } else {
+                            $registration_equivalent_id = 3;
+                        }
+
+                        $is_sra_country = $this->belongsToWhichRegionCategory($product_origin_id, array('sra_id' => 1));
+                        if ($is_sra_country) {
+                            $registration_equivalent_id = 2;
+                        }
+                    } else {
+                        $registration_equivalent_id = 5;
+                    }
+                }
+            } else {
+                if (recordExists('tra_product_information', array(
+                    'atc_code_id' => $rec->atc_code_id,
+                    'product_strength' => $rec->product_strength,
+                    'si_unit_id' => $rec->si_unit_id,
+                    'dosage_form_id' => $rec->dosage_form_id,
+                    'prodclass_category_id' => 10
+                ))) {
+                    $product_origin_id = getSingleRecordColValue('tra_product_information', array(
+                        'atc_code_id' => $rec->atc_code_id,
+                        'product_strength' => $rec->product_strength,
+                        'si_unit_id' => $rec->si_unit_id,
+                        'dosage_form_id' => $rec->dosage_form_id,
+                        'prodclass_category_id' => 10
+                    ), 'product_origin_id');
+
+                    $is_eac_country = $this->belongsToWhichRegionCategory($product_origin_id, array('eac_id' => 1));
+                    if ($is_eac_country) {
+                        $registration_equivalent_id = 4;
+                    } else {
+                        $registration_equivalent_id = 3;
+                    }
+
+                    $is_sra_country = $this->belongsToWhichRegionCategory($product_origin_id, array('sra_id' => 1));
+                    if ($is_sra_country) {
+                        $registration_equivalent_id = 2;
+                    }
+                } else {
+                    $registration_equivalent_id = 5;
+                }
+            }
+
+            $fob_percentage = getSingleRecordColValue('tra_import_feesconfigurations', array(
+                'license_type_id' => $rec->license_type_id,
+                'import_reason_id' => $rec->import_reason_id,
+                'premise_type_id' => $rec->premise_type_id,
+                'product_category_id' => $rec->product_category_id,
+                'is_registered' => $rec->is_registered,
+                'is_bubu' => $is_bubu,
+                'is_generic' => $is_generic,
+                'country_of_origin_region_id' => $country_of_origin_region_id,
+                'registration_equivalent_id' => $registration_equivalent_id
+            ), 'fob');
+
+            // print_r($rec->license_type_id);
+            // print_r($rec->import_reason_id);
+            // print_r($rec->premise_type_id);
+            // print_r($rec->product_category_id);
+            //  print_r($is_bubu);
+            //  print_r($is_generic);
+            //  print_r($country_of_origin_region_id);
+            // print_r($registration_equivalent_id);
+
+            // dd($fob_percentage);
+        }
+
+        if ($fob_percentage !== null && $fob_percentage !== '') {
+            $verification_fee_percentage = $fob_percentage;
+        }
+       
+        if(validateisNumeric($rec->atc_code_id)){
+          $is_vaccine = $this->belongsToVaccineAnticancerCategory($rec->atc_code_id);
+        }else{
+          //if ($rec->is_registered == 2) {
+            $is_vaccine = $this->belongsToVaccineAnticancerCategory($rec->common_name_id); 
+           //}
+        }
+        if ($is_vaccine) {
+            $verification_fee_percentage = 0;
+        }
+
+
+        $total_value = ($rec->pack_price * $rec->no_of_packs);
+
+    
+        $exchange_ratedata = getSingleRecordColValue('par_exchange_rates', array('currency_id' => $rec->currency_id), 'exchange_rate');
+        if (validateIsNumeric($exchange_ratedata)) {
+            if ($verification_fee_percentage != 'Not Set') {
+                $verification_fee = $exchange_ratedata * (($verification_fee_percentage / 100) * $total_value);
+            }
+        } else {
+            $currency_name = getSingleRecordColValue('par_currencies', array('id' => $rec->currency_id), 'name');
+            $verification_fee = 'Exchange Rate' . $currency_name . 'Not Set';
+        }
+
+        $data[] = array(
+            'application_code' => $rec->application_code,
+            'product_id' => $rec->product_id,
+            'quantity' => $rec->quantity,
+            'currency_id' => $rec->currency_id,
+            'packaging_unit_id' => $rec->packaging_unit_id,
+            'registration_no' => $rec->product_registration_no,
+            'certificate_no' => $rec->product_registration_no,
+            'common_name' => $rec->permitcommon_name,
+            'brand_name' => $rec->permitbrand_name,
+            'product_strength' => $rec->product_strength,
+            'section_id' => $rec->section_id,
+            'id' => $rec->id,
+            'pack_size' => $pack_size,
+            'no_of_packs' => $rec->no_of_packs,
+            'packaging_units' => returnParamFromArray($packagingData, $rec->packaging_unit_id),
+            'units_of_strength' => returnParamFromArray($siUnitsData, $rec->si_unit_id),
+            'atc_code_id' => $rec->atc_code_id,
+            'currency_name' => returnParamFromArray($currencyData, $rec->currency_id),
+            'product_category' => returnParamFromArray($productClassCategoriesData, $rec->prodclass_category_id),
+            'dosage_form' => returnParamFromArray($dosageFormsData, $rec->dosage_form_id),
+            'unit_price' => $rec->pack_price,
+            'total_value' => $total_value,
+            'verification_fee_percentage' => $verification_fee_percentage,
+            'verification_fee' => $verification_fee,
+        );
     }
+    return $data;
+}
+
+
+     static function getVaccineAnticancerCategoryIds()
+    {
+        $vaccine_anticancer_category_obj = DB::table('par_atc_codes')
+            ->where('is_vaccine_id', 1)
+            ->get();
+        $vaccine_anticancer_categories_ass = convertStdClassObjToArray($vaccine_anticancer_category_obj);
+        $vaccine_anticancer_categories_simp = convertAssArrayToSimpleArray($vaccine_anticancer_categories_ass, 'id');
+        return $vaccine_anticancer_categories_simp;
+    }
+    static function belongsToVaccineAnticancerCategory($atc_code_id)
+        {
+            $VaccineAnticancerCategoryIDs = self::getVaccineAnticancerCategoryIds();
+            $atc_code_id_array = is_array($atc_code_id) ? $atc_code_id : [$atc_code_id];
+            $arr_intersect = array_intersect($VaccineAnticancerCategoryIDs, $atc_code_id_array);
+            if (count($arr_intersect) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+ static function getCountryLocationCategoryIds($where)
+    {
+        $country_region_category_obj = DB::table('par_countries')
+            ->where($where)
+            ->get();
+        $country_region_categories_ass = convertStdClassObjToArray($country_region_category_obj);
+        $country_region_categories_simp = convertAssArrayToSimpleArray($country_region_categories_ass, 'id');
+        return $country_region_categories_simp;
+    }
+    static function belongsToWhichRegionCategory($country_id,$where)
+        {
+            $countryCategoryIDs = self::getCountryLocationCategoryIds($where);
+            $country_id_array = is_array($country_id) ? $country_id : [$country_id];
+            $arr_intersect = array_intersect($countryCategoryIDs, $country_id_array);
+            if (count($arr_intersect) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+
     public function funcDrugsContentsCalculations(Request $req)
     {
 
@@ -1614,6 +1976,155 @@ class ImportexportpermitsController extends Controller
         }
         return $res;
     }
+
+
+    static function getQuantityCategoryIds()
+    {
+        $quantity_category_obj = DB::table('par_containers')
+            ->where('has_quantity', 1)
+            ->get();
+
+        $quantity_categories_ass = convertStdClassObjToArray($quantity_category_obj);
+        $quantity_categories_simp = convertAssArrayToSimpleArray($quantity_categories_ass, 'id');
+        return $quantity_categories_simp;
+    }
+    static function belongsToQuantityCategory($container_id)
+        {
+            $QuantityCategoryIDs = self::getQuantityCategoryIds();
+            $container_id_array = is_array($container_id) ? $container_id : [$container_id];
+            $arr_intersect = array_intersect($QuantityCategoryIDs, $container_id_array);
+            if (count($arr_intersect) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    function getproductPackagingInformation($pack_size_id)
+    {
+
+            //
+            $data = array();
+            //get the records
+            $data = DB::table('tra_product_packaging as t1')
+                ->select(DB::raw("t1.*,t2.name as container_name,t3.name as secondary_container_name,t4.name as tertiary_container_name,t5.name as shipper_container_name,t6.name as si_unit,t7.name as secondary_si_unit,t8.name as tertiary_si_unit,t9.name as shipper_si_unit,t10.description as generic_name"))
+                ->leftJoin('par_containers as t2', 't1.container_id', '=', 't2.id')
+                ->leftJoin('par_containers as t3', 't1.secondary_container_id', '=', 't3.id')
+                ->leftJoin('par_containers as t4', 't1.tertiary_container_id', '=', 't4.id')
+                ->leftJoin('par_containers as t5', 't1.shipper_container_id', '=', 't5.id')
+                ->leftJoin('si_units as t6', 't1.si_unit_id', '=', 't6.id')
+                ->leftJoin('si_units as t7', 't1.secondary_si_unit_id', '=', 't7.id')
+                ->leftJoin('si_units as t8', 't1.tertiary_si_unit_id', '=', 't8.id')
+                ->leftJoin('si_units as t9', 't1.shipper_si_unit_id', '=', 't9.id')
+                 ->leftJoin('par_atc_codes as t10', 't1.active_common_name_id', '=', 't10.id')
+                ->where(array('t1.id' => $pack_size_id))
+                ->get();
+
+             foreach ($data as $record) {
+                    $packSize = '';
+                    $packSizediluent = '';
+                    $no_of_units_packs="";
+                    $pack_id = $record->id;
+                    $product_id = $record->product_id;
+                    $is_quantity_category = $this->belongsToQuantityCategory($record->container_id);
+
+                    // Calculate pack size
+                    if ($is_quantity_category) {
+                        $packSize = "{$record->no_of_packs}{$record->si_unit} {$record->container_name}";
+                        $no_of_units_packs = $record->no_of_units;
+
+                    } else {
+                        $packSize = "{$record->no_of_units} {$record->container_name}";
+                         $no_of_units_packs = $record->secondary_no_of_units*$record->no_of_units*$record->no_of_packs;
+
+                    }
+
+                    // Add secondary, tertiary, and shipper units if they exist
+                    if ($record->secondary_no_of_units) {
+                        $is_quantity_category = $this->belongsToQuantityCategory($record->secondary_container_id);
+                            // Calculate pack size
+                            if ($is_quantity_category) {
+                                 $packSize = "{$record->secondary_no_of_packs}x" . $packSize;
+                            } else {
+                                 $packSize = "{$record->secondary_no_of_units}x" . $packSize;
+                            }
+                           // $packSize = "{$record->secondary_no_of_units}*" . $packSize;
+                       
+                    }
+                    if ($record->tertiary_no_of_units) {
+                         $is_quantity_category = $this->belongsToQuantityCategory($record->tertiary_container_id);
+                            // Calculate pack size
+                            if ($is_quantity_category) {
+                                 $packSize = "{$record->tertiary_no_of_packs}x" . $packSize;
+                            } else {
+                                 $packSize = "{$record->tertiary_no_of_units}x" . $packSize;
+                            }
+                        //$packSize = "{$record->tertiary_no_of_units}*" . $packSize;
+                    }
+                    if ($record->shipper_no_of_units) {
+                        $is_quantity_category = $this->belongsToQuantityCategory($record->shipper_container_id);
+                            // Calculate pack size
+                            if ($is_quantity_category) {
+                                 $packSize = "{$record->shipper_no_of_packs}x" . $packSize;
+                            } else {
+                                 $packSize = "{$record->shipper_no_of_units}x" . $packSize;
+                             }
+                            
+                        //$packSize = "{$record->shipper_no_of_units}*" . $packSize;
+                    }
+                    if ($record->other_no_of_units) {
+                        $is_quantity_category = $this->belongsToQuantityCategory($record->other_container_id);
+                         // Calculate pack size
+                         if ($is_quantity_category) {
+                                 $packSize = "{$record->other_no_of_packs}x" . $packSize;
+                        } else {
+                             $packSize = "{$record->other_no_of_units}x" . $packSize;
+                         }
+                             
+                       // $packSize = "{$record->other_no_of_units}*" . $packSize;
+                    }
+
+                    // Retrieve diluent data
+
+                    $diluent_data = DB::table('tra_product_diluent_packaging as t1')
+                        ->select(DB::raw("t1.*, t2.name as container_type, t3.name as container_name, t4.name as container_material, t5.name as closure_materials, t4.name as container_material, t5.name as closure_material, t6.name as seal_type, t7.name as packaging_units, retail_packaging_size as retail_packaging,t8.name as si_unit,t9.name as packaging_category,t10.name as diluent"))
+                        ->leftJoin('par_containers_types as t2', 't1.container_type_id', '=', 't2.id')
+                        
+                        ->leftJoin('par_containers as t3', 't1.container_id', '=', 't3.id')
+                        ->leftJoin('par_containers_materials as t4', 't1.container_material_id', '=', 't4.id')
+                        ->leftJoin('par_closure_materials as t5', 't1.closure_material_id', '=', 't5.id')
+                        ->leftJoin('par_seal_types as t6', 't1.seal_type_id', '=', 't6.id')
+                        ->leftJoin('par_packaging_units as t7', 't1.packaging_units_id', '=', 't7.id')
+                        ->leftJoin('si_units as t8', 't1.si_unit_id', '=', 't8.id')
+                        ->leftJoin('par_container_categories as t9', 't1.packaging_category_id', '=', 't9.id')
+                        ->leftJoin('par_diluents as t10', 't1.diluent_id', '=', 't10.id')
+                        ->where(['t1.product_id' => $product_id, 't1.pack_id' => $pack_id])
+                        ->get();
+
+                    // Process each diluent record
+                    foreach ($diluent_data as $diluent_record) {
+                        
+                         $is_quantity_category = $this->belongsToQuantityCategory($diluent_record->container_id);
+
+                            // Calculate pack size
+                            if ($is_quantity_category) {
+                                $packSizediluent = "{$diluent_record->secondary_no_of_units}x{$diluent_record->no_of_packs}{$diluent_record->si_unit} {$diluent_record->container_name} {$diluent_record->diluent}";
+                            } else {
+                                $packSizediluent = "{$diluent_record->secondary_no_of_units}x{$diluent_record->no_of_units} {$diluent_record->container_name} {$diluent_record->diluent}";
+                            }
+                                $packSize .= ' + ' . $packSizediluent;
+                            }
+
+                    // Assign the calculated pack size to the record
+                    $record->pack_size = $packSize;
+                    $record->no_of_units_packs = $no_of_units_packs;
+                }
+
+
+        return $data;
+
+            
+
+    } 
 
     function savepermitOtherDetails($app_data, $applications_table, $application_code)
     {
@@ -1695,6 +2206,8 @@ class ImportexportpermitsController extends Controller
             $premise_id = $permit_details->premise_id;
             $has_registered_premises = $permit_details->has_registered_premises;
             $business_type_id = $permit_details->business_type_id;
+            $consignee_id = $permit_details->consignee_id;
+            $contact_person_id = $permit_details->contact_person_id;
              if($has_registered_premises==1 || $has_registered_premises===1){
                  if($business_type_id==5 || $business_type_id===5){
                     $manufacturing_site_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
@@ -1704,6 +2217,19 @@ class ImportexportpermitsController extends Controller
                     $permit_details->premises_name=$premises_name;
                  }
             }
+
+             
+            if (validateIsNumeric($consignee_id)) {
+                $consignee_name = getSingleRecordColValue('tra_consignee_data', array('id' => $consignee_id), 'name');
+
+                $permit_details->consignee_name = $consignee_name;
+            }
+            if (validateIsNumeric($contact_person_id)) {
+                $billing_person = getSingleRecordColValue('tra_personnel_information', array('id' => $contact_person_id), 'name');
+
+                $permit_details->billing_person = $billing_person;
+            }
+
             $qry2 = DB::table('tra_permitsenderreceiver_data as t3')
                 ->select(
                     't3.id as trader_id',
@@ -3996,12 +4522,27 @@ class ImportexportpermitsController extends Controller
 
                     $permit_details = $qry1->first();
 
+                    $permit_details->importexport_product_range_id=json_decode($permit_details->importexport_product_range_id);
                     $premise_id = $permit_details->premise_id;
-                    $sender_receiver_id = $permit_details->sender_receiver_id;
+                    $has_registered_premises = $permit_details->has_registered_premises;
+                    $business_type_id = $permit_details->business_type_id;
+                    $consignee_id = $permit_details->consignee_id;
+                    $contact_person_id = $permit_details->contact_person_id;
 
+                    if($has_registered_premises==1 || $has_registered_premises===1){
+                         if($business_type_id==5 || $business_type_id===5){
+                            $manufacturing_site_name = getSingleRecordColValue('tra_manufacturing_sites', array('id' => $premise_id), 'name');
+                            $permit_details->manufacturing_site_name=$manufacturing_site_name;
+                         }else{
+                            $premises_name = getSingleRecordColValue('tra_premises', array('id' => $premise_id), 'name');
+                            $permit_details->premises_name=$premises_name;
+                         }
+                    }
+                    $sender_receiver_id = $permit_details->sender_receiver_id;
                     $qry2 = DB::table('tra_permitsenderreceiver_data as t3')
                         ->select(
                             't3.id as trader_id',
+                            't3.id as applicant_id',
                             't3.name as applicant_name',
                             't3.contact_person',
                             't3.tin_no',
@@ -4014,12 +4555,28 @@ class ImportexportpermitsController extends Controller
                             't3.email_address as app_email'
                         )
                         ->where(array('id' => $sender_receiver_id));
-                    $senderReceiverDetails = $qry2->first();
+                      $senderReceiverDetails = $qry2->first();
 
-                    $qry3 = DB::table('tra_premises as t3')
-                        ->select('t3.*')
-                        ->where(array('id' => $premise_id));
-                    $premisesDetails = $qry3->first();
+                      
+                        if (validateIsNumeric($consignee_id)) {
+                            $consignee_name = getSingleRecordColValue('tra_consignee_data', array('id' => $consignee_id), 'name');
+
+                            $permit_details->consignee_name = $consignee_name;
+                        }
+
+                         if (validateIsNumeric($contact_person_id)) {
+                            $billing_person = getSingleRecordColValue('tra_personnel_information', array('id' => $contact_person_id), 'name');
+
+                            $permit_details->billing_person = $billing_person;
+                        }
+
+
+
+                    // $qry3 = DB::table('tra_premises as t3')
+                    //     ->select('t3.*')
+                    //     ->where(array('id' => $premise_id));
+                    // $premisesDetails = $qry3->first();
+                    $premisesDetails=$this->getPremiseDetails($has_registered_premises,$business_type_id,$premise_id);
                 }
 
                 $res = array(
@@ -4082,6 +4639,11 @@ class ImportexportpermitsController extends Controller
                 })
                 ->leftJoin('par_approval_decisions as t14', 't13.decision_id', '=', 't14.id')
 
+                ->leftJoin('par_vc_application_type as t15', 't1.vc_application_type_id', '=', 't15.id')
+                ->leftJoin('par_import_registration_level as t16', 't1.is_registered', '=', 't16.id')
+                ->leftJoin('par_importexport_reasons as t17', 't1.importation_reason_id', '=', 't17.id')
+                ->leftJoin('par_importexport_product_category as t18', 't1.product_category_id', '=', 't18.id')
+
                 ->select(
                     't1.*',
                     't1.id as application_id',
@@ -4098,6 +4660,10 @@ class ImportexportpermitsController extends Controller
                     't12.name as approval_recommendation',
                     't13.decision_id as director_recommendation_id',
                     't14.name as director_recommendation',
+                    't15.name as vc_application_type',
+                    't16.name as registration_level',
+                    't17.name as importation_reason',
+                    't18.name as product_category'
                 )
             ->groupBy('t1.id')
             ->where(array('t6.current_stage' => $workflow_stage, 'isDone' => 0))
@@ -5274,6 +5840,9 @@ class ImportexportpermitsController extends Controller
                 ->leftJoin('par_vc_application_type as t24', 't1.vc_application_type_id', '=', 't24.id')
                 ->leftJoin('par_import_registration_level as t25', 't1.is_registered', '=', 't25.id')
 
+                ->leftJoin('par_importexport_reasons as t26', 't1.importation_reason_id', '=', 't26.id')
+                ->leftJoin('par_importexport_product_category as t27', 't1.product_category_id', '=', 't27.id')
+
                 ->select(
                     't1.*',
                     't3.name as applicant_name',
@@ -5291,6 +5860,8 @@ class ImportexportpermitsController extends Controller
                     't21.name as business_type',
                     't24.name as vc_application_type',
                     't25.name as registration_level',
+                    't26.name as importation_reason',
+                    't27.name as product_category',
                     DB::raw("CONCAT_WS(' ',decrypt(t12.first_name),decrypt(t12.last_name)) as from_user,t16.name as process_name, t11.name as workflow_stage")
                 )
                 ->groupBy('t1.id')
@@ -7038,12 +7609,14 @@ private function processApplication($table_name, $application_code, $request, $u
                     $where = array(
                         'id' => $permit_prod_id
                     );
+
+
                     $permitprod_recommendation_id = $prod_detail->permitprod_recommendation_id;
                     $permitprod_recommendation_remarks = $prod_detail->permitprod_recommendation_remarks;
 
-                    $prodregistrationvalidation_recommendation_id = $prod_detail->prodregistrationvalidation_recommendation_id;
+                   $prodregistrationvalidation_recommendation_id = $prod_detail->prodregistrationvalidation_recommendation_id ?? "";
 
-                    $prodregistrationvalidation_recommendation_remarks = $prod_detail->prodregistrationvalidation_recommendation_remarks;
+                    $prodregistrationvalidation_recommendation_remarks = $prod_detail->prodregistrationvalidation_recommendation_remarks ?? "";
 
                     $update_params = array(
                         'permitprod_recommendation_id' => $permitprod_recommendation_id,

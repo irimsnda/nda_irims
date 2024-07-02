@@ -1143,56 +1143,102 @@ Ext.define('Admin.view.drugshopregistration.views.forms.DrugShopDetailsFrm', {
                 xtype: 'fieldcontainer',
                 columnWidth: 1,
                 layout: {
-                    type: 'column',
+                    type: 'column'
                 },
                 defaults: {
-                    columnWidth: 0.49,
-                    labelAlign: 'top'
+                    columnWidth: 0.5,
+                    labelAlign: 'top',
+                    margin: '0 10 10 0'
                 },
                 items: [
                     {
                         xtype: 'textfield',
                         fieldLabel: 'Latitude',
                         name: 'latitude',
-                        allowBlank: false
+                        allowBlank: false,
+                        //fieldStyle: 'padding-right: 50px;', // Add some padding to make room for the icon
+                        listeners: {
+                            render: function(cmp) {
+                                // Create the icon element
+                                var icon = document.createElement('span');
+                                icon.className = 'x-fa fa-info-circle';
+                                icon.style.position = 'absolute';
+                                icon.style.right = '5px'; // Adjust the positioning to suit your layout
+                                icon.style.top = '50%';
+                                icon.style.transform = 'translateY(-50%)';
+                                icon.style.cursor = 'pointer';
+                                
+                                // Append the icon to the text field's bodyEl
+                                cmp.bodyEl.dom.style.position = 'relative'; // Ensure parent is positioned relatively
+                                cmp.bodyEl.dom.appendChild(icon);
+
+                                // Create the tooltip
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: icon,
+                                    html: 'Enter the latitude in decimal degrees'
+                                });
+                            }
+                        }
                     },
                     {
                         xtype: 'textfield',
                         fieldLabel: 'Longitude',
                         name: 'longitude',
-                        allowBlank: false
+                        allowBlank: false,
+                        //fieldStyle: 'padding-right: 50px;', // Add some padding to make room for the icon
+                        listeners: {
+                            render: function(cmp) {
+                                // Create the icon element
+                                var icon = document.createElement('span');
+                                icon.className = 'x-fa fa-info-circle';
+                                icon.style.position = 'absolute';
+                                icon.style.right = '10px';
+                                icon.style.top = '50%';
+                                icon.style.transform = 'translateY(-50%)';
+                                icon.style.cursor = 'pointer';
+                                // Append the icon to the text field's bodyEl
+                                 // Append the icon to the text field's bodyEl
+                                cmp.bodyEl.dom.style.position = 'relative'; // Ensure parent is positioned relatively
+                                cmp.bodyEl.dom.appendChild(icon);
+
+                                // Create the tooltip
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: icon,
+                                    html: 'Enter the longitude in decimal degrees'
+                                });
+                            }
+                        }
                     },
                     {
                         xtype: 'button',
                         columnWidth: 0.3,
-                        name:'capture_location',
-                        margin:'10 0 0 0',
+                        name: 'capture_location',
+                        margin: '10 0 0 0',
                         iconCls: 'fa fa-location-arrow',
-                        iconAlign: 'right', 
+                        iconAlign: 'right',
                         text: 'Capture Location',
-                        handler: function () {
-                        
+                        handler: function() {
                             if ("geolocation" in navigator) {
                                 navigator.geolocation.getCurrentPosition(
-                                    function (position) {
+                                    function(position) {
                                         var latitude = position.coords.latitude;
                                         var longitude = position.coords.longitude;
                                         // Populate the textfields
                                         Ext.ComponentQuery.query('textfield[name=latitude]')[0].setValue(latitude);
                                         Ext.ComponentQuery.query('textfield[name=longitude]')[0].setValue(longitude);
                                     },
-                                    function (error) {
+                                    function(error) {
                                         Ext.Msg.alert("Geolocation Error", error);
                                     }
                                 );
                             } else {
-                                 Ext.Msg.alert("Geolocation Error", "Geolocation not available");
-                                
+                                Ext.Msg.alert("Geolocation Error", "Geolocation not available");
                             }
                         }
                     }
                 ]
-            } 
+            }
+ 
            ]
 
      }

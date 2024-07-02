@@ -411,6 +411,30 @@ Ext.define('Admin.view.dashboard.viewcontrollers.DashboardVctr', {
     onHideView: function () {
         this.clearChartUpdates();
     },
+    // exportDashboard: function(btn){
+    //     var type = btn.type,
+    //         is_internaluser = btn.is_internaluser,
+    //         grid = btn.up('grid'),
+    //         section_id = grid.down('combo[name=section_id]').getValue(),
+    //         module_id = grid.down('combo[name=module_id]').getValue(),
+    //         sub_module_id = grid.down('combo[name=sub_module_id]').getValue(),
+    //         workflow_stage_id = grid.down('combo[name=workflow_stage_id]').getValue(),
+    //         filterfield = grid.getPlugin('filterfield');
+            
+    //    if(grid.down('combo[name=zone_id]')){
+    //      var zone_id=grid.down('combo[name=zone_id]').getValue(), 
+    //          application_status_id=grid.down('combo[name=application_status_id]').getValue();
+    //    }else{
+    //       var zone_id = null,
+    //           application_status_id = null;
+    //    }
+    //    var filter_array =Ext.pluck( filterfield.getgridFilters(grid), 'config');
+    //    filter_array = Ext.JSON.encode(filter_array);
+    //    var str = 'dashboard/exportDashboard?type='+type+'&is_internaluser='+is_internaluser+'&section_id='+section_id+'&module_id='+module_id+'&sub_module_id='+sub_module_id+'&workflow_stage_id='+workflow_stage_id+'&zone_id='+zone_id+'&application_status_id='+application_status_id+'&filter='+encodeURIComponent(filter_array);
+    //    var action_url = str.replace(/null/gi, '');
+    //    print_report(action_url);
+    // },
+
     exportDashboard: function(btn){
         var type = btn.type,
             is_internaluser = btn.is_internaluser,
@@ -421,22 +445,103 @@ Ext.define('Admin.view.dashboard.viewcontrollers.DashboardVctr', {
             workflow_stage_id = grid.down('combo[name=workflow_stage_id]').getValue(),
             filterfield = grid.getPlugin('filterfield');
             
-       if(grid.down('combo[name=zone_id]')){
-         var zone_id=grid.down('combo[name=zone_id]').getValue(), 
-             application_status_id=grid.down('combo[name=application_status_id]').getValue();
-       }else{
-          var zone_id = null,
-              application_status_id = null;
-       }
-       var filter_array =Ext.pluck( filterfield.getgridFilters(grid), 'config');
-       filter_array = Ext.JSON.encode(filter_array);
-       var str = 'dashboard/exportDashboard?type='+type+'&is_internaluser='+is_internaluser+'&section_id='+section_id+'&module_id='+module_id+'&sub_module_id='+sub_module_id+'&workflow_stage_id='+workflow_stage_id+'&zone_id='+zone_id+'&application_status_id='+application_status_id+'&filter='+encodeURIComponent(filter_array);
-       var action_url = str.replace(/null/gi, '');
-       print_report(action_url);
+        var zone_id = grid.down('combo[name=zone_id]') ? grid.down('combo[name=zone_id]').getValue() : null;
+        var application_status_id = grid.down('combo[name=application_status_id]') ? grid.down('combo[name=application_status_id]').getValue() : null;
+        
+        var filter_array = Ext.pluck(filterfield.getgridFilters(grid), 'config');
+        filter_array = Ext.JSON.encode(filter_array);
+        
+        var params = {
+            type: type,
+            is_internaluser: is_internaluser,
+            section_id: section_id,
+            module_id: module_id,
+            sub_module_id: sub_module_id,
+            workflow_stage_id: workflow_stage_id,
+            zone_id: zone_id,
+            application_status_id: application_status_id,
+            filter: filter_array
+        };
+        
+        // Remove null values from params
+        for (var key in params) {
+            if (params[key] === null) {
+                delete params[key];
+            }
+        }
+        
+        Ext.getBody().mask('Exporting... Please wait...');
+        
+        Ext.Ajax.request({
+            url: 'dashboard/exportDashboard',
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            params: params,
+            success: function(response, textStatus, request) {
+                Ext.getBody().unmask();
+                var t = JSON.parse(response.responseText);
+                if (t.status.trim() === 'success') {
+                    var a = document.createElement("a");
+                    a.href = t.file;
+                    a.download = t.name;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                } else {
+                    toastr.error(t.message, 'Warning Response');
+                }
+            },
+            failure: function(conn, response, options, eOpts) {
+                Ext.getBody().unmask();
+                Ext.Msg.alert('Error', 'Please try again');
+            }
+        });
     },
-    exportDashboardnoFilters: function(btn){
+
+    // exportDashboardnoFilters: function(btn){
+    //     var type = btn.type,
+    //         is_internaluser = btn.is_internaluser;
+    //    print_report('dashboard/exportDashboard?type='+type+'&is_internaluser='+is_internaluser);
+    // }
+    exportDashboardnoFilters: function(btn) {
         var type = btn.type,
             is_internaluser = btn.is_internaluser;
-       print_report('dashboard/exportDashboard?type='+type+'&is_internaluser='+is_internaluser);
+
+        var params = {
+            type: type,
+            is_internaluser: is_internaluser
+        };
+
+        Ext.getBody().mask('Exporting... Please wait...');
+        
+        Ext.Ajax.request({
+            url: 'dashboard/exportDashboard',
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            params: params,
+            success: function(response, textStatus, request) {
+                Ext.getBody().unmask();
+                var t = JSON.parse(response.responseText);
+                if (t.status.trim() === 'success') {
+                    var a = document.createElement("a");
+                    a.href = t.file;
+                    a.download = t.name;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                } else {
+                    toastr.error(t.message, 'Warning Response');
+                }
+            },
+            failure: function(conn, response, options, eOpts) {
+                Ext.getBody().unmask();
+                Ext.Msg.alert('Error', 'Please try again');
+            }
+        });
     }
+
 });

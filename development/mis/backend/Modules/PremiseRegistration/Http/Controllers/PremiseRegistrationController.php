@@ -100,9 +100,9 @@ public function getAllPremisesList(Request $request)
 					't3.country_id as app_country_id', 't3.region_id as app_region_id', 't3.district_id as app_district_id',
 					't3.physical_address as app_physical_address', 't3.postal_address as app_postal_address','t4.name as region_name', 't5.name as district_name',
 					't3.telephone_no as app_telephone', 't3.fax as app_fax', 't3.email as app_email', 't3.website as app_website');
-			// if (validateIsNumeric($section_id)) {
-			// 	$qry->where('t1.section_id', $section_id);
-			// }
+			if (validateIsNumeric($section_id)) {
+				$qry->where('t1.section_id', $section_id);
+			}
 			if ($filter_string != '') {
 				$qry->whereRAW($filter_string);
 			}
@@ -5057,6 +5057,8 @@ public function funcAddNewPremisesDetails(Request $request){
 		$application_id = $request->input('application_id');
 		$application_code = $request->input('application_code');
 		$table_name = $request->input('table_name');
+		$report_type_id=3;
+		$prevreport_type_id=2;
 		try {
 			$qry = DB::table($table_name . ' as t1')
 				->join('wb_trader_account as t2', 't1.applicant_id', '=', 't2.id')
@@ -5070,6 +5072,12 @@ public function funcAddNewPremisesDetails(Request $request){
 			$applicant_id = $results->applicant_id;
 			
 			$premise_id = $results->premise_id;
+			$module_id = $results->module_id;
+			if($module_id==2){
+			 $report_type_id=2;
+			 $prevreport_type_id=1;
+			}
+
 			$qryApplicant = DB::table('wb_trader_account as t1')
 				->leftJoin('par_countries as t2', 't1.country_id', '=', 't2.id')
 				->leftJoin('par_premise_regions as t3', 't1.region_id', '=', 't3.id')
@@ -5114,7 +5122,7 @@ public function funcAddNewPremisesDetails(Request $request){
 				->leftJoin('par_locationcouncils_definations as t5', 't5a.locationcouncils_defination_id', '=', 't5.id')
 				->leftJoin('par_business_types as t6', 't3.business_type_id', '=', 't6.id')
 				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.company_registration_no','t3.product_classification_id','t3.country_id','t3.district_id','t3.region_id','t3.county_id','t3.sub_county_id','t3.village','t3.street','t3.physical_address','t3.latitude','t3.longitude','t4.size as recommended_room_size','t5.recommended_premise_distance as recommended_distance','t6.name as premise_type','t5.name as locationcouncils_definations')
-				->where(array('t1.application_code' => $application_code,'report_type_id' =>2));
+				->where(array('t1.application_code' => $application_code,'report_type_id' =>$report_type_id));
 			$inspection_details = $qry->first();
 
 
@@ -5127,7 +5135,7 @@ public function funcAddNewPremisesDetails(Request $request){
 				->leftJoin('par_locationcouncils_definations as t5', 't5a.locationcouncils_defination_id', '=', 't5.id')
 				->leftJoin('par_business_types as t6', 't3.business_type_id', '=', 't6.id')
 				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.company_registration_no','t3.product_classification_id','t3.country_id','t3.district_id','t3.region_id','t3.county_id','t3.sub_county_id','t3.village','t3.street','t3.physical_address','t3.latitude','t3.longitude','t4.size as recommended_room_size','t5.recommended_premise_distance as recommended_distance','t6.name as premise_type','t5.name as locationcouncils_definations')
-				->where(array('t1.application_code' => $application_code,'report_type_id' =>1));
+				->where(array('t1.application_code' => $application_code,'report_type_id' =>$prevreport_type_id));
 			$previous_inspection_details = $qryPrev->first();
 			
 			$res = array(
@@ -5158,6 +5166,8 @@ public function funcAddNewPremisesDetails(Request $request){
 		$application_id = $request->input('application_id');
 		$application_code = $request->input('application_code');
 		$table_name = $request->input('table_name');
+		$report_type_id=4;
+		$prevreport_type_id=3;
 		try {
 			$qry = DB::table($table_name . ' as t1')
 				->join('wb_trader_account as t2', 't1.applicant_id', '=', 't2.id')
@@ -5171,6 +5181,11 @@ public function funcAddNewPremisesDetails(Request $request){
 			$applicant_id = $results->applicant_id;
 			
 			$premise_id = $results->premise_id;
+			$module_id = $results->module_id;
+			if($module_id==2){
+			 $report_type_id=3;
+			 $prevreport_type_id=2;
+			}
 			$qryApplicant = DB::table('wb_trader_account as t1')
 				->leftJoin('par_countries as t2', 't1.country_id', '=', 't2.id')
 				->leftJoin('par_premise_regions as t3', 't1.region_id', '=', 't3.id')
@@ -5217,7 +5232,7 @@ public function funcAddNewPremisesDetails(Request $request){
 
 				->leftJoin('par_business_types as t6', 't3.business_type_id', '=', 't6.id')
 				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.company_registration_no','t3.product_classification_id','t3.country_id','t3.district_id','t3.region_id','t3.county_id','t3.sub_county_id','t3.village','t3.street','t3.physical_address','t3.latitude','t3.longitude','t4.size as recommended_room_size','t5.recommended_premise_distance as recommended_distance','t6.name as premise_type','t5.name as locationcouncils_definations')
-				->where(array('t1.application_code' => $application_code,'report_type_id' =>4));
+				->where(array('t1.application_code' => $application_code,'report_type_id' =>$report_type_id));
 			$inspection_details = $qry->first();
 
 
@@ -5230,7 +5245,7 @@ public function funcAddNewPremisesDetails(Request $request){
 				->leftJoin('par_locationcouncils_definations as t5', 't5a.locationcouncils_defination_id', '=', 't5.id')
 				->leftJoin('par_business_types as t6', 't3.business_type_id', '=', 't6.id')
 				->select('t1.id as record_id','t1.*','t3.applicant_type_id','t3.name','t3.tpin_no','t3.registration_date','t3.business_type_id','t3.company_registration_no','t3.product_classification_id','t3.country_id','t3.district_id','t3.region_id','t3.county_id','t3.sub_county_id','t3.village','t3.street','t3.physical_address','t3.latitude','t3.longitude','t4.size as recommended_room_size','t5.recommended_premise_distance as recommended_distance','t6.name as premise_type','t5.name as locationcouncils_definations')
-				->where(array('t1.application_code' => $application_code,'report_type_id' =>3));
+				->where(array('t1.application_code' => $application_code,'report_type_id' =>$prevreport_type_id));
 			$previous_inspection_details = $qryPrev->first();
 			
 			$res = array(
@@ -5403,7 +5418,6 @@ public function funcAddNewPremisesDetails(Request $request){
 			if (isset($id) && $id != '') {
 				unset($post_data['id']);
 				$post_data['mis_dola'] = Carbon::now();
-				//$post_data['status_id'] = 1;
 				$post_data['mis_altered_by'] = $this->user_id;
 				$portal_db->table('tra_online_queries')
 					->where('id', $id)

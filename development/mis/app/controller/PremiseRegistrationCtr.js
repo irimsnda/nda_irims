@@ -8247,6 +8247,18 @@ previewPremisesOnlineApplication: function (view, record) {
 
            //activeTab.down('button[name=search_PreInspection_Premise]').setVisible(false);
 
+            if(sub_module_id==96 || sub_module_id==96){
+              premiseFrm.down('#location_fieldset').items.each(function(item) {
+                if (item.isFormField) { // Check if the item is a form field (e.g., textfield, combo, etc.)
+                    item.setReadOnly(true);
+                }
+            });
+              premiseFrm.down('textfield[name=latitude]').setReadOnly(true);
+              premiseFrm.down('textfield[name=longitude]').setReadOnly(true);
+              premiseFrm.down('button[name=capture_location]').setVisible(false);
+              
+          }
+
          
         if (app_status_id == 8 || app_status_id === 8) {//manager raise query
             activeTab.down('button[name=manager_query]').setVisible(true);

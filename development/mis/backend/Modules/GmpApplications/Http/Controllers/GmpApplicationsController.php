@@ -2775,7 +2775,7 @@ class GmpApplicationsController extends Controller
         try {
             if (validateIsNumeric($isOnline) && $isOnline == 1) {
                 //$results = $this->getOnlineSiteBlockDetails($request);
-                $results = $this->getMISSiteBlockDetails($request);
+                $results = $this->getOnlineSiteBlockDetails($request);
 
             } else {
                 $results = $this->getMISSiteBlockDetails($request);
@@ -2805,12 +2805,12 @@ class GmpApplicationsController extends Controller
         $qry = DB::table('tra_manufacturing_sites_blocks as t1')
             ->leftJoin('par_manufacturinginspection_category as t2', 't1.inspection_category_id', '=', 't2.id')
            ->leftJoin('par_general_manufacturing_activity as t3', 't1.general_manufacturing_activity_id', '=', 't3.id')
-            ->Join('gmp_productline_details as t4', 't4.manufacturingsite_block_id', '=', 't1.id')
+            //->Join('gmp_productline_details as t4', 't4.manufacturingsite_block_id', '=', 't1.id')
 
-            // ->Join('gmp_productline_details as t4', function ($join) use ($site_id) {
-            //         $join->on('t1.id', '=', 't4.manufacturingsite_block_id')
-            //       ->where('t4.manufacturing_site_id', $site_id);
-            //   })
+            ->Join('gmp_productline_details as t4', function ($join) use ($site_id) {
+                    $join->on('t1.id', '=', 't4.manufacturingsite_block_id')
+                  ->where('t4.manufacturing_site_id', $site_id);
+              })
             ->select('t1.*', 't2.name as inspection_manufacturing_Category','t3.name as general_manufacturing_activity_type',DB::raw('COUNT(DISTINCT t4.id) as lines_no'))
             ->where('t1.manufacturing_site_id', $site_id)
             ->groupBy('t1.id');

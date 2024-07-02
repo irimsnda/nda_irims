@@ -3125,6 +3125,7 @@ class ClinicalTrialController extends Controller
         
         $meeting_venue = $request->input('meeting_venue');
         $meeting_time = $request->input('meeting_time');
+        $meeting_invitation_details = $request->input('meeting_invitation_details');
         $date_requested = $request->input('date_requested');
         $selected = $request->input('selected');
         $selected_codes = json_decode($selected);
@@ -3134,6 +3135,7 @@ class ClinicalTrialController extends Controller
                 'meeting_name' => $meeting_name,
                 'meeting_desc' => $meeting_desc,
                 'meeting_venue' => $meeting_venue,
+                'meeting_invitation_details' => $meeting_invitation_details,
                 'meeting_type_id' => $meeting_type_id,
                 'meeting_time' => $meeting_time,
                 'date_requested' => $date_requested

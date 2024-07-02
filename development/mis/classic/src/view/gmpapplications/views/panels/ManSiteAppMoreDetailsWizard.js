@@ -81,13 +81,11 @@ Ext.define('Admin.view.gmpapplications.views.panels.ManSiteAppMoreDetailsWizard'
                                 filterObj = {is_local: 1},
                                 filterStr = JSON.stringify(filterObj);
                             if (newVal == 2 || newVal === 2) {//local
-                                ltr_selection.setValue(2);
-                                ltr_selection.setReadOnly(true);
+                                // ltr_selection.setValue(2);
+                                // ltr_selection.setReadOnly(true);
                                 phamacist_fieldset.setVisible(true);
                                 inspection_activities.setVisible(false);
                                 inspection_activities.allowBlank = true;
-                                licence_no.allowBlank = true;
-                                licence_no.setVisible(false);
                                 // psu_no.allowBlank = false;
                                 // psu_no.validate();
                                 productlinedetailsgrid.columns.find(col => col.dataIndex === 'general_manufacturing_activity_type').setHidden(false);
@@ -103,11 +101,13 @@ Ext.define('Admin.view.gmpapplications.views.panels.ManSiteAppMoreDetailsWizard'
                                    psu_no.allowBlank = true;
                                    assessment_type_id.setValue(1);
                                    assessment_type_id.setReadOnly(true);
+                                   licence_no.allowBlank = true;
+                                   licence_no.setVisible(false);
 
                                 }else{
                                    psu_no.allowBlank = false;
                                    psu_no.validate();
-
+                                   licence_no.setVisible(true);
                                 }
 
                                 // county_id.allowBlank = false;
